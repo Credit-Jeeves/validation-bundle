@@ -1,0 +1,12 @@
+homepage_applicant:
+    pattern:  /
+    defaults: { _controller: ApplicantBundle:Homepage:index }
+
+homepage_dealer:
+    pattern:  /
+    defaults: { _controller: DealerBundle:Homepage:index }
+
+homepage_admin:
+  pattern: /admin
+  defaults: { _controller: AdminBundle:Homepage:index }
+

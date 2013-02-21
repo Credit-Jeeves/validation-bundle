@@ -1,0 +1,7 @@
+parameters:
+#    dealer.example.class: CreditJeeves\DealerBundle\Example
+
+services:
+#    dealer.example:
+#        class: %dealer.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
