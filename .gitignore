@@ -5,6 +5,5 @@
 /app/config/parameters.yml
 /build/
 /vendor/
-/bin/
 /composer.phar
 /.*
