@@ -1,6 +1,8 @@
 {
-    "name": "symfony/framework-standard-edition",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "name": "Credit-Jeeves/Credit-Jeeves-SF2",
+    "description": "Credit-Jeeves SF2",
+    "version": "2.0",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-0": { "": "src/" }
     },
@@ -38,7 +40,6 @@
     "config": {
         "bin-dir": "bin"
     },
-    "minimum-stability": "dev",
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
