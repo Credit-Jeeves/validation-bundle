@@ -1,8 +1,22 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "version": "2.0",
     "minimum-stability": "dev",
+    "version": "2.0",
+    "authors": [
+        {
+            "name": "Ton Sharp",
+            "email": "Forma-PRO@66ton99.org.ua"
+        },
+        {
+            "name": "Alex Emelyanov",
+            "email": "alex.emelyanov.ua@gmail.com"
+        },
+        {
+            "name": "Darryl Eaton",
+            "email": "darryl@creditjeeves.com"
+        }
+    ],
     "autoload": {
         "psr-0": { "": "src/" }
     },
@@ -81,7 +95,7 @@
         "ext-apc": "*",
         "lib-curl": "*",
         "lib-openssl": "*",
-        "symfony/symfony": "2.2.*",
+        "symfony/symfony": "2.2.x-dev",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "1.2.*",
         "twig/extensions": "1.0.*",
@@ -112,12 +126,14 @@
         "post-install-cmd": [
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ],
         "post-update-cmd": [
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ]
     },
     "config": {
