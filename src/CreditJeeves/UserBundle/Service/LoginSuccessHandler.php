@@ -14,21 +14,28 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 
   protected $security;
 
+  /**
+   * 
+   * @param ContainerInterface $container
+   * @param SecurityContext $security
+   */
   public function __construct(ContainerInterface $container, SecurityContext $security)
   {
     $this->container = $container;
     $this->security = $security;
   }
 
+  /**
+   * 
+   * @param Request $request
+   * @param TokenInterface $token
+   */
   public function onAuthenticationSuccess(Request $request, TokenInterface $token)
   {
-//     $user = $this->security->getToken()->getUser();
-//     echo $user->getUsername();
-    $url = $this->container->get('router')->generate('homepage_dealer');
-    $url = $this->container->get('router')->generate('homepage_applicant');
-    $url = $this->container->get('router')->generate('homepage_admin');
+    $cjUser = $this->security->getToken()->getUser();
+    $sType = $cjUser->getType();
+    $url = $this->container->get('router')->generate('homepage_'.$sType);
     $response = new RedirectResponse($url);
-
     return $response;
   }
 

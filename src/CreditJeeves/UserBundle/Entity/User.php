@@ -16,7 +16,11 @@ class User extends BaseUser
    * @ORM\GeneratedValue(strategy="AUTO")
    */
   protected $id;
-  
+
+  /**
+   * @ORM\Column(type="string")
+   */
+  protected $type;
 
   public function __construct()
   {
@@ -30,5 +34,10 @@ class User extends BaseUser
   public function setPassword($password)
   {
     $this->password = md5($password);
+  }
+
+  public function getType()
+  {
+    return $this->type;
   }
 }

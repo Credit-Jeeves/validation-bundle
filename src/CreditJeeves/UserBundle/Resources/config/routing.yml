@@ -3,7 +3,7 @@ homepage_applicant:
     defaults: { _controller: ApplicantBundle:Homepage:index }
 
 homepage_dealer:
-    pattern:  /
+    pattern:  /dealer
     defaults: { _controller: DealerBundle:Homepage:index }
 
 homepage_admin:
