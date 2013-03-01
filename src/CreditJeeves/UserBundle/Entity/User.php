@@ -16,9 +16,19 @@ class User extends BaseUser
    * @ORM\GeneratedValue(strategy="AUTO")
    */
   protected $id;
+  
 
   public function __construct()
   {
     parent::__construct();
+  }
+
+  /**
+   * (non-PHPdoc)
+   * @see FOS\UserBundle\Model.User::setPassword()
+   */
+  public function setPassword($password)
+  {
+    $this->password = md5($password);
   }
 }
