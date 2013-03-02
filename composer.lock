@@ -1,6 +1,18 @@
 {
-    "hash": "c3dd30d9468eef01554ce72456c867bf",
+    "hash": "56b860f08e08d2d512e258b97bada91c",
     "packages": [
+        {
+            "name": "CreditJeevesSf1",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
+                "reference": "2a8b14be3e8585fa71e3817deaa8902f507dbe24"
+            },
+            "type": "library",
+            "description": "Legacy code",
+            "time": "2013-03-01 15:32:01"
+        },
         {
             "name": "doctrine/common",
             "version": "2.3.x-dev",
@@ -399,11 +411,14 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "efdc818cca5ff834fb56f5d9cf716da7d6d2471f"
+                "reference": "86eb5b43441fbf6b8f15a64590cb526c7e628cc7"
             },
             "require": {
                 "php": ">=5.3.2"
             },
+            "bin": [
+                "bin/environment"
+            ],
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -421,7 +436,7 @@
                 "system",
                 "test"
             ],
-            "time": "2013-02-06 16:41:46"
+            "time": "2013-03-01 12:41:10"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1563,12 +1578,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "2705791d6dc5c3b33b65d3832b1fc8e0a630c4cf"
+                "reference": "9c46043e21ba28e323eb1b9acf7781badf96c6a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/2705791d6dc5c3b33b65d3832b1fc8e0a630c4cf",
-                "reference": "2705791d6dc5c3b33b65d3832b1fc8e0a630c4cf",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/9c46043e21ba28e323eb1b9acf7781badf96c6a8",
+                "reference": "9c46043e21ba28e323eb1b9acf7781badf96c6a8",
                 "shasum": ""
             },
             "require": {
@@ -1635,7 +1650,7 @@
                     "src/Symfony/Component/Locale/Resources/stubs"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1654,7 +1669,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-02-20 22:12:30"
+            "time": "2013-02-26 16:36:32"
         },
         {
             "name": "twig/extensions",
@@ -1709,12 +1724,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "15336c154c960f7e55e8b9fc1043ce7764ed7edc"
+                "reference": "bc30d9b7e24b0cd2f02078064b2d9fe1c20aa1aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/15336c154c960f7e55e8b9fc1043ce7764ed7edc",
-                "reference": "15336c154c960f7e55e8b9fc1043ce7764ed7edc",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/bc30d9b7e24b0cd2f02078064b2d9fe1c20aa1aa",
+                "reference": "bc30d9b7e24b0cd2f02078064b2d9fe1c20aa1aa",
                 "shasum": ""
             },
             "require": {
@@ -1731,7 +1746,7 @@
                     "Twig_": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "BSD-3"
             ],
@@ -1750,7 +1765,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-02-21 06:47:52"
+            "time": "2013-02-26 13:03:39"
         }
     ],
     "packages-dev": [
@@ -2221,6 +2236,8 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "creditjeevessf1": 20,
+        "symfony/symfony": 20,
         "friendsofsymfony/user-bundle": 20,
         "payum/payum": 20,
         "payum/payum-bundle": 20,
