@@ -64,6 +64,20 @@
             }
         },
         {
+            "type": "package",
+            "package": {
+                "name": "CreditJeevesSf1",
+                "type": "library",
+                "description": "Legacy code",
+                "version": "dev-master",
+                "source": {
+                    "type": "git",
+                    "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
+                    "reference": "2a8b14be3e8585fa71e3817deaa8902f507dbe24"
+                }
+            }
+        },
+        {
             "type": "git",
             "url": "git@github.com:66Ton99/Payum.git"
         },
@@ -95,6 +109,7 @@
         "ext-apc": "*",
         "lib-curl": "*",
         "lib-openssl": "*",
+        "CreditJeevesSf1": "dev-master",
         "symfony/symfony": "2.2.x-dev",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "1.2.*",

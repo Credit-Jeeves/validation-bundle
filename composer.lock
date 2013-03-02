@@ -1,6 +1,18 @@
 {
-    "hash": "a74f6d7de4b399302df869133c46a20d",
+    "hash": "56b860f08e08d2d512e258b97bada91c",
     "packages": [
+        {
+            "name": "CreditJeevesSf1",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
+                "reference": "2a8b14be3e8585fa71e3817deaa8902f507dbe24"
+            },
+            "type": "library",
+            "description": "Legacy code",
+            "time": "2013-03-01 15:32:01"
+        },
         {
             "name": "doctrine/common",
             "version": "2.3.x-dev",
@@ -399,7 +411,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "646789c169a5d608e939f7b2f84fb363f2e1f8a9"
+                "reference": "86eb5b43441fbf6b8f15a64590cb526c7e628cc7"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -424,7 +436,7 @@
                 "system",
                 "test"
             ],
-            "time": "2013-02-28 15:59:58"
+            "time": "2013-03-01 12:41:10"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -2224,6 +2236,7 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
+        "creditjeevessf1": 20,
         "symfony/symfony": 20,
         "friendsofsymfony/user-bundle": 20,
         "payum/payum": 20,
