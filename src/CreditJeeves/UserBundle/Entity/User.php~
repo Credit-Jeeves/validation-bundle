@@ -150,27 +150,4 @@ class User extends BaseUser
         return $this->Score;
     }
 
-
-    /**
-     * Set Lead
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $lead
-     * @return User
-     */
-    public function setLead(\CreditJeeves\DataBundle\Entity\Lead $lead = null)
-    {
-        $this->Lead = $lead;
-    
-        return $this;
-    }
-
-    /**
-     * Get Lead
-     *
-     * @return \CreditJeeves\DataBundle\Entity\Lead 
-     */
-    public function getLead()
-    {
-        return $this->Lead;
-    }
 }

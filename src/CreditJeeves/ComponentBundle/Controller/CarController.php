@@ -11,7 +11,8 @@ class CarController extends Controller
     {
         $cjUser = $this->get('security.context')->getToken()->getUser();
         $Report = $cjUser->getReport()->last();
-        $name   = $Report->getRawData();
-        return $this->render('ComponentBundle:Car:index.html.twig', array('name' => $name));
+        $nTargetScore   = $cjUser->getLead()->getTargetScore();
+        //$nTargetScore = 0;
+        return $this->render('ComponentBundle:Car:index.html.twig', array('nTargetScore' => $nTargetScore));
     }
 }

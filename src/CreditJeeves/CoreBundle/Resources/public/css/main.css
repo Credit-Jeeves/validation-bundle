@@ -54,20 +54,32 @@ h5 {
 
 /** Header part **/
 .header {
-  height: 145px;
   margin: 0 auto;
   position: relative;
   width: 1075px;
+  text-align: center;
 }
 
 .site-logo {
   float: left;
+  height: 120px;
 }
 .info-block {
   float: right;
   margin-right: 30px;
-  margin-top: 115px;
+  margin-top: 20px;
 }
+
+.user-email {
+    font-size: 16px;
+}
+
+.user-logout {
+    float: right;
+    font-size: 16px;
+}
+
+
 
 /** Main content part **/
 .body {
