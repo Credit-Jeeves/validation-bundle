@@ -91,7 +91,7 @@ h5 {
 
 .content {
   min-height: 200px;
-  width: 1000px;
+  width: 920px;
   margin: 0 auto;
   background-color: #ffffff;
 }
@@ -100,11 +100,11 @@ h5 {
     width: 250px;
 }
 .column-middle {
-    width: 730px;
+    width: 650px;
 }
 
 .column-large {
-    width: 1000px;
+    width: 920px;
 }
 
 .pod-small {

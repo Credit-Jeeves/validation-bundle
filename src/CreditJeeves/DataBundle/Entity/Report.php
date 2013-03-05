@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Entity\cjEncryptionUtility;
+use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
@@ -84,7 +84,8 @@ class Report
      */
     public function setRawData($rawData)
     {
-        $this->raw_data = $rawData;//base64_encode(cjEncryptionUtility::encrypt($rawData));//$rawData;
+        $Utility = new Encryption();
+        $this->raw_data = base64_encode(\cjEncryptionUtility::encrypt($rawData));//$rawData;
     
         return $this;
     }
@@ -96,9 +97,10 @@ class Report
      */
     public function getRawData()
     {
-      return $this->raw_data;
+      //return $this->raw_data;
+      $Utility = new Encryption();
       $encValue = $this->raw_data;
-      $value = cjEncryptionUtility::decrypt(base64_decode($encValue));
+      $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
       
       return $value === false ? $encValue : $value;
     }
