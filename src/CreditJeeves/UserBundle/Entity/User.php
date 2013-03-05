@@ -13,28 +13,34 @@ use CreditJeeves\DataBundle\Entity\Report;
  */
 class User extends BaseUser
 {
-  /**
-   * @ORM\Id
-   * @ORM\Column(type="integer")
-   * @ORM\GeneratedValue(strategy="AUTO")
-   */
-  protected $id;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
 
-  /**
-   * @ORM\Column(type="string")
-   */
-  protected $type;
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $type;
 
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Report", mappedBy="User")
      */
-  protected $Report;
+    protected $Report;
 
-  public function __construct()
-  {
-    parent::__construct();
-    $this->Report = new ArrayCollection();
-  }
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Score", mappedBy="User")
+     */
+    protected $Score;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->Report = new ArrayCollection();
+        $this->Score = new ArrayCollection();
+    }
 
   /**
    * (non-PHPdoc)
@@ -104,5 +110,38 @@ class User extends BaseUser
     public function getReport()
     {
         return $this->Report;
+    }
+
+    /**
+     * Add Score
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Score $score
+     * @return User
+     */
+    public function addScore(\CreditJeeves\DataBundle\Entity\Score $score)
+    {
+        $this->Score[] = $score;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Score
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Score $score
+     */
+    public function removeScore(\CreditJeeves\DataBundle\Entity\Score $score)
+    {
+        $this->Score->removeElement($score);
+    }
+
+    /**
+     * Get Score
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getScore()
+    {
+        return $this->Score;
     }
 }

@@ -10,6 +10,8 @@ class ScoreController extends Controller
     public function indexAction()
     {
         $cjUser = $this->get('security.context')->getToken()->getUser();
-        return $this->render('ComponentBundle:Score:index.html.twig', array('cjUser' => $cjUser));
+        $aScores = $cjUser->getScore();
+        $nScore = $aScores->last()->getScore();
+        return $this->render('ComponentBundle:Score:index.html.twig', array('nScore' => $nScore));
     }
 }

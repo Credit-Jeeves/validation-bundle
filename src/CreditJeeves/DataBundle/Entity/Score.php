@@ -6,9 +6,9 @@ use CreditJeeves\CoreBundle\Entity\cjEncryptionUtility;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="cj_applicant_report")
+ * @ORM\Table(name="cj_applicant_score")
  */
-class Report
+class Score
 {
     /**
      * @ORM\Id
@@ -25,23 +25,19 @@ class Report
     /**
      * @ORM\Column(type="text")
      */
-    protected $raw_data;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $type;
+    protected $score;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    protected $created_at;
+    protected $created_date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="Report")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="Score")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $User;
+
 
     /**
      * Get id
@@ -57,7 +53,7 @@ class Report
      * Set cj_applicant_id
      *
      * @param integer $cjApplicantId
-     * @return Report
+     * @return Score
      */
     public function setCjApplicantId($cjApplicantId)
     {
@@ -77,60 +73,33 @@ class Report
     }
 
     /**
-     * Set raw_data
+     * Set score
      *
-     * @param string $rawData
-     * @return Report
+     * @param string $score
+     * @return Score
      */
-    public function setRawData($rawData)
+    public function setScore($score)
     {
-        $this->raw_data = $rawData;//base64_encode(cjEncryptionUtility::encrypt($rawData));//$rawData;
+        $this->score = $score;
     
         return $this;
     }
 
     /**
-     * Get raw_data
+     * Get score
      *
      * @return string 
      */
-    public function getRawData()
+    public function getScore()
     {
-      return $this->raw_data;
-      $encValue = $this->raw_data;
-      $value = cjEncryptionUtility::decrypt(base64_decode($encValue));
-      
-      return $value === false ? $encValue : $value;
-    }
-
-    /**
-     * Set type_enum
-     *
-     * @param string $typeEnum
-     * @return Report
-     */
-    public function setTypeEnum($typeEnum)
-    {
-        $this->type_enum = $typeEnum;
-    
-        return $this;
-    }
-
-    /**
-     * Get type_enum
-     *
-     * @return string 
-     */
-    public function getTypeEnum()
-    {
-        return $this->type_enum;
+        return $this->score;
     }
 
     /**
      * Set created_at
      *
      * @param \DateTime $createdAt
-     * @return Report
+     * @return Score
      */
     public function setCreatedAt($createdAt)
     {
@@ -153,7 +122,7 @@ class Report
      * Set User
      *
      * @param \CreditJeeves\UserBundle\Entity\User $user
-     * @return Report
+     * @return Score
      */
     public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
     {
@@ -173,25 +142,25 @@ class Report
     }
 
     /**
-     * Set type
+     * Set created_date
      *
-     * @param string $type
-     * @return Report
+     * @param \DateTime $createdDate
+     * @return Score
      */
-    public function setType($type)
+    public function setCreatedDate($createdDate)
     {
-        $this->type = $type;
+        $this->created_date = $createdDate;
     
         return $this;
     }
 
     /**
-     * Get type
+     * Get created_date
      *
-     * @return string 
+     * @return \DateTime 
      */
-    public function getType()
+    public function getCreatedDate()
     {
-        return $this->type;
+        return $this->created_date;
     }
 }
