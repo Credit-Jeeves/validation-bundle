@@ -84,6 +84,30 @@ h5 {
   background-color: #ffffff;
 }
 
+.column-small {
+    width: 250px;
+}
+.column-middle {
+    width: 730px;
+}
+
+.column-large {
+    width: 1000px;
+}
+
+.pod-small {
+    min-height: 50px;
+ 
+}
+
+.pod-middle {
+    min-height: 50px;
+}
+
+.pod-large {
+    min-height: 50px;
+}
+
 /** Footer part **/
 .footer {
   padding: 20px 0;
@@ -91,9 +115,16 @@ h5 {
 }
 
 /** additional styles **/
+.row-20 {
+    margin-top: 20px;
+}
 
-.clear-both {
+.clearboth {
   clear: both;
+}
+
+.floatleft {
+    float: left;
 }
 
 .floatright {
@@ -103,16 +134,25 @@ h5 {
 
 .border {
   border: none;
-  padding: 20px 10px 20px 20px;
+  padding: 20px 20px 20px 20px;
   -moz-border-radius: 24px;
   -webkit-border-radius: 24px;
   border-radius: 24px;
 }
 
-.shadow {
+.pod-border {
+  border: none;
+  padding: 20px 10px 20px 20px;
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
   border-radius: 8px;
+}
+
+.shadow {
+/*  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+*/
   -webkit-box-shadow: 0 0 2px 2px #cccccc;
   -moz-box-shadow: 0 0 2px 2px #cccccc;
   box-shadow: 0 0 2px 2px #cccccc;

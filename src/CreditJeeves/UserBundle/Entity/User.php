@@ -3,6 +3,9 @@ namespace CreditJeeves\UserBundle\Entity;
 
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use CreditJeeves\DataBundle\Entity\Report;
 
 /**
  * @ORM\Entity
@@ -22,9 +25,15 @@ class User extends BaseUser
    */
   protected $type;
 
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Report", mappedBy="User")
+     */
+  protected $Report;
+
   public function __construct()
   {
     parent::__construct();
+    $this->Report = new ArrayCollection();
   }
 
   /**
@@ -40,4 +49,60 @@ class User extends BaseUser
   {
     return $this->type;
   }
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     * @return User
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    
+        return $this;
+    }
+
+    /**
+     * Add Report
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Report $report
+     * @return User
+     */
+    public function addReport(\CreditJeeves\DataBundle\Entity\Report $report)
+    {
+        $this->Report[] = $report;
+    
+        return $this;
+    }
+
+    /**
+     * Remove Report
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Report $report
+     */
+    public function removeReport(\CreditJeeves\DataBundle\Entity\Report $report)
+    {
+        $this->Report->removeElement($report);
+    }
+
+    /**
+     * Get Report
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getReport()
+    {
+        return $this->Report;
+    }
 }

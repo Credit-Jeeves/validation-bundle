@@ -7,3 +7,26 @@
 <a href="{{ path('fos_user_security_logout') }}">Logout</a>
 {% endblock %}
 
+{% block content %}
+    <div class="column-middle floatleft">
+        {{ render(controller('ComponentBundle:Score:index')) }}
+    </div>
+    <div class="column-small floatright">
+        {{ render(controller('ComponentBundle:Car:index')) }}
+    </div>
+    <div class="clearboth"></div>
+    <div class="row-20"></div>
+    <div class="column-large">
+        {{ render(controller('ComponentBundle:Simulation:index')) }}
+        <div class="row-20"></div>
+        {{ render(controller('ComponentBundle:Incentives:index')) }}
+    </div>
+    <div class="row-20"></div>
+    <div class="column-middle floatleft">
+        {{ render(controller('ComponentBundle:Score:index')) }}
+    </div>
+    <div class="column-small floatright">
+        {{ render(controller('ComponentBundle:DidYouKnow:index')) }}
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}
