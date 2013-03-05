@@ -1,6 +1,18 @@
 {
-    "hash": "832df5893ad9d9766284b45d43e7f032",
+    "hash": "56b860f08e08d2d512e258b97bada91c",
     "packages": [
+        {
+            "name": "CreditJeevesSf1",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
+                "reference": "2a8b14be3e8585fa71e3817deaa8902f507dbe24"
+            },
+            "type": "library",
+            "description": "Legacy code",
+            "time": "2013-03-01 15:32:01"
+        },
         {
             "name": "doctrine/common",
             "version": "2.3.x-dev",
@@ -107,7 +119,7 @@
                     "Doctrine\\Common\\DataFixtures": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -230,7 +242,7 @@
                     "Doctrine\\Bundle\\DoctrineBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -367,7 +379,7 @@
                     "FOS\\UserBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -392,6 +404,39 @@
                 "User management"
             ],
             "time": "2013-02-20 08:35:53"
+        },
+        {
+            "name": "hat/environment",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/environment.git",
+                "reference": "86eb5b43441fbf6b8f15a64590cb526c7e628cc7"
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "bin": [
+                "bin/environment"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Hat": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "The lib allows to check your environment easy",
+            "homepage": "https://github.com/slavahatnuke/environment",
+            "keywords": [
+                "environment",
+                "os",
+                "system",
+                "test"
+            ],
+            "time": "2013-03-01 12:41:10"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -446,7 +491,7 @@
             "target-dir": "JMS/AopBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/schmittjoh/JMSAopBundle",
+                "url": "https://github.com/schmittjoh/JMSAopBundle.git",
                 "reference": "7018357f5bedf204979a88867a9da05973744422"
             },
             "dist": {
@@ -470,13 +515,13 @@
                     "JMS\\AopBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -517,13 +562,13 @@
                     "CG\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "Apache2"
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -633,7 +678,7 @@
                     "Metadata\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "Apache"
             ],
@@ -682,7 +727,7 @@
                     "JMS\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "Apache2"
             ],
@@ -832,6 +877,51 @@
             "time": "2013-02-18 16:17:57"
         },
         {
+            "name": "kriswallsmith/buzz",
+            "version": "v0.7",
+            "source": {
+                "type": "git",
+                "url": "http://github.com/kriswallsmith/Buzz.git",
+                "reference": "v0.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/kriswallsmith/Buzz/zipball/v0.7",
+                "reference": "v0.7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-curl": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Buzz": "lib/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kris Wallsmith",
+                    "email": "kris.wallsmith@gmail.com",
+                    "homepage": "http://kriswallsmith.net/"
+                }
+            ],
+            "description": "Lightweight HTTP client",
+            "homepage": "https://github.com/kriswallsmith/Buzz",
+            "keywords": [
+                "curl",
+                "http client"
+            ],
+            "time": "2012-06-25 12:01:38"
+        },
+        {
             "name": "monolog/monolog",
             "version": "dev-master",
             "source": {
@@ -872,7 +962,7 @@
                     "Monolog": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -892,6 +982,142 @@
                 "psr-3"
             ],
             "time": "2013-02-21 10:03:40"
+        },
+        {
+            "name": "payum/paypal-pro-checkout-nvp",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/PaypalProCheckoutNvp.git",
+                "reference": "2cecc35ef847cee02a06952bb99fbdb01a54b447"
+            },
+            "require": {
+                "kriswallsmith/buzz": "0.7.*",
+                "payum/payum": "0.1.*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "ext-curl": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Payum\\Paypal\\ProCheckout\\Nvp": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ton Sharp",
+                    "email": "Forma-PRO@66ton99.org.ua"
+                }
+            ],
+            "description": "Paypal pro checkout",
+            "keywords": [
+                "payment",
+                "paypal",
+                "pro checkout"
+            ],
+            "time": "2013-02-21 19:09:58"
+        },
+        {
+            "name": "payum/payum",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/Payum.git",
+                "reference": "3c141d992f1daee434c9afc9c0d9fcb9744af1c8"
+            },
+            "require": {
+                "kriswallsmith/buzz": "0.7.*",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "doctrine/orm": "2.2.*",
+                "ext-curl": "*",
+                "ext-pdo_sqlite": "*",
+                "fp/testo": "dev-master",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "suggest": {
+                "doctrine/orm": "If you want to store to database."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Payum": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kotlyar Maksim",
+                    "email": "kotlyar.maksim@gmail.com"
+                }
+            ],
+            "description": "Payment lib",
+            "keywords": [
+                "payment"
+            ],
+            "time": "2013-01-31 19:21:21"
+        },
+        {
+            "name": "payum/payum-bundle",
+            "version": "dev-master",
+            "target-dir": "Payum/Bundle/PayumBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/PayumBundle.git",
+                "reference": "6969f096efc2844fbfd45c3b903c8dda6ac32c88"
+            },
+            "require": {
+                "payum/payum": "0.1.*",
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": "2.*"
+            },
+            "require-dev": {
+                "ajbdev/authorizenet-php-api": "dev-master@dev",
+                "payum/authorize-net-aim": "0.1.*",
+                "payum/be2bill": "0.1.*",
+                "payum/paypal-express-checkout-nvp": "0.1.*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "suggest": {
+                "payum/authorize-net-aim": "If you want to use authorize.net gateway",
+                "payum/be2bill": "If you want to use be2bill gateway",
+                "payum/paypal-express-checkout-nvp": "If you want to use paypal express checkout nvp gateway"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Payum\\Bundle\\PayumBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kotlyar Maksim",
+                    "email": "kotlyar.maksim@gmail.com"
+                },
+                {
+                    "name": "Ton Sharp",
+                    "email": "Forma-PRO@66ton99.org.ua"
+                }
+            ],
+            "description": "Integrate payum libs into symfony2 framework",
+            "keywords": [
+                "authorize.net",
+                "be2bill",
+                "payment",
+                "paypal"
+            ],
+            "time": "2013-02-01 18:35:36"
         },
         {
             "name": "phpoption/phpoption",
@@ -921,13 +1147,13 @@
                     "PhpOption\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "Apache2"
             ],
             "authors": [
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -962,7 +1188,7 @@
                     "Psr\\Log\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1149,7 +1375,7 @@
                     "lib/swift_required.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "LGPL"
             ],
@@ -1352,12 +1578,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "2705791d6dc5c3b33b65d3832b1fc8e0a630c4cf"
+                "reference": "9c46043e21ba28e323eb1b9acf7781badf96c6a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/2705791d6dc5c3b33b65d3832b1fc8e0a630c4cf",
-                "reference": "2705791d6dc5c3b33b65d3832b1fc8e0a630c4cf",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/9c46043e21ba28e323eb1b9acf7781badf96c6a8",
+                "reference": "9c46043e21ba28e323eb1b9acf7781badf96c6a8",
                 "shasum": ""
             },
             "require": {
@@ -1424,7 +1650,7 @@
                     "src/Symfony/Component/Locale/Resources/stubs"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1443,7 +1669,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-02-20 22:12:30"
+            "time": "2013-02-26 16:36:32"
         },
         {
             "name": "twig/extensions",
@@ -1473,7 +1699,7 @@
                     "Twig_Extensions_": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -1498,12 +1724,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "15336c154c960f7e55e8b9fc1043ce7764ed7edc"
+                "reference": "bc30d9b7e24b0cd2f02078064b2d9fe1c20aa1aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/15336c154c960f7e55e8b9fc1043ce7764ed7edc",
-                "reference": "15336c154c960f7e55e8b9fc1043ce7764ed7edc",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/bc30d9b7e24b0cd2f02078064b2d9fe1c20aa1aa",
+                "reference": "bc30d9b7e24b0cd2f02078064b2d9fe1c20aa1aa",
                 "shasum": ""
             },
             "require": {
@@ -1520,7 +1746,7 @@
                     "Twig_": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "BSD-3"
             ],
@@ -1539,17 +1765,483 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-02-21 06:47:52"
+            "time": "2013-02-26 13:03:39"
         }
     ],
     "packages-dev": [
-
+        {
+            "name": "behat/mink",
+            "version": "dev-develop",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Behat/Mink.git",
+                "reference": "0f886c9a0cd75f4ec56043e01859b30e7d53a265"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Behat/Mink/zipball/0f886c9a0cd75f4ec56043e01859b30e7d53a265",
+                "reference": "0f886c9a0cd75f4ec56043e01859b30e7d53a265",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.1",
+                "symfony/css-selector": ">=2.0,<2.3-dev"
+            },
+            "suggest": {
+                "behat/mink-browserkit-driver": "extremely fast headless driver for Symfony\\Kernel-based apps (Sf2, Silex)",
+                "behat/mink-goutte-driver": "fast headless driver for any app without JS emulation",
+                "behat/mink-selenium2-driver": "slow, but JS-enabled driver for any app (requires Selenium2)",
+                "behat/mink-zombie-driver": "fast and JS-enabled headless driver for any app (requires node.js)"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-develop": "1.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Behat\\Mink": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                }
+            ],
+            "description": "Web acceptance testing framework for PHP 5.3",
+            "homepage": "http://mink.behat.org/",
+            "keywords": [
+                "browser",
+                "testing",
+                "web"
+            ],
+            "time": "2013-02-20 20:13:52"
+        },
+        {
+            "name": "behat/mink-browserkit-driver",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Behat/MinkBrowserKitDriver.git",
+                "reference": "v1.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Behat/MinkBrowserKitDriver/zipball/v1.0.2",
+                "reference": "v1.0.2",
+                "shasum": ""
+            },
+            "require": {
+                "behat/mink": ">=1.4,<1.5-dev",
+                "php": ">=5.3.1",
+                "symfony/browser-kit": ">=2.0,<2.3-dev",
+                "symfony/dom-crawler": ">=2.0,<2.3-dev"
+            },
+            "require-dev": {
+                "silex/silex": "@dev"
+            },
+            "type": "mink-driver",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Behat\\Mink\\Driver": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                }
+            ],
+            "description": "Symfony2 BrowserKit driver for Mink framework",
+            "homepage": "http://mink.behat.org/",
+            "keywords": [
+                "Mink",
+                "Symfony2",
+                "browser",
+                "testing"
+            ],
+            "time": "2013-02-17 15:44:44"
+        },
+        {
+            "name": "behat/mink-goutte-driver",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Behat/MinkGoutteDriver.git",
+                "reference": "v1.0.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Behat/MinkGoutteDriver/zipball/v1.0.5",
+                "reference": "v1.0.5",
+                "shasum": ""
+            },
+            "require": {
+                "behat/mink": ">=1.4,<1.5.0-dev",
+                "behat/mink-browserkit-driver": "1.0.*",
+                "fabpot/goutte": "1.0.*@dev",
+                "php": ">=5.3.1",
+                "symfony/browser-kit": ">=2.1,<2.3-dev",
+                "symfony/css-selector": ">=2.1,<2.3-dev",
+                "symfony/dom-crawler": ">=2.1,<2.3-dev",
+                "symfony/finder": ">=2.1,<2.3-dev",
+                "symfony/process": ">=2.1,<2.3-dev"
+            },
+            "type": "mink-driver",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Behat\\Mink\\Driver": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                }
+            ],
+            "description": "Goutte driver for Mink framework",
+            "homepage": "http://mink.behat.org/",
+            "keywords": [
+                "browser",
+                "goutte",
+                "headless",
+                "testing"
+            ],
+            "time": "2013-02-17 15:43:17"
+        },
+        {
+            "name": "behat/mink-selenium2-driver",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Behat/MinkSelenium2Driver.git",
+                "reference": "6fb1d663b41150969e1143451840b638188d2298"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Behat/MinkSelenium2Driver/zipball/6fb1d663b41150969e1143451840b638188d2298",
+                "reference": "6fb1d663b41150969e1143451840b638188d2298",
+                "shasum": ""
+            },
+            "require": {
+                "behat/mink": ">=1.4,<1.5-dev",
+                "instaclick/php-webdriver": ">=1.0,<1.1-dev",
+                "php": ">=5.3.1"
+            },
+            "type": "mink-driver",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Behat\\Mink\\Driver": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kudryashov",
+                    "email": "ever.zet@gmail.com",
+                    "homepage": "http://everzet.com"
+                },
+                {
+                    "name": "Pete Otaqui",
+                    "email": "pete@otaqui.com",
+                    "homepage": "https://github.com/pete-otaqui"
+                }
+            ],
+            "description": "Selenium2 (WebDriver) driver for Mink framework",
+            "homepage": "http://mink.behat.org/",
+            "keywords": [
+                "ajax",
+                "browser",
+                "javascript",
+                "selenium",
+                "testing",
+                "webdriver"
+            ],
+            "time": "2013-02-19 09:26:15"
+        },
+        {
+            "name": "envjs",
+            "version": "v1",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/ryan-roemer/envjs-1.2.git",
+                "reference": "deeac3a6beab5432c10609b7af75a873312b198e"
+            },
+            "type": "library",
+            "description": "Envjs 1.2 Patch for jQuery 1.5 "
+        },
+        {
+            "name": "fabpot/goutte",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Goutte.git",
+                "reference": "ab0a4307ab6f8ef4019b83f62e179803d9d1002c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Goutte/zipball/ab0a4307ab6f8ef4019b83f62e179803d9d1002c",
+                "reference": "ab0a4307ab6f8ef4019b83f62e179803d9d1002c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "guzzle/guzzle": "3.0.*",
+                "php": ">=5.3.0",
+                "symfony/browser-kit": ">=2.1, <2.3-dev",
+                "symfony/css-selector": ">=2.1, <2.3-dev",
+                "symfony/dom-crawler": ">=2.1, <2.3-dev",
+                "symfony/finder": ">=2.1, <2.3-dev",
+                "symfony/process": ">=2.1, <2.3-dev"
+            },
+            "type": "application",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Goutte": "."
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "A simple PHP Web Scraper",
+            "homepage": "https://github.com/fabpot/Goutte",
+            "keywords": [
+                "scraper"
+            ],
+            "time": "2013-02-08 21:20:16"
+        },
+        {
+            "name": "guzzle/guzzle",
+            "version": "v3.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle",
+                "reference": "v3.0.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/guzzle/guzzle/archive/v3.0.7.zip",
+                "reference": "v3.0.7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.3.2",
+                "symfony/event-dispatcher": ">=2.1"
+            },
+            "replace": {
+                "guzzle/batch": "self.version",
+                "guzzle/cache": "self.version",
+                "guzzle/common": "self.version",
+                "guzzle/http": "self.version",
+                "guzzle/inflection": "self.version",
+                "guzzle/iterator": "self.version",
+                "guzzle/log": "self.version",
+                "guzzle/parser": "self.version",
+                "guzzle/plugin": "self.version",
+                "guzzle/plugin-async": "self.version",
+                "guzzle/plugin-backoff": "self.version",
+                "guzzle/plugin-cache": "self.version",
+                "guzzle/plugin-cookie": "self.version",
+                "guzzle/plugin-curlauth": "self.version",
+                "guzzle/plugin-history": "self.version",
+                "guzzle/plugin-log": "self.version",
+                "guzzle/plugin-md5": "self.version",
+                "guzzle/plugin-mock": "self.version",
+                "guzzle/plugin-oauth": "self.version",
+                "guzzle/service": "self.version",
+                "guzzle/stream": "self.version"
+            },
+            "require-dev": {
+                "doctrine/common": "*",
+                "monolog/monolog": "1.*",
+                "phpunit/phpunit": "3.7.*",
+                "symfony/class-loader": "*",
+                "zend/zend-cache1": "1.12",
+                "zend/zend-log1": "1.12",
+                "zendframework/zend-cache": "2.0.*",
+                "zendframework/zend-log": "2.0.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Guzzle\\Tests": "tests/",
+                    "Guzzle": "src/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Guzzle Community",
+                    "homepage": "https://github.com/guzzle/guzzle/contributors"
+                }
+            ],
+            "description": "Guzzle is a PHP HTTP client library and framework for building RESTful web service clients",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "client",
+                "curl",
+                "framework",
+                "http",
+                "http client",
+                "rest",
+                "web service"
+            ],
+            "time": "2012-12-19 23:06:35"
+        },
+        {
+            "name": "instaclick/php-webdriver",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/instaclick/php-webdriver.git",
+                "reference": "6f2196bc09dbf4f8eaa2bbcc94d4fc979544706a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/instaclick/php-webdriver/zipball/6f2196bc09dbf4f8eaa2bbcc94d4fc979544706a",
+                "reference": "6f2196bc09dbf4f8eaa2bbcc94d4fc979544706a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "WebDriver": "lib/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Justin Bishop",
+                    "email": "jubishop@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca",
+                    "role": "developer"
+                }
+            ],
+            "description": "PHP WebDriver for Selenium 2",
+            "homepage": "http://instaclick.com/torontotechjobs/",
+            "keywords": [
+                "browser",
+                "selenium",
+                "webdriver",
+                "webtest"
+            ],
+            "time": "2013-02-21 16:05:33"
+        },
+        {
+            "name": "qunit",
+            "version": "v1",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/asynchrony/qunit.git",
+                "reference": "60e9902dfb1e7a5aba74590635841943ea1134a9"
+            },
+            "type": "library",
+            "description": "An easy-to-use JavaScript Unit Testing framework."
+        },
+        {
+            "name": "sinon",
+            "version": "1.5.0",
+            "source": {
+                "type": "git",
+                "url": "git://github.com/cjohansen/Sinon.JS.git",
+                "reference": "v1.5.0"
+            },
+            "type": "library",
+            "description": "Test spies, stubs and mocks for JavaScript."
+        }
     ],
     "aliases": [
-
+        {
+            "alias": "0.1.1",
+            "alias_normalized": "0.1.1.0",
+            "version": "9999999-dev",
+            "package": "payum/payum"
+        }
     ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "friendsofsymfony/user-bundle": 20
+        "creditjeevessf1": 20,
+        "symfony/symfony": 20,
+        "friendsofsymfony/user-bundle": 20,
+        "payum/payum": 20,
+        "payum/payum-bundle": 20,
+        "payum/paypal-pro-checkout-nvp": 20,
+        "hat/environment": 20
     }
 }

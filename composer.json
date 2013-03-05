@@ -1,15 +1,117 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "version": "2.0",
     "minimum-stability": "dev",
+    "version": "2.0",
+    "authors": [
+        {
+            "name": "Ton Sharp",
+            "email": "Forma-PRO@66ton99.org.ua"
+        },
+        {
+            "name": "Alex Emelyanov",
+            "email": "alex.emelyanov.ua@gmail.com"
+        },
+        {
+            "name": "Darryl Eaton",
+            "email": "darryl@creditjeeves.com"
+        }
+    ],
     "autoload": {
         "psr-0": { "": "src/" }
     },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "qunit",
+                "type": "library",
+                "description": "An easy-to-use JavaScript Unit Testing framework.",
+                "version": "v1",
+                "source": {
+                    "type": "git",
+                    "url": "git://github.com/asynchrony/qunit.git",
+                    "reference": "60e9902dfb1e7a5aba74590635841943ea1134a9"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "envjs",
+                "type": "library",
+                "description": "Envjs 1.2 Patch for jQuery 1.5 ",
+                "version": "v1",
+                "source": {
+                    "type": "git",
+                    "url": "git://github.com/ryan-roemer/envjs-1.2.git",
+                    "reference": "deeac3a6beab5432c10609b7af75a873312b198e"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "sinon",
+                "type": "library",
+                "description": "Test spies, stubs and mocks for JavaScript.",
+                "version": "1.5.0",
+                "source": {
+                    "type": "git",
+                    "url": "git://github.com/cjohansen/Sinon.JS.git",
+                    "reference": "v1.5.0"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "CreditJeevesSf1",
+                "type": "library",
+                "description": "Legacy code",
+                "version": "dev-master",
+                "source": {
+                    "type": "git",
+                    "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
+                    "reference": "2a8b14be3e8585fa71e3817deaa8902f507dbe24"
+                }
+            }
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/Payum.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/PayumBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/PaypalProCheckoutNvp.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/environment.git"
+        }
+    ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/symfony": "2.2.*",
-        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "ext-curl": "*",
+        "ext-date": "*",
+        "ext-mcrypt": "*",
+        "ext-mysql": "*",
+        "ext-PDO": "*",
+        "ext-pdo_mysql": "*",
+        "ext-session": "*",
+        "ext-SimpleXML": "*",
+        "ext-Reflection": "*",
+        "ext-intl": "*",
+        "ext-apc": "*",
+        "lib-curl": "*",
+        "lib-openssl": "*",
+        "CreditJeevesSf1": "dev-master",
+        "symfony/symfony": "2.2.x-dev",
+        "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "1.2.*",
         "twig/extensions": "1.0.*",
         "symfony/assetic-bundle": "2.1.*",
@@ -21,7 +123,19 @@
         "jms/security-extra-bundle": "1.4.*",
         "jms/di-extra-bundle": "1.3.*",
         "doctrine/data-fixtures": "1.0.*",
-        "friendsofsymfony/user-bundle": "dev-master"
+        "friendsofsymfony/user-bundle": "dev-master",
+        "payum/payum": "dev-master as 0.1.1",
+        "payum/payum-bundle": "dev-master",
+        "payum/paypal-pro-checkout-nvp": "dev-master",
+        "hat/environment": "dev-master"
+    },
+    "require-dev": {
+        "qunit": "v1",
+        "envjs": "v1",
+        "sinon": "1.5.0",
+        "behat/mink": "1.4.*",
+        "behat/mink-selenium2-driver": "1.0.*",
+        "behat/mink-goutte-driver": "1.0.*"
     },
     "scripts": {
         "post-install-cmd": [
@@ -43,6 +157,7 @@
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
+        "symfony-assets-install": "symlink",
         "branch-alias": {
             "dev-master": "2.3-dev"
         }
