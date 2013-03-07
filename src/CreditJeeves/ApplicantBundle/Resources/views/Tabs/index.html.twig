@@ -1,19 +1,19 @@
 <div class="top-nav">
   <ul>
-    <li class="active">
-      <a href="{{ path('fos_user_security_logout') }}">
+    <li class="{% if sRouteName == 'applicant_homepage' %}active{% endif %}">
+      <a href="{{ path('applicant_homepage') }}">
         <span class="tab-corner"></span>
-        Action Plan            
+        Action Plan
       </a>
     </li>
-    <li>
-      <a href="{{ path('fos_user_security_logout') }}">
+    <li class="{% if sRouteName == 'applicant_summary' %}active{% endif %}">
+      <a href="{{ path('applicant_summary') }}">
         <span class="tab-corner"></span>
         Credit Summary
       </a>
     </li>
-    <li>
-      <a href="{{ path('fos_user_security_logout') }}">
+    <li class="{% if sRouteName == 'applicant_password' %}active{% endif %}">
+      <a href="{{ path('applicant_password') }}">
         <span class="tab-corner"></span>
         My Account
       </a>

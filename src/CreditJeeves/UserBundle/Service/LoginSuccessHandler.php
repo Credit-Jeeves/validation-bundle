@@ -34,7 +34,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
   {
     $cjUser = $this->security->getToken()->getUser();
     $sType = $cjUser->getType();
-    $url = $this->container->get('router')->generate('homepage_'.$sType);
+    $url = $this->container->get('router')->generate($sType.'_homepage');
     $response = new RedirectResponse($url);
     return $response;
   }

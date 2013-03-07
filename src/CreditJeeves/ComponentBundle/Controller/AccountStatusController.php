@@ -11,7 +11,7 @@ class AccountStatusController extends Controller
     {
         $cjUser = $this->get('security.context')->getToken()->getUser();
         $Report = $cjUser->getReport()->last();
-        $name   = $Report->getRawData();
+        $name   = '***';//$Report->getRawData();
         return $this->render('ComponentBundle:AccountStatus:index.html.twig', array('name' => $name));
     }
 }

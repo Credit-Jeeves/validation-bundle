@@ -3,7 +3,7 @@
 {% block title "Appliant Dasboard" %}
 
 {% block tabs %}
-    {{ render(controller('ApplicantBundle:Tabs:index')) }}
+    {{ render(controller('ApplicantBundle:Tabs:index', {'sRouteName': sRouteName})) }}
 {% endblock %}
 
 {% block info %}
