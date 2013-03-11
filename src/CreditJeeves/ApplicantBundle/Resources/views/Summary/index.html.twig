@@ -1,0 +1,31 @@
+{% extends "::base.html.twig" %}
+
+{% block title "Appliant Dasboard" %}
+
+{% block tabs %}
+    {{ render(controller('ApplicantBundle:Tabs:index', {'sRouteName': sRouteName})) }}
+{% endblock %}
+
+{% block info %}
+<p class="user-email">{{ sEmail }} </p>
+<div class="user-logout">
+    <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
+    <a href="{{ path('fos_user_security_logout') }}">» Help </a>
+</div>
+{% endblock %}
+
+{% block content %}
+    <div class="column-large">
+        {{ render(controller('ComponentBundle:CreditBalance:index')) }}
+        <div class="row-20"></div>
+        {{ render(controller('ComponentBundle:Incentives:index')) }}
+    </div>
+    <div class="row-20"></div>
+    <div class="column-middle floatleft">
+        {{ render(controller('ComponentBundle:AccountStatus:index')) }}
+    </div>
+    <div class="column-small floatright">
+        {{ render(controller('ComponentBundle:BuyReport:index')) }}
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}

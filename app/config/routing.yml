@@ -1,3 +1,15 @@
+component:
+    resource: "@ComponentBundle/Resources/config/routing.yml"
+    prefix:   /
+
+data:
+    resource: "@DataBundle/Resources/config/routing.yml"
+    prefix:   /
+
+core:
+    resource: "@CoreBundle/Resources/config/routing.yml"
+    prefix:   /
+
 user:
     resource: "@UserBundle/Resources/config/routing.yml"
     prefix:   /

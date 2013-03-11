@@ -1,0 +1,7 @@
+parameters:
+#    data.example.class: CreditJeeves\DataBundle\Example
+
+services:
+#    data.example:
+#        class: %data.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

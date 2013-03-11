@@ -8,6 +8,6 @@ class HomepageController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('AdminBundle:Homepage:index.html.twig', array());
+        return $this->render('AdminBundle:Homepage:index.html.twig', array('sEmail' => $sEmail));
     }
 }

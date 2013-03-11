@@ -1,0 +1,7 @@
+parameters:
+#    core.example.class: CreditJeeves\CoreBundle\Example
+
+services:
+#    core.example:
+#        class: %core.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

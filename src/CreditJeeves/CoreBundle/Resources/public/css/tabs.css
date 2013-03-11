@@ -1,0 +1,62 @@
+/* Navigation tabs*/
+
+.top-nav {
+ width: 700px;
+ margin: 0 auto;
+}
+
+ul {
+    list-style: none outside none;
+}
+
+.top-nav ul li {
+ float: left;
+ position: relative;
+ margin-right: 5px;
+}
+
+.top-nav ul li a {
+    background: url("/bundles/core/images/tabs-sprite.png") no-repeat scroll left top transparent;
+    color: white;
+    display: block;
+    font-family: astoria-medium;
+    font-size: 18px;
+    font-weight: normal;
+    height: 27px;
+    padding: 7px 25px 0;
+    text-shadow: 1px 1px 3px #636363;
+}
+
+.top-nav ul li a .tab-corner {
+    background: url("/bundles/core/images/tabs-sprite.png") no-repeat scroll right top transparent;
+    display: block;
+    height: 34px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 15px;
+}
+
+.top-nav ul li.active a {
+    background-position: left bottom;
+}
+.top-nav ul li.active a .tab-corner {
+    background-position: right bottom;
+}
+.top-nav ul li.active a:hover {
+    background-position: left bottom;
+}
+.top-nav ul li.active a:hover .tab-corner {
+    background-position: right bottom;
+}
+.top-nav ul li a:hover {
+    background-position: left center;
+    cursor: pointer;
+    text-decoration: none;
+}
+.top-nav ul li a:hover .tab-corner {
+    background-position: right center;
+}
+
+.header-tabs {
+}

@@ -1,0 +1,329 @@
+/** Additional fonts **/
+@font-face {
+  font-family: 'astoria-medium';
+  src: url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.eot?#iefix") format("embedded-opentype"), url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.woff") format("woff"), url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.ttf") format("truetype"), url("/bundles/core/fonts/astoria-medium/astoria-medium-webfont.svg#AstoriaMedium") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body, p {
+  margin: 0;
+  color: #333333;
+  font-family: helvetica, arial, sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 135%;
+}
+
+a {
+  color: #1985ea;
+  font-weight: bold;
+  outline: medium none;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5 {
+  color: #ff6600;
+  font-family: astoria-medium;
+  font-size: 18px;
+  font-weight: normal;
+  margin: 5px;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+h4 {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+h5 {
+  font-size: 14px;
+}
+
+/** Header part **/
+.header {
+  margin: 0 auto;
+  position: relative;
+  width: 1075px;
+  text-align: center;
+}
+
+.site-logo {
+  float: left;
+  height: 120px;
+}
+.info-block {
+  float: right;
+  margin-right: 30px;
+  margin-top: 20px;
+}
+
+.user-email {
+    font-size: 16px;
+}
+
+.user-logout {
+    float: right;
+    font-size: 16px;
+}
+
+
+
+/** Main content part **/
+.body {
+  background: #a3cef7;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1985ea), to(#1985ea), color-stop(.5,#a3cef7));
+  background: -moz-linear-gradient(0% 100% 90deg, #1985ea, #a3cef7, #1985ea 100%);
+  padding: 20px 0;
+}
+
+.content {
+  min-height: 200px;
+  width: 920px;
+  margin: 0 auto;
+  background-color: #ffffff;
+}
+
+.column-small {
+    width: 250px;
+}
+.column-middle {
+    width: 650px;
+}
+
+.column-large {
+    width: 920px;
+}
+
+.pod-small {
+    min-height: 50px;
+ 
+}
+
+.pod-middle {
+    min-height: 50px;
+}
+
+.pod-large {
+    min-height: 50px;
+}
+
+/** Footer part **/
+.footer {
+  padding: 20px 0;
+  text-align: center;
+}
+
+/** additional styles **/
+.row-20 {
+    margin-top: 20px;
+}
+
+.clearboth {
+  clear: both;
+}
+
+.floatleft {
+    float: left;
+}
+
+.floatright {
+  float: right;
+}
+
+
+.border {
+  border: none;
+  padding: 20px 20px 20px 20px;
+  -moz-border-radius: 24px;
+  -webkit-border-radius: 24px;
+  border-radius: 24px;
+}
+
+.pod-border {
+  border: none;
+  padding: 20px 10px 20px 20px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
+
+.shadow {
+/*  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+*/
+  -webkit-box-shadow: 0 0 2px 2px #cccccc;
+  -moz-box-shadow: 0 0 2px 2px #cccccc;
+  box-shadow: 0 0 2px 2px #cccccc;
+}
+
+.checkbox-off {
+  background: url("/bundles/core/images/check_off.png") no-repeat scroll 0 0 transparent;
+  float: left;
+  height: 23px;
+  width: 27px;
+  cursor: pointer;
+}
+
+.checkbox-on {
+  background: url("/bundles/core/images/check_on.png") no-repeat scroll 0 0 transparent;
+  float: left;
+  height: 23px;
+  width: 27px;
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+.customer-info {
+  float: right;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.navigation {
+  width: 400px;
+  margin: auto;
+  height: 35px;
+  text-align: center;
+}
+
+.navigation-tab {
+  float: left;
+  font-family: astoria-medium;
+  text-shadow: 1px 1px 3px #636363;
+  filter: dropshadow(color = #636363, offx = 1, offy = 1);
+  font-size: 18px;
+  margin-right: 10px;
+  padding: 8px 10px;
+  height: 17px;
+  -moz-border-radius: 8px 8px 0 0;
+  -webkit-border-radius: 8px 8px 0 0;
+  border-radius: 8px 8px 0 0;
+  border-right: 2px solid #1985ea;
+  border-top: 2px solid #1985ea;
+  border-left: 2px solid #1985ea;
+}
+
+.tab-active {
+  background-image: linear-gradient(bottom, #1985ea 35%, #92c5f5 85%);
+  background-image: -o-linear-gradient(bottom, #1985ea 35%, #92c5f5 85%);
+  background-image: -moz-linear-gradient(bottom, #1985ea 35%, #92c5f5 85%);
+  background-image: -webkit-linear-gradient(bottom, #1985ea 35%, #92c5f5 85%);
+  background-image: -ms-linear-gradient(bottom, #1985ea 35%, #92c5f5 85%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.35, #1985ea), color-stop(0.85, #92c5f5));
+}
+
+.tab-passive {
+  background-image: linear-gradient(bottom, #0d4d9c 35%, #1a8dda 85%);
+  background-image: -o-linear-gradient(bottom, #0d4d9c 35%, #1a8dda 85%);
+  background-image: -moz-linear-gradient(bottom, #0d4d9c 35%, #1a8dda 85%);
+  background-image: -webkit-linear-gradient(bottom, #0d4d9c 35%, #1a8dda 85%);
+  background-image: -ms-linear-gradient(bottom, #0d4d9c 35%, #1a8dda 85%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.35, #0d4d9c), color-stop(0.85, #1a8dda));
+}
+
+.tab-passive:hover {
+  background-image: linear-gradient(bottom, #0858ba 35%, #399dfa 85%);
+  background-image: -o-linear-gradient(bottom, #0858ba 35%, #399dfa 85%);
+  background-image: -moz-linear-gradient(bottom, #0858ba 35%, #399dfa 85%);
+  background-image: -webkit-linear-gradient(bottom, #0858ba 35%, #399dfa 85%);
+  background-image: -ms-linear-gradient(bottom, #0858ba 35%, #399dfa 85%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.35, #0858ba), color-stop(0.85, #399dfa));
+}
+
+.navigation-tab a {
+  color: white !important;
+  font-weight: normal !important;
+}
+
+
+.main {
+  background: none repeat scroll 0 0 white;
+  border-radius: 24px 24px 24px 24px;
+  margin: 0 auto;
+  min-height: 200px;
+  padding: 20px;
+  width: 1100px;
+}
+
+.column-small {
+  width: 240px;
+  float: left;
+}
+
+.column-large {
+  width: 640px;
+  float: left;
+  margin-left: 30px;
+}
+
+.link-edit {
+  background: url("/sfDoctrinePlugin/images/edit.png") no-repeat 0 0;
+  padding-left: 20px;
+}
+
+.link-delete {
+  background: url("/sfDoctrinePlugin/images/delete.png") no-repeat 0 0;
+  padding-left: 20px;
+}
+
+.link-manage {
+  background: url("/sfDoctrinePlugin/images/default.png") no-repeat 0 0;
+  padding-left: 20px;
+}
+
+
+table {
+  border: 0px; 
+  border-collapse: collapse;
+}
+
+table th {
+  background-color: #e7eef6;
+  padding: 10px;
+}
+
+table td {
+  padding: 10px;
+}
+
+table tr {
+  border: 1px solid #c8c8c8;
+}
+
+.row-odd {
+  background-color: #f3f3f3;
+}
+
+.row-even {
+  background-color: #ffffee;
+}
+
+.active {
+  color: #ff6600;
+}
+*/
