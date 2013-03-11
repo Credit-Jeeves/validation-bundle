@@ -10,3 +10,14 @@ applicant_password:
     pattern: /password
     defaults: { _controller: ApplicantBundle:Settings:password }
 
+applicant_contact:
+    pattern: /contact
+    defaults: { _controller: ApplicantBundle:Settings:contact }
+
+applicant_email:
+    pattern: /email
+    defaults: { _controller: ApplicantBundle:Settings:email }
+
+applicant_remove:
+    pattern: /remove
+    defaults: { _controller: ApplicantBundle:Settings:remove }

@@ -48,4 +48,58 @@ class SettingsController extends Controller
         );
         
     }
+
+    public function contactAction()
+    {
+        $request = $this->get('request');
+        $sRouteName = $request->get('_route');
+        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $sEmail = $cjUser->getEmail();
+        
+        return $this->render(
+                'ApplicantBundle:Settings:contact.html.twig',
+                array(
+                        'sEmail' => $sEmail,
+                        'sRouteName' => $sRouteName,
+//                        'form'    => $form->createView()
+                )
+        );
+        
+    }
+
+    public function emailAction()
+    {
+        $request = $this->get('request');
+        $sRouteName = $request->get('_route');
+        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $sEmail = $cjUser->getEmail();
+        
+        return $this->render(
+                'ApplicantBundle:Settings:email.html.twig',
+                array(
+                        'sEmail' => $sEmail,
+                        'sRouteName' => $sRouteName,
+//                        'form'    => $form->createView()
+                )
+        );
+        
+    }
+
+    public function removeAction()
+    {
+        $request = $this->get('request');
+        $sRouteName = $request->get('_route');
+        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $sEmail = $cjUser->getEmail();
+        
+        return $this->render(
+                'ApplicantBundle:Settings:remove.html.twig',
+                array(
+                        'sEmail' => $sEmail,
+                        'sRouteName' => $sRouteName,
+ //                       'form'    => $form->createView()
+                )
+        );
+        
+    }
 }
