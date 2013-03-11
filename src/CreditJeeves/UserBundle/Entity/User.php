@@ -40,12 +40,29 @@ class User extends BaseUser
      */
     protected $leads;
 
+    /**
+     * 
+     * @var string
+     */
+    protected $new_password;
+
     public function __construct()
     {
         parent::__construct();
         $this->reports = new ArrayCollection();
         $this->scores  = new ArrayCollection();
         $this->leads   = new ArrayCollection();
+    }
+
+    public function getNewPassword()
+    {
+        return $this->new_password;
+    }
+    
+
+    public function setNewPassword($newPassword)
+    {
+        $this->new_password = $newPassword;
     }
 
   /**

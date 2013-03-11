@@ -1,11 +1,12 @@
 applicant_homepage:
-    pattern:  /
+    pattern: /
     defaults: { _controller: ApplicantBundle:Homepage:index }
 
 applicant_summary:
-    pattern:  /summary
+    pattern: /summary
     defaults: { _controller: ApplicantBundle:Summary:index }
 
 applicant_password:
     pattern: /password
-    defaults: { _controller: ApplicantBundle:Password:index }
+    defaults: { _controller: ApplicantBundle:Settings:password }
+

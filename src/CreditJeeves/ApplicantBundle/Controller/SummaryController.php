@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class SummaryController extends Controller
 {
     /**
-     * @Route("/summary", name="_summary")
+     * @Route("/summary", name="applicant_summary")
      * @Template()
      */
     public function indexAction()

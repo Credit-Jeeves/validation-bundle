@@ -11,6 +11,7 @@ class HomepageController extends Controller
         $sRouteName = $this->get('request')->get('_route');
         $cjUser = $this->get('security.context')->getToken()->getUser();
         $sEmail = $cjUser->getEmail();
+        echo $cjUser->getLeads()->count();
         return $this->render('ApplicantBundle:Homepage:index.html.twig', array('sEmail' => $sEmail, 'sRouteName' => $sRouteName));
     }
 }
