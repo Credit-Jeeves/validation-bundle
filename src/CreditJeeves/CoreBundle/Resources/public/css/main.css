@@ -56,7 +56,7 @@ h5 {
 .header {
   margin: 0 auto;
   position: relative;
-  width: 1075px;
+  width: 1000px;
   text-align: center;
 }
 
@@ -97,10 +97,10 @@ h5 {
 }
 
 .column-small {
-    width: 250px;
+    width: 275px;
 }
 .column-middle {
-    width: 650px;
+    width: 625px;
 }
 
 .column-large {

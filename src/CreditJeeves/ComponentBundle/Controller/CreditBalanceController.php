@@ -10,7 +10,7 @@ class CreditBalanceController extends Controller
     public function indexAction()
     {
         $cjUser = $this->get('security.context')->getToken()->getUser();
-        $Report = $cjUser->getReports()->last();
+        $Report = $cjUser->getReportsPrequal()->last();
         $name = $cjUser->getEmail();
         return $this->render('ComponentBundle:CreditBalance:index.html.twig', array('name' => $name));
     }

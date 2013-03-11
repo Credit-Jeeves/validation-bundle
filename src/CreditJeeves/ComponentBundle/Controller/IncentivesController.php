@@ -10,7 +10,7 @@ class IncentivesController extends Controller
     public function indexAction()
     {
         $cjUser = $this->get('security.context')->getToken()->getUser();
-        $Report = $cjUser->getReports()->last();
+        $Report = $cjUser->getReportsPrequal()->last();
         $name   = '***';///$Report->getRawData();
         return $this->render('ComponentBundle:Incentives:index.html.twig', array('name' => $name));
     }
