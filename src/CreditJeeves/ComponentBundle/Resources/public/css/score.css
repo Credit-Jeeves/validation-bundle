@@ -1,0 +1,15 @@
+.vertical-rainbow-chart {
+    background: url("/bundles/component/images/vertical-rainbow.png") no-repeat scroll right bottom transparent;
+    width: 320px;
+    height: 171px;
+    margin-right: 19px;
+}
+
+.score-chart {
+    width: 301px;
+    height: 171px;
+}
+
+.score-column {
+    float: left;
+}

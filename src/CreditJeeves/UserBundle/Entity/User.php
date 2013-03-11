@@ -26,25 +26,26 @@ class User extends BaseUser
     protected $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Report", mappedBy="User")
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Report", mappedBy="user")
      */
-    protected $Report;
+    protected $reports;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Score", mappedBy="User")
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Score", mappedBy="user")
      */
-    protected $Score;
+    protected $scores;
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="User")
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="user")
      */
-    protected $Lead;
+    protected $leads;
 
     public function __construct()
     {
         parent::__construct();
-        $this->Report = new ArrayCollection();
-        $this->Score = new ArrayCollection();
+        $this->reports = new ArrayCollection();
+        $this->scores  = new ArrayCollection();
+        $this->leads   = new ArrayCollection();
     }
 
   /**
@@ -84,93 +85,103 @@ class User extends BaseUser
         return $this;
     }
 
+
     /**
-     * Add Report
+     * Add reports
      *
-     * @param \CreditJeeves\DataBundle\Entity\Report $report
+     * @param \CreditJeeves\DataBundle\Entity\Report $reports
      * @return User
      */
-    public function addReport(\CreditJeeves\DataBundle\Entity\Report $report)
+    public function addReport(\CreditJeeves\DataBundle\Entity\Report $reports)
     {
-        $this->Report[] = $report;
+        $this->reports[] = $reports;
     
         return $this;
     }
 
     /**
-     * Remove Report
+     * Remove reports
      *
-     * @param \CreditJeeves\DataBundle\Entity\Report $report
+     * @param \CreditJeeves\DataBundle\Entity\Report $reports
      */
-    public function removeReport(\CreditJeeves\DataBundle\Entity\Report $report)
+    public function removeReport(\CreditJeeves\DataBundle\Entity\Report $reports)
     {
-        $this->Report->removeElement($report);
+        $this->reports->removeElement($reports);
     }
 
     /**
-     * Get Report
+     * Get reports
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getReport()
+    public function getReports()
     {
-        return $this->Report;
+        return $this->reports;
     }
 
     /**
-     * Add Score
+     * Add scores
      *
-     * @param \CreditJeeves\DataBundle\Entity\Score $score
+     * @param \CreditJeeves\DataBundle\Entity\Score $scores
      * @return User
      */
-    public function addScore(\CreditJeeves\DataBundle\Entity\Score $score)
+    public function addScore(\CreditJeeves\DataBundle\Entity\Score $scores)
     {
-        $this->Score[] = $score;
+        $this->scores[] = $scores;
     
         return $this;
     }
 
     /**
-     * Remove Score
+     * Remove scores
      *
-     * @param \CreditJeeves\DataBundle\Entity\Score $score
+     * @param \CreditJeeves\DataBundle\Entity\Score $scores
      */
-    public function removeScore(\CreditJeeves\DataBundle\Entity\Score $score)
+    public function removeScore(\CreditJeeves\DataBundle\Entity\Score $scores)
     {
-        $this->Score->removeElement($score);
+        $this->scores->removeElement($scores);
     }
 
     /**
-     * Get Score
+     * Get scores
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getScore()
+    public function getScores()
     {
-        return $this->Score;
+        return $this->scores;
     }
 
-
     /**
-     * Set Lead
+     * Add leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $lead
+     * @param \CreditJeeves\DataBundle\Entity\Lead $leads
      * @return User
      */
-    public function setLead(\CreditJeeves\DataBundle\Entity\Lead $lead = null)
+    public function addLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
     {
-        $this->Lead = $lead;
+        $this->leads[] = $leads;
     
         return $this;
     }
 
     /**
-     * Get Lead
+     * Remove leads
      *
-     * @return \CreditJeeves\DataBundle\Entity\Lead 
+     * @param \CreditJeeves\DataBundle\Entity\Lead $leads
      */
-    public function getLead()
+    public function removeLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
     {
-        return $this->Lead;
+        $this->leads->removeElement($leads);
+    }
+
+    /**
+     * Get leads
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getLeads()
+    {
+        return $this->leads;
     }
 }

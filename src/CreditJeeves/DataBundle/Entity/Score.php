@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Entity\cjEncryptionUtility;
+use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
@@ -33,10 +33,10 @@ class Score
     protected $created_date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="Score")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="scores")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
-    protected $User;
+    protected $user;
 
 
     /**
@@ -80,7 +80,8 @@ class Score
      */
     public function setScore($score)
     {
-        $this->score = $score;
+        $Utility = new Encryption();
+        $this->score = base64_encode(\cjEncryptionUtility::encrypt($score));
     
         return $this;
     }
@@ -92,30 +93,11 @@ class Score
      */
     public function getScore()
     {
-        return $this->score;
-    }
-
-    /**
-     * Set created_at
-     *
-     * @param \DateTime $createdAt
-     * @return Score
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->created_at = $createdAt;
-    
-        return $this;
-    }
-
-    /**
-     * Get created_at
-     *
-     * @return \DateTime 
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
+        $Utility = new Encryption();
+        $encValue = $this->score;
+        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
+        
+        return $value === false ? $encValue : $value;
     }
 
     /**

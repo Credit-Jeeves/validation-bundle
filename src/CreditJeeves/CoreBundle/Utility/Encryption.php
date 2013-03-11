@@ -6,6 +6,5 @@ require_once dirname(dirname(dirname(dirname(__DIR__)))).'/vendor/CreditJeevesSf
 
 class Encryption extends \cjEncryptionUtility
 {
-  
 }
 

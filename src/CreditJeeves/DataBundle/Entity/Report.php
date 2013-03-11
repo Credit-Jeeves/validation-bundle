@@ -38,10 +38,10 @@ class Report
     protected $created_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="Report")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="reports")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
-    protected $User;
+    protected $user;
 
     /**
      * Get id
@@ -86,7 +86,7 @@ class Report
     {
         $Utility = new Encryption();
         $this->raw_data = base64_encode(\cjEncryptionUtility::encrypt($rawData));//$rawData;
-    
+
         return $this;
     }
 
@@ -97,11 +97,10 @@ class Report
      */
     public function getRawData()
     {
-      //return $this->raw_data;
       $Utility = new Encryption();
       $encValue = $this->raw_data;
       $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
-      
+
       return $value === false ? $encValue : $value;
     }
 
@@ -111,9 +110,9 @@ class Report
      * @param string $typeEnum
      * @return Report
      */
-    public function setTypeEnum($typeEnum)
+    public function setType($type)
     {
-        $this->type_enum = $typeEnum;
+        $this->type = $type;
     
         return $this;
     }
@@ -123,9 +122,9 @@ class Report
      *
      * @return string 
      */
-    public function getTypeEnum()
+    public function getType()
     {
-        return $this->type_enum;
+        return $this->type;
     }
 
     /**
@@ -172,28 +171,5 @@ class Report
     public function getUser()
     {
         return $this->User;
-    }
-
-    /**
-     * Set type
-     *
-     * @param string $type
-     * @return Report
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return string 
-     */
-    public function getType()
-    {
-        return $this->type;
     }
 }

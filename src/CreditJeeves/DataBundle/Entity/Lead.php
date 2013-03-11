@@ -65,10 +65,10 @@ class Lead
     protected $updated_at;
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="Lead")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="leads")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
-    protected $User;
+    protected $user;
 
 
     /**

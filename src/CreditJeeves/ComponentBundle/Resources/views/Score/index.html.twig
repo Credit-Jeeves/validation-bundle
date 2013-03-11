@@ -1,7 +1,43 @@
 {% block stylesheets %}
-    <link href="{{ asset('bundles/applicant/css/score.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/score.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+<script type="text/javascript">
+  google.load('visualization', '1.0', {'packages':['corechart']});
+  google.setOnLoadCallback(function() {
+    var data = new google.visualization.arrayToDataTable([
+          ['Year', 'Applicant', 'Target'],
+          {% autoescape false %}{{ chartData }}{% endautoescape %}
+          ]);
+
+    var options = {
+      curveType: 'function',
+      height: 171,
+      hAxis: {'baseline': 300, 'baselineColor': '#D3D3D3', 'format': 'MMM d', 'textPosition': 'out', 'gridlines': {'color': '#D3D3D3', 'count': 2}, 'textStyle': {color: '#D3D3D3', fontSize: 9}},
+      vAxis: {'baselineColor': '#D3D3D3', 'maxValue': 900, 'textPosition': 'in', 'minValue': 300, 'gridlines': {'color': '#D3D3D3', 'count': 11}, 'textStyle': {color: '#D3D3D3', fontSize: 9}},
+      series: {0:{color: '#87CEFA', lineWidth: 8, pointSize: 12, visibleInLegend: false}, 1:{color: '#1985EA', visibleInLegend: false}},
+      chartArea: {top: 0, left: 8, width: "96%", height: "100%"}
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById('score-chart'));
+    chart.draw(data, options);
+  });
+</script>
+
 <div class="pod-middle pod-border shadow">
-    {{ nScore }}
+  <div class="score-column">
+    <h3>Your Credit Score</h3>
+    <div class="score-current">{{nScore}}</div>
+    <div class="score-date">{{nScore}}</div>
+    <div class="score-fico">{{nScore}}</div>
+  </div>
+  <div class="score-column">
+    <div class="vertical-rainbow-chart">
+      <div id="score-chart" class="score-chart"></div>
+    </div>
+  </div>
+  <div class="clearboth"></div>
 </div>
+

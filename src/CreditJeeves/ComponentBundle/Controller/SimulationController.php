@@ -10,7 +10,7 @@ class SimulationController extends Controller
     public function indexAction()
     {
         $cjUser = $this->get('security.context')->getToken()->getUser();
-        $Report = $cjUser->getReport()->last();
+        $Report = $cjUser->getReports()->last();
         $name = $cjUser->getEmail();
         return $this->render('ComponentBundle:Simulation:index.html.twig', array('name' => $name));
     }
