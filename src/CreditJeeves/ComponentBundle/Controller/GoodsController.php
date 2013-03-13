@@ -12,7 +12,9 @@ class GoodsController extends Controller
         $cjUser = $this->get('security.context')->getToken()->getUser();
         $Report = $cjUser->getReportsPrequal()->last();
         $nTargetScore   = $cjUser->getLeads()->last()->getTargetScore();
-        //$nTargetScore = $Report->getRawData();
+//         switch ($sType) {
+//             case ''
+//         }
         return $this->render('ComponentBundle:Goods:index.html.twig', array('nTargetScore' => $nTargetScore));
     }
 }

@@ -21,6 +21,24 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * 
+     * @ORM\Column(type="string")
+     */
+    protected $first_name;
+
+    /**
+     * 
+     * @ORM\Column(type="string")
+     */
+    protected $middle_initial;
+
+    /**
+     * 
+     * @ORM\Column(type="string")
+     */
+    protected $last_name;
+
+    /**
      * @ORM\Column(type="string")
      */
     protected $type;
@@ -239,5 +257,74 @@ class User extends BaseUser
     public function getReportsD2c()
     {
         return $this->reportsD2c;
+    }
+
+    /**
+     * Set first_name
+     *
+     * @param string $firstName
+     * @return User
+     */
+    public function setFirstName($firstName)
+    {
+        $this->first_name = $firstName;
+    
+        return $this;
+    }
+
+    /**
+     * Get first_name
+     *
+     * @return string 
+     */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * Set middle_initial
+     *
+     * @param string $middleInitial
+     * @return User
+     */
+    public function setMiddleInitial($middleInitial)
+    {
+        $this->middle_initial = $middleInitial;
+    
+        return $this;
+    }
+
+    /**
+     * Get middle_initial
+     *
+     * @return string 
+     */
+    public function getMiddleInitial()
+    {
+        return $this->middle_initial;
+    }
+
+    /**
+     * Set last_name
+     *
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName($lastName)
+    {
+        $this->last_name = $lastName;
+    
+        return $this;
+    }
+
+    /**
+     * Get last_name
+     *
+     * @return string 
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
     }
 }

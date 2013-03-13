@@ -21,3 +21,13 @@ applicant_email:
 applicant_remove:
     pattern: /remove
     defaults: { _controller: ApplicantBundle:Settings:remove }
+
+applicant_new:
+    pattern: /new
+    defaults: { _controller: ApplicantBundle:New:index }
+
+applicant__invite:
+    pattern: /invite/{code}
+    defaults: { _controller: ApplicantBundle:Invite:index }
+    requirements:
+      code: '.+'

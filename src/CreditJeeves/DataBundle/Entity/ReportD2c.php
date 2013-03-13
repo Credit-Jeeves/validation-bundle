@@ -20,4 +20,113 @@ class ReportD2c extends Report
 //      */
 //     protected $id;
 
+    /**
+     * @var integer
+     */
+    protected $id;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set cj_applicant_id
+     *
+     * @param integer $cjApplicantId
+     * @return ReportD2c
+     */
+    public function setCjApplicantId($cjApplicantId)
+    {
+        $this->cj_applicant_id = $cjApplicantId;
+    
+        return $this;
+    }
+
+    /**
+     * Get cj_applicant_id
+     *
+     * @return integer 
+     */
+    public function getCjApplicantId()
+    {
+        return $this->cj_applicant_id;
+    }
+
+    /**
+     * Set raw_data
+     *
+     * @param string $rawData
+     * @return ReportD2c
+     */
+    public function setRawData($rawData)
+    {
+        $this->raw_data = $rawData;
+    
+        return $this;
+    }
+
+    /**
+     * Get raw_data
+     *
+     * @return string 
+     */
+    public function getRawData()
+    {
+        return $this->raw_data;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     * @return ReportD2c
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \CreditJeeves\UserBundle\Entity\User $user
+     * @return ReportD2c
+     */
+    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \CreditJeeves\UserBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
 }
