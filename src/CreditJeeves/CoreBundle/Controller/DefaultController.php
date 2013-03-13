@@ -1,5 +1,4 @@
 <?php
-
 namespace CreditJeeves\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

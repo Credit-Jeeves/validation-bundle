@@ -1,3 +1,5 @@
+/web/*_dev.php
+/web/*_test.php
 /web/bundles/
 /app/bootstrap.php.cache
 /app/cache/*
