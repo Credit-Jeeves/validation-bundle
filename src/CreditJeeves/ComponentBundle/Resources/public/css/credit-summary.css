@@ -33,6 +33,7 @@ table td {
 table {
   *border-collapse: collapse; /* IE7 and lower */
   border-spacing: 0;
+  width: 100%;
 }
 
 /* override striping to the td instead of the tr so we can manage rounded corners easier */

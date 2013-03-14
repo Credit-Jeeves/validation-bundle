@@ -3,31 +3,33 @@
 {% endblock %}
 
 <div class="pod-large pod-border pod-padding shadow">
-  <div class="summary">
-    <h3>Credit Summary</h3>
+<div class="summary">
+    <h3>{{ 'component.credit.summary' | trans }}</h3>
       <div class="datetime floatright">
         {{ sDate }}
       </div>
-      <div class="col summary-block">
-          <table class="zebra-grid">
-              <thead>
-              <tr>
-                  <th>Credit Type</th>
-                  <th>Balance</th>
-              </tr>
-              </thead>
+      <div class="col summary-block zebra-grid">
+          <table>
               <tbody>
               <tr>
-                  <td>Mortgage</td>
-                  <td>${{ aCreditSummary.mortgage_debt | number_format() }}</td>
+                  <td>{{ 'account.total' | trans }}:</td>
+                  <td>{{ aCreditSummary.total_trade_items_counter }}</td>
               </tr>
               <tr>
-                  <td>Revolving</td>
-                  <td>${{ aCreditSummary.revolving_debt | number_format() }}</td>
+                  <td>{{ 'account.good.total' | trans }}:</td>
+                  <td>{{ aCreditSummary.satisfactory_accounts }}</td>
               </tr>
               <tr>
-                  <td>Installment</td>
-                  <td>${{ aCreditSummary.installment_debt | number_format() }}</td>
+                  <td>{{ 'account.negative.total' | trans }}:</td>
+                  <td>{{ aCreditSummary.now_delinquentderog_counter }}</td>
+              </tr>
+              <tr>
+                  <td>{{ 'account.negative.historical' | trans }}:</td>
+                  <td>{{ aCreditSummary.was_delinquentderog_counter }}</td>
+              </tr>
+              <tr>
+                  <td>{{ 'account.oldest' | trans }}:</td>
+                  <td>{{ aCreditSummary.oldest_trade_date }}</td>
               </tr>
               </tbody>
           </table>
@@ -36,24 +38,20 @@
           <table>
               <tbody>
               <tr>
-                  <td>Satisfactory Accounts:</td>
-                  <td>{{ aCreditSummary.satisfactory_accounts | number_format() }}</td>
-              </tr>
-              <tr>
-                  <td>Total Real Estate Payment:</td>
-                  <td>${{ aCreditSummary.real_estate_payment | number_format() }}</td>
-              </tr>
-              <tr>
-                  <td>Total Monthly Payment:</td>
+                  <td>{{ 'payment.monthly.total' | trans }}:</td>
                   <td>${{ aCreditSummary.monthly_payment | number_format() }}</td>
               </tr>
               <tr>
-                  <td>Total Inquiries:</td>
-                  <td>{{ aCreditSummary.total_inquiries_counter | number_format() }}</td>
+                  <td>{{ 'payment.monthly.estate' | trans }}:</td>
+                  <td>${{ aCreditSummary.real_estate_payment | number_format() }}</td>
               </tr>
               <tr>
-                  <td>Oldest Trade Date:</td>
-                  <td>{{ aCreditSummary.oldest_trade_date }}</td>
+                  <td>{{ 'payment.auto.total' | trans }}:</td>
+                  <td>${{ nAutomotive | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>{{ 'inquiries.total' | trans }}:</td>
+                  <td>{{ aCreditSummary.total_inquiries_counter }}</td>
               </tr>
               </tbody>
           </table>
@@ -62,23 +60,23 @@
           <table>
               <tbody>
               <tr class="important">
-                  <td>Current Derogatory Marks:</td>
+                  <td>{{ 'derogatory.current' | trans }}:</td>
                   <td>{{ aCreditSummary.now_delinquentderog_counter }}</td>
               </tr>
               <tr class="important">
-                  <td>Past Derogatory Marks:</td>
+                  <td>{{ 'derogatory.past' | trans }}:</td>
                   <td>{{ aCreditSummary.was_delinquentderog_counter }}</td>
               </tr>
               <tr class="important">
-                  <td>Total Past Due Amount:</td>
+                  <td>{{ 'past_due.total.amount' | trans }}:</td>
                   <td>${{ aCreditSummary.total_past_due | number_format() }}</td>
               </tr>
               <tr>
-                  <td>Inquiries Last 6 Months:</td>
-                  <td>{{ aCreditSummary.inquiries_during_last_6_months_counter }}</td>
+                  <td>{{ 'collections.total' | trans }}:</td>
+                  <td>{{ aCreditSummary.collections }}</td>
               </tr>
               <tr>
-                  <td>Public Records:</td>
+                  <td>{{ 'records.public.total' | trans }}:</td>
                   <td>{{ aCreditSummary.public_records_count }}</td>
               </tr>
               </tbody>

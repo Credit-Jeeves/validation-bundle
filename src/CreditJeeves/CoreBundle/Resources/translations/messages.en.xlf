@@ -6,6 +6,76 @@
                 <source>project_name</source>
                 <target>CreditJeeves</target>
             </trans-unit>
+
+            <trans-unit id="account.total">
+                <source>account.total</source>
+                <target>Total Accounts</target>
+            </trans-unit>
+            <trans-unit id="account.good.total">
+                <source>account.good.total</source>
+                <target>Accounts in Good Standing</target>
+            </trans-unit>
+            <trans-unit id="account.negative.total">
+                <source>account.negative.total</source>
+                <target>Potentially Negative</target>
+            </trans-unit>
+            <trans-unit id="account.negative.historical">
+                <source>account.negative.historical</source>
+                <target>Historically Negative</target>
+            </trans-unit>
+            <trans-unit id="account.oldest">
+                <source>account.oldest</source>
+                <target>Oldest Account</target>
+            </trans-unit>
+
+            <trans-unit id="payment.monthly.total">
+                <source>payment.monthly.total</source>
+                <target>Total Monthly Payment</target>
+            </trans-unit>
+            <trans-unit id="payment.monthly.estate">
+                <source>payment.monthly.estate</source>
+                <target>Total Monthly Payment</target>
+            </trans-unit>
+            <trans-unit id="payment.auto.total">
+                <source>payment.auto.total</source>
+                <target>Total Auto Payment</target>
+            </trans-unit>
+            
+            <trans-unit id="inquiries.total">
+                <source>inquiries.total</source>
+                <target>Total Inquiries</target>
+            </trans-unit>
+
+            <trans-unit id="derogatory.current">
+                <source>derogatory.current</source>
+                <target>Current Derogatory Marks</target>
+            </trans-unit>
+            <trans-unit id="derogatory.past">
+                <source>derogatory.past</source>
+                <target>Past Derogatory Marks</target>
+            </trans-unit>
+
+            <trans-unit id="past_due.total.amount">
+                <source>past_due.total.amount</source>
+                <target>Total Past Due Amount</target>
+            </trans-unit>
+
+            <trans-unit id="collections.total">
+                <source>collections.total</source>
+                <target>Collections</target>
+            </trans-unit>
+
+            <trans-unit id="records.public.total">
+                <source>records.public.total</source>
+                <target>Public Records</target>
+            </trans-unit>
+
+            <trans-unit id="component.credit.summary">
+                <source>component.credit.summary</source>
+                <target>Credit Summary</target>
+            </trans-unit>
+
+            
         </body>
     </file>
 </xliff>

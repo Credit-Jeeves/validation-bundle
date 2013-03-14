@@ -182,10 +182,12 @@ class Report
         return count($this->getTradelaineCollections());
     }
 
+    /**
+     * @return array
+     */
     public function getAutomotiveSummary()
     {
         $oArfReport = $this->getArfReport();
-        return $oArfReport->getValue(ArfParser::SEGMENT_AUTOMOTIVE);
+        return $oArfReport->getValue(ArfParser::SEGMENT_AUTOMOTIVE_PROFILE);
     }
-    
 }
