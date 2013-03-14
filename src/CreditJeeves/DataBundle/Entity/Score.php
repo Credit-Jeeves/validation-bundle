@@ -100,6 +100,13 @@ class Score
         return $value === false ? $encValue : $value;
     }
 
+    public function getFicoScore()
+    {
+        $nScore = $this->getScore();
+        $nFicoScore = round(10 * (($nScore - 483.06) / 11.079) + 490);
+        return $nFicoScore > 850 ? 850 : $nFicoScore;
+    }
+
     /**
      * Set User
      *

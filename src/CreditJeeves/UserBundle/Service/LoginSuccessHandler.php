@@ -52,6 +52,15 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 
     private function prepareApplicant(User $cjUser)
     {
-
+        //$this->get('session')->
+        // we'll count user's leads
+        $nLeads = $cjUser->getLeads()->count();
+        if ($nLeads > 1) {
+            
+        }
+        $nReports = $cjUser->getReportsPrequal()->count();
+        if (empty($nReports)) {
+            
+        }
     }
 }

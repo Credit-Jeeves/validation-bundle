@@ -1,0 +1,33 @@
+{% extends "ApplicantBundle::base.html.twig" %}
+
+{% block title "Appliant Dasboard" %}
+
+{% block stylesheets %}
+  <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block info %}
+<p class="user-email">{{ sEmail }} </p>
+<div class="user-logout">
+    <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
+    <a href="{{ path('fos_user_security_logout') }}">» Help </a>
+</div>
+{% endblock %}
+
+{% block content %}
+    <div class="column-small floatleft">
+        <div class="pod-small pod-border pod-padding shadow">
+            <h2>Account Settings</h2><br>
+            <a href="{{ path('applicant_password') }}">Change Password</a><br>
+            <a href="{{ path('applicant_contact') }}">Contact Information</a><br>
+            <span>Email Preferences</span><br>
+            <a href="{{ path('applicant_remove') }}">Remove Authorization</a>
+        </div>
+    </div>
+    <div class="column-middle floatright">
+        <div class="pod-middle pod-border pod-padding shadow">
+            <h1>Email Preferences</h1>
+        </div>
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}

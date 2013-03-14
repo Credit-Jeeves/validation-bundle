@@ -19,6 +19,7 @@ class HomepageController extends Controller
      */
     public function indexAction()
     {
+        $sRouteName = $this->get('request')->get('_route');
         $sEmail = $this->getUser()->getEmail();
         return array('sEmail' => $sEmail);
     }

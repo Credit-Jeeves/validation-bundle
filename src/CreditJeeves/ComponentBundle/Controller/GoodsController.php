@@ -9,9 +9,11 @@ class GoodsController extends Controller
     public function indexAction()
     {
         $cjUser = $this->getUser();
-        $Report = $cjUser->getReports()->last();
+        //$Report = $cjUser->getReports()->last();
         $nTargetScore   = $cjUser->getLeads()->last()->getTargetScore();
-        //$nTargetScore = 0;
+//         switch ($sType) {
+//             case ''
+//         }
         return $this->render('ComponentBundle:Goods:index.html.twig', array('nTargetScore' => $nTargetScore));
     }
 }

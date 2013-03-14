@@ -23,14 +23,37 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * 
+     * @ORM\Column(type="string")
+     */
+    protected $first_name;
+
+    /**
+     * 
+     * @ORM\Column(type="string")
+     */
+    protected $middle_initial;
+
+    /**
+     * 
+     * @ORM\Column(type="string")
+     */
+    protected $last_name;
+
+    /**
      * @ORM\Column(type="string")
      */
     protected $type;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Report", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", mappedBy="user")
      */
-    protected $reports;
+    protected $reportsPrequal;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportD2c", mappedBy="user")
+     */
+    protected $reportsD2c;
 
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Score", mappedBy="user")
@@ -42,12 +65,30 @@ class User extends BaseUser
      */
     protected $leads;
 
+    /**
+     * 
+     * @var string
+     */
+    protected $new_password;
+
     public function __construct()
     {
         parent::__construct();
-        $this->reports = new ArrayCollection();
-        $this->scores  = new ArrayCollection();
-        $this->leads   = new ArrayCollection();
+        $this->reportsPrequal = new ArrayCollection();
+        $this->reportsD2c     = new ArrayCollection();
+        $this->scores         = new ArrayCollection();
+        $this->leads          = new ArrayCollection();
+    }
+
+    public function getNewPassword()
+    {
+        return $this->new_password;
+    }
+    
+
+    public function setNewPassword($newPassword)
+    {
+        $this->new_password = $newPassword;
     }
 
   /**
@@ -87,39 +128,6 @@ class User extends BaseUser
         return $this;
     }
 
-
-    /**
-     * Add reports
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Report $reports
-     * @return User
-     */
-    public function addReport(\CreditJeeves\DataBundle\Entity\Report $reports)
-    {
-        $this->reports[] = $reports;
-    
-        return $this;
-    }
-
-    /**
-     * Remove reports
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Report $reports
-     */
-    public function removeReport(\CreditJeeves\DataBundle\Entity\Report $reports)
-    {
-        $this->reports->removeElement($reports);
-    }
-
-    /**
-     * Get reports
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getReports()
-    {
-        return $this->reports;
-    }
 
     /**
      * Add scores
@@ -185,5 +193,140 @@ class User extends BaseUser
     public function getLeads()
     {
         return $this->leads;
+    }
+
+    /**
+     * Add reportsPrequal
+     *
+     * @param \CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal
+     * @return User
+     */
+    public function addReportsPrequal(\CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal)
+    {
+        $this->reportsPrequal[] = $reportsPrequal;
+    
+        return $this;
+    }
+
+    /**
+     * Remove reportsPrequal
+     *
+     * @param \CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal
+     */
+    public function removeReportsPrequal(\CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal)
+    {
+        $this->reportsPrequal->removeElement($reportsPrequal);
+    }
+
+    /**
+     * Get reportsPrequal
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getReportsPrequal()
+    {
+        return $this->reportsPrequal;
+    }
+
+    /**
+     * Add reportsD2c
+     *
+     * @param \CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c
+     * @return User
+     */
+    public function addReportsD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c)
+    {
+        $this->reportsD2c[] = $reportsD2c;
+    
+        return $this;
+    }
+
+    /**
+     * Remove reportsD2c
+     *
+     * @param \CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c
+     */
+    public function removeReportsD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c)
+    {
+        $this->reportsD2c->removeElement($reportsD2c);
+    }
+
+    /**
+     * Get reportsD2c
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getReportsD2c()
+    {
+        return $this->reportsD2c;
+    }
+
+    /**
+     * Set first_name
+     *
+     * @param string $firstName
+     * @return User
+     */
+    public function setFirstName($firstName)
+    {
+        $this->first_name = $firstName;
+    
+        return $this;
+    }
+
+    /**
+     * Get first_name
+     *
+     * @return string 
+     */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * Set middle_initial
+     *
+     * @param string $middleInitial
+     * @return User
+     */
+    public function setMiddleInitial($middleInitial)
+    {
+        $this->middle_initial = $middleInitial;
+    
+        return $this;
+    }
+
+    /**
+     * Get middle_initial
+     *
+     * @return string 
+     */
+    public function getMiddleInitial()
+    {
+        return $this->middle_initial;
+    }
+
+    /**
+     * Set last_name
+     *
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName($lastName)
+    {
+        $this->last_name = $lastName;
+    
+        return $this;
+    }
+
+    /**
+     * Get last_name
+     *
+     * @return string 
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
     }
 }

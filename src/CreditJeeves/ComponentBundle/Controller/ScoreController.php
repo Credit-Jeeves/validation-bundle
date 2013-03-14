@@ -24,13 +24,17 @@ class ScoreController extends Controller
         }
         $chartData = implode(',', $chartData);
         $nScore = $cjUser->getScores()->last()->getScore();
+        $nFicoScore = $cjUser->getScores()->last()->getFicoScore();
         $sDate = $cjUser->getScores()->last()->getCreatedDate()->format('M d, Y');
+        $nTop = intval((850 - $nTargetScore) * 171 / 600);
         return $this->render(
             'ComponentBundle:Score:index.html.twig',
             array(
                 'chartData' => $chartData,
                 'nScore' => $nScore,
+                'nFicoScore' => $nFicoScore,
                 'nTargetScore' => $nTargetScore,
+                'nTop' => $nTop,
                 'sDate' => $sDate,
                )
            );

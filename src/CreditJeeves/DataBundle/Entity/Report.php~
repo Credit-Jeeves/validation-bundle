@@ -2,10 +2,13 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Entity\cjEncryptionUtility;
+use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorMap({"prequal" = "ReportPrequal", "d2c" = "ReportD2c"})
  * @ORM\Table(name="cj_applicant_report")
  */
 class Report
@@ -27,171 +30,144 @@ class Report
      */
     protected $raw_data;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $type;
+//     /**
+//      * @ORM\Column(type="string")
+//      */
+//     protected $type;
 
     /**
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="Report")
-     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
-     */
-    protected $User;
+//     /**
+//      * Get id
+//      *
+//      * @return integer 
+//      */
+//     public function getId()
+//     {
+//         return $this->id;
+//     }
 
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set cj_applicant_id
-     *
-     * @param integer $cjApplicantId
-     * @return Report
-     */
-    public function setCjApplicantId($cjApplicantId)
-    {
-        $this->cj_applicant_id = $cjApplicantId;
+//     /**
+//      * Set cj_applicant_id
+//      *
+//      * @param integer $cjApplicantId
+//      * @return Report
+//      */
+//     public function setCjApplicantId($cjApplicantId)
+//     {
+//         $this->cj_applicant_id = $cjApplicantId;
     
-        return $this;
-    }
+//         return $this;
+//     }
 
-    /**
-     * Get cj_applicant_id
-     *
-     * @return integer 
-     */
-    public function getCjApplicantId()
-    {
-        return $this->cj_applicant_id;
-    }
+//     /**
+//      * Get cj_applicant_id
+//      *
+//      * @return integer 
+//      */
+//     public function getCjApplicantId()
+//     {
+//         return $this->cj_applicant_id;
+//     }
 
-    /**
-     * Set raw_data
-     *
-     * @param string $rawData
-     * @return Report
-     */
-    public function setRawData($rawData)
-    {
-        $this->raw_data = $rawData;//base64_encode(cjEncryptionUtility::encrypt($rawData));//$rawData;
+//     /**
+//      * Set raw_data
+//      *
+//      * @param string $rawData
+//      * @return Report
+//      */
+//     public function setRawData($rawData)
+//     {
+//         $Utility = new Encryption();
+//         $this->raw_data = base64_encode(\cjEncryptionUtility::encrypt($rawData));//$rawData;
+
+//         return $this;
+//     }
+
+//     /**
+//      * Get raw_data
+//      *
+//      * @return string 
+//      */
+//     public function getRawData()
+//     {
+//       $Utility = new Encryption();
+//       $encValue = $this->raw_data;
+//       $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
+
+//       return $value === false ? $encValue : $value;
+//     }
+
+//     /**
+//      * Set type_enum
+//      *
+//      * @param string $typeEnum
+//      * @return Report
+//      */
+//     public function setType($type)
+//     {
+//         $this->type = $type;
     
-        return $this;
-    }
+//         return $this;
+//     }
 
-    /**
-     * Get raw_data
-     *
-     * @return string 
-     */
-    public function getRawData()
-    {
-      return $this->raw_data;
-      $encValue = $this->raw_data;
-      $value = cjEncryptionUtility::decrypt(base64_decode($encValue));
-      
-      return $value === false ? $encValue : $value;
-    }
+//     /**
+//      * Get type_enum
+//      *
+//      * @return string 
+//      */
+//     public function getType()
+//     {
+//         return $this->type;
+//     }
 
-    /**
-     * Set type_enum
-     *
-     * @param string $typeEnum
-     * @return Report
-     */
-    public function setTypeEnum($typeEnum)
-    {
-        $this->type_enum = $typeEnum;
+//     /**
+//      * Set created_at
+//      *
+//      * @param \DateTime $createdAt
+//      * @return Report
+//      */
+//     public function setCreatedAt($createdAt)
+//     {
+//         $this->created_at = $createdAt;
     
-        return $this;
-    }
+//         return $this;
+//     }
 
-    /**
-     * Get type_enum
-     *
-     * @return string 
-     */
-    public function getTypeEnum()
-    {
-        return $this->type_enum;
-    }
+//     /**
+//      * Get created_at
+//      *
+//      * @return \DateTime 
+//      */
+//     public function getCreatedAt()
+//     {
+//         return $this->created_at;
+//     }
 
-    /**
-     * Set created_at
-     *
-     * @param \DateTime $createdAt
-     * @return Report
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->created_at = $createdAt;
+//     /**
+//      * Set User
+//      *
+//      * @param \CreditJeeves\UserBundle\Entity\User $user
+//      * @return Report
+//      */
+//     public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+//     {
+//         $this->User = $user;
     
-        return $this;
-    }
+//         return $this;
+//     }
 
-    /**
-     * Get created_at
-     *
-     * @return \DateTime 
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
+//     /**
+//      * Get User
+//      *
+//      * @return \CreditJeeves\UserBundle\Entity\User 
+//      */
+//     public function getUser()
+//     {
+//         return $this->User;
+//     }
 
-    /**
-     * Set User
-     *
-     * @param \CreditJeeves\UserBundle\Entity\User $user
-     * @return Report
-     */
-    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
-    {
-        $this->User = $user;
-    
-        return $this;
-    }
-
-    /**
-     * Get User
-     *
-     * @return \CreditJeeves\UserBundle\Entity\User 
-     */
-    public function getUser()
-    {
-        return $this->User;
-    }
-
-    /**
-     * Set type
-     *
-     * @param string $type
-     * @return Report
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return string 
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
 }

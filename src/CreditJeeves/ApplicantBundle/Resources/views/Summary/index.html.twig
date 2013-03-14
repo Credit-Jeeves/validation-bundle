@@ -2,6 +2,10 @@
 
 {% block title "Appliant Dasboard" %}
 
+{% block stylesheets %}
+    <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 {% block info %}
 <p class="user-email">{{ sEmail }} </p>
 <div class="user-logout">
