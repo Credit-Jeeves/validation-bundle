@@ -1,46 +1,44 @@
 component:
-    resource: "@ComponentBundle/Resources/config/routing.yml"
-    prefix:   /
-
-data:
-    resource: "@DataBundle/Resources/config/routing.yml"
-    prefix:   /
+    resource:   "@ComponentBundle/Controller"
+    type:       annotation
 
 core:
-    resource: "@CoreBundle/Resources/config/routing.yml"
-    prefix:   /
+    resource:   "@CoreBundle/Controller"
+    type:       annotation
 
-user:
-    resource: "@UserBundle/Resources/config/routing.yml"
-    prefix:   /
+#user:
+#    resource:   "@UserBundle/Controller"
+#    type:       annotation
 
 admin:
-    resource: "@AdminBundle/Resources/config/routing.yml"
-    prefix:   /admin
+    resource:   "@AdminBundle/Controller"
+    type:       annotation
+    prefix:     /admin
 
 dealer:
-    resource: "@DealerBundle/Resources/config/routing.yml"
-    prefix:   /dealer
+    resource:   "@DealerBundle/Controller"
+    type:       annotation
+    prefix:     /dealer
 
 applicant:
-    resource: "@ApplicantBundle/Resources/config/routing.yml"
-    prefix:   /
+    resource:   "@ApplicantBundle/Controller"
+    type:       annotation
 
 fos_user_security:
-    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+    resource:   "@FOSUserBundle/Resources/config/routing/security.xml"
 
 fos_user_profile:
-    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
-    prefix: /profile
+    resource:   "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix:     /profile
 
 fos_user_register:
-    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
-    prefix: /register
+    resource:   "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix:     /register
 
 fos_user_resetting:
-    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
-    prefix: /resetting
+    resource:   "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix:     /resetting
 
 fos_user_change_password:
-    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
-    prefix: /profile
+    resource:   "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix:     /profile

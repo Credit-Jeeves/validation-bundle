@@ -1,5 +1,5 @@
 parameters:
-#    applicant.example.class: CreditJeeves\ApplicantBundle\Example
+    core.event_listener.controller.class: CreditJeeves\ApplicantBundle\EventListener\Controller
 
 services:
 #    applicant.example:

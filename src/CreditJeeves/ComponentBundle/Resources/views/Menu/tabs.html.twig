@@ -1,0 +1,22 @@
+<div class="top-nav">
+    <ul>
+        <li class="{% if sRouteName == 'applicant_homepage' %}active{% endif %}">
+            <a href="{{ path('applicant_homepage') }}">
+                <span class="tab-corner"></span>
+                {{ 'action_plan'|trans }}
+            </a>
+        </li>
+        <li class="{% if sRouteName == 'applicant_summary' %}active{% endif %}">
+            <a href="{{ path('applicant_summary') }}">
+                <span class="tab-corner"></span>
+                {{ 'credit_summary'|trans }}
+            </a>
+        </li>
+        <li class="{% if sRouteName == 'applicant_password' %}active{% endif %}">
+            <a href="{{ path('applicant_password') }}">
+                <span class="tab-corner"></span>
+                {{ 'my_account'|trans }}
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="appliant_dashboard_title">
+                <source>appliant_dashboard_title</source>
+                <target>Appliant Dasboard</target>
+            </trans-unit>
+            <trans-unit id="action_plan">
+                <source>action_plan</source>
+                <target>Action Plan</target>
+            </trans-unit>
+            <trans-unit id="credit_summary">
+                <source>credit_summary</source>
+                <target>Credit Summary</target>
+            </trans-unit>
+            <trans-unit id="my_account">
+                <source>my_account</source>
+                <target>My Account</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
