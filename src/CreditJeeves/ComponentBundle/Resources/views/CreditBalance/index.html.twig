@@ -6,23 +6,23 @@
   <div class="credit-balances-block credit-balances-left">
     <h3>Credit Balances</h3>
     <p class='pod-header'>
-      <span class='header-right'>as of {{ sDate }}</span>
-      <strong class='bigbold'>Total: {{ nTotal}}</strong>
+      <span class="floatright">as of {{ sDate }}</span>
+      <strong class='bigbold'>Total: ${{ nTotal | number_format() }}</strong>
     </p>
     <div class="zebra-grid">
       <div class='header-smooth'>Balance for Loan Type:</div>
       <ul>
         <li>
           Revolving Accounts
-          <span class='amount'>{{ nRevolvingDept }}</span>
+          <span class='amount'>${{ nRevolvingDept | number_format() }}</span>
         </li>
         <li>
           Mortgages
-          <span class='amount'>{{ nMortgageDebt }}</span>
+          <span class='amount'>${{ nMortgageDebt | number_format() }}</span>
         </li>
         <li>
           Installment Loans
-          <span class='amount'>{{ nInstallmentDebt }}</span>
+          <span class='amount'>{{ nInstallmentDebt | number_format() }}</span>
         </li>
       </ul>
     </div>
@@ -32,7 +32,7 @@
       <div class='rainbow-chart'>
         <span class='score-line score' style="right: {{ nRight }}px">{{ nCurrentScore }}</span>
       </div>
-      <div class='key score-text'>Your score is higher than {{ nCurrentScore }} of the population.</div>
+      <div class='key score-text'>Your score is higher than {{ nPercent }} of the population.</div>
   </div>
   <div class="clearboth"></div>
 </div>

@@ -152,4 +152,28 @@ class Score
     {
         return $this->created_date;
     }
+
+    /**
+     * @return string
+     */
+    public function getScorePercentage()
+    {
+        $score = $this->getScore();
+        if ($score >= 900) {
+            return "84%";
+        }
+        if ($score >= 800) {
+            return "64%";
+        }
+        if ($score >= 700) {
+            return "44%";
+        }
+        if ($score >= 600) {
+            return "19%";
+        }
+        if ($score >= 550) {
+            return "7%";
+        }
+        return "2%";
+    }
 }
