@@ -6,6 +6,12 @@
                 <source>project_name</source>
                 <target>CreditJeeves</target>
             </trans-unit>
+            
+            <trans-unit id="common.learn.more">
+                <source>common.learn.more</source>
+                <target>Learn more</target>
+            </trans-unit>
+            
 
             <trans-unit id="account.total">
                 <source>account.total</source>
@@ -74,7 +80,19 @@
                 <source>component.credit.summary</source>
                 <target>Credit Summary</target>
             </trans-unit>
+            <trans-unit id="component.card.utilization">
+                <source>component.card.utilization</source>
+                <target>Credit Card Utilization</target>
+            </trans-unit>
 
+            <trans-unit id="credit.used">
+                <source>credit.used</source>
+                <target>Credit Used</target>
+            </trans-unit>
+            <trans-unit id="credit.used.comment">
+                <source>credit.used.comment</source>
+                <target>Your credit card utilization is an indicator of how well you might be able to handle additional debt. If you have used more than 30% of your available credit, lenders will be wary of extending you additional credit.</target>
+            </trans-unit>
             
         </body>
     </file>
