@@ -1,0 +1,27 @@
+.header-smooth {
+    background: url("/bundles/component/images/header-smooth-bg-repeat.png") repeat-x scroll left top transparent;
+    border-radius: 5px 5px 0 0;
+    color: white;
+    font-size: 16px;
+    height: 22px;
+    padding: 2px 0 2px 11px;
+}
+
+
+.rainbow-chart {
+    background: url("/bundles/component/images/rainbow-spectrum.png") no-repeat scroll left bottom transparent;
+    height: 80px;
+    position: relative;
+    width: 266px;
+}
+
+.rainbow-chart .score-line {
+    background: url("/bundles/component/images/spectrum-score.png") no-repeat scroll left bottom transparent;
+    display: block;
+    height: 69px;
+    padding: 4px 0 0 10px;
+    position: absolute;
+    right: 30px;
+    top: -9px;
+    width: 63px;
+}

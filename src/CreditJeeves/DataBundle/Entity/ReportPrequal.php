@@ -59,28 +59,6 @@ class ReportPrequal extends Report
         return $this->cj_applicant_id;
     }
 
-    /**
-     * Set raw_data
-     *
-     * @param string $rawData
-     * @return ReportPrequal
-     */
-    public function setRawData($rawData)
-    {
-        $this->raw_data = $rawData;
-    
-        return $this;
-    }
-
-    /**
-     * Get raw_data
-     *
-     * @return string 
-     */
-    public function getRawData()
-    {
-        return $this->raw_data;
-    }
 
     /**
      * Set created_at

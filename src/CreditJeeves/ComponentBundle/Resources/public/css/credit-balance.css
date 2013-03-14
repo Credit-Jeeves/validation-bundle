@@ -1,0 +1,27 @@
+.credit-balances-blocks {
+  width: 920px;
+  padding: 0px;
+}
+
+.credit-balances-block {
+  float: left;
+  padding: 20px;
+}
+
+.credit-balances-left {
+  width: 570px;
+  border-right: 1px solid #DBDBDB;
+}
+
+.credit-balances-right {
+  width: 200px;
+  height: 170px;
+}
+
+.credit-balances-rank {
+  width: 270px;
+}
+
+.score-text {
+  margin-top: 25px;
+}

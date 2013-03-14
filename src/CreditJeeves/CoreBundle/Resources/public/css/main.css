@@ -154,10 +154,14 @@ h5 {
 
 .pod-border {
   border: none;
-  padding: 20px;
+  
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
   border-radius: 8px;
+}
+
+.pod-padding {
+ padding: 20px;
 }
 
 .shadow {
@@ -185,9 +189,6 @@ h5 {
   width: 27px;
   cursor: pointer;
 }
-
-
-
 
 
 

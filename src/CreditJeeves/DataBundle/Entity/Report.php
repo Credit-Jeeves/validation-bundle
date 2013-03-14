@@ -3,6 +3,9 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\CoreBundle\Utility\Encryption;
+use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\CoreBundle\Arf\ArfReport;
+
 
 /**
  * @ORM\Entity
@@ -34,6 +37,8 @@ class Report
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
+
+    private $arfParser;
 
     /**
      * Get id
@@ -117,5 +122,33 @@ class Report
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArfArray()
+    {
+        return $this->getArfParser()->getArfArray();
+    }
+    
+
+    /**
+     * @return CreditJeeves\CoreBundle\Arf\ArfPaser
+     */
+    public function getArfParser()
+    {
+        if ($this->arfParser == null) {
+            $this->arfParser = new ArfParser($this->getRawData());
+        }
+        return $this->arfParser;
+    }
+
+    /**
+     * @return CreditJeeves\CoreBundle\Arf\ArfReport
+     */
+    public function getArfReport()
+    {
+        return new ArfReport($this->getArfArray());
     }
 }

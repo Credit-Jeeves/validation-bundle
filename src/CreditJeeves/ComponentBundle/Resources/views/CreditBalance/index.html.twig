@@ -1,8 +1,39 @@
 {% block stylesheets %}
-    <link href="{{ asset('bundles/applicant/css/simulation.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/credit-balance.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 <div class="pod-large pod-border shadow">
-    ****
+  <div class="credit-balances-block credit-balances-left">
+    <h3>Credit Balances</h3>
+    <p class='pod-header'>
+      <span class='header-right'>as of {{ sDate }}</span>
+      <strong class='bigbold'>Total: {{ nTotal}}</strong>
+    </p>
+    <div class="zebra-grid">
+      <div class='header-smooth'>Balance for Loan Type:</div>
+      <ul>
+        <li>
+          Revolving Accounts
+          <span class='amount'>{{ nRevolvingDept }}</span>
+        </li>
+        <li>
+          Mortgages
+          <span class='amount'>{{ nMortgageDebt }}</span>
+        </li>
+        <li>
+          Installment Loans
+          <span class='amount'>{{ nInstallmentDebt }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="credit-balances-block credit-balances-right">
+    <h3>How You Rank</h3>
+      <div class='rainbow-chart'>
+        <span class='score-line score' style="right: {{ nRight }}px">{{ nCurrentScore }}</span>
+      </div>
+      <div class='key score-text'>Your score is higher than {{ nCurrentScore }} of the population.</div>
+  </div>
+  <div class="clearboth"></div>
 </div>
 
