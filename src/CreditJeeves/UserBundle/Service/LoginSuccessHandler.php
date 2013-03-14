@@ -52,6 +52,6 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 
     private function prepareApplicant(User $cjUser)
     {
-        
+
     }
 }

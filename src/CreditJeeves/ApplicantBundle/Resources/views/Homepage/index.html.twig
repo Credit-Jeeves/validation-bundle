@@ -1,17 +1,15 @@
-{% extends "::base.html.twig" %}
+{% extends "ApplicantBundle::base.html.twig" %}
 
-{% block title "Appliant Dasboard" %}
-
-{% block tabs %}
-    {{ render(controller('ApplicantBundle:Tabs:index', {'sRouteName': sRouteName})) }}
-{% endblock %}
+{% block title "appliant_dashboard_title"|trans %}
 
 {% block info %}
-<p class="user-email">{{ sEmail }} </p>
-<div class="user-logout">
-    <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
-    <a href="{{ path('fos_user_security_logout') }}">» Help </a>
-</div>
+    <p class="user-email">{{ sEmail }} </p>
+
+    {# FIXME must be moved to base layout #}
+    <div class="user-logout">
+        <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
+        <a href="{{ path('fos_user_security_logout') }}">» Help </a>
+    </div>
 {% endblock %}
 
 {% block content %}

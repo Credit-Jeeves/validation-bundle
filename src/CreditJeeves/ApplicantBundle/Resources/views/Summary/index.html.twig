@@ -1,10 +1,6 @@
-{% extends "::base.html.twig" %}
+{% extends "ApplicantBundle::base.html.twig" %}
 
 {% block title "Appliant Dasboard" %}
-
-{% block tabs %}
-    {{ render(controller('ApplicantBundle:Tabs:index', {'sRouteName': sRouteName})) }}
-{% endblock %}
 
 {% block info %}
 <p class="user-email">{{ sEmail }} </p>

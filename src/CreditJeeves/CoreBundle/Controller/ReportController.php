@@ -2,19 +2,23 @@
 namespace CreditJeeves\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @Route("/report")
  */
 class ReportController extends Controller
 {
-
     /**
-     * @param $name
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/get", name="core_report_get")
+     * @Template()
+     *
+     * @return array
      */
-    public function getAction($name)
+    public function getAction()
     {
-        return $this->render('CoreBundle:Default:index.html.twig', array('name' => $name));
+        return array();
     }
 }

@@ -1,3 +1,0 @@
-data_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: DataBundle:Default:index }

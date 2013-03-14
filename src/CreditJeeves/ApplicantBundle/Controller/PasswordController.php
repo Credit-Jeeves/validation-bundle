@@ -6,17 +6,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * @author Alex
+ * @Route("/")
+ */
 class PasswordController extends Controller
 {
     /**
-     * @Route("/summary", name="_summary")
+     * @Route("/summary", name="applicant_password")
      * @Template()
+     *
+     * @return array
      */
     public function indexAction()
     {
-        $sRouteName = $this->get('request')->get('_route');
         $cjUser = $this->get('security.context')->getToken()->getUser();
         $sEmail = $cjUser->getEmail();
-        return $this->render('ApplicantBundle:Summary:index.html.twig', array('sEmail' => $sEmail, 'sRouteName' => $sRouteName));
+        return array('sEmail' => $sEmail);
     }
 }

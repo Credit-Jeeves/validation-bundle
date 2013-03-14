@@ -1,5 +1,5 @@
 {
-    "hash": "56b860f08e08d2d512e258b97bada91c",
+    "hash": "00c9129c1f8ac8bcf4f2656a145b0bb0",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -7,11 +7,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "2a8b14be3e8585fa71e3817deaa8902f507dbe24"
+                "reference": "36fb3ffbdb94ac18f994d878cbcc7f72241e69ce"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-03-01 15:32:01"
+            "time": "2013-03-13 16:18:03"
         },
         {
             "name": "doctrine/annotations",
@@ -51,7 +51,7 @@
                     "homepage": "http://www.jwage.com/"
                 },
                 {
-                    "name": "Christoph Dorn",
+                    "name": "Guilherme Blanco",
                     "email": "guilhermeblanco@gmail.com",
                     "homepage": "http://www.instaclick.com"
                 },
@@ -64,7 +64,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -287,72 +287,17 @@
             "time": "2013-03-11 00:27:11"
         },
         {
-            "name": "doctrine/data-fixtures",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "eef10f6b92706bdae2841a8fdeb45ad8999b15b3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/eef10f6b92706bdae2841a8fdeb45ad8999b15b3",
-                "reference": "eef10f6b92706bdae2841a8fdeb45ad8999b15b3",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/common": ">=2.2,<2.5-dev",
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "doctrine/orm": ">=2.2,<2.5-dev"
-            },
-            "suggest": {
-                "doctrine/mongodb-odm": "For loading MongoDB ODM fixtures",
-                "doctrine/orm": "For loading ORM fixtures",
-                "doctrine/phpcr-odm": "For loading PHPCR ODM fixtures"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common\\DataFixtures": "lib/"
-                }
-            },
-            "notification-url": "http://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan H. Wage",
-                    "email": "jonwage@gmail.com",
-                    "homepage": "http://www.jwage.com/"
-                }
-            ],
-            "description": "Data Fixtures for all Doctrine Object Managers",
-            "homepage": "http://www.doctrine-project.org",
-            "keywords": [
-                "database"
-            ],
-            "time": "2013-03-11 00:25:48"
-        },
-        {
             "name": "doctrine/dbal",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "427a48c889e1e9c1775dca9a6db55eed4f42a1be"
+                "reference": "143c251041e6fed511b666ba865019f4e697e603"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/427a48c889e1e9c1775dca9a6db55eed4f42a1be",
-                "reference": "427a48c889e1e9c1775dca9a6db55eed4f42a1be",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/143c251041e6fed511b666ba865019f4e697e603",
+                "reference": "143c251041e6fed511b666ba865019f4e697e603",
                 "shasum": ""
             },
             "require": {
@@ -409,7 +354,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2013-03-10 08:01:28"
+            "time": "2013-03-12 20:11:25"
         },
         {
             "name": "doctrine/doctrine-bundle",
@@ -612,15 +557,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "d808c5d895a0e3148ab0885d5ecbb2a0e1381fd3"
+                "reference": "dba63c5a6189de8826bd35dccf60149debc60237"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/d808c5d895a0e3148ab0885d5ecbb2a0e1381fd3",
-                "reference": "d808c5d895a0e3148ab0885d5ecbb2a0e1381fd3",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/dba63c5a6189de8826bd35dccf60149debc60237",
+                "reference": "dba63c5a6189de8826bd35dccf60149debc60237",
                 "shasum": ""
             },
             "require": {
+                "doctrine/collections": ">=1.1,<2.0",
                 "doctrine/dbal": ">=2.4-dev,<2.5-dev",
                 "ext-pdo": "*",
                 "php": ">=5.3.2",
@@ -674,7 +620,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2013-03-11 00:55:41"
+            "time": "2013-03-12 19:00:47"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -781,12 +727,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jdorn/sql-formatter.git",
-                "reference": "2724ddb7fb79851a557d868a688fc269960bff87"
+                "reference": "999f8125a66f44da7ee53db64e7aee3be8fa91ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jdorn/sql-formatter/zipball/2724ddb7fb79851a557d868a688fc269960bff87",
-                "reference": "2724ddb7fb79851a557d868a688fc269960bff87",
+                "url": "https://api.github.com/repos/jdorn/sql-formatter/zipball/999f8125a66f44da7ee53db64e7aee3be8fa91ec",
+                "reference": "999f8125a66f44da7ee53db64e7aee3be8fa91ec",
                 "shasum": ""
             },
             "require": {
@@ -823,7 +769,7 @@
                 "highlight",
                 "sql"
             ],
-            "time": "2013-03-08 02:26:59"
+            "time": "2013-03-11 18:41:07"
         },
         {
             "name": "jms/aop-bundle",
@@ -863,7 +809,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -910,7 +856,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1026,7 +972,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1806,12 +1752,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/MonologBundle.git",
-                "reference": "v2.2.0"
+                "reference": "1be60b1bfefea802732710a3af3166f7ea1ecf51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/v2.2.0",
-                "reference": "v2.2.0",
+                "url": "https://api.github.com/repos/symfony/MonologBundle/zipball/1be60b1bfefea802732710a3af3166f7ea1ecf51",
+                "reference": "1be60b1bfefea802732710a3af3166f7ea1ecf51",
                 "shasum": ""
             },
             "require": {
@@ -1855,7 +1801,7 @@
                 "log",
                 "logging"
             ],
-            "time": "2013-02-23 17:18:24"
+            "time": "2013-03-12 10:42:54"
         },
         {
             "name": "symfony/swiftmailer-bundle",
@@ -1918,12 +1864,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "62f3d2acd5d2ebbb271864fb6b6ddb3e5145cfce"
+                "reference": "d32c1c0d9c0bb54c40d4edf0492e471f8e6f0544"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/62f3d2acd5d2ebbb271864fb6b6ddb3e5145cfce",
-                "reference": "62f3d2acd5d2ebbb271864fb6b6ddb3e5145cfce",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/d32c1c0d9c0bb54c40d4edf0492e471f8e6f0544",
+                "reference": "d32c1c0d9c0bb54c40d4edf0492e471f8e6f0544",
                 "shasum": ""
             },
             "require": {
@@ -2009,7 +1955,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-03-08 13:32:59"
+            "time": "2013-03-13 13:44:31"
         },
         {
             "name": "twig/extensions",
@@ -2115,12 +2061,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/Mink.git",
-                "reference": "de7c3f2596837b2135ec49d45dfb5e745d928fbf"
+                "reference": "fb92a89923068cb21811a8830063602e90d83dab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Mink/zipball/de7c3f2596837b2135ec49d45dfb5e745d928fbf",
-                "reference": "de7c3f2596837b2135ec49d45dfb5e745d928fbf",
+                "url": "https://api.github.com/repos/Behat/Mink/zipball/fb92a89923068cb21811a8830063602e90d83dab",
+                "reference": "fb92a89923068cb21811a8830063602e90d83dab",
                 "shasum": ""
             },
             "require": {
@@ -2162,7 +2108,7 @@
                 "testing",
                 "web"
             ],
-            "time": "2013-03-08 10:24:42"
+            "time": "2013-03-11 19:39:00"
         },
         {
             "name": "behat/mink-browserkit-driver",
@@ -2170,12 +2116,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkBrowserKitDriver.git",
-                "reference": "v1.0.4"
+                "reference": "2c89051d35f39d80f0f51c72cdc536b32015f278"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkBrowserKitDriver/zipball/v1.0.4",
-                "reference": "v1.0.4",
+                "url": "https://api.github.com/repos/Behat/MinkBrowserKitDriver/zipball/2c89051d35f39d80f0f51c72cdc536b32015f278",
+                "reference": "2c89051d35f39d80f0f51c72cdc536b32015f278",
                 "shasum": ""
             },
             "require": {
@@ -2217,7 +2163,7 @@
                 "browser",
                 "testing"
             ],
-            "time": "2013-03-08 09:50:41"
+            "time": "2013-03-13 10:34:15"
         },
         {
             "name": "behat/mink-goutte-driver",
@@ -2330,6 +2276,61 @@
             "time": "2013-03-09 12:34:04"
         },
         {
+            "name": "doctrine/data-fixtures",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/data-fixtures.git",
+                "reference": "eef10f6b92706bdae2841a8fdeb45ad8999b15b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/eef10f6b92706bdae2841a8fdeb45ad8999b15b3",
+                "reference": "eef10f6b92706bdae2841a8fdeb45ad8999b15b3",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/common": ">=2.2,<2.5-dev",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "doctrine/orm": ">=2.2,<2.5-dev"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "For loading MongoDB ODM fixtures",
+                "doctrine/orm": "For loading ORM fixtures",
+                "doctrine/phpcr-odm": "For loading PHPCR ODM fixtures"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Common\\DataFixtures": "lib/"
+                }
+            },
+            "notification-url": "http://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonathan H. Wage",
+                    "email": "jonwage@gmail.com",
+                    "homepage": "http://www.jwage.com/"
+                }
+            ],
+            "description": "Data Fixtures for all Doctrine Object Managers",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "database"
+            ],
+            "time": "2013-03-11 00:25:48"
+        },
+        {
             "name": "envjs",
             "version": "v1",
             "source": {
@@ -2394,16 +2395,16 @@
         },
         {
             "name": "guzzle/guzzle",
-            "version": "v3.0.7",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/guzzle",
-                "reference": "v3.0.7"
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "f2fd4bd43bbdf0bda02f0db6458b7e93fe2d8236"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/guzzle/guzzle/archive/v3.0.7.zip",
-                "reference": "v3.0.7",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f2fd4bd43bbdf0bda02f0db6458b7e93fe2d8236",
+                "reference": "f2fd4bd43bbdf0bda02f0db6458b7e93fe2d8236",
                 "shasum": ""
             },
             "require": {
@@ -2426,6 +2427,7 @@
                 "guzzle/plugin-cache": "self.version",
                 "guzzle/plugin-cookie": "self.version",
                 "guzzle/plugin-curlauth": "self.version",
+                "guzzle/plugin-error-response": "self.version",
                 "guzzle/plugin-history": "self.version",
                 "guzzle/plugin-log": "self.version",
                 "guzzle/plugin-md5": "self.version",
@@ -2435,7 +2437,7 @@
                 "guzzle/stream": "self.version"
             },
             "require-dev": {
-                "doctrine/common": "*",
+                "doctrine/cache": "*",
                 "monolog/monolog": "1.*",
                 "phpunit/phpunit": "3.7.*",
                 "symfony/class-loader": "*",
@@ -2447,7 +2449,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.3-dev"
                 }
             },
             "autoload": {
@@ -2482,7 +2484,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2012-12-19 23:06:35"
+            "time": "2013-03-11 22:42:27"
         },
         {
             "name": "instaclick/php-webdriver",

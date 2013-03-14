@@ -1,7 +1,14 @@
 parameters:
-#    core.example.class: CreditJeeves\CoreBundle\Example
+    core.experian.net_connect.class: CreditJeeves\CoreBundle\Experian\NetConnect
+    core.event_listener.controller.class: CreditJeeves\CoreBundle\EventListener\Controller
 
 services:
-#    core.example:
-#        class: %core.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    core.experian.net_connect:
+        class: %core.experian.net_connect.class%
+        arguments: []
+    core.event_listener.controller:
+        class: %core.event_listener.controller.class%
+        arguments:  []
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }

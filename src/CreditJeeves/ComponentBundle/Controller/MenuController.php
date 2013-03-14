@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -7,19 +7,18 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
  * @author Alex
- * @Route("/")
+ * @Route(service="component.controller.menu")
  */
-class HomepageController extends Controller
+class MenuController extends Controller
 {
     /**
-     * @Route("/", name="applicant_homepage")
      * @Template()
      *
      * @return array
      */
-    public function indexAction()
+    public function tabsAction()
     {
-        $sEmail = $this->getUser()->getEmail();
-        return array('sEmail' => $sEmail);
+        $sRouteName = $this->getRequest()->get('_route');
+        return array('sRouteName' => $sRouteName);
     }
 }
