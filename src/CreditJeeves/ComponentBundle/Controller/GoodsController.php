@@ -1,5 +1,4 @@
 <?php
-
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -9,7 +8,7 @@ class GoodsController extends Controller
 {
     public function indexAction()
     {
-        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $cjUser = $this->getUser();
         $Report = $cjUser->getReports()->last();
         $nTargetScore   = $cjUser->getLeads()->last()->getTargetScore();
         //$nTargetScore = 0;

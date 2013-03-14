@@ -8,31 +8,31 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserProvider implements UserProviderInterface
 {
-  private $userManager;
+    private $userManager;
 
-  public function __construct(UserManagerInterface $userManager)
-  {
-    $this->userManager = $userManager;
-  }
-
-  public function loadUserByUsername($username)
-  {
-    $user = $this->userManager->findUserByEmail($username);
-
-    if (!$user) {
-      throw new UsernameNotFoundException(sprintf('No user with email "%s" was found.', $username));
+    public function __construct(UserManagerInterface $userManager)
+    {
+        $this->userManager = $userManager;
     }
 
-    return $user;
-  }
+    public function loadUserByUsername($username)
+    {
+        $user = $this->userManager->findUserByEmail($username);
 
-  public function refreshUser(UserInterface $user)
-  {
-    return $this->userManager->refreshUser($user);
-  }
+        if (!$user) {
+            throw new UsernameNotFoundException(sprintf('No user with email "%s" was found.', $username));
+        }
 
-  public function supportsClass($class)
-  {
-    return $this->userManager->supportsClass($class);
-  }
+        return $user;
+    }
+
+    public function refreshUser(UserInterface $user)
+    {
+        return $this->userManager->refreshUser($user);
+    }
+
+    public function supportsClass($class)
+    {
+        return $this->userManager->supportsClass($class);
+    }
 }

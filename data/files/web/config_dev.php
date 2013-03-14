@@ -4,15 +4,7 @@ if (!isset($_SERVER['HTTP_HOST'])) {
     exit('This script cannot be run from the CLI. Run it from a browser.');
 }
 
-if (!in_array(@$_SERVER['REMOTE_ADDR'], array(
-    '127.0.0.1',
-    '::1',
-))) {
-    header('HTTP/1.0 403 Forbidden');
-    exit('This script is only accessible from localhost.');
-}
-
-require_once dirname(__FILE__).'/../app/SymfonyRequirements.php';
+require_once dirname(__FILE__) . '/../app/SymfonyRequirements.php';
 
 $symfonyRequirements = new SymfonyRequirements();
 
@@ -108,11 +100,11 @@ $minorProblems = $symfonyRequirements->getFailedRecommendations();
 
                         <ul class="symfony-install-continue">
                             <?php if (!count($majorProblems)): ?>
-                                <li><a href="app_dev.php/_configurator/">Configure your Symfony Application online</a></li>
-                                <li><a href="app_dev.php/">Bypass configuration and go to the Welcome page</a></li>
+                                <li><a href="_dev.php/_configurator/">Configure your Symfony Application online</a></li>
+                                <li><a href="_dev.php/">Bypass configuration and go to the Welcome page</a></li>
                             <?php endif; ?>
                             <?php if (count($majorProblems) || count($minorProblems)): ?>
-                                <li><a href="config.php">Re-check configuration</a></li>
+                                <li><a href="config_dev.php">Re-check configuration</a></li>
                             <?php endif; ?>
                         </ul>
                     </div>

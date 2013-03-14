@@ -10,6 +10,8 @@ use CreditJeeves\DataBundle\Entity\Report;
 /**
  * @ORM\Entity
  * @ORM\Table(name="cj_user")
+ *
+ * FIXME move to DataBundle
  */
 class User extends BaseUser
 {
