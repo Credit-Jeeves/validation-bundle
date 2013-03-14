@@ -1,0 +1,108 @@
+.summary-block {
+  float: left;
+  margin-right: 20px;
+  width: 278px;
+  border: 1px solid #cccccc;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+table td {
+  border: none;
+  padding: 5px 10px;
+}
+
+.summary-block table td:first-child {
+  text-align: left;
+}
+
+.summary-block table td:last-child {
+  text-align: right;
+}
+
+.summary-block table.grey-striped thead th:first-child {
+  text-align: left;
+  padding-left: 10px;
+}
+
+.summary-block table.grey-striped thead th:last-child {
+  text-align: right;
+  padding-right: 10px;
+}
+
+table {
+  *border-collapse: collapse; /* IE7 and lower */
+  border-spacing: 0;
+  width: 100%;
+}
+
+/* override striping to the td instead of the tr so we can manage rounded corners easier */
+.zebra-stripe tr.even-stripe, .zebra-stripe tr.odd-stripe {
+  background: none;
+}
+
+.zebra-stripe tr.odd-stripe td {
+  background: #f3f3f3;
+}
+
+.summary-block tr:last-child td:last-child {
+  -moz-border-radius: 0 0 3px 0;
+  -webkit-border-radius: 0 0 3px 0;
+  border-radius: 0 0 3px 0;
+}
+
+.summary-block tr:last-child td:first-child {
+  -moz-border-radius: 0 0 0 3px;
+  -webkit-border-radius: 0 0 0 3px;
+  border-radius: 0 0 0 3px;
+}
+
+.summary-block th:first-child {
+  -moz-border-radius: 3px 0 0 0;
+  -webkit-border-radius: 3px 0 0 0;
+  border-radius: 3px 0 0 0;
+}
+
+.summary-block th:last-child {
+  -moz-border-radius: 0 3px 0 0;
+  -webkit-border-radius: 0 3px 0 0;
+  border-radius: 0 3px 0 0;
+}
+
+.summary-block th:only-child {
+  -moz-border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+}
+
+.summary-block.important {
+  border-width: 2px;
+  width: 274px; /* to account for larger border width */
+  border-color: #af0000;
+}
+
+table tr.important td, td.important {
+  color: #af0000;
+  font-weight: bold;
+}
+
+.datetime.floatright {
+  float: right;
+  font-size: 12px;
+  margin-top: -27px;
+  color: #333;
+}
+
+.col:last-child {
+  margin-right: 0;
+}
+
+table.grey-striped thead tr.even-stripe {
+  background: none;
+}
+
+table.grey-striped thead tr th {
+  background: #999999;
+  color: white;
+  border-right: none;
+}

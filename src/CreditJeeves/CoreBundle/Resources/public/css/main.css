@@ -30,6 +30,32 @@ h1, h2, h3, h4, h5 {
   margin: 5px;
 }
 
+.pod-title {
+    border-bottom: 1px solid #DBDBDB;
+    margin-bottom: 0;
+    padding: 15px;
+    height: 25px;
+}
+
+.pod-header {
+    color: #659E01;
+    font-family: astoria-medium;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.pod-column-medium {
+    border-right: 1px solid #DBDBDB;
+    min-height: 88px;
+    padding: 5px 10px 0 5px;
+    width: auto;
+}
+
+.pod-column-big {
+    width: 460px;
+    margin: 15px;
+}
+
 h1 {
   font-size: 24px;
 }

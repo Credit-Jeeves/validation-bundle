@@ -1,0 +1,37 @@
+<div class="pod-middle pod-border shadow">
+    <div class="pod-title">
+        <h3>{{ 'component.card.utilization' | trans }}</h3>
+    </div>
+    <div class='clear'></div>
+    <div class='pod-column-medium floatleft'>
+        <div id="credit-card-utilization"></div>
+    </div>
+    <div class='pod-column-big floatright'>
+        <div class="pod-header">{{ 'credit.used' | trans }}: {{ nAvailableDebt }}%</div>
+        <p>
+            {{ 'credit.used.comment' | trans }}
+            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133570-credit-card-utilization-">{{ 'common.learn.more' | trans }}</a>
+        </p>
+  </div>
+  <div class="clearboth"></div>
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load('visualization', '1.0', {'packages':['gauge']});
+      google.setOnLoadCallback(function () {
+        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Utilization', {{ nAvailableDebt }}],
+        ]);
+        var options = {
+          max: 100,
+          width: 400, height: 120,
+          greenFrom: 0, greenTo: 30,
+          redFrom: 50, redTo: 100,
+          yellowFrom: 30, yellowTo: 50
+        };
+        var chart = new google.visualization.Gauge(document.getElementById('credit-card-utilization'));
+        chart.draw(data, options);
+      });
+</script>

@@ -1,0 +1,90 @@
+{% block stylesheets %}
+    <link href="{{ asset('bundles/component/css/credit-summary.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+<div class="pod-large pod-border pod-padding shadow">
+  <div class="summary">
+    <h3>Credit Summary</h3>
+      <div class="datetime floatright">
+        {{ sDate }}
+      </div>
+      <div class="col summary-block">
+          <table class="zebra-grid">
+              <thead>
+              <tr>
+                  <th>Credit Type</th>
+                  <th>Balance</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                  <td>Mortgage</td>
+                  <td>${{ aCreditSummary.mortgage_debt | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>Revolving</td>
+                  <td>${{ aCreditSummary.revolving_debt | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>Installment</td>
+                  <td>${{ aCreditSummary.installment_debt | number_format() }}</td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="col summary-block zebra-grid">
+          <table>
+              <tbody>
+              <tr>
+                  <td>Satisfactory Accounts:</td>
+                  <td>{{ aCreditSummary.satisfactory_accounts | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>Total Real Estate Payment:</td>
+                  <td>${{ aCreditSummary.real_estate_payment | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>Total Monthly Payment:</td>
+                  <td>${{ aCreditSummary.monthly_payment | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>Total Inquiries:</td>
+                  <td>{{ aCreditSummary.total_inquiries_counter | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>Oldest Trade Date:</td>
+                  <td>{{ aCreditSummary.oldest_trade_date }}</td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+      <div class="col summary-block important zebra-grid">
+          <table>
+              <tbody>
+              <tr class="important">
+                  <td>Current Derogatory Marks:</td>
+                  <td>{{ aCreditSummary.now_delinquentderog_counter }}</td>
+              </tr>
+              <tr class="important">
+                  <td>Past Derogatory Marks:</td>
+                  <td>{{ aCreditSummary.was_delinquentderog_counter }}</td>
+              </tr>
+              <tr class="important">
+                  <td>Total Past Due Amount:</td>
+                  <td>${{ aCreditSummary.total_past_due | number_format() }}</td>
+              </tr>
+              <tr>
+                  <td>Inquiries Last 6 Months:</td>
+                  <td>{{ aCreditSummary.inquiries_during_last_6_months_counter }}</td>
+              </tr>
+              <tr>
+                  <td>Public Records:</td>
+                  <td>{{ aCreditSummary.public_records_count }}</td>
+              </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+  <div class="clearboth"></div>
+</div>
+

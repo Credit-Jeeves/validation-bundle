@@ -25,3 +25,8 @@
 .score-text {
   margin-top: 25px;
 }
+
+.bigbold {
+    font-size: 16px;
+    font-weight: 600;
+}

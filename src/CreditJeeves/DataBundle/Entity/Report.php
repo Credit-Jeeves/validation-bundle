@@ -5,6 +5,8 @@ use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\CoreBundle\Utility\Encryption;
 use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\CoreBundle\Arf\ArfReport;
+use CreditJeeves\CoreBundle\Arf\ArfSummary;
+use CreditJeeves\CoreBundle\Arf\ArfTradelines;
 
 
 /**
@@ -150,5 +152,42 @@ class Report
     public function getArfReport()
     {
         return new ArfReport($this->getArfArray());
+    }
+
+    /**
+     * @return array
+     */
+    public function getCreditSummary()
+    {
+        $arfSummaryInfo = new ArfSummary($this->getArfArray());
+        return $arfSummaryInfo->getSummaryInfo();
+    }
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getTradelaineCollections($isSecurity = true)
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return $arfTradeLines->getCollections($isSecurity);
+    }
+    
+    /**
+     * @return integer
+     * @access public
+     */
+    public function getCountTradelineCollections()
+    {
+        return count($this->getTradelaineCollections());
+    }
+
+    /**
+     * @return array
+     */
+    public function getAutomotiveSummary()
+    {
+        $oArfReport = $this->getArfReport();
+        return $oArfReport->getValue(ArfParser::SEGMENT_AUTOMOTIVE_PROFILE);
     }
 }

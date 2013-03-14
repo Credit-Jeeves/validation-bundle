@@ -28,28 +28,23 @@ class CreditBalanceController extends Controller
         
         
         
-        $nRevolvingDept   = intval(
-                $ArfReport->getValue(
+        $nRevolvingDept   = $ArfReport->getValue(
                         ArfParser::SEGMENT_PROFILE_SUMMARY,
                         ArfParser::REPORT_BALANCE_TOTAL_REVOLVING
-                )
         );
-        $nMortgageDebt    = intval(
-                $ArfReport->getValue(
+        $nMortgageDebt    = $ArfReport->getValue(
                         ArfParser::SEGMENT_PROFILE_SUMMARY,
                         ArfParser::REPORT_BALANCE_REAL_ESTATE
-                )
         );
-        $nInstallmentDebt = intval(
-                $ArfReport->getValue(
+        $nInstallmentDebt = $ArfReport->getValue(
                         ArfParser::SEGMENT_PROFILE_SUMMARY,
                         ArfParser::REPORT_BALANCE_INSTALLMENT
-                )
         );
         $nTotal           = $nRevolvingDept + $nInstallmentDebt + $nMortgageDebt;
         $nCurrentScore    = $cjUser->getScores()->last()->getScore();
         $nScale           = self::COMPONENT_WIDTH / self::COMPONENT_POINTS;
         $nRight           = intval((900 - $nCurrentScore) * $nScale - 37);
+        $nPercent         = $cjUser->getScores()->last()->getScorePercentage();
 
         return $this->render(
             'ComponentBundle:CreditBalance:index.html.twig',
@@ -60,7 +55,8 @@ class CreditBalanceController extends Controller
                 'nInstallmentDebt' => $nInstallmentDebt,
                 'nCurrentScore' => $nCurrentScore,
                 'nRight' => $nRight,
-                'nTotal' => $nTotal
+                'nTotal' => $nTotal,
+                'nPercent' => $nPercent
                 )
             );
     }
