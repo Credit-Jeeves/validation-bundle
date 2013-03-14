@@ -9,8 +9,7 @@ class BuyReportController extends Controller
     public function indexAction()
     {
         $cjUser = $this->getUser();
-        $Report = $cjUser->getReports()->last();
-        $name   = $Report->getRawData();
+        $name = __FILE__;
         return $this->render('ComponentBundle:BuyReport:index.html.twig', array('name' => $name));
     }
 }

@@ -6,10 +6,6 @@
     <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
-{% block tabs %}
-    {{ render(controller('ApplicantBundle:Tabs:index', {'sRouteName': sRouteName})) }}
-{% endblock %}
-
 {% block info %}
 <p class="user-email">{{ sEmail }} </p>
 <div class="user-logout">

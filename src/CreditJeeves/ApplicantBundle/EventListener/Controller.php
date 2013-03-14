@@ -18,7 +18,8 @@ class Controller extends Base
     public function onKernelController(FilterControllerEvent $event)
     {
         /** @var $controller \Symfony\Bundle\FrameworkBundle\Controller\Controller */
-        $controller = $event->getController()[0];
+        $controller = $event->getController();
+        $controller = $controller[0];
         if (strstr(__CLASS__, 'Bundle\\', true) == strstr(get_class($controller), 'Bundle\\', true) &&
             !$controller->getUser()->getScores()->last()
         ) {

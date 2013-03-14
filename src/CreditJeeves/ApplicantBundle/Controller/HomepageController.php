@@ -21,6 +21,6 @@ class HomepageController extends Controller
     {
         $sRouteName = $this->get('request')->get('_route');
         $sEmail = $this->getUser()->getEmail();
-        return array('sEmail' => $sEmail, 'sRouteName' => $sRouteName);
+        return array('sEmail' => $sEmail);
     }
 }

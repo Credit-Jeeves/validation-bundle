@@ -9,7 +9,7 @@ class GoodsController extends Controller
     public function indexAction()
     {
         $cjUser = $this->getUser();
-        $Report = $cjUser->getReports()->last();
+        //$Report = $cjUser->getReports()->last();
         $nTargetScore   = $cjUser->getLeads()->last()->getTargetScore();
 //         switch ($sType) {
 //             case ''

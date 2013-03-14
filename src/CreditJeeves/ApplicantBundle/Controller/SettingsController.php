@@ -49,6 +49,10 @@ class SettingsController extends Controller
         
     }
 
+    /**
+     * @Route("/password", name="applicant_contact")
+     * @Template()
+     */
     public function contactAction()
     {
         $request = $this->get('request');
@@ -67,6 +71,10 @@ class SettingsController extends Controller
         
     }
 
+    /**
+     * @Route("/password", name="applicant_email")
+     * @Template()
+     */
     public function emailAction()
     {
         $request = $this->get('request');
@@ -85,6 +93,10 @@ class SettingsController extends Controller
         
     }
 
+    /**
+     * @Route("/password", name="applicant_remove")
+     * @Template()
+     */
     public function removeAction()
     {
         $request = $this->get('request');
