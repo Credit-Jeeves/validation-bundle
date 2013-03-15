@@ -64,6 +64,15 @@
                 <target>If lenders see more than a few inquiries in the last 6 months, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
             </trans-unit>
             
+            <trans-unit id="credit.age.average.title">
+                <source>credit.age.average.title</source>
+                <target>Average Age of Open Credit Lines: %nAge% Years</target>
+            </trans-unit>
+            <trans-unit id="credit.age.average.comment">
+                <source>credit.age.average.comment</source>
+                <target>Lenders appreciate a long history of good credit. It is important to keep older credit lines open and in satisfactory status. Your oldest tradeline is %nOldest% years.</target>
+            </trans-unit>
+            
 
             <trans-unit id="derogatory.current">
                 <source>derogatory.current</source>
@@ -108,6 +117,10 @@
             <trans-unit id="component.loan.types">
                 <source>component.loan.types</source>
                 <target>Mix of Loan Types</target>
+            </trans-unit>
+            <trans-unit id="component.credit.age.average">
+                <source>component.credit.age.average</source>
+                <target>Average Age of Credit</target>
             </trans-unit>
             
             <trans-unit id="loan.types.comment">
