@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use CreditJeeves\DataBundle\Entity\Report;
+use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
@@ -39,6 +40,17 @@ class User extends BaseUser
      * @ORM\Column(type="string")
      */
     protected $last_name;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    protected $date_of_birth;
+
+    /**
+     *
+     * @ORM\Column(type="string")
+     */
+    protected $ssn;
 
     /**
      * @ORM\Column(type="string")
@@ -328,5 +340,51 @@ class User extends BaseUser
     public function getLastName()
     {
         return $this->last_name;
+    }
+
+    /**
+     * 
+     * @param string $ssn
+     */
+    public function setSsn($ssn)
+    {
+        $Utility = new Encryption();
+        $this->ssn = base64_encode(\cjEncryptionUtility::encrypt($ssn));
+        
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSsn()
+    {
+        $Utility = new Encryption();
+        $encValue = $this->ssn;
+        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
+        
+        return $value === false ? $encValue : $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function displaySsn()
+    {
+        $sSSN = substr($this->getSsn(), 0, 5);
+    
+        return substr($sSSN, 0, 3) . '-' . substr($sSSN, 3) . '-XXXX';
+    }
+
+    public function getDateOfBirth()
+    {
+        return $this->date_of_birth;
+    }
+
+    public function setDateOfBirth($sDOB)
+    {
+        $this->date_of_birth = $sDOB;
+        
+        return $this;
     }
 }

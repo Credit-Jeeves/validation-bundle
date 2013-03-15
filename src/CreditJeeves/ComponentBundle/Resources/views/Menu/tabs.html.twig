@@ -12,6 +12,14 @@
                 {{ 'credit_summary'|trans }}
             </a>
         </li>
+        {% if nReport > 0 %}
+        <li class="{% if sRouteName == 'applicant_report' %}active{% endif %}">
+            <a href="{{ path('applicant_report') }}">
+                <span class="tab-corner"></span>
+                {{ 'tab.report'|trans }}
+            </a>
+        </li>
+        {% endif %}
         <li class="{% if sRouteName == 'applicant_password' %}active{% endif %}">
             <a href="{{ path('applicant_password') }}">
                 <span class="tab-corner"></span>

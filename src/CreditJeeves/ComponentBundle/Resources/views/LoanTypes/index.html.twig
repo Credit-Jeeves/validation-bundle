@@ -1,0 +1,38 @@
+<div class="pod-middle pod-border shadow">
+    <div class="pod-title">
+        <h3>{{ 'component.loan.types' | trans }}</h3>
+    </div>
+    <div class='clear'></div>
+    <div class='pod-column-medium floatleft'>
+        <div id="loan-types-chart-div"></div>
+    </div>
+    <div class='pod-column-middle floatright'>
+        <p>
+            {{ 'loan.types.comment' | trans }}
+            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/121856-i-have-a-late-payment-what-should-i-do-">{{ 'common.learn.more' | trans }}</a>
+        </p>
+  </div>
+  <div class="clearboth"></div>
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load('visualization', '1.0', {'packages':['corechart']});
+    google.setOnLoadCallback(function() {
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Loan Type Ratio');
+      data.addColumn('number', 'Type');
+      data.addRows([
+        ['Credit Cards',      {{ RevolvingDept }}],
+        ['Mortages',          {{ MortgageDebt }}],
+        ['Installment Loans', {{ InstallmentDebt }}]
+      ]);
+      var options = {
+        'width':220,'height':110, fontSize: 10,
+        chartArea: {top: 5, left: 0, width: "100%", height: "90%"},
+        legend: {position: 'right', textStyle: {color: 'blue', fontSize: 10}}
+      };
+      var chart = new google.visualization.PieChart(document.getElementById('loan-types-chart-div'));
+      chart.draw(data, options);
+    });
+</script>

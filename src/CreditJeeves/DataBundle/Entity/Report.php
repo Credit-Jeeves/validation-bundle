@@ -175,6 +175,33 @@ class Report
     
     /**
      * @return integer
+     */
+    public function getCountApplicantTotalTradelines()
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return count($arfTradeLines->getTradeLines());
+    }
+    
+    /**
+     * @return integer
+     */
+    public function getCountApplicantOpenedTradelines()
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return count($arfTradeLines->getOpenedTradelines());
+    }
+    
+    /**
+     * @return integer
+     */
+    public function getCountApplicantClosedTradelines()
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return count($arfTradeLines->getClosedTradelines());
+    }
+
+    /**
+     * @return integer
      * @access public
      */
     public function getCountTradelineCollections()
@@ -189,5 +216,55 @@ class Report
     {
         $oArfReport = $this->getArfReport();
         return $oArfReport->getValue(ArfParser::SEGMENT_AUTOMOTIVE_PROFILE);
+    }
+
+    /**
+     * @return array
+     */
+    public function getTradeLines()
+    {
+        $oArfReport = $this->getArfReport();
+        $aTradeLines = $oArfReport->getValue(ArfParser::SEGMENT_TRADELINE);
+        return $aTradeLines;
+    }
+
+    /**
+     * @return string
+     * @access public
+     */
+    public function getApplicantName()
+    {
+        $oArfReport = $this->getArfReport();
+        $aNames = $oArfReport->getValue(ArfParser::SEGMENT_NAME);
+        return (isset($aNames['name_text'])) ? $aNames['name_text'] : $aNames[0]['name_text'];
+    }
+
+    /**
+     *
+     * @return array
+     * @access public
+     */
+    public function getApplicantAddress()
+    {
+        $oArfReport = $this->getArfReport();
+        $aAddresses = $oArfReport->getValue(ArfParser::SEGMENT_ADDRESS);
+        return $aAddresses;
+    }
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantEmployments()
+    {
+        $oArfReport = $this->getArfReport();
+        $aEmployments = array();
+        $aResult = $oArfReport->getValue(ArfParser::SEGMENT_EMPLOYMENT);
+        if (count($aResult) < 2) {
+            $aEmployments[] = $aResult;
+        } else {
+            $aEmployments = $aResult;
+        }
+        return $aEmployments;
     }
 }

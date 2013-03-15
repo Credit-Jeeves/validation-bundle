@@ -44,12 +44,19 @@ h1, h2, h3, h4, h5 {
     margin-bottom: 5px;
 }
 
+
 .pod-column-medium {
     border-right: 1px solid #DBDBDB;
     min-height: 88px;
     padding: 5px 10px 0 5px;
     width: auto;
 }
+
+.pod-column-middle {
+    width: 350px;
+    margin: 15px;
+}
+
 
 .pod-column-big {
     width: 460px;

@@ -1,0 +1,41 @@
+<div class="pod-middle pod-border shadow">
+    <div class="pod-title">
+        <h3>{{ 'component.missed.payments' | trans }}</h3>
+    </div>
+    <div class='clear'></div>
+    <div class='pod-column-medium floatleft'>
+        <div id="missed-chart-div"></div>
+    </div>
+    <div class='pod-column-big floatright'>
+        <div class="pod-header">Percent of Total Payments Missed: {{ nPercent }}%</div>
+        <p>
+            {{ 'payment.missed.comment' | trans | replace({'%nTotal%' : nTotal, '%nLate%': nLate})}}
+            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/121856-i-have-a-late-payment-what-should-i-do-">{{ 'common.learn.more' | trans }}</a>
+        </p>
+  </div>
+  <div class="clearboth"></div>
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load('visualization', '1.0', {'packages':['gauge']});
+    google.setOnLoadCallback(function () {
+      var data = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['% Missed', {{ nPercent }}],
+      ]);
+      var options = {
+        max:        4,
+        width:      400, 
+        height:     120,
+        greenFrom:  0,
+        greenTo:    1,
+        yellowFrom: 1,
+        yellowTo:   2,
+        redFrom:    2,
+        redTo:      4
+      };
+      var chart = new google.visualization.Gauge(document.getElementById('missed-chart-div'));
+      chart.draw(data, options);
+    });
+</script>

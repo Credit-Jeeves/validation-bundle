@@ -1,0 +1,76 @@
+.segment {
+  width: 880px;
+}
+
+.personal-column {
+  float: left;
+  width: 190px;
+  margin-right: 5px;
+}
+
+.message-annotation {
+  margin: 20px 0;
+}
+
+.message {
+  margin: 10px 0;
+}
+
+.segment-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.question-mail {
+  margin-top: 5px;
+}
+
+.question-link {
+  margin-top: 5px;
+}
+
+table th {
+  text-align: center;
+}
+
+.right-text {
+  height: 115px;
+}
+
+.next-tips {
+  font-size: 18px;
+  line-height: 28px;
+  float: left;
+  margin-left: 20px;
+}
+
+.next-tips .mailto {
+  margin-left: 35px;
+}
+
+.button-print {
+  float: right;
+  margin-top: 40px;
+  margin-right: 50px;
+}
+
+/*zane styles*/
+.content-indent {
+  padding-left: 12px;
+}
+
+.personal-column:last-child, .personal-column .last {
+  margin-right: 0;
+}
+
+
+ol, ul {
+  list-style: none outside none;
+  padding: 0;
+}
+
+.bottom-left-link {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+}

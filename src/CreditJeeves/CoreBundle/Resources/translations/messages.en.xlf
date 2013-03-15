@@ -11,6 +11,28 @@
                 <source>common.learn.more</source>
                 <target>Learn more</target>
             </trans-unit>
+            <trans-unit id="common.mortgage">
+                <source>common.mortgage</source>
+                <target>Mortgage</target>
+            </trans-unit>
+            <trans-unit id="common.revolving">
+                <source>common.revolving</source>
+                <target>Revolving</target>
+            </trans-unit>
+            <trans-unit id="common.installment">
+                <source>common.installment</source>
+                <target>Installment</target>
+            </trans-unit>
+            <trans-unit id="common.balance">
+                <source>common.balance</source>
+                <target>Balance</target>
+            </trans-unit>
+            <trans-unit id="common.credit.type">
+                <source>common.credit.type</source>
+                <target>Credit Type</target>
+            </trans-unit>
+            
+            
             
 
             <trans-unit id="account.total">
@@ -33,6 +55,12 @@
                 <source>account.oldest</source>
                 <target>Oldest Account</target>
             </trans-unit>
+            <trans-unit id="account.satisfactory">
+                <source>account.satisfactory</source>
+                <target>Satisfactory Accounts</target>
+            </trans-unit>
+
+
 
             <trans-unit id="payment.monthly.total">
                 <source>payment.monthly.total</source>
@@ -40,17 +68,39 @@
             </trans-unit>
             <trans-unit id="payment.monthly.estate">
                 <source>payment.monthly.estate</source>
-                <target>Total Monthly Payment</target>
+                <target>Total Real Estate Payment</target>
             </trans-unit>
             <trans-unit id="payment.auto.total">
                 <source>payment.auto.total</source>
                 <target>Total Auto Payment</target>
+            </trans-unit>
+            <trans-unit id="payment.missed.comment">
+                <source>payment.missed.comment</source>
+                <target>Out of  %nTotal% payment records on your report,  %nLate% are marked late. To achieve a high credit score, you must pay your bills on time. Even just a few late payments will hurt you score dramatically.</target>
             </trans-unit>
             
             <trans-unit id="inquiries.total">
                 <source>inquiries.total</source>
                 <target>Total Inquiries</target>
             </trans-unit>
+            <trans-unit id="inquiries.hard.header">
+                <source>inquiries.hard.header</source>
+                <target>Inquiries During Last 6 Months</target>
+            </trans-unit>
+            <trans-unit id="inquiries.hard.comment">
+                <source>inquiries.hard.comment</source>
+                <target>If lenders see more than a few inquiries in the last 6 months, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
+            </trans-unit>
+            
+            <trans-unit id="credit.age.average.title">
+                <source>credit.age.average.title</source>
+                <target>Average Age of Open Credit Lines: %nAge% Years</target>
+            </trans-unit>
+            <trans-unit id="credit.age.average.comment">
+                <source>credit.age.average.comment</source>
+                <target>Lenders appreciate a long history of good credit. It is important to keep older credit lines open and in satisfactory status. Your oldest tradeline is %nOldest% years.</target>
+            </trans-unit>
+            
 
             <trans-unit id="derogatory.current">
                 <source>derogatory.current</source>
@@ -84,6 +134,50 @@
                 <source>component.card.utilization</source>
                 <target>Credit Card Utilization</target>
             </trans-unit>
+            <trans-unit id="component.missed.payments">
+                <source>component.missed.payments</source>
+                <target>Missed Payments</target>
+            </trans-unit>
+            <trans-unit id="component.inquiries.hard">
+                <source>component.inquiries.hard</source>
+                <target>Hard Inquiries</target>
+            </trans-unit>
+            <trans-unit id="component.loan.types">
+                <source>component.loan.types</source>
+                <target>Mix of Loan Types</target>
+            </trans-unit>
+            <trans-unit id="component.credit.age.average">
+                <source>component.credit.age.average</source>
+                <target>Average Age of Credit</target>
+            </trans-unit>
+            <trans-unit id="component.tradelines.total">
+                <source>component.tradelines.total</source>
+                <target>Total Accounts</target>
+            </trans-unit>
+            <trans-unit id="component.personal.info">
+                <source>component.personal.info</source>
+                <target>Personal Information</target>
+            </trans-unit>
+            <trans-unit id="component.personal.imployment">
+                <source>component.personal.imployment</source>
+                <target>Employment</target>
+            </trans-unit>
+            <trans-unit id="component.address.previous">
+                <source>component.address.previous</source>
+                <target>Previous Address</target>
+            </trans-unit>
+            
+            
+            <trans-unit id="tradelines.total.comment">
+                <source>tradelines.total.comment</source>
+                <target>You have  %nOpened% Opened and  %nClosed% Closed accounts. Having more accounts is an indicator that lenders are willing to grant credit, and usually results in a higher score.</target>
+            </trans-unit>
+            
+            <trans-unit id="loan.types.comment">
+                <source>loan.types.comment</source>
+                <target>Lenders like to see that you are responsible with a variety of credit types, including credit cards, installment loans, and mortgages. Here, you can see the proportions for the loan types you currently have.</target>
+            </trans-unit>
+
 
             <trans-unit id="credit.used">
                 <source>credit.used</source>
@@ -93,6 +187,13 @@
                 <source>credit.used.comment</source>
                 <target>Your credit card utilization is an indicator of how well you might be able to handle additional debt. If you have used more than 30% of your available credit, lenders will be wary of extending you additional credit.</target>
             </trans-unit>
+            
+            <trans-unit id="tab.report">
+                <source>tab.report</source>
+                <target>Report</target>
+            </trans-unit>
+            
+            
             
         </body>
     </file>
