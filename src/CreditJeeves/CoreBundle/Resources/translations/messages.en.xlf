@@ -46,6 +46,10 @@
                 <source>payment.auto.total</source>
                 <target>Total Auto Payment</target>
             </trans-unit>
+            <trans-unit id="payment.missed.comment">
+                <source>payment.missed.comment</source>
+                <target>Out of  %nTotal% payment records on your report,  %nLate% are marked late. To achieve a high credit score, you must pay your bills on time. Even just a few late payments will hurt you score dramatically.</target>
+            </trans-unit>
             
             <trans-unit id="inquiries.total">
                 <source>inquiries.total</source>
@@ -84,6 +88,11 @@
                 <source>component.card.utilization</source>
                 <target>Credit Card Utilization</target>
             </trans-unit>
+            <trans-unit id="component.missed.payments">
+                <source>component.missed.payments</source>
+                <target>Missed Payments</target>
+            </trans-unit>
+            
 
             <trans-unit id="credit.used">
                 <source>credit.used</source>

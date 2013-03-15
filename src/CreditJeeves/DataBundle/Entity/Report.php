@@ -190,4 +190,14 @@ class Report
         $oArfReport = $this->getArfReport();
         return $oArfReport->getValue(ArfParser::SEGMENT_AUTOMOTIVE_PROFILE);
     }
+
+    /**
+     * @return array
+     */
+    public function getTradeLines()
+    {
+        $oArfReport = $this->getArfReport();
+        $aTradeLines = $oArfReport->getValue(ArfParser::SEGMENT_TRADELINE);
+        return $aTradeLines;
+    }    
 }
