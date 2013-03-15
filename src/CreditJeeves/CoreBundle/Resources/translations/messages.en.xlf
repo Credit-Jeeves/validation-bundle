@@ -105,7 +105,16 @@
                 <source>component.inquiries.hard</source>
                 <target>Hard Inquiries</target>
             </trans-unit>
+            <trans-unit id="component.loan.types">
+                <source>component.loan.types</source>
+                <target>Mix of Loan Types</target>
+            </trans-unit>
             
+            <trans-unit id="loan.types.comment">
+                <source>loan.types.comment</source>
+                <target>Lenders like to see that you are responsible with a variety of credit types, including credit cards, installment loans, and mortgages. Here, you can see the proportions for the loan types you currently have.</target>
+            </trans-unit>
+
 
             <trans-unit id="credit.used">
                 <source>credit.used</source>
