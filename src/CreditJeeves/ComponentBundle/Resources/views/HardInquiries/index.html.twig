@@ -1,0 +1,37 @@
+<div class="pod-middle pod-border shadow">
+    <div class="pod-title">
+        <h3>{{ 'component.inquiries.hard' | trans }}</h3>
+    </div>
+    <div class='clear'></div>
+    <div class='pod-column-medium floatleft'>
+        <div id="inquiries-chart-div"></div>
+    </div>
+    <div class='pod-column-big floatright'>
+        <div class="pod-header">{{ 'inquiries.hard.header' | trans }}: {{ nInquiries }}</div>
+        <p>
+            {{ 'inquiries.hard.comment' | trans }}
+            <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/121856-i-have-a-late-payment-what-should-i-do-">{{ 'common.learn.more' | trans }}</a>
+        </p>
+  </div>
+  <div class="clearboth"></div>
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load('visualization', '1.0', {'packages':['gauge']});
+    google.setOnLoadCallback(function () {
+      var data = google.visualization.arrayToDataTable([
+        ['Label', 'Value'],
+        ['Inquiries', {{ nInquiries }}],
+      ]);
+      var options = {
+        max: {{ nMaxDial }},
+        width: 400, height: 120,
+        redFrom: 5, redTo: {{ nMaxDial }},
+        yellowFrom: 3, yellowTo: 5,
+        minorTicks: 3
+      };
+      var chart = new google.visualization.Gauge(document.getElementById('inquiries-chart-div'));
+      chart.draw(data, options);
+    });
+</script>

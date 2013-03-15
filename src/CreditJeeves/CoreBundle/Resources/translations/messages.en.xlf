@@ -55,6 +55,15 @@
                 <source>inquiries.total</source>
                 <target>Total Inquiries</target>
             </trans-unit>
+            <trans-unit id="inquiries.hard.header">
+                <source>inquiries.hard.header</source>
+                <target>Inquiries During Last 6 Months</target>
+            </trans-unit>
+            <trans-unit id="inquiries.hard.comment">
+                <source>inquiries.hard.comment</source>
+                <target>If lenders see more than a few inquiries in the last 6 months, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
+            </trans-unit>
+            
 
             <trans-unit id="derogatory.current">
                 <source>derogatory.current</source>
@@ -91,6 +100,10 @@
             <trans-unit id="component.missed.payments">
                 <source>component.missed.payments</source>
                 <target>Missed Payments</target>
+            </trans-unit>
+            <trans-unit id="component.inquiries.hard">
+                <source>component.inquiries.hard</source>
+                <target>Hard Inquiries</target>
             </trans-unit>
             
 
