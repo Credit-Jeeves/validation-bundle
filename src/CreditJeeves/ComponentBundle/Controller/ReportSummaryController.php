@@ -2,8 +2,6 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\CoreBundle\Arf\ArfParser;
-use CreditJeeves\CoreBundle\Arf\ArfReport;
 
 class ReportSummaryController extends Controller
 {

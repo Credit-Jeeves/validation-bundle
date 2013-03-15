@@ -11,6 +11,28 @@
                 <source>common.learn.more</source>
                 <target>Learn more</target>
             </trans-unit>
+            <trans-unit id="common.mortgage">
+                <source>common.mortgage</source>
+                <target>Mortgage</target>
+            </trans-unit>
+            <trans-unit id="common.revolving">
+                <source>common.revolving</source>
+                <target>Revolving</target>
+            </trans-unit>
+            <trans-unit id="common.installment">
+                <source>common.installment</source>
+                <target>Installment</target>
+            </trans-unit>
+            <trans-unit id="common.balance">
+                <source>common.balance</source>
+                <target>Balance</target>
+            </trans-unit>
+            <trans-unit id="common.credit.type">
+                <source>common.credit.type</source>
+                <target>Credit Type</target>
+            </trans-unit>
+            
+            
             
 
             <trans-unit id="account.total">
@@ -33,6 +55,12 @@
                 <source>account.oldest</source>
                 <target>Oldest Account</target>
             </trans-unit>
+            <trans-unit id="account.satisfactory">
+                <source>account.satisfactory</source>
+                <target>Satisfactory Accounts</target>
+            </trans-unit>
+
+
 
             <trans-unit id="payment.monthly.total">
                 <source>payment.monthly.total</source>
@@ -40,7 +68,7 @@
             </trans-unit>
             <trans-unit id="payment.monthly.estate">
                 <source>payment.monthly.estate</source>
-                <target>Total Monthly Payment</target>
+                <target>Total Real Estate Payment</target>
             </trans-unit>
             <trans-unit id="payment.auto.total">
                 <source>payment.auto.total</source>
