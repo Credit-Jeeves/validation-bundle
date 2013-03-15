@@ -1,0 +1,39 @@
+{% block stylesheets %}
+    <link href="{{ asset('bundles/component/css/report.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+<div class="pod-middle pod-border pod-padding shadow">
+    <div class="col personal-column">
+        <h3>{{ 'component.personal.info' | trans }}</h3>
+        <ul>
+          <li>{{ sName }}</li>
+          <li>{{ aAddress.address_text }}</li>
+          <li>&nbsp;</li>
+          <li>SSN:&nbsp;{{ sSSN }}</li>
+          <li>DOB:&nbsp;{{ sDOB }}</li>
+        </ul>
+    </div>
+    <div class="col personal-column">
+        <h3>{{ 'component.personal.imployment' | trans }}</h3>
+        {% if aEmployments|length > 0 %}
+        <ul>
+        {% for aEmployment in aEmployments %}
+            <li>{{ aEmployment.employer_name }}</li>
+            <li>&nbsp;</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="col personal-column scroller">
+        <h3>{{ 'component.address.previous' | trans }}</h3>
+        {% if aAddresses | length > 0 %}
+        <ul>
+            {% for aAddress in aAddresses %}
+            <li>{{ aAddress.address_text }}</li>
+            <li>&nbsp;</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <div class="clearboth"></div>
+</div>

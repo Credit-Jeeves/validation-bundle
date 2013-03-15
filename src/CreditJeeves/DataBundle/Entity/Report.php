@@ -227,4 +227,44 @@ class Report
         $aTradeLines = $oArfReport->getValue(ArfParser::SEGMENT_TRADELINE);
         return $aTradeLines;
     }
+
+    /**
+     * @return string
+     * @access public
+     */
+    public function getApplicantName()
+    {
+        $oArfReport = $this->getArfReport();
+        $aNames = $oArfReport->getValue(ArfParser::SEGMENT_NAME);
+        return (isset($aNames['name_text'])) ? $aNames['name_text'] : $aNames[0]['name_text'];
+    }
+
+    /**
+     *
+     * @return array
+     * @access public
+     */
+    public function getApplicantAddress()
+    {
+        $oArfReport = $this->getArfReport();
+        $aAddresses = $oArfReport->getValue(ArfParser::SEGMENT_ADDRESS);
+        return $aAddresses;
+    }
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantEmployments()
+    {
+        $oArfReport = $this->getArfReport();
+        $aEmployments = array();
+        $aResult = $oArfReport->getValue(ArfParser::SEGMENT_EMPLOYMENT);
+        if (count($aResult) < 2) {
+            $aEmployments[] = $aResult;
+        } else {
+            $aEmployments = $aResult;
+        }
+        return $aEmployments;
+    }
 }

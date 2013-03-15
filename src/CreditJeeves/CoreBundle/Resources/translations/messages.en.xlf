@@ -126,6 +126,19 @@
                 <source>component.tradelines.total</source>
                 <target>Total Accounts</target>
             </trans-unit>
+            <trans-unit id="component.personal.info">
+                <source>component.personal.info</source>
+                <target>Personal Information</target>
+            </trans-unit>
+            <trans-unit id="component.personal.imployment">
+                <source>component.personal.imployment</source>
+                <target>Employment</target>
+            </trans-unit>
+            <trans-unit id="component.address.previous">
+                <source>component.address.previous</source>
+                <target>Previous Address</target>
+            </trans-unit>
+            
             
             <trans-unit id="tradelines.total.comment">
                 <source>tradelines.total.comment</source>
@@ -146,6 +159,13 @@
                 <source>credit.used.comment</source>
                 <target>Your credit card utilization is an indicator of how well you might be able to handle additional debt. If you have used more than 30% of your available credit, lenders will be wary of extending you additional credit.</target>
             </trans-unit>
+            
+            <trans-unit id="tab.report">
+                <source>tab.report</source>
+                <target>Report</target>
+            </trans-unit>
+            
+            
             
         </body>
     </file>

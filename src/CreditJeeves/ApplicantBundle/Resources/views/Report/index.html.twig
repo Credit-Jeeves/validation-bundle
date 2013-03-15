@@ -1,0 +1,31 @@
+{% extends "ApplicantBundle::base.html.twig" %}
+
+{% block title "Appliant Dasboard" %}
+
+{% block stylesheets %}
+    <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block info %}
+<p class="user-email">{{ sEmail }} </p>
+<div class="user-logout">
+    <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
+    <a href="{{ path('fos_user_security_logout') }}">» Help </a>
+</div>
+{% endblock %}
+
+{% block content %}
+    
+    <div class="column-middle floatleft">
+        {{ render(controller('ComponentBundle:PersonalInfo:index')) }}
+    </div>
+    <div class="column-small floatright">
+    </div>
+    <div class="clearboth"></div>
+    <div class="row-20"></div>
+    <div class="column-large">
+        {{ render(controller('ComponentBundle:CreditSummary:index')) }}
+    </div>
+    
+    
+{% endblock %}
