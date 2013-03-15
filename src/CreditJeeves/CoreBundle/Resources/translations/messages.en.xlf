@@ -122,6 +122,15 @@
                 <source>component.credit.age.average</source>
                 <target>Average Age of Credit</target>
             </trans-unit>
+            <trans-unit id="component.tradelines.total">
+                <source>component.tradelines.total</source>
+                <target>Total Accounts</target>
+            </trans-unit>
+            
+            <trans-unit id="tradelines.total.comment">
+                <source>tradelines.total.comment</source>
+                <target>You have  %nOpened% Opened and  %nClosed% Closed accounts. Having more accounts is an indicator that lenders are willing to grant credit, and usually results in a higher score.</target>
+            </trans-unit>
             
             <trans-unit id="loan.types.comment">
                 <source>loan.types.comment</source>

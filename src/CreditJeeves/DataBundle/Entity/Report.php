@@ -175,6 +175,33 @@ class Report
     
     /**
      * @return integer
+     */
+    public function getCountApplicantTotalTradelines()
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return count($arfTradeLines->getTradeLines());
+    }
+    
+    /**
+     * @return integer
+     */
+    public function getCountApplicantOpenedTradelines()
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return count($arfTradeLines->getOpenedTradelines());
+    }
+    
+    /**
+     * @return integer
+     */
+    public function getCountApplicantClosedTradelines()
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return count($arfTradeLines->getClosedTradelines());
+    }
+
+    /**
+     * @return integer
      * @access public
      */
     public function getCountTradelineCollections()
@@ -199,5 +226,5 @@ class Report
         $oArfReport = $this->getArfReport();
         $aTradeLines = $oArfReport->getValue(ArfParser::SEGMENT_TRADELINE);
         return $aTradeLines;
-    }    
+    }
 }
