@@ -37,7 +37,7 @@
 }
 
 .lightbox-close {
-  background-image: url('/images/lightbox-close.png');
+  background-image: url('/bundles/core/images/lightbox-close.png');
   width: 20px;
   height: 20px;
   float: right;
