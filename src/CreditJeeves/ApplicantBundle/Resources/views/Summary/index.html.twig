@@ -4,14 +4,8 @@
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
-{% block info %}
-<p class="user-email">{{ sEmail }} </p>
-<div class="user-logout">
-    <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
-    <a href="{{ path('fos_user_security_logout') }}">» Help </a>
-</div>
+    <link href="{{ asset('bundles/component/css/credit-balance.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/credit-summary.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block content %}
@@ -38,4 +32,8 @@
         {{ render(controller('ComponentBundle:BuyReport:index')) }}
     </div>
     <div class="clearboth"></div>
+{% endblock %}
+
+{% block google_api %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 {% endblock %}
