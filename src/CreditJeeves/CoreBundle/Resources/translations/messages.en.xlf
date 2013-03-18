@@ -7,6 +7,26 @@
                 <target>CreditJeeves</target>
             </trans-unit>
             
+            <trans-unit id="project.questions">
+                <source>project.questions</source>
+                <target>Questions?</target>
+            </trans-unit>
+            <trans-unit id="project.contact_us">
+                <source>project.contact_us</source>
+                <target>Contact us</target>
+            </trans-unit>
+            <trans-unit id="project.dispute.online">
+                <source>project.dispute.online</source>
+                <target>File a dispute online</target>
+            </trans-unit>
+            <trans-unit id="project.dispute.experian">
+                <source>project.dispute.experian</source>
+                <target>Experian Online Dispute Portal</target>
+            </trans-unit>
+            
+            
+            
+            
             <trans-unit id="common.learn.more">
                 <source>common.learn.more</source>
                 <target>Learn more</target>

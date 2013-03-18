@@ -2,12 +2,6 @@
 
 {% block title "Appliant Dasboard" %}
 
-{% block stylesheets %}
-    <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/credit-balance.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/credit-summary.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
 {% block content %}
     <div class="column-large">
         {{ render(controller('ComponentBundle:CreditBalance:index')) }}
@@ -32,8 +26,4 @@
         {{ render(controller('ComponentBundle:BuyReport:index')) }}
     </div>
     <div class="clearboth"></div>
-{% endblock %}
-
-{% block google_api %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 {% endblock %}
