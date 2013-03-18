@@ -1,0 +1,68 @@
+    <div class="tradeline-block">
+      <div class="tradeline-name">{{ aTradeline.tr_subname }} {{ aTradeline.tr_acctnum }}</div>
+      <div class="clearboth"></div>
+      <div class="tradeline-info">
+        {% if isNegative == false %}
+        <div class="tradeline-status tradeline-{{ aTradeline.tr_state }}">{{ aTradeline.status_text }}</div>
+        {% else %}
+        <div class="tradeline-status tradeline-red">{{ aTradeline.status_text }}</div>
+        {% endif %}
+        <div class="tradeline-balance"><b>Balance: <?php echo cjFormatCurrency($aTradeLine['tr_balance']);?></b></div>
+        <div class="tradeline-last-payment">
+            <span class="tradeline-amount">{{ aTradeline.last_payment_date }}</span>Last Payment Date:</div>
+        {% if aTradeline.credit_amounts.high_balance | length > 0 %}
+        <div class="tradeline-highest-balance">
+            <span class="tradeline-amount">${{ aTradeline.credit_amounts.high_balance | number_format() }}</span>Highest Balance:</div>
+        {% endif %}
+      </div>
+      <div class="tradeline-history">
+        <div class="tradeline-history-toolbar">Payment History <a class="tradeline-legend-link" href="">» View Legend</a></div>
+        <div class="tradeline-history-date">Updated&nbsp;{{ aTradeline.balance_date }}</div>
+        <div class="clearboth"></div>
+        <div class="tradeline-history-body">
+          <div class="tradeline-history-head">
+            <div class="tradeline-history-year"></div>
+            {% for sMonth in aMonthes %}
+              <div class="tradeline-history-month">{{ sMonth }}</div>
+            {% endfor %}
+            <div class="clearboth"></div>
+          </div>
+          <div class="clearboth"></div>
+          {% for nYear, aData in aTradeline.payment_history %}
+            <div class="tradeline-history-year">{{ nYear }}</div>
+            {% if nYear == aTradeline.balance_year %}
+                {% set nEmpty = aTradeline.balance_month - aData | length  %}
+            {% else %}
+                {% set nEmpty = 11 - aData | length %}
+            {% endif %}
+            {% if nEmpty > 0 %}
+                {% for i in range (0, nEmpty) %}
+                  <div class="tradeline-history-empty-month"></div>
+                {% endfor %}
+            {% endif %}
+            {% for nMonth, aStatus in aData %}
+            <div class="tradeline-history-empty-month status-{{ aStatus.status }}">{{ aStatus.text }}</div>
+          {% endfor %}
+          <div class="clearboth"></div>
+        {% endfor %}
+        </div>
+      </div>
+      <div class="tradeline-details">
+        <div><span><b>Type:</b>&nbsp;{{ aTradeline.type_code }}</span></div>
+        <div><span><b>Responsibility:</b>&nbsp;{{ aTradeline.ecoa }}</span></div>
+        <div><span><b>Date Opened:</b>&nbsp;{{ aTradeline.date_open }}</span></div>
+        <div><span><b>Credit Limit:</b>&nbsp;{{ aTradeline.credit_amounts.credit_limit }}</span></div>
+        {% if aTradeline.creditor_name is defined %}
+        <div><span><b>Original Creditor:</b>&nbsp;{{ aTradeline.creditor_name }}</span></div>
+        {% endif %}
+        {% if aTradeline.direct_check is defined %}
+          <div class="creditor-contact">Creditor Contact:</div>
+          {% if aTradeline.direct_check.subscriber_phone_number is defined %}
+            <div class="creditor-phone"><span><b>{{ aTradeline.direct_check.subscriber_phone_number }}</b></span></div>
+          {% endif %}
+          <div><span>{{ aTradeline.direct_check.subscriber_address }}</span></div>
+          <div><span>{{ aTradeline.direct_check.subscriber_city }}, {{ aTradeline.direct_check.subscriber_state }} {{ aTradeline.direct_check.subscriber_zip_code }}</span></div>
+        {% endif %}
+      </div>
+      <div class="clearboth"></div>
+    </div>
