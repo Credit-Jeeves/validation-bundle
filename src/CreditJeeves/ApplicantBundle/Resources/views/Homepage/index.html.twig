@@ -2,14 +2,8 @@
 
 {% block title "appliant_dashboard_title"|trans %}
 
-{% block info %}
-    <p class="user-email">{{ sEmail }} </p>
-
-    {# FIXME must be moved to base layout #}
-    <div class="user-logout">
-        <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
-        <a href="{{ path('fos_user_security_logout') }}">» Help </a>
-    </div>
+{% block stylesheets %}
+    <link href="{{ asset('bundles/component/css/score.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block content %}
@@ -34,4 +28,8 @@
         {{ render(controller('ComponentBundle:DidYouKnow:index')) }}
     </div>
     <div class="clearboth"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 {% endblock %}

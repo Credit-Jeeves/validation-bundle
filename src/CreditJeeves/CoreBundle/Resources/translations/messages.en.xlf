@@ -31,6 +31,24 @@
                 <source>common.credit.type</source>
                 <target>Credit Type</target>
             </trans-unit>
+            <trans-unit id="common.legend.view">
+                <source>common.legend.view</source>
+                <target>View Legend</target>
+            </trans-unit>
+            <trans-unit id="common.help">
+                <source>common.help</source>
+                <target>Help</target>
+            </trans-unit>
+            <trans-unit id="common.log_out">
+                <source>common.log_out</source>
+                <target>Log out</target>
+            </trans-unit>
+            
+            
+            <trans-unit id="common.applicant.dashboard">
+                <source>common.applicant.dashboard</source>
+                <target>Applicant Dashboard</target>
+            </trans-unit>
             
             
             
@@ -172,6 +190,62 @@
                 <source>tradelines.total.comment</source>
                 <target>You have  %nOpened% Opened and  %nClosed% Closed accounts. Having more accounts is an indicator that lenders are willing to grant credit, and usually results in a higher score.</target>
             </trans-unit>
+            <trans-unit id="tradelines.history.negative">
+                <source>tradelines.history.negative</source>
+                <target>Potentially Negative Accounts</target>
+            </trans-unit>
+            <trans-unit id="tradelines.history.satisfactory">
+                <source>tradelines.history.satisfactory</source>
+                <target>Potentially Satisfactory Accounts</target>
+            </trans-unit>
+            <trans-unit id="tradelines.history.closed">
+                <source>tradelines.history.closed</source>
+                <target>Closed Accounts</target>
+            </trans-unit>
+
+            <trans-unit id="tradeline.balance">
+                <source>tradeline.balance</source>
+                <target>Balance</target>
+            </trans-unit>
+            <trans-unit id="tradeline.balance.highest">
+                <source>tradeline.balance.highest</source>
+                <target>Highest Balance</target>
+            </trans-unit>
+            <trans-unit id="tradeline.history.payment">
+                <source>tradeline.history.payment</source>
+                <target>Payment History</target>
+            </trans-unit>
+            <trans-unit id="tradeline.last.payment">
+                <source>tradeline.last.payment</source>
+                <target>Last Payment Date</target>
+            </trans-unit>
+            <trans-unit id="tradeline.details.type">
+                <source>tradeline.details.type</source>
+                <target>Type</target>
+            </trans-unit>
+            <trans-unit id="tradeline.details.responsibility">
+                <source>tradeline.details.responsibility</source>
+                <target>Responsibility</target>
+            </trans-unit>
+            <trans-unit id="tradeline.details.date_opened">
+                <source>tradeline.details.date_opened</source>
+                <target>Date Opened</target>
+            </trans-unit>
+            <trans-unit id="tradeline.details.credit_limit">
+                <source>tradeline.details.credit_limit</source>
+                <target>Credit Limit</target>
+            </trans-unit>
+            <trans-unit id="tradeline.details.original_creditor">
+                <source>tradeline.details.original_creditor</source>
+                <target>Original Creditor</target>
+            </trans-unit>
+            <trans-unit id="tradeline.details.creditor_contact">
+                <source>tradeline.details.creditor_contact</source>
+                <target>Creditor Contact</target>
+            </trans-unit>
+            
+            
+            
             
             <trans-unit id="loan.types.comment">
                 <source>loan.types.comment</source>
