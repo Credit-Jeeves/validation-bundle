@@ -21,12 +21,17 @@
   font-weight: bold;
 }
 
+.pod-questions {
+    padding: 20px;
+    height: 180px;
+}
+
 .question-mail {
-  margin-top: 5px;
+  margin-top: 25px;
 }
 
 .question-link {
-  margin-top: 5px;
+  margin-top: 25px;
 }
 
 table th {

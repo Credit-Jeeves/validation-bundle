@@ -7,16 +7,16 @@
         {% else %}
         <div class="tradeline-status tradeline-red">{{ aTradeline.status_text }}</div>
         {% endif %}
-        <div class="tradeline-balance"><b>Balance: <?php echo cjFormatCurrency($aTradeLine['tr_balance']);?></b></div>
+        <div class="tradeline-balance"><b>{{ 'tradeline.balance' | trans }}: ${{ aTradeline.tr_balance }}</b></div>
         <div class="tradeline-last-payment">
-            <span class="tradeline-amount">{{ aTradeline.last_payment_date }}</span>Last Payment Date:</div>
+            <span class="tradeline-amount">{{ aTradeline.last_payment_date }}</span>{{ 'tradeline.last.payment' | trans }}:</div>
         {% if aTradeline.credit_amounts.high_balance | length > 0 %}
         <div class="tradeline-highest-balance">
-            <span class="tradeline-amount">${{ aTradeline.credit_amounts.high_balance | number_format() }}</span>Highest Balance:</div>
+            <span class="tradeline-amount">${{ aTradeline.credit_amounts.high_balance | number_format() }}</span>{{ 'tradeline.balance.highest' | trans }}:</div>
         {% endif %}
       </div>
       <div class="tradeline-history">
-        <div class="tradeline-history-toolbar">Payment History <a class="tradeline-legend-link" href="">» View Legend</a></div>
+        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} <a class="tradeline-legend-link" href="">» {{ 'common.legend.view' | trans }}</a></div>
         <div class="tradeline-history-date">Updated&nbsp;{{ aTradeline.balance_date }}</div>
         <div class="clearboth"></div>
         <div class="tradeline-history-body">
@@ -48,15 +48,15 @@
         </div>
       </div>
       <div class="tradeline-details">
-        <div><span><b>Type:</b>&nbsp;{{ aTradeline.type_code }}</span></div>
-        <div><span><b>Responsibility:</b>&nbsp;{{ aTradeline.ecoa }}</span></div>
-        <div><span><b>Date Opened:</b>&nbsp;{{ aTradeline.date_open }}</span></div>
-        <div><span><b>Credit Limit:</b>&nbsp;{{ aTradeline.credit_amounts.credit_limit }}</span></div>
+        <div><span><b>{{ 'tradeline.details.type' | trans }}:</b>&nbsp;{{ aTradeline.type_code }}</span></div>
+        <div><span><b>{{ 'tradeline.details.responsibility' | trans }}:</b>&nbsp;{{ aTradeline.ecoa }}</span></div>
+        <div><span><b>{{ 'tradeline.details.date_opened' | trans }}:</b>&nbsp;{{ aTradeline.date_open }}</span></div>
+        <div><span><b>{{ 'tradeline.details.credit_limit' | trans }}:</b>&nbsp;{{ aTradeline.credit_amounts.credit_limit }}</span></div>
         {% if aTradeline.creditor_name is defined %}
-        <div><span><b>Original Creditor:</b>&nbsp;{{ aTradeline.creditor_name }}</span></div>
+        <div><span><b>{{ 'tradeline.details.original_creditor' | trans }}:</b>&nbsp;{{ aTradeline.creditor_name }}</span></div>
         {% endif %}
         {% if aTradeline.direct_check is defined %}
-          <div class="creditor-contact">Creditor Contact:</div>
+          <div class="creditor-contact">{{ 'tradeline.details.creditor_contact' | trans }}:</div>
           {% if aTradeline.direct_check.subscriber_phone_number is defined %}
             <div class="creditor-phone"><span><b>{{ aTradeline.direct_check.subscriber_phone_number }}</b></span></div>
           {% endif %}

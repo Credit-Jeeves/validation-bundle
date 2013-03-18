@@ -17,7 +17,6 @@ class TradelinesHistoryController extends Controller
             $aMonthes[] = date('M', mktime(0,0,0, $i));
         }
         $aClosedTradelines = array();
-        
         // Create closed tradelines
         foreach ($aNegativeTradelines as $nKey => $aTradeline) {
             if (isset($aTradeline['tr_subcode']) && isset($aDirectCheck[$aTradeline['tr_subcode']])) {
@@ -49,9 +48,6 @@ class TradelinesHistoryController extends Controller
                 $aSatisfactoryTradelines[$nKey] = $aTradeline;
             }
         }
-//         echo '<pre>';
-//         print_r($aTradeline);
-//         echo '</pre>';
         return $this->render(
             'ComponentBundle:TradelinesHistory:index.html.twig',
             array(

@@ -2,16 +2,6 @@
 
 {% block title "appliant_dashboard_title"|trans %}
 
-{% block info %}
-    <p class="user-email">{{ sEmail }} </p>
-
-    {# FIXME must be moved to base layout #}
-    <div class="user-logout">
-        <a href="{{ path('fos_user_security_logout') }}">» Log out </a>&nbsp;|&nbsp;
-        <a href="{{ path('fos_user_security_logout') }}">» Help </a>
-    </div>
-{% endblock %}
-
 {% block content %}
     <div class="column-middle floatleft">
         {{ render(controller('ComponentBundle:Score:index')) }}
@@ -35,3 +25,4 @@
     </div>
     <div class="clearboth"></div>
 {% endblock %}
+
