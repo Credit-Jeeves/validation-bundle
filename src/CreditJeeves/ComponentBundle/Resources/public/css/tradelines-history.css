@@ -1,0 +1,242 @@
+.tradeline-legend {
+  display: none;
+}
+.tradeline-history-text {
+  float: left;
+  font-family: astoriamedium;
+  margin-top: 5px;
+  margin-left: 10px;
+  color: #333333;
+  width: 350px;
+}
+
+.tradeline-history-block {
+  float: left;
+  width: 400px;
+}
+
+.tradeline-block {
+  border-top: 1px solid #c8c8c8;
+  margin-bottom: 15px;
+  padding-top: 15px;
+}
+
+.tradeline-amount {
+    float: right;
+    text-align: right;
+}
+
+.tradeline-name {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.tradeline-info {
+  float: left;
+  margin-right: 20px;
+  width: 150px;
+}
+
+.tradeline-status {
+  width: 130px;
+  min-height: 20px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.tradeline-O {
+  background-color: #6faf00;
+}
+
+.tradeline-C {
+  background-color: #999999;
+}
+
+.tradeline-red {
+  background-color: #af0001;
+}
+
+.tradeline-balance {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+/** History block **/
+.tradeline-history {
+  float: left; /*width: 460px;*/
+}
+
+.tradeline-history-toolbar a {
+  font-size: 14px;
+  margin-left: 20px;
+  font-weight: normal;
+}
+
+.tradeline-history-toolbar {
+  float: left;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 90%;
+  margin-bottom: 5px;
+}
+
+.tradeline-history-date {
+  float: right;
+  font-size: 12px;
+  color: #333;
+}
+
+.tradeline-history-head {
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.tradeline-history-body {
+  background-color: #f3f3f3;
+  padding: 20px; /*width: 460px;*/
+}
+
+.tradeline-history-year {
+  width: 45px;
+  float: left;
+  margin: 0 5px 5px 0;
+  text-align: center;
+  padding-top: 7px;
+  font-weight: bold;
+}
+
+.tradeline-history-month {
+  width: 30px;
+  height: 15px;
+  float: left;
+  margin: 0 7px 5px 0;
+  text-align: center;
+  padding-top: 1px;
+}
+
+.tradeline-history-empty-month {
+  width: 30px;
+  height: 24px;
+  border: 1px solid white;
+  float: left;
+  margin: 0 5px 5px 0;
+  text-align: center;
+  padding-top: 5px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  color: white;
+}
+
+/** History Status Legend **/
+.status-0 {
+  background-color: #999999;
+}
+
+.status-1 {
+  background-color: #fe9900;
+}
+
+.status-2 {
+  background-color: #ff6700;
+}
+
+.status-3 {
+  background-color: #af0001;
+}
+
+.status-4 {
+  background-color: #af0001;
+}
+
+.status-5 {
+  background-color: #af0001;
+}
+
+.status-6 {
+  background-color: #af0001;
+}
+
+.status-7 {
+  background-color: #333333;
+}
+
+.status-8 {
+  background-color: #333333;
+}
+
+.status-9 {
+  background-color: #333333;
+}
+
+.status-B {
+  background-color: green;
+}
+
+.status-C {
+  background-color: #6faf01;
+}
+
+.status-G {
+  background-color: #333333;
+}
+
+.status-H {
+  background-color: #333333;
+}
+
+.status-J {
+  background-color: #333333;
+}
+
+.status-K {
+  background-color: #333333;
+}
+
+.status-L {
+  background-color: #333333;
+}
+
+.status-N {
+  background-color: #999999;
+}
+
+.status-- {
+  background-color: #999999;
+}
+
+/** details block **/
+.tradeline-details .creditor-contact {
+  margin-top: 10px;
+}
+
+.tradeline-details .creditor-phone {
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+
+.tradeline-details {
+  width: 155px;
+  float: left;
+  margin-left: 20px;
+  font-size: 12px;
+}
+
+.tradeline-highest-balance, .tradeline-last-payment {
+  font-size: 11px;
+  color: #333;
+  line-height: 130%;
+}
+
+.tradeline-highest-balance .amount, .tradeline-last-payment .amount {
+  float: right;
+  text-align: right;
+}

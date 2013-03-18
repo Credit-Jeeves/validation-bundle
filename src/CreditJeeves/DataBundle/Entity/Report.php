@@ -7,6 +7,7 @@ use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\CoreBundle\Arf\ArfReport;
 use CreditJeeves\CoreBundle\Arf\ArfSummary;
 use CreditJeeves\CoreBundle\Arf\ArfTradelines;
+use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
 
 
 /**
@@ -156,6 +157,16 @@ class Report
 
     /**
      * @return array
+     * @access public
+     */
+    public function getApplicantDirectCheck()
+    {
+        $arfDirectCheck = new ArfDirectCheck($this->getArfArray());
+        return $arfDirectCheck->getDirectCheck();
+    }
+
+    /**
+     * @return array
      */
     public function getCreditSummary()
     {
@@ -172,7 +183,27 @@ class Report
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
         return $arfTradeLines->getCollections($isSecurity);
     }
-    
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantNegativeTradeLines($isSecurity = true)
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return $arfTradeLines->getNegativeDetails($isSecurity);
+    }
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantSatisfactoryTradeLines($isSecurity = true)
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return $arfTradeLines->getSatisfactoryDetails($isSecurity);
+    }
+
     /**
      * @return integer
      */

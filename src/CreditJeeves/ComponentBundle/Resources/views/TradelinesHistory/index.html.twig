@@ -1,0 +1,55 @@
+{% block stylesheets %}
+    <link href="{{ asset('bundles/component/css/tradelines-history.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% include 'ComponentBundle:TradelinesHistory:legend.html.twig' only %}
+
+{% if aNegativeTradelines | length > 0 %}
+<div class="pod-large pod-border pod-padding shadow">
+    <h3>Potentially Negative Accounts</h3>
+    {% for aTradeline in aNegativeTradelines %}
+        {% include 'ComponentBundle:TradelinesHistory:tradelineRow.html.twig' 
+            with {
+                'aTradeline': aTradeline,
+                'isNegative': true,
+                'aMonthes': aMonthes
+                } 
+        %}
+    {% endfor %}
+    <div class="clearboth"></div>
+</div>
+{% endif %}
+
+{% if aSatisfactoryTradelines | length > 0 %}
+<div class="row-20"></div>
+<div class="pod-large pod-border pod-padding shadow">
+    <h3>Potentially Satisfactory Accounts</h3>
+    {% for aTradeline in aSatisfactoryTradelines %}
+        {% include 'ComponentBundle:TradelinesHistory:tradelineRow.html.twig' 
+            with {
+                'aTradeline': aTradeline,
+                'isNegative': false,
+                'aMonthes': aMonthes
+                } 
+        %}
+    {% endfor %}
+    <div class="clearboth"></div>
+</div>
+{% endif %}
+
+{% if aClosedTradelines | length > 0 %}
+<div class="row-20"></div>
+<div class="pod-large pod-border pod-padding shadow">
+    <h3>Closed Accounts</h3>
+    {% for aTradeline in aClosedTradelines %}
+        {% include 'ComponentBundle:TradelinesHistory:tradelineRow.html.twig' 
+            with {
+                'aTradeline': aTradeline,
+                'isNegative': false,
+                'aMonthes': aMonthes
+                } 
+        %}
+    {% endfor %}
+    <div class="clearboth"></div>
+</div>
+{% endif %}
