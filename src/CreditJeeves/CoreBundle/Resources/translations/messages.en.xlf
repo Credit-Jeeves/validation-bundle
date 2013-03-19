@@ -63,6 +63,18 @@
                 <source>common.log_out</source>
                 <target>Log out</target>
             </trans-unit>
+            <trans-unit id="common.date">
+                <source>common.date</source>
+                <target>as of</target>
+            </trans-unit>
+            <trans-unit id="common.account">
+                <source>common.account</source>
+                <target>Account</target>
+            </trans-unit>
+            <trans-unit id="common.total">
+                <source>common.total</source>
+                <target>Total</target>
+            </trans-unit>
             
             
             <trans-unit id="common.applicant.dashboard">
@@ -70,12 +82,32 @@
                 <target>Applicant Dashboard</target>
             </trans-unit>
             
+            <trans-unit id="loan.type.balance">
+                <source>loan.type.balance</source>
+                <target>Balance for Loan Type</target>
+            </trans-unit>
+            <trans-unit id="loan.type.revolving">
+                <source>loan.type.revolving</source>
+                <target>Revolving Accounts</target>
+            </trans-unit>
+            <trans-unit id="loan.type.mortgage">
+                <source>loan.type.mortgage</source>
+                <target>Mortgages</target>
+            </trans-unit>
+            <trans-unit id="loan.type.installment">
+                <source>loan.type.installment</source>
+                <target>Installment Loans</target>
+            </trans-unit>
             
             
 
             <trans-unit id="account.total">
                 <source>account.total</source>
                 <target>Total Accounts</target>
+            </trans-unit>
+            <trans-unit id="account.total.past_due">
+                <source>account.total.past_due</source>
+                <target>Total Past Due</target>
             </trans-unit>
             <trans-unit id="account.good.total">
                 <source>account.good.total</source>
@@ -96,6 +128,10 @@
             <trans-unit id="account.satisfactory">
                 <source>account.satisfactory</source>
                 <target>Satisfactory Accounts</target>
+            </trans-unit>
+            <trans-unit id="account.late">
+                <source>account.late</source>
+                <target>Late Accounts</target>
             </trans-unit>
 
 
@@ -164,6 +200,10 @@
                 <target>Public Records</target>
             </trans-unit>
 
+            <trans-unit id="component.account_status.header">
+                <source>component.account_status.header</source>
+                <target>Status of Accounts used in This Simulation</target>
+            </trans-unit>
             <trans-unit id="component.credit.summary">
                 <source>component.credit.summary</source>
                 <target>Credit Summary</target>
@@ -203,6 +243,14 @@
             <trans-unit id="component.address.previous">
                 <source>component.address.previous</source>
                 <target>Previous Address</target>
+            </trans-unit>
+            <trans-unit id="component.credit_balance.header">
+                <source>component.credit_balance.header</source>
+                <target>Credit Balances</target>
+            </trans-unit>
+            <trans-unit id="component.credit_balance.comment">
+                <source>component.credit_balance.comment</source>
+                <target>Your score is higher than %nPercent% of the population.</target>
             </trans-unit>
             
             

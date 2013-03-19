@@ -223,7 +223,14 @@ h5 {
   cursor: pointer;
 }
 
+/* colors */
+.red {
+    color: #cc0000;
+}
 
+.green {
+    color: #6faf00;
+}
 
 
 

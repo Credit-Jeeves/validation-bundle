@@ -7,7 +7,7 @@ class TradelinesHistoryController extends Controller
 {
     public function indexAction()
     {
-        $Report    = $this->getUser()->getReportsPrequal()->last();
+        $Report    = $this->getUser()->getReportsD2c()->last();
         
         $aNegativeTradelines     = $Report->getApplicantNegativeTradeLines();
         $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
