@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Vehicle;
 use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
@@ -93,7 +94,12 @@ class User extends BaseUser
      */
     protected $dealer_groups;
 
-    
+    /**
+     * 
+     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Vehicle", mappedBy="user")
+     */
+    protected $vehicle;
+
     /**
      * 
      * @var string
@@ -490,5 +496,28 @@ class User extends BaseUser
     public function getDealerLeads()
     {
         return $this->dealer_leads;
+    }
+
+    /**
+     * Set vehicle
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Vehicle $vehicle
+     * @return User
+     */
+    public function setVehicle(\CreditJeeves\DataBundle\Entity\Vehicle $vehicle = null)
+    {
+        $this->vehicle = $vehicle;
+
+        return $this;
+    }
+
+    /**
+     * Get vehicle
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Vehicle 
+     */
+    public function getVehicle()
+    {
+        return $this->vehicle;
     }
 }

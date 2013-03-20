@@ -347,29 +347,6 @@ class Lead
         return $this->group;
     }
 
-//     /**
-//      * Set dealer
-//      *
-//      * @param \CreditJeeves\UserBundle\Entity\User $dealer
-//      * @return Lead
-//      */
-//     public function setDealer(\CreditJeeves\UserBundle\Entity\User $dealer = null)
-//     {
-//         $this->dealer = $dealer;
-
-//         return $this;
-//     }
-
-//     /**
-//      * Get dealer
-//      *
-//      * @return \CreditJeeves\UserBundle\Entity\User 
-//      */
-//     public function getDealer()
-//     {
-//         return $this->dealer;
-//     }
-
     /**
      * Set dealer
      *

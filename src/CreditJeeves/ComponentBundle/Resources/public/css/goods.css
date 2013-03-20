@@ -1,0 +1,10 @@
+.vehicle-pod {
+    height: 170px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.vehicle-model {
+    margin-top: 115px;
+    font-size: 18px;
+}

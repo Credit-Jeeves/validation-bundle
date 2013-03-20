@@ -11,6 +11,18 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Group
 {
     /**
+     * 
+     * @var string
+     */
+    const TYPE_VEHICLE = 'vehicle';
+
+    /**
+     * 
+     * @var string
+     */
+    const TYPE_ESTATE = 'estate';
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -27,6 +39,12 @@ class Group
      * @ORM\Column(type="string")
      */
     protected $name;
+
+    /**
+     *
+     * @ORM\Column(type="string")
+     */
+    protected $website_url;
 
     /**
      * @ORM\ManyToMany(targetEntity="CreditJeeves\UserBundle\Entity\User", mappedBy="dealer_groups")
@@ -167,5 +185,28 @@ class Group
     public function getGroupDealers()
     {
         return $this->group_dealers;
+    }
+
+    /**
+     * Set website_url
+     *
+     * @param string $websiteUrl
+     * @return Group
+     */
+    public function setWebsiteUrl($websiteUrl)
+    {
+        $this->website_url = $websiteUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get website_url
+     *
+     * @return string 
+     */
+    public function getWebsiteUrl()
+    {
+        return $this->website_url;
     }
 }
