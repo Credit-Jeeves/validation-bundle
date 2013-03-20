@@ -2,15 +2,14 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\DataBundle\Entity\Report;
 
 class GoodsController extends Controller
 {
-    public function indexAction()
+    public function indexAction(\CreditJeeves\DataBundle\Entity\Lead $Lead)
     {
         $cjUser = $this->getUser();
         //$Report = $cjUser->getReports()->last();
-        $nTargetScore   = $cjUser->getLeads()->last()->getTargetScore();
+        $nTargetScore   = $Lead->getTargetScore();
 //         switch ($sType) {
 //             case ''
 //         }

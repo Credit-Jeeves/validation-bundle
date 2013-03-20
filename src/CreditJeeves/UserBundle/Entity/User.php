@@ -5,7 +5,9 @@ use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\Report;
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
@@ -75,8 +77,23 @@ class User extends BaseUser
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="user")
      */
-    protected $leads;
+    protected $user_leads;
 
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="dealer")
+     */
+    protected $dealer_leads;
+    
+    /**
+     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
+     * @ORM\JoinTable(name="cj_dealer_group",
+     *      joinColumns={@ORM\JoinColumn(name="dealer_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $dealer_groups;
+
+    
     /**
      * 
      * @var string
@@ -89,7 +106,9 @@ class User extends BaseUser
         $this->reportsPrequal = new ArrayCollection();
         $this->reportsD2c     = new ArrayCollection();
         $this->scores         = new ArrayCollection();
-        $this->leads          = new ArrayCollection();
+        $this->user_leads     = new ArrayCollection();
+        $this->dealer_leads   = new ArrayCollection();
+        $this->groups         = new ArrayCollection();
     }
 
     public function getNewPassword()
@@ -174,38 +193,7 @@ class User extends BaseUser
         return $this->scores;
     }
 
-    /**
-     * Add leads
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $leads
-     * @return User
-     */
-    public function addLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
-    {
-        $this->leads[] = $leads;
-    
-        return $this;
-    }
 
-    /**
-     * Remove leads
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $leads
-     */
-    public function removeLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
-    {
-        $this->leads->removeElement($leads);
-    }
-
-    /**
-     * Get leads
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getLeads()
-    {
-        return $this->leads;
-    }
 
     /**
      * Add reportsPrequal
@@ -386,5 +374,121 @@ class User extends BaseUser
         $this->date_of_birth = $sDOB;
         
         return $this;
+    }
+
+    /**
+     * Here would be logic, how we'll get actice lead. Now - simply last
+     *
+     * @return Lead
+     */
+    public function getActiveLead()
+    {
+        $nLeads = $this->getUserLeads()->count();
+        if ($nLeads > 0) {
+            return $this->getUserLeads()->last();
+        } else {
+            return new Lead();
+        }
+    }
+
+
+    /**
+     * Add dealer_groups
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $dealerGroups
+     * @return User
+     */
+    public function addDealerGroup(\CreditJeeves\DataBundle\Entity\Group $dealerGroups)
+    {
+        $this->dealer_groups[] = $dealerGroups;
+
+        return $this;
+    }
+
+    /**
+     * Remove dealer_groups
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $dealerGroups
+     */
+    public function removeDealerGroup(\CreditJeeves\DataBundle\Entity\Group $dealerGroups)
+    {
+        $this->dealer_groups->removeElement($dealerGroups);
+    }
+
+    /**
+     * Get dealer_groups
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDealerGroups()
+    {
+        return $this->dealer_groups;
+    }
+
+    /**
+     * Add user_leads
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
+     * @return User
+     */
+    public function addUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
+    {
+        $this->user_leads[] = $userLeads;
+
+        return $this;
+    }
+
+    /**
+     * Remove user_leads
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
+     */
+    public function removeUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
+    {
+        $this->user_leads->removeElement($userLeads);
+    }
+
+    /**
+     * Get user_leads
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getUserLeads()
+    {
+        return $this->user_leads;
+    }
+
+
+    /**
+     * Add dealer_leads
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
+     * @return User
+     */
+    public function addDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
+    {
+        $this->dealer_leads[] = $dealerLeads;
+
+        return $this;
+    }
+
+    /**
+     * Remove dealer_leads
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
+     */
+    public function removeDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
+    {
+        $this->dealer_leads->removeElement($dealerLeads);
+    }
+
+    /**
+     * Get dealer_leads
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getDealerLeads()
+    {
+        return $this->dealer_leads;
     }
 }

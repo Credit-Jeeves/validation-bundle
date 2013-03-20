@@ -11,9 +11,11 @@
     </div>
     
   </div>
+  {% if nTargetScore > 0 %}
   <div class="score-column-target">
     <div class="score-target" style="top:{{ nTop }}px;">{{ nTargetScore }}</div>
   </div>
+  {% endif %}
   <div class="clearboth"></div>
 </div>
 

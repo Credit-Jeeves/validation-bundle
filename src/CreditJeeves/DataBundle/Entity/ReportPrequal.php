@@ -14,17 +14,11 @@ class ReportPrequal extends Report
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
-//     /**
-//      * @var integer
-//      */
-//     protected $id;
 
     /**
      * @var integer
      */
     protected $id;
-
-
 
     /**
      * Get id
@@ -58,7 +52,6 @@ class ReportPrequal extends Report
     {
         return $this->cj_applicant_id;
     }
-
 
     /**
      * Set created_at
@@ -105,5 +98,4 @@ class ReportPrequal extends Report
     {
         return $this->user;
     }
-
 }

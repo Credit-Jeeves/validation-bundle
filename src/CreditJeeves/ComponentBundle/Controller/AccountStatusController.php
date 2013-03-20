@@ -3,14 +3,20 @@ namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\CoreBundle\Arf\ArfParser;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 
 class AccountStatusController extends Controller
 {
-    public function indexAction()
+    /**
+     * @Template()
+     * @param \CreditJeeves\DataBundle\Entity\Report $Report
+     * @return array
+     */
+    public function indexAction(\CreditJeeves\DataBundle\Entity\Report $Report)
     {
-        $ArfReport      = $this->getUser()->getReportsPrequal()->last()->getArfReport();
-        $sReportDate    = $this->getUser()->getReportsPrequal()->last()->getCreatedAt()->format('M j, Y');
+        $ArfReport      = $Report->getArfReport();
+        $sReportDate    = $Report->getCreatedAt()->format('M j, Y');
         $TotalPastDue   = $ArfReport->getValue(
                         ArfParser::SEGMENT_PROFILE_SUMMARY,
                         ArfParser::REPORT_TOTAL_PAST_DUE
@@ -39,15 +45,12 @@ class AccountStatusController extends Controller
                 unset($aClosed[$nKey]);
             }
         }
-        return $this->render(
-            'ComponentBundle:AccountStatus:index.html.twig',
-            array(
+        return array(
                 'sReportDate' => $sReportDate,
                 'TotalPastDue' => $TotalPastDue,
                 'LateCounter' => $LateCounter,
                 'aTradelines' => $aTradelines,
                 'aClosed' => $aClosed,
-                )
-            );
+                );
     }
 }

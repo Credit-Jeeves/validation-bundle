@@ -1,25 +1,28 @@
 <?php
-namespace CreditJeeves\CoreBundle\Controller;
+namespace CreditJeeves\ApplicantBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
- * @Route("/report")
+ * This page would be usefull for development
+ * @author Alex
+ * @Route("/")
  */
-class ReportController extends Controller
+class ZeroController extends Controller
 {
     /**
-     * @Route("/get", name="core_report_get")
+     * @Route("/zero", name="applicant_zero_page")
      * @Template()
      *
      * @return array
      */
-    public function getAction()
+    public function indexAction()
     {
         $sEmail = $this->getUser()->getEmail();
-        return array('sEmail' => $sEmail);
+        return array(
+             'sEmail' => $sEmail
+            );
     }
 }

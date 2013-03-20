@@ -19,8 +19,24 @@ class HomepageController extends Controller
      */
     public function indexAction()
     {
-        $sRouteName = $this->get('request')->get('_route');
+        $Lead   = $this->getUser()->getActiveLead();
+//        $Dealer = $Lead->getDealer();
+//          echo $Dealer->getFirstName().'<br>';
+        $Group  = $Lead->getGroup();
+//          echo $Group->getName().'<br>';
+        $aDealers = $Group->getGroupDealers();
+         echo $aDealers->count().'<br>';
+        foreach ($aDealers as $aDealer) {
+            echo $aDealer->getFirstName().'<br>';
+        }
+        echo $Lead->getGroup()->getType();
+        //$Report = $this->getUser()->getReportsD2c()->last();
+        $Report = $this->getUser()->getReportsPrequal()->last();
         $sEmail = $this->getUser()->getEmail();
-        return array('sEmail' => $sEmail);
+        return array(
+            'Report' => $Report,
+            'Lead' => $Lead,
+            'sEmail' => $sEmail
+            );
     }
 }

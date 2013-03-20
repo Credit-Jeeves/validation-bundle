@@ -15,17 +15,10 @@ class ReportD2c extends Report
      */
     protected $user;
 
-//     /**
-//      * @var integer
-//      */
-//     protected $id;
-
     /**
      * @var integer
      */
     protected $id;
-
-
 
     /**
      * Get id
@@ -59,7 +52,6 @@ class ReportD2c extends Report
     {
         return $this->cj_applicant_id;
     }
-
 
     /**
      * Set created_at
@@ -106,5 +98,4 @@ class ReportD2c extends Report
     {
         return $this->user;
     }
-
 }
