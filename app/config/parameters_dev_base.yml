@@ -1,7 +1,30 @@
 parameters:
-  database_driver: pdo_mysql
-  database_port: null
-  mailer_transport: mail
-  mailer_host: 127.0.0.1
-  mailer_user: null
-  mailer_password: null
+    database_host: 127.0.0.1
+    database_driver: pdo_mysql
+    database_port: null
+    mailer_transport: mail
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+
+    experian:
+        pidkiq_url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
+        pidkiq_userpwd: 'creditjeeves_pid_demo:ju3CVGlhX4' #required! # overwritten by DB
+        pidkiq_eai: 'HRPCX4RA' #required! # overwritten by DB
+        pidkiq_dbhost: 'PRECISE_ID_TEST' #required!
+        net_connect_url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnectDemo&serviceVersion=2.0&responseType=text/plain' #required!
+        net_connect_userpwd: 'creditjeeves_cs_demo:cAO2Ajd3f9' #required! # overwritten by DB
+        net_connect_eai: 'HRPCX4RA' #required! # overwritten by DB
+        net_connect_dbhost: 'STAR' #required!
+        atb_host: 'http://stg.creditjeeves.com:8080/'
+
+    paypal_pro:
+        username: 'creditjeevestest'
+        password: 'xP07!t7fzV'
+        partner:  'PayPal'
+        vendor:   'creditjeevestest'
+        sandbox:  true
+    authorize_net:
+        login_id: '54PB5egZ'
+        transaction_key: '48V258vr55AE8tcg'
+        sandbox: true

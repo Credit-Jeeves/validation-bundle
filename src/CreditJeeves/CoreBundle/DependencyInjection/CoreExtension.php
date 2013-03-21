@@ -24,6 +24,5 @@ class CoreExtension extends Extension
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('core.yml');
-        $loader->load('experian.yml');
     }
 }

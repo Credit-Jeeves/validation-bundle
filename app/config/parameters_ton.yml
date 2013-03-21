@@ -6,3 +6,6 @@ parameters:
   database_user: admin
   database_password: 'qwerty'
 
+  server: local
+  host: creditjeeves.tonpc.forma-dev.com
+  mink_webdriver_host: 'http://127.0.0.1:4444/wd/hub'

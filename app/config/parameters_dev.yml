@@ -2,7 +2,6 @@ imports:
     - { resource: parameters_dev_base.yml }
 
 parameters:
-  database_host: 127.0.0.1
   database_name: credit_jeeves2
   database_user: credit_jeeves
   database_password: 'passw0rd'
