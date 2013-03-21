@@ -23,10 +23,8 @@
     {{ render(controller('ComponentBundle:Menu:tabs')) }}
 {% endblock %}
 
+
 {% block info %}
-<p class="user-email">{{ sEmail }} </p>
-<div class="user-logout">
-    <a href="{{ path('fos_user_security_logout') }}">» {{ 'common.log_out' | trans }} </a>&nbsp;|&nbsp;
-    <a href="{{ path('fos_user_security_logout') }}">» {{ 'common.help' | trans }} </a>
-</div>
+    {{ render(controller('ComponentBundle:Elements:info')) }}
 {% endblock %}
+

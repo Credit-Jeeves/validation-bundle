@@ -21,7 +21,11 @@
     <div class="site-logo">
         <img alt="" src="{{ asset('bundles/core/images/logo/logo.png') }}">
     </div>
-    <div class="info-block">{% block info %}{% endblock %}</div>
+    <div class="info-block">
+        {% block info %}
+            {% include '::userLogout.html.twig' %}
+        {% endblock %}
+    </div>
     <div class="clearboth"></div>
     <div class="header-tabs">{% block tabs %}{% endblock %}</div>
 </div>
