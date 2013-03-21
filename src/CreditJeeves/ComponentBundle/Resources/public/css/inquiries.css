@@ -1,0 +1,29 @@
+.inquiries-header {
+  font-weight: bold;
+}
+
+.inquiry-item {
+  float: left;
+  width: 410px;
+  min-height: 80px; /* leave space for the address and permissible purpose, force the height so they all line up regardless of content */
+  background-color: #f3f3f3;
+  margin: 5px 5px 0 0;
+  padding: 10px;
+}
+
+.request-details {
+  margin-top: 20px;
+}
+
+.public-record-details {
+
+}
+
+.public-record-item {
+  float: left;
+  width: 860px;
+  min-height: 80px; /* leave space for the address and permissible purpose, force the height so they all line up regardless of content */
+  background-color: #f3f3f3;
+  margin: 5px 5px 0 0;
+  padding: 10px;
+}

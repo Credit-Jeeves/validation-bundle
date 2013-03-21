@@ -5,7 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\DataBundle\Entity\Report;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-class ReportSummaryController extends Controller
+class RegularInquiriesController extends Controller
 {
     /**
      * @Template()
@@ -13,11 +13,9 @@ class ReportSummaryController extends Controller
      */
     public function indexAction(Report $Report)
     {
-        $sDate     = $Report->getCreatedAt()->format('M j, Y');
-        $aCreditSummary = $Report->getCreditSummary();
+        $aInquiries = $Report->getApplicantInquiries();
         return array(
-                'sDate' => $sDate,
-                'aCreditSummary' => $aCreditSummary,
+                'aInquiries' => $aInquiries,
             );
     }
 }
