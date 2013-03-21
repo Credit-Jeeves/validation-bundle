@@ -15,9 +15,8 @@
         {{ render(controller('ComponentBundle:ReportSummary:index', {'Report': Report})) }}
         <div class="row-20"></div>
         {{ render(controller('ComponentBundle:TradelinesHistory:index', {'Report': Report})) }}
-        <div class="row-20"></div>
+        {{ render(controller('ComponentBundle:AutomotiveDetails:index', {'Report': Report})) }}
         {{ render(controller('ComponentBundle:RegularInquiries:index', {'Report': Report})) }}
-        <div class="row-20"></div>
         {{ render(controller('ComponentBundle:PublicRecords:index', {'Report': Report})) }}
     </div>
 {% endblock %}

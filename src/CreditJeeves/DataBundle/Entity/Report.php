@@ -10,6 +10,7 @@ use CreditJeeves\CoreBundle\Arf\ArfTradelines;
 use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
 use CreditJeeves\CoreBundle\Arf\ArfInquiries;
 use CreditJeeves\CoreBundle\Arf\ArfPublicRecords;
+use CreditJeeves\CoreBundle\Arf\ArfAutomotiveDetails;
 
 /**
  * @ORM\Entity
@@ -327,7 +328,16 @@ class Report
     public function getApplicantPublicRecords()
     {
         $arfPublicRecords = new ArfPublicRecords($this->getArfArray());
-    
         return $arfPublicRecords->getPublicRecords();
+    }
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantAutomotiveDetails()
+    {
+        $arfAutomotiveDetails = new ArfAutomotiveDetails($this->getArfArray());
+        return $arfAutomotiveDetails->getAutomotiveDetails();
     }
 }

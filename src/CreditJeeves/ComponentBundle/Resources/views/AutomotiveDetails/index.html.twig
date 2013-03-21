@@ -1,0 +1,42 @@
+{% if aAutomotive | length > 0 %}
+<div class="row-20"></div>
+<div class="pod-large pod-border pod-padding shadow">
+  <div class="automotive-header">
+    <h3>{{ 'automotive.details.title' | trans }}</h3>
+  </div>
+  <div class="automotive-result">
+    <span><b>{{ 'automotive.details.open_balance' | trans }}:</b>&nbsp;${{ aAutomotive.total_open_balance | number_format() }}</span>&nbsp;&nbsp;&nbsp;
+    <span><b>{{ 'automotive.details.monthly_payment_total' | trans }}:</b>&nbsp;${{ aAutomotive.total_open_monthly_payment | number_format() }}</span>
+  </div>
+  <div class="clearboth"></div>
+  
+  <div class="automotive-alert">
+    <div class="automotive-alert-sign floatleft"></div>
+    <div class="automotive-alert-text floatleft"><b>{{ 'automotive.details.deliquencies' | trans }}:</b></div>
+    <div class="tradeline-history-empty-month status-1 floatleft">30</div>
+    <div class="automotive-alert-text floatleft"><b>{{ aAutomotive.total_30_number }}&nbsp;{{ 'common.total' | trans }}</b></div>
+    <div class="tradeline-history-empty-month status-2 floatleft">60</div>
+    <div class="automotive-alert-text floatleft"><b>{{ aAutomotive.total_60_number }}&nbsp;{{ 'common.total' | trans }}</b></div>
+    <div class="tradeline-history-empty-month status-3 floatleft">90</div>
+    <div class="automotive-alert-text floatleft"><b>{{ aAutomotive.total_90_number }}&nbsp;{{ 'common.total' | trans }}</b></div>
+    <div class="tradeline-history-empty-month status-8 floatleft">W</div>
+    <div class="automotive-alert-text floatleft"><b>{{ aAutomotive.total_worst_number }}&nbsp;{{ 'common.total' | trans }}</b></div>
+  </div>
+  <div class="clearboth"></div>
+  {% for aItem in aAutomotive.A4 %}
+    <div class="automotive-item col">
+      <div class="automotive-payment">
+        <span>{{ 'automotive.details.monthly_payment' | trans }}:</span><br>
+          <span class="payment-amount">${{ aItem.monthly_payment | number_format() }}</span>
+      </div>
+      <div class="automotive-details">
+        <span><b>{{ 'automotive.details.status' | trans }}:</b>&nbsp;{{ aItem.status }}</span><br>
+        <span><b>{{ 'automotive.details.financed' | trans }}:</b>&nbsp;${{ aItem.finance_amount | number_format() }}</span><br>
+        <span><b>{{ 'automotive.details.term' | trans }}:</b>&nbsp;{{ aItem.term }}&nbsp;{{ 'common.months' | trans }}</span><br>
+        <span><b>{{ 'automotive.details.months_left' | trans }}:</b>&nbsp;{{ aItem.remain }}</span>
+      </div>
+    </div>
+  {% endfor %}
+    <div class="clearboth"></div>
+</div>
+{% endif %}

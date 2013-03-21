@@ -1,0 +1,57 @@
+.automotive-header {
+  float: left;
+}
+
+.automotive-result {
+  float: right;
+  font-size: 16px;
+}
+
+.automotive-item {
+  background-color: #f3f3f3;
+  float: left;
+  margin: 10px 10px 0 0;
+  padding: 15px;
+  width: 400px;
+}
+
+.automotive-payment .payment-amount {
+  font-size: 28px;
+  font-weight: bold;
+  display: block;
+  padding-top: 20px;
+}
+
+.automotive-payment {
+  float: left;
+  font-weight: bold;
+  width: 140px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.automotive-details {
+  float: left;
+  width: 210px;
+  margin-left: 40px;
+  font-size: 12px;
+}
+
+.automotive-alert-sign {
+  background: url(/bundles/core/images/exclamation-point-red-icon.png) no-repeat;
+  height: 20px;
+  margin-right: 6px;
+  padding-top: 5px;
+  width: 20px;
+  margin-top: 7px;
+}
+
+.automotive-alert-text {
+  font-size: 18px;
+  padding-top: 7px;
+}
+
+.floatleft {
+  float: left;
+  margin-right: 5px;
+}

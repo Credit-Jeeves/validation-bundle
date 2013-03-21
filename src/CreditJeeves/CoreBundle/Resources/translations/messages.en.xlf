@@ -24,6 +24,42 @@
                 <target>Experian Online Dispute Portal</target>
             </trans-unit>
             
+            <trans-unit id="automotive.details.title">
+                <source>automotive.details.title</source>
+                <target>Automotive Details</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.open_balance">
+                <source>automotive.details.open_balance</source>
+                <target>Total Open Balance</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.monthly_payment_total">
+                <source>automotive.details.monthly_payment_total</source>
+                <target>Total Currently Monthly Payment</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.deliquencies">
+                <source>automotive.details.deliquencies</source>
+                <target>Deliquencies</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.monthly_payment">
+                <source>automotive.details.monthly_payment</source>
+                <target>Monthly Payment</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.status">
+                <source>automotive.details.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.financed">
+                <source>automotive.details.financed</source>
+                <target>Financed</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.term">
+                <source>automotive.details.term</source>
+                <target>Term</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.months_left">
+                <source>automotive.details.months_left</source>
+                <target>Months Left</target>
+            </trans-unit>
             
             
             
@@ -78,6 +114,10 @@
             <trans-unit id="common.amount">
                 <source>common.amount</source>
                 <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="common.months">
+                <source>common.months</source>
+                <target>Months</target>
             </trans-unit>
             
             
