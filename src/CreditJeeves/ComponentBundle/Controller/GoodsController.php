@@ -17,8 +17,14 @@ class GoodsController extends Controller
         $sType = $Group->getType();
         switch ($sType) {
             case Group::TYPE_VEHICLE:
-                $Make = $this->getUser()->getVehicle()->getMake();
-                $Model = $this->getUser()->getVehicle()->getModel();
+                $Make = null;
+                $Model = null;
+                $Vehicle = $this->getUser()->getVehicle();
+                if (!empty($Vehicle)) {
+                    $Make = $this->getUser()->getVehicle()->getMake();
+                    $Model = $this->getUser()->getVehicle()->getModel();
+                    
+                }
                 $sImageUrl = Vehicle::getAmazonVehicle($Make, $Model, $this->container);
                 $sLink = $Group->getWebsiteUrl();
                 return $this->render(

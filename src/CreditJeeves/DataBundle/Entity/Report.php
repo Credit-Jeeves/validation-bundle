@@ -9,6 +9,7 @@ use CreditJeeves\CoreBundle\Arf\ArfSummary;
 use CreditJeeves\CoreBundle\Arf\ArfTradelines;
 use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
 use CreditJeeves\CoreBundle\Arf\ArfInquiries;
+use CreditJeeves\CoreBundle\Arf\ArfPublicRecords;
 
 /**
  * @ORM\Entity
@@ -309,7 +310,7 @@ class Report
         $arfInquiries = new ArfInquiries($this->getArfArray());
         return $arfInquiries->getInquiries();
     }
-    
+
     /**
      * @return integer
      * @access public
@@ -317,5 +318,16 @@ class Report
     public function getCountApplicantInquiries()
     {
         return count($this->getApplicantInquiries());
-    }    
+    } 
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantPublicRecords()
+    {
+        $arfPublicRecords = new ArfPublicRecords($this->getArfArray());
+    
+        return $arfPublicRecords->getPublicRecords();
+    }
 }

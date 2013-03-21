@@ -75,6 +75,11 @@
                 <source>common.total</source>
                 <target>Total</target>
             </trans-unit>
+            <trans-unit id="common.amount">
+                <source>common.amount</source>
+                <target>Amount</target>
+            </trans-unit>
+            
             
             
             <trans-unit id="common.applicant.dashboard">
@@ -156,6 +161,18 @@
             <trans-unit id="inquiries.total">
                 <source>inquiries.total</source>
                 <target>Total Inquiries</target>
+            </trans-unit>
+            <trans-unit id="inquiries.regular.title">
+                <source>inquiries.regular.title</source>
+                <target>Regular Inquiries</target>
+            </trans-unit>
+            <trans-unit id="inquiries.regular.requested">
+                <source>inquiries.regular.requested</source>
+                <target>Requested On</target>
+            </trans-unit>
+            <trans-unit id="inquiries.regular.comment">
+                <source>inquiries.regular.comment</source>
+                <target>Companies listed here obtained information from your credit file for the purposes of a business transaction. They will remain on your file for 2 years</target>
             </trans-unit>
             <trans-unit id="inquiries.hard.header">
                 <source>inquiries.hard.header</source>
@@ -313,6 +330,30 @@
             </trans-unit>
             
             
+            <trans-unit id="public.records.comment">
+                <source>public.records.comment</source>
+                <target>Public actions such as bankruptcies, tax liens, small claims, civil claims and child support delinquencies are listed bellow. These generally remain on your file for 7 years.</target>
+            </trans-unit>
+            <trans-unit id="public.records.court">
+                <source>public.records.court</source>
+                <target>Court</target>
+            </trans-unit>
+            <trans-unit id="public.records.court_code">
+                <source>public.records.court_code</source>
+                <target>Court Code</target>
+            </trans-unit>
+            <trans-unit id="public.records.court_date">
+                <source>public.records.court_date</source>
+                <target>Date of Court Action</target>
+            </trans-unit>
+            <trans-unit id="public.records.reference">
+                <source>public.records.reference</source>
+                <target>Reference</target>
+            </trans-unit>
+            <trans-unit id="public.records.plaintiff">
+                <source>public.records.plaintiff</source>
+                <target>Plaintiff</target>
+            </trans-unit>
             
             
             <trans-unit id="loan.types.comment">
@@ -335,6 +376,10 @@
                 <target>Report</target>
             </trans-unit>
             
+            <trans-unit id="goods.vehicle.title">
+                <source>goods.vehicle.title</source>
+                <target>Your Dream Car</target>
+            </trans-unit>
             
             
         </body>

@@ -1,17 +1,14 @@
 {% if aInquiries | length > 0 %}
 <div class="pod-large pod-border pod-padding shadow">
     <div class="summary">
-        <h3>Regular Inquiries</h3>
-        <div class="inquiries-header">
-            Companies listed here obtained information from your credit file for the purposes of a business transaction.<br>
-            They will remain on your file for 2 years
-        </div>
+        <h3>{{ 'inquiries.regular.title' | trans }}</h3>
+        <div class="inquiries-header">{{ 'inquiries.regular.comment' | trans }}</div>
         {% for aInquiry in aInquiries %}
         <div class="inquiry-item">
             <span><b>{{ aInquiry.tr_subname }}</b></span><br>
             <span>{{ aInquiry.kob }}</span>
             <div class="request-details">
-                <span><b>Requested On:&nbsp;</b>{{ aInquiry.inquiry_date }}</span><br>
+                <span><b>{{ 'inquiries.regular.requested' | trans }}:&nbsp;</b>{{ aInquiry.inquiry_date }}</span><br>
             </div>
         </div>
         {% endfor %}

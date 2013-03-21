@@ -32,7 +32,7 @@ class TradelinesHistoryController extends Controller
             }
             if ($aTradeline['tr_state'] == 'C' && !in_array($aTradeline['tr_status'], array(93, 97))) {
                 $aClosedTradeLines[] = $aTradeline;
-                unset($aNegativeTradeLines[$nKey]);
+                unset($aNegativeTradelines[$nKey]);
             } else {
                 $aNegativeTradelines[$nKey] = $aTradeline;
             }
