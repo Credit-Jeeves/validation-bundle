@@ -1,1 +1,14 @@
 /* fix IE 8 */
+.shadow {
+    border: 1px solid #c8c8c8;
+}
+
+.pod-column-medium {
+    width: 0;
+    border: none;
+}
+
+.pod-column-big,
+.pod-column-middle {
+    width: 560px;
+}
