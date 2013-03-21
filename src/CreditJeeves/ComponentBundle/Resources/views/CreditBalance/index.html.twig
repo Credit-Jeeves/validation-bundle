@@ -1,23 +1,23 @@
 <div class="pod-large pod-border shadow">
   <div class="credit-balances-block credit-balances-left">
-    <h3>Credit Balances</h3>
-    <p class='pod-header'>
-      <span class="floatright">as of {{ sDate }}</span>
-      <strong class='bigbold'>Total: ${{ nTotal | number_format() }}</strong>
+    <h3>{{ 'component.credit_balance.header' | trans }}</h3>
+    <p class='credit-balance-title'>
+      <span class="floatright">{{ 'common.date' | trans }} {{ sDate }}</span>
+      <strong class='bigbold'>{{ 'common.total' | trans }}: ${{ nTotal | number_format() }}</strong>
     </p>
     <div class="zebra-grid">
-      <div class='header-smooth'>Balance for Loan Type:</div>
+      <div class='header-smooth'>{{ 'loan.type.balance' | trans }}:</div>
       <ul>
         <li>
-          Revolving Accounts
+          {{ 'loan.type.revolving' | trans }}
           <span class='amount'>${{ nRevolvingDept | number_format() }}</span>
         </li>
         <li>
-          Mortgages
+          {{ 'loan.type.mortgage' | trans }}
           <span class='amount'>${{ nMortgageDebt | number_format() }}</span>
         </li>
         <li>
-          Installment Loans
+          {{ 'loan.type.installment' | trans }}
           <span class='amount'>{{ nInstallmentDebt | number_format() }}</span>
         </li>
       </ul>
@@ -28,7 +28,7 @@
       <div class='rainbow-chart'>
         <span class='score-line score' style="right: {{ nRight }}px">{{ nCurrentScore }}</span>
       </div>
-      <div class='key score-text'>Your score is higher than {{ nPercent }} of the population.</div>
+      <div class='key score-text'>{{ 'component.credit_balance.comment' | trans | replace({'%nPercent%': nPercent}) }}</div>
   </div>
   <div class="clearboth"></div>
 </div>

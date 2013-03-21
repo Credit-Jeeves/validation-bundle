@@ -24,6 +24,42 @@
                 <target>Experian Online Dispute Portal</target>
             </trans-unit>
             
+            <trans-unit id="automotive.details.title">
+                <source>automotive.details.title</source>
+                <target>Automotive Details</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.open_balance">
+                <source>automotive.details.open_balance</source>
+                <target>Total Open Balance</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.monthly_payment_total">
+                <source>automotive.details.monthly_payment_total</source>
+                <target>Total Currently Monthly Payment</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.deliquencies">
+                <source>automotive.details.deliquencies</source>
+                <target>Deliquencies</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.monthly_payment">
+                <source>automotive.details.monthly_payment</source>
+                <target>Monthly Payment</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.status">
+                <source>automotive.details.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.financed">
+                <source>automotive.details.financed</source>
+                <target>Financed</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.term">
+                <source>automotive.details.term</source>
+                <target>Term</target>
+            </trans-unit>
+            <trans-unit id="automotive.details.months_left">
+                <source>automotive.details.months_left</source>
+                <target>Months Left</target>
+            </trans-unit>
             
             
             
@@ -63,6 +99,27 @@
                 <source>common.log_out</source>
                 <target>Log out</target>
             </trans-unit>
+            <trans-unit id="common.date">
+                <source>common.date</source>
+                <target>as of</target>
+            </trans-unit>
+            <trans-unit id="common.account">
+                <source>common.account</source>
+                <target>Account</target>
+            </trans-unit>
+            <trans-unit id="common.total">
+                <source>common.total</source>
+                <target>Total</target>
+            </trans-unit>
+            <trans-unit id="common.amount">
+                <source>common.amount</source>
+                <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="common.months">
+                <source>common.months</source>
+                <target>Months</target>
+            </trans-unit>
+            
             
             
             <trans-unit id="common.applicant.dashboard">
@@ -70,12 +127,32 @@
                 <target>Applicant Dashboard</target>
             </trans-unit>
             
+            <trans-unit id="loan.type.balance">
+                <source>loan.type.balance</source>
+                <target>Balance for Loan Type</target>
+            </trans-unit>
+            <trans-unit id="loan.type.revolving">
+                <source>loan.type.revolving</source>
+                <target>Revolving Accounts</target>
+            </trans-unit>
+            <trans-unit id="loan.type.mortgage">
+                <source>loan.type.mortgage</source>
+                <target>Mortgages</target>
+            </trans-unit>
+            <trans-unit id="loan.type.installment">
+                <source>loan.type.installment</source>
+                <target>Installment Loans</target>
+            </trans-unit>
             
             
 
             <trans-unit id="account.total">
                 <source>account.total</source>
                 <target>Total Accounts</target>
+            </trans-unit>
+            <trans-unit id="account.total.past_due">
+                <source>account.total.past_due</source>
+                <target>Total Past Due</target>
             </trans-unit>
             <trans-unit id="account.good.total">
                 <source>account.good.total</source>
@@ -96,6 +173,10 @@
             <trans-unit id="account.satisfactory">
                 <source>account.satisfactory</source>
                 <target>Satisfactory Accounts</target>
+            </trans-unit>
+            <trans-unit id="account.late">
+                <source>account.late</source>
+                <target>Late Accounts</target>
             </trans-unit>
 
 
@@ -120,6 +201,18 @@
             <trans-unit id="inquiries.total">
                 <source>inquiries.total</source>
                 <target>Total Inquiries</target>
+            </trans-unit>
+            <trans-unit id="inquiries.regular.title">
+                <source>inquiries.regular.title</source>
+                <target>Regular Inquiries</target>
+            </trans-unit>
+            <trans-unit id="inquiries.regular.requested">
+                <source>inquiries.regular.requested</source>
+                <target>Requested On</target>
+            </trans-unit>
+            <trans-unit id="inquiries.regular.comment">
+                <source>inquiries.regular.comment</source>
+                <target>Companies listed here obtained information from your credit file for the purposes of a business transaction. They will remain on your file for 2 years</target>
             </trans-unit>
             <trans-unit id="inquiries.hard.header">
                 <source>inquiries.hard.header</source>
@@ -164,6 +257,10 @@
                 <target>Public Records</target>
             </trans-unit>
 
+            <trans-unit id="component.account_status.header">
+                <source>component.account_status.header</source>
+                <target>Status of Accounts used in This Simulation</target>
+            </trans-unit>
             <trans-unit id="component.credit.summary">
                 <source>component.credit.summary</source>
                 <target>Credit Summary</target>
@@ -203,6 +300,14 @@
             <trans-unit id="component.address.previous">
                 <source>component.address.previous</source>
                 <target>Previous Address</target>
+            </trans-unit>
+            <trans-unit id="component.credit_balance.header">
+                <source>component.credit_balance.header</source>
+                <target>Credit Balances</target>
+            </trans-unit>
+            <trans-unit id="component.credit_balance.comment">
+                <source>component.credit_balance.comment</source>
+                <target>Your score is higher than %nPercent% of the population.</target>
             </trans-unit>
             
             
@@ -265,6 +370,30 @@
             </trans-unit>
             
             
+            <trans-unit id="public.records.comment">
+                <source>public.records.comment</source>
+                <target>Public actions such as bankruptcies, tax liens, small claims, civil claims and child support delinquencies are listed bellow. These generally remain on your file for 7 years.</target>
+            </trans-unit>
+            <trans-unit id="public.records.court">
+                <source>public.records.court</source>
+                <target>Court</target>
+            </trans-unit>
+            <trans-unit id="public.records.court_code">
+                <source>public.records.court_code</source>
+                <target>Court Code</target>
+            </trans-unit>
+            <trans-unit id="public.records.court_date">
+                <source>public.records.court_date</source>
+                <target>Date of Court Action</target>
+            </trans-unit>
+            <trans-unit id="public.records.reference">
+                <source>public.records.reference</source>
+                <target>Reference</target>
+            </trans-unit>
+            <trans-unit id="public.records.plaintiff">
+                <source>public.records.plaintiff</source>
+                <target>Plaintiff</target>
+            </trans-unit>
             
             
             <trans-unit id="loan.types.comment">
@@ -287,6 +416,10 @@
                 <target>Report</target>
             </trans-unit>
             
+            <trans-unit id="goods.vehicle.title">
+                <source>goods.vehicle.title</source>
+                <target>Your Dream Car</target>
+            </trans-unit>
             
             
         </body>

@@ -2,21 +2,22 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Entity\Report;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class ReportSummaryController extends Controller
 {
-    public function indexAction()
+    /**
+     * @Template()
+     * @param \Report $Report
+     */
+    public function indexAction(Report $Report)
     {
-        $cjUser    = $this->getUser();
-        $Report    = $cjUser->getReportsPrequal()->last();
         $sDate     = $Report->getCreatedAt()->format('M j, Y');
         $aCreditSummary = $Report->getCreditSummary();
-        return $this->render(
-            'ComponentBundle:ReportSummary:index.html.twig',
-            array(
+        return array(
                 'sDate' => $sDate,
                 'aCreditSummary' => $aCreditSummary,
-                )
             );
     }
 }

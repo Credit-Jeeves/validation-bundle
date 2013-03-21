@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="column-middle floatleft">
-        {{ render(controller('ComponentBundle:PersonalInfo:index')) }}
+        {{ render(controller('ComponentBundle:PersonalInfo:index', {'Report': Report})) }}
     </div>
     <div class="column-small floatright">
         {{ render(controller('ComponentBundle:Questions:index')) }}
@@ -12,8 +12,11 @@
     <div class="clearboth"></div>
     <div class="row-20"></div>
     <div class="column-large">
-        {{ render(controller('ComponentBundle:ReportSummary:index')) }}
+        {{ render(controller('ComponentBundle:ReportSummary:index', {'Report': Report})) }}
         <div class="row-20"></div>
-        {{ render(controller('ComponentBundle:TradelinesHistory:index')) }}
+        {{ render(controller('ComponentBundle:TradelinesHistory:index', {'Report': Report})) }}
+        {{ render(controller('ComponentBundle:AutomotiveDetails:index', {'Report': Report})) }}
+        {{ render(controller('ComponentBundle:RegularInquiries:index', {'Report': Report})) }}
+        {{ render(controller('ComponentBundle:PublicRecords:index', {'Report': Report})) }}
     </div>
 {% endblock %}

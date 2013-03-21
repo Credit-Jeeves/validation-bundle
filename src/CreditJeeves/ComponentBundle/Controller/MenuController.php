@@ -20,6 +20,7 @@ class MenuController extends Controller
     {
         $nCountReports = $this->getUser()->getReportsD2c()->count();
         $sRouteName = $this->getRequest()->get('_route');
+        //echo $sRouteName;
         return array(
             'sRouteName' => $sRouteName,
             'nReport' => $nCountReports

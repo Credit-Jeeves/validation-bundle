@@ -2,13 +2,17 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Entity\Report;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class TradelinesHistoryController extends Controller
 {
-    public function indexAction()
+    /**
+     * @Template()
+     * @param \Report $Report
+     */
+    public function indexAction(Report $Report)
     {
-        $Report    = $this->getUser()->getReportsPrequal()->last();
-        
         $aNegativeTradelines     = $Report->getApplicantNegativeTradeLines();
         $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
         $aDirectCheck            = $Report->getApplicantDirectCheck();
@@ -28,7 +32,7 @@ class TradelinesHistoryController extends Controller
             }
             if ($aTradeline['tr_state'] == 'C' && !in_array($aTradeline['tr_status'], array(93, 97))) {
                 $aClosedTradeLines[] = $aTradeline;
-                unset($aNegativeTradeLines[$nKey]);
+                unset($aNegativeTradelines[$nKey]);
             } else {
                 $aNegativeTradelines[$nKey] = $aTradeline;
             }
@@ -48,14 +52,11 @@ class TradelinesHistoryController extends Controller
                 $aSatisfactoryTradelines[$nKey] = $aTradeline;
             }
         }
-        return $this->render(
-            'ComponentBundle:TradelinesHistory:index.html.twig',
-            array(
+        return array(
                 'aNegativeTradelines' => $aNegativeTradelines,
                 'aSatisfactoryTradelines' => $aSatisfactoryTradelines,
                 'aClosedTradelines' => $aClosedTradelines,
                 'aMonthes' => $aMonthes,
-                )
             );
     }
 }

@@ -16,7 +16,11 @@ class ReportController extends Controller
      */
     public function indexAction()
     {
+        $Report = $this->getUser()->getReportsD2c()->last();
         $sEmail = $this->getUser()->getEmail();
-        return array('sEmail' => $sEmail);
+        return array(
+            'sEmail' => $sEmail,
+            'Report' => $Report,
+            );
     }
 }
