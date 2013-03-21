@@ -1,16 +1,20 @@
 <?php
 namespace CreditJeeves\ComponentBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Lead;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\DataBundle\Entity\Report;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class ScoreController extends Controller
 {
-    public function indexAction()
+    /**
+     * @Template()
+     * @param \CreditJeeves\DataBundle\Entity\Lead $Lead
+     */
+    public function indexAction(\CreditJeeves\DataBundle\Entity\Lead $Lead)
     {
+        $nTargetScore = $Lead->getTargetScore() ? $Lead->getTargetScore() : 0;
         $cjUser = $this->getUser();
-        $cjLead = $cjUser->getLeads()->last();
-        $nTargetScore = $cjLead->getTargetScore();
         $aScores = $cjUser->getScores();
         
         $chartData = array();
@@ -27,16 +31,13 @@ class ScoreController extends Controller
         $nFicoScore = $cjUser->getScores()->last()->getFicoScore();
         $sDate = $cjUser->getScores()->last()->getCreatedDate()->format('M d, Y');
         $nTop = intval((850 - $nTargetScore) * 171 / 600);
-        return $this->render(
-            'ComponentBundle:Score:index.html.twig',
-            array(
+        return array(
                 'chartData' => $chartData,
                 'nScore' => $nScore,
                 'nFicoScore' => $nFicoScore,
                 'nTargetScore' => $nTargetScore,
                 'nTop' => $nTop,
                 'sDate' => $sDate,
-               )
            );
     }
 }

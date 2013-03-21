@@ -54,13 +54,13 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     {
         //$this->get('session')->
         // we'll count user's leads
-        $nLeads = $cjUser->getLeads()->count();
-        if ($nLeads > 1) {
+//         $nLeads = $cjUser->getActiveLead()->count();
+//         if ($nLeads > 1) {
             
-        }
-        $nReports = $cjUser->getReportsPrequal()->count();
-        if (empty($nReports)) {
+//         }
+//         $nReports = $cjUser->getReportsPrequal()->count();
+//         if (empty($nReports)) {
             
-        }
+//         }
     }
 }

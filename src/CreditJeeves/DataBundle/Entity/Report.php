@@ -8,7 +8,9 @@ use CreditJeeves\CoreBundle\Arf\ArfReport;
 use CreditJeeves\CoreBundle\Arf\ArfSummary;
 use CreditJeeves\CoreBundle\Arf\ArfTradelines;
 use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
-
+use CreditJeeves\CoreBundle\Arf\ArfInquiries;
+use CreditJeeves\CoreBundle\Arf\ArfPublicRecords;
+use CreditJeeves\CoreBundle\Arf\ArfAutomotiveDetails;
 
 /**
  * @ORM\Entity
@@ -297,5 +299,45 @@ class Report
             $aEmployments = $aResult;
         }
         return $aEmployments;
+    }
+
+    
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantInquiries()
+    {
+        $arfInquiries = new ArfInquiries($this->getArfArray());
+        return $arfInquiries->getInquiries();
+    }
+
+    /**
+     * @return integer
+     * @access public
+     */
+    public function getCountApplicantInquiries()
+    {
+        return count($this->getApplicantInquiries());
+    } 
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantPublicRecords()
+    {
+        $arfPublicRecords = new ArfPublicRecords($this->getArfArray());
+        return $arfPublicRecords->getPublicRecords();
+    }
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantAutomotiveDetails()
+    {
+        $arfAutomotiveDetails = new ArfAutomotiveDetails($this->getArfArray());
+        return $arfAutomotiveDetails->getAutomotiveDetails();
     }
 }

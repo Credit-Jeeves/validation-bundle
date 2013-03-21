@@ -1,0 +1,41 @@
+{% if aRecords | length > 0 %}
+<div class="row-20"></div>
+<div class="pod-large pod-border pod-padding shadow">
+    <div class="summary">
+        <h3>{{ 'records.public.total' | trans }}</h3>
+        <div class="inquiries-header">
+            {{ 'public.records.comment' | trans }}
+        </div>
+        {% for aRecord in aRecords %}
+        <div class="public-record-item">
+            <span><b>{{ aRecord.status }}</b></span><br>
+            <div class="public-record-details">
+                <span><b>{{ 'public.records.court' | trans }}:&nbsp;</b>{{ aRecord.court_name }}</span><br>
+            </div>
+            <div class="public-record-details">
+                <span><b>{{ 'public.records.court_code' | trans }}:&nbsp;</b>{{ aRecord.court_code }}</span><br>
+            </div>
+            {% if aRecord.reference_number is defined %}
+            <div class="public-record-details">
+                <span><b>{{ 'public.records.reference' | trans }} #:&nbsp;</b>{{ aRecord.reference_number }}</span><br>
+            </div>
+            {% endif %}
+            {% if aRecord.plaintiff_name is defined %}
+            <div class="public-record-details">
+                <span><b>{{ 'public.records.plaintiff' | trans }}:&nbsp;</b>{{ aRecord.plaintiff_name }}</span><br>
+            </div>
+            {% endif %}
+            {% if aRecord.amount is defined %}
+            <div class="public-record-details">
+                <span><b>{{ 'common.amount' | trans }}:&nbsp;</b>${{ aRecord.amount | number_format() }}</span><br>
+            </div>
+            {% endif %}
+            <div class="public-record-details">
+                <span><b>{{ 'public.records.court_date' | trans }}:&nbsp;</b>{{ aRecord.status_date }}</span><br>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="clearboth"></div>
+</div>
+{% endif %}

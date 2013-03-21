@@ -1,7 +1,26 @@
-{% block stylesheets %}
-    <link href="{{ asset('bundles/component/css/account-status.css') }}" rel="stylesheet" type="text/css" />
-{% endblock %}
-
-<div class="pod-middle pod-border shadow">
-    ****
+<div class="pod-middle pod-border pod-padding shadow">
+    <h3>{{ 'component.account_status.header' | trans }}</h3>
+    <p class="account-status-title">
+    <span class="floatright">{{ 'common.date' | trans }} {{ sReportDate }}</span>
+    <strong class='bigbold'>{{ 'account.total.past_due' | trans }}: <span class="{% if TotalPastDue > 0 %}red{% else %}green{% endif %}">${{ TotalPastDue | number_format() }}</span></strong>
+    <strong class='bigbold'>{{ 'account.late' | trans }}: <span class="{% if LateCounter > 0 %}red{% else %}green{% endif %}">{{ LateCounter }}</span></strong>
+    <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133573-account-status-">{{ 'common.learn.more' | trans }}</a>
+  </p>
+  <div class='grid-pod zebra-grid'>
+    <div class='header-smooth'>{{ 'common.account' | trans }}:</div>
+    <ul>
+      {% for aTradeline in aTradelines %}
+      <li>
+        {{ aTradeline.bank}} {{ aTradeline.account }}
+        <span class='amount{% if aTradeline.status == 'Current' %} green{% else %} red{% endif %}'>{{ aTradeline.status }}</span>
+      </li>
+      {% endfor %}
+      {% for aTradeline in aClosed %}
+      <li>
+        {{ aTradeline.bank}} {{ aTradeline.account }}
+        <span class='amount grey'>Closed</span>
+      </li>
+      {% endfor %}
+      </ul>
+  </div>
 </div>

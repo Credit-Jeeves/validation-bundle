@@ -65,12 +65,25 @@ class Lead
     protected $updated_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="leads")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="user_leads")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="dealer_leads")
+     * @ORM\JoinColumn(name="cj_account_id", referencedColumnName="id")
+     */
+    protected $dealer;
+    
 
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="leads")
+     * @ORM\JoinColumn(name="cj_group_id", referencedColumnName="id")
+     */
+    protected $group;
+
+    
     /**
      * Get id
      *
@@ -309,5 +322,51 @@ class Lead
     public function getUser()
     {
         return $this->User;
+    }
+
+    /**
+     * Set group
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @return Lead
+     */
+    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set dealer
+     *
+     * @param \CreditJeeves\UserBundle\Entity\User $dealer
+     * @return Lead
+     */
+    public function setDealer(\CreditJeeves\UserBundle\Entity\User $dealer = null)
+    {
+        $this->dealer = $dealer;
+
+        return $this;
+    }
+
+    /**
+     * Get dealer
+     *
+     * @return \CreditJeeves\UserBundle\Entity\User 
+     */
+    public function getDealer()
+    {
+        return $this->dealer;
     }
 }

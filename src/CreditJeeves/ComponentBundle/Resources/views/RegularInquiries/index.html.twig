@@ -1,0 +1,19 @@
+{% if aInquiries | length > 0 %}
+<div class="row-20"></div>
+<div class="pod-large pod-border pod-padding shadow">
+    <div class="summary">
+        <h3>{{ 'inquiries.regular.title' | trans }}</h3>
+        <div class="inquiries-header">{{ 'inquiries.regular.comment' | trans }}</div>
+        {% for aInquiry in aInquiries %}
+        <div class="inquiry-item">
+            <span><b>{{ aInquiry.tr_subname }}</b></span><br>
+            <span>{{ aInquiry.kob }}</span>
+            <div class="request-details">
+                <span><b>{{ 'inquiries.regular.requested' | trans }}:&nbsp;</b>{{ aInquiry.inquiry_date }}</span><br>
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    <div class="clearboth"></div>
+</div>
+{% endif %}

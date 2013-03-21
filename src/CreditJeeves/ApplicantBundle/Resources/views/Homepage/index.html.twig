@@ -4,10 +4,10 @@
 
 {% block content %}
     <div class="column-middle floatleft">
-        {{ render(controller('ComponentBundle:Score:index')) }}
+        {{ render(controller('ComponentBundle:Score:index', {'Lead': Lead})) }}
     </div>
     <div class="column-small floatright">
-        {{ render(controller('ComponentBundle:Goods:index')) }}
+        {{ render(controller('ComponentBundle:Goods:index', {'Lead': Lead})) }}
     </div>
     <div class="clearboth"></div>
     <div class="row-20"></div>
@@ -18,7 +18,7 @@
     </div>
     <div class="row-20"></div>
     <div class="column-middle floatleft">
-        {{ render(controller('ComponentBundle:AccountStatus:index')) }}
+        {{ render(controller('ComponentBundle:AccountStatus:index', {'Report': Report})) }}
     </div>
     <div class="column-small floatright">
         {{ render(controller('ComponentBundle:DidYouKnow:index')) }}

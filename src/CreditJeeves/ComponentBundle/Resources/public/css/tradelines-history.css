@@ -228,6 +228,7 @@
   float: left;
   margin-left: 20px;
   font-size: 12px;
+  line-height: 20px;
 }
 
 .tradeline-highest-balance, .tradeline-last-payment {

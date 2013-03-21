@@ -3,12 +3,16 @@ namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\DataBundle\Entity\Report;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class PersonalInfoController extends Controller
 {
-    public function indexAction()
+    /**
+     * @Template()
+     * @param \Report $Report
+     */
+    public function indexAction(Report $Report)
     {
-        $Report     = $this->getUser()->getReportsD2c()->last();
         $sSSN       = $this->getUser()->displaySsn();
         $sDOB       = $this->getUser()->getDateOfBirth()->format("F j, Y");
         $sName      = $Report->getApplicantName();
@@ -19,17 +23,13 @@ class PersonalInfoController extends Controller
         }
         $aAddress     = empty($aAddresses) ? array() : array_shift($aAddresses);
         $aEmployments = $Report->getApplicantEmployments();
-        
-        return $this->render(
-            'ComponentBundle:PersonalInfo:index.html.twig',
-            array(
+        return array(
                 'sName' => $sName,
                 'aAddresses' => $aAddresses,
                 'aAddress' => $aAddress,
                 'aEmployments' => $aEmployments,
                 'sSSN' => $sSSN,
                 'sDOB' => $sDOB,
-               )
            );
     }
 }
