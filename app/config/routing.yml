@@ -1,6 +1,6 @@
-component:
-    resource:   "@ComponentBundle/Controller"
-    type:       annotation
+#component:
+#    resource:   "@ComponentBundle/Controller"
+#    type:       annotation
 
 core:
     resource:   "@CoreBundle/Controller"

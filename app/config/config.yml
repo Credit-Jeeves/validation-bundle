@@ -4,8 +4,8 @@ imports:
 
 framework:
     #esi:             ~
-    translator:      { fallback: %locale% }
-    secret:          %secret%
+    translator:      { fallback: en }
+    secret:          50d18dbac33bbebe9fdd694d1d06d55499ce6d9v
     router:
         resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: %kernel.debug%
@@ -13,7 +13,7 @@ framework:
     csrf_protection: true
     validation:      { enable_annotations: true }
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
-    default_locale:  "%locale%"
+    default_locale:  "en"
     trusted_proxies: ~
     session:         ~
     #router_proxy:   { path: /_proxy }
@@ -46,10 +46,6 @@ doctrine:
         user:     %database_user%
         password: %database_password%
         charset:  UTF8
-        # if using pdo_sqlite as your database driver, add the path in parameters.yml
-        # e.g. database_path: %kernel.root_dir%/data/data.db3
-        # path:     %database_path%
-
     orm:
         auto_generate_proxy_classes: %kernel.debug%
         auto_mapping: true
@@ -67,3 +63,10 @@ fos_user:
     db_driver: orm 
     firewall_name: main
     user_class: CreditJeeves\UserBundle\Entity\User
+
+jms_di_extra:
+    locations:
+        all_bundles: true
+    automatic_controller_injections:
+        method_calls:
+            setContainer: ["@service_container"]

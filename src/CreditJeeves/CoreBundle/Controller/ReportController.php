@@ -4,6 +4,8 @@ namespace CreditJeeves\CoreBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use JMS\DiExtraBundle\Annotation as DI;
+use CreditJeeves\CoreBundle\Experian\NetConnect;
 
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
@@ -12,6 +14,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class ReportController extends Controller
 {
     /**
+     * @var NetConnect
+     */
+    protected $netConnect;
+
+    /**
      * @Route("/get", name="core_report_get")
      * @Template()
      *
@@ -19,7 +26,17 @@ class ReportController extends Controller
      */
     public function getAction()
     {
-        $sEmail = $this->getUser()->getEmail();
-        return array('sEmail' => $sEmail);
+//        $this->netConnect->execute();
+        return array();
+    }
+
+    /**
+     * @DI\InjectParams({
+     *     "netConnect" = @DI\Inject("core.experian.net_connect")
+     * })
+     */
+    public function setNetConnect(NetConnect $netConnect)
+    {
+        $this->netConnect = $netConnect;
     }
 }

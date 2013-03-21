@@ -14,7 +14,7 @@ Installation
 git clone ... FOLDER
 cd FOLDER
 php bin/composer.phar install
-php bin/environment.php --live
+php bin/environment.php --prod
 ```
 
 Possible params for environment.php --help or in the file /data/environment/profiles.ini

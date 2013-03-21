@@ -1,7 +1,6 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "minimum-stability": "dev",
     "version": "2.0",
     "authors": [
         {
@@ -73,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "36fb3ffbdb94ac18f994d878cbcc7f72241e69ce"
+                    "reference": "8fc49d524eda836d09bd0e715f3f23553bf523c3"
                 }
             }
         },
@@ -92,6 +91,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/environment.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/66Ton99/environment"
         }
     ],
     "require": {
@@ -110,10 +113,11 @@
         "lib-curl": "*",
         "lib-openssl": "*",
         "CreditJeevesSf1": "dev-master",
-        "symfony/symfony": "2.2.x-dev",
+        "symfony/symfony": "2.2.*",
         "doctrine/orm": "~2.2,>=2.2.3",
-        "doctrine/doctrine-bundle": "1.2.*",
+        "doctrine/doctrine-bundle": "v1.2.0-beta1",
         "twig/extensions": "1.0.*",
+        "kriswallsmith/assetic": "1.1.x-dev",
         "symfony/assetic-bundle": "2.1.*",
         "symfony/swiftmailer-bundle": "2.2.*",
         "symfony/monolog-bundle": "2.2.*",
@@ -123,13 +127,13 @@
         "jms/security-extra-bundle": "1.4.*",
         "jms/di-extra-bundle": "1.3.*",
         "friendsofsymfony/user-bundle": "dev-master",
-        "payum/payum": "dev-master as 0.1.1",
-        "payum/payum-bundle": "dev-master",
-        "payum/paypal-pro-checkout-nvp": "dev-master",
+        "payum/payum": "0.3.*",
+        "payum/payum-bundle": "0.3.*",
+        "payum/authorize-net-aim": "0.3.*",
         "hat/environment": "dev-master"
     },
     "require-dev": {
-        "doctrine/data-fixtures": "1.0.*",
+        "doctrine/data-fixtures": "1.0.x-dev",
         "qunit": "v1",
         "envjs": "v1",
         "sinon": "1.5.0",
@@ -159,7 +163,7 @@
         "symfony-web-dir": "web",
         "symfony-assets-install": "symlink",
         "branch-alias": {
-            "dev-master": "2.3-dev"
+            "dev-master": "2.2-dev"
         }
     }
 }
