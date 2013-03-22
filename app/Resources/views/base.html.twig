@@ -22,8 +22,8 @@
         </style>
    <![endif]-->
    <!--[if lte IE 8]>
-	<link rel="stylesheet" type="text/css" href="{{ asset('bundles/core/css/main-ie-8.css') }}" />
-<![endif]-->
+       <link rel="stylesheet" type="text/css" href="{{ asset('bundles/core/css/main-ie-8.css') }}" />
+   <![endif]-->
 </head>
 <body>
     {% include 'CoreBundle:Lightbox:index.html.twig' only %}
@@ -40,8 +40,10 @@
     <div class="header-tabs">{% block tabs %}{% endblock %}</div>
 </div>
 <div class="clearboth"></div>
+<div class="section">
 <div class="body gradient">
     <div class="content border">{% block content %}{% endblock %}</div>
+</div>
 </div>
 <div class="footer">
     <div class="footer-info"></div>
