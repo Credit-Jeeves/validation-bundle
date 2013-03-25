@@ -26,7 +26,9 @@ class ReportController extends Controller
      */
     public function getAction()
     {
-//        $this->netConnect->execute();
+        require_once __DIR__.'/../sfConfig.php';
+        \sfConfig::fill($this->container->getParameter('experian'), 'global_experian');
+        $this->netConnect->execute();
         return array();
     }
 
