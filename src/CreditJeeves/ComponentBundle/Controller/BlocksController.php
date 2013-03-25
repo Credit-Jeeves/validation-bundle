@@ -5,7 +5,7 @@ namespace CreditJeeves\ComponentBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-class ElementsController extends Controller
+class BlocksController extends Controller
 {
     /**
      * @Template
