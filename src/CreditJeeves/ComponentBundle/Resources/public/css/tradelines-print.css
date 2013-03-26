@@ -1,6 +1,24 @@
-.tradeline-legend {
+/* Hide some elements */
+header,
+footer,
+.tradeline-legend-link,
+.tradeline-legend,
+.button-print,
+.pod-x-small
+{
   display: none;
 }
+
+ul {
+  list-style: none outside none;
+}
+
+.personal-column,
+.scroller
+{
+    margin-right: 5px;
+}
+
 .tradeline-history-text {
   float: left;
   font-family: astoriamedium;
@@ -19,11 +37,6 @@
   border-top: 1px solid #c8c8c8;
   margin-bottom: 15px;
   padding-top: 15px;
-}
-
-.tradeline-amount {
-    float: right;
-    text-align: right;
 }
 
 .tradeline-name {
@@ -49,18 +62,6 @@
   color: white;
   font-weight: bold;
   text-align: center;
-}
-
-.tradeline-O {
-  background-color: #6faf00;
-}
-
-.tradeline-C {
-  background-color: #999999;
-}
-
-.tradeline-red {
-  background-color: #af0001;
 }
 
 .tradeline-balance {
@@ -99,16 +100,6 @@
 }
 
 .tradeline-history-body {
-  background-color: #f3f3f3;
-  padding: 20px; /*width: 460px;*/
-}
-
-@media print {
-.tradeline-history-body {
-  background-color: #f3f3f3;
-  padding: 5px; /*width: 460px;*/
-}
-
 }
 
 .tradeline-history-year {
@@ -143,83 +134,6 @@
   color: white;
 }
 
-/** History Status Legend **/
-.status-0 {
-  background-color: #999999;
-}
-
-.status-1 {
-  background-color: #fe9900;
-}
-
-.status-2 {
-  background-color: #ff6700;
-}
-
-.status-3 {
-  background-color: #af0001;
-}
-
-.status-4 {
-  background-color: #af0001;
-}
-
-.status-5 {
-  background-color: #af0001;
-}
-
-.status-6 {
-  background-color: #af0001;
-}
-
-.status-7 {
-  background-color: #333333;
-}
-
-.status-8 {
-  background-color: #333333;
-}
-
-.status-9 {
-  background-color: #333333;
-}
-
-.status-B {
-  background-color: green;
-}
-
-.status-C {
-  background-color: #6faf01;
-}
-
-.status-G {
-  background-color: #333333;
-}
-
-.status-H {
-  background-color: #333333;
-}
-
-.status-J {
-  background-color: #333333;
-}
-
-.status-K {
-  background-color: #333333;
-}
-
-.status-L {
-  background-color: #333333;
-}
-
-.status-N {
-  background-color: #999999;
-}
-
-.status-- {
-  background-color: #999999;
-}
-
 /** details block **/
 .tradeline-details .creditor-contact {
   margin-top: 10px;
@@ -233,10 +147,9 @@
 
 .tradeline-details {
   width: 155px;
-  float: right;
+  float: left;
   margin-left: 20px;
   font-size: 12px;
-  line-height: 20px;
 }
 
 .tradeline-highest-balance, .tradeline-last-payment {
@@ -248,4 +161,13 @@
 .tradeline-highest-balance .amount, .tradeline-last-payment .amount {
   float: right;
   text-align: right;
+}
+
+.clear {
+  clear: both;
+}
+
+.floatleft {
+    float: left;
+    margin-right: 5px;
 }
