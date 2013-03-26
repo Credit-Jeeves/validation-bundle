@@ -123,6 +123,10 @@
                 <source>common.messages</source>
                 <target>Messages</target>
             </trans-unit>
+            <trans-unit id="common.rights">
+                <source>common.rights</source>
+                <target>Your Rights</target>
+            </trans-unit>
             
             
             
