@@ -35,9 +35,10 @@ class ReportController extends Controller
      */
     public function getAction()
     {
-        $this->getArf();
-        die('OK');
-//        return array('url' => $this->generateUrl('core_report_get_ajax'));
+        return array(
+            'url' => $this->generateUrl('core_report_get_ajax'),
+            'redirect' => $this->getRequest()->headers->get('referer')
+        );
     }
 
     protected function getArf()
@@ -49,10 +50,10 @@ class ReportController extends Controller
         return $this->netConnect->getResponseOnUserData($this->getUser());
     }
 
-    protected function saveArf($arfString)
+    protected function saveArf()
     {
         $report = new ReportPrequal();
-        $report->setRawData($arfString);
+        $report->setRawData($this->getArf());
         $report->setUser($this->getUser());
         $em = $this->getDoctrine()->getManager();
         $em->persist($report);
@@ -78,13 +79,13 @@ class ReportController extends Controller
             set_time_limit(90);
             if (!$session->get('cjIsArfProcessing', false)) {
                 $session->set('cjIsArfProcessing', true);
-//                try {
-                    $this->saveArf($this->getArf());
-//                } catch (\Exception $e) {
+                try {
+                    $this->saveArf();
+                } catch (\Exception $e) {
+                    $session->set('cjIsArfProcessing', false);
 //                        fpErrorNotifier::getInstance()->handler()->handleException($e);
                     return new JsonResponse('fatal error');
-//                }
-                $session->set('cjIsArfProcessing', false);
+                }
                 return new JsonResponse('finished');
             }
             return new JsonResponse('processing');

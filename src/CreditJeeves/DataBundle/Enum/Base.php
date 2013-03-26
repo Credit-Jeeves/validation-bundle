@@ -188,11 +188,11 @@ abstract class Base extends Type
     /**
      * Get reflection class
      *
-     * @return ReflectionClass
+     * @return \ReflectionClass
      */
     protected static function getRC()
     {
-        return new ReflectionClass(get_called_class());
+        return new \ReflectionClass(get_called_class());
     }
 
     /**

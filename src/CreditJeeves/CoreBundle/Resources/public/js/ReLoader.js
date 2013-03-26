@@ -1,7 +1,7 @@
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-function ReLoader($url) {
+function ReLoader($url, $redirect) {
     var timeoutId = false;
     var nDelay = 3000; // 3 seconds;
 

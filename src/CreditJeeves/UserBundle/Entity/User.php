@@ -9,7 +9,6 @@ use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Vehicle;
-use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
@@ -42,12 +41,12 @@ class User extends BaseUser
     protected $last_name;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="encrypt")
      */
     protected $street_address1;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="encrypt")
      */
     protected $street_address2;
 
@@ -82,7 +81,7 @@ class User extends BaseUser
     protected $date_of_birth;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="encrypt")
      */
     protected $ssn;
 
@@ -373,9 +372,7 @@ class User extends BaseUser
      */
     public function setSsn($ssn)
     {
-        $Utility = new Encryption();
-        $this->ssn = base64_encode(\cjEncryptionUtility::encrypt($ssn));
-        
+        $this->ssn = $ssn;
         return $this;
     }
 
@@ -384,11 +381,7 @@ class User extends BaseUser
      */
     public function getSsn()
     {
-        $Utility = new Encryption();
-        $encValue = $this->ssn;
-        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
-        
-        return $value === false ? $encValue : $value;
+        return $this->ssn;
     }
 
     /**

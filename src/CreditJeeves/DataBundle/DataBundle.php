@@ -12,6 +12,7 @@ class DataBundle extends Bundle
      */
     public function boot()
     {
+        Type::addType('encrypt', 'CreditJeeves\DataBundle\Type\Encrypt');
         Type::addType('ReportTypeEnum', 'CreditJeeves\DataBundle\Enum\ReportTypeEnum');
     }
 }

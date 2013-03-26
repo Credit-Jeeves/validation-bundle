@@ -2,7 +2,6 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Entity\cjEncryptionUtility;
 
 /**
  * @ORM\Entity
