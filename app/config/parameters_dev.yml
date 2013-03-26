@@ -2,9 +2,12 @@ imports:
     - { resource: parameters_dev_base.yml }
 
 parameters:
-  database_name: credit_jeeves2
-  database_user: credit_jeeves
-  database_password: 'passw0rd'
+    database_name: credit_jeeves2
+    database_user: credit_jeeves
+    database_password: 'passw0rd'
 
 
-  host: dev2.creditjeeves.com
+    host: dev2.creditjeeves.com
+    server_name: cj2
+    support_email: help@creditjeeves.com
+    support_phone: (866)-976-6622

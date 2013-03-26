@@ -18,9 +18,13 @@ class ReportController extends Controller
     {
         $Report = $this->getUser()->getReportsD2c()->last();
         $sEmail = $this->getUser()->getEmail();
+        $sSupportEmail = $this->container->getParameter('support_email');
+        $sSupportPhone = $this->container->getParameter('support_phone');
         return array(
             'sEmail' => $sEmail,
             'Report' => $Report,
+            'sSupportEmail' => $sSupportEmail,
+            'sSupportPhone' => $sSupportPhone,
             );
     }
 }

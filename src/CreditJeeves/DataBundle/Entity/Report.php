@@ -10,6 +10,7 @@ use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
 use CreditJeeves\CoreBundle\Arf\ArfInquiries;
 use CreditJeeves\CoreBundle\Arf\ArfPublicRecords;
 use CreditJeeves\CoreBundle\Arf\ArfAutomotiveDetails;
+use CreditJeeves\CoreBundle\Arf\ArfMessages;
 
 /**
  * @ORM\Entity
@@ -342,4 +343,15 @@ class Report
         $arfAutomotiveDetails = new ArfAutomotiveDetails($this->getArfArray());
         return $arfAutomotiveDetails->getAutomotiveDetails();
     }
+
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantMessages()
+    {
+      $arfMessages = new ArfMessages($this->getArfArray());
+    
+      return $arfMessages->getMessages();
+    }    
 }

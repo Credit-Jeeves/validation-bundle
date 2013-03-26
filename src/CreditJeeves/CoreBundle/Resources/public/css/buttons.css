@@ -30,3 +30,17 @@ button, .button {
   background-position: bottom left;
 }
 
+.button.x-large, button.x-large {
+  width: 257px;
+  height: 44px;
+  font-size: 21px;
+  padding-left: 36px;
+}
+
+.button.x-large.green, button.x-large.green {
+  background: url(/bundles/core/images/buttons/btn_xlg_green.png) top left no-repeat;
+}
+
+.button.x-large.green:hover, button.x-large.green:hover {
+  background-position: bottom left;
+}
