@@ -22,7 +22,7 @@ class sfConfig
             foreach ($value as &$val) {
                 $val = self::replacePlaceHolders($val);
             }
-        } else {
+        } elseif (!is_bool($value)) {
             foreach (self::$config as $key => $val) {
                 if (is_string($val)) {
                     $key = strtoupper($key);
@@ -56,6 +56,8 @@ class sfConfig
         if (self::$init) return;
 
         self::$config['sf_data_dir'] = self::getRoot() . '/vendor/CreditJeevesSf1/data';
+        self::$config['sf_log_dir'] = self::getRoot() . '/app/logs';
+        self::$config['sf_upload_dir'] = self::getRoot() . '/web/uploads';
 
         $configs = Yaml::parse(self::getRoot() . '/vendor/CreditJeevesSf1/config/experian.yml');
         self::fill($configs['all'], 'experian');

@@ -31,7 +31,7 @@ class SettingsController extends Controller
                 if ($sOldPassword == $cjUser->getPassword()) {
                     $sNewPassword = $cjUser->getNewPassword();
                     $cjUser->setPassword($sNewPassword);
-                    $em = $this->getDoctrine()->getEntityManager();
+                    $em = $this->getDoctrine()->getManager();
                     $em->persist($cjUser);
                     $em->flush();
                 }

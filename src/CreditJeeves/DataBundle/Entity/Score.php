@@ -2,7 +2,6 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
@@ -23,7 +22,7 @@ class Score
     protected $cj_applicant_id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $score;
 
@@ -80,9 +79,7 @@ class Score
      */
     public function setScore($score)
     {
-        $Utility = new Encryption();
-        $this->score = base64_encode(\cjEncryptionUtility::encrypt($score));
-    
+        $this->score = $score;
         return $this;
     }
 
@@ -93,11 +90,7 @@ class Score
      */
     public function getScore()
     {
-        $Utility = new Encryption();
-        $encValue = $this->score;
-        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
-        
-        return $value === false ? $encValue : $value;
+        return $this->score;
     }
 
     public function getFicoScore()

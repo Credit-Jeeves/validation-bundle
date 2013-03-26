@@ -2,7 +2,6 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Utility\Encryption;
 use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\CoreBundle\Arf\ArfReport;
 use CreditJeeves\CoreBundle\Arf\ArfSummary;
@@ -15,9 +14,10 @@ use CreditJeeves\CoreBundle\Arf\ArfAutomotiveDetails;
 /**
  * @ORM\Entity
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string")
+ * @ORM\DiscriminatorColumn(name="type", type="ReportTypeEnum")
  * @ORM\DiscriminatorMap({"prequal" = "ReportPrequal", "d2c" = "ReportD2c"})
  * @ORM\Table(name="cj_applicant_report")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Report
 {
@@ -34,7 +34,7 @@ class Report
     protected $cj_applicant_id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $raw_data;
 
@@ -86,9 +86,7 @@ class Report
      */
     public function setRawData($rawData)
     {
-        $Utility = new Encryption();
-        $this->raw_data = base64_encode(\cjEncryptionUtility::encrypt($rawData));
-
+        $this->raw_data = $rawData;
         return $this;
     }
 
@@ -99,11 +97,7 @@ class Report
      */
     public function getRawData()
     {
-        $Utility = new Encryption();
-        $encValue = $this->raw_data;
-        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
-        
-        return $value === false ? $encValue : $value;
+        return $this->raw_data;
     }
 
     /**
@@ -130,6 +124,14 @@ class Report
     }
 
     /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->created_at = new \DateTime();
+    }
+
+    /**
      * @return array
      */
     public function getArfArray()
@@ -139,7 +141,7 @@ class Report
     
 
     /**
-     * @return CreditJeeves\CoreBundle\Arf\ArfPaser
+     * @return \CreditJeeves\CoreBundle\Arf\ArfPaser
      */
     public function getArfParser()
     {
@@ -150,7 +152,7 @@ class Report
     }
 
     /**
-     * @return CreditJeeves\CoreBundle\Arf\ArfReport
+     * @return \CreditJeeves\CoreBundle\Arf\ArfReport
      */
     public function getArfReport()
     {
