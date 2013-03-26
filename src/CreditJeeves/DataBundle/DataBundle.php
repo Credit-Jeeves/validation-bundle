@@ -7,12 +7,16 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class DataBundle extends Bundle
 {
+    protected static $isLoaded = false;
     /**
      * {@inheritdoc}
      */
     public function boot()
     {
-        Type::addType('encrypt', 'CreditJeeves\DataBundle\Type\Encrypt');
-        Type::addType('ReportTypeEnum', 'CreditJeeves\DataBundle\Enum\ReportTypeEnum');
+        if (!static::$isLoaded) { // TODO find better way
+            static::$isLoaded = true;
+            Type::addType('encrypt', 'CreditJeeves\DataBundle\Type\Encrypt');
+            Type::addType('ReportTypeEnum', 'CreditJeeves\DataBundle\Enum\ReportTypeEnum');
+        }
     }
 }

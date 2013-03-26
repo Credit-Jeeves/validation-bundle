@@ -1,1 +1,15 @@
 /* fix IE 8 */
+.shadow {
+    border: 1px solid #c8c8c8;
+}
+
+.tradeline-details {
+    width: 153px;
+}
+
+.section {
+     background: url("/bundles/core/images/bg-gradient-top.png") repeat-x scroll left top #A3CEF7;
+}
+.body {
+    background: url("/bundles/core/images/bg-gradient-bottom.png") repeat-x scroll left bottom transparent;
+}
