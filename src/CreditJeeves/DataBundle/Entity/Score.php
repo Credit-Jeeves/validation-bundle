@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  * @ORM\Table(name="cj_applicant_score")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Score
 {
@@ -108,7 +109,7 @@ class Score
      */
     public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
     {
-        $this->User = $user;
+        $this->user = $user;
     
         return $this;
     }
@@ -120,7 +121,7 @@ class Score
      */
     public function getUser()
     {
-        return $this->User;
+        return $this->user;
     }
 
     /**
@@ -168,5 +169,13 @@ class Score
             return "7%";
         }
         return "2%";
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->created_date = new \DateTime();
     }
 }

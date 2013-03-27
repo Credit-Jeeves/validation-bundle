@@ -1,14 +1,14 @@
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-function ReLoader($url, $redirect) {
+function ReLoader(url, redirect) {
     var timeoutId = false;
     var nDelay = 3000; // 3 seconds;
 
     function checkStatus() {
         clearTimeout(timeoutId);
         jQuery.ajax({
-            url: $url,
+            url: url,
             type: 'POST',
             dataType: 'json',
             success: function (status) {
@@ -18,7 +18,12 @@ function ReLoader($url, $redirect) {
                     return false;
                 }
                 if (status == 'finished') {
-                    location.reload();
+                    if (!redirect) {
+                        location.reload();
+                    } else {
+                        window.location.href = redirect;
+                        return true;
+                    }
                     return false;
                 }
             },

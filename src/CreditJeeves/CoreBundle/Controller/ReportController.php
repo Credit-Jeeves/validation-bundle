@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\CoreBundle\Experian\NetConnect;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -28,6 +29,16 @@ class ReportController extends Controller
     protected $netConnect;
 
     /**
+     * @todo add all rules
+     *
+     * @return bool
+     */
+    protected function isReportLoadAllowed()
+    {
+        return !$this->getUser()->getReportsPrequal()->last();
+    }
+
+    /**
      * @Route("/get", name="core_report_get")
      * @Template()
      *
@@ -35,9 +46,12 @@ class ReportController extends Controller
      */
     public function getAction()
     {
+        if (!$this->isReportLoadAllowed()) {
+            return new RedirectResponse($this->generateUrl('applicant_homepage'));
+        }
         return array(
             'url' => $this->generateUrl('core_report_get_ajax'),
-            'redirect' => $this->getRequest()->headers->get('referer')
+            'redirect' => null//$this->getRequest()->headers->get('referer'),
         );
     }
 
@@ -52,12 +66,17 @@ class ReportController extends Controller
 
     protected function saveArf()
     {
+        if (!$this->isReportLoadAllowed()) {
+            return false;
+        }
+
         $report = new ReportPrequal();
         $report->setRawData($this->getArf());
         $report->setUser($this->getUser());
         $em = $this->getDoctrine()->getManager();
         $em->persist($report);
         $em->flush();
+        return true;
     }
 
     /**
@@ -82,6 +101,7 @@ class ReportController extends Controller
                 try {
                     $this->saveArf();
                 } catch (\Exception $e) {
+                    throw $e;
                     $session->set('cjIsArfProcessing', false);
 //                        fpErrorNotifier::getInstance()->handler()->handleException($e);
                     return new JsonResponse('fatal error');

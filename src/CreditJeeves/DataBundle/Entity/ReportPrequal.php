@@ -1,6 +1,9 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\UserBundle\Entity\User;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -89,7 +92,7 @@ class ReportPrequal extends Report
     }
 
     /**
-     * Get user
+     * Get userPostFlush
      *
      * @return \CreditJeeves\UserBundle\Entity\User 
      */

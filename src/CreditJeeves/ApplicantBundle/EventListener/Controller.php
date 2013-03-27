@@ -28,9 +28,23 @@ class Controller extends Base
         $controller = $event->getController();
         $controller = $controller[0];
         if (strstr(__CLASS__, 'Bundle\\', true) == strstr(get_class($controller), 'Bundle\\', true) &&
-            !$controller->getUser()->getScores()->last()
+            !$controller->getUser()->getReportsPrequal()->last()
         ) {
-            throw new HttpException(307, null, null, array('Location' => $controller->generateUrl('core_report_get')));
+            $request = $controller->getRequest();
+            $currentUrl = 'http';
+            if ($request->server->get('HTTPS')) {
+                $currentUrl .= 's';
+            }
+            $currentUrl .= '://' . $request->server->get('HTTP_HOST') . $request->getPathInfo();
+            throw new HttpException(
+                307,
+                null,
+                null,
+                array(
+                    'Location' => $controller->generateUrl('core_report_get'),
+                    'Referer' => $currentUrl // TODO find variant which works
+                )
+            );
         }
         parent::onKernelController($event);
     }
