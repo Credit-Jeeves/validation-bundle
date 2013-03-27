@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\HasLifecycleCallbacks()
  */
 class ReportPrequal extends Report
 {
@@ -100,17 +99,5 @@ class ReportPrequal extends Report
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * @ORM\PostPersist
-     */
-    public function postPersist(/*PostFlushEventArgs $args*/) {
-//        $arfReport = $this->getArfReport();
-//        $newScore = $arfReport->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
-//        $score = new Score();
-//        $score->setUser($this->getUser());
-//        $score->setScore($newScore);
-//        $args->getEntityManager()->persist($score);
     }
 }
