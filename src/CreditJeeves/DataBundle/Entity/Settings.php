@@ -7,6 +7,7 @@ use CreditJeeves\CoreBundle\Utility\Encryption;
 /**
  * @ORM\Entity
  * @ORM\Table(name="cj_settings")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Settings
 {
@@ -18,24 +19,24 @@ class Settings
     protected $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $pidkiq_password;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $pidkiq_eai;
 
     /**
      * 
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $net_connect_password;
 
     /**
      * 
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $net_connect_eai;
 
@@ -74,8 +75,7 @@ class Settings
      */
     public function setPidkiqPassword($password)
     {
-        $Utility = new Encryption();
-        $this->pidkiq_password = base64_encode(\cjEncryptionUtility::encrypt($password));
+        $this->pidkiq_password = $password;
     
         return $this;
     }
@@ -87,11 +87,7 @@ class Settings
      */
     public function getPidkiqPassword()
     {
-        $Utility = new Encryption();
-        $encValue = $this->pidkiq_password;
-        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
-        
-        return $value === false ? $encValue : $value;
+        return $this->pidkiq_password;
     }
 
     public function setRights($rights)
@@ -103,5 +99,21 @@ class Settings
     public function getRights()
     {
       return $this->rights;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * @ORM\preUpdate
+     */
+    public function preUpdate()
+    {
+        $this->updated_at = new \DateTime();
     }
 }

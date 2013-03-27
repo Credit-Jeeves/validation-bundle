@@ -1,10 +1,14 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\UserBundle\Entity\User;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks()
  */
 class ReportPrequal extends Report
 {
@@ -89,12 +93,24 @@ class ReportPrequal extends Report
     }
 
     /**
-     * Get user
+     * Get userPostFlush
      *
      * @return \CreditJeeves\UserBundle\Entity\User 
      */
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function postPersist(/*PostFlushEventArgs $args*/) {
+//        $arfReport = $this->getArfReport();
+//        $newScore = $arfReport->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
+//        $score = new Score();
+//        $score->setUser($this->getUser());
+//        $score->setScore($newScore);
+//        $args->getEntityManager()->persist($score);
     }
 }

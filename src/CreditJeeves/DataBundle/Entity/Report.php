@@ -47,6 +47,13 @@ class Report
     private $arfParser;
 
     /**
+     * Cache
+     *
+     * @var array
+     */
+    private $arfArray;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -137,7 +144,10 @@ class Report
      */
     public function getArfArray()
     {
-        return $this->getArfParser()->getArfArray();
+        if (null == $this->arfArray) {
+            $this->arfArray = $this->getArfParser()->getArfArray();
+        }
+        return $this->arfArray;
     }
     
 

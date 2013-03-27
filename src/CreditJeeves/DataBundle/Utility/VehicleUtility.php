@@ -54,7 +54,7 @@ class VehicleUtility
      */
     private static function loadAmazonData($container)
     {
-        $filename = 'http://'.$container->getParameter('server_name').'/bundles/data/'.self::FILE_NAME;
+        $filename = __DIR__ . '/../Resources/public/'.self::FILE_NAME;
         return file_get_contents($filename);
     }
 
