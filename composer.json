@@ -95,6 +95,10 @@
         {
             "type": "git",
             "url": "https://github.com/66Ton99/environment"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/66Ton99/MinkBundle"
         }
     ],
     "require": {
@@ -139,7 +143,9 @@
         "sinon": "1.5.0",
         "behat/mink": "1.4.*",
         "behat/mink-selenium2-driver": "1.0.*",
-        "behat/mink-goutte-driver": "1.0.*"
+        "behat/mink-goutte-driver": "1.0.*",
+        "behat/symfony2-extension": "1.0.x-dev",
+        "behat/mink-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
