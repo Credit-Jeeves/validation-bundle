@@ -436,6 +436,80 @@
                 <target>Your Dream Car</target>
             </trans-unit>
             
+            <trans-unit id="footer.title">
+                <source>footer.title</source>
+                <target>Credit Jeeves, at your service.</target>
+            </trans-unit>
+            <trans-unit id="footer.comment">
+                <source>footer.comment</source>
+                <target>Credit Jeeves has helped many consumers better understand their credit and credit scores. Our mission is to help you attain nothing less than your dreams.</target>
+            </trans-unit>
+            <trans-unit id="footer.copyright">
+                <source>footer.copyright</source>
+                <target>%nYear% Credit Jeeves LLC. All rights reserved.</target>
+            </trans-unit>
+            <trans-unit id="footer.credit.jeeves">
+                <source>footer.credit.jeeves</source>
+                <target>Credit Jeeves</target>
+            </trans-unit>
+            <trans-unit id="footer.about_us">
+                <source>footer.about_us</source>
+                <target>About Us</target>
+            </trans-unit>
+            <trans-unit id="footer.terms_of_service">
+                <source>footer.terms_of_service</source>
+                <target>Terms of Service</target>
+            </trans-unit>
+            <trans-unit id="footer.privacy_policy">
+                <source>footer.privace_policy</source>
+                <target>Privacy Policy</target>
+            </trans-unit>
+            <trans-unit id="footer.send_feedback">
+                <source>footer.send_feedback</source>
+                <target>Send Feedback!</target>
+            </trans-unit>
+            <trans-unit id="footer.credit_information">
+                <source>footer.credit_information</source>
+                <target>Credit Information</target>
+            </trans-unit>
+            <trans-unit id="footer.credit_score">
+                <source>footer.credit_score</source>
+                <target>The Credit Score</target>
+            </trans-unit>
+            <trans-unit id="footer.your_rights">
+                <source>footer.your_rights</source>
+                <target>Know Your Rights</target>
+            </trans-unit>
+            <trans-unit id="footer.dos_donts">
+                <source>footer.dos_donts</source>
+                <target>Dos and Don'ts</target>
+            </trans-unit>
+            <trans-unit id="footer.blog">
+                <source>footer.blog</source>
+                <target>Credit Jeeves Blog</target>
+            </trans-unit>
+            <trans-unit id="footer.resources">
+                <source>footer.resources</source>
+                <target>Credit Resources</target>
+            </trans-unit>
+            <trans-unit id="footer.information">
+                <source>footer.information</source>
+                <target>Credit Information</target>
+            </trans-unit>
+            <trans-unit id="footer.report">
+                <source>footer.report</source>
+                <target>Your Credit Report</target>
+            </trans-unit>
+            <trans-unit id="footer.experian">
+                <source>footer.experian</source>
+                <target>Experian</target>
+            </trans-unit>
+            <trans-unit id="footer.ftc">
+                <source>footer.ftc</source>
+                <target>FTC</target>
+            </trans-unit>
+
+
             
         </body>
     </file>

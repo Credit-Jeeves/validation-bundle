@@ -1,0 +1,46 @@
+.footer-info {
+    width: 425px;
+    text-align: left;
+    margin-right: 25px;
+}
+
+.footer-box {
+    width: 150px;
+}
+
+.footer-box ul {
+    margin: 0;
+}
+
+.copyright {
+    color: #858383;
+    font-size: 12px;
+}
+
+.footer strong {
+    font-weight: 500;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+.footer .disclaimer {
+    color: #858383;
+    font-size: 12px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.footer .experian-data {
+    color: #BBBBBB;
+    font-family: arial,helvetica,sans-serif;
+    font-size: 10px;
+    margin-left: 325px;
+    margin-top: 12px;
+    position: absolute;
+}
+
+.footer .experian-logo {
+    margin-top: 20px;
+}
