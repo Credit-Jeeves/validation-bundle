@@ -4,6 +4,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use CreditJeeves\DataBundle\Entity\Lead;
 
 /**
  * @author Alex
@@ -19,9 +20,10 @@ class HomepageController extends Controller
      */
     public function indexAction()
     {
-        $Lead   = $this->getUser()->getActiveLead();
-        $Report = $this->getUser()->getReportsPrequal()->last();
-        $sEmail = $this->getUser()->getEmail();
+        $nLeadId = $this->get('core.session.applicant')->getLeadId();
+        $Lead    = $this->getDoctrine()->getRepository('DataBundle:Lead')->find($nLeadId);
+        $Report  = $this->getUser()->getReportsPrequal()->last();
+        $sEmail  = $this->getUser()->getEmail();
         return array(
             'Report' => $Report,
             'Lead' => $Lead,

@@ -34,33 +34,21 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
-        $cjUser = $this->security->getToken()->getUser();
-        $sType = $cjUser->getType();
+        $User = $this->security->getToken()->getUser();
+        $sType = $User->getType();
         switch ($sType) {
             case 'applicant':
-                $this->prepareApplicant($cjUser);
+                $this->container->get('core.session.applicant')->setUser($User);
                 break;
             case 'dealer':
+                $this->container->get('core.session.dealer')->setUser($User);
                 break;
             case 'admin':
+                $this->container->get('core.session.admin')->setUser($User);
                 break;
         }
         $url = $this->container->get('router')->generate($sType.'_homepage');
         $response = new RedirectResponse($url);
         return $response;
-    }
-
-    private function prepareApplicant(User $cjUser)
-    {
-        //$this->get('session')->
-        // we'll count user's leads
-//         $nLeads = $cjUser->getActiveLead()->count();
-//         if ($nLeads > 1) {
-            
-//         }
-//         $nReports = $cjUser->getReportsPrequal()->count();
-//         if (empty($nReports)) {
-            
-//         }
     }
 }
