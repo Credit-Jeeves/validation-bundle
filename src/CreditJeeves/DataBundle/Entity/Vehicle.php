@@ -42,7 +42,7 @@ class Vehicle
     protected $updated_at;
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="vehicle")
+     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="vehicle")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
@@ -175,10 +175,10 @@ class Vehicle
     /**
      * Set user
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $user
+     * @param \CreditJeeves\DataBundle\Entity\User $user
      * @return Vehicle
      */
-    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
 
@@ -188,7 +188,7 @@ class Vehicle
     /**
      * Get user
      *
-     * @return \CreditJeeves\UserBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User 
      */
     public function getUser()
     {

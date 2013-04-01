@@ -7,6 +7,7 @@ use CreditJeeves\CoreBundle\Utility\Encryption;
 /**
  * @ORM\Entity
  * @ORM\Table(name="cj_settings")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Settings
 {
@@ -18,24 +19,24 @@ class Settings
     protected $id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $pidkiq_password;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $pidkiq_eai;
 
     /**
      * 
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $net_connect_password;
 
     /**
      * 
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $net_connect_eai;
 
@@ -74,8 +75,7 @@ class Settings
      */
     public function setPidkiqPassword($password)
     {
-        $Utility = new Encryption();
-        $this->pidkiq_password = base64_encode(\cjEncryptionUtility::encrypt($password));
+        $this->pidkiq_password = $password;
     
         return $this;
     }
@@ -87,11 +87,7 @@ class Settings
      */
     public function getPidkiqPassword()
     {
-        $Utility = new Encryption();
-        $encValue = $this->pidkiq_password;
-        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
-        
-        return $value === false ? $encValue : $value;
+        return $this->pidkiq_password;
     }
 
     public function setRights($rights)
@@ -103,5 +99,136 @@ class Settings
     public function getRights()
     {
       return $this->rights;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * Set pidkiq_eai
+     *
+     * @param encrypt $pidkiqEai
+     * @return Settings
+     */
+    public function setPidkiqEai($pidkiqEai)
+    {
+        $this->pidkiq_eai = $pidkiqEai;
+    
+        return $this;
+    }
+
+    /**
+     * Get pidkiq_eai
+     *
+     * @return encrypt 
+     */
+    public function getPidkiqEai()
+    {
+        return $this->pidkiq_eai;
+    }
+
+    /**
+     * Set net_connect_password
+     *
+     * @param encrypt $netConnectPassword
+     * @return Settings
+     */
+    public function setNetConnectPassword($netConnectPassword)
+    {
+        $this->net_connect_password = $netConnectPassword;
+    
+        return $this;
+    }
+
+    /**
+     * Get net_connect_password
+     *
+     * @return encrypt 
+     */
+    public function getNetConnectPassword()
+    {
+        return $this->net_connect_password;
+    }
+
+    /**
+     * Set net_connect_eai
+     *
+     * @param encrypt $netConnectEai
+     * @return Settings
+     */
+    public function setNetConnectEai($netConnectEai)
+    {
+        $this->net_connect_eai = $netConnectEai;
+    
+        return $this;
+    }
+
+    /**
+     * Get net_connect_eai
+     *
+     * @return encrypt 
+     */
+    public function getNetConnectEai()
+    {
+        return $this->net_connect_eai;
+    }
+
+    /**
+     * Set contract
+     *
+     * @param string $contract
+     * @return Settings
+     */
+    public function setContract($contract)
+    {
+        $this->contract = $contract;
+    
+        return $this;
+    }
+
+    /**
+     * Get contract
+     *
+     * @return string 
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     * @return Settings
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }

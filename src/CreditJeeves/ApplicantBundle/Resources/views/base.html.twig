@@ -25,12 +25,14 @@
 {% endblock %}
 
 {% block tabs %}
-    {{ render(controller('ComponentBundle:Menu:tabs')) }}
+    <div class="top-nav">
+    {{ knp_menu_render('ApplicantBundle:Builder:mainMenu', { 'template': 'ApplicantBundle:Menu:applicant_tabs.html.twig' }) }}
+    </div>
 {% endblock %}
 
 
 {% block info %}
-    {{ render(controller('ComponentBundle:Elements:info')) }}
+    {{ render(controller('ComponentBundle:Blocks:info')) }}
 {% endblock %}
 
 {% block footer %}

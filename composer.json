@@ -72,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "8fc49d524eda836d09bd0e715f3f23553bf523c3"
+                    "reference": "0d8445b6e29d74b3aa9b0b06bbac073342d4a5f3"
                 }
             }
         },
@@ -130,7 +130,8 @@
         "payum/payum": "0.3.*",
         "payum/payum-bundle": "0.3.*",
         "payum/authorize-net-aim": "0.3.*",
-        "hat/environment": "dev-master"
+        "hat/environment": "dev-master",
+        "knplabs/knp-menu-bundle": "v1.1.1"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",

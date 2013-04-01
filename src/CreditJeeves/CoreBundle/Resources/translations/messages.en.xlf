@@ -127,13 +127,20 @@
                 <source>common.rights</source>
                 <target>Your Rights</target>
             </trans-unit>
-            
-            
-            
             <trans-unit id="common.applicant.dashboard">
                 <source>common.applicant.dashboard</source>
                 <target>Applicant Dashboard</target>
             </trans-unit>
+            <trans-unit id="common.loading.alt">
+                <source>common.loading.alt</source>
+                <target>Loading...</target>
+            </trans-unit>
+            <trans-unit id="common.loading.text">
+                <source>common.loading.text</source>
+                <target>Please wait while we retrieve your credit information and build your custom action plan.</target>
+            </trans-unit>
+            
+            
             
             <trans-unit id="loan.type.balance">
                 <source>loan.type.balance</source>

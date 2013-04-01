@@ -27,7 +27,7 @@ class PasswordType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'CreditJeeves\UserBundle\Entity\User',
+            'data_class' => 'CreditJeeves\DataBundle\Entity\User',
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             // a unique key to help generate the secret token

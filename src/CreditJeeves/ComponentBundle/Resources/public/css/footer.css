@@ -29,18 +29,15 @@
     font-size: 12px;
     margin-top: 20px;
     margin-bottom: 20px;
-    line-height: 15px;
+    line-height: 18px;
+    width: 950px;
 }
 
 .footer .experian-data {
     color: #BBBBBB;
     font-family: arial,helvetica,sans-serif;
     font-size: 10px;
-    margin-left: 325px;
-    margin-top: 12px;
-    position: absolute;
 }
 
 .footer .experian-logo {
-    margin-top: 20px;
 }

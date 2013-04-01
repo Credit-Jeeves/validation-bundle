@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\UserBundle\Service;
 
-use CreditJeeves\UserBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\User;
 
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;

@@ -2,7 +2,6 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
@@ -10,7 +9,7 @@ use CreditJeeves\CoreBundle\Utility\Encryption;
 class ReportD2c extends Report
 {
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="reportsD2c")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="reportsD2c")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
@@ -79,10 +78,10 @@ class ReportD2c extends Report
     /**
      * Set user
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $user
+     * @param \CreditJeeves\DataBundle\Entity\User $user
      * @return ReportD2c
      */
-    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
     
@@ -92,7 +91,7 @@ class ReportD2c extends Report
     /**
      * Get user
      *
-     * @return \CreditJeeves\UserBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User 
      */
     public function getUser()
     {

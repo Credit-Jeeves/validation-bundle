@@ -4,7 +4,7 @@ jms_security_extra:
 
 security:
     encoders:
-        CreditJeeves\UserBundle\Entity\User:
+        CreditJeeves\DataBundle\Entity\User:
             id: user.security.encoder.digest
 #        FOS\UserBundle\Model\UserInterface: md5
 

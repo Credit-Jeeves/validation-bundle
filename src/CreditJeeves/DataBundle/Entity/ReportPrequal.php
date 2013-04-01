@@ -1,8 +1,10 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\User;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
@@ -10,7 +12,7 @@ use CreditJeeves\CoreBundle\Utility\Encryption;
 class ReportPrequal extends Report
 {
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="reportsPrequal")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="reportsPrequal")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
@@ -79,10 +81,10 @@ class ReportPrequal extends Report
     /**
      * Set user
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $user
+     * @param \CreditJeeves\DataBundle\Entity\User $user
      * @return ReportPrequal
      */
-    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
     
@@ -90,12 +92,13 @@ class ReportPrequal extends Report
     }
 
     /**
-     * Get user
+     * Get userPostFlush
      *
-     * @return \CreditJeeves\UserBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User 
      */
     public function getUser()
     {
         return $this->user;
     }
+
 }

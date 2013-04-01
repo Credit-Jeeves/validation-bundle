@@ -4,7 +4,6 @@ namespace CreditJeeves\CoreBundle\Experian;
 use JMS\DiExtraBundle\Annotation\Service;
 
 require_once __DIR__.'/../sfConfig.php';
-require_once __DIR__.'/../cjSettingsTable.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/Curl.class.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/CurlException.class.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/xml/Xml.class.php';

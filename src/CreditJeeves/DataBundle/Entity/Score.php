@@ -2,11 +2,11 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\CoreBundle\Utility\Encryption;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="cj_applicant_score")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Score
 {
@@ -23,7 +23,7 @@ class Score
     protected $cj_applicant_id;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="encrypt")
      */
     protected $score;
 
@@ -33,7 +33,7 @@ class Score
     protected $created_date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="scores")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="scores")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
@@ -80,9 +80,7 @@ class Score
      */
     public function setScore($score)
     {
-        $Utility = new Encryption();
-        $this->score = base64_encode(\cjEncryptionUtility::encrypt($score));
-    
+        $this->score = $score;
         return $this;
     }
 
@@ -93,11 +91,7 @@ class Score
      */
     public function getScore()
     {
-        $Utility = new Encryption();
-        $encValue = $this->score;
-        $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
-        
-        return $value === false ? $encValue : $value;
+        return $this->score;
     }
 
     public function getFicoScore()
@@ -110,12 +104,12 @@ class Score
     /**
      * Set User
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $user
+     * @param \CreditJeeves\DataBundle\Entity\User $user
      * @return Score
      */
-    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
-        $this->User = $user;
+        $this->user = $user;
     
         return $this;
     }
@@ -123,11 +117,11 @@ class Score
     /**
      * Get User
      *
-     * @return \CreditJeeves\UserBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User 
      */
     public function getUser()
     {
-        return $this->User;
+        return $this->user;
     }
 
     /**
@@ -175,5 +169,13 @@ class Score
             return "7%";
         }
         return "2%";
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->created_date = new \DateTime();
     }
 }

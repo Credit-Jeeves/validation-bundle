@@ -47,7 +47,7 @@ class Group
     protected $website_url;
 
     /**
-     * @ORM\ManyToMany(targetEntity="CreditJeeves\UserBundle\Entity\User", mappedBy="dealer_groups")
+     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\User", mappedBy="dealer_groups")
      */
     protected $group_dealers;
 
@@ -157,10 +157,10 @@ class Group
     /**
      * Add group_dealers
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $groupDealers
+     * @param \CreditJeeves\DataBundle\Entity\User $groupDealers
      * @return Group
      */
-    public function addGroupDealer(\CreditJeeves\UserBundle\Entity\User $groupDealers)
+    public function addGroupDealer(\CreditJeeves\DataBundle\Entity\User $groupDealers)
     {
         $this->group_dealers[] = $groupDealers;
 
@@ -170,9 +170,9 @@ class Group
     /**
      * Remove group_dealers
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $groupDealers
+     * @param \CreditJeeves\DataBundle\Entity\User $groupDealers
      */
-    public function removeGroupDealer(\CreditJeeves\UserBundle\Entity\User $groupDealers)
+    public function removeGroupDealer(\CreditJeeves\DataBundle\Entity\User $groupDealers)
     {
         $this->group_dealers->removeElement($groupDealers);
     }

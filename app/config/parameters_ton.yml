@@ -1,12 +1,11 @@
+imports:
+    - { resource: parameters_dev_base.yml }
+
 parameters:
-  database_driver: pdo_mysql
-  database_host: 127.0.0.1
-  database_port: null
-  database_name: creditjeeves2
+  database_name: creditjeeves
   database_user: admin
   database_password: 'qwerty'
-  mailer_transport: mail
-  mailer_host: 127.0.0.1
-  mailer_user: null
-  mailer_password: null
 
+  server: local
+  host: creditjeeves2.tonpc.forma-dev.com
+  mink_webdriver_host: 'http://127.0.0.1:4444/wd/hub'

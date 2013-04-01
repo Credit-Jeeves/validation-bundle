@@ -1,4 +1,5 @@
 imports:
+    - { resource: parameters_base.yml }
     - { resource: parameters.yml }
     - { resource: security.yml }
 
@@ -62,7 +63,7 @@ swiftmailer:
 fos_user:
     db_driver: orm 
     firewall_name: main
-    user_class: CreditJeeves\UserBundle\Entity\User
+    user_class: CreditJeeves\DataBundle\Entity\User
 
 jms_di_extra:
     locations:

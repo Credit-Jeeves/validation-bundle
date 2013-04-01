@@ -1,0 +1,53 @@
+<?php
+namespace CreditJeeves\DataBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="cj_order")
+ * @ORM\HasLifecycleCallbacks()
+ */
+class Order
+{
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $cj_applicant_id;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $status;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $created_date;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated_at;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="orders")
+     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
+     */
+    protected $user;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->created_date = new \DateTime();
+    }
+}
