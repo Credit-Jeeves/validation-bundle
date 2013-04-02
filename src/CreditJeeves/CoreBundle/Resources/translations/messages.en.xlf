@@ -509,6 +509,23 @@
                 <target>FTC</target>
             </trans-unit>
 
+            <trans-unit id="tabs.action_plan">
+                <source>tabs.action_plan</source>
+                <target>Action Plan</target>
+            </trans-unit>
+            <trans-unit id="tabs.summary">
+                <source>tabs.summary</source>
+                <target>Summary</target>
+            </trans-unit>
+            <trans-unit id="tabs.report">
+                <source>tabs.report</source>
+                <target>Report</target>
+            </trans-unit>
+            <trans-unit id="tabs.settings">
+                <source>tabs.settings</source>
+                <target>Settings</target>
+            </trans-unit>
+
 
             
         </body>
