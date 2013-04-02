@@ -14,7 +14,11 @@ class BlocksController extends Controller
      */
     public function infoAction()
     {
-        $sEmail = $this->getUser()->getEmail();
-        return array('sEmail' => $sEmail);
+        $isAdmin = $this->get('core.session.applicant')->isAdmin();
+        $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
+        return array(
+            'sEmail' => $sEmail,
+            'isAdmin' => $isAdmin
+            );
     }
 }

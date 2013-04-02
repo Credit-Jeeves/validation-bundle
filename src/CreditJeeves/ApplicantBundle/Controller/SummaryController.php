@@ -16,7 +16,7 @@ class SummaryController extends Controller
      */
     public function indexAction()
     {
-        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $cjUser = $this->get('core.session.applicant')->getUser();
         $sEmail = $cjUser->getEmail();
         return array('sEmail' => $sEmail);
     }

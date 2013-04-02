@@ -1,2 +1,6 @@
 <p class="user-email">{{ sEmail }} </p>
+{% if isAdmin %}
+    <a href="{{ path('admin_homepage') }}">Back to Admin</a>
+{% else %}
 {% include '::userLogout.html.twig' %}
+{% endif %}

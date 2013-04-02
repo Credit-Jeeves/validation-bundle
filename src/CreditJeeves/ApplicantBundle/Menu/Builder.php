@@ -11,8 +11,9 @@ class Builder extends ContainerAware
         $menu = $factory->createItem('root');
         $menu->addChild('Action Plan', array('route' => 'applicant_homepage'));
         $menu->addChild('Summary',     array('route' => 'applicant_summary'));
-        
-        $User = $this->container->get('security.context')->getToken()->getUser();
+        //$this->get('core.session.applicant')
+        $User = $this->container->get('core.session.applicant')->getUser();
+        $isAdmin = $this->container->get('core.session.applicant')->isAdmin();
         $isCompleteOrder = $User->isCompleteOrderExist();
         
         if ($isCompleteOrder) {

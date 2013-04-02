@@ -10,7 +10,7 @@ class MissedPaymentsController extends Controller
         $nTotal = 0;
         $nLate = 0;
         
-        $aTradelines = $this->getUser()->getReportsPrequal()->last()->getTradeLines();
+        $aTradelines = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getTradeLines();
         foreach ($aTradelines as $aTradeline) {
             $aTradeline['months_reviewed'] = isset($aTradeline['months_reviewed']) ? $aTradeline['months_reviewed'] : 0;
             $aTradeline['30_day_counter'] = isset($aTradeline['30_day_counter']) ? $aTradeline['30_day_counter'] : 0;

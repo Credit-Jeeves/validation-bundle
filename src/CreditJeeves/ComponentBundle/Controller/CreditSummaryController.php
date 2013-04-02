@@ -7,7 +7,7 @@ class CreditSummaryController extends Controller
 {
     public function indexAction()
     {
-        $cjUser    = $this->getUser();
+        $cjUser    = $this->get('core.session.applicant')->getUser();
         $Report    = $cjUser->getReportsPrequal()->last();
         $sDate     = $Report->getCreatedAt()->format('M j, Y');
         $aCreditSummary = $Report->getCreditSummary();

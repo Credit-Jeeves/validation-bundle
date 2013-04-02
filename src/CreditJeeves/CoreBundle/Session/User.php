@@ -44,6 +44,11 @@ abstract class User
         $this->em = $em;
     }
 
+    public function isAdmin()
+    {
+        return $this->session->has(self::USER_ADMIN);
+    }
+
     protected function findUser($nUserId)
     {
        return  $this->em->getRepository('DataBundle:User')->find($nUserId);

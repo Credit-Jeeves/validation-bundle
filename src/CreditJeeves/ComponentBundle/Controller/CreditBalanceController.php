@@ -21,7 +21,7 @@ class CreditBalanceController extends Controller
 
     public function indexAction()
     {
-        $cjUser    = $this->get('security.context')->getToken()->getUser();
+        $cjUser    = $this->get('core.session.applicant')->getUser();
         $Report    = $cjUser->getReportsPrequal()->last();
         $sDate     = $Report->getCreatedAt()->format('M j, Y');
         $ArfReport = $Report->getArfReport();
