@@ -14,7 +14,7 @@ class HardInquiriesController extends Controller
     
     public function indexAction()
     {
-        $ArfReport = $this->getUser()->getReportsPrequal()->last()->getArfReport();
+        $ArfReport = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getArfReport();
         $nInquiries = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_INQUIRIES_DURING_LAST_6_MONTHS_COUNTER

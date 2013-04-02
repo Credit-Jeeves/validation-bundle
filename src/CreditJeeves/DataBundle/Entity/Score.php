@@ -33,7 +33,7 @@ class Score
     protected $created_date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="scores")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="scores")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
@@ -104,10 +104,10 @@ class Score
     /**
      * Set User
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $user
+     * @param \CreditJeeves\DataBundle\Entity\User $user
      * @return Score
      */
-    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
     
@@ -117,7 +117,7 @@ class Score
     /**
      * Get User
      *
-     * @return \CreditJeeves\UserBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User 
      */
     public function getUser()
     {

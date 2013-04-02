@@ -14,7 +14,7 @@ class ScoreController extends Controller
     public function indexAction(\CreditJeeves\DataBundle\Entity\Lead $Lead)
     {
         $nTargetScore = $Lead->getTargetScore() ? $Lead->getTargetScore() : 0;
-        $cjUser = $this->getUser();
+        $cjUser = $this->get('core.session.applicant')->getUser();
         $aScores = $cjUser->getScores();
         
         $chartData = array();

@@ -134,7 +134,8 @@
         "payum/payum": "0.3.*",
         "payum/payum-bundle": "0.3.*",
         "payum/authorize-net-aim": "0.3.*",
-        "hat/environment": "dev-master"
+        "hat/environment": "dev-master",
+        "knplabs/knp-menu-bundle": "v1.1.1"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",

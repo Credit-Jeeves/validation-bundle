@@ -20,7 +20,7 @@ class SettingsController extends Controller
     {
         $request = $this->get('request');
         $sRouteName = $request->get('_route');
-        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $cjUser = $this->get('core.session.applicant')->getUser();
         $sOldPassword = $cjUser->getPassword();
         $sEmail = $cjUser->getEmail();
         $form = $this->createForm(new PasswordType(), $cjUser);

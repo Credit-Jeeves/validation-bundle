@@ -10,7 +10,7 @@ class CreditAverageAgeController extends Controller
         $nOldest = 0;
         $nAge = 0;
         $nTotal = 0;
-        $aTradelines = $this->getUser()->getReportsPrequal()->last()->getTradeLines();
+        $aTradelines = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getTradeLines();
         $oCurrentDate = new \DateTime('now');
         foreach ($aTradelines as $aTradeline) {
           $nTotal++;

@@ -47,8 +47,9 @@
 </div>
 </div>
 <div class="footer">
-    <div class="footer-info"></div>
+    {% block footer %}{% endblock %}
     <div class="experian-logo">
+        <span class="experian-data">Data provided by</span><br>
         <img alt="" src="{{ asset('bundles/core/images/logo/experian_sm.png') }}">
     </div>
 </div>

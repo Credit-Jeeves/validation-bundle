@@ -24,7 +24,7 @@ abstract class Base
     }
 
     /**
-     * @return \CreditJeeves\UserBundle\Entity\User
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     protected function getUser()
     {

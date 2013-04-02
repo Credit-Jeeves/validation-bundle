@@ -11,6 +11,7 @@
     <link href="{{ asset('bundles/component/css/goods.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/inquiries.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/automotive-details.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/footer.css') }}" rel="stylesheet" type="text/css" />
     
     <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
@@ -24,7 +25,9 @@
 {% endblock %}
 
 {% block tabs %}
-    {{ render(controller('ComponentBundle:Menu:tabs')) }}
+    <div class="top-nav">
+    {{ knp_menu_render('ApplicantBundle:Builder:mainMenu', { 'template': 'ApplicantBundle:Menu:applicant_tabs.html.twig' }) }}
+    </div>
 {% endblock %}
 
 
@@ -32,3 +35,6 @@
     {{ render(controller('ComponentBundle:Blocks:info')) }}
 {% endblock %}
 
+{% block footer %}
+    {{ render(controller('ComponentBundle:Footer:index')) }}
+{% endblock %}

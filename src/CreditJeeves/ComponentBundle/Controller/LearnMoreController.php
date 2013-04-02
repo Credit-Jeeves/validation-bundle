@@ -4,10 +4,10 @@ namespace CreditJeeves\ComponentBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\DataBundle\Entity\Report;
 
-class DidYouKnowController extends Controller
+class LearnMoreController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('ComponentBundle:DidYouKnow:index.html.twig', array());
+        return $this->render('ComponentBundle:LearnMore:index.html.twig', array());
     }
 }

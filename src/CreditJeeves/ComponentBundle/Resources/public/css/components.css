@@ -29,3 +29,14 @@
 .spaced-text {
     margin-bottom: 20px;
 }
+
+.link-row {
+    color: #1985EA;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.link-row a {
+    float: right;
+    width: 215px;
+}

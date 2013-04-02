@@ -16,8 +16,8 @@ class ReportController extends Controller
      */
     public function indexAction()
     {
-        $Report = $this->getUser()->getReportsD2c()->last();
-        $sEmail = $this->getUser()->getEmail();
+        $Report = $this->get('core.session.applicant')->getUser()->getReportsD2c()->last();
+        $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
         $sSupportEmail = $this->container->getParameter('support_email');
         $sSupportPhone = $this->container->getParameter('support_phone');
         return array(

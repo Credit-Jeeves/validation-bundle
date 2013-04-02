@@ -5,10 +5,17 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="cj_vehicle")
+ * @ORM\Table(name="cj_order")
+ * @ORM\HasLifecycleCallbacks()
  */
-class Vehicle
+class Order
 {
+    /**
+     * 
+     * @var string
+     */
+    const STATUS_COMPLETE = 'complete';
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -24,12 +31,7 @@ class Vehicle
     /**
      * @ORM\Column(type="string")
      */
-    protected $make;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $model;
+    protected $status;
 
     /**
      * @ORM\Column(type="datetime")
@@ -42,10 +44,18 @@ class Vehicle
     protected $updated_at;
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="vehicle")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="orders")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->created_date = new \DateTime();
+    }
 
     /**
      * Get id
@@ -61,7 +71,7 @@ class Vehicle
      * Set cj_applicant_id
      *
      * @param integer $cjApplicantId
-     * @return Lead
+     * @return Order
      */
     public function setCjApplicantId($cjApplicantId)
     {
@@ -81,84 +91,61 @@ class Vehicle
     }
 
     /**
-     * Set make
+     * Set status
      *
-     * @param string $make
-     * @return Vehicle
+     * @param string $status
+     * @return Order
      */
-    public function setMake($make)
+    public function setStatus($status)
     {
-        $this->make = $make;
-
+        $this->status = $status;
+    
         return $this;
     }
 
     /**
-     * Get make
+     * Get status
      *
      * @return string 
      */
-    public function getMake()
+    public function getStatus()
     {
-        return $this->make;
+        return $this->status;
     }
 
     /**
-     * Set model
+     * Set created_date
      *
-     * @param string $model
-     * @return Vehicle
-     */
-    public function setModel($model)
-    {
-        $this->model = $model;
-
-        return $this;
-    }
-
-    /**
-     * Get model
-     *
-     * @return string 
-     */
-    public function getModel()
-    {
-        return $this->model;
-    }
-
-    /**
-     * Set created_at
-     *
-     * @param \DateTime $createdAt
-     * @return Vehicle
+     * @param \DateTime $createdDate
+     * @return Order
      */
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-
+    
         return $this;
     }
 
     /**
-     * Get created_at
+     * Get created_date
      *
      * @return \DateTime 
      */
     public function getCreatedAt()
     {
-        return $this->created_at;
+        return $this->created_At;
     }
 
     /**
      * Set updated_at
      *
      * @param \DateTime $updatedAt
-     * @return Vehicle
+     * @return Order
      */
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
-
+    
         return $this;
     }
 
@@ -176,12 +163,12 @@ class Vehicle
      * Set user
      *
      * @param \CreditJeeves\DataBundle\Entity\User $user
-     * @return Vehicle
+     * @return Order
      */
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
-
+    
         return $this;
     }
 

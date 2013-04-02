@@ -1,23 +1,26 @@
 <?php
-
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-class SummaryController extends Controller
+/**
+ * @author Alex
+ * @Route(service="component.controller.footer")
+ */
+class FooterController extends Controller
 {
     /**
-     * @Route("/summary", name="applicant_summary")
      * @Template()
      *
      * @return array
      */
     public function indexAction()
     {
-        $cjUser = $this->get('core.session.applicant')->getUser();
-        $sEmail = $cjUser->getEmail();
-        return array('sEmail' => $sEmail);
+        $sHost = $this->container->getParameter('server_name');
+        return array(
+            'sHost' => $sHost,
+            );
     }
 }

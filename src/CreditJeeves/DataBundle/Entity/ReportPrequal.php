@@ -92,7 +92,7 @@ class ReportPrequal extends Report
     }
 
     /**
-     * Get userPostFlush
+     * Get user
      *
      * @return \CreditJeeves\UserBundle\Entity\User 
      */

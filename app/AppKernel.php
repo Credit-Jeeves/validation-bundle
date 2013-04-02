@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
+            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
