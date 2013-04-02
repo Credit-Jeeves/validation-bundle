@@ -4,8 +4,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
+require_once __DIR__.'/../app/AppTestKernel.php';
 
-$kernel = new AppKernel('test', true);
+$kernel = new TestAppKernel('test', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);

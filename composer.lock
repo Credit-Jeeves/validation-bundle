@@ -2015,21 +2015,26 @@
         {
             "name": "behat/mink-bundle",
             "version": "dev-master",
-            "target-dir": "Behat/MinkBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/66Ton99/MinkBundle",
-                "reference": "a47ac6dad1583e265c1338f8c5521e9a15072f49"
+                "reference": "22efd225caa0ed4d19614f6cb7bda19c993df8ee"
             },
             "require": {
                 "behat/mink": "1.4.*",
                 "php": ">=5.3.3",
                 "symfony/framework-bundle": "2.2.*"
             },
+            "require-dev": {
+                "behat/mink-browserkit-driver": "1.0.*",
+                "behat/mink-goutte-driver": "1.0.*",
+                "behat/mink-selenium2-driver": "1.0.*",
+                "behat/mink-zombie-driver": "1.0.*"
+            },
             "type": "symfony-bundle",
             "autoload": {
                 "psr-0": {
-                    "Behat\\MinkBundle": ""
+                    "Behat\\MinkBundle": "src/"
                 }
             },
             "license": [
@@ -2037,18 +2042,21 @@
             ],
             "authors": [
                 {
+                    "name": "Ton Sharp",
+                    "email": "66ton99@gmail.com"
+                },
+                {
                     "name": "Konstantin Kudryashov",
                     "email": "ever.zet@gmail.com"
                 }
             ],
             "description": "Mink bundle for Symfony2",
-            "homepage": "http://mink.behat.org/bundle/index.html",
             "keywords": [
                 "browser",
                 "test",
                 "web"
             ],
-            "time": "2013-03-29 12:46:23"
+            "time": "2013-04-01 11:20:17"
         },
         {
             "name": "behat/mink-goutte-driver",

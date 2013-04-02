@@ -21,7 +21,7 @@ abstract class BaseTestCase extends MinkTestCase
     protected function getUrl()
     {
         if (null === $this->url) {
-            $this->url = 'http://' . $this->getContainer()->getParameter('url') . '/' . $this->envPath;
+            $this->url = 'http://' . $this->getContainer()->getParameter('host') . $this->envPath;
         }
         return $this->url;
     }

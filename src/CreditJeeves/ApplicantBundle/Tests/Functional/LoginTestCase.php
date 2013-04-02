@@ -12,9 +12,8 @@ class LoginTestCanse extends BaseTestCase
      */
     public function userCanLogin()
     {
-        die('OK');
-        $session = $this->getMink()->getSession();
+        $session = $this->getMink()->getSession('symfony');
+        $session = $this->getMink()->getSession('symfony');
         $session->visit($this->getUrl());
-        sleep(900);
     }
 }
