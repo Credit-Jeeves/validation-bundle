@@ -14,8 +14,5 @@ class Dealer extends User
 {
     public function setUser(cjUser $User)
     {
-        $attribute = new AttributeBag();
-        $attribute->setName('dealer');
-        $this->session->registerBag($attribute);
     }
 }

@@ -20,10 +20,10 @@ class HomepageController extends Controller
      */
     public function indexAction()
     {
-        $nLeadId = $this->get('core.session.applicant')->getLeadId();
-        $Lead    = $this->getDoctrine()->getRepository('DataBundle:Lead')->find($nLeadId);
-        $Report  = $this->getUser()->getReportsPrequal()->last();
-        $sEmail  = $this->getUser()->getEmail();
+        $User    = $this->get('core.session.applicant')->getUser();
+        $Lead    = $this->get('core.session.applicant')->getLead();
+        $Report  = $User->getReportsPrequal()->last();
+        $sEmail  = $User->getEmail();
         return array(
             'Report' => $Report,
             'Lead' => $Lead,

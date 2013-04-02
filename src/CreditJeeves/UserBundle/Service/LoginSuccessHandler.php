@@ -44,6 +44,8 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 $this->container->get('core.session.dealer')->setUser($User);
                 break;
             case 'admin':
+//                 $User()->setRoles(array('ROLE_USER', 'ROLE_ADMIN'));
+//                 $User->persist();
                 $this->container->get('core.session.admin')->setUser($User);
                 break;
         }

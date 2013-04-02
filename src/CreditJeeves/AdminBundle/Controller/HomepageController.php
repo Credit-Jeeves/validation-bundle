@@ -18,6 +18,8 @@ class HomepageController extends Controller
      */
     public function indexAction()
     {
+        $Applicant = $this->getDoctrine()->getRepository('DataBundle:User')->find(17);
+        $this->get('core.session.applicant')->setUser($Applicant);
         return array();
     }
 }

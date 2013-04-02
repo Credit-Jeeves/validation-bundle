@@ -12,29 +12,60 @@ abstract class User
      * 
      * @var string
      */
-    const BAG_APPLICANT = 'applicant';
+    const USER_APPLICANT = 'applicant';
 
     /**
      * 
      * @var string
      */
-    const BAG_DEALER = 'dealer';
+    const USER_DEALER = 'dealer';
 
     /**
      * 
      * @var string
      */
-    const BAG_ADMIN = 'admin';
+    const USER_ADMIN = 'admin';
+
+    protected $data = array();
+
+    protected $em;
 
     protected $session;
 
     /**
      * @InjectParams({
-     *     "session" = @Inject("Session")
+     *     "session" = @Inject("Session"),
+     *     "em" = @Inject("doctrine.orm.entity_manager")
      * })
      */
-    public function __construct(Session $session)
+    public function __construct(Session $session, $em)
     {
         $this->session = $session;
+        $this->em = $em;
+    }
+
+    protected function findUser($nUserId)
+    {
+       return  $this->em->getRepository('DataBundle:User')->find($nUserId);
+    }
+
+    protected function saveToSession($sNamespace)
+    {
+        $this->session->set($sNamespace, $this->serialize());
+    }
+
+    protected function getFromSession($sNamespace)
+    {
+        return $this->unserialize($this->session->get($sNamespace, ''));
+    }
+
+    protected function serialize()
+    {
+        return serialize($this->data);
+    }
+
+    protected function unserialize($serialized)
+    {
+        return unserialize($serialized);
     }
 }

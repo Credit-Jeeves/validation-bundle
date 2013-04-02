@@ -7,18 +7,19 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 /**
  * 
- * @Service("core.session.dealer")
+ * @Service("core.session.admin")
  *
  */
 class Admin extends User
 {
     public function setUser(cjUser $User)
     {
-        $attribute = new AttributeBag();
-        $attribute->setName(self::BAG_DEALER);
-        $this->session->registerBag($attribute);
-        $attribute = new AttributeBag();
-        $attribute->setName(self::BAG_ADMIN);
-        $this->session->registerBag($attribute);
+        $this->prepareAdmin($User);
+        $this->saveToSession(self::USER_ADMIN);
+    }
+    
+    public function prepareAdmin(cjUser $User)
+    {
+        $this->data['user_id'] = $User->getId();
     }
 }

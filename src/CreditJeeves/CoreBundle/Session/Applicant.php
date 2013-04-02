@@ -3,7 +3,6 @@ namespace CreditJeeves\CoreBundle\Session;
 
 use JMS\DiExtraBundle\Annotation\Service;
 use CreditJeeves\DataBundle\Entity\User as cjUser;
-use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 /**
  * 
@@ -12,27 +11,60 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
  */
 class Applicant extends User
 {
+    /**
+     * 
+     * @param cjUser $User
+     */
     public function setUser(cjUser $User)
     {
-        $attribute = new AttributeBag();
-        $attribute->setName(self::BAG_APPLICANT);
-        $this->session->registerBag($attribute);
-        $Lead = $User->getActiveLead();
-        $this->session->set('nLeadId', $Lead->getId());
+        $this->prepareApplicant($User);
+        $this->saveToSession(self::USER_APPLICANT);
     }
-        
+
+    /**
+     * 
+     * @param cjUser $User
+     */
+    public function prepareApplicant(cjUser $User)
+    {
+        $Lead = $User->getActiveLead();
+        $this->data['user_id'] = $User->getId();
+        $this->data['lead_id'] = $Lead->getId();
+    }
+
+    /**
+     * @return CreditJeeves\DataBundle\Entity\User
+     */
+    public function getUser()
+    {
+        $data = $this->getFromSession(self::USER_APPLICANT);
+        if (isset($data['user_id'])) {
+            return $this->findUser($data['user_id']);
+        }
+    }
+
+    /**
+     * @return integer
+     */
     public function getLeadId()
     {
-        
-        return  $this->session->get('nLeadId', null);
+        $data = $this->getFromSession(self::USER_APPLICANT);
+        return  isset($data['lead_id']) ? $data['lead_id'] : null;
     }
-    
-//     public function setUser(cjUser $User)
-//     {
-        
-//         $this->session->setName('applicant');
-//         $Lead = $User->getActiveLead();
-//         $this->session->set('nLeadId', $Lead->getId());
-        
-//     }
+
+    /**
+     * 
+     * @param integer $nLeadId
+     */
+    public function setLeadId($nLeadId)
+    {
+        $this->data = $this->getFromSession(self::USER_APPLICANT);
+        $this->data['lead_id'] = $nLeadId;
+        $this->saveToSession(self::USER_APPLICANT);
+    }
+
+    public function getLead()
+    {
+        return $this->em->getRepository('DataBundle:Lead')->find($this->getLeadId());
+    }
 }

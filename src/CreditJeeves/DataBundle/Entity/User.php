@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+//use JMS\DiExtraBundle\Annotation\Service;
 
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\Report;
@@ -15,7 +16,6 @@ use CreditJeeves\DataBundle\Entity\Order;
  * @ORM\Entity
  * @ORM\Table(name="cj_user")
  *
- * FIXME move to DataBundle
  */
 class User extends BaseUser
 {
