@@ -7,6 +7,10 @@ parameters:
     mailer_user: null
     mailer_password: null
 
+    mink.browser_name: 'firefox'
+    mink.base_url: 'http://%server_name%/_test.php'
+    server: dev
+
     experian:
         pidkiq_url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
         pidkiq_userpwd: 'creditjeeves_pid_demo:ju3CVGlhX4' #required! # overwritten by DB

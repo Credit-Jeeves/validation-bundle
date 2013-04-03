@@ -36,7 +36,7 @@ class Filter implements ContainerAwareInterface
      */
     public function checkReport(FilterEvent $event)
     {
-        /** @var $user \CreditJeeves\UserBundle\Entity\User */
+        /** @var $user \CreditJeeves\DataBundle\Entity\User */
         $user = $this->container->get('security.context')->getToken()->getUser();
         /** @var $route \Symfony\Bundle\FrameworkBundle\Routing\Router */
         $route = $this->container->get('router');

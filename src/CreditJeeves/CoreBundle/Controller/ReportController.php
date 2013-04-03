@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  * @Route("/report")
  *
- * @method \CreditJeeves\UserBundle\Entity\User getUser()
+ * @method \CreditJeeves\DataBundle\Entity\User getUser()
  */
 class ReportController extends Controller
 {
@@ -59,7 +59,7 @@ class ReportController extends Controller
     {
         require_once __DIR__.'/../sfConfig.php';
         \sfConfig::fill($this->container->getParameter('experian'), 'global_experian');
-        \sfConfig::set('global_host', $this->container->getParameter('host'));
+        \sfConfig::set('global_host', $this->container->getParameter('server_name'));
         $this->netConnect->execute();
         return $this->netConnect->getResponseOnUserData($this->getUser());
     }

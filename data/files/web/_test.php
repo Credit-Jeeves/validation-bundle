@@ -6,7 +6,7 @@ $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
 require_once __DIR__.'/../app/AppTestKernel.php';
 
-$kernel = new TestAppKernel('test', true);
+$kernel = new AppTestKernel('test', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
