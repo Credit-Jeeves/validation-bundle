@@ -50,7 +50,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/password", name="applicant_contact")
+     * @Route("/contact", name="applicant_contact")
      * @Template()
      */
     public function contactAction()
@@ -72,7 +72,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/password", name="applicant_email")
+     * @Route("/email", name="applicant_email")
      * @Template()
      */
     public function emailAction()
@@ -94,7 +94,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/password", name="applicant_remove")
+     * @Route("/remove", name="applicant_remove")
      * @Template()
      */
     public function removeAction()

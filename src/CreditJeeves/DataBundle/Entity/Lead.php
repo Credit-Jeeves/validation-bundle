@@ -64,13 +64,13 @@ class Lead
     protected $updated_at;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="user_leads")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="user_leads")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\UserBundle\Entity\User", inversedBy="dealer_leads")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="dealer_leads")
      * @ORM\JoinColumn(name="cj_account_id", referencedColumnName="id")
      */
     protected $dealer;
@@ -303,10 +303,10 @@ class Lead
     /**
      * Set User
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $user
+     * @param \CreditJeeves\DataBundle\Entity\User $user
      * @return Lead
      */
-    public function setUser(\CreditJeeves\UserBundle\Entity\User $user = null)
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->User = $user;
     
@@ -316,7 +316,7 @@ class Lead
     /**
      * Get User
      *
-     * @return \CreditJeeves\UserBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User 
      */
     public function getUser()
     {
@@ -349,10 +349,10 @@ class Lead
     /**
      * Set dealer
      *
-     * @param \CreditJeeves\UserBundle\Entity\User $dealer
+     * @param \CreditJeeves\DataBundle\Entity\User $dealer
      * @return Lead
      */
-    public function setDealer(\CreditJeeves\UserBundle\Entity\User $dealer = null)
+    public function setDealer(\CreditJeeves\DataBundle\Entity\User $dealer = null)
     {
         $this->dealer = $dealer;
 
@@ -362,7 +362,7 @@ class Lead
     /**
      * Get dealer
      *
-     * @return \CreditJeeves\UserBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User 
      */
     public function getDealer()
     {

@@ -526,6 +526,23 @@
                 <target>Settings</target>
             </trans-unit>
 
+            <trans-unit id="settings.password">
+                <source>settings.password</source>
+                <target>Change Password</target>
+            </trans-unit>
+            <trans-unit id="settings.contact_information">
+                <source>settings.contact_information</source>
+                <target>Contact Information</target>
+            </trans-unit>
+            <trans-unit id="settings.email">
+                <source>settings.email</source>
+                <target>Email Preferences</target>
+            </trans-unit>
+            <trans-unit id="settings.remove">
+                <source>settings.remove</source>
+                <target>Remove Authorization</target>
+            </trans-unit>
+
 
             
         </body>
