@@ -2,6 +2,6 @@ _main:
     resource: routing.yml
 
 _mink_bundle:
-    resource: "/srv/nginx/creditjeeves2/vendor/behat/mink-bundle/tests/routing.yml"
+    resource: "@MinkBundle/Resources/config/routing.yml"
     prefix:   /
 

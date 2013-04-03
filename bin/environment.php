@@ -3,15 +3,8 @@
 $libRoot = realpath(__DIR__ . '/../vendor/hat/environment') . '/';
 require_once $libRoot . 'autoload.php';
 
-use Hat\Environment\Request\CliRequest;
-use Hat\Environment\Environment;
+$configs = require $libRoot . 'src/Hat/Environment/Environment.config.php';
+$configs['default.profile.name'] = 'data/environment/profiles.ini';
 
-$env = new Environment();
-
-$env->handle(
-    new CliRequest(
-        array(
-            'profile' => 'data/environment/profiles.ini'
-        )
-    )
-);
+$environment = new Hat\Environment\Environment(new \Hat\Environment\Kit\Kit($configs));
+$environment();

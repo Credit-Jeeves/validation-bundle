@@ -17,3 +17,11 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+mink:
+    goutte: ~
+#    sahi: ~
+#    zombie: ~
+#    selenium: ~
+    selenium2: ~
+

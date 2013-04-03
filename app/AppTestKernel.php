@@ -4,15 +4,16 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
-
-class TestAppKernel extends AppKernel
+/**
+ * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ */
+class AppTestKernel extends AppKernel
 {
     private $catch;
 
     public function registerBundles()
     {
         $bundles = parent::registerBundles();
-        $bundles[] = new Behat\MinkBundle\MinkBundle();
         return $bundles;
     }
 

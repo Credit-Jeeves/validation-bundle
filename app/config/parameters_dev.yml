@@ -6,6 +6,6 @@ parameters:
     database_user: credit_jeeves
     database_password: 'passw0rd'
 
+    server_name: dev2.creditjeeves.com
 
-    host: dev2.creditjeeves.com
-    server_name: cj2
+    mink_webdriver_host: 'http://10.46.179.1:4444/wd/hub'
