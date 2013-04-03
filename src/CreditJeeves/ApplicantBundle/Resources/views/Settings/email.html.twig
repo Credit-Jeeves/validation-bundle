@@ -18,9 +18,46 @@
     <div class="column-middle floatright">
         <div class="pod-middle pod-border pod-padding shadow">
             <h1>Email Preferences</h1>
-            <select class="cj-select">
-                <option></option>
-            </select>
+            <div class="row-20"></div>
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="flash-notice">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            <form action="{{ path('applicant_email') }}" method="post" {{ form_enctype(form) }}>
+                {{ form_errors(form) }}
+                <table>
+                    <tr>
+                        <td>
+                            <div class="checkbox-anywhere">
+                            {{ form_widget(form.score_changed_notification) }}
+                            </div>
+                        </td>
+                        <td>
+                            <label>{{ 'notification.score' | trans }}</label>
+                        </td>
+                        <td>
+                            {{ 'notification.score.comment' | trans }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="checkbox-anywhere">
+                            {{ form_widget(form.offer_notification) }}
+                            </div>
+                        </td> 
+                        <td>
+                            <label>{{ 'notification.offer' | trans }}</label>
+                        </td>
+                        <td>
+                            {{ 'notification.offer.comment' | trans }}
+                        </td>
+                    </tr>
+                </table>
+                {{ form_rest(form) }}
+                <div class="row-20"></div>
+                <input class="button large green" type="submit" name="_submit" value="Save" />
+            </form>
         </div>
     </div>
     <div class="clearboth"></div>

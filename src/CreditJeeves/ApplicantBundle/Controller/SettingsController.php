@@ -3,6 +3,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 
 use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
 use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
+use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -81,16 +82,23 @@ class SettingsController extends Controller
     public function emailAction()
     {
         $request = $this->get('request');
-        $sRouteName = $request->get('_route');
-        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $cjUser = $this->get('core.session.applicant')->getUser();
         $sEmail = $cjUser->getEmail();
-        
+        $form = $this->createForm(new NotificationType(), $cjUser);
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($cjUser);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
+            }
+        }
         return $this->render(
                 'ApplicantBundle:Settings:email.html.twig',
                 array(
                         'sEmail' => $sEmail,
-                        'sRouteName' => $sRouteName,
-//                        'form'    => $form->createView()
+                        'form'    => $form->createView()
                 )
         );
         
