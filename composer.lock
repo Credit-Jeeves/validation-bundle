@@ -1,5 +1,5 @@
 {
-    "hash": "baeecdb0f63787eef62af9ad37354e67",
+    "hash": "301e7e3fd3a2fb8bc2510c3e23ec2c00",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -389,14 +389,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/slavahatnuke/environment.git",
-                "reference": "4a2a664a9aa0770767d3d8ee0475f88c2d96690c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/slavahatnuke/environment/zipball/4a2a664a9aa0770767d3d8ee0475f88c2d96690c",
-                "reference": "4a2a664a9aa0770767d3d8ee0475f88c2d96690c",
-                "shasum": ""
+                "url": "git@github.com:66Ton99/environment.git",
+                "reference": "78fe71cb4bc95ea867fe8c2dd48d751e8bf32d7d"
             },
             "require": {
                 "php": ">=5.3.2"
