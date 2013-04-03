@@ -97,4 +97,5 @@ class ReportD2c extends Report
     {
         return $this->user;
     }
+
 }

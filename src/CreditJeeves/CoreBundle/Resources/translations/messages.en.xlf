@@ -526,6 +526,40 @@
                 <target>Settings</target>
             </trans-unit>
 
+            <trans-unit id="settings.password">
+                <source>settings.password</source>
+                <target>Change Password</target>
+            </trans-unit>
+            <trans-unit id="settings.contact_information">
+                <source>settings.contact_information</source>
+                <target>Contact Information</target>
+            </trans-unit>
+            <trans-unit id="settings.email">
+                <source>settings.email</source>
+                <target>Email Preferences</target>
+            </trans-unit>
+            <trans-unit id="settings.remove">
+                <source>settings.remove</source>
+                <target>Remove Authorization</target>
+            </trans-unit>
+
+            <trans-unit id="notification.score">
+                <source>notification.score</source>
+                <target>Notifications</target>
+            </trans-unit>
+            <trans-unit id="notification.score.comment">
+                <source>notification.score.comment</source>
+                <target>Yes, please send me notifications like changes in my credit score and reaching my target prequalification score.</target>
+            </trans-unit>
+            <trans-unit id="notification.offer">
+                <source>notification.offer</source>
+                <target>Offers</target>
+            </trans-unit>
+            <trans-unit id="notification.offer.comment">
+                <source>notification.offer.comment</source>
+                <target>Yes, please send me offers like discounts on full credit reports or loans that I might qualify for.</target>
+            </trans-unit>
+
 
             
         </body>

@@ -77,6 +77,21 @@ class User extends BaseUser
     protected $phone_type;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $phone;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $score_changed_notification;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $offer_notification;
+
+    /**
      * @ORM\Column(type="date")
      */
     protected $date_of_birth;
@@ -704,9 +719,32 @@ class User extends BaseUser
     }
 
     /**
+     * Get phone
+     *
+     * @return string 
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return User
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    
+        return $this;
+    }
+    
+    /**
      * Get phone_type
      *
-     * @return integer 
+     * @return integer
      */
     public function getPhoneType()
     {
@@ -756,5 +794,51 @@ class User extends BaseUser
             }
         }
         return false;
+    }
+
+    /**
+     * Set score_changed_notification
+     *
+     * @param integer $scoreChangedNotification
+     * @return User
+     */
+    public function setScoreChangedNotification($scoreChangedNotification)
+    {
+        $this->score_changed_notification = $scoreChangedNotification;
+    
+        return $this;
+    }
+
+    /**
+     * Get score_changed_notification
+     *
+     * @return integer 
+     */
+    public function getScoreChangedNotification()
+    {
+        return $this->score_changed_notification;
+    }
+
+    /**
+     * Set offer_notification
+     *
+     * @param integer $offerNotification
+     * @return User
+     */
+    public function setOfferNotification($offerNotification)
+    {
+        $this->offer_notification = $offerNotification;
+    
+        return $this;
+    }
+
+    /**
+     * Get offer_notification
+     *
+     * @return integer 
+     */
+    public function getOfferNotification()
+    {
+        return $this->offer_notification;
     }
 }
