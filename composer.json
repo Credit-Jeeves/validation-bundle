@@ -112,8 +112,6 @@
         "ext-session": "*",
         "ext-SimpleXML": "*",
         "ext-Reflection": "*",
-        "ext-intl": "*",
-        "ext-apc": "*",
         "lib-curl": "*",
         "lib-openssl": "*",
         "CreditJeevesSf1": "dev-master",
