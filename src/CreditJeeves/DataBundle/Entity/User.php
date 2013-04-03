@@ -77,6 +77,11 @@ class User extends BaseUser
     protected $phone_type;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $phone;
+
+    /**
      * @ORM\Column(type="date")
      */
     protected $date_of_birth;
@@ -704,9 +709,31 @@ class User extends BaseUser
     }
 
     /**
+     * Get phone
+     *
+     * @return string 
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return User
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    
+        return $this;
+    }
+    
+    /**
      * Get phone_type
      *
-     * @return integer 
+     * @return integer
      */
     public function getPhoneType()
     {

@@ -1,10 +1,8 @@
 <?php
-
 namespace CreditJeeves\ApplicantBundle\Controller;
 
-use CreditJeeves\UserBundle\Form\Type\PasswordType;
-
-use CreditJeeves\ApplicantBundle\Form\Type;
+use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
+use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -19,7 +17,6 @@ class SettingsController extends Controller
     public function passwordAction()
     {
         $request = $this->get('request');
-        $sRouteName = $request->get('_route');
         $cjUser = $this->get('core.session.applicant')->getUser();
         $sOldPassword = $cjUser->getPassword();
         $sEmail = $cjUser->getEmail();
@@ -41,9 +38,8 @@ class SettingsController extends Controller
         return $this->render(
                 'ApplicantBundle:Settings:password.html.twig',
                 array(
-                        'sEmail' => $sEmail,
-                        'sRouteName' => $sRouteName,
-                        'form'    => $form->createView()
+                    'sEmail' => $sEmail,
+                    'form' => $form->createView()
                 )
         );
         
@@ -56,16 +52,23 @@ class SettingsController extends Controller
     public function contactAction()
     {
         $request = $this->get('request');
-        $sRouteName = $request->get('_route');
-        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $cjUser = $this->get('core.session.applicant')->getUser();
         $sEmail = $cjUser->getEmail();
-        
+        $form = $this->createForm(new ContactType(), $cjUser);
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($cjUser);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
+            }
+        }
         return $this->render(
                 'ApplicantBundle:Settings:contact.html.twig',
                 array(
-                        'sEmail' => $sEmail,
-                        'sRouteName' => $sRouteName,
-//                        'form'    => $form->createView()
+                    'sEmail' => $sEmail,
+                    'form' => $form->createView()
                 )
         );
         

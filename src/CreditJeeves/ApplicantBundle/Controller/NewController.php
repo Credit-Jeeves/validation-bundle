@@ -4,7 +4,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 
 //use CreditJeeves\UserBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\UserBundle\Form\Type\NewType;
+use CreditJeeves\ApplicantBundle\Form\Type\NewType;
 use CreditJeeves\UserBundle\Entity\NewEntity as User;
 
 class NewController extends Controller

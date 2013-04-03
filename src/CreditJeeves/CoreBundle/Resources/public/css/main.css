@@ -246,10 +246,29 @@ h5 {
     color: #6faf00;
 }
 
+input[type="text"],
+input[type="password"] {
+    border: 1px solid #999999;
+    border-radius: 4px 4px 4px 4px;
+    box-shadow: 0 0 1px 1px #D7D7D7 inset;
+    padding: 3px 10px;
+}
 
+input {
+    background-color: white;
+    color: #333333;
+    font-size: 20px;
+    margin-right: 10px;
+}
 
-
-
+.flash-notice {
+  margin: 4px 0;
+  padding: 4px 4px 4px 30px;
+  background: url(/bundles/core/images/tick.png) no-repeat 10px 4px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  background-color: #ffc;
+}
 
 /*
 
