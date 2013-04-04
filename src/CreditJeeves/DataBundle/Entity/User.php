@@ -13,7 +13,7 @@ use CreditJeeves\DataBundle\Entity\Vehicle;
 use CreditJeeves\DataBundle\Entity\Order;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
  * @ORM\Table(name="cj_user")
  *
  */

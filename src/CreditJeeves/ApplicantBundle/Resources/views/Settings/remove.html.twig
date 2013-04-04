@@ -3,23 +3,23 @@
 {% block content %}
     <div class="column-small floatleft">
         <div class="pod-small pod-border pod-padding shadow">
-            <h2>Account Settings</h2>
+            <h2>{{ 'settings.title' | trans }}</h2>
             {{ knp_menu_render('ApplicantBundle:Builder:settingsMenu', { 'template': 'ApplicantBundle:Menu:applicant_settings.html.twig' }) }}
         </div>
     </div>
     <div class="column-middle floatright">
         <div class="pod-middle pod-border pod-padding shadow">
-            <h1>Remove Authorization</h1>
+            <h1>{{ 'settings.remove' | trans }}</h1>
             {{ 'remove.comment' | trans }}
+            <div class="row-20"></div>
             {% for flashMessage in app.session.flashbag.get('notice') %}
                 <div class="flash-notice">
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-            <div class="row-20"></div>
             <form action="{{ path('applicant_remove') }}" method="post" {{ form_enctype(form) }}>
                 <div class="background-grey">
-                    <h5>Verify your password</h5>
+                    <h5>{{ 'password.verify' | trans }}</h5>
                     <br>
                     <div>
                         {{ form_widget(form) }}
