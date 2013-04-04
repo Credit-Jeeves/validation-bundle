@@ -2,7 +2,7 @@
 
 DIR="$(cd `dirname $0` ; pwd)"
 BUILDS_DIR="$WORKSPACE/../../jobs/$JOB_NAME/builds"
-BUILD_DIR="$DIR/../log/build"
+BUILD_DIR="$DIR/../app/logs/build"
 PHPUNIT_PATH=`which phpunit`
 
 #DB_DUMP="$DIR/../data/sql/dump_20130328.sql"
