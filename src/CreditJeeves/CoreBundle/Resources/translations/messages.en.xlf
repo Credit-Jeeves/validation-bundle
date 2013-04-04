@@ -6,6 +6,26 @@
                 <source>project_name</source>
                 <target>CreditJeeves</target>
             </trans-unit>
+            <trans-unit id="login.title">
+                <source>login.title</source>
+                <target>Member Login</target>
+            </trans-unit>
+            <trans-unit id="login.email">
+                <source>login.email</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="login.password">
+                <source>login.password</source>
+                <target>Password</target>
+            </trans-unit>
+            <trans-unit id="login.submit">
+                <source>login.submit</source>
+                <target>Sign In</target>
+            </trans-unit>
+            <trans-unit id="login.remember">
+                <source>login.remember</source>
+                <target>Remember My Email</target>
+            </trans-unit>
             
             <trans-unit id="project.questions">
                 <source>project.questions</source>

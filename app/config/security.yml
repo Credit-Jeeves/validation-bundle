@@ -1,7 +1,3 @@
-jms_security_extra:
-    secure_all_services: false
-    expressions: true
-
 security:
     encoders:
         CreditJeeves\DataBundle\Entity\User:
@@ -32,6 +28,7 @@ security:
             anonymous:    true
 
     access_control:
+        - { path: ^/_behat/tests/, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$,     role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/new$,       role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/invite/,    role: IS_AUTHENTICATED_ANONYMOUSLY }

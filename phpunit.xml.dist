@@ -15,7 +15,6 @@
 
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>vendor/behat/mink-bundle/tests/Behat/MinkBundle/Tests</directory>
             <directory suffix="TestCase.php">src/*/*Bundle/Tests</directory>
             <directory suffix="TestCase.php">src/*/*Bundle/Tests/Functional</directory>
             <directory suffix="TestCase.php">src/*/Bundle/*Bundle/Tests</directory>

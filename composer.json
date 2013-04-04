@@ -94,11 +94,7 @@
         },
         {
             "type": "git",
-            "url": "https://github.com/66Ton99/environment"
-        },
-        {
-            "type": "git",
-            "url": "https://github.com/66Ton99/MinkBundle"
+            "url": "git@github.com:66Ton99/MinkBundle.git"
         }
     ],
     "require": {
@@ -112,8 +108,6 @@
         "ext-session": "*",
         "ext-SimpleXML": "*",
         "ext-Reflection": "*",
-        "ext-intl": "*",
-        "ext-apc": "*",
         "lib-curl": "*",
         "lib-openssl": "*",
         "CreditJeevesSf1": "dev-master",

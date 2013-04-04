@@ -65,9 +65,15 @@ fos_user:
     firewall_name: main
     user_class: CreditJeeves\DataBundle\Entity\User
 
+#JMS
 jms_di_extra:
     locations:
         all_bundles: true
     automatic_controller_injections:
         method_calls:
             setContainer: ["@service_container"]
+
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+

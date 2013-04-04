@@ -5,15 +5,47 @@ use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class LoginTestCanse extends BaseTestCase
+class LoginTestCase extends BaseTestCase
 {
+    protected $fixtures = array(
+        '001_cj_account_group.yml',
+        '002_cj_admin_account.yml',
+        '003_cj_dealer_account.yml',
+        '004_cj_applicant.yml',
+        '005_cj_lead.yml',
+        '006_cj_applicant_report.yml',
+        '007_cj_applicant_score.yml',
+        '010_cj_affiliate.yml',
+        '013_cj_holding_account.yml',
+    );
+
     /**
      * @test
      */
     public function userCanLogin()
     {
-        $session = $this->getMink()->getSession('symfony');
-        $session = $this->getMink()->getSession('symfony');
-        $session->visit($this->getUrl());
+        $this->load($this->fixtures, true);
+        $this->getMink()->setDefaultSessionName('selenium2');
+        $this->login('emilio@example.com', 'pass');
+    }
+
+    /**
+     * @test
+     * @depends userCanLogin
+     * @expectedException PHPUnit_Framework_AssertionFailedError
+     */
+    public function wrongPassword()
+    {
+        $this->load($this->fixtures, true);
+        $this->getMink()->setDefaultSessionName('goutte');
+        $this->login('emilio@example.com', '123');
+    }
+
+    /**
+     * @test
+     */
+    public function userMustBeBlockedAfterFewFails()
+    {
+        $this->markTestIncomplete('TODO finish');
     }
 }
