@@ -6,7 +6,7 @@ use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\ReportPrequalRepository")
  */
 class ReportPrequal extends Report
 {
@@ -99,4 +99,5 @@ class ReportPrequal extends Report
     {
         return $this->user;
     }
+
 }

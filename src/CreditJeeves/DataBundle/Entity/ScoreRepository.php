@@ -2,18 +2,19 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping as ORM;
 
-class LeadRepository extends EntityRepository
+class ScoreRepository extends EntityRepository
 {
     /**
-     *
+     * 
      * @param \CreditJeeves\DataBundle\Entity\User $User
      */
-    public function deleteUserLeads(\CreditJeeves\DataBundle\Entity\User $User)
+    public function deleteUserScores(\CreditJeeves\DataBundle\Entity\User $User)
     {
-        $query = $this->createQueryBuilder('l')
+        $query = $this->createQueryBuilder('s')
                       ->delete()
-                      ->where('l.cj_applicant_id = :id')
+                      ->where('s.cj_applicant_id = :id')
                       ->setParameter('id', $User->getId())
                       ->getQuery()
                       ->execute();

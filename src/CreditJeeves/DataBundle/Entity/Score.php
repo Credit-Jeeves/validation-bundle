@@ -4,7 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\ScoreRepository")
  * @ORM\Table(name="cj_applicant_score")
  * @ORM\HasLifecycleCallbacks()
  */

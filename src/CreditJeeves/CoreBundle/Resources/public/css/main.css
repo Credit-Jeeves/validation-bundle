@@ -284,6 +284,10 @@ table label {
     line-height: 190%;
     width: 106px;
 }
+
+.loading {
+    margin-top: 30px;
+}
 /*
 
 .customer-info {

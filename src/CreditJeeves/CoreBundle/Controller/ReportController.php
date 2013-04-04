@@ -35,7 +35,7 @@ class ReportController extends Controller
      */
     protected function isReportLoadAllowed()
     {
-        return !$this->getUser()->getReportsPrequal()->last();
+        return !$this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
     }
 
     /**
@@ -61,7 +61,7 @@ class ReportController extends Controller
         \sfConfig::fill($this->container->getParameter('experian'), 'global_experian');
         \sfConfig::set('global_host', $this->container->getParameter('server_name'));
         $this->netConnect->execute();
-        return $this->netConnect->getResponseOnUserData($this->getUser());
+        return $this->netConnect->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
 
     protected function saveArf()
@@ -69,10 +69,9 @@ class ReportController extends Controller
         if (!$this->isReportLoadAllowed()) {
             return false;
         }
-
         $report = new ReportPrequal();
         $report->setRawData($this->getArf());
-        $report->setUser($this->getUser());
+        $report->setUser($this->get('core.session.applicant')->getUser());
         $em = $this->getDoctrine()->getManager();
         $em->persist($report);
         $em->flush();

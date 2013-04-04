@@ -34,7 +34,7 @@ class SettingsController extends Controller
                     $em->persist($cjUser);
                     $em->flush();
                 }
-                return $this->redirect($this->generateUrl('applicant_password'));
+                //return $this->redirect($this->generateUrl('applicant_password'));
             }
         }
         return $this->render(
@@ -120,11 +120,20 @@ class SettingsController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 if ($sPassword == $cjUser->getPassword()) {
-                    $cjUser->clearUserData();
                     $em = $this->getDoctrine()->getManager();
-                    $em->persist($cjUser);
-                    $em->flush();
-                    $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
+                    try {
+                        $em->getConnection()->beginTransaction();
+                        $em->getRepository('DataBundle:User')->removeUserData($cjUser);
+                        $cjUser->removeData();
+                        $em->persist($cjUser);
+                        $em->flush();
+                        $em->getConnection()->commit();
+                        $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
+                    } catch (Exception $e) {
+                        $em->getConnection()->rollback();
+                        $em->close();
+                        throw $e;
+                    }
                     // Commented for develop
                     //return $this->redirect($this->generateUrl('fos_user_security_logout'));
                 } else {
