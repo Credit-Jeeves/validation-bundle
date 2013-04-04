@@ -99,5 +99,4 @@ class ReportPrequal extends Report
     {
         return $this->user;
     }
-
 }

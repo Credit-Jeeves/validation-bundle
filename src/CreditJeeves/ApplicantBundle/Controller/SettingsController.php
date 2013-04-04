@@ -144,11 +144,11 @@ class SettingsController extends Controller
             }
         }
         return $this->render(
-                'ApplicantBundle:Settings:remove.html.twig',
-                array(
-                    'sEmail' => $sEmail,
-                    'form' => $form->createView()
-                )
+            'ApplicantBundle:Settings:remove.html.twig',
+            array(
+                'sEmail' => $sEmail,
+                'form' => $form->createView()
+            )
         );
     }
 }

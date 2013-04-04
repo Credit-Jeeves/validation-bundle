@@ -7,7 +7,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
-
 class RemoveType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -15,18 +14,20 @@ class RemoveType extends AbstractType
         $builder->add(
             'password',
             'password'
-            );
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'CreditJeeves\DataBundle\Entity\User',
-            'csrf_protection' => true,
-            'csrf_field_name' => '_token',
-            // a unique key to help generate the secret token
-            'intention'       => 'username',
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'csrf_protection' => true,
+                'csrf_field_name' => '_token',
+                // a unique key to help generate the secret token
+                'intention'       => 'username',
+            )
+        );
     }
 
     public function getName()
