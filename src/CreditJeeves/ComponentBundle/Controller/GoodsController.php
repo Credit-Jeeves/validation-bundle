@@ -8,7 +8,7 @@ use CreditJeeves\DataBundle\Utility\VehicleUtility as Vehicle;
 class GoodsController extends Controller
 {
     /**
-     * 
+     *
      * @param \CreditJeeves\DataBundle\Entity\Lead $Lead
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Lead $Lead)
@@ -23,10 +23,11 @@ class GoodsController extends Controller
                 if (!empty($Vehicle)) {
                     $Make = $this->getUser()->getVehicle()->getMake();
                     $Model = $this->getUser()->getVehicle()->getModel();
-                    
+
                 }
                 $sImageUrl = Vehicle::getAmazonVehicle($Make, $Model, $this->container);
                 $sLink = $Group->getWebsiteUrl();
+
                 return $this->render(
                     'ComponentBundle:Goods:vehicle.html.twig',
                     array(
@@ -34,8 +35,8 @@ class GoodsController extends Controller
                         'Make' => $Make,
                         'Model' => $Model,
                         'sLink' => $sLink,
-                       )
-                    );
+                    )
+                );
                 break;
             case Group::TYPE_ESTATE:
                 return $this->render('ComponentBundle:Goods:estate.html.twig', array());
@@ -43,6 +44,6 @@ class GoodsController extends Controller
             default:
                 return $this->render('ComponentBundle:Goods:index.html.twig', array());
         }
-        
+
     }
 }

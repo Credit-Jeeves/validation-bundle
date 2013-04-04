@@ -13,22 +13,29 @@ class TradelinesHistoryController extends Controller
      */
     public function indexAction(Report $Report)
     {
-        $aNegativeTradelines     = $Report->getApplicantNegativeTradeLines();
+        $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
         $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
-        $aDirectCheck            = $Report->getApplicantDirectCheck();
+        $aDirectCheck = $Report->getApplicantDirectCheck();
         $aMonthes = array();
-        for($i = 1; $i < 13; $i++) {
-            $aMonthes[] = date('M', mktime(0,0,0, $i));
+        for ($i = 1; $i < 13; $i++) {
+            $aMonthes[] = date('M', mktime(0, 0, 0, $i));
         }
+
+        $directCheckKeys = array(
+            'subscriber_phone_number',
+            'subscriber_address',
+            'subscriber_city',
+            'subscriber_state',
+            'subscriber_zip_code',
+        );
+
         $aClosedTradelines = array();
         // Create closed tradelines
         foreach ($aNegativeTradelines as $nKey => $aTradeline) {
             if (isset($aTradeline['tr_subcode']) && isset($aDirectCheck[$aTradeline['tr_subcode']])) {
-                $aTradeline['direct_check']['subscriber_phone_number'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_phone_number'];
-                $aTradeline['direct_check']['subscriber_address'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_address'];
-                $aTradeline['direct_check']['subscriber_city'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_city'];
-                $aTradeline['direct_check']['subscriber_state'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_state'];
-                $aTradeline['direct_check']['subscriber_zip_code'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_zip_code'];
+                foreach ($directCheckKeys as $key) {
+                    $aTradeline['direct_check'][$key] = $aDirectCheck[$aTradeline['tr_subcode']][$key];
+                }
             }
             if ($aTradeline['tr_state'] == 'C' && !in_array($aTradeline['tr_status'], array(93, 97))) {
                 $aClosedTradeLines[] = $aTradeline;
@@ -39,11 +46,9 @@ class TradelinesHistoryController extends Controller
         }
         foreach ($aSatisfactoryTradelines as $nKey => $aTradeline) {
             if (isset($aTradeline['tr_subcode']) && isset($aDirectCheck[$aTradeline['tr_subcode']])) {
-                $aTradeline['direct_check']['subscriber_phone_number'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_phone_number'];
-                $aTradeline['direct_check']['subscriber_address'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_address'];
-                $aTradeline['direct_check']['subscriber_city'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_city'];
-                $aTradeline['direct_check']['subscriber_state'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_state'];
-                $aTradeline['direct_check']['subscriber_zip_code'] = $aDirectCheck[$aTradeline['tr_subcode']]['subscriber_zip_code'];
+                foreach ($directCheckKeys as $key) {
+                    $aTradeline['direct_check'][$key] = $aDirectCheck[$aTradeline['tr_subcode']][$key];
+                }
             }
             if ($aTradeline['tr_state'] == 'C') {
                 $aClosedTradelines[] = $aTradeline;
@@ -52,11 +57,12 @@ class TradelinesHistoryController extends Controller
                 $aSatisfactoryTradelines[$nKey] = $aTradeline;
             }
         }
+
         return array(
-                'aNegativeTradelines' => $aNegativeTradelines,
-                'aSatisfactoryTradelines' => $aSatisfactoryTradelines,
-                'aClosedTradelines' => $aClosedTradelines,
-                'aMonthes' => $aMonthes,
-            );
+            'aNegativeTradelines' => $aNegativeTradelines,
+            'aSatisfactoryTradelines' => $aSatisfactoryTradelines,
+            'aClosedTradelines' => $aClosedTradelines,
+            'aMonthes' => $aMonthes,
+        );
     }
 }

@@ -32,6 +32,7 @@ abstract class BaseTestCase extends Base
         if (null === $this->url) {
             $this->url = 'http://' . static::getContainer()->getParameter('server_name') . $this->envPath;
         }
+
         return $this->url;
     }
 
@@ -186,7 +187,10 @@ abstract class BaseTestCase extends Base
     protected function onNotSuccessfulTest(\Exception $e)
     {
         if ('selenium2' == static::getMink()->getDefaultSessionName() &&
-          !in_array(get_class($e), array('PHPUnit_Framework_IncompleteTestError', 'PHPUnit_Framework_SkippedTestError'))
+            !in_array(
+                get_class($e),
+                array('PHPUnit_Framework_IncompleteTestError', 'PHPUnit_Framework_SkippedTestError')
+            )
         ) {
             $name = '/logs/screenshot/' . date('Y-m-d_H:i:s') . '.png';
             file_put_contents(
@@ -196,7 +200,7 @@ abstract class BaseTestCase extends Base
 
             $e = new \RuntimeException(
                 $e->getMessage() . ' http://' . static::getContainer()->getParameter('server_name') .
-                    '/uploads' . $name,
+                '/uploads' . $name,
                 $e->getCode(),
                 $e
             );

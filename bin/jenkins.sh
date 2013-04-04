@@ -2,7 +2,7 @@
 
 DIR="$(cd `dirname $0` ; pwd)"
 BUILDS_DIR="$WORKSPACE/../../jobs/$JOB_NAME/builds"
-BUILD_DIR="$DIR/../log/build"
+BUILD_DIR="$DIR/../app/logs/build"
 PHPUNIT_PATH=`which phpunit`
 
 #DB_DUMP="$DIR/../data/sql/dump_20130328.sql"
@@ -52,7 +52,11 @@ php -C -q -d memory_limit=1024M $PHPUNIT_PATH \
 #fi
 #cat $BUILD_DIR/migration.res
 
-#echo "##### CHECKS CODING STANDARDS #####"
-#./bin/cs.sh "--report=checkstyle --report-file=$BUILD_DIR/phpcs.xml ./"
+echo "##### CHECKS CODING STANDARDS #####"
+if ./bin/cs.sh "--report=checkstyle --report-file=$BUILD_DIR/phpcs.xml ./" ; then
+  echo 'OK' > $BUILD_DIR/phpcs.res
+else
+  echo 'FAIL' > $BUILD_DIR/phpcs.res
+fi
 
 exit 0

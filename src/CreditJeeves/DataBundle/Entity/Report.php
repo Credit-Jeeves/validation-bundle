@@ -56,7 +56,7 @@ class Report
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -72,14 +72,14 @@ class Report
     public function setCjApplicantId($cjApplicantId)
     {
         $this->cj_applicant_id = $cjApplicantId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_applicant_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantId()
     {
@@ -95,13 +95,14 @@ class Report
     public function setRawData($rawData)
     {
         $this->raw_data = $rawData;
+
         return $this;
     }
 
     /**
      * Get raw_data
      *
-     * @return string 
+     * @return string
      */
     public function getRawData()
     {
@@ -117,14 +118,14 @@ class Report
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -147,9 +148,10 @@ class Report
         if (null == $this->arfArray) {
             $this->arfArray = $this->getArfParser()->getArfArray();
         }
+
         return $this->arfArray;
     }
-    
+
 
     /**
      * @return \CreditJeeves\CoreBundle\Arf\ArfPaser
@@ -159,6 +161,7 @@ class Report
         if ($this->arfParser == null) {
             $this->arfParser = new ArfParser($this->getRawData());
         }
+
         return $this->arfParser;
     }
 
@@ -172,11 +175,11 @@ class Report
 
     /**
      * @return array
-     * @access public
      */
     public function getApplicantDirectCheck()
     {
         $arfDirectCheck = new ArfDirectCheck($this->getArfArray());
+
         return $arfDirectCheck->getDirectCheck();
     }
 
@@ -186,36 +189,37 @@ class Report
     public function getCreditSummary()
     {
         $arfSummaryInfo = new ArfSummary($this->getArfArray());
+
         return $arfSummaryInfo->getSummaryInfo();
     }
 
     /**
      * @return array
-     * @access public
      */
     public function getTradelaineCollections($isSecurity = true)
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
+
         return $arfTradeLines->getCollections($isSecurity);
     }
 
     /**
      * @return array
-     * @access public
      */
     public function getApplicantNegativeTradeLines($isSecurity = true)
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
+
         return $arfTradeLines->getNegativeDetails($isSecurity);
     }
 
     /**
      * @return array
-     * @access public
      */
     public function getApplicantSatisfactoryTradeLines($isSecurity = true)
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
+
         return $arfTradeLines->getSatisfactoryDetails($isSecurity);
     }
 
@@ -225,30 +229,32 @@ class Report
     public function getCountApplicantTotalTradelines()
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
+
         return count($arfTradeLines->getTradeLines());
     }
-    
+
     /**
      * @return integer
      */
     public function getCountApplicantOpenedTradelines()
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
+
         return count($arfTradeLines->getOpenedTradelines());
     }
-    
+
     /**
      * @return integer
      */
     public function getCountApplicantClosedTradelines()
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
+
         return count($arfTradeLines->getClosedTradelines());
     }
 
     /**
      * @return integer
-     * @access public
      */
     public function getCountTradelineCollections()
     {
@@ -261,6 +267,7 @@ class Report
     public function getAutomotiveSummary()
     {
         $oArfReport = $this->getArfReport();
+
         return $oArfReport->getValue(ArfParser::SEGMENT_AUTOMOTIVE_PROFILE);
     }
 
@@ -271,35 +278,35 @@ class Report
     {
         $oArfReport = $this->getArfReport();
         $aTradeLines = $oArfReport->getValue(ArfParser::SEGMENT_TRADELINE);
+
         return $aTradeLines;
     }
 
     /**
      * @return string
-     * @access public
      */
     public function getApplicantName()
     {
         $oArfReport = $this->getArfReport();
         $aNames = $oArfReport->getValue(ArfParser::SEGMENT_NAME);
+
         return (isset($aNames['name_text'])) ? $aNames['name_text'] : $aNames[0]['name_text'];
     }
 
     /**
      *
      * @return array
-     * @access public
      */
     public function getApplicantAddress()
     {
         $oArfReport = $this->getArfReport();
         $aAddresses = $oArfReport->getValue(ArfParser::SEGMENT_ADDRESS);
+
         return $aAddresses;
     }
 
     /**
      * @return array
-     * @access public
      */
     public function getApplicantEmployments()
     {
@@ -311,57 +318,56 @@ class Report
         } else {
             $aEmployments = $aResult;
         }
+
         return $aEmployments;
     }
 
-    
+
     /**
      * @return array
-     * @access public
      */
     public function getApplicantInquiries()
     {
         $arfInquiries = new ArfInquiries($this->getArfArray());
+
         return $arfInquiries->getInquiries();
     }
 
     /**
      * @return integer
-     * @access public
      */
     public function getCountApplicantInquiries()
     {
         return count($this->getApplicantInquiries());
-    } 
+    }
 
     /**
      * @return array
-     * @access public
      */
     public function getApplicantPublicRecords()
     {
         $arfPublicRecords = new ArfPublicRecords($this->getArfArray());
+
         return $arfPublicRecords->getPublicRecords();
     }
 
     /**
      * @return array
-     * @access public
      */
     public function getApplicantAutomotiveDetails()
     {
         $arfAutomotiveDetails = new ArfAutomotiveDetails($this->getArfArray());
+
         return $arfAutomotiveDetails->getAutomotiveDetails();
     }
 
     /**
      * @return array
-     * @access public
      */
     public function getApplicantMessages()
     {
-      $arfMessages = new ArfMessages($this->getArfArray());
-    
-      return $arfMessages->getMessages();
-    }    
+        $arfMessages = new ArfMessages($this->getArfArray());
+
+        return $arfMessages->getMessages();
+    }
 }

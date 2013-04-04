@@ -42,7 +42,7 @@ class Score
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -58,14 +58,14 @@ class Score
     public function setCjApplicantId($cjApplicantId)
     {
         $this->cj_applicant_id = $cjApplicantId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_applicant_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantId()
     {
@@ -81,13 +81,14 @@ class Score
     public function setScore($score)
     {
         $this->score = $score;
+
         return $this;
     }
 
     /**
      * Get score
      *
-     * @return string 
+     * @return string
      */
     public function getScore()
     {
@@ -98,6 +99,7 @@ class Score
     {
         $nScore = $this->getScore();
         $nFicoScore = round(10 * (($nScore - 483.06) / 11.079) + 490);
+
         return $nFicoScore > 850 ? 850 : $nFicoScore;
     }
 
@@ -110,14 +112,14 @@ class Score
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
-    
+
         return $this;
     }
 
     /**
      * Get User
      *
-     * @return \CreditJeeves\DataBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getUser()
     {
@@ -133,14 +135,14 @@ class Score
     public function setCreatedDate($createdDate)
     {
         $this->created_date = $createdDate;
-    
+
         return $this;
     }
 
     /**
      * Get created_date
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedDate()
     {
@@ -168,6 +170,7 @@ class Score
         if ($score >= 550) {
             return "7%";
         }
+
         return "2%";
     }
 

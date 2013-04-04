@@ -30,6 +30,7 @@ class sfConfig
                 }
             }
         }
+
         return $value;
     }
 
@@ -53,7 +54,9 @@ class sfConfig
 
     private static function init()
     {
-        if (self::$init) return;
+        if (self::$init) {
+            return;
+        }
 
         self::$config['sf_data_dir'] = self::getRoot() . '/vendor/CreditJeevesSf1/data';
         self::$config['sf_log_dir'] = self::getRoot() . '/app/logs';
@@ -73,7 +76,8 @@ class sfConfig
     public static function get($name, $default = null)
     {
         self::init();
-        return isset(self::$config[$name])?self::$config[$name]:$default;
+
+        return isset(self::$config[$name]) ? self::$config[$name] : $default;
     }
 
     /**
@@ -87,6 +91,7 @@ class sfConfig
     public static function has($name)
     {
         self::init();
+
         return array_key_exists($name, self::$config);
     }
 
@@ -97,7 +102,7 @@ class sfConfig
      *
      * @deprecated
      * @param string $name  A config parameter name
-     * @param mixed  $value A config parameter value
+     * @param mixed $value A config parameter value
      */
     public static function set($name, $value)
     {
@@ -129,6 +134,7 @@ class sfConfig
     public static function getAll()
     {
         self::init();
+
         return self::$config;
     }
 

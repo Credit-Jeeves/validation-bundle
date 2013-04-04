@@ -11,13 +11,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Group
 {
     /**
-     * 
+     * @todo move to Enum
      * @var string
      */
     const TYPE_VEHICLE = 'vehicle';
 
     /**
-     * 
+     * @todo move to Enum
      * @var string
      */
     const TYPE_ESTATE = 'estate';
@@ -35,7 +35,7 @@ class Group
     protected $type;
 
     /**
-     * 
+     *
      * @ORM\Column(type="string")
      */
     protected $name;
@@ -59,14 +59,14 @@ class Group
     public function __construct()
     {
         parent::__construct();
-        $this->leads         = new ArrayCollection();
+        $this->leads = new ArrayCollection();
         $this->group_dealers = new ArrayCollection();
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -89,7 +89,7 @@ class Group
     /**
      * Get type
      *
-     * @return string 
+     * @return string
      */
     public function getType()
     {
@@ -105,10 +105,10 @@ class Group
     public function setName($name)
     {
         $this->name = $name;
-    
+
         return $this;
     }
-    
+
     /**
      * Get type
      *
@@ -118,7 +118,7 @@ class Group
     {
         return $this->name;
     }
-    
+
 
     /**
      * Add leads
@@ -146,7 +146,7 @@ class Group
     /**
      * Get leads
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getLeads()
     {
@@ -180,7 +180,7 @@ class Group
     /**
      * Get group_dealers
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGroupDealers()
     {
@@ -203,7 +203,7 @@ class Group
     /**
      * Get website_url
      *
-     * @return string 
+     * @return string
      */
     public function getWebsiteUrl()
     {

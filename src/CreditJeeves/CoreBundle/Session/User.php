@@ -9,19 +9,19 @@ use Symfony\Component\HttpFoundation\Session\Session;
 abstract class User
 {
     /**
-     * 
+     * @TODO move to Enum
      * @var string
      */
     const USER_APPLICANT = 'applicant';
 
     /**
-     * 
+     * @TODO move to Enum
      * @var string
      */
     const USER_DEALER = 'dealer';
 
     /**
-     * 
+     *
      * @var string
      */
     const USER_ADMIN = 'admin';
@@ -51,7 +51,7 @@ abstract class User
 
     protected function findUser($nUserId)
     {
-       return  $this->em->getRepository('DataBundle:User')->find($nUserId);
+        return $this->em->getRepository('DataBundle:User')->find($nUserId);
     }
 
     protected function saveToSession($sNamespace)
