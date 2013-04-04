@@ -50,7 +50,7 @@ class Vehicle
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -66,14 +66,14 @@ class Vehicle
     public function setCjApplicantId($cjApplicantId)
     {
         $this->cj_applicant_id = $cjApplicantId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_applicant_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantId()
     {
@@ -96,7 +96,7 @@ class Vehicle
     /**
      * Get make
      *
-     * @return string 
+     * @return string
      */
     public function getMake()
     {
@@ -119,7 +119,7 @@ class Vehicle
     /**
      * Get model
      *
-     * @return string 
+     * @return string
      */
     public function getModel()
     {
@@ -142,7 +142,7 @@ class Vehicle
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -165,7 +165,7 @@ class Vehicle
     /**
      * Get updated_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -188,7 +188,7 @@ class Vehicle
     /**
      * Get user
      *
-     * @return \CreditJeeves\DataBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getUser()
     {

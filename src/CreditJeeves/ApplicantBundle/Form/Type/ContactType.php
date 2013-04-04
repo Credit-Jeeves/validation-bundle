@@ -7,7 +7,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
-
 class ContactType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -20,24 +19,26 @@ class ContactType extends AbstractType
                     'Mobile',
                     'Home',
                     'Work'
-                    )
                 )
-            );
+            )
+        );
         $builder->add(
             'phone',
             'text'
-            );
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'CreditJeeves\DataBundle\Entity\User',
-            'csrf_protection' => true,
-            'csrf_field_name' => '_token',
-            // a unique key to help generate the secret token
-            'intention'       => 'username',
-        ));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'csrf_protection' => true,
+                'csrf_field_name' => '_token',
+                // a unique key to help generate the secret token
+                'intention' => 'username',
+            )
+        );
     }
 
     public function getName()

@@ -29,25 +29,25 @@ class Settings
     protected $pidkiq_eai;
 
     /**
-     * 
+     *
      * @ORM\Column(type="encrypt")
      */
     protected $net_connect_password;
 
     /**
-     * 
+     *
      * @ORM\Column(type="encrypt")
      */
     protected $net_connect_eai;
 
     /**
-     * 
+     *
      * @ORM\Column(type="text")
      */
     protected $contract;
 
     /**
-     * 
+     *
      * @ORM\Column(type="text")
      */
     protected $rights;
@@ -60,7 +60,7 @@ class Settings
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -76,14 +76,14 @@ class Settings
     public function setPidkiqPassword($password)
     {
         $this->pidkiq_password = $password;
-    
+
         return $this;
     }
 
     /**
      * Get score
      *
-     * @return string 
+     * @return string
      */
     public function getPidkiqPassword()
     {
@@ -92,13 +92,14 @@ class Settings
 
     public function setRights($rights)
     {
-      $this->rights = $rights;
-      return $this;
+        $this->rights = $rights;
+
+        return $this;
     }
 
     public function getRights()
     {
-      return $this->rights;
+        return $this->rights;
     }
 
     /**
@@ -126,14 +127,14 @@ class Settings
     public function setPidkiqEai($pidkiqEai)
     {
         $this->pidkiq_eai = $pidkiqEai;
-    
+
         return $this;
     }
 
     /**
      * Get pidkiq_eai
      *
-     * @return encrypt 
+     * @return encrypt
      */
     public function getPidkiqEai()
     {
@@ -149,14 +150,14 @@ class Settings
     public function setNetConnectPassword($netConnectPassword)
     {
         $this->net_connect_password = $netConnectPassword;
-    
+
         return $this;
     }
 
     /**
      * Get net_connect_password
      *
-     * @return encrypt 
+     * @return encrypt
      */
     public function getNetConnectPassword()
     {
@@ -172,14 +173,14 @@ class Settings
     public function setNetConnectEai($netConnectEai)
     {
         $this->net_connect_eai = $netConnectEai;
-    
+
         return $this;
     }
 
     /**
      * Get net_connect_eai
      *
-     * @return encrypt 
+     * @return encrypt
      */
     public function getNetConnectEai()
     {
@@ -195,14 +196,14 @@ class Settings
     public function setContract($contract)
     {
         $this->contract = $contract;
-    
+
         return $this;
     }
 
     /**
      * Get contract
      *
-     * @return string 
+     * @return string
      */
     public function getContract()
     {
@@ -218,14 +219,14 @@ class Settings
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
-    
+
         return $this;
     }
 
     /**
      * Get updated_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {

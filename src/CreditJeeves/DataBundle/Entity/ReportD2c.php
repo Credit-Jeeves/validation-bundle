@@ -22,7 +22,7 @@ class ReportD2c extends Report
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -38,14 +38,14 @@ class ReportD2c extends Report
     public function setCjApplicantId($cjApplicantId)
     {
         $this->cj_applicant_id = $cjApplicantId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_applicant_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantId()
     {
@@ -61,14 +61,14 @@ class ReportD2c extends Report
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -84,18 +84,17 @@ class ReportD2c extends Report
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
-    
+
         return $this;
     }
 
     /**
      * Get user
      *
-     * @return \CreditJeeves\DataBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getUser()
     {
         return $this->user;
     }
-
 }

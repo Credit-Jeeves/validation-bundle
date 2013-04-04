@@ -18,6 +18,6 @@ class TotalTradelinesController extends Controller
                 'nOpened' => $nOpened,
                 'nClosed' => $nClosed,
                 )
-            );
+        );
     }
 }

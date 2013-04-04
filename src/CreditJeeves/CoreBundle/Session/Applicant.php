@@ -5,14 +5,12 @@ use JMS\DiExtraBundle\Annotation\Service;
 use CreditJeeves\DataBundle\Entity\User as cjUser;
 
 /**
- * 
  * @Service("core.session.applicant")
- *
  */
 class Applicant extends User
 {
     /**
-     * 
+     *
      * @param cjUser $User
      */
     public function setUser(cjUser $User)
@@ -22,7 +20,7 @@ class Applicant extends User
     }
 
     /**
-     * 
+     *
      * @param cjUser $User
      */
     public function prepareApplicant(cjUser $User)
@@ -49,11 +47,12 @@ class Applicant extends User
     public function getLeadId()
     {
         $data = $this->getFromSession(self::USER_APPLICANT);
-        return  isset($data['lead_id']) ? $data['lead_id'] : null;
+
+        return isset($data['lead_id']) ? $data['lead_id'] : null;
     }
 
     /**
-     * 
+     *
      * @param integer $nLeadId
      */
     public function setLeadId($nLeadId)

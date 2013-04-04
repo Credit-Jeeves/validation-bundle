@@ -1,8 +1,6 @@
 <?php
 namespace CreditJeeves\DataBundle\Type;
 
-require_once dirname(dirname(dirname(dirname(__DIR__)))).'/vendor/CreditJeevesSf1/lib/utility/cjEncryptionUtility.class.php';
-
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\TextType;
 
@@ -16,6 +14,7 @@ class Encrypt extends TextType
      */
     public function convertToPHPValue($encValue, AbstractPlatform $platform)
     {
+        require_once __DIR__ . '/../../../../vendor/CreditJeevesSf1/lib/utility/cjEncryptionUtility.class.php';
         $value = \cjEncryptionUtility::decrypt(base64_decode($encValue));
         return $value === false ? $encValue : $value;
     }
@@ -25,6 +24,7 @@ class Encrypt extends TextType
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
+        require_once __DIR__ . '/../../../../vendor/CreditJeevesSf1/lib/utility/cjEncryptionUtility.class.php';
         return base64_encode(\cjEncryptionUtility::encrypt($value));
     }
 
