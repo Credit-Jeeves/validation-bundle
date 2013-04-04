@@ -560,6 +560,11 @@
                 <target>Yes, please send me offers like discounts on full credit reports or loans that I might qualify for.</target>
             </trans-unit>
 
+            <trans-unit id="remove.comment">
+                <source>remove.comment</source>
+                <target>To remove authorization for Credit Jeeves to pull your credit profile, type your password below and click 'Remove'. Your score, credit profile data and any sensitive personal data will be removed from our database.</target>
+            </trans-unit>
+
 
             
         </body>

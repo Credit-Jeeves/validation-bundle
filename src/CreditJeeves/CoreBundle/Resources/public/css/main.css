@@ -270,6 +270,20 @@ input {
   background-color: #ffc;
 }
 
+.background-grey {
+    background-color: #f3f3f3;
+    padding: 20px;
+}
+
+form label,
+table label {
+    float: left;
+    color: #333333;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 190%;
+    width: 106px;
+}
 /*
 
 .customer-info {

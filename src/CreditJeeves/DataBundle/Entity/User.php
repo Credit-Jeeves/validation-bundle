@@ -841,4 +841,11 @@ class User extends BaseUser
     {
         return $this->offer_notification;
     }
+
+    public function clearUserData()
+    {
+        //echo __METHOD__;
+        //$this->getUserLeads()->delete();
+        return $this;
+    }
 }
