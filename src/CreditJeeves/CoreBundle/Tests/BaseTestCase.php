@@ -2,6 +2,7 @@
 namespace CreditJeeves\CoreBundle\Tests;
 
 use Behat\MinkBundle\Test\MinkTestCase;
+
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */

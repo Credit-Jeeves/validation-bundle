@@ -6,9 +6,7 @@ use CreditJeeves\DataBundle\Entity\User as cjUser;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 /**
- * 
  * @Service("core.session.admin")
- *
  */
 class Admin extends User
 {
@@ -17,7 +15,7 @@ class Admin extends User
         $this->prepareAdmin($User);
         $this->saveToSession(self::USER_ADMIN);
     }
-    
+
     public function prepareAdmin(cjUser $User)
     {
         $this->data['user_id'] = $User->getId();

@@ -7,13 +7,16 @@ class CreditSummaryController extends Controller
 {
     public function indexAction()
     {
-        $cjUser    = $this->get('core.session.applicant')->getUser();
-        $Report    = $cjUser->getReportsPrequal()->last();
-        $sDate     = $Report->getCreatedAt()->format('M j, Y');
+        $cjUser = $this->get('core.session.applicant')->getUser();
+        $Report = $cjUser->getReportsPrequal()->last();
+        $sDate = $Report->getCreatedAt()->format('M j, Y');
         $aCreditSummary = $Report->getCreditSummary();
         $aCreditSummary['collections'] = $Report->getCountTradelineCollections();
         $aAutomotive = $Report->getAutomotiveSummary();
-        $nAutomotive = isset($aAutomotive['total_open_monthly_payment']) ? $aAutomotive['total_open_monthly_payment'] : 0;
+        $nAutomotive = isset($aAutomotive['total_open_monthly_payment']) ?
+            $aAutomotive['total_open_monthly_payment'] :
+            0
+        ;
 
         return $this->render(
             'ComponentBundle:CreditSummary:index.html.twig',
@@ -21,7 +24,7 @@ class CreditSummaryController extends Controller
                 'sDate' => $sDate,
                 'aCreditSummary' => $aCreditSummary,
                 'nAutomotive' => $nAutomotive,
-                )
-            );
+            )
+        );
     }
 }

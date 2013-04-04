@@ -2,6 +2,7 @@
 namespace CreditJeeves\ApplicantBundle\Tests\Functional;
 
 use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
+
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */

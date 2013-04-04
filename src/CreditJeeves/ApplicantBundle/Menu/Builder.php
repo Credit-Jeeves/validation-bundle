@@ -10,14 +10,14 @@ class Builder extends ContainerAware
     {
         $menu = $factory->createItem('root');
         $menu->addChild('tabs.action_plan', array('route' => 'applicant_homepage'));
-        $menu->addChild('tabs.summary',          array('route' => 'applicant_summary'));
+        $menu->addChild('tabs.summary', array('route' => 'applicant_summary'));
         $User = $this->container->get('core.session.applicant')->getUser();
         $isCompleteOrder = $User->isCompleteOrderExist();
-        
+
         if ($isCompleteOrder) {
-            $menu->addChild('tabs.report',      array('route' => 'applicant_report'));
+            $menu->addChild('tabs.report', array('route' => 'applicant_report'));
         }
-        $menu->addChild('tabs.settings',    array('route' => 'applicant_password'));
+        $menu->addChild('tabs.settings', array('route' => 'applicant_password'));
 
         $sRoute = $this->container->get('request')->get('_route');
         switch ($sRoute) {
@@ -40,10 +40,10 @@ class Builder extends ContainerAware
     public function settingsMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
-        $menu->addChild('settings.password',            array('route' => 'applicant_password'));
+        $menu->addChild('settings.password', array('route' => 'applicant_password'));
         $menu->addChild('settings.contact_information', array('route' => 'applicant_contact'));
-        $menu->addChild('settings.email',               array('route' => 'applicant_email'));
-        $menu->addChild('settings.remove',              array('route' => 'applicant_remove'));
+        $menu->addChild('settings.email', array('route' => 'applicant_email'));
+        $menu->addChild('settings.remove', array('route' => 'applicant_remove'));
 
         $sRoute = $this->container->get('request')->get('_route');
         switch ($sRoute) {

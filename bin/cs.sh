@@ -11,7 +11,10 @@ if [ -z "$CS_PATH" ]; then
   exit 1
 fi
 
-IGNOR_DIRS="$BASE_DIR/vendor/,$BASE_DIR/app/cache/,$BASE_DIR/data/,$BASE_DIR/app/log/,\
-$BASE_DIR/web/uploads/,$BASE_DIR/web/js/vendor/"
+IGNOR_DIRS="$BASE_DIR/vendor/,$BASE_DIR/app/cache/,$BASE_DIR/app/log/,$BASE_DIR/data/,\
+$BASE_DIR/web/uploads/,$BASE_DIR/web/js/vendor/,$BASE_DIR/src/*/*/Resources/,$BASE_DIR/web/config_dev.php,\
+$BASE_DIR/src/CreditJeeves/CoreBundle/sfConfig.php,$BASE_DIR/src/CreditJeeves/CoreBundle/Experian/,\
+$BASE_DIR/src/CreditJeeves/CoreBundle/CS/,$BASE_DIR/src/CreditJeeves/CoreBundle/Arf/,\
+$BASE_DIR/app/check.php,$BASE_DIR/app/SymfonyRequirements.php,$BASE_DIR/app/App*"
 
-$CS_PATH -d memory_limit=1024M --standard=$BASE_DIR/lib/cjCS -p --ignore=$IGNOR_DIRS $1
+$CS_PATH -d memory_limit=1024M --standard=$BASE_DIR/src/CreditJeeves/CoreBundle/CS -p --ignore=$IGNOR_DIRS $1

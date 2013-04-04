@@ -7,7 +7,6 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  * @DI\Service

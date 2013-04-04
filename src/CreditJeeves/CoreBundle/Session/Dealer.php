@@ -6,9 +6,7 @@ use CreditJeeves\DataBundle\Entity\User as cjUser;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 /**
- * 
  * @Service("core.session.dealer")
- *
  */
 class Dealer extends User
 {

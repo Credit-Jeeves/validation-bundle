@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Order
 {
     /**
-     * 
+     *
      * @var string
      */
     const STATUS_COMPLETE = 'complete';
@@ -60,7 +60,7 @@ class Order
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -76,14 +76,14 @@ class Order
     public function setCjApplicantId($cjApplicantId)
     {
         $this->cj_applicant_id = $cjApplicantId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_applicant_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantId()
     {
@@ -99,14 +99,14 @@ class Order
     public function setStatus($status)
     {
         $this->status = $status;
-    
+
         return $this;
     }
 
     /**
      * Get status
      *
-     * @return string 
+     * @return string
      */
     public function getStatus()
     {
@@ -122,14 +122,14 @@ class Order
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get created_date
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -145,14 +145,14 @@ class Order
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
-    
+
         return $this;
     }
 
     /**
      * Get updated_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -168,14 +168,14 @@ class Order
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
-    
+
         return $this;
     }
 
     /**
      * Get user
      *
-     * @return \CreditJeeves\DataBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getUser()
     {

@@ -22,7 +22,7 @@ class Lead
     protected $cj_applicant_id;
 
     /**
-     * 
+     *
      * @ORM\Column(type="integer")
      */
     protected $cj_account_id;
@@ -32,7 +32,7 @@ class Lead
      * @ORM\Column(type="integer")
      */
     protected $cj_group_id;
-    
+
     /**
      * @ORM\Column(type="integer")
      */
@@ -52,7 +52,7 @@ class Lead
      * @ORM\Column(type="string")
      */
     protected $source;
-    
+
     /**
      * @ORM\Column(type="datetime")
      */
@@ -74,7 +74,7 @@ class Lead
      * @ORM\JoinColumn(name="cj_account_id", referencedColumnName="id")
      */
     protected $dealer;
-    
+
 
     /**
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="leads")
@@ -82,11 +82,11 @@ class Lead
      */
     protected $group;
 
-    
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -102,14 +102,14 @@ class Lead
     public function setCjApplicantId($cjApplicantId)
     {
         $this->cj_applicant_id = $cjApplicantId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_applicant_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjApplicantId()
     {
@@ -125,14 +125,14 @@ class Lead
     public function setCjAccountId($cjAccountId)
     {
         $this->cj_account_id = $cjAccountId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_account_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjAccountId()
     {
@@ -148,14 +148,14 @@ class Lead
     public function setCjGroupId($cjGroupId)
     {
         $this->cj_group_id = $cjGroupId;
-    
+
         return $this;
     }
 
     /**
      * Get cj_group_id
      *
-     * @return integer 
+     * @return integer
      */
     public function getCjGroupId()
     {
@@ -171,14 +171,14 @@ class Lead
     public function setTargetScore($targetScore)
     {
         $this->target_score = $targetScore;
-    
+
         return $this;
     }
 
     /**
      * Get target_score
      *
-     * @return integer 
+     * @return integer
      */
     public function getTargetScore()
     {
@@ -194,14 +194,14 @@ class Lead
     public function setFraction($fraction)
     {
         $this->fraction = $fraction;
-    
+
         return $this;
     }
 
     /**
      * Get fraction
      *
-     * @return integer 
+     * @return integer
      */
     public function getFraction()
     {
@@ -217,14 +217,14 @@ class Lead
     public function setStatus($status)
     {
         $this->status = $status;
-    
+
         return $this;
     }
 
     /**
      * Get status
      *
-     * @return string 
+     * @return string
      */
     public function getStatus()
     {
@@ -240,14 +240,14 @@ class Lead
     public function setSource($source)
     {
         $this->source = $source;
-    
+
         return $this;
     }
 
     /**
      * Get source
      *
-     * @return string 
+     * @return string
      */
     public function getSource()
     {
@@ -263,14 +263,14 @@ class Lead
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get created_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -286,14 +286,14 @@ class Lead
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
-    
+
         return $this;
     }
 
     /**
      * Get updated_at
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -309,14 +309,14 @@ class Lead
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->User = $user;
-    
+
         return $this;
     }
 
     /**
      * Get User
      *
-     * @return \CreditJeeves\DataBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getUser()
     {
@@ -339,7 +339,7 @@ class Lead
     /**
      * Get group
      *
-     * @return \CreditJeeves\DataBundle\Entity\Group 
+     * @return \CreditJeeves\DataBundle\Entity\Group
      */
     public function getGroup()
     {
@@ -362,7 +362,7 @@ class Lead
     /**
      * Get dealer
      *
-     * @return \CreditJeeves\DataBundle\Entity\User 
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getDealer()
     {

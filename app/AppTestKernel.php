@@ -4,6 +4,7 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
+
 /**
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
@@ -14,6 +15,7 @@ class AppTestKernel extends AppKernel
     public function registerBundles()
     {
         $bundles = parent::registerBundles();
+
         return $bundles;
     }
 

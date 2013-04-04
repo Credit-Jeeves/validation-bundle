@@ -4,8 +4,6 @@ namespace CreditJeeves\DataBundle\Entity;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-//use JMS\DiExtraBundle\Annotation\Service;
-
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Group;
@@ -135,7 +133,7 @@ class User extends BaseUser
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="dealer")
      */
     protected $dealer_leads;
-    
+
     /**
      * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
      * @ORM\JoinTable(name="cj_dealer_group",
@@ -146,13 +144,13 @@ class User extends BaseUser
     protected $dealer_groups;
 
     /**
-     * 
+     *
      * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Vehicle", mappedBy="user")
      */
     protected $vehicle;
 
     /**
-     * 
+     *
      * @var string
      */
     protected $new_password;
@@ -161,43 +159,43 @@ class User extends BaseUser
     {
         parent::__construct();
         $this->reportsPrequal = new ArrayCollection();
-        $this->reportsD2c     = new ArrayCollection();
-        $this->scores         = new ArrayCollection();
-        $this->orders         = new ArrayCollection();
-        $this->user_leads     = new ArrayCollection();
-        $this->dealer_leads   = new ArrayCollection();
-        $this->groups         = new ArrayCollection();
+        $this->reportsD2c = new ArrayCollection();
+        $this->scores = new ArrayCollection();
+        $this->orders = new ArrayCollection();
+        $this->user_leads = new ArrayCollection();
+        $this->dealer_leads = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function getNewPassword()
     {
         return $this->new_password;
     }
-    
+
 
     public function setNewPassword($newPassword)
     {
         $this->new_password = $newPassword;
     }
 
-  /**
-   * (non-PHPdoc)
-   * @see FOS\UserBundle\Model.User::setPassword()
-   */
-  public function setPassword($password)
-  {
-    $this->password = md5($password);
-  }
+    /**
+     * (non-PHPdoc)
+     * @see FOS\UserBundle\Model.User::setPassword()
+     */
+    public function setPassword($password)
+    {
+        $this->password = md5($password);
+    }
 
-  public function getType()
-  {
-    return $this->type;
-  }
+    public function getType()
+    {
+        return $this->type;
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -213,7 +211,7 @@ class User extends BaseUser
     public function setType($type)
     {
         $this->type = $type;
-    
+
         return $this;
     }
 
@@ -227,7 +225,7 @@ class User extends BaseUser
     public function addScore(\CreditJeeves\DataBundle\Entity\Score $scores)
     {
         $this->scores[] = $scores;
-    
+
         return $this;
     }
 
@@ -244,13 +242,12 @@ class User extends BaseUser
     /**
      * Get scores
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getScores()
     {
         return $this->scores;
     }
-
 
 
     /**
@@ -262,7 +259,7 @@ class User extends BaseUser
     public function addReportsPrequal(\CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal)
     {
         $this->reportsPrequal[] = $reportsPrequal;
-    
+
         return $this;
     }
 
@@ -279,7 +276,7 @@ class User extends BaseUser
     /**
      * Get reportsPrequal
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getReportsPrequal()
     {
@@ -295,7 +292,7 @@ class User extends BaseUser
     public function addReportsD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c)
     {
         $this->reportsD2c[] = $reportsD2c;
-    
+
         return $this;
     }
 
@@ -312,7 +309,7 @@ class User extends BaseUser
     /**
      * Get reportsD2c
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getReportsD2c()
     {
@@ -328,14 +325,14 @@ class User extends BaseUser
     public function setFirstName($firstName)
     {
         $this->first_name = $firstName;
-    
+
         return $this;
     }
 
     /**
      * Get first_name
      *
-     * @return string 
+     * @return string
      */
     public function getFirstName()
     {
@@ -351,14 +348,14 @@ class User extends BaseUser
     public function setMiddleInitial($middleInitial)
     {
         $this->middle_initial = $middleInitial;
-    
+
         return $this;
     }
 
     /**
      * Get middle_initial
      *
-     * @return string 
+     * @return string
      */
     public function getMiddleInitial()
     {
@@ -374,14 +371,14 @@ class User extends BaseUser
     public function setLastName($lastName)
     {
         $this->last_name = $lastName;
-    
+
         return $this;
     }
 
     /**
      * Get last_name
      *
-     * @return string 
+     * @return string
      */
     public function getLastName()
     {
@@ -389,12 +386,13 @@ class User extends BaseUser
     }
 
     /**
-     * 
+     *
      * @param string $ssn
      */
     public function setSsn($ssn)
     {
         $this->ssn = $ssn;
+
         return $this;
     }
 
@@ -412,7 +410,7 @@ class User extends BaseUser
     public function displaySsn()
     {
         $sSSN = substr($this->getSsn(), 0, 5);
-    
+
         return substr($sSSN, 0, 3) . '-' . substr($sSSN, 3) . '-XXXX';
     }
 
@@ -424,7 +422,7 @@ class User extends BaseUser
     public function setDateOfBirth($sDOB)
     {
         $this->date_of_birth = $sDOB;
-        
+
         return $this;
     }
 
@@ -470,7 +468,7 @@ class User extends BaseUser
     /**
      * Get dealer_groups
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDealerGroups()
     {
@@ -503,7 +501,7 @@ class User extends BaseUser
     /**
      * Get user_leads
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUserLeads()
     {
@@ -537,7 +535,7 @@ class User extends BaseUser
     /**
      * Get dealer_leads
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDealerLeads()
     {
@@ -560,7 +558,7 @@ class User extends BaseUser
     /**
      * Get vehicle
      *
-     * @return \CreditJeeves\DataBundle\Entity\Vehicle 
+     * @return \CreditJeeves\DataBundle\Entity\Vehicle
      */
     public function getVehicle()
     {
@@ -576,14 +574,14 @@ class User extends BaseUser
     public function setStreetAddress1($streetAddress1)
     {
         $this->street_address1 = $streetAddress1;
-    
+
         return $this;
     }
 
     /**
      * Get street_address1
      *
-     * @return string 
+     * @return string
      */
     public function getStreetAddress1()
     {
@@ -599,14 +597,14 @@ class User extends BaseUser
     public function setStreetAddress2($streetAddress2)
     {
         $this->street_address2 = $streetAddress2;
-    
+
         return $this;
     }
 
     /**
      * Get street_address2
      *
-     * @return string 
+     * @return string
      */
     public function getStreetAddress2()
     {
@@ -622,14 +620,14 @@ class User extends BaseUser
     public function setUnitNo($unitNo)
     {
         $this->unit_no = $unitNo;
-    
+
         return $this;
     }
 
     /**
      * Get unit_no
      *
-     * @return string 
+     * @return string
      */
     public function getUnitNo()
     {
@@ -645,14 +643,14 @@ class User extends BaseUser
     public function setCity($city)
     {
         $this->city = $city;
-    
+
         return $this;
     }
 
     /**
      * Get city
      *
-     * @return string 
+     * @return string
      */
     public function getCity()
     {
@@ -668,14 +666,14 @@ class User extends BaseUser
     public function setState($state)
     {
         $this->state = $state;
-    
+
         return $this;
     }
 
     /**
      * Get state
      *
-     * @return string 
+     * @return string
      */
     public function getState()
     {
@@ -691,14 +689,14 @@ class User extends BaseUser
     public function setZip($zip)
     {
         $this->zip = $zip;
-    
+
         return $this;
     }
 
     /**
      * Get zip
      *
-     * @return string 
+     * @return string
      */
     public function getZip()
     {
@@ -714,14 +712,14 @@ class User extends BaseUser
     public function setPhoneType($phoneType)
     {
         $this->phone_type = $phoneType;
-    
+
         return $this;
     }
 
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -737,10 +735,10 @@ class User extends BaseUser
     public function setPhone($phone)
     {
         $this->phone = $phone;
-    
+
         return $this;
     }
-    
+
     /**
      * Get phone_type
      *
@@ -760,7 +758,7 @@ class User extends BaseUser
     public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
     {
         $this->orders[] = $orders;
-    
+
         return $this;
     }
 
@@ -777,7 +775,7 @@ class User extends BaseUser
     /**
      * Get orders
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getOrders()
     {
@@ -793,6 +791,7 @@ class User extends BaseUser
                 return true;
             }
         }
+
         return false;
     }
 
@@ -805,14 +804,14 @@ class User extends BaseUser
     public function setScoreChangedNotification($scoreChangedNotification)
     {
         $this->score_changed_notification = $scoreChangedNotification;
-    
+
         return $this;
     }
 
     /**
      * Get score_changed_notification
      *
-     * @return integer 
+     * @return integer
      */
     public function getScoreChangedNotification()
     {
@@ -828,14 +827,14 @@ class User extends BaseUser
     public function setOfferNotification($offerNotification)
     {
         $this->offer_notification = $offerNotification;
-    
+
         return $this;
     }
 
     /**
      * Get offer_notification
      *
-     * @return integer 
+     * @return integer
      */
     public function getOfferNotification()
     {

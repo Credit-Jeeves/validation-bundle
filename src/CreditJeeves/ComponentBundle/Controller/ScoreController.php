@@ -18,7 +18,7 @@ class ScoreController extends Controller
         $aScores = $cjUser->getScores();
         
         $chartData = array();
-        foreach ($aScores as $score){
+        foreach ($aScores as $score) {
             $chartData[] = sprintf(
                 "[\"%s\", %d, %d]",
                 $score->getCreatedDate()->format('M d, Y'),
@@ -32,12 +32,12 @@ class ScoreController extends Controller
         $sDate = $cjUser->getScores()->last()->getCreatedDate()->format('M d, Y');
         $nTop = intval((850 - $nTargetScore) * 171 / 600);
         return array(
-                'chartData' => $chartData,
-                'nScore' => $nScore,
-                'nFicoScore' => $nFicoScore,
-                'nTargetScore' => $nTargetScore,
-                'nTop' => $nTop,
-                'sDate' => $sDate,
-           );
+            'chartData' => $chartData,
+            'nScore' => $nScore,
+            'nFicoScore' => $nFicoScore,
+            'nTargetScore' => $nTargetScore,
+            'nTop' => $nTop,
+            'sDate' => $sDate,
+        );
     }
 }

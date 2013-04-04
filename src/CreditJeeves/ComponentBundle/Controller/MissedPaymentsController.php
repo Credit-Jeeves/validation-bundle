@@ -28,7 +28,7 @@ class MissedPaymentsController extends Controller
                 'nPercent' => $nPercent,
                 'nTotal' => $nTotal,
                 'nLate' => $nLate,
-                )
-            );
+            )
+        );
     }
 }

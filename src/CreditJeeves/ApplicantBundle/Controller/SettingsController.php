@@ -33,17 +33,19 @@ class SettingsController extends Controller
                     $em->persist($cjUser);
                     $em->flush();
                 }
+
                 return $this->redirect($this->generateUrl('applicant_password'));
             }
         }
+
         return $this->render(
-                'ApplicantBundle:Settings:password.html.twig',
-                array(
-                    'sEmail' => $sEmail,
-                    'form' => $form->createView()
-                )
+            'ApplicantBundle:Settings:password.html.twig',
+            array(
+                'sEmail' => $sEmail,
+                'form' => $form->createView()
+            )
         );
-        
+
     }
 
     /**
@@ -65,14 +67,15 @@ class SettingsController extends Controller
                 $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
             }
         }
+
         return $this->render(
-                'ApplicantBundle:Settings:contact.html.twig',
-                array(
-                    'sEmail' => $sEmail,
-                    'form' => $form->createView()
-                )
+            'ApplicantBundle:Settings:contact.html.twig',
+            array(
+                'sEmail' => $sEmail,
+                'form' => $form->createView()
+            )
         );
-        
+
     }
 
     /**
@@ -94,14 +97,15 @@ class SettingsController extends Controller
                 $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
             }
         }
+
         return $this->render(
-                'ApplicantBundle:Settings:email.html.twig',
-                array(
-                        'sEmail' => $sEmail,
-                        'form'    => $form->createView()
-                )
+            'ApplicantBundle:Settings:email.html.twig',
+            array(
+                'sEmail' => $sEmail,
+                'form' => $form->createView()
+            )
         );
-        
+
     }
 
     /**
@@ -114,15 +118,15 @@ class SettingsController extends Controller
         $sRouteName = $request->get('_route');
         $cjUser = $this->get('security.context')->getToken()->getUser();
         $sEmail = $cjUser->getEmail();
-        
+
         return $this->render(
-                'ApplicantBundle:Settings:remove.html.twig',
-                array(
-                        'sEmail' => $sEmail,
-                        'sRouteName' => $sRouteName,
- //                       'form'    => $form->createView()
-                )
+            'ApplicantBundle:Settings:remove.html.twig',
+            array(
+                'sEmail' => $sEmail,
+                'sRouteName' => $sRouteName,
+                //                       'form'    => $form->createView()
+            )
         );
-        
+
     }
 }
