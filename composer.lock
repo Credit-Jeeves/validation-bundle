@@ -1,5 +1,5 @@
 {
-    "hash": "301e7e3fd3a2fb8bc2510c3e23ec2c00",
+    "hash": "28793bd55513f6c870f6f24cb5ec2754",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -7,11 +7,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "0d8445b6e29d74b3aa9b0b06bbac073342d4a5f3"
+                "reference": "f173d609f8e6144bd72b0bda8b3bf8baf4a68727"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-03-27 13:38:05"
+            "time": "2013-04-05 19:38:16"
         },
         {
             "name": "ajbdev/authorizenet-php-api",
@@ -386,14 +386,17 @@
         },
         {
             "name": "hat/environment",
-            "version": "dev-master",
+            "version": "dev-ton",
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "78fe71cb4bc95ea867fe8c2dd48d751e8bf32d7d"
+                "reference": "81aa1917d559766a0d3988b7a413cbde6cb828c0"
             },
             "require": {
                 "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "dev-master"
             },
             "bin": [
                 "bin/environment"
@@ -404,7 +407,6 @@
                     "Hat": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -420,7 +422,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2013-03-21 12:30:40"
+            "time": "2013-04-05 12:49:38"
         },
         {
             "name": "jdorn/sql-formatter",
