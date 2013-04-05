@@ -4,6 +4,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
 use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
 use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
+use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -33,8 +34,6 @@ class SettingsController extends Controller
                     $em->persist($cjUser);
                     $em->flush();
                 }
-
-                return $this->redirect($this->generateUrl('applicant_password'));
             }
         }
 
@@ -115,18 +114,41 @@ class SettingsController extends Controller
     public function removeAction()
     {
         $request = $this->get('request');
-        $sRouteName = $request->get('_route');
-        $cjUser = $this->get('security.context')->getToken()->getUser();
+        $cjUser = $this->get('core.session.applicant')->getUser();
         $sEmail = $cjUser->getEmail();
-
+        $sPassword = $cjUser->getPassword();
+        $form = $this->createForm(new RemoveType(), $cjUser);
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                if ($sPassword == $cjUser->getPassword()) {
+                    $em = $this->getDoctrine()->getManager();
+                    try {
+                        $em->getConnection()->beginTransaction();
+                        $em->getRepository('DataBundle:User')->removeUserData($cjUser);
+                        $cjUser->removeData();
+                        $em->persist($cjUser);
+                        $em->flush();
+                        $em->getConnection()->commit();
+                        $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
+                    } catch (Exception $e) {
+                        $em->getConnection()->rollback();
+                        $em->close();
+                        throw $e;
+                    }
+                    // Commented for develop
+                    //return $this->redirect($this->generateUrl('fos_user_security_logout'));
+                } else {
+                    $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
+                }
+            }
+        }
         return $this->render(
             'ApplicantBundle:Settings:remove.html.twig',
             array(
                 'sEmail' => $sEmail,
-                'sRouteName' => $sRouteName,
-                //                       'form'    => $form->createView()
+                'form' => $form->createView()
             )
         );
-
     }
 }

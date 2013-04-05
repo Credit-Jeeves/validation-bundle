@@ -47,6 +47,51 @@ class Group
     protected $website_url;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $logo_url;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    protected $phone;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $fax;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $street_address_1;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $street_address_2;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $city;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $state;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $zip;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    protected $description;
+
+    /**
      * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\User", mappedBy="dealer_groups")
      */
     protected $group_dealers;
@@ -208,5 +253,246 @@ class Group
     public function getWebsiteUrl()
     {
         return $this->website_url;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return Group
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string 
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return Group
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    
+        return $this;
+    }
+
+    /**
+     * Get phone
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    /**
+     * Set logo_url
+     *
+     * @param string $logoUrl
+     * @return Group
+     */
+    public function setLogoUrl($logoUrl)
+    {
+        $this->logo_url = $logoUrl;
+    
+        return $this;
+    }
+
+    /**
+     * Get logo_url
+     *
+     * @return string 
+     */
+    public function getLogoUrl()
+    {
+        return $this->logo_url;
+    }
+
+    /**
+     * Set fax
+     *
+     * @param string $fax
+     * @return Group
+     */
+    public function setFax($fax)
+    {
+        $this->fax = $fax;
+    
+        return $this;
+    }
+
+    /**
+     * Get fax
+     *
+     * @return string 
+     */
+    public function getFax()
+    {
+        return $this->fax;
+    }
+
+    /**
+     * Set street_address_1
+     *
+     * @param string $streetAddress1
+     * @return Group
+     */
+    public function setStreetAddress1($streetAddress1)
+    {
+        $this->street_address_1 = $streetAddress1;
+    
+        return $this;
+    }
+
+    /**
+     * Get street_address_1
+     *
+     * @return string 
+     */
+    public function getStreetAddress1()
+    {
+        return $this->street_address_1;
+    }
+
+    /**
+     * Set street_address_2
+     *
+     * @param string $streetAddress2
+     * @return Group
+     */
+    public function setStreetAddress2($streetAddress2)
+    {
+        $this->street_address_2 = $streetAddress2;
+    
+        return $this;
+    }
+
+    /**
+     * Get street_address_2
+     *
+     * @return string 
+     */
+    public function getStreetAddress2()
+    {
+        return $this->street_address_2;
+    }
+
+    /**
+     * Set city
+     *
+     * @param string $city
+     * @return Group
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+    
+        return $this;
+    }
+
+    /**
+     * Get city
+     *
+     * @return string 
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     * @return Group
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+    
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string 
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set zip
+     *
+     * @param string $zip
+     * @return Group
+     */
+    public function setZip($zip)
+    {
+        $this->zip = $zip;
+    
+        return $this;
+    }
+
+    /**
+     * Get zip
+     *
+     * @return string 
+     */
+    public function getZip()
+    {
+        return $this->zip;
+    }
+
+    public function getAddressArray()
+    {
+        $aResult = array();
+        $aAddress = array();
+        $address1 = $this->getStreetAddress1();
+        if (!empty($address1)) {
+            $aAddress[] = $address1;
+        }
+        $address2 = $this->getStreetAddress2();
+        if (!empty($address2)) {
+            $aAddress[] = $address2;
+        }
+        $aResult[] = implode(' ', $aAddress);
+        $aAddress = array();
+        $city = $this->getCity();
+        $state = $this->getState();
+        $zip = $this->getZip();
+        if (!empty($city)) {
+            if (!empty($state) || !empty($zip)) {
+                $aAddress[] = $city.',';
+            } else {
+                $aAddress[] = $city;
+            }
+        }
+        if (!empty($state)) {
+            $aAddress[] = $state;
+        }
+        if (!empty($zip)) {
+            $aAddress[] = $zip;
+        }
+        $aResult[] = implode(' ', $aAddress);
+        return $aResult;
     }
 }

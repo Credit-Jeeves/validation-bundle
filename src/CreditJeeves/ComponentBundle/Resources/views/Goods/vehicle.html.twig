@@ -3,6 +3,9 @@
     <div class="vehicle-model">
         <span>{{ Make }} {{ Model }}</span>
     </div>
+    {% if nLeads > 1 %}
+        <div id="lead-select-button" class="lead-select-button">Select Goal</div>
+    {% endif %}
     {% if sLink | length > 0 %}
     <a href="{{ sLink }}" target="_blank">{{ sLink }}</a>
     {% endif %}

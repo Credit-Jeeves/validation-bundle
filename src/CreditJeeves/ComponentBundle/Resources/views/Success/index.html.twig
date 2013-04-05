@@ -1,0 +1,26 @@
+<div class="pod-large pod-border shadow">
+    <div class="success-title">Congratulations! You’ve reached {{ nTarget }}!</div>
+    <div class="success-inner">
+        <div class="success-left">
+            Your chances have improved to qualify for a loan.
+            <div class="row-20"></div>
+            {% if sPhone | length > 0 %}
+                <div class="success-phone floatleft">{{ sPhone }}</div>
+            {% endif %}
+            <div class="success-address floatright">
+                <span>{{ sGroup }}</span><br>
+                {% for address in aAddress %}
+                    <span>{{ address }}</span><br>
+                {% endfor %}
+            </div>
+        </div>
+        {% if sMessage | length > 0 %}
+        <div class="success-right">
+            <h3>A message from {{ sGroup }}:</h3>
+            {% autoescape false %}{{ sMessage }}{% endautoescape %}
+        </div>
+        {% endif %}
+    </div>
+    <div class="clearboth"></div>
+</div>
+

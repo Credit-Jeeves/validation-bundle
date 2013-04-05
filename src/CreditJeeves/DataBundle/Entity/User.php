@@ -4,16 +4,11 @@ namespace CreditJeeves\DataBundle\Entity;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use CreditJeeves\DataBundle\Entity\Lead;
-use CreditJeeves\DataBundle\Entity\Report;
-use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Vehicle;
-use CreditJeeves\DataBundle\Entity\Order;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
  * @ORM\Table(name="cj_user")
- *
+ * @ORM\HasLifecycleCallbacks()
  */
 class User extends BaseUser
 {
@@ -103,6 +98,21 @@ class User extends BaseUser
      * @ORM\Column(type="string")
      */
     protected $type;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $is_active;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $has_data;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $has_report;
 
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", mappedBy="user")
@@ -839,5 +849,143 @@ class User extends BaseUser
     public function getOfferNotification()
     {
         return $this->offer_notification;
+    }
+
+    public function removeData()
+    {
+        $this->setFirstName('');
+        $this->setMiddleInitial('');
+        $this->setHasData(false);
+        $this->setHasReport(false);
+        $this->setIsActive(false);
+        $this->setSsn('');
+        $this->setSsn('');
+        $this->setUnitNo('');
+        $this->setCity('');
+        $this->setState('');
+        $this->setZip('');
+        $this->setPhone('');
+        $this->setScoreChangedNotification(false);
+        $this->setOfferNotification(false);
+        
+        return $this;
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function methodPreRemove()
+    {
+    }
+
+    /**
+     * @ORM\PostRemove
+     */
+    public function methodPostRemove()
+    {
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function methodPrePersist()
+    {
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function methodPostPersist()
+    {
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function methodPreUpdate()
+    {
+    }
+
+    /**
+     * @ORM\PostUpdate
+     */
+    public function methodPostUpdate()
+    {
+    }
+
+    /**
+     * @ORM\PostLoad
+     */
+    public function methodPostLoad()
+    {
+    }
+
+    /**
+     * Set is_active
+     *
+     * @param boolean $isActive
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->is_active = $isActive;
+    
+        return $this;
+    }
+
+    /**
+     * Get is_active
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
+    {
+        return $this->is_active;
+    }
+
+    /**
+     * Set has_data
+     *
+     * @param boolean $hasData
+     * @return User
+     */
+    public function setHasData($hasData)
+    {
+        $this->has_data = $hasData;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_data
+     *
+     * @return boolean 
+     */
+    public function getHasData()
+    {
+        return $this->has_data;
+    }
+
+    /**
+     * Set has_report
+     *
+     * @param boolean $hasReport
+     * @return User
+     */
+    public function setHasReport($hasReport)
+    {
+        $this->has_report = $hasReport;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_report
+     *
+     * @return boolean 
+     */
+    public function getHasReport()
+    {
+        return $this->has_report;
     }
 }

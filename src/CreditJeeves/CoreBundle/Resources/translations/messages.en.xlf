@@ -546,6 +546,10 @@
                 <target>Settings</target>
             </trans-unit>
 
+            <trans-unit id="settings.title">
+                <source>settings.title</source>
+                <target>Account Settings</target>
+            </trans-unit>
             <trans-unit id="settings.password">
                 <source>settings.password</source>
                 <target>Change Password</target>
@@ -578,6 +582,25 @@
             <trans-unit id="notification.offer.comment">
                 <source>notification.offer.comment</source>
                 <target>Yes, please send me offers like discounts on full credit reports or loans that I might qualify for.</target>
+            </trans-unit>
+
+            <trans-unit id="remove.comment">
+                <source>remove.comment</source>
+                <target>To remove authorization for Credit Jeeves to pull your credit profile, type your password below and click 'Remove'. Your score, credit profile data and any sensitive personal data will be removed from our database.</target>
+            </trans-unit>
+
+            <trans-unit id="password.verify">
+                <source>password.verify</source>
+                <target>Verify your password</target>
+            </trans-unit>
+            <trans-unit id="password.create_new">
+                <source>password.create_new</source>
+                <target>Create a new password</target>
+            </trans-unit>
+
+            <trans-unit id="leads.select.title">
+                <source>leads.select.title</source>
+                <target>You have following Leads</target>
             </trans-unit>
 
 
