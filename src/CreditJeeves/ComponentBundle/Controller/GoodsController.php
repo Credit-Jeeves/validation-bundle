@@ -13,16 +13,18 @@ class GoodsController extends Controller
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Lead $Lead)
     {
-        $Group = $Lead->getGroup();
-        $sType = $Group->getType();
+        $User   = $this->get('core.session.applicant')->getUser();
+        $nLeads = $User->getUserLeads()->count();
+        $Group  = $Lead->getGroup();
+        $sType  = $Group->getType();
         switch ($sType) {
             case Group::TYPE_VEHICLE:
                 $Make = null;
                 $Model = null;
-                $Vehicle = $this->getUser()->getVehicle();
+                $Vehicle = $User->getVehicle();
                 if (!empty($Vehicle)) {
-                    $Make = $this->getUser()->getVehicle()->getMake();
-                    $Model = $this->getUser()->getVehicle()->getModel();
+                    $Make = $User->getVehicle()->getMake();
+                    $Model = $User->getVehicle()->getModel();
 
                 }
                 $sImageUrl = Vehicle::getAmazonVehicle($Make, $Model, $this->container);
@@ -35,6 +37,7 @@ class GoodsController extends Controller
                         'Make' => $Make,
                         'Model' => $Model,
                         'sLink' => $sLink,
+                        'nLeads' => $nLeads,
                     )
                 );
                 break;
@@ -44,6 +47,5 @@ class GoodsController extends Controller
             default:
                 return $this->render('ComponentBundle:Goods:index.html.twig', array());
         }
-
     }
 }

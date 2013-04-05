@@ -1,0 +1,15 @@
+<div id="lead-select-container" class="lead-select-container">
+    <div id="lead-select-form" class="lead-select-form">
+        <div class="lead-select-title"><h2>{{ 'leads.select.title' | trans }}</h2></div>
+        <div class="row-20"></div>
+        {% for Lead in aLeads %}
+            <div class="lead-select-lead" id="lead-{{ Lead.id }}">
+                <span>Dealer: {{ Lead.group }}</span><br>
+                <span>Target Score: {{ Lead.target }}</span><br>
+                <span>Type: {{ Lead.type }}</span>
+            </div>
+        {% endfor %}
+        <div class="row-20"></div>
+        <h5>Click on Dealer to select</h5>
+    </div>
+</div>

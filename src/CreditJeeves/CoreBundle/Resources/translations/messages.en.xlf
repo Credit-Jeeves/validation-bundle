@@ -598,6 +598,11 @@
                 <target>Create a new password</target>
             </trans-unit>
 
+            <trans-unit id="leads.select.title">
+                <source>leads.select.title</source>
+                <target>You have following Leads</target>
+            </trans-unit>
+
 
             
         </body>

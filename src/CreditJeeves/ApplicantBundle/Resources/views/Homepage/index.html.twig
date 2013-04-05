@@ -2,6 +2,12 @@
 
 {% block title "appliant_dashboard_title"|trans %}
 
+{% block header %}
+    {% if nLeads > 1 %}
+        {{ render(controller('ComponentBundle:Leads:index')) }}
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="column-middle floatleft">
         {{ render(controller('ComponentBundle:Score:index', {'Lead': Lead})) }}
@@ -30,3 +36,8 @@
     <div class="clearboth"></div>
 {% endblock %}
 
+{% block javascripts %}
+    {% if nLeads > 1 %}
+        <script src="{{ asset('bundles/component/js/leads.js') }}" type="text/javascript"></script>
+    {% endif %}
+{% endblock %}
