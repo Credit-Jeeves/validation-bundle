@@ -12,6 +12,10 @@
     <div class="clearboth"></div>
     <div class="row-20"></div>
     <div class="column-large">
+        {% if isSuccess %}
+        {{ render(controller('ComponentBundle:Success:index', {'Lead': Lead})) }}
+        <div class="row-20"></div>
+        {% endif %}
         {{ render(controller('ComponentBundle:Simulation:index')) }}
         <div class="row-20"></div>
         {{ render(controller('ComponentBundle:Incentives:index')) }}

@@ -40,3 +40,50 @@
     float: right;
     width: 215px;
 }
+
+.success-title {
+    background: none repeat scroll 0 0 #1985EA;
+    border-radius: 7px 7px 0 0;
+    color: white;
+    border: 2px solid #ffffff;
+    padding: 7px 15px;
+    font-size: 30px;
+    font-family: astoria-medium;
+    font-weight: normal;
+}
+
+.success-inner {
+    margin: 15px 20px;
+    color: #333333;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.success-right {
+    width: 350px;
+    float: right;
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #333333;
+    font-family: "helvetica neue",helveticaneue,helvetica-neue,helvetica,arial,sans-serif;
+    font-weight: 300;
+    line-height: 135%;
+}
+
+.success-left {
+    width: 460px;
+    float: left;
+    margin-bottom: 20px;
+}
+
+.success-phone {
+    padding: 20px;
+    border-right: 1px solid #cccccc;
+    font-size: 24px;
+    font-weight: 800;
+    width: 175px;
+}
+
+.success-address {
+    width: 220px;
+}
