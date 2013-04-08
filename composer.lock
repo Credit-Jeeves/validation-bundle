@@ -1,5 +1,5 @@
 {
-    "hash": "28793bd55513f6c870f6f24cb5ec2754",
+    "hash": "57f6cd7846ed509a07506a5768a7c335",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -7,11 +7,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "f173d609f8e6144bd72b0bda8b3bf8baf4a68727"
+                "reference": "4a6431747f0c202c2a15c15069ea16f85691c426"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-04-05 19:38:16"
+            "time": "2013-04-08 11:57:26"
         },
         {
             "name": "ajbdev/authorizenet-php-api",
@@ -1323,7 +1323,7 @@
                     "Psr\\Log\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "notification-url": "http://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],

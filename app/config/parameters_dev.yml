@@ -3,7 +3,7 @@ imports:
 
 parameters:
     database_name: credit_jeeves2
-    database_user: credit_jeeves
+    database_user: credit_jeeves2
     database_password: 'passw0rd'
 
     server: dev
