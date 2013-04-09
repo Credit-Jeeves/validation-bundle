@@ -9,14 +9,20 @@
     box-shadow: inset 0px 0px 1px 1px #d7d7d7;
     padding: 3px 10px;
 }
+
+.user-item {
+    float: left;
+    margin-right: 10px;
+}
+
 .user-name {
    width: 133px;
-   float: left;
-   margin-right: 10px;
 }
 
 .user-initial {
     width: 20px;
-    float: left;
-    margin-right: 10px;
+}
+
+.user-email-address {
+    width: 352px;
 }

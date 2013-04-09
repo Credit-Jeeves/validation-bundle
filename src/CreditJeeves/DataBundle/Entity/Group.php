@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -39,6 +40,11 @@ class Group
      * @ORM\Column(type="string")
      */
     protected $name;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $code;
 
     /**
      *
@@ -494,5 +500,28 @@ class Group
         }
         $aResult[] = implode(' ', $aAddress);
         return $aResult;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     * @return Group
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string 
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 }

@@ -22,6 +22,7 @@ class LeadsController extends Controller
             $aItem['id'] = $Lead->getId();
             $aItem['target'] = $Lead->getTargetScore();
             $aItem['type'] = $Lead->getGroup()->getType();
+            $aItem['status'] = $Lead->getStatus();
             $aLeads[] = $aItem;
         }
         return array(
