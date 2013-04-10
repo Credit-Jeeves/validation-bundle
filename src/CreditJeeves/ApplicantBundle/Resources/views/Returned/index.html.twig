@@ -18,13 +18,6 @@
 {% block content %}
     <div class="column-small floatleft">
         <div class="pod-small pod-border pod-padding shadow">
-            <h3>Tailored to You</h3>
-            <iframe src="https://player.vimeo.com/video/50397606?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff&amp;autoplay=false"
-                  width="235"
-                  height="140"
-                  frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen>
-            </iframe>
-            <p>Credit Jeeves is a powerful service designed to help you understand, optimize and directly impact your credit score.</p>
         </div>
     </div>
     <div class="column-middle floatright">
@@ -33,8 +26,47 @@
             <h3>Please enter your information below and we can get started right away.</h3>
                 <form action="{{ path('applicant_returned') }}" method="post" {{ form_enctype(form) }}>
                     {{ form_errors(form) }}
-                    {{ form_widget(form) }}
-                    <input class="button large green" type="submit" name="_submit" value="Update" />
+                    <table>
+                        <tr>
+                            <td>{{ form_label(form.code) }}</td>
+                            <td>{{ form_widget(form.code, { 'attr': {'class': 'user-margin'} }) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form_label(form.email) }}</td>
+                            <td>{{ form_widget(form.email, { 'attr': {'class': 'user-margin'} }) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form_label(form.user.first_name) }}</td>
+                            <td>
+                                {{ form_widget(form.user.first_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
+                                {{ form_widget(form.user.middle_initial, { 'attr': {'class': 'user-input user-initial user-margin'} }) }}
+                                {{ form_widget(form.user.last_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ form_label(form.user.ssn1) }}<span class="lock-icon floatright"></span></td>
+                            <td>
+                                {{ form_widget(form.user.ssn1, { 'attr': {'class': 'user-input user-ssn1 user-margin', 'maxlength' : 3} })}}
+                                {{ form_widget(form.user.ssn2, { 'attr': {'class': 'user-input user-ssn2 user-margin', 'maxlength' : 2} }) }}
+                                {{ form_widget(form.user.ssn3, { 'attr': {'class': 'user-input user-ssn3 user-margin', 'maxlength' : 4} }) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ form_label(form.user.street_address1) }}</td>
+                            <td>
+                                {{ form_widget(form.user.street_address1, { 'attr': {'class': 'user-input user-address user-margin', 'placeholder': 'Street'} })}}
+                                {{ form_widget(form.user.unit_no, { 'attr': {'class': 'user-input user-unit user-margin', 'placeholder': 'Unit #'} }) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                {{ form_widget(form.user.city, { 'attr': {'class': 'user-input user-address user-margin'} })}}
+                            </td>
+                        </tr>
+                        </table>
+                    {{ form_rest(form) }}
+                    <input class="button large green" type="submit" name="_submit" value="Get Score" />
                 </form>
         </div>
     </div>

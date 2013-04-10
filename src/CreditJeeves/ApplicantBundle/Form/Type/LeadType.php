@@ -16,9 +16,27 @@ class LeadType extends AbstractType
         $entityManager = $options['em'];
         $groupTransformer = new CodeToGroupTransformer($entityManager);
         $userTransformer = new EmailToUserTransformer($entityManager);
-        //$builder->add('user', new UserType());
-        $builder->add($builder->create('code', 'text', array('property_path' => 'group'))->addModelTransformer($groupTransformer));
-        $builder->add($builder->create('email', 'email', array('property_path' => 'user'))->addModelTransformer($userTransformer));
+        $builder->add(
+            'user',
+            new UserType()
+            );
+        $builder->add(
+            $builder->create(
+                'code',
+                'text',
+                array(
+                    'property_path' => 'group',
+                    'label' => 'Dealer Code',
+                    )
+                )->addModelTransformer($groupTransformer));
+        $builder->add(
+            $builder->create(
+                'email',
+                'email',
+                array(
+                    'property_path' => 'user'
+                    )
+                )->addModelTransformer($userTransformer));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -32,15 +50,14 @@ class LeadType extends AbstractType
                 'intention' => 'username',
             )
         );
-        
+
         $resolver->setRequired(array(
                 'em',
         ));
-        
+
         $resolver->setAllowedTypes(array(
                 'em' => 'Doctrine\Common\Persistence\ObjectManager',
         ));
-        
     }
 
     public function getName()

@@ -165,6 +165,24 @@ class User extends BaseUser
      */
     protected $new_password;
 
+    /**
+     * 
+     * @var string
+     */
+    protected $ssn1;
+
+    /**
+     *
+     * @var string
+     */
+    protected $ssn2;
+
+    /**
+     *
+     * @var string
+     */
+    protected $ssn3;
+
     public function __construct()
     {
         parent::__construct();
@@ -987,5 +1005,20 @@ class User extends BaseUser
     public function getHasReport()
     {
         return $this->has_report;
+    }
+
+    public function getSsn1()
+    {
+        return substr($this->getSsn(), 0, 3);
+    }
+
+    public function getSsn2()
+    {
+        return substr($this->getSsn(), 3, 2);
+    }
+
+    public function getSsn3()
+    {
+        return substr($this->getSsn(), 5);
     }
 }

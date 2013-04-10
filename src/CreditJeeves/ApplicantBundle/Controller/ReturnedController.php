@@ -41,11 +41,12 @@ class ReturnedController extends Controller
                 // @TODO would be fixed with right logic
                 $Lead->setDealer($Group->getGroupDealers()->first());
                 $Lead->setTargetScore($Group->getTargetScore());
-                $Lead->setStatus('new');
+                $Lead->setStatus($Lead::STATUS_NEW);
                 $Lead->setSource('webpage');
                 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($Lead);
+                $em->persist($User);
                 $em->flush();
             }
         }

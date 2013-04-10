@@ -26,3 +26,28 @@
 .user-email-address {
     width: 352px;
 }
+
+.user-margin {
+    margin-bottom: 10px;
+    margin-right: 2px;
+}
+
+.user-ssn1 {
+    width: 40px;
+}
+
+.user-ssn2 {
+    width: 25px;
+}
+
+.user-ssn3 {
+    width: 50px;
+}
+
+.user-address {
+     width: 240px;
+}
+
+.user-unit {
+    width: 75px;
+}

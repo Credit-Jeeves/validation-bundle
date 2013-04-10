@@ -37,4 +37,7 @@ $(document).ready(function(){
   }
   // Now we could use linkselect plugin
   $('select').linkselect();
+  
+  jQuery('input[placeholder], textarea[placeholder]').placeholder();
+
 });

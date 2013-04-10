@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Lead
 {
     /**
+     * 
+     * @var string
+     */
+    const STATUS_NEW = 'new';
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
