@@ -47,15 +47,12 @@ class UserType extends AbstractType
             ->add('has_data')
             ->add('has_report')
             ->add('dealer_groups')
-            ->add('vehicle')
-        ;
+            ->add('vehicle');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'CreditJeeves\DataBundle\Entity\User'
-        ));
+        $resolver->setDefaults(array('data_class' => 'CreditJeeves\DataBundle\Entity\User'));
     }
 
     public function getName()

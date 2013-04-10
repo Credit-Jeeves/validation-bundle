@@ -24,15 +24,12 @@ class GroupType extends AbstractType
             ->add('state')
             ->add('zip')
             ->add('description')
-            ->add('group_dealers')
-        ;
+            ->add('group_dealers');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'CreditJeeves\DataBundle\Entity\Group'
-        ));
+        $resolver->setDefaults(array('data_class' => 'CreditJeeves\DataBundle\Entity\Group'));
     }
 
     public function getName()

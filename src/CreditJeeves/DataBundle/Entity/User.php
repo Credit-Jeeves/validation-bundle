@@ -1021,4 +1021,26 @@ class User extends BaseUser
     {
         return substr($this->getSsn(), 5);
     }
+
+    public function setSsn1($ssn1)
+    {
+        $this->ssn1 = $ssn1;
+
+        return $this;
+    }
+
+    public function setSsn2($ssn2)
+    {
+        $this->ssn2 = $ssn2;
+
+        return $this;
+    }
+
+    public function setSsn3($ssn3)
+    {
+        $this->ssn3 = $ssn3;
+
+        return $this;
+    
+    }
 }

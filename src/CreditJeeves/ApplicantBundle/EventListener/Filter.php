@@ -42,29 +42,19 @@ class Filter implements ContainerAwareInterface
         $route = $this->container->get('router');
         // First check data
         if (!$user->getHasData()) {
-           if ($sRouteName != 'applicant_returned') {
-            return $event->getResponseEvent()->setResponse(new RedirectResponse($route->generate('applicant_returned')));
-           } else {
-               return true;
-           }
+            if ($sRouteName != 'applicant_returned') {
+                return $event->getResponseEvent()->setResponse(
+                    new RedirectResponse(
+                        $route->generate('applicant_returned')
+                    )
+                );
+            } else {
+                return true;
+            }
         }
         // Second - check if report exists
         if (!$user->getReportsPrequal()->last()) {
             return $event->getResponseEvent()->setResponse(new RedirectResponse($route->generate('core_report_get')));
         }
     }
-
-//     /**
-//      * @DI\Observe("applicant.filter")
-//      */
-//     public function checkStatus(FilterEvent $event)
-//     {
-//     }
-
-//     /**
-//      * @DI\Observe("applicant.filter")
-//      */
-//     public function checkData(FilterEvent $event)
-//     {
-//     }
 }

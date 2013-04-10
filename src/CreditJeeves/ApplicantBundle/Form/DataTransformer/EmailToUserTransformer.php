@@ -51,10 +51,7 @@ class EmailToUserTransformer implements DataTransformerInterface
         }
         $User = $this->om->getRepository('DataBundle:User')->findOneByEmail($sEmail);
         if (null === $User) {
-            throw new TransformationFailedException(sprintf(
-                    'User with email "%s" does not exist!',
-                    $sEmail
-            ));
+            throw new TransformationFailedException(sprintf('User with email "%s" does not exist!', $sEmail));
         }
         return $User;
     }

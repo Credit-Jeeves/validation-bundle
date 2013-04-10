@@ -32,7 +32,7 @@ class ReturnedController extends Controller
             array(
                 'em' => $this->getDoctrine()->getManager()
                 )
-            );
+        );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {

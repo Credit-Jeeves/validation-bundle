@@ -538,10 +538,10 @@ class Group
     public function setTargetScore($targetScore)
     {
         $this->target_score = $targetScore;
-    
+
         return $this;
     }
-    
+
     /**
      * Get target_score
      *
@@ -551,5 +551,4 @@ class Group
     {
         return $this->target_score;
     }
-    
 }

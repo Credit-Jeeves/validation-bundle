@@ -19,7 +19,7 @@ class LeadType extends AbstractType
         $builder->add(
             'user',
             new UserType()
-            );
+        );
         $builder->add(
             $builder->create(
                 'code',
@@ -28,7 +28,8 @@ class LeadType extends AbstractType
                     'property_path' => 'group',
                     'label' => 'Dealer Code',
                     )
-                )->addModelTransformer($groupTransformer));
+            )->addModelTransformer($groupTransformer)
+        );
         $builder->add(
             $builder->create(
                 'email',
@@ -36,7 +37,8 @@ class LeadType extends AbstractType
                 array(
                     'property_path' => 'user'
                     )
-                )->addModelTransformer($userTransformer));
+            )->addModelTransformer($userTransformer)
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -51,13 +53,9 @@ class LeadType extends AbstractType
             )
         );
 
-        $resolver->setRequired(array(
-                'em',
-        ));
+        $resolver->setRequired(array('em'));
 
-        $resolver->setAllowedTypes(array(
-                'em' => 'Doctrine\Common\Persistence\ObjectManager',
-        ));
+        $resolver->setAllowedTypes(array('em' => 'Doctrine\Common\Persistence\ObjectManager'));
     }
 
     public function getName()

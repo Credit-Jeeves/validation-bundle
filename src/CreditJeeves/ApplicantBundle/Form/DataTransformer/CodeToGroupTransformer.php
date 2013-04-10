@@ -51,10 +51,12 @@ class CodeToGroupTransformer implements DataTransformerInterface
         }
         $Group = $this->om->getRepository('DataBundle:Group')->findOneByCode($sCode);
         if (null === $Group) {
-            throw new TransformationFailedException(sprintf(
+            throw new TransformationFailedException(
+                sprintf(
                     'Group with code "%s" does not exist!',
                     $sCode
-            ));
+                )
+            );
         }
         return $Group;
     }

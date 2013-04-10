@@ -5,6 +5,7 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 
 class UserType extends AbstractType
 {
@@ -16,7 +17,7 @@ class UserType extends AbstractType
             array(
                 'label' => 'Name'
                 )
-            );
+        );
         $builder->add(
             'middle_initial',
             'text',
@@ -24,63 +25,69 @@ class UserType extends AbstractType
                 'label' => '',
                 'required' => false,
                 )
-            );
+        );
         $builder->add(
             'last_name',
             'text',
             array(
                 'label' => ''
                 )
-            );
+        );
         $builder->add(
             'ssn1',
             'text',
             array(
                 'label' => 'SSN'
                 )
-            );
+        );
         $builder->add(
             'ssn2',
             'text',
             array(
                 'label' => ''
                 )
-            );
+        );
         $builder->add(
             'ssn3',
             'text',
             array(
                 'label' => '0'
                 )
-            );
+        );
         $builder->add(
             'street_address1',
             'text',
             array(
                 'label' => 'Address',
                 )
-            );
+        );
         $builder->add(
             'unit_no',
             'text',
             array(
                 'label' => '',
                 )
-            );
+        );
         $builder->add(
             'city',
             'text',
             array(
                 'label' => ''
                 )
-            );
+        );
+        $builder->add(
+            'state',
+            'choice',
+            array(
+                'label' => '',
+                'choice_list' =>  new StateChoiceList(),
+                )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'data_class' => 'CreditJeeves\DataBundle\Entity\User'
-        ));
+        $resolver->setDefaults(array('data_class' => 'CreditJeeves\DataBundle\Entity\User'));
     }
 
     public function getName()
