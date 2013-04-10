@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -39,6 +40,16 @@ class Group
      * @ORM\Column(type="string")
      */
     protected $name;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $target_score;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $code;
 
     /**
      *
@@ -103,7 +114,6 @@ class Group
 
     public function __construct()
     {
-        parent::__construct();
         $this->leads = new ArrayCollection();
         $this->group_dealers = new ArrayCollection();
     }
@@ -494,5 +504,51 @@ class Group
         }
         $aResult[] = implode(' ', $aAddress);
         return $aResult;
+    }
+
+    /**
+     * Set code
+     *
+     * @param string $code
+     * @return Group
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+    
+        return $this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return string 
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Set target_score
+     *
+     * @param integer $targetScore
+     * @return Group
+     */
+    public function setTargetScore($targetScore)
+    {
+        $this->target_score = $targetScore;
+
+        return $this;
+    }
+
+    /**
+     * Get target_score
+     *
+     * @return integer
+     */
+    public function getTargetScore()
+    {
+        return $this->target_score;
     }
 }

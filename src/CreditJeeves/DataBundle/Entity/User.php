@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
@@ -164,6 +165,30 @@ class User extends BaseUser
      * @var string
      */
     protected $new_password;
+
+    /**
+     * 
+     * @var string
+     */
+    protected $ssn1;
+
+    /**
+     *
+     * @var string
+     */
+    protected $ssn2;
+
+    /**
+     *
+     * @var string
+     */
+    protected $ssn3;
+
+    /**
+     * @Assert\True()
+     * @var boolean
+     */
+    protected $tos;
 
     public function __construct()
     {
@@ -987,5 +1012,54 @@ class User extends BaseUser
     public function getHasReport()
     {
         return $this->has_report;
+    }
+
+    public function getSsn1()
+    {
+        return substr($this->getSsn(), 0, 3);
+    }
+
+    public function getSsn2()
+    {
+        return substr($this->getSsn(), 3, 2);
+    }
+
+    public function getSsn3()
+    {
+        return substr($this->getSsn(), 5);
+    }
+
+    public function setSsn1($ssn1)
+    {
+        $this->ssn1 = $ssn1;
+
+        return $this;
+    }
+
+    public function setSsn2($ssn2)
+    {
+        $this->ssn2 = $ssn2;
+
+        return $this;
+    }
+
+    public function setSsn3($ssn3)
+    {
+        $this->ssn3 = $ssn3;
+
+        return $this;
+    
+    }
+
+    public function getTos()
+    {
+        return $this->tos;
+    }
+
+    public function setTos($tos)
+    {
+        $this->tos = $tos;
+        
+        return $this;
     }
 }

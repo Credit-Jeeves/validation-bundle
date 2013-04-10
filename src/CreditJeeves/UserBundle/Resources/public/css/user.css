@@ -9,14 +9,52 @@
     box-shadow: inset 0px 0px 1px 1px #d7d7d7;
     padding: 3px 10px;
 }
+
+.user-item {
+    float: left;
+    margin-right: 10px;
+}
+
 .user-name {
    width: 133px;
-   float: left;
-   margin-right: 10px;
 }
 
 .user-initial {
     width: 20px;
-    float: left;
-    margin-right: 10px;
 }
+
+.user-email-address {
+    width: 352px;
+}
+
+.user-margin {
+    margin-bottom: 10px;
+    margin-right: 2px;
+}
+
+.user-ssn1 {
+    width: 40px;
+}
+
+.user-ssn2 {
+    width: 25px;
+}
+
+.user-ssn3 {
+    width: 50px;
+}
+
+.user-address {
+     width: 240px;
+}
+
+.user-unit {
+    width: 75px;
+}
+
+.user-city {
+    margin-top: 1px;
+    width: 150px;
+    margin-right: 5px;
+}
+

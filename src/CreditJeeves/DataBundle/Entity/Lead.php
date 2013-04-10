@@ -6,9 +6,16 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\LeadRepository")
  * @ORM\Table(name="cj_lead")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Lead
 {
+    /**
+     * 
+     * @var string
+     */
+    const STATUS_NEW = 'new';
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -308,7 +315,7 @@ class Lead
      */
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
-        $this->User = $user;
+        $this->user = $user;
 
         return $this;
     }
@@ -320,7 +327,7 @@ class Lead
      */
     public function getUser()
     {
-        return $this->User;
+        return $this->user;
     }
 
     /**
@@ -367,5 +374,22 @@ class Lead
     public function getDealer()
     {
         return $this->dealer;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function methodPrePersist()
+    {
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function methodPreUpdate()
+    {
+        $this->updated_at = new \DateTime();
     }
 }

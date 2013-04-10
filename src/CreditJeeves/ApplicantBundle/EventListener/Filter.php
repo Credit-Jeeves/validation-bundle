@@ -35,27 +35,26 @@ class Filter implements ContainerAwareInterface
      */
     public function checkReport(FilterEvent $event)
     {
+        $sRouteName = $this->container->get('request')->get('_route');
         /** @var $user \CreditJeeves\DataBundle\Entity\User */
-        $user = $this->container->get('security.context')->getToken()->getUser();
+        $user = $this->container->get('core.session.applicant')->getUser();
         /** @var $route \Symfony\Bundle\FrameworkBundle\Routing\Router */
         $route = $this->container->get('router');
-
+        // First check data
+        if (!$user->getHasData()) {
+            if ($sRouteName != 'applicant_returned') {
+                return $event->getResponseEvent()->setResponse(
+                    new RedirectResponse(
+                        $route->generate('applicant_returned')
+                    )
+                );
+            } else {
+                return true;
+            }
+        }
+        // Second - check if report exists
         if (!$user->getReportsPrequal()->last()) {
             return $event->getResponseEvent()->setResponse(new RedirectResponse($route->generate('core_report_get')));
         }
-    }
-
-    /**
-     * @DI\Observe("applicant.filter")
-     */
-    public function checkStatus(FilterEvent $event)
-    {
-    }
-
-    /**
-     * @DI\Observe("applicant.filter")
-     */
-    public function checkData(FilterEvent $event)
-    {
     }
 }
