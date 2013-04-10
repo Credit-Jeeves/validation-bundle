@@ -5,8 +5,10 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use CreditJeeves\ApplicantBundle\Form\Type\ReturnedType;
-use CreditJeeves\ApplicantBundle\Form\Entity\User;
+use CreditJeeves\ApplicantBundle\Form\Type\LeadType;
+use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Lead;
+use CreditJeeves\ApplicantBundle\Form\DataTransformer\CodeToGroupTransformer;
 
 class ReturnedController extends Controller
 {
@@ -20,11 +22,31 @@ class ReturnedController extends Controller
     {
         $request = $this->get('request');
         $User = $this->get('core.session.applicant')->getUser();
-        $form = $this->createForm(new ReturnedType(), $User);
+        $Lead = new Lead();
+        
+        $Lead->setUser($User);
+        
+        $form = $this->createForm(
+            new LeadType(),
+            $Lead,
+            array(
+                'em' => $this->getDoctrine()->getManager()
+                )
+            );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-        
+                $Lead = $form->getData();
+                $Group = $Lead->getGroup();
+                // @TODO would be fixed with right logic
+                $Lead->setDealer($Group->getGroupDealers()->first());
+                $Lead->setTargetScore($Group->getTargetScore());
+                $Lead->setStatus('new');
+                $Lead->setSource('webpage');
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($Lead);
+                $em->flush();
             }
         }
         return array('form' => $form->createView());

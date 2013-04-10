@@ -31,29 +31,11 @@
         <div class="pod-middle pod-border pod-padding shadow">
             <h1>Welcome to Credit Jeeves.</h1>
             <h3>Please enter your information below and we can get started right away.</h3>
-            <table>
                 <form action="{{ path('applicant_returned') }}" method="post" {{ form_enctype(form) }}>
                     {{ form_errors(form) }}
-                    <tr>
-                        <td>{{ form_label(form.email) }}</td>
-                        <td>{{ form_widget(form.email, { 'attr': {'class': 'user-input user-item user-email-address'} }) }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form_label(form.first_name) }}</td>
-                        <td>
-                            {{ form_widget(form.first_name,     { 'attr': {'class': 'user-input user-item user-name'} }) }}
-                            {{ form_widget(form.middle_initial, { 'attr': {'class': 'user-input user-item user-initial'} }) }}
-                            {{ form_widget(form.last_name,      { 'attr': {'class': 'user-input user-item user-name'} }) }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="center">
-                            {{ form_rest(form) }}
-                            <input class="button large green" type="submit" name="_submit" value="Update" />
-                        </td>
-                    </tr>
+                    {{ form_widget(form) }}
+                    <input class="button large green" type="submit" name="_submit" value="Update" />
                 </form>
-            </table>
         </div>
     </div>
     <div class="clearboth"></div>
