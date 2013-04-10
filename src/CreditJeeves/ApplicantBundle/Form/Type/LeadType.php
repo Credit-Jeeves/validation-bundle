@@ -3,6 +3,7 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 
 use CreditJeeves\ApplicantBundle\Form\Type\GroupType;
 use CreditJeeves\ApplicantBundle\Form\Type\UserType;
+use CreditJeeves\ApplicantBundle\Form\Type\TosType;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\CodeToGroupTransformer;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\EmailToUserTransformer;
 use Symfony\Component\Form\AbstractType;

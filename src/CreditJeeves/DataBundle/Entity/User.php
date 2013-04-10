@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
@@ -182,6 +183,12 @@ class User extends BaseUser
      * @var string
      */
     protected $ssn3;
+
+    /**
+     * @Assert\True()
+     * @var boolean
+     */
+    protected $tos;
 
     public function __construct()
     {
@@ -1042,5 +1049,17 @@ class User extends BaseUser
 
         return $this;
     
+    }
+
+    public function getTos()
+    {
+        return $this->tos;
+    }
+
+    public function setTos($tos)
+    {
+        $this->tos = $tos;
+        
+        return $this;
     }
 }

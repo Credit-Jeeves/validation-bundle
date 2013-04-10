@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
+use CreditJeeves\ApplicantBundle\Form\Type\TosType;
 
 class UserType extends AbstractType
 {
@@ -83,6 +84,14 @@ class UserType extends AbstractType
                 'choice_list' =>  new StateChoiceList(),
                 )
         );
+        $builder->add(
+            'tos',
+            'hidden',
+            array(
+                'label' => '',
+                'required' => true,
+                )
+            );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

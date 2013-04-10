@@ -61,8 +61,16 @@
                         <tr>
                             <td></td>
                             <td>
-                                {{ form_widget(form.user.city, { 'attr': {'class': 'user-input user-address user-margin'} })}}
+                                {{ form_widget(form.user.city, { 'attr': {'class': 'user-input user-city user-margin floatleft', 'placeholder': 'City'} })}}
+                                {{ form_widget(form.user.state, { 'attr': {'class': 'user-input user-state user-margin'} })}}
                             </td>
+                        </tr>
+                        <tr>
+                        <td colspan="2">
+                        <div class="checkbox-anywhere">
+                            {{ form_widget(form.user.tos) }}
+                            </div>
+                        </td>
                         </tr>
                         </table>
                     {{ form_rest(form) }}

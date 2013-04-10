@@ -39,17 +39,31 @@ class ReturnedController extends Controller
                 $Lead = $form->getData();
                 $Group = $Lead->getGroup();
                 // @TODO would be fixed with right logic
-                $Lead->setDealer($Group->getGroupDealers()->first());
+                $Lead->setDealer($this->getLeadDealer($Lead));
                 $Lead->setTargetScore($Group->getTargetScore());
                 $Lead->setStatus($Lead::STATUS_NEW);
                 $Lead->setSource('webpage');
-                
+
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($Lead);
+                if ($this->validateLead($Lead)) {
+                    $em->persist($Lead);
+                }
+                $User->setHasData(true);
                 $em->persist($User);
                 $em->flush();
             }
         }
         return array('form' => $form->createView());
+    }
+
+    private function validateLead($Lead)
+    {
+        return true;
+    }
+
+    private function getLeadDealer($Lead)
+    {
+        $Group = $Lead->getGroup();
+        return $Group->getGroupDealers()->first();
     }
 }

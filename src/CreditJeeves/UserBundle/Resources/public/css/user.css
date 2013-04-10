@@ -51,3 +51,10 @@
 .user-unit {
     width: 75px;
 }
+
+.user-city {
+    margin-top: 1px;
+    width: 150px;
+    margin-right: 5px;
+}
+
