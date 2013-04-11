@@ -1,0 +1,31 @@
+<div id="entryForm">
+    <div class="clear"></div>
+    <?php if (!empty($form)) { ?>
+        <div class="column column-medium">
+            <fieldset class="buyer-info">
+                <h2><?php echo __('Identity Verification') ?></h2>
+                <?php echo $form->renderFormTag('') ?>
+                    <p>Please answer the following questions.</p>
+                    <?php echo $form?>
+                    <div class="row submitter-row">
+                        <button type="submit" class="large green submit auto-hide">Submit</button>
+                    </div>
+                </form>
+            </fieldset>
+        </div>
+        <div class="column column-right">
+            <div class="pod pod-small auto-pod">
+                <h3>Why do I need to do this?</h3>
+                <p class="spaced-text">
+                    In order to verify you have access to the credit information associated with the identity you provided, we ask a few questions that only the identity owner would know.
+                </p>
+                <p class="spaced-text">
+                    Please answer these questions carefully. Please note that the correct answer may not be listed, and that some information on your credit file may be from past addresses and employers.
+                </p>
+            </div>
+        </div>
+    <?php } else {?>
+        <?php include_partial('cjCommon/loading', array('url' => url_for($selfRoute)));?>
+    <?php }?>
+    <div class="clear"></div>
+</div>

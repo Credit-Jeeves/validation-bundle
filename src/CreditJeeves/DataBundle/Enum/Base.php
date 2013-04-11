@@ -7,7 +7,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 /**
  * Base Enum class
  *
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  */
 abstract class Base extends Type
 {

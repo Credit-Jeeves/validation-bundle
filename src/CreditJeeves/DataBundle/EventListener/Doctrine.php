@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  *
  * @Service("data.event_listener.doctrine")
  * @Tag("doctrine.event_listener", attributes = { "event" = "prePersist", "method" = "prePersist" })

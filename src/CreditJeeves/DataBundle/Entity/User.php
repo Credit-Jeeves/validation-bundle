@@ -13,7 +13,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 /**
  * @ORM\Entity
  * @ORM\Table(name="cj_user")
- *
+ * @ORM\HasLifecycleCallbacks()
  */
 class User extends BaseUser
 {
@@ -80,16 +80,6 @@ class User extends BaseUser
     protected $phone;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $score_changed_notification;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $offer_notification;
-
-    /**
      * @ORM\Column(type="date")
      */
     protected $date_of_birth;
@@ -102,7 +92,52 @@ class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      */
+    protected $invite_code;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $score_changed_notification;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $offer_notification;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $culture;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $has_data;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $has_report;
+
+    /**
+     * @ORM\Column(type="UserIsVerified")
+     */
+    protected $is_verified;
+
+    /**
+     * @ORM\Column(type="UserType")
+     */
     protected $type;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $created_at;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated_at;
 
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", mappedBy="user")
@@ -144,13 +179,16 @@ class User extends BaseUser
     protected $dealer_groups;
 
     /**
-     *
      * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Vehicle", mappedBy="user")
      */
     protected $vehicle;
 
     /**
-     *
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq", mappedBy="user")
+     */
+    protected $pidkiqs;
+
+    /**
      * @var string
      */
     protected $new_password;
@@ -165,6 +203,7 @@ class User extends BaseUser
         $this->user_leads = new ArrayCollection();
         $this->dealer_leads = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->pidkiqs = new ArrayCollection();
     }
 
     public function getNewPassword()
@@ -412,6 +451,52 @@ class User extends BaseUser
         $sSSN = substr($this->getSsn(), 0, 5);
 
         return substr($sSSN, 0, 3) . '-' . substr($sSSN, 3) . '-XXXX';
+    }
+
+    /**
+     * Set invite_code
+     *
+     * @param string $inviteCode
+     * @return User
+     */
+    public function setInviteCode($inviteCode)
+    {
+        $this->invite_code = $inviteCode;
+
+        return $this;
+    }
+
+    /**
+     * Get invite_code
+     *
+     * @return string
+     */
+    public function getInviteCode()
+    {
+        return $this->invite_code;
+    }
+
+    /**
+     * Set culture
+     *
+     * @param string $culture
+     * @return User
+     */
+    public function setCulture($culture)
+    {
+        $this->culture = $culture;
+
+        return $this;
+    }
+
+    /**
+     * Get culture
+     *
+     * @return string
+     */
+    public function getCulture()
+    {
+        return $this->culture;
     }
 
     public function getDateOfBirth()
@@ -839,5 +924,196 @@ class User extends BaseUser
     public function getOfferNotification()
     {
         return $this->offer_notification;
+    }
+
+    /**
+     * Add pidkiq
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Pidkiq $pidkiqs
+     * @return User
+     */
+    public function addPidkiq(\CreditJeeves\DataBundle\Entity\Pidkiq $pidkiq)
+    {
+        $this->pidkiqs[] = $pidkiq;
+
+        return $this;
+    }
+
+    /**
+     * Remove pidkiq
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Pidkiq $pidkiq
+     */
+    public function removePidkiq(\CreditJeeves\DataBundle\Entity\Pidkiq $pidkiq)
+    {
+        $this->pidkiqs->removeElement($pidkiq);
+    }
+
+
+    /**
+     * Get pidkiqs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPidkiqs()
+    {
+        return $this->pidkiqs;
+    }
+
+    /**
+     * @return array
+     */
+    public function getArrayForPidkiq()
+    {
+        $data = array(
+            'id',
+            'first_name',
+            'middle_initial',
+            'last_name',
+            'street_address1',
+            'street_address2',
+            'city',
+            'state',
+            'zip',
+            'ssn',
+            'is_verified',
+        );
+        $return = array();
+        foreach ($data as $key) {
+            $return[$key] = $this->$key;
+        }
+        return $return;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function preUpdate()
+    {
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * Set has_data
+     *
+     * @param string $hasData
+     * @return User
+     */
+    public function setHasData($hasData)
+    {
+        $this->has_data = $hasData;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_data
+     *
+     * @return string 
+     */
+    public function getHasData()
+    {
+        return $this->has_data;
+    }
+
+    /**
+     * Set has_report
+     *
+     * @param string $hasReport
+     * @return User
+     */
+    public function setHasReport($hasReport)
+    {
+        $this->has_report = $hasReport;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_report
+     *
+     * @return string 
+     */
+    public function getHasReport()
+    {
+        return $this->has_report;
+    }
+
+    /**
+     * Set is_verified
+     *
+     * @param UserIsVerified $isVerified
+     * @return User
+     */
+    public function setIsVerified($isVerified)
+    {
+        $this->is_verified = $isVerified;
+    
+        return $this;
+    }
+
+    /**
+     * Get is_verified
+     *
+     * @return UserIsVerified 
+     */
+    public function getIsVerified()
+    {
+        return $this->is_verified;
+    }
+
+    /**
+     * Set created_at
+     *
+     * @param \DateTime $createdAt
+     * @return User
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get created_at
+     *
+     * @return \DateTime 
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updated_at
+     *
+     * @param \DateTime $updatedAt
+     * @return User
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+    
+        return $this;
+    }
+
+    /**
+     * Get updated_at
+     *
+     * @return \DateTime 
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
     }
 }

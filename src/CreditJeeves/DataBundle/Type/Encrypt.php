@@ -5,7 +5,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\TextType;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  */
 class Encrypt extends TextType
 {

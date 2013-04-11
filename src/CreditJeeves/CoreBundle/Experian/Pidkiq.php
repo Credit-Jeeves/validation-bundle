@@ -13,8 +13,9 @@ require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/experian/pidkiq/Pi
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/experian/pidkiq/PidkiqCurl.class.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/experian/pidkiq/PidkiqXml.class.php';
 
-
-
+/**
+ * @Service("core.experian.pidkiq")
+ */
 class Pidkiq extends \Pidkiq
 {
     

@@ -7,7 +7,7 @@ use JMS\DiExtraBundle\Annotation\Tag;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  *
  * @Service("core.event_listener.kernel")
  *
