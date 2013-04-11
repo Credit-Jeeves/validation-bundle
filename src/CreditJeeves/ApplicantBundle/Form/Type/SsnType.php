@@ -17,7 +17,7 @@ class SsnType extends AbstractType
         //echo '>>>'.$ssn.'<<<';
 //        $builder->add('ssn1', 'text');
 //         $root = $builder->create('root', 'text', array('compound' => true));
-//         $root->add('ssn1', 'text');
+         //$builder->add('ssn1', 'text', array('mapped' => false));
 //         $root->add('ssn2', 'text');
 //         $root->add('ssn3', 'text');
 //         return $root->getForm();

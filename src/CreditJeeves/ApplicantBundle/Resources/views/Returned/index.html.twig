@@ -11,13 +11,18 @@
 
 {% block info %}
 <div class="user-logout">
-    <a href="{{ path('fos_user_security_login') }}">» Log In </a>
+    <a href="{{ path('fos_user_security_logout') }}">» {{ 'common.log_out' | trans }} </a>&nbsp;|&nbsp;
+    <a href="{{ path('fos_user_security_logout') }}">» {{ 'common.help' | trans }} </a>
 </div>
 {% endblock %}
 
 {% block content %}
     <div class="column-small floatleft">
         <div class="pod-small pod-border pod-padding shadow">
+            <h3>Why is Credit Jeeves Different?</h3>
+            <p>
+                Credit Jeeves gives you a <strong>custom action plan</strong> so you can take charge of your credit and buy the car of your dreams.
+            </p>
         </div>
     </div>
     <div class="column-middle floatright">

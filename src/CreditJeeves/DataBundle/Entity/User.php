@@ -160,12 +160,6 @@ class User extends BaseUser
      */
     protected $vehicle;
 
-//     /**
-//      *
-//      * @var string
-//      */
-//     protected $new_password;
-
     public function __construct()
     {
         parent::__construct();
@@ -177,17 +171,6 @@ class User extends BaseUser
         $this->dealer_leads = new ArrayCollection();
         $this->groups = new ArrayCollection();
     }
-
-//     public function getNewPassword()
-//     {
-//         return $this->new_password;
-//     }
-
-
-//     public function setNewPassword($newPassword)
-//     {
-//         $this->new_password = $newPassword;
-//     }
 
     /**
      * (non-PHPdoc)

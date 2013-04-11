@@ -37,14 +37,14 @@ class UserType extends AbstractType
                 'label' => ''
                 )
         );
-        $builder->add(
-                'ssn',
-                new SsnType()
-        );
-        $builder->add(
-                'date_of_birth',
-                new DobType()
-        );
+//         $builder->add(
+//                 'ssn',
+//                 new SsnType()
+//         );
+//         $builder->add(
+//                 'date_of_birth',
+//                 new DobType()
+//         );
         $builder->add(
             'street_address1',
             'text',
