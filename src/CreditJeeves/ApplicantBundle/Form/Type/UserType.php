@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
-use CreditJeeves\ApplicantBundle\Form\Type\TosType;
+use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
 
 class UserType extends AbstractType
 {
@@ -34,27 +34,31 @@ class UserType extends AbstractType
                 'label' => ''
                 )
         );
-        $builder->add(
-            'ssn1',
-            'text',
-            array(
-                'label' => 'SSN'
-                )
-        );
-        $builder->add(
-            'ssn2',
-            'text',
-            array(
-                'label' => ''
-                )
-        );
-        $builder->add(
-            'ssn3',
-            'text',
-            array(
-                'label' => '0'
-                )
-        );
+//         $builder->add(
+//                 'ssn',
+//                 'text', array('property_path' => new SsnType())
+//         );
+//         $builder->add(
+//             'ssn1',
+//             'text',
+//             array(
+//                 'label' => 'SSN'
+//                 )
+//         );
+//         $builder->add(
+//             'ssn2',
+//             'text',
+//             array(
+//                 'label' => ''
+//                 )
+//         );
+//         $builder->add(
+//             'ssn3',
+//             'text',
+//             array(
+//                 'label' => '0'
+//                 )
+//         );
         $builder->add(
             'street_address1',
             'text',
@@ -85,11 +89,36 @@ class UserType extends AbstractType
                 )
         );
         $builder->add(
+            'zip',
+            'text',
+            array(
+                    'label' => ''
+                )
+        );
+        $builder->add(
+            'phone_type',
+            'choice',
+            array(
+                'label' => '',
+                'choices' => array(
+                    '1' => 'Mobile',
+                    '2' => 'Home',
+                    '3' => 'Work',
+                    ),
+                )
+        );
+        $builder->add(
+            'phone',
+            'text',
+            array(
+                    'label' => 'Phone'
+                )
+        );
+        $builder->add(
             'tos',
             'hidden',
             array(
                 'label' => '',
-                'required' => true,
                 )
             );
     }

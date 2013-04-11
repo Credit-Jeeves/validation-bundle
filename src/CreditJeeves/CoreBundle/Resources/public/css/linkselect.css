@@ -18,8 +18,8 @@ a.linkselect-link {
   font-size: 20px;
   color: #333;
   height: 30px;
-  margin-top: 1px;
-  margin-right: 10px;
+ /* margin-top: 1px;*/
+  margin-right: 5px;
   font-weight: normal;
   background: url(../images/link-select-bg.png) repeat-x top left;
   padding-right: 30px;

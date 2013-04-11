@@ -53,8 +53,13 @@
 }
 
 .user-city {
-    margin-top: 1px;
     width: 150px;
     margin-right: 5px;
+}
+
+.user-tos {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 5px;
 }
 

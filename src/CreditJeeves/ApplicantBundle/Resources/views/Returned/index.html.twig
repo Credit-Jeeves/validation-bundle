@@ -23,6 +23,7 @@
     <div class="column-middle floatright">
         <div class="pod-middle pod-border pod-padding shadow">
             <h1>Welcome to Credit Jeeves.</h1>
+            <div class="row-20"></div>
             <h3>Please enter your information below and we can get started right away.</h3>
                 <form action="{{ path('applicant_returned') }}" method="post" {{ form_enctype(form) }}>
                     {{ form_errors(form) }}
@@ -44,12 +45,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>{{ form_label(form.user.ssn1) }}<span class="lock-icon floatright"></span></td>
-                            <td>
-                                {{ form_widget(form.user.ssn1, { 'attr': {'class': 'user-input user-ssn1 user-margin', 'maxlength' : 3} })}}
-                                {{ form_widget(form.user.ssn2, { 'attr': {'class': 'user-input user-ssn2 user-margin', 'maxlength' : 2} }) }}
-                                {{ form_widget(form.user.ssn3, { 'attr': {'class': 'user-input user-ssn3 user-margin', 'maxlength' : 4} }) }}
-                            </td>
                         </tr>
                         <tr>
                             <td>{{ form_label(form.user.street_address1) }}</td>
@@ -63,17 +58,37 @@
                             <td>
                                 {{ form_widget(form.user.city, { 'attr': {'class': 'user-input user-city user-margin floatleft', 'placeholder': 'City'} })}}
                                 {{ form_widget(form.user.state, { 'attr': {'class': 'user-input user-state user-margin'} })}}
+                                {{ form_widget(form.user.zip, { 'attr': {'class': 'user-input user-unit user-margin', 'placeholder': 'ZIP'} })}}
                             </td>
                         </tr>
                         <tr>
-                        <td colspan="2">
-                        <div class="checkbox-anywhere">
-                            {{ form_widget(form.user.tos) }}
-                            </div>
-                        </td>
+                            <td>{{ form_label(form.user.phone) }}</td>
+                            <td>
+                                {{ form_widget(form.user.phone_type, { 'attr': {'class': 'user-input user-margin floatleft'} })}}
+                                {{ form_widget(form.user.phone, { 'attr': {'class': 'user-input user-address user-margin', 'placeholder': 'Phone'} })}}
+                            </td>
                         </tr>
-                        </table>
+                        <tr>
+                            <td colspan="2">
+                                {% for flashMessage in app.session.flashbag.get('notice') %}
+                                <div class="flash-notice">
+                                    {{ flashMessage }}
+                                </div>
+                                {% endfor %}
+                                <div class="checkbox-anywhere">
+                                    {{ form_widget(form.user.tos) }}
+                                </div>
+                                <div class="user-tos">I have read the <a href="http://www.creditjeeves.com/terms-of-service">Terms of Service</a></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                {{ 'common.applicant.tos' | trans }}
+                            </td>
+                        </tr>
+                    </table>
                     {{ form_rest(form) }}
+                    <div class="row-20"></div>
                     <input class="button large green" type="submit" name="_submit" value="Get Score" />
                 </form>
         </div>
