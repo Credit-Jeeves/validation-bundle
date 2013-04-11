@@ -37,10 +37,10 @@ class UserType extends AbstractType
                 'label' => ''
                 )
         );
-//         $builder->add(
-//                 'ssn',
-//                 new SsnType()
-//         );
+        $builder->add(
+                'ssn',
+                new SsnType()
+        );
 //         $builder->add(
 //                 'date_of_birth',
 //                 new DobType()
@@ -105,11 +105,15 @@ class UserType extends AbstractType
             'hidden',
             array(
                 'label' => '',
-                "mapped" => false,
-                    "constraints" => new True(array(
-                            "message" => "Please accept the Terms and conditions in order to register")),
+                'data' => 0,
+                'mapped' => false,
+                'constraints' => new True(
+                    array(
+                            'message' => 'Please accept the Terms and conditions in order to register'
+                        )
+                    ),
                 )
-            );
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
