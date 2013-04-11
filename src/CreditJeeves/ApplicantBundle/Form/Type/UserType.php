@@ -5,8 +5,11 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
+use CreditJeeves\ApplicantBundle\Form\Type\DobType;
+use Symfony\Component\Validator\Constraints\True;
 
 class UserType extends AbstractType
 {
@@ -34,31 +37,14 @@ class UserType extends AbstractType
                 'label' => ''
                 )
         );
-//         $builder->add(
-//                 'ssn',
-//                 'text', array('property_path' => new SsnType())
-//         );
-//         $builder->add(
-//             'ssn1',
-//             'text',
-//             array(
-//                 'label' => 'SSN'
-//                 )
-//         );
-//         $builder->add(
-//             'ssn2',
-//             'text',
-//             array(
-//                 'label' => ''
-//                 )
-//         );
-//         $builder->add(
-//             'ssn3',
-//             'text',
-//             array(
-//                 'label' => '0'
-//                 )
-//         );
+        $builder->add(
+                'ssn',
+                new SsnType()
+        );
+        $builder->add(
+                'date_of_birth',
+                new DobType()
+        );
         $builder->add(
             'street_address1',
             'text',
@@ -119,6 +105,9 @@ class UserType extends AbstractType
             'hidden',
             array(
                 'label' => '',
+                "mapped" => false,
+                    "constraints" => new True(array(
+                            "message" => "Please accept the Terms and conditions in order to register")),
                 )
             );
     }

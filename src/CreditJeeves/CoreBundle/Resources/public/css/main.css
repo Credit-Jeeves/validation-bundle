@@ -271,6 +271,16 @@ input {
   background-color: #ffc;
 }
 
+.flash-error {
+  margin: 4px 0;
+  padding: 4px 4px 4px 30px;
+  /*background: url(/bundles/core/images/exclamation-point-red-icon.png) no-repeat 10px 4px;*/
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  background-color: #ffc;
+}
+
+
 .background-grey {
     background-color: #f3f3f3;
     padding: 20px;

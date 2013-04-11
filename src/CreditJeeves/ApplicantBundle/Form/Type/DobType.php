@@ -5,7 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class SsnType extends AbstractType
+class DobType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,7 +28,7 @@ class SsnType extends AbstractType
         $resolver->setDefaults(
             array(
                 //'empty_data' => '*********',
-                //'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'data_class' => 'DateTime',
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token

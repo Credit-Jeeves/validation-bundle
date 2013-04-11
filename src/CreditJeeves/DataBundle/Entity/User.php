@@ -160,35 +160,11 @@ class User extends BaseUser
      */
     protected $vehicle;
 
-    /**
-     *
-     * @var string
-     */
-    protected $new_password;
-
-    /**
-     * 
-     * @var string
-     */
-    protected $ssn1;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ssn2;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ssn3;
-
-    /**
-     * @Assert\True()
-     * @var boolean
-     */
-    protected $tos;
+//     /**
+//      *
+//      * @var string
+//      */
+//     protected $new_password;
 
     public function __construct()
     {
@@ -202,16 +178,16 @@ class User extends BaseUser
         $this->groups = new ArrayCollection();
     }
 
-    public function getNewPassword()
-    {
-        return $this->new_password;
-    }
+//     public function getNewPassword()
+//     {
+//         return $this->new_password;
+//     }
 
 
-    public function setNewPassword($newPassword)
-    {
-        $this->new_password = $newPassword;
-    }
+//     public function setNewPassword($newPassword)
+//     {
+//         $this->new_password = $newPassword;
+//     }
 
     /**
      * (non-PHPdoc)
@@ -1012,54 +988,5 @@ class User extends BaseUser
     public function getHasReport()
     {
         return $this->has_report;
-    }
-
-    public function getSsn1()
-    {
-        return substr($this->getSsn(), 0, 3);
-    }
-
-    public function getSsn2()
-    {
-        return substr($this->getSsn(), 3, 2);
-    }
-
-    public function getSsn3()
-    {
-        return substr($this->getSsn(), 5);
-    }
-
-    public function setSsn1($ssn1)
-    {
-        $this->ssn1 = $ssn1;
-
-        return $this;
-    }
-
-    public function setSsn2($ssn2)
-    {
-        $this->ssn2 = $ssn2;
-
-        return $this;
-    }
-
-    public function setSsn3($ssn3)
-    {
-        $this->ssn3 = $ssn3;
-
-        return $this;
-    
-    }
-
-    public function getTos()
-    {
-        return $this->tos;
-    }
-
-    public function setTos($tos)
-    {
-        $this->tos = $tos;
-        
-        return $this;
     }
 }

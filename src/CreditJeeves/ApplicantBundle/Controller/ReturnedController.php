@@ -37,13 +37,7 @@ class ReturnedController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $Lead = $form->getData();
-                $isTos = $Lead->getUser()->getTos();
-                //echo $Lead->getUser()->getSsn1();
-                if (!$isTos) {
-                    $this->get('session')->getFlashBag()->add('notice', 'You need to agree with Term of Service');
-                } else {
                 $Group = $Lead->getGroup();
-                $User->setSsn($this->createSsn($Lead->getUser()));
                 //echo $User->getSsn();
                 // @TODO would be fixed with right logic
                 $Lead->setDealer($this->getLeadDealer($Lead));
@@ -58,7 +52,6 @@ class ReturnedController extends Controller
 //                 $User->setHasData(true);
 //                 $em->persist($User);
 //                 $em->flush();
-                }
             }
         }
         return array('form' => $form->createView());
@@ -73,11 +66,5 @@ class ReturnedController extends Controller
     {
         $Group = $Lead->getGroup();
         return $Group->getGroupDealers()->first();
-    }
-
-    private function createSsn($User)
-    {
-        //echo __METHOD__.$User->getSsn1().$User->getSsn2().$User->getSsn3();
-        return $User->getSsn1().$User->getSsn2().$User->getSsn3();
     }
 }

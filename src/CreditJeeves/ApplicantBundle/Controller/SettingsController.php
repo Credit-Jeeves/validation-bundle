@@ -33,6 +33,7 @@ class SettingsController extends Controller
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($cjUser);
                     $em->flush();
+                    $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
                 }
             }
         }
