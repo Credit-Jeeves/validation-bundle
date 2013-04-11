@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -9,9 +10,10 @@ use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Vehicle;
 use CreditJeeves\DataBundle\Entity\Order;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
  * @ORM\Table(name="cj_user")
  * @ORM\HasLifecycleCallbacks()
  */
@@ -130,6 +132,11 @@ class User extends BaseUser
     protected $type;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $is_active;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
@@ -192,6 +199,30 @@ class User extends BaseUser
      * @var string
      */
     protected $new_password;
+
+    /**
+     * 
+     * @var string
+     */
+    protected $ssn1;
+
+    /**
+     *
+     * @var string
+     */
+    protected $ssn2;
+
+    /**
+     *
+     * @var string
+     */
+    protected $ssn3;
+
+    /**
+     * @Assert\True()
+     * @var boolean
+     */
+    protected $tos;
 
     public function __construct()
     {
@@ -926,6 +957,193 @@ class User extends BaseUser
         return $this->offer_notification;
     }
 
+    public function removeData()
+    {
+        $this->setFirstName('');
+        $this->setMiddleInitial('');
+        $this->setHasData(false);
+        $this->setHasReport(false);
+        $this->setIsActive(false);
+        $this->setSsn('');
+        $this->setSsn('');
+        $this->setUnitNo('');
+        $this->setCity('');
+        $this->setState('');
+        $this->setZip('');
+        $this->setPhone('');
+        $this->setScoreChangedNotification(false);
+        $this->setOfferNotification(false);
+        
+        return $this;
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function methodPreRemove()
+    {
+    }
+
+    /**
+     * @ORM\PostRemove
+     */
+    public function methodPostRemove()
+    {
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function methodPrePersist()
+    {
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function methodPostPersist()
+    {
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function methodPreUpdate()
+    {
+    }
+
+    /**
+     * @ORM\PostUpdate
+     */
+    public function methodPostUpdate()
+    {
+    }
+
+    /**
+     * @ORM\PostLoad
+     */
+    public function methodPostLoad()
+    {
+    }
+
+    /**
+     * Set is_active
+     *
+     * @param boolean $isActive
+     * @return User
+     */
+    public function setIsActive($isActive)
+    {
+        $this->is_active = $isActive;
+    
+        return $this;
+    }
+
+    /**
+     * Get is_active
+     *
+     * @return boolean 
+     */
+    public function getIsActive()
+    {
+        return $this->is_active;
+    }
+
+    /**
+     * Set has_data
+     *
+     * @param boolean $hasData
+     * @return User
+     */
+    public function setHasData($hasData)
+    {
+        $this->has_data = $hasData;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_data
+     *
+     * @return boolean 
+     */
+    public function getHasData()
+    {
+        return $this->has_data;
+    }
+
+    /**
+     * Set has_report
+     *
+     * @param boolean $hasReport
+     * @return User
+     */
+    public function setHasReport($hasReport)
+    {
+        $this->has_report = $hasReport;
+    
+        return $this;
+    }
+
+    /**
+     * Get has_report
+     *
+     * @return boolean 
+     */
+    public function getHasReport()
+    {
+        return $this->has_report;
+    }
+
+    public function getSsn1()
+    {
+        return substr($this->getSsn(), 0, 3);
+    }
+
+    public function getSsn2()
+    {
+        return substr($this->getSsn(), 3, 2);
+    }
+
+    public function getSsn3()
+    {
+        return substr($this->getSsn(), 5);
+    }
+
+    public function setSsn1($ssn1)
+    {
+        $this->ssn1 = $ssn1;
+
+        return $this;
+    }
+
+    public function setSsn2($ssn2)
+    {
+        $this->ssn2 = $ssn2;
+
+        return $this;
+    }
+
+    public function setSsn3($ssn3)
+    {
+        $this->ssn3 = $ssn3;
+
+        return $this;
+    
+    }
+
+    public function getTos()
+    {
+        return $this->tos;
+    }
+
+    public function setTos($tos)
+    {
+        $this->tos = $tos;
+        
+        return $this;
+    }
+
     /**
      * Add pidkiq
      *
@@ -1000,52 +1218,6 @@ class User extends BaseUser
     public function preUpdate()
     {
         $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * Set has_data
-     *
-     * @param string $hasData
-     * @return User
-     */
-    public function setHasData($hasData)
-    {
-        $this->has_data = $hasData;
-    
-        return $this;
-    }
-
-    /**
-     * Get has_data
-     *
-     * @return string 
-     */
-    public function getHasData()
-    {
-        return $this->has_data;
-    }
-
-    /**
-     * Set has_report
-     *
-     * @param string $hasReport
-     * @return User
-     */
-    public function setHasReport($hasReport)
-    {
-        $this->has_report = $hasReport;
-    
-        return $this;
-    }
-
-    /**
-     * Get has_report
-     *
-     * @return string 
-     */
-    public function getHasReport()
-    {
-        return $this->has_report;
     }
 
     /**

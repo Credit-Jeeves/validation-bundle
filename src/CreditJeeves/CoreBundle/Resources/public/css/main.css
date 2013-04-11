@@ -247,7 +247,8 @@ h5 {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
     border: 1px solid #999999;
     border-radius: 4px 4px 4px 4px;
     box-shadow: 0 0 1px 1px #D7D7D7 inset;
@@ -269,6 +270,76 @@ input {
   border-bottom: 1px solid #ddd;
   background-color: #ffc;
 }
+
+.background-grey {
+    background-color: #f3f3f3;
+    padding: 20px;
+}
+
+form label,
+table label {
+    float: left;
+    color: #333333;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 190%;
+    width: 106px;
+}
+
+.loading {
+    margin-top: 30px;
+}
+
+.dealer-name {
+    top: 135px;
+    color: #659E01;
+    font-family: astoria-medium;
+    font-size: 24px;
+    position: absolute;
+    right: 40px;
+    text-align: right;
+    /*cursor: pointer;*/
+}
+
+.lock-icon {
+    background: url("/bundles/core/images/padlock-icon.png") no-repeat scroll left top transparent;
+    display: block;
+    height: 30px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 24px;
+}
+
+.placeholder-active {
+    color: #999999;
+}
+
+/*match placeholder/watermark padding to border+padding for input element*/
+label.placeholder {
+cursor: text;
+padding: 4px 4px 4px 4px;
+color: #999999;
+}
+/* html5 placeholder support */
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+color:#999999;
+}
+input:placeholder, textarea:placeholder {
+color:#999999;
+}
+
+::-webkit-input-placeholder {
+    color: #999;
+}
+:-moz-placeholder {
+    color: #999;
+}
+.placeholder {
+    color: #999;
+}
+
+
+
 
 /*
 
