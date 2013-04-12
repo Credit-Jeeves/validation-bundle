@@ -5,7 +5,10 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
 use Symfony\Component\Validator\Constraints\True;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
@@ -19,7 +22,10 @@ class UserType extends AbstractType
             'first_name',
             'text',
             array(
-                'label' => 'Name'
+                'label' => 'Name',
+                'constraints' => array(
+                    new Length(array('min' => 3)),
+                    ),
                 )
         );
         $builder->add(
@@ -28,6 +34,7 @@ class UserType extends AbstractType
             array(
                 'label' => '',
                 'required' => false,
+                'max_length' => 5
                 )
         );
         $builder->add(

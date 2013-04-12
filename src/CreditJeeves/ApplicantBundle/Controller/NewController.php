@@ -46,13 +46,17 @@ class NewController extends Controller
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-//                 echo '<pre>';
-//                 print_r($request);
-//                 echo '</pre>';
+                $Lead = $form->getData();
+                $User = $Lead->getUser();
+                // Here would be ....
             }
         }
+        $validator = $this->get('validator');
+        $errors = $validator->validate($Lead);
+        
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'errors' => $errors,
             );
     }
 
@@ -91,7 +95,6 @@ class NewController extends Controller
         if ($query->has('ph')) {
             $User->setPhone($query->get('ph'));
         }
-        
         return $User;
     }
 }

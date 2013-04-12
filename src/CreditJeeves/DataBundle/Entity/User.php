@@ -22,6 +22,12 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *      min = "2",
+     *      max = "50",
+     *      minMessage = "Your first name must be at least {{ limit }} characters length",
+     *      maxMessage = "Your first name cannot be longer than than {{ limit }} characters length"
+     * )
      */
     protected $first_name;
 

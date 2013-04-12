@@ -41,54 +41,7 @@
                             <td>{{ form_label(form.code) }}</td>
                             <td>{{ form_widget(form.code, { 'attr': {'class': 'user-margin'} }) }}</td>
                         </tr>
-                        <tr>
-                            <td>{{ form_label(form.email) }}</td>
-                            <td>{{ form_widget(form.email, { 'attr': {'class': 'user-margin'} }) }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ form_label(form.user.first_name) }}</td>
-                            <td>
-                                {{ form_widget(form.user.first_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
-                                {{ form_widget(form.user.middle_initial, { 'attr': {'class': 'user-input user-initial user-margin'} }) }}
-                                {{ form_widget(form.user.last_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{{ form_label(form.user.ssn) }}<span class="lock-icon floatright"></span></td>
-                            <td>
-                                {{ form_widget(form.user.ssn.ssn1, { 'attr': {'class': 'user-margin user-unit'} })}}
-                                {{ form_widget(form.user.ssn.ssn2, { 'attr': {'class': 'user-margin user-unit'} })}}
-                                {{ form_widget(form.user.ssn.ssn3, { 'attr': {'class': 'user-margin user-unit'} })}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{{ form_label(form.user.street_address1) }}</td>
-                            <td>
-                                {{ form_widget(form.user.street_address1, { 'attr': {'class': 'user-input user-address user-margin', 'placeholder': 'Street'} })}}
-                                {{ form_widget(form.user.unit_no, { 'attr': {'class': 'user-input user-unit user-margin', 'placeholder': 'Unit #'} }) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                {{ form_widget(form.user.city, { 'attr': {'class': 'user-input user-city user-margin floatleft', 'placeholder': 'City'} })}}
-                                {{ form_widget(form.user.state, { 'attr': {'class': 'user-input user-state user-margin'} })}}
-                                {{ form_widget(form.user.zip, { 'attr': {'class': 'user-input user-unit user-margin', 'placeholder': 'ZIP'} })}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{{ form_label(form.user.phone) }}</td>
-                            <td>
-                                {{ form_widget(form.user.phone_type, { 'attr': {'class': 'user-input user-margin floatleft'} })}}
-                                {{ form_widget(form.user.phone, { 'attr': {'class': 'user-input user-address user-margin', 'placeholder': 'Phone'} })}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>{{ form_label(form.user.date_of_birth) }}</td>
-                            <td>
-                                {{ form_widget(form.user.date_of_birth, { 'attr': {'class': 'floatleft'} })}}
-                            </td>
-                        </tr>
+                        {% include 'ComponentBundle:User:user.html.twig' with { 'form' : form } %}
                         <tr>
                             <td colspan="2">
                                 <div class="row-20"></div>
