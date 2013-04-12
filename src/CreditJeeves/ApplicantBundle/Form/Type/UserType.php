@@ -5,11 +5,11 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\True;
 
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
-use CreditJeeves\ApplicantBundle\Form\Type\DobType;
-use Symfony\Component\Validator\Constraints\True;
+use CreditJeeves\ApplicantBundle\Form\DataTransformer\SsnToPartsTransformer;
 
 class UserType extends AbstractType
 {
@@ -38,13 +38,19 @@ class UserType extends AbstractType
                 )
         );
         $builder->add(
-                'ssn',
-                new SsnType()
+            'ssn',
+            new SsnType(),
+            array(
+                'label' => 'SSN'
+                )
         );
-//         $builder->add(
-//                 'date_of_birth',
-//                 new DobType()
-//         );
+        $builder->add(
+            'date_of_birth',
+            'birthday',
+            array(
+                'label' => 'Date Of Birth'
+                )
+        );
         $builder->add(
             'street_address1',
             'text',

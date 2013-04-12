@@ -138,7 +138,7 @@ class SettingsController extends Controller
                         throw $e;
                     }
                     // Commented for develop
-                    //return $this->redirect($this->generateUrl('fos_user_security_logout'));
+                    return $this->redirect($this->generateUrl('fos_user_security_logout'));
                 } else {
                     $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
                 }

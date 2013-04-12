@@ -45,13 +45,14 @@ class ReturnedController extends Controller
                 $Lead->setStatus($Lead::STATUS_NEW);
                 $Lead->setSource('webpage');
 
-//                 $em = $this->getDoctrine()->getManager();
-//                 if ($this->validateLead($Lead)) {
-//                     $em->persist($Lead);
-//                 }
-//                 $User->setHasData(true);
-//                 $em->persist($User);
-//                 $em->flush();
+                $em = $this->getDoctrine()->getManager();
+                if ($this->validateLead($Lead)) {
+                    $em->persist($Lead);
+                }
+                $User->setHasData(true);
+                $em->persist($User);
+                $em->flush();
+                return $this->redirect($this->generateUrl('applicant_homepage'));
             }
         }
         return array('form' => $form->createView());
