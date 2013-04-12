@@ -22,37 +22,64 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      * @Assert\Length(
-     *      min = "2",
-     *      max = "50",
-     *      minMessage = "Your first name must be at least {{ limit }} characters length",
-     *      maxMessage = "Your first name cannot be longer than than {{ limit }} characters length"
+     *     min = "2",
+     *     max = "50",
+     *     minMessage = "Your first name must be at least {{ limit }} characters length",
+     *     maxMessage = "Your first name cannot be longer than {{ limit }} characters length"
      * )
      */
     protected $first_name;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *     min = "1",
+     *     max = "20",
+     *     maxMessage = "Your middle initial cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $middle_initial;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "2",
+     *     max = "50",
+     *     minMessage = "Your last name must be at least {{ limit }} characters length",
+     *     maxMessage = "Your last name cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $last_name;
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "2",
+     *     max = "255",
+     *     minMessage = "Your address must be at least {{ limit }} characters length",
+     *     maxMessage = "Your address cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $street_address1;
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\Length(
+     *     max = "255"
+     * )
      */
     protected $street_address2;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *     max = "31",
+     *     maxMessage = "Your unit number cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $unit_no;
 
@@ -63,11 +90,23 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "2",
+     *     max = "255",
+     *     minMessage = "City name must be at least {{ limit }} characters length",
+     *     maxMessage = "City name cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     max = "15",
+     *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $zip;
 
@@ -98,6 +137,11 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "9",
+     *     max = "9"
+     * )
      */
     protected $ssn;
 
@@ -734,11 +778,41 @@ class User extends BaseUser
      */
     public function setPhone($phone)
     {
-        $this->phone = $phone;
+        $this->phone = $this->formatPhoneInput($phone);
 
         return $this;
     }
 
+    private function formatPhoneOutput($phone)
+    {
+        $sPhoneNumber = $this->getPhone();
+        // remove all empty spaces and not number signs
+        $sPhoneNumber = preg_replace('/\s+/', '', $sPhoneNumber);
+        $sPhoneNumber = str_replace(array('(', ')', '-'), '', $sPhoneNumber);
+        //format phone number
+        $sPhoneNumber = strrev($sPhoneNumber);
+        $sCityCode = substr($sPhoneNumber, 7);
+        $sPhoneNumber = substr($sPhoneNumber, 0, 4) . '-' . substr($sPhoneNumber, 4, 3);
+        if (!empty($sCityCode)) {
+            $sPhoneNumber .= ' )' . $sCityCode . '(';
+        }
+        
+        return strrev($sPhoneNumber);
+        
+    }
+
+    private function formatPhoneInput($phone)
+    {
+        $phone = trim($phone);
+        $phone = preg_replace(array(
+           '/\s+/',
+           '/\(/',
+           '/\)/',
+           '/-/'
+           ), '', $phone);
+        return $phone;
+    }
+    
     /**
      * Get phone_type
      *

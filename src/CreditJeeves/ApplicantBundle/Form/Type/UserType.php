@@ -55,7 +55,7 @@ class UserType extends AbstractType
             'date_of_birth',
             'birthday',
             array(
-                'label' => 'Date Of Birth'
+                'label' => 'Date of Birth'
                 )
         );
         $builder->add(
@@ -85,6 +85,7 @@ class UserType extends AbstractType
             array(
                 'label' => '',
                 'choice_list' =>  new StateChoiceList(),
+                'required' => true,
                 )
         );
         $builder->add(

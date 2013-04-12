@@ -1,43 +1,163 @@
 <tr>
     <td>{{ form_label(form.email) }}</td>
-    <td>{{ form_widget(form.email, { 'attr': {'class': 'user-margin'} }) }}</td>
+    <td>
+        {{ form_widget(
+            form.email,
+            { 'attr':
+                {
+                    'class': 'user-margin'
+                }
+            })
+        }}
+    </td>
 </tr>
 <tr>
     <td>{{ form_label(form.user.first_name) }}</td>
     <td>
-        {{ form_widget(form.user.first_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
-        {{ form_widget(form.user.middle_initial, { 'attr': {'class': 'user-input user-initial user-margin'} }) }}
-        {{ form_widget(form.user.last_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
+        {{ form_widget(
+            form.user.first_name,
+            { 'attr': 
+                {
+                    'class': 'user-input user-name user-margin',
+                    'maxlength' : 50,
+                    'placeholder': 'First Name' 
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.middle_initial,
+            { 'attr':
+                {
+                    'class': 'user-input user-initial user-margin',
+                    'maxlength' : 20,
+                    'placeholder': 'MI'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.last_name,
+                { 'attr':
+                    {
+                        'class': 'user-input user-name user-margin',
+                        'maxlength' : 50,
+                        'placeholder': 'Last Name'
+                    }
+                })
+        }}
     </td>
 </tr>
 <tr>
     <td>{{ form_label(form.user.ssn) }}<span class="lock-icon floatright"></span></td>
     <td>
-        {{ form_widget(form.user.ssn.ssn1, { 'attr': {'class': 'user-margin user-unit'} })}}
-        {{ form_widget(form.user.ssn.ssn2, { 'attr': {'class': 'user-margin user-unit'} })}}
-        {{ form_widget(form.user.ssn.ssn3, { 'attr': {'class': 'user-margin user-unit'} })}}
+        {{ form_widget(
+            form.user.ssn.ssn1,
+            { 'attr':
+                {
+                    'class': 'user-margin user-ssn1',
+                    'maxlength' : 3
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.ssn.ssn2,
+            { 'attr':
+                {
+                    'class': 'user-margin user-ssn2',
+                    'maxlength' : 2
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.ssn.ssn3,
+            { 'attr':
+                {
+                    'class': 'user-margin user-ssn3',
+                    'maxlength' : 4
+                }
+            })
+        }}
     </td>
 </tr>
 <tr>
     <td>{{ form_label(form.user.street_address1) }}</td>
     <td>
-        {{ form_widget(form.user.street_address1, { 'attr': {'class': 'user-input user-address user-margin', 'placeholder': 'Street'} })}}
-        {{ form_widget(form.user.unit_no, { 'attr': {'class': 'user-input user-unit user-margin', 'placeholder': 'Unit #'} }) }}
+        {{ form_widget(
+            form.user.street_address1,
+            { 'attr':
+                {
+                    'class': 'user-input user-address user-margin',
+                    'maxlength' : 255,
+                    'placeholder': 'Street'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.unit_no,
+            { 'attr':
+                {
+                    'class': 'user-input user-unit user-margin',
+                    'placeholder': 'Unit #',
+                    'maxlength' : 15
+                }
+            })
+        }}
     </td>
 </tr>
 <tr>
     <td></td>
     <td>
-        {{ form_widget(form.user.city, { 'attr': {'class': 'user-input user-city user-margin floatleft', 'placeholder': 'City'} })}}
-        {{ form_widget(form.user.state, { 'attr': {'class': 'user-input user-state user-margin'} })}}
-        {{ form_widget(form.user.zip, { 'attr': {'class': 'user-input user-unit user-margin', 'placeholder': 'ZIP'} })}}
+        {{ form_widget(
+            form.user.city,
+            { 'attr':
+                {
+                    'class': 'user-input user-city user-margin floatleft',
+                    'placeholder': 'City',
+                    'maxlength' : 255
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.state,
+            { 'attr':
+                {
+                    'class': 'user-input user-state user-margin',
+                    'maxlength' : 2
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.zip,
+            { 'attr':
+                {
+                    'class': 'user-input user-unit user-margin',
+                    'placeholder': 'ZIP',
+                    'maxlength' : 15
+                }
+            })
+        }}
     </td>
 </tr>
 <tr>
     <td>{{ form_label(form.user.phone) }}</td>
     <td>
-        {{ form_widget(form.user.phone_type, { 'attr': {'class': 'user-input user-margin floatleft'} })}}
-        {{ form_widget(form.user.phone, { 'attr': {'class': 'user-input user-address user-margin', 'placeholder': 'Phone'} })}}
+        {{ form_widget(
+            form.user.phone_type,
+            { 'attr':
+                {
+                    'class': 'user-input user-margin floatleft'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.user.phone,
+            { 'attr':
+                {
+                    'class': 'user-input user-address user-margin',
+                    'placeholder': 'Phone',
+                    'maxlength' : 255
+                }
+            })
+        }}
     </td>
 </tr>
 <tr>
