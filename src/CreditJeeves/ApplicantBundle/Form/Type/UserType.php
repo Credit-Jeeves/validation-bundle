@@ -103,7 +103,8 @@ class UserType extends AbstractType
             'phone',
             'text',
             array(
-                    'label' => 'Phone'
+                'label' => 'Phone',
+                'required' => false,
                 )
         );
         $builder->add(

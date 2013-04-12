@@ -52,6 +52,7 @@ class ReturnedController extends Controller
                 $User->setHasData(true);
                 $em->persist($User);
                 $em->flush();
+                $this->get('core.session.applicant')->setLeadId($Lead->getId());
                 return $this->redirect($this->generateUrl('applicant_homepage'));
             }
         }

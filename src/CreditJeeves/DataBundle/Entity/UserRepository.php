@@ -15,6 +15,7 @@ class UserRepository extends EntityRepository
         $this->getEntityManager()->getRepository('DataBundle:Score')->deleteUserScores($User);
         $this->getEntityManager()->getRepository('DataBundle:ReportPrequal')->deleteUserReports($User);
         $this->getEntityManager()->getRepository('DataBundle:Vehicle')->deleteUserVehicles($User);
+        $this->getEntityManager()->getRepository('DataBundle:Lead')->deleteUserLeads($User);
         //$this->getEntityManager()->getRepository('DataBundle:Order')->deleteUserOrders($User);
     }
 
