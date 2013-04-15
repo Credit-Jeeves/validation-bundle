@@ -2,9 +2,9 @@
 namespace CreditJeeves\DataBundle\Enum;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  */
-class ReportTypeEnum extends Base
+class ReportType extends Base
 {
     const D2C = 'd2c';
     const PREQUAL = 'prequal';

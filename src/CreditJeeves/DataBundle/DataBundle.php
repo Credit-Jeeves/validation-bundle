@@ -16,7 +16,9 @@ class DataBundle extends Bundle
         if (!static::$isLoaded) { // TODO find better way
             static::$isLoaded = true;
             Type::addType('encrypt', 'CreditJeeves\DataBundle\Type\Encrypt');
-            Type::addType('ReportTypeEnum', 'CreditJeeves\DataBundle\Enum\ReportTypeEnum');
+            Type::addType('ReportType', 'CreditJeeves\DataBundle\Enum\ReportType');
+            Type::addType('UserIsVerified', 'CreditJeeves\DataBundle\Enum\UserIsVerified');
+            Type::addType('UserType', 'CreditJeeves\DataBundle\Enum\UserType');
         }
     }
 }

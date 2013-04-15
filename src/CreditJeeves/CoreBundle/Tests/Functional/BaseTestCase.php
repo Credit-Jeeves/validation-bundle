@@ -4,7 +4,7 @@ namespace CreditJeeves\CoreBundle\Tests\Functional;
 use CreditJeeves\CoreBundle\Tests\BaseTestCase as Base;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  */
 abstract class BaseTestCase extends Base
 {

@@ -25,6 +25,6 @@ class ReportController extends Controller
             'Report' => $Report,
             'sSupportEmail' => $sSupportEmail,
             'sSupportPhone' => $sSupportPhone,
-            );
+        );
     }
 }

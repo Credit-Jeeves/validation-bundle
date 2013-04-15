@@ -15,7 +15,7 @@ use CreditJeeves\CoreBundle\Arf\ArfMessages;
 /**
  * @ORM\Entity
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="ReportTypeEnum")
+ * @ORM\DiscriminatorColumn(name="type", type="ReportType")
  * @ORM\DiscriminatorMap({"prequal" = "ReportPrequal", "d2c" = "ReportD2c"})
  * @ORM\Table(name="cj_applicant_report")
  * @ORM\HasLifecycleCallbacks()

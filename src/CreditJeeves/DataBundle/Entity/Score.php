@@ -38,7 +38,6 @@ class Score
      */
     protected $user;
 
-
     /**
      * Get id
      *
@@ -106,10 +105,10 @@ class Score
     /**
      * Set User
      *
-     * @param \CreditJeeves\DataBundle\Entity\User $user
+     * @param User $user
      * @return Score
      */
-    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -119,7 +118,7 @@ class Score
     /**
      * Get User
      *
-     * @return \CreditJeeves\DataBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {

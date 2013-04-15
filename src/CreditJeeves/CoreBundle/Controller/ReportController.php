@@ -2,7 +2,7 @@
 namespace CreditJeeves\CoreBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
-use CreditJeeves\DataBundle\Enum\ReportTypeEnum;
+use CreditJeeves\DataBundle\Enum\ReportType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -14,14 +14,14 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  * @Route("/report")
  *
  * @method \CreditJeeves\DataBundle\Entity\User getUser()
  */
 class ReportController extends Controller
 {
-    protected $reportType = ReportTypeEnum::PREQUAL;
+    protected $reportType = ReportType::PREQUAL;
 
     /**
      * @var NetConnect

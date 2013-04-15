@@ -22,12 +22,6 @@ parameters:
         net_connect_dbhost: 'STAR' #required!
         atb_host: 'http://stg.creditjeeves.com:8080/'
 
-    paypal_pro:
-        username: 'creditjeevestest'
-        password: 'xP07!t7fzV'
-        partner:  'PayPal'
-        vendor:   'creditjeevestest'
-        sandbox:  true
     authorize_net:
         login_id: '54PB5egZ'
         transaction_key: '48V258vr55AE8tcg'

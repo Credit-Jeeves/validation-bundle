@@ -1,5 +1,5 @@
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  */
 function ReLoader(url, redirect) {
     var timeoutId = false;

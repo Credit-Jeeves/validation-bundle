@@ -2,9 +2,9 @@ imports:
     - { resource: parameters_dev_base.yml }
 
 parameters:
-    database_name: creditjeeves
-    database_user: admin
-    database_password: 'qwerty'
+    database_name: credit_jeeves2
+    database_user: credit_jeeves2
+    database_password: 'passw0rd'
 
     server: local
     server_name: creditjeeves2.tonpc.forma-dev.com
