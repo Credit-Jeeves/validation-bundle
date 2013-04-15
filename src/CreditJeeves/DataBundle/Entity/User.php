@@ -820,12 +820,16 @@ class User extends BaseUser
     private function formatPhoneInput($phone)
     {
         $phone = trim($phone);
-        $phone = preg_replace(array(
-           '/\s+/',
-           '/\(/',
-           '/\)/',
-           '/-/'
-           ), '', $phone);
+        $phone = preg_replace(
+            array(
+               '/\s+/',
+               '/\(/',
+               '/\)/',
+               '/-/'
+            ),
+            '',
+            $phone
+        );
         return $phone;
     }
     
