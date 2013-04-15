@@ -121,53 +121,49 @@ abstract class PidkiqController extends Controller
         $this->forward404If(empty($this->account), 'Account does not found');
         $this->redirectIf(cjApplicantIsVerified::PASSED == $this->getUser()->getIsVerified(), $this->routeHomepage);
 
-        $supportEmail = sfConfig::get('app_support_email');
-        $supportEmail = "<a href=\"mailto:{$supportEmail}\">{$supportEmail}</a>";
+        $supportEmail = $this->get('service_container')->getParameter('support_email');
+        $supportEmailTag = "<a href=\"mailto:{$supportEmail}\">{$supportEmail}</a>";
 
-        $i18n = $this->getContext()->getI18N();
+        $i18n = $this->get('translator');
 
         if ($request->isXmlHttpRequest()) {
             try {
                 try {
                     if (false === $this->retrieveQuestions()) {
-                        $this->error = $i18n->__(
-                            'We are unable to contact Experian at this time due to connectivity issues. ' .
-                                'Please email %SUPPORT_EMAIL% to let us know you were unable to authenticate with Experian.',
-                            array('%SUPPORT_EMAIL%' => $supportEmail)
+                        $this->error = $i18n->trans(
+                            'pidkiq.error.timeout-%SUPPORT_EMAIL%',
+                            array('%SUPPORT_EMAIL%' => $supportEmailTag)
                         );
                     } else {
                         return $this->renderText(json_encode('finished'));
                     }
                 } catch (ExperianException $e) {
-                    if (!Server::isTestEnv()) fpErrorNotifier::getInstance()->handler()->handleException($e);
+                    if (!Server::isTestEnv()) {
+                        fpErrorNotifier::getInstance()->handler()->handleException($e);
+                    }
                     switch ($e->getCode()) {
                         case E_USER_ERROR:
-                            $this->error = $i18n->__(
-                                'You have attempted to authenticate too many times recently. Please try again in an hour.'
-                            );
+                            $this->error = $i18n->trans('pidkiq.error.attempts');
                             break;
-
                         case E_ERROR:
-                            $this->error = $i18n->__(
-                                'Connection Error. Please contact %SUPPORT_EMAIL%',
-                                array('%SUPPORT_EMAIL%' => $supportEmail)
+                            $this->error = $i18n->trans(
+                                'pidkiq.error.connection-%SUPPORT_EMAIL%',
+                                array('%SUPPORT_EMAIL%' => $supportEmailTag)
                             );
                             break;
-
                         default:
                         case E_NOTICE:
                             if ('Cannot formulate questions for this consumer.' == $e->getMessage()) {
-                                $this->error = $i18n->__(
-                                    'We could not find your profile at Experian. ' .
-                                        'Please contact %SUPPORT_EMAIL% if you feel this is an error.',
-                                    array('%SUPPORT_EMAIL%' => $supportEmail)
+                                $this->error = $i18n->trans(
+                                    'pidkiq.error.questions-%SUPPORT_EMAIL%',
+                                    array('%SUPPORT_EMAIL%' => $supportEmailTag)
                                 );
                                 break;
                             }
-                            $this->error = $i18n->__(
-                                "We encountered an error when contacting Experian: '%ERROR%'. Please contact %SUPPORT_EMAIL%.",
+                            $this->error = $i18n->trans(
+                                "pidkiq.error.generic-%SUPPORT_EMAIL%",
                                 array(
-                                    '%SUPPORT_EMAIL%' => $supportEmail,
+                                    '%SUPPORT_EMAIL%' => $supportEmailTag,
                                     '%ERROR%' => $e->getMessage()
                                 )
                             );
@@ -187,7 +183,7 @@ abstract class PidkiqController extends Controller
         }
 
         if (!empty($this->error)) {
-            $this->getUser()->setFlash('message_title', $i18n->__('Identity Verification'));
+            $this->getUser()->setFlash('message_title', $i18n->trans('Identity Verification'));
             $this->getUser()->setFlash('message_body', $this->error);
             if ($request->isXmlHttpRequest()) {
                 return $this->renderText(json_encode(array('url' => $this->generateUrl('message'))));
@@ -221,10 +217,8 @@ abstract class PidkiqController extends Controller
                     $this->account->changeIsVerified(cjApplicantIsVerified::LOCKED);
                 }
                 $this->error = $this->getContext()->getI18N()->__(
-                    "Some of the answers you provided to the questions are incorrect. " .
-                        "We're sorry but we cannot authenticate you at this time. " .
-                        "Please try again in one hour, or contact %SUPPORT_EMAIL% if you feel this is an error.",
-                    array('%SUPPORT_EMAIL%' => sfConfig::get('app_support_email'))
+                    'pidkiq.error.answers-%SUPPORT_EMAIL%',
+                    array('%SUPPORT_EMAIL%' => $this->get('service_container')->getParameter('support_email'))
                 );
             }
         }

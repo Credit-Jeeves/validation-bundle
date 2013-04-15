@@ -608,6 +608,31 @@
                 <target>You have following Leads</target>
             </trans-unit>
 
+            <trans-unit id="pidkiq.error.timeout">
+                <source>pidkiq.error.timeout-%SUPPORT_EMAIL%</source>
+                <target>We are unable to contact Experian at this time due to connectivity issues. Please email %SUPPORT_EMAIL% to let us know you were unable to authenticate with Experian.</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.attempts">
+                <source>pidkiq.error.attempts</source>
+                <target>You have attempted to authenticate too many times recently. Please try again in an hour.</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.connection">
+                <source>pidkiq.error.connection-%SUPPORT_EMAIL%</source>
+                <target>Connection Error. Please contact %SUPPORT_EMAIL%</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.questions">
+                <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
+                <target>We could not find your profile at Experian. Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.generic">
+                <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>
+                <target>We encountered an error when contacting Experian: '%ERROR%'. Please contact %SUPPORT_EMAIL%.</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.answers">
+                <source>pidkiq.error.answers-%SUPPORT_EMAIL%</source>
+                <target>Some of the answers you provided to the questions are incorrect. We're sorry but we cannot authenticate you at this time. Please try again in one hour, or contact %SUPPORT_EMAIL% if you feel this is an error.</target>
+            </trans-unit>
+
 
             
         </body>
