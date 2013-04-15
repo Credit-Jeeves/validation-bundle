@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "71e0c7f807b8cc50e37f2d61ed27ceed",
+    "hash": "8bd07c58bd4fe7b6a7a7109ca31acafc",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "4a6431747f0c202c2a15c15069ea16f85691c426"
+                "reference": "c3e561c5c83230b590f22f1036c8ec8c20d0c457"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-04-08 11:57:26"
+            "time": "2013-04-15 17:55:24"
         },
         {
             "name": "ajbdev/authorizenet-php-api",
@@ -394,7 +394,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "e2399494656018779161ae90b6c7865c1681d514"
+                "reference": "6ae403deb7c621aa36ba291ca5fdc86bd7518d10"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -427,7 +427,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2013-04-11 14:39:38"
+            "time": "2013-04-13 12:37:23"
         },
         {
             "name": "jdorn/sql-formatter",
