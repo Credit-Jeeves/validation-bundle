@@ -22,47 +22,21 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *     min = "2",
-     *     max = "50",
-     *     minMessage = "Your first name must be at least {{ limit }} characters length",
-     *     maxMessage = "Your first name cannot be longer than {{ limit }} characters length"
-     * )
      */
     protected $first_name;
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\Length(
-     *     min = "1",
-     *     max = "20",
-     *     maxMessage = "Your middle initial cannot be longer than {{ limit }} characters length"
-     * )
      */
     protected $middle_initial;
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *     min = "2",
-     *     max = "50",
-     *     minMessage = "Your last name must be at least {{ limit }} characters length",
-     *     maxMessage = "Your last name cannot be longer than {{ limit }} characters length"
-     * )
      */
     protected $last_name;
 
     /**
      * @ORM\Column(type="encrypt")
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *     min = "2",
-     *     max = "255",
-     *     minMessage = "Your address must be at least {{ limit }} characters length",
-     *     maxMessage = "Your address cannot be longer than {{ limit }} characters length"
-     * )
      */
     protected $street_address1;
 
@@ -90,19 +64,11 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *     min = "2",
-     *     max = "255",
-     *     minMessage = "City name must be at least {{ limit }} characters length",
-     *     maxMessage = "City name cannot be longer than {{ limit }} characters length"
-     * )
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
      * @Assert\Length(
      *     max = "15",
      *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length"
@@ -137,11 +103,6 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="encrypt")
-     * @Assert\NotBlank()
-     * @Assert\Length(
-     *     min = "9",
-     *     max = "9"
-     * )
      */
     protected $ssn;
 
@@ -935,7 +896,6 @@ class User extends BaseUser
         $this->setHasData(false);
         $this->setHasReport(false);
         $this->setIsActive(false);
-        $this->setSsn('');
         $this->setSsn('');
         $this->setUnitNo('');
         $this->setCity('');
