@@ -5,7 +5,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use CreditJeeves\ApplicantBundle\Form\Type\LeadType;
+use CreditJeeves\ApplicantBundle\Form\Type\LeadReturnedType;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\CodeToGroupTransformer;
@@ -27,7 +27,7 @@ class ReturnedController extends Controller
         $Lead->setUser($User);
         
         $form = $this->createForm(
-            new LeadType(),
+            new LeadReturnedType(),
             $Lead,
             array(
                 'em' => $this->getDoctrine()->getManager()

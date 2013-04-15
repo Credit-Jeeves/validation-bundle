@@ -24,9 +24,9 @@ class UserType extends AbstractType
             array(
                 'label' => 'Name',
                 'error_bubbling' => true,
-                'constraints' => array(
-                    new Length(array('min' => 3)),
-                    ),
+//                 'constraints' => array(
+//                     new Length(array('min' => 3)),
+//                     ),
                 )
         );
         $builder->add(
