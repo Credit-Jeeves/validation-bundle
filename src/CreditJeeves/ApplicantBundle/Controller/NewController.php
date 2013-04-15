@@ -24,7 +24,8 @@ class NewController extends Controller
         $request = $this->get('request');
         $query = $request->query;
         $Lead = new Lead();
-        $User = new User();
+        $User = $this->get('core.session.applicant')->getUser();
+        //$User = new User();
         $Group = new Group();
         if ($request->getMethod() == 'GET') {
             // Group code
@@ -47,17 +48,41 @@ class NewController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $Lead = $form->getData();
-                $User = $Lead->getUser();
-                // Here would be ....
+                if ($this->validateLead($Lead)) {
+                    $User = $Lead->getUser();
+                    $User->setUsername($User->getEmail());
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($User);
+                    $em->persist($Lead);
+                    $em->flush();
+//                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
+                    return $this->redirect($this->generateUrl('applicant_homepage'));
+                    
+                } else {
+                    $this->get('session')->getFlashBag()->add('notice', 'You are already associated with this dealership. Please contact the dealership at '.$Lead->getGroup()->getName().' if you wish to change your salesperson.');
+                }
             }
         }
-        $validator = $this->get('validator');
-        $errors = $validator->validate($Lead);
-        
         return array(
             'form' => $form->createView(),
-            'errors' => $errors,
             );
+    }
+
+    private function validateLead($Lead)
+    {
+        $nUserId = $Lead->getUser()->getId();
+        $nGroupId = $Lead->getGroup()->getid();
+        $nLeads = $this->
+            getDoctrine()->
+            getRepository('DataBundle:Lead')->
+            findBy(
+                array(
+                    'cj_applicant_id' => $nUserId,
+                    'cj_group_id' => $nGroupId,
+                    )
+                );
+        $isExist = count($nLeads);
+        return $isExist ? false : true;
     }
 
     private function bindUserDetails($User, $query)

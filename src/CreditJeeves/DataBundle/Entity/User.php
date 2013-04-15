@@ -231,6 +231,18 @@ class User extends BaseUser
         $this->password = md5($password);
     }
 
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        $this->setEmailCanonical(strtolower($email));
+        $this->setUsername($email);
+        $this->setUsernameCanonical(strtolower($email));
+        
+        return $this;
+    }
+    
+    
+    
     public function getType()
     {
         return $this->type;
@@ -919,6 +931,7 @@ class User extends BaseUser
     {
         $this->setFirstName('');
         $this->setMiddleInitial('');
+        $this->setLastName('');
         $this->setHasData(false);
         $this->setHasReport(false);
         $this->setIsActive(false);

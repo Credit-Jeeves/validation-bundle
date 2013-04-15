@@ -39,6 +39,7 @@ class Applicant extends User
         if (isset($data['user_id'])) {
             return $this->findUser($data['user_id']);
         }
+        return new cjUser();
     }
 
     /**
