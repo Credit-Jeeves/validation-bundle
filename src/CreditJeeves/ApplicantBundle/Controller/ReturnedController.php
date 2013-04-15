@@ -5,7 +5,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use CreditJeeves\ApplicantBundle\Form\Type\LeadType;
+use CreditJeeves\ApplicantBundle\Form\Type\LeadReturnedType;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\CodeToGroupTransformer;
@@ -27,7 +27,7 @@ class ReturnedController extends Controller
         $Lead->setUser($User);
         
         $form = $this->createForm(
-            new LeadType(),
+            new LeadReturnedType(),
             $Lead,
             array(
                 'em' => $this->getDoctrine()->getManager()
@@ -38,6 +38,7 @@ class ReturnedController extends Controller
             if ($form->isValid()) {
                 $Lead = $form->getData();
                 $Group = $Lead->getGroup();
+                //echo $User->getSsn();
                 // @TODO would be fixed with right logic
                 $Lead->setDealer($this->getLeadDealer($Lead));
                 $Lead->setTargetScore($Group->getTargetScore());
@@ -51,6 +52,8 @@ class ReturnedController extends Controller
                 $User->setHasData(true);
                 $em->persist($User);
                 $em->flush();
+                $this->get('core.session.applicant')->setLeadId($Lead->getId());
+                return $this->redirect($this->generateUrl('applicant_homepage'));
             }
         }
         return array('form' => $form->createView());

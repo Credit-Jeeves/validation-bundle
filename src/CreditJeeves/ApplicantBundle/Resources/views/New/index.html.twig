@@ -3,7 +3,7 @@
 {% block title "New Appliant" %}
 
 {% block stylesheets %}
-  <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block tabs %}
@@ -17,7 +17,7 @@
 
 {% block content %}
     <div class="column-small floatleft">
-        <div class="pod-small pod-border shadow">
+        <div class="pod-small pod-border pod-padding shadow">
             <h3>Tailored to You</h3>
             <iframe src="https://player.vimeo.com/video/50397606?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff&amp;autoplay=false"
                   width="235"
@@ -28,39 +28,71 @@
         </div>
     </div>
     <div class="column-middle floatright">
-        <div class="pod-middle pod-border shadow">
-            <table>
+        <div class="pod-middle pod-border pod-padding shadow">
+            <h1>Welcome to Credit Jeeves.</h1>
+            <div class="row-20"></div>
+            <h3>Please enter your information below and we can get started right away.</h3>
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+            <div class="row-20"></div>
+                <div class="flash-notice">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
                 <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }}>
-                    {{ form_errors(form) }}
-                    <tr>
-                        <td>{{ form_label(form.first_name) }}</td>
-                        <td>
-                            {{ form_widget(form.first_name,     { 'attr': {'class': 'user-input user-name'} }) }}
-                            {{ form_widget(form.middle_initial, { 'attr': {'class': 'user-input user-initial'} }) }}
-                            {{ form_widget(form.last_name,      { 'attr': {'class': 'user-input user-name'} }) }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{{ form_label(form.email) }}</td>
-                        <td>{{ form_widget(form.email, { 'attr': {'class': 'login-input'} }) }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form_label(form.password.Password) }}</td>
-                        <td>{{ form_widget(form.password.Password, { 'attr': {'class': 'login-input'} }) }}</td>
-                    </tr>
-                    <tr>
-                        <td>{{ form_label(form.password.Confirm) }}</td>
-                        <td>{{ form_widget(form.password.Confirm, { 'attr': {'class': 'login-input'} }) }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="center">
-                            {{ form_rest(form) }}
-                            <input class="button large green" type="submit" name="_submit" value="Update" />
-                        </td>
-                    </tr>
+                    {% if form_errors(form) | length > 0 %}
+                    <div class="flash-error">
+                        {{ form_errors(form) }}
+                    </div>
+                    {% endif %}
+                    {{ form_errors(form.user) }}
+                    <table>
+                        {% if form_errors(form.code) | length > 0 %}
+                        <tr>
+                            <td colspan="2">
+                                <div class="flash-error">
+                                    {{ form_errors(form.code) }}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td>{{ form_label(form.code) }}</td>
+                            <td>{{ form_widget(form.code, { 'attr': {'class': 'user-margin'} }) }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ form_label(form.email) }}</td>
+                            <td>
+                                {{ form_widget(
+                                    form.email,
+                                    { 'attr':
+                                        {
+                                            'class': 'user-margin'
+                                        }
+                                    })
+                                }}
+                            </td>
+                        </tr>
+                        {% include 'ComponentBundle:User:user.html.twig' with { 'form' : form.user } %}
+                        <tr>
+                            <td colspan="2">
+                                <div class="row-20"></div>
+                                <div class="checkbox-anywhere">
+                                    {{ form_widget(form.user.tos) }}
+                                </div>
+                                <div class="user-tos">I have read the <a href="http://www.creditjeeves.com/terms-of-service">Terms of Service</a></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                {{ 'common.applicant.tos' | trans }}
+                            </td>
+                        </tr>
+                    </table>
+                    {{ form_rest(form) }}
+                    <div class="row-20"></div>
+                    <input class="button large green" type="submit" name="_submit" value="Get Score" />
                 </form>
-            </table>
         </div>
     </div>
-    <div class="clearboth"></div>
+        <div class="clearboth"></div>
 {% endblock %}

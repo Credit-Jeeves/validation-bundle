@@ -40,6 +40,10 @@ class Filter implements ContainerAwareInterface
         $user = $this->container->get('core.session.applicant')->getUser();
         /** @var $route \Symfony\Bundle\FrameworkBundle\Routing\Router */
         $route = $this->container->get('router');
+        // check new applicant
+        if ($sRouteName == 'applicant_new') {
+            return true;
+        }
         // First check data
         if (!$user->getHasData()) {
             if ($sRouteName != 'applicant_returned') {

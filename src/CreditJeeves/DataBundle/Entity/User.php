@@ -48,11 +48,18 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\Length(
+     *     max = "255"
+     * )
      */
     protected $street_address2;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *     max = "31",
+     *     maxMessage = "Your unit number cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $unit_no;
 
@@ -68,6 +75,10 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *     max = "15",
+     *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $zip;
 
@@ -117,15 +128,15 @@ class User extends BaseUser
     protected $has_data;
 
     /**
-     * @ORM\Column(type="string")
-     */
-    protected $has_report;
-
-    /**
      * @ORM\Column(type="UserIsVerified")
      */
     protected $is_verified;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $has_report;
+    
     /**
      * @ORM\Column(type="UserType")
      */
@@ -135,16 +146,6 @@ class User extends BaseUser
      * @ORM\Column(type="boolean")
      */
     protected $is_active;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $created_at;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $updated_at;
 
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", mappedBy="user")
@@ -186,37 +187,10 @@ class User extends BaseUser
     protected $dealer_groups;
 
     /**
+     *
      * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Vehicle", mappedBy="user")
      */
     protected $vehicle;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq", mappedBy="user")
-     */
-    protected $pidkiqs;
-
-    /**
-     * @var string
-     */
-    protected $new_password;
-
-    /**
-     * 
-     * @var string
-     */
-    protected $ssn1;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ssn2;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ssn3;
 
     /**
      * @Assert\True()
@@ -237,6 +211,12 @@ class User extends BaseUser
         $this->pidkiqs = new ArrayCollection();
     }
 
+    /**
+     * FIXME delete
+     * @var string
+     */
+    protected $new_password;
+    
     public function getNewPassword()
     {
         return $this->new_password;
@@ -257,6 +237,16 @@ class User extends BaseUser
         $this->password = md5($password);
     }
 
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        $this->setEmailCanonical(strtolower($email));
+        $this->setUsername($email);
+        $this->setUsernameCanonical(strtolower($email));
+        
+        return $this;
+    }
+    
     public function getType()
     {
         return $this->type;
@@ -482,52 +472,6 @@ class User extends BaseUser
         $sSSN = substr($this->getSsn(), 0, 5);
 
         return substr($sSSN, 0, 3) . '-' . substr($sSSN, 3) . '-XXXX';
-    }
-
-    /**
-     * Set invite_code
-     *
-     * @param string $inviteCode
-     * @return User
-     */
-    public function setInviteCode($inviteCode)
-    {
-        $this->invite_code = $inviteCode;
-
-        return $this;
-    }
-
-    /**
-     * Get invite_code
-     *
-     * @return string
-     */
-    public function getInviteCode()
-    {
-        return $this->invite_code;
-    }
-
-    /**
-     * Set culture
-     *
-     * @param string $culture
-     * @return User
-     */
-    public function setCulture($culture)
-    {
-        $this->culture = $culture;
-
-        return $this;
-    }
-
-    /**
-     * Get culture
-     *
-     * @return string
-     */
-    public function getCulture()
-    {
-        return $this->culture;
     }
 
     public function getDateOfBirth()
@@ -850,11 +794,41 @@ class User extends BaseUser
      */
     public function setPhone($phone)
     {
-        $this->phone = $phone;
+        $this->phone = $this->formatPhoneInput($phone);
 
         return $this;
     }
 
+    private function formatPhoneOutput($phone)
+    {
+        $sPhoneNumber = $this->getPhone();
+        // remove all empty spaces and not number signs
+        $sPhoneNumber = preg_replace('/\s+/', '', $sPhoneNumber);
+        $sPhoneNumber = str_replace(array('(', ')', '-'), '', $sPhoneNumber);
+        //format phone number
+        $sPhoneNumber = strrev($sPhoneNumber);
+        $sCityCode = substr($sPhoneNumber, 7);
+        $sPhoneNumber = substr($sPhoneNumber, 0, 4) . '-' . substr($sPhoneNumber, 4, 3);
+        if (!empty($sCityCode)) {
+            $sPhoneNumber .= ' )' . $sCityCode . '(';
+        }
+        
+        return strrev($sPhoneNumber);
+        
+    }
+
+    private function formatPhoneInput($phone)
+    {
+        $phone = trim($phone);
+        $phone = preg_replace(array(
+           '/\s+/',
+           '/\(/',
+           '/\)/',
+           '/-/'
+           ), '', $phone);
+        return $phone;
+    }
+    
     /**
      * Get phone_type
      *
@@ -961,10 +935,10 @@ class User extends BaseUser
     {
         $this->setFirstName('');
         $this->setMiddleInitial('');
+        $this->setLastName('');
         $this->setHasData(false);
         $this->setHasReport(false);
         $this->setIsActive(false);
-        $this->setSsn('');
         $this->setSsn('');
         $this->setUnitNo('');
         $this->setCity('');
@@ -1095,43 +1069,6 @@ class User extends BaseUser
         return $this->has_report;
     }
 
-    public function getSsn1()
-    {
-        return substr($this->getSsn(), 0, 3);
-    }
-
-    public function getSsn2()
-    {
-        return substr($this->getSsn(), 3, 2);
-    }
-
-    public function getSsn3()
-    {
-        return substr($this->getSsn(), 5);
-    }
-
-    public function setSsn1($ssn1)
-    {
-        $this->ssn1 = $ssn1;
-
-        return $this;
-    }
-
-    public function setSsn2($ssn2)
-    {
-        $this->ssn2 = $ssn2;
-
-        return $this;
-    }
-
-    public function setSsn3($ssn3)
-    {
-        $this->ssn3 = $ssn3;
-
-        return $this;
-    
-    }
-
     public function getTos()
     {
         return $this->tos;
@@ -1142,150 +1079,5 @@ class User extends BaseUser
         $this->tos = $tos;
         
         return $this;
-    }
-
-    /**
-     * Add pidkiq
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Pidkiq $pidkiqs
-     * @return User
-     */
-    public function addPidkiq(\CreditJeeves\DataBundle\Entity\Pidkiq $pidkiq)
-    {
-        $this->pidkiqs[] = $pidkiq;
-
-        return $this;
-    }
-
-    /**
-     * Remove pidkiq
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Pidkiq $pidkiq
-     */
-    public function removePidkiq(\CreditJeeves\DataBundle\Entity\Pidkiq $pidkiq)
-    {
-        $this->pidkiqs->removeElement($pidkiq);
-    }
-
-
-    /**
-     * Get pidkiqs
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPidkiqs()
-    {
-        return $this->pidkiqs;
-    }
-
-    /**
-     * @return array
-     */
-    public function getArrayForPidkiq()
-    {
-        $data = array(
-            'id',
-            'first_name',
-            'middle_initial',
-            'last_name',
-            'street_address1',
-            'street_address2',
-            'city',
-            'state',
-            'zip',
-            'ssn',
-            'is_verified',
-        );
-        $return = array();
-        foreach ($data as $key) {
-            $return[$key] = $this->$key;
-        }
-        return $return;
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->created_at = new \DateTime();
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdate()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * Set is_verified
-     *
-     * @param UserIsVerified $isVerified
-     * @return User
-     */
-    public function setIsVerified($isVerified)
-    {
-        $this->is_verified = $isVerified;
-    
-        return $this;
-    }
-
-    /**
-     * Get is_verified
-     *
-     * @return UserIsVerified 
-     */
-    public function getIsVerified()
-    {
-        return $this->is_verified;
-    }
-
-    /**
-     * Set created_at
-     *
-     * @param \DateTime $createdAt
-     * @return User
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->created_at = $createdAt;
-    
-        return $this;
-    }
-
-    /**
-     * Get created_at
-     *
-     * @return \DateTime 
-     */
-    public function getCreatedAt()
-    {
-        return $this->created_at;
-    }
-
-    /**
-     * Set updated_at
-     *
-     * @param \DateTime $updatedAt
-     * @return User
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updated_at = $updatedAt;
-    
-        return $this;
-    }
-
-    /**
-     * Get updated_at
-     *
-     * @return \DateTime 
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updated_at;
     }
 }

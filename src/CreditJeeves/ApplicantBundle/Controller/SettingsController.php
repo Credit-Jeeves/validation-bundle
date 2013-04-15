@@ -33,6 +33,7 @@ class SettingsController extends Controller
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($cjUser);
                     $em->flush();
+                    $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
                 }
             }
         }
@@ -137,7 +138,7 @@ class SettingsController extends Controller
                         throw $e;
                     }
                     // Commented for develop
-                    //return $this->redirect($this->generateUrl('fos_user_security_logout'));
+                    return $this->redirect($this->generateUrl('fos_user_security_logout'));
                 } else {
                     $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
                 }
