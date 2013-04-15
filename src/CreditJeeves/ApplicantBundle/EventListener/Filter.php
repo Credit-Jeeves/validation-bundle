@@ -44,6 +44,10 @@ class Filter implements ContainerAwareInterface
         if ($sRouteName == 'applicant_new') {
             return true;
         }
+        // check new applicant
+        if ($sRouteName == 'applicant_invite') {
+            return true;
+        }
         // First check data
         if (!$user->getHasData()) {
             if ($sRouteName != 'applicant_returned') {
