@@ -1,21 +1,8 @@
 <tr>
-    <td>{{ form_label(form.email) }}</td>
+    <td>{{ form_label(form.first_name) }}</td>
     <td>
         {{ form_widget(
-            form.email,
-            { 'attr':
-                {
-                    'class': 'user-margin'
-                }
-            })
-        }}
-    </td>
-</tr>
-<tr>
-    <td>{{ form_label(form.user.first_name) }}</td>
-    <td>
-        {{ form_widget(
-            form.user.first_name,
+            form.first_name,
             { 'attr': 
                 {
                     'class': 'user-input user-name user-margin',
@@ -25,7 +12,7 @@
             })
         }}
         {{ form_widget(
-            form.user.middle_initial,
+            form.middle_initial,
             { 'attr':
                 {
                     'class': 'user-input user-initial user-margin',
@@ -35,7 +22,7 @@
             })
         }}
         {{ form_widget(
-            form.user.last_name,
+            form.last_name,
                 { 'attr':
                     {
                         'class': 'user-input user-name user-margin',
@@ -47,31 +34,31 @@
     </td>
 </tr>
 <tr>
-    <td>{{ form_label(form.user.ssn) }}<span class="lock-icon floatright"></span></td>
+    <td>{{ form_label(form.ssn) }}<span class="lock-icon floatright"></span></td>
     <td>
         {{ form_widget(
-            form.user.ssn.ssn1,
+            form.ssn.ssn1,
             { 'attr':
                 {
-                    'class': 'user-margin user-ssn1',
+                    'class': 'user-margin user-ssn1 user-ssn',
                     'maxlength' : 3
                 }
             })
         }}
         {{ form_widget(
-            form.user.ssn.ssn2,
+            form.ssn.ssn2,
             { 'attr':
                 {
-                    'class': 'user-margin user-ssn2',
+                    'class': 'user-margin user-ssn2 user-ssn',
                     'maxlength' : 2
                 }
             })
         }}
         {{ form_widget(
-            form.user.ssn.ssn3,
+            form.ssn.ssn3,
             { 'attr':
                 {
-                    'class': 'user-margin user-ssn3',
+                    'class': 'user-margin user-ssn3 user-ssn',
                     'maxlength' : 4
                 }
             })
@@ -79,10 +66,10 @@
     </td>
 </tr>
 <tr>
-    <td>{{ form_label(form.user.street_address1) }}</td>
+    <td>{{ form_label(form.street_address1) }}</td>
     <td>
         {{ form_widget(
-            form.user.street_address1,
+            form.street_address1,
             { 'attr':
                 {
                     'class': 'user-input user-address user-margin',
@@ -92,7 +79,7 @@
             })
         }}
         {{ form_widget(
-            form.user.unit_no,
+            form.unit_no,
             { 'attr':
                 {
                     'class': 'user-input user-unit user-margin',
@@ -107,7 +94,7 @@
     <td></td>
     <td>
         {{ form_widget(
-            form.user.city,
+            form.city,
             { 'attr':
                 {
                     'class': 'user-input user-city user-margin floatleft',
@@ -117,7 +104,7 @@
             })
         }}
         {{ form_widget(
-            form.user.state,
+            form.state,
             { 'attr':
                 {
                     'class': 'user-input user-state user-margin',
@@ -126,7 +113,7 @@
             })
         }}
         {{ form_widget(
-            form.user.zip,
+            form.zip,
             { 'attr':
                 {
                     'class': 'user-input user-unit user-margin',
@@ -138,10 +125,10 @@
     </td>
 </tr>
 <tr>
-    <td>{{ form_label(form.user.phone) }}</td>
+    <td>{{ form_label(form.phone) }}</td>
     <td>
         {{ form_widget(
-            form.user.phone_type,
+            form.phone_type,
             { 'attr':
                 {
                     'class': 'user-input user-margin floatleft'
@@ -149,7 +136,7 @@
             })
         }}
         {{ form_widget(
-            form.user.phone,
+            form.phone,
             { 'attr':
                 {
                     'class': 'user-input user-address user-margin',
@@ -161,8 +148,15 @@
     </td>
 </tr>
 <tr>
-    <td>{{ form_label(form.user.date_of_birth) }}</td>
+    <td>{{ form_label(form.date_of_birth) }}</td>
     <td>
-        {{ form_widget(form.user.date_of_birth, { 'attr': {'class': 'floatleft'} })}}
+        {{ form_widget(
+            form.date_of_birth,
+            { 'attr':
+                {
+                    'class': 'floatleft'
+                }
+            })
+        }}
     </td>
 </tr>

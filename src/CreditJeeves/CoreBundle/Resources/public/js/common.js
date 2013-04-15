@@ -39,5 +39,7 @@ $(document).ready(function(){
   $('select').linkselect();
   
   jQuery('input[placeholder], textarea[placeholder]').placeholder();
+  
+  jQuery('.user-ssn').ssn();
 
 });

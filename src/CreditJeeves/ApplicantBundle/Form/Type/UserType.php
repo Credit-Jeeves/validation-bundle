@@ -23,6 +23,7 @@ class UserType extends AbstractType
             'text',
             array(
                 'label' => 'Name',
+                'error_bubbling' => true,
                 'constraints' => array(
                     new Length(array('min' => 3)),
                     ),

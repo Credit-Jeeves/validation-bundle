@@ -19,10 +19,7 @@ class LeadType extends AbstractType
         $userTransformer = new EmailToUserTransformer($entityManager);
         $builder->add(
             'user',
-            new UserType(),
-            array(
-//                 ''
-                )
+            new UserType()
         );
         $builder->add(
             $builder->create(

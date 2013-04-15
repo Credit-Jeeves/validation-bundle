@@ -46,6 +46,9 @@ class NewController extends Controller
         );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
+            echo '<pre>';
+            var_dump($form->getErrorsAsString());
+            echo '</pre>';
             if ($form->isValid()) {
                 $Lead = $form->getData();
                 if ($this->validateLead($Lead)) {
@@ -62,9 +65,13 @@ class NewController extends Controller
                     $this->get('session')->getFlashBag()->add('notice', 'You are already associated with this dealership. Please contact the dealership at '.$Lead->getGroup()->getName().' if you wish to change your salesperson.');
                 }
             }
+//              else {
+//                 $this->get('session')->getFlashBag()->add('notice', 'Form is not valid');
+//             }
         }
         return array(
             'form' => $form->createView(),
+            'nUserId' => $User->getId(),
             );
     }
 
