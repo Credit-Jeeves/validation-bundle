@@ -383,6 +383,8 @@ class Lead
     {
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
+        $this->status = 'new';
+        $this->target_score = $this->getGroup()->getTargetScore();
     }
 
     /**

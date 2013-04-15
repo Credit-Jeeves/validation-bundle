@@ -1,9 +1,9 @@
 {% extends "::base.html.twig" %}
 
-{% block title "New Appliant" %}
+{% block title "Returned Appliant" %}
 
 {% block stylesheets %}
-  <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block tabs %}
@@ -11,69 +11,54 @@
 
 {% block info %}
 <div class="user-logout">
-    <a href="{{ path('fos_user_security_login') }}">» Log In </a>
+    <a href="{{ path('fos_user_security_logout') }}">» {{ 'common.log_out' | trans }} </a>&nbsp;|&nbsp;
+    <a href="{{ path('fos_user_security_logout') }}">» {{ 'common.help' | trans }} </a>
 </div>
 {% endblock %}
 
 {% block content %}
     <div class="column-small floatleft">
         <div class="pod-small pod-border pod-padding shadow">
+            <h3>Why is Credit Jeeves Different?</h3>
+            <p>
+                Credit Jeeves gives you a <strong>custom action plan</strong> so you can take charge of your credit and buy the car of your dreams.
+            </p>
         </div>
     </div>
     <div class="column-middle floatright">
         <div class="pod-middle pod-border pod-padding shadow">
             <h1>Welcome to Credit Jeeves.</h1>
+            <div class="row-20"></div>
             <h3>Please enter your information below and we can get started right away.</h3>
                 <form action="{{ path('applicant_returned') }}" method="post" {{ form_enctype(form) }}>
-                    {{ form_errors(form) }}
+                    {% if form_errors(form) | length > 0 %}
+                    <div class="flash-error">
+                        {{ form_errors(form) }}
+                    </div>
+                    {% endif %}
                     <table>
                         <tr>
                             <td>{{ form_label(form.code) }}</td>
                             <td>{{ form_widget(form.code, { 'attr': {'class': 'user-margin'} }) }}</td>
                         </tr>
+                        {% include 'ComponentBundle:User:user.html.twig' with { 'form' : form } %}
                         <tr>
-                            <td>{{ form_label(form.email) }}</td>
-                            <td>{{ form_widget(form.email, { 'attr': {'class': 'user-margin'} }) }}</td>
-                        </tr>
-                        <tr>
-                            <td>{{ form_label(form.user.first_name) }}</td>
-                            <td>
-                                {{ form_widget(form.user.first_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
-                                {{ form_widget(form.user.middle_initial, { 'attr': {'class': 'user-input user-initial user-margin'} }) }}
-                                {{ form_widget(form.user.last_name, { 'attr': {'class': 'user-input user-name user-margin'} }) }}
+                            <td colspan="2">
+                                <div class="row-20"></div>
+                                <div class="checkbox-anywhere">
+                                    {{ form_widget(form.user.tos) }}
+                                </div>
+                                <div class="user-tos">I have read the <a href="http://www.creditjeeves.com/terms-of-service">Terms of Service</a></div>
                             </td>
                         </tr>
                         <tr>
-                            <td>{{ form_label(form.user.ssn1) }}<span class="lock-icon floatright"></span></td>
-                            <td>
-                                {{ form_widget(form.user.ssn1, { 'attr': {'class': 'user-input user-ssn1 user-margin', 'maxlength' : 3} })}}
-                                {{ form_widget(form.user.ssn2, { 'attr': {'class': 'user-input user-ssn2 user-margin', 'maxlength' : 2} }) }}
-                                {{ form_widget(form.user.ssn3, { 'attr': {'class': 'user-input user-ssn3 user-margin', 'maxlength' : 4} }) }}
+                            <td colspan="2">
+                                {{ 'common.applicant.tos' | trans }}
                             </td>
                         </tr>
-                        <tr>
-                            <td>{{ form_label(form.user.street_address1) }}</td>
-                            <td>
-                                {{ form_widget(form.user.street_address1, { 'attr': {'class': 'user-input user-address user-margin', 'placeholder': 'Street'} })}}
-                                {{ form_widget(form.user.unit_no, { 'attr': {'class': 'user-input user-unit user-margin', 'placeholder': 'Unit #'} }) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td>
-                                {{ form_widget(form.user.city, { 'attr': {'class': 'user-input user-city user-margin floatleft', 'placeholder': 'City'} })}}
-                                {{ form_widget(form.user.state, { 'attr': {'class': 'user-input user-state user-margin'} })}}
-                            </td>
-                        </tr>
-                        <tr>
-                        <td colspan="2">
-                        <div class="checkbox-anywhere">
-                            {{ form_widget(form.user.tos) }}
-                            </div>
-                        </td>
-                        </tr>
-                        </table>
+                    </table>
                     {{ form_rest(form) }}
+                    <div class="row-20"></div>
                     <input class="button large green" type="submit" name="_submit" value="Get Score" />
                 </form>
         </div>

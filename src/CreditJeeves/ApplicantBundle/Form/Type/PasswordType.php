@@ -18,6 +18,7 @@ class PasswordType extends AbstractType
                 'first_name' => 'Password',
                 'second_name' => 'Retype',
                 'type' => 'password',
+                'mapped' => false,
             )
         );
     }
@@ -37,6 +38,6 @@ class PasswordType extends AbstractType
 
     public function getName()
     {
-        return 'password';
+        return 'creditjeeves_applicantbundle_passwordtype';
     }
 }

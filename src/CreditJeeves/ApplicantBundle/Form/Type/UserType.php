@@ -5,8 +5,14 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
+use Symfony\Component\Validator\Constraints\True;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
-use CreditJeeves\ApplicantBundle\Form\Type\TosType;
+use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
+use CreditJeeves\ApplicantBundle\Form\DataTransformer\SsnToPartsTransformer;
 
 class UserType extends AbstractType
 {
@@ -16,7 +22,11 @@ class UserType extends AbstractType
             'first_name',
             'text',
             array(
-                'label' => 'Name'
+                'label' => 'Name',
+                'error_bubbling' => true,
+                'constraints' => array(
+                    new Length(array('min' => 3)),
+                    ),
                 )
         );
         $builder->add(
@@ -25,6 +35,7 @@ class UserType extends AbstractType
             array(
                 'label' => '',
                 'required' => false,
+                'max_length' => 5
                 )
         );
         $builder->add(
@@ -35,24 +46,17 @@ class UserType extends AbstractType
                 )
         );
         $builder->add(
-            'ssn1',
-            'text',
+            'ssn',
+            new SsnType(),
             array(
                 'label' => 'SSN'
                 )
         );
         $builder->add(
-            'ssn2',
-            'text',
+            'date_of_birth',
+            'birthday',
             array(
-                'label' => ''
-                )
-        );
-        $builder->add(
-            'ssn3',
-            'text',
-            array(
-                'label' => '0'
+                'label' => 'Date of Birth'
                 )
         );
         $builder->add(
@@ -82,6 +86,34 @@ class UserType extends AbstractType
             array(
                 'label' => '',
                 'choice_list' =>  new StateChoiceList(),
+                'required' => true,
+                )
+        );
+        $builder->add(
+            'zip',
+            'text',
+            array(
+                    'label' => ''
+                )
+        );
+        $builder->add(
+            'phone_type',
+            'choice',
+            array(
+                'label' => '',
+                'choices' => array(
+                    '1' => 'Mobile',
+                    '2' => 'Home',
+                    '3' => 'Work',
+                    ),
+                )
+        );
+        $builder->add(
+            'phone',
+            'text',
+            array(
+                'label' => 'Phone',
+                'required' => false,
                 )
         );
         $builder->add(
@@ -89,9 +121,15 @@ class UserType extends AbstractType
             'hidden',
             array(
                 'label' => '',
-                'required' => true,
+                'data' => 0,
+                'mapped' => false,
+                'constraints' => new True(
+                    array(
+                            'message' => 'Please accept the Terms and conditions in order to register'
+                        )
+                    ),
                 )
-            );
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

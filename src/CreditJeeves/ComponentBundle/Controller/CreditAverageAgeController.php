@@ -15,6 +15,9 @@ class CreditAverageAgeController extends Controller
         foreach ($aTradelines as $aTradeline) {
             $nTotal++;
             $oOpenedDate = \DateTime::createFromFormat('my', $aTradeline['date_open']);
+            if (empty($oOpenedDate)) {
+                continue;
+            }
             $interval = $oOpenedDate->diff($oCurrentDate);
             $nMonthes = $interval->format('%y') * 12 + $interval->format('%m');
             $nAge += $nMonthes;

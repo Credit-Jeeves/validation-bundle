@@ -1,0 +1,162 @@
+<tr>
+    <td>{{ form_label(form.first_name) }}</td>
+    <td>
+        {{ form_widget(
+            form.first_name,
+            { 'attr': 
+                {
+                    'class': 'user-input user-name user-margin',
+                    'maxlength' : 50,
+                    'placeholder': 'First Name' 
+                }
+            })
+        }}
+        {{ form_widget(
+            form.middle_initial,
+            { 'attr':
+                {
+                    'class': 'user-input user-initial user-margin',
+                    'maxlength' : 20,
+                    'placeholder': 'MI'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.last_name,
+                { 'attr':
+                    {
+                        'class': 'user-input user-name user-margin',
+                        'maxlength' : 50,
+                        'placeholder': 'Last Name'
+                    }
+                })
+        }}
+    </td>
+</tr>
+<tr>
+    <td>{{ form_label(form.ssn) }}<span class="lock-icon floatright"></span></td>
+    <td>
+        {{ form_widget(
+            form.ssn.ssn1,
+            { 'attr':
+                {
+                    'class': 'user-margin user-ssn1 user-ssn',
+                    'maxlength' : 3
+                }
+            })
+        }}
+        {{ form_widget(
+            form.ssn.ssn2,
+            { 'attr':
+                {
+                    'class': 'user-margin user-ssn2 user-ssn',
+                    'maxlength' : 2
+                }
+            })
+        }}
+        {{ form_widget(
+            form.ssn.ssn3,
+            { 'attr':
+                {
+                    'class': 'user-margin user-ssn3 user-ssn',
+                    'maxlength' : 4
+                }
+            })
+        }}
+    </td>
+</tr>
+<tr>
+    <td>{{ form_label(form.street_address1) }}</td>
+    <td>
+        {{ form_widget(
+            form.street_address1,
+            { 'attr':
+                {
+                    'class': 'user-input user-address user-margin',
+                    'maxlength' : 255,
+                    'placeholder': 'Street'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.unit_no,
+            { 'attr':
+                {
+                    'class': 'user-input user-unit user-margin',
+                    'placeholder': 'Unit #',
+                    'maxlength' : 15
+                }
+            })
+        }}
+    </td>
+</tr>
+<tr>
+    <td></td>
+    <td>
+        {{ form_widget(
+            form.city,
+            { 'attr':
+                {
+                    'class': 'user-input user-city user-margin floatleft',
+                    'placeholder': 'City',
+                    'maxlength' : 255
+                }
+            })
+        }}
+        {{ form_widget(
+            form.state,
+            { 'attr':
+                {
+                    'class': 'user-input user-state user-margin',
+                    'maxlength' : 2
+                }
+            })
+        }}
+        {{ form_widget(
+            form.zip,
+            { 'attr':
+                {
+                    'class': 'user-input user-unit user-margin',
+                    'placeholder': 'ZIP',
+                    'maxlength' : 15
+                }
+            })
+        }}
+    </td>
+</tr>
+<tr>
+    <td>{{ form_label(form.phone) }}</td>
+    <td>
+        {{ form_widget(
+            form.phone_type,
+            { 'attr':
+                {
+                    'class': 'user-input user-margin floatleft'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.phone,
+            { 'attr':
+                {
+                    'class': 'user-input user-address user-margin',
+                    'placeholder': 'Phone',
+                    'maxlength' : 255
+                }
+            })
+        }}
+    </td>
+</tr>
+<tr>
+    <td>{{ form_label(form.date_of_birth) }}</td>
+    <td>
+        {{ form_widget(
+            form.date_of_birth,
+            { 'attr':
+                {
+                    'class': 'floatleft'
+                }
+            })
+        }}
+    </td>
+</tr>

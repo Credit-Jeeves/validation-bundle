@@ -38,6 +38,7 @@ class ReturnedController extends Controller
             if ($form->isValid()) {
                 $Lead = $form->getData();
                 $Group = $Lead->getGroup();
+                //echo $User->getSsn();
                 // @TODO would be fixed with right logic
                 $Lead->setDealer($this->getLeadDealer($Lead));
                 $Lead->setTargetScore($Group->getTargetScore());
@@ -51,6 +52,8 @@ class ReturnedController extends Controller
                 $User->setHasData(true);
                 $em->persist($User);
                 $em->flush();
+                $this->get('core.session.applicant')->setLeadId($Lead->getId());
+                return $this->redirect($this->generateUrl('applicant_homepage'));
             }
         }
         return array('form' => $form->createView());

@@ -22,31 +22,64 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "2",
+     *     max = "50",
+     *     minMessage = "Your first name must be at least {{ limit }} characters length",
+     *     maxMessage = "Your first name cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $first_name;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *     min = "1",
+     *     max = "20",
+     *     maxMessage = "Your middle initial cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $middle_initial;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "2",
+     *     max = "50",
+     *     minMessage = "Your last name must be at least {{ limit }} characters length",
+     *     maxMessage = "Your last name cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $last_name;
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "2",
+     *     max = "255",
+     *     minMessage = "Your address must be at least {{ limit }} characters length",
+     *     maxMessage = "Your address cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $street_address1;
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\Length(
+     *     max = "255"
+     * )
      */
     protected $street_address2;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\Length(
+     *     max = "31",
+     *     maxMessage = "Your unit number cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $unit_no;
 
@@ -57,11 +90,23 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "2",
+     *     max = "255",
+     *     minMessage = "City name must be at least {{ limit }} characters length",
+     *     maxMessage = "City name cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     max = "15",
+     *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length"
+     * )
      */
     protected $zip;
 
@@ -92,6 +137,11 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min = "9",
+     *     max = "9"
+     * )
      */
     protected $ssn;
 
@@ -160,36 +210,6 @@ class User extends BaseUser
      */
     protected $vehicle;
 
-    /**
-     *
-     * @var string
-     */
-    protected $new_password;
-
-    /**
-     * 
-     * @var string
-     */
-    protected $ssn1;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ssn2;
-
-    /**
-     *
-     * @var string
-     */
-    protected $ssn3;
-
-    /**
-     * @Assert\True()
-     * @var boolean
-     */
-    protected $tos;
-
     public function __construct()
     {
         parent::__construct();
@@ -202,17 +222,6 @@ class User extends BaseUser
         $this->groups = new ArrayCollection();
     }
 
-    public function getNewPassword()
-    {
-        return $this->new_password;
-    }
-
-
-    public function setNewPassword($newPassword)
-    {
-        $this->new_password = $newPassword;
-    }
-
     /**
      * (non-PHPdoc)
      * @see FOS\UserBundle\Model.User::setPassword()
@@ -222,6 +231,18 @@ class User extends BaseUser
         $this->password = md5($password);
     }
 
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        $this->setEmailCanonical(strtolower($email));
+        $this->setUsername($email);
+        $this->setUsernameCanonical(strtolower($email));
+        
+        return $this;
+    }
+    
+    
+    
     public function getType()
     {
         return $this->type;
@@ -769,11 +790,41 @@ class User extends BaseUser
      */
     public function setPhone($phone)
     {
-        $this->phone = $phone;
+        $this->phone = $this->formatPhoneInput($phone);
 
         return $this;
     }
 
+    private function formatPhoneOutput($phone)
+    {
+        $sPhoneNumber = $this->getPhone();
+        // remove all empty spaces and not number signs
+        $sPhoneNumber = preg_replace('/\s+/', '', $sPhoneNumber);
+        $sPhoneNumber = str_replace(array('(', ')', '-'), '', $sPhoneNumber);
+        //format phone number
+        $sPhoneNumber = strrev($sPhoneNumber);
+        $sCityCode = substr($sPhoneNumber, 7);
+        $sPhoneNumber = substr($sPhoneNumber, 0, 4) . '-' . substr($sPhoneNumber, 4, 3);
+        if (!empty($sCityCode)) {
+            $sPhoneNumber .= ' )' . $sCityCode . '(';
+        }
+        
+        return strrev($sPhoneNumber);
+        
+    }
+
+    private function formatPhoneInput($phone)
+    {
+        $phone = trim($phone);
+        $phone = preg_replace(array(
+           '/\s+/',
+           '/\(/',
+           '/\)/',
+           '/-/'
+           ), '', $phone);
+        return $phone;
+    }
+    
     /**
      * Get phone_type
      *
@@ -880,6 +931,7 @@ class User extends BaseUser
     {
         $this->setFirstName('');
         $this->setMiddleInitial('');
+        $this->setLastName('');
         $this->setHasData(false);
         $this->setHasReport(false);
         $this->setIsActive(false);
@@ -1012,54 +1064,5 @@ class User extends BaseUser
     public function getHasReport()
     {
         return $this->has_report;
-    }
-
-    public function getSsn1()
-    {
-        return substr($this->getSsn(), 0, 3);
-    }
-
-    public function getSsn2()
-    {
-        return substr($this->getSsn(), 3, 2);
-    }
-
-    public function getSsn3()
-    {
-        return substr($this->getSsn(), 5);
-    }
-
-    public function setSsn1($ssn1)
-    {
-        $this->ssn1 = $ssn1;
-
-        return $this;
-    }
-
-    public function setSsn2($ssn2)
-    {
-        $this->ssn2 = $ssn2;
-
-        return $this;
-    }
-
-    public function setSsn3($ssn3)
-    {
-        $this->ssn3 = $ssn3;
-
-        return $this;
-    
-    }
-
-    public function getTos()
-    {
-        return $this->tos;
-    }
-
-    public function setTos($tos)
-    {
-        $this->tos = $tos;
-        
-        return $this;
     }
 }
