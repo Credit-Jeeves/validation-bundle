@@ -1,9 +1,15 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use CreditJeeves\DataBundle\Entity\Lead;
+use CreditJeeves\DataBundle\Entity\Report;
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Vehicle;
+use CreditJeeves\DataBundle\Entity\Order;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -87,16 +93,6 @@ class User extends BaseUser
     protected $phone;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $score_changed_notification;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $offer_notification;
-
-    /**
      * @ORM\Column(type="date")
      */
     protected $date_of_birth;
@@ -109,22 +105,47 @@ class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      */
+    protected $invite_code;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $score_changed_notification;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $offer_notification;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $culture;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $has_data;
+
+    /**
+     * @ORM\Column(type="UserIsVerified")
+     */
+    protected $is_verified;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $has_report;
+    
+    /**
+     * @ORM\Column(type="UserType")
+     */
     protected $type;
 
     /**
      * @ORM\Column(type="boolean")
      */
     protected $is_active;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $has_data;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $has_report;
 
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", mappedBy="user")
@@ -171,6 +192,12 @@ class User extends BaseUser
      */
     protected $vehicle;
 
+    /**
+     * @Assert\True()
+     * @var boolean
+     */
+    protected $tos;
+
     public function __construct()
     {
         parent::__construct();
@@ -181,6 +208,24 @@ class User extends BaseUser
         $this->user_leads = new ArrayCollection();
         $this->dealer_leads = new ArrayCollection();
         $this->groups = new ArrayCollection();
+        $this->pidkiqs = new ArrayCollection();
+    }
+
+    /**
+     * FIXME delete
+     * @var string
+     */
+    protected $new_password;
+    
+    public function getNewPassword()
+    {
+        return $this->new_password;
+    }
+
+
+    public function setNewPassword($newPassword)
+    {
+        $this->new_password = $newPassword;
     }
 
     /**
@@ -201,8 +246,6 @@ class User extends BaseUser
         
         return $this;
     }
-    
-    
     
     public function getType()
     {
@@ -1024,5 +1067,17 @@ class User extends BaseUser
     public function getHasReport()
     {
         return $this->has_report;
+    }
+
+    public function getTos()
+    {
+        return $this->tos;
+    }
+
+    public function setTos($tos)
+    {
+        $this->tos = $tos;
+        
+        return $this;
     }
 }

@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ * @author Ton Sharp <66ton99@gmail.com>
  * @DI\Service
  */
 class Filter implements ContainerAwareInterface

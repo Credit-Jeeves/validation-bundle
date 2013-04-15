@@ -2,8 +2,8 @@ parameters:
     database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: null
-    database_name: credit_jeeves2
-    database_user: credit_jeeves2
+    database_name: credit_jeeves
+    database_user: root
     database_password: 'passw0rd2'
     mailer_transport: smtp
     mailer_host: 127.0.0.1
@@ -12,3 +12,15 @@ parameters:
 
     server: live
     server_name: my.creditjeeves.com
+
+    experian:
+        pidkiq_url: 'https://ss3.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
+        pidkiq_dbhost: 'PRECISE_ID' #required!
+        net_connect_url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnect&serviceVersion=2.0&responseType=text/plain' #required!
+        net_connect_dbhost: 'CIS' #required!
+        atb_host: 'http://stg.creditjeeves.com:8080/'
+
+    authorize_net:
+        login_id: '29fDg7sU24G'
+        transaction_key: '474v43G35wJ6Gm2d'
+        sandbox: false

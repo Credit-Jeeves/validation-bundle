@@ -72,9 +72,13 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "0d8445b6e29d74b3aa9b0b06bbac073342d4a5f3"
+                    "reference": "4a6431747f0c202c2a15c15069ea16f85691c426"
                 }
             }
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/environment.git"
         },
         {
             "type": "git",
@@ -87,10 +91,6 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/PaypalProCheckoutNvp.git"
-        },
-        {
-            "type": "git",
-            "url": "git@github.com:66Ton99/environment.git"
         },
         {
             "type": "git",
@@ -128,7 +128,7 @@
         "payum/payum": "0.3.*",
         "payum/payum-bundle": "0.3.*",
         "payum/authorize-net-aim": "0.3.*",
-        "hat/environment": "dev-master",
+        "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "v1.1.1"
     },
     "require-dev": {
@@ -145,13 +145,11 @@
     "scripts": {
         "post-install-cmd": [
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ],
         "post-update-cmd": [
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile"
         ]
