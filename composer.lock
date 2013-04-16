@@ -328,11 +328,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/BadaBoom.git",
-                "reference": "69e716ccfd2c4b5bee6c0fb834b26ef1513ab99a"
+                "reference": "ee6af654030035e3709f7c612c5d3fe056569767"
             },
             "require": {
                 "php": ">=5.3.2",
-                "symfony/serializer": ">=2.0.6,<2.3-dev"
+                "symfony/serializer": ">=2.2-dev"
             },
             "require-dev": {
                 "fp/fumocker": ">=1.0-dev",
@@ -374,7 +374,7 @@
                 "error handler",
                 "exception handler"
             ],
-            "time": "2013-04-16 13:13:02"
+            "time": "2013-04-16 16:47:23"
         },
         {
             "name": "fp/badaboom-bundle",
