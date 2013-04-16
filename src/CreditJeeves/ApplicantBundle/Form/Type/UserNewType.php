@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\SsnToPartsTransformer;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserNewType extends AbstractType
 {
@@ -45,6 +46,13 @@ class UserNewType extends AbstractType
                 )
         );
         $builder->add(
+            'email',
+            'email',
+            array(
+                'label' => 'Email'
+            )
+        );
+        $builder->add(
             'ssn',
             new SsnType(),
             array(
@@ -67,7 +75,12 @@ class UserNewType extends AbstractType
         );
         $builder->add(
             'password',
-            new NewPasswordType()
+            'repeated',
+            array(
+                'first_name' => 'Password',
+                'second_name' => 'Retype',
+                'type' => 'password',
+                )
         );
         $builder->add(
             'unit_no',
@@ -142,6 +155,6 @@ class UserNewType extends AbstractType
 
     public function getName()
     {
-        return 'creditjeeves_applicantbundle_usertype';
+        return 'creditjeeves_applicantbundle_usernewtype';
     }
 }

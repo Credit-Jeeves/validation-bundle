@@ -43,6 +43,9 @@ class User extends BaseUser
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\Length(
+     *     max = "255"
+     * )
      */
     protected $street_address1;
 
@@ -118,7 +121,7 @@ class User extends BaseUser
     protected $offer_notification;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options="en")
      */
     protected $culture;
 
@@ -148,32 +151,61 @@ class User extends BaseUser
     protected $is_active;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"}, orphanRemoval=true
+     * )
      */
     protected $reportsPrequal;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\ReportD2c", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\ReportD2c",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
      */
     protected $reportsD2c;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Score", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Score",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
      */
     protected $scores;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Order", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
      */
     protected $orders;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Lead",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
      */
     protected $user_leads;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="dealer")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Lead",
+     *     mappedBy="dealer",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
      */
     protected $dealer_leads;
 
@@ -188,7 +220,12 @@ class User extends BaseUser
 
     /**
      *
-     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Vehicle", mappedBy="user")
+     * @ORM\OneToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Vehicle",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
      */
     protected $vehicle;
 
@@ -215,18 +252,18 @@ class User extends BaseUser
      * FIXME delete
      * @var string
      */
-    protected $new_password;
+//     protected $new_password;
     
-    public function getNewPassword()
-    {
-        return $this->new_password;
-    }
+//     public function getNewPassword()
+//     {
+//         return $this->new_password;
+//     }
 
 
-    public function setNewPassword($newPassword)
-    {
-        $this->new_password = $newPassword;
-    }
+//     public function setNewPassword($newPassword)
+//     {
+//         $this->new_password = $newPassword;
+//     }
 
     /**
      * (non-PHPdoc)
@@ -974,6 +1011,10 @@ class User extends BaseUser
      */
     public function methodPrePersist()
     {
+        // For the new User
+        $this->culture = 'en';
+        $this->has_data = false;
+        
     }
 
     /**
@@ -1073,15 +1114,25 @@ class User extends BaseUser
         return $this->has_report;
     }
 
-    public function getTos()
+    public function setIsVerified($isVerified)
     {
-        return $this->tos;
+        $this->is_verified = $isVerified;
+        return $this;
     }
 
-    public function setTos($tos)
+    public function getIsVerified()
     {
-        $this->tos = $tos;
-        
+        return $this->verified;
+    }
+
+    public function setCulture($culture)
+    {
+        $this->culture = $culture;
         return $this;
+    }
+
+    public function getCulture()
+    {
+        return $this->culture;
     }
 }

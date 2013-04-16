@@ -12,7 +12,7 @@ class PasswordType extends AbstractType
     {
         $builder->add('password', 'password', array('label' => 'Old Password'));
         $builder->add(
-            'new_password',
+            'password_new',
             'repeated',
             array(
                 'first_name' => 'Password',
