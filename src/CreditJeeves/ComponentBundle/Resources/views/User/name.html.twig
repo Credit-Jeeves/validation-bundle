@@ -1,0 +1,35 @@
+<div class="form-row">
+    <div class="form-label">{{ form_label(form.first_name) }}</div>
+    <div class="form-widget">
+        {{ form_widget(
+            form.first_name,
+            { 'attr': 
+                {
+                    'class': 'user-input user-name user-margin',
+                    'maxlength' : 50,
+                    'placeholder': 'First Name' 
+                }
+            })
+        }}
+        {{ form_widget(
+            form.middle_initial,
+            { 'attr':
+                {
+                    'class': 'user-input user-initial user-margin',
+                    'maxlength' : 20,
+                    'placeholder': 'MI'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.last_name,
+                { 'attr':
+                    {
+                        'class': 'user-input user-name user-margin',
+                        'maxlength' : 50,
+                        'placeholder': 'Last Name'
+                    }
+                })
+        }}
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="form-row">
+    <div class="form-label">{{ form_label(form.phone) }}</div>
+    <div class="form-widget">{{ form_widget(
+            form.phone_type,
+            { 'attr':
+                {
+                    'class': 'user-input user-margin floatleft'
+                }
+            })
+        }}
+        {{ form_widget(
+            form.phone,
+            { 'attr':
+                {
+                    'class': 'user-input user-address user-margin',
+                    'placeholder': 'Phone',
+                    'maxlength' : 255
+                }
+            })
+        }}</div>
+</div>
