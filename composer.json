@@ -95,6 +95,14 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/MinkBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/BadaBoom.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/FpBadaBoomBundle.git"
         }
     ],
     "require": {
@@ -129,7 +137,9 @@
         "payum/payum-bundle": "0.3.*",
         "payum/authorize-net-aim": "0.3.*",
         "hat/environment": "dev-ton",
-        "knplabs/knp-menu-bundle": "v1.1.1"
+        "knplabs/knp-menu-bundle": "v1.1.1",
+        "fp/badaboom": "dev-ton as dev-not-approved",
+        "fp/badaboom-bundle": "dev-ton"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",

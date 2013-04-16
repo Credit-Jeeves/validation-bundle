@@ -632,6 +632,14 @@
                 <source>pidkiq.error.answers-%SUPPORT_EMAIL%</source>
                 <target>Some of the answers you provided to the questions are incorrect. We're sorry but we cannot authenticate you at this time. Please try again in one hour, or contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
+            <trans-unit id="pidkiq.error.lock">
+                <source>pidkiq.error.lock-%SUPPORT_EMAIL%</source>
+                <target>Your account has been locked after too many failed attempts to authenticate. Please contact %SUPPORT_EMAIL%.</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.title">
+                <source>pidkiq.title</source>
+                <target>Identity Verification</target>
+            </trans-unit>
 
 
             

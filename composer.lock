@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8bd07c58bd4fe7b6a7a7109ca31acafc",
+    "hash": "d91762437f9509685f128ce6a065bc7c",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -321,6 +321,113 @@
                 "orm"
             ],
             "time": "2013-03-24 20:43:58"
+        },
+        {
+            "name": "fp/badaboom",
+            "version": "dev-ton",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/BadaBoom.git",
+                "reference": "69e716ccfd2c4b5bee6c0fb834b26ef1513ab99a"
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/serializer": ">=2.0.6,<2.3-dev"
+            },
+            "require-dev": {
+                "fp/fumocker": ">=1.0-dev",
+                "raven/raven": "dev-master",
+                "swiftmailer/swiftmailer": ">=4.1.0"
+            },
+            "suggest": {
+                "ext-newrelic": "In case you want use newrelic.com service.",
+                "raven/raven": "In case you want use getsentry.com service.",
+                "swiftmailer/swiftmailer": "In case you want use swiftmailer"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "BadaBoom": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Vadim Tyukov",
+                    "email": "brainreflex@gmail.com"
+                },
+                {
+                    "name": "Maksim Kotlyar",
+                    "email": "kotlyar.maksim@gmail.com"
+                }
+            ],
+            "description": "Wise error catcher",
+            "homepage": "http://github.com/formapro/BadaBoom",
+            "keywords": [
+                "error handler",
+                "exception handler"
+            ],
+            "time": "2013-04-16 13:13:02"
+        },
+        {
+            "name": "fp/badaboom-bundle",
+            "version": "dev-ton",
+            "target-dir": "Fp/BadaBoomBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/FpBadaBoomBundle.git",
+                "reference": "c9c762cb39e4447cb07069a413e467dda7a75a59"
+            },
+            "require": {
+                "fp/badaboom": "dev-not-approved",
+                "php": ">=5.3.2",
+                "symfony/symfony": ">=2.0,<2.3"
+            },
+            "require-dev": {
+                "fp/fumocker": "1.0.*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "suggest": {
+                "fp/universal-error-catcher": "As exceptions and recoverable\fatal errors catcher."
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Fp\\BadaBoomBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Vadim Tyukov",
+                    "email": "brainreflex@gmail.com"
+                },
+                {
+                    "name": "Maksim Kotlyar",
+                    "email": "kotlyar.maksim@gmail.com"
+                }
+            ],
+            "description": "Symfony2 wise error catcher",
+            "homepage": "https://github.com/formapro/FpBadaBoomBundle",
+            "keywords": [
+                "Error",
+                "Exception"
+            ],
+            "time": "2013-04-16 12:40:06"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -2648,7 +2755,12 @@
         }
     ],
     "aliases": [
-
+        {
+            "alias": "dev-not-approved",
+            "alias_normalized": "dev-not-approved",
+            "version": "dev-ton",
+            "package": "fp/badaboom"
+        }
     ],
     "minimum-stability": "stable",
     "stability-flags": {
@@ -2657,6 +2769,8 @@
         "kriswallsmith/assetic": 20,
         "friendsofsymfony/user-bundle": 20,
         "hat/environment": 20,
+        "fp/badaboom": 20,
+        "fp/badaboom-bundle": 20,
         "doctrine/data-fixtures": 20,
         "behat/symfony2-extension": 20,
         "behat/mink-bundle": 20

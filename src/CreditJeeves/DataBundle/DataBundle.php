@@ -19,6 +19,7 @@ class DataBundle extends Bundle
             Type::addType('ReportType', 'CreditJeeves\DataBundle\Enum\ReportType');
             Type::addType('UserIsVerified', 'CreditJeeves\DataBundle\Enum\UserIsVerified');
             Type::addType('UserType', 'CreditJeeves\DataBundle\Enum\UserType');
+            Type::addType('UserCulture', 'CreditJeeves\DataBundle\Enum\UserCulture');
         }
     }
 }

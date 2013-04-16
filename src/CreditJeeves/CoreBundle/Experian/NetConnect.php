@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\CoreBundle\Experian;
 
-use JMS\DiExtraBundle\Annotation\Service;
+use JMS\DiExtraBundle\Annotation as DI;
 
 require_once __DIR__.'/../sfConfig.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/Curl.class.php';
@@ -17,7 +17,7 @@ require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/experian/netConnec
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/experian/netConnect/NetConnectXml.class.php';
 
 /**
- * @Service("core.experian.net_connect")
+ * @DI\Service("core.experian.net_connect")
  */
 class NetConnect extends \NetConnect
 {
