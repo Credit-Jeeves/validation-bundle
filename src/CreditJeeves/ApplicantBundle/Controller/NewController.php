@@ -58,21 +58,28 @@ class NewController extends Controller
                     $em->persist($User);
                     $em->persist($Lead);
                     $em->flush();
+
 //                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
                     return $this->redirect($this->generateUrl('applicant_homepage'));
-                    
+
                 } else {
-                    $this->get('session')->getFlashBag()->add('notice', 'You are already associated with this dealership. Please contact the dealership at '.$Lead->getGroup()->getName().' if you wish to change your salesperson.');
+                    // FIXME this text must be moved to i18n file
+                    $this->get('session')->getFlashBag()->add(
+                        'notice',
+                        'You are already associated with this dealership. Please contact the dealership at ' .
+                        $Lead->getGroup()->getName() . ' if you wish to change your salesperson.'
+                    );
                 }
             }
 //              else {
 //                 $this->get('session')->getFlashBag()->add('notice', 'Form is not valid');
 //             }
         }
+
         return array(
             'form' => $form->createView(),
             'nUserId' => $User->getId(),
-            );
+        );
     }
 
     private function validateLead($Lead)
@@ -86,9 +93,10 @@ class NewController extends Controller
                 array(
                     'cj_applicant_id' => $nUserId,
                     'cj_group_id' => $nGroupId,
-                    )
-                );
+                )
+            );
         $isExist = count($nLeads);
+
         return $isExist ? false : true;
     }
 
@@ -127,6 +135,7 @@ class NewController extends Controller
         if ($query->has('ph')) {
             $User->setPhone($query->get('ph'));
         }
+
         return $User;
     }
 }

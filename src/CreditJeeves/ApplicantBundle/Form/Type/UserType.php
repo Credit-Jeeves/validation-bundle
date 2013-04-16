@@ -27,7 +27,7 @@ class UserType extends AbstractType
 //                 'constraints' => array(
 //                     new Length(array('min' => 3)),
 //                     ),
-                )
+            )
         );
         $builder->add(
             'middle_initial',
@@ -36,65 +36,65 @@ class UserType extends AbstractType
                 'label' => '',
                 'required' => false,
                 'max_length' => 5
-                )
+            )
         );
         $builder->add(
             'last_name',
             'text',
             array(
                 'label' => ''
-                )
+            )
         );
         $builder->add(
             'ssn',
             new SsnType(),
             array(
                 'label' => 'SSN'
-                )
+            )
         );
         $builder->add(
             'date_of_birth',
             'birthday',
             array(
                 'label' => 'Date of Birth'
-                )
+            )
         );
         $builder->add(
             'street_address1',
             'text',
             array(
                 'label' => 'Address',
-                )
+            )
         );
         $builder->add(
             'unit_no',
             'text',
             array(
                 'label' => '',
-                )
+            )
         );
         $builder->add(
             'city',
             'text',
             array(
                 'label' => ''
-                )
+            )
         );
         $builder->add(
             'state',
             'choice',
             array(
                 'label' => '',
-                'choice_list' =>  new StateChoiceList(),
+                'choice_list' => new StateChoiceList(),
                 'required' => true,
-                )
+            )
         );
         $builder->add(
             'zip',
             'text',
             array(
-                    'label' => ''
-                )
+                'label' => ''
+            )
         );
         $builder->add(
             'phone_type',
@@ -105,8 +105,8 @@ class UserType extends AbstractType
                     '1' => 'Mobile',
                     '2' => 'Home',
                     '3' => 'Work',
-                    ),
-                )
+                ),
+            )
         );
         $builder->add(
             'phone',
@@ -114,7 +114,7 @@ class UserType extends AbstractType
             array(
                 'label' => 'Phone',
                 'required' => false,
-                )
+            )
         );
         $builder->add(
             'tos',
@@ -125,10 +125,10 @@ class UserType extends AbstractType
                 'mapped' => false,
                 'constraints' => new True(
                     array(
-                            'message' => 'Please accept the Terms and conditions in order to register'
-                        )
-                    ),
-                )
+                        'message' => 'Please accept the Terms and conditions in order to register'
+                    )
+                ),
+            )
         );
     }
 
