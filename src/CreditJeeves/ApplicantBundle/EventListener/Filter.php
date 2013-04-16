@@ -2,6 +2,7 @@
 namespace CreditJeeves\ApplicantBundle\EventListener;
 
 use CreditJeeves\CoreBundle\Event\Filter as FilterEvent;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -31,15 +32,71 @@ class Filter implements ContainerAwareInterface
     }
 
     /**
+     * @return \CreditJeeves\DataBundle\Entity\User
+     */
+    protected function getUser()
+    {
+        return $this->container->get('core.session.applicant')->getUser();
+    }
+
+    /**
+     * @return \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
+    protected function getRoute()
+    {
+        return $this->container->get('router');
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Session\Session
+     */
+    protected function getSession()
+    {
+        return $this->container->get('session');
+    }
+
+    /**
+     * @param string $text
+     * @param array $arr
+     *
+     * @return string
+     */
+    protected function trans($text, $arr = array())
+    {
+        return $this->container->get('translator')->trans($text, $arr);
+    }
+
+    /**
+     * @DI\Observe("applicant.filter")
+     */
+    public function isVerified(FilterEvent $event)
+    {
+        if (UserIsVerified::FAILED == $this->getUser()->getIsVerified()) {
+            $this->getSession()->setFlash('message_title', $this->trans('pidkiq.title'));
+            $this->getSession()->setFlash(
+                'message_body',
+                $this->trans(
+                    'pidkiq.error.lock-%SUPPORT_EMAIL%',
+                    array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                )
+            );
+            return $event->getResponseEvent()->setResponse(
+                new RedirectResponse($this->getRoute()->generate('public_message_flash'))
+            );
+        } elseif (UserIsVerified::PASSED != $this->getUser()->getIsVerified()) {
+            return $event->getResponseEvent()->setResponse(
+                new RedirectResponse($this->getRoute()->generate('core_pidkiq'))
+            );
+        }
+    }
+
+    /**
      * @DI\Observe("applicant.filter")
      */
     public function checkReport(FilterEvent $event)
     {
         $sRouteName = $this->container->get('request')->get('_route');
-        // $user \CreditJeeves\DataBundle\Entity\User
-        $user = $this->container->get('core.session.applicant')->getUser();
-        // @var $route \Symfony\Bundle\FrameworkBundle\Routing\Router
-        $route = $this->container->get('router');
+
         // check new applicant
         if ($sRouteName == 'applicant_new') {
             return true;
@@ -49,11 +106,11 @@ class Filter implements ContainerAwareInterface
             return true;
         }
         // First check data
-        if (!$user->getHasData()) {
+        if (!$this->getUser()->getHasData()) {
             if ($sRouteName != 'applicant_returned') {
                 return $event->getResponseEvent()->setResponse(
                     new RedirectResponse(
-                        $route->generate('applicant_returned')
+                        $this->getRoute()->generate('applicant_returned')
                     )
                 );
             } else {
@@ -61,8 +118,10 @@ class Filter implements ContainerAwareInterface
             }
         }
         // Second - check if report exists
-        if (!$user->getReportsPrequal()->last()) {
-            return $event->getResponseEvent()->setResponse(new RedirectResponse($route->generate('core_report_get')));
+        if (!$this->getUser()->getReportsPrequal()->last()) {
+            return $event->getResponseEvent()->setResponse(
+                new RedirectResponse($this->getRoute()->generate('core_report_get'))
+            );
         }
     }
 }

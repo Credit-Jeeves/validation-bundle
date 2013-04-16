@@ -34,7 +34,7 @@ abstract class User
 
     /**
      * @InjectParams({
-     *     "session" = @Inject("Session"),
+     *     "session" = @Inject("session"),
      *     "em" = @Inject("doctrine.orm.entity_manager")
      * })
      */

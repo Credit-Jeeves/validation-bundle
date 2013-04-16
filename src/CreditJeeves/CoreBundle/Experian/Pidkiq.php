@@ -1,6 +1,8 @@
 <?php
 namespace CreditJeeves\CoreBundle\Experian;
 
+use JMS\DiExtraBundle\Annotation as DI;
+
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/Curl.class.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/CurlException.class.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/xml/Xml.class.php';
@@ -14,9 +16,16 @@ require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/experian/pidkiq/Pi
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/experian/pidkiq/PidkiqXml.class.php';
 
 /**
- * @Service("core.experian.pidkiq")
+ * @DI\Service("core.experian.pidkiq")
  */
 class Pidkiq extends \Pidkiq
 {
-    
+    public function __construct()
+    {
+    }
+
+    public function execute()
+    {
+        parent::__construct();
+    }
 }
