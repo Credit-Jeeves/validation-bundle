@@ -1,3 +1,7 @@
+public:
+    resource: "@PublicBundle/Controller/"
+    type:     annotation
+
 #component:
 #    resource:   "@ComponentBundle/Controller"
 #    type:       annotation

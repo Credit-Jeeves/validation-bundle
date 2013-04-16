@@ -36,12 +36,16 @@ class Filter implements ContainerAwareInterface
     public function checkReport(FilterEvent $event)
     {
         $sRouteName = $this->container->get('request')->get('_route');
-        /** @var $user \CreditJeeves\DataBundle\Entity\User */
+        // $user \CreditJeeves\DataBundle\Entity\User
         $user = $this->container->get('core.session.applicant')->getUser();
-        /** @var $route \Symfony\Bundle\FrameworkBundle\Routing\Router */
+        // @var $route \Symfony\Bundle\FrameworkBundle\Routing\Router
         $route = $this->container->get('router');
         // check new applicant
         if ($sRouteName == 'applicant_new') {
+            return true;
+        }
+        // check new applicant
+        if ($sRouteName == 'applicant_invite') {
             return true;
         }
         // First check data

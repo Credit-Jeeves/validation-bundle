@@ -28,6 +28,7 @@ class AppKernel extends Kernel
             new CreditJeeves\DataBundle\DataBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
+            new CreditJeeves\PublicBundle\PublicBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

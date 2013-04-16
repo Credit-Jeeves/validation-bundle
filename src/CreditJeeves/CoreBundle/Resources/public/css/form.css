@@ -1,0 +1,26 @@
+form fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.form-row {
+    width: 545px;
+    float: left;
+    padding: 0 20px;
+}
+
+.form-label {
+    width: 150px;
+    float: left;
+}
+
+.form-widget {
+    width: 390px;
+    float: left;
+    
+}
+
+.form-input {
+    
+}

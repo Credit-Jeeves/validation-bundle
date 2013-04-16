@@ -6,7 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use CreditJeeves\ApplicantBundle\Form\Type\LeadType;
+use CreditJeeves\ApplicantBundle\Form\Type\LeadNewType;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Group;
@@ -38,11 +38,11 @@ class NewController extends Controller
         $Lead->setUser($User);
         $Lead->setGroup($Group);
         $form = $this->createForm(
-            new LeadType(),
+            new LeadNewType(),
             $Lead,
             array(
                 'em' => $this->getDoctrine()->getManager()
-            )
+                )
         );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
