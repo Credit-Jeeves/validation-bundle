@@ -1,5 +1,4 @@
 <?php
-
 namespace CreditJeeves\ApplicantBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -67,8 +66,8 @@ class UserNewType extends AbstractType
                 )
         );
         $builder->add(
-                'password',
-                new NewPasswordType()
+            'password',
+            new NewPasswordType()
         );
         $builder->add(
             'unit_no',

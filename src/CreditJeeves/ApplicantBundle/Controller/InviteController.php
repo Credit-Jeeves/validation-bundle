@@ -38,10 +38,10 @@ class InviteController extends Controller
         $Lead->setUser($User);
         $Lead->setGroup($Group);
         $form = $this->createForm(
-                new LeadType(),
-                $Lead,
-                array(
-                        'em' => $this->getDoctrine()->getManager()
+            new LeadType(),
+            $Lead,
+            array(
+                'em' => $this->getDoctrine()->getManager()
                 )
         );
 //         if ($request->getMethod() == 'POST') {
@@ -62,7 +62,9 @@ class InviteController extends Controller
 //                     return $this->redirect($this->generateUrl('applicant_homepage'));
                     
 //                 } else {
-//                     $this->get('session')->getFlashBag()->add('notice', 'You are already associated with this dealership. Please contact the dealership at '.$Lead->getGroup()->getName().' if you wish to change your salesperson.');
+//                     $this->get('session')->getFlashBag()->add(
+//        'notice', 'You are already associated with this dealership. 
+//        Please contact the dealership at '.$Lead->getGroup()->getName().' if you wish to change your salesperson.');
 //                 }
 //             }
 // //              else {
@@ -87,7 +89,7 @@ class InviteController extends Controller
                     'cj_applicant_id' => $nUserId,
                     'cj_group_id' => $nGroupId,
                     )
-                );
+            );
         $isExist = count($nLeads);
         return $isExist ? false : true;
     }

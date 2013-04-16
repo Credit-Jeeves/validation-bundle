@@ -38,10 +38,10 @@ class NewController extends Controller
         $Lead->setUser($User);
         $Lead->setGroup($Group);
         $form = $this->createForm(
-                new LeadNewType(),
-                $Lead,
-                array(
-                        'em' => $this->getDoctrine()->getManager()
+            new LeadNewType(),
+            $Lead,
+            array(
+                'em' => $this->getDoctrine()->getManager()
                 )
         );
         if ($request->getMethod() == 'POST') {
