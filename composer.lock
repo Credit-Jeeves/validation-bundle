@@ -383,7 +383,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/FpBadaBoomBundle.git",
-                "reference": "c9c762cb39e4447cb07069a413e467dda7a75a59"
+                "reference": "d55278055ac15043c9e5bf3b616f0bac3ac073e3"
             },
             "require": {
                 "fp/badaboom": "dev-not-approved",
@@ -427,7 +427,7 @@
                 "Error",
                 "Exception"
             ],
-            "time": "2013-04-16 12:40:06"
+            "time": "2013-04-16 17:02:33"
         },
         {
             "name": "friendsofsymfony/user-bundle",

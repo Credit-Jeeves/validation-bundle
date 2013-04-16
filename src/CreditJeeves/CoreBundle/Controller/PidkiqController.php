@@ -9,6 +9,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -30,6 +31,11 @@ class PidkiqController extends Controller
     protected $error = '';
 
     /**
+     * @var
+     */
+    protected $form = '';
+
+    /**
      * @var array
      */
     protected $questionsData = array();
@@ -45,7 +51,7 @@ class PidkiqController extends Controller
     /**
      * @return Pidkiq
      */
-    protected function getPidkiqApi()
+    protected function getPidkiq()
     {
         /** @var $model Pidkiq */
         $model = $this->getUser()->getPidkiqs()->last();
@@ -68,10 +74,10 @@ class PidkiqController extends Controller
      */
     protected function retrieveQuestions()
     {
-        $pidiqModel = $this->getPidkiqApi();
+        $pidiqModel = $this->getPidkiq();
 
         if (!$pidiqModel->getQuestions()) {
-            $pidiqModel->setCjApplicant($this->getUser());
+            $pidiqModel->setUser($this->getUser());
             $em = $this->getDoctrine()->getManager();
             if (2 < ($try = $pidiqModel->getTryNum())) {
                 $pidiqModel->setTryNum(0);
@@ -172,11 +178,12 @@ class PidkiqController extends Controller
 
                     }
                 }
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
+                throw $e;
 //                fpErrorNotifier::getInstance()->handler()->handleException($e); // FIXME
-                return $this->renderText(json_encode('error'));
+                return new JsonResponse('error');
             }
-        } elseif ($this->questionsData = $this->getPidkiqApi()->getQuestions()) {
+        } elseif ($this->questionsData = $this->getPidkiq()->getQuestions()) {
             $this->form = new cjApplicantQuestionsForm($this->questionsData);
             if ($request->isMethod(sfRequest::POST) && $request->hasParameter($this->form->getName())) {
                 $this->processForm();
@@ -187,11 +194,16 @@ class PidkiqController extends Controller
             $this->getSession()->setFlash('message_title', $i18n->trans('pidkiq.title'));
             $this->getSession()->setFlash('message_body', $this->error);
             if ($request->isXmlHttpRequest()) {
-                return $this->renderText(json_encode(array('url' => $this->generateUrl('public_message_flash'))));
+                return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
             } else {
                 return $this->redirect($this->routeMessage);
             }
         }
+        return array(
+            'form' => $this->form,
+            'url' => $this->generateUrl('core_pidkiq'),
+            'redirect' => null//$this->getRequest()->headers->get('referer'),
+        );
     }
 
     /**

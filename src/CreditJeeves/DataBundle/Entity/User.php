@@ -26,6 +26,59 @@ class User extends BaseUser
     }
 
     /**
+     * @ORM\PreRemove
+     */
+    public function methodPreRemove()
+    {
+    }
+
+    /**
+     * @ORM\PostRemove
+     */
+    public function methodPostRemove()
+    {
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function methodPrePersist()
+    {
+        $this->enabled = 1;
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * @ORM\PostPersist
+     */
+    public function methodPostPersist()
+    {
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function methodPreUpdate()
+    {
+        $this->updated_at = new \DateTime();
+    }
+
+    /**
+     * @ORM\PostUpdate
+     */
+    public function methodPostUpdate()
+    {
+    }
+
+    /**
+     * @ORM\PostLoad
+     */
+    public function methodPostLoad()
+    {
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setEmail($email)
@@ -148,55 +201,27 @@ class User extends BaseUser
     }
 
     /**
-     * @ORM\PreRemove
+     * @return array
      */
-    public function methodPreRemove()
+    public function getArrayForPidkiq()
     {
-    }
-
-    /**
-     * @ORM\PostRemove
-     */
-    public function methodPostRemove()
-    {
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function methodPrePersist()
-    {
-        $this->enabled = 1;
-        $this->created_at = new \DateTime();
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\PostPersist
-     */
-    public function methodPostPersist()
-    {
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function methodPreUpdate()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\PostUpdate
-     */
-    public function methodPostUpdate()
-    {
-    }
-
-    /**
-     * @ORM\PostLoad
-     */
-    public function methodPostLoad()
-    {
+        $data = array(
+            'id',
+            'first_name',
+            'middle_initial',
+            'last_name',
+            'street_address1',
+            'street_address2',
+            'city',
+            'state',
+            'zip',
+            'ssn',
+            'is_verified',
+        );
+        $return = array();
+        foreach ($data as $key) {
+            $return[$key] = $this->$key;
+        }
+        return $return;
     }
 }

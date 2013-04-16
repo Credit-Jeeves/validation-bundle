@@ -14,7 +14,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @Orm\MappedSuperclass
+ * @ORM\MappedSuperclass
  */
 abstract class User extends BaseUser
 {
