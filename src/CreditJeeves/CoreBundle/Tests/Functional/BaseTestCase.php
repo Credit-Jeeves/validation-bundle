@@ -54,7 +54,6 @@ abstract class BaseTestCase extends Base
      */
     protected function load(array $list, $reload = false)
     {
-        return; //FIXME
         if (self::$isFixturesLoaded && !$reload) {
             return;
         }
@@ -73,7 +72,7 @@ abstract class BaseTestCase extends Base
         if ('Fixtures loaded successful.' != ($response = $session->getPage()->getText())) {
             $this->fail('Fixtures load fail by: ' . $url . ' With response: ' . $response);
         }
-        $url = $this->getUrl() . 'sfPhpunit/cc';
+//        $url = $this->getUrl() . 'sfPhpunit/cc'; // FIXME
         $session->visit($url);
 
         self::$isFixturesLoaded = true;
