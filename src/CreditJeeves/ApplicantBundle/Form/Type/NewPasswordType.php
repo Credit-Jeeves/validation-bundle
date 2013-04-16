@@ -11,13 +11,13 @@ class NewPasswordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'new_password',
+            'password',
             'repeated',
             array(
                 'first_name' => 'Password',
                 'second_name' => 'Retype',
                 'type' => 'password',
-                'mapped' => false,
+//                'mapped' => false,
             )
         );
     }

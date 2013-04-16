@@ -19,19 +19,20 @@ class SettingsController extends Controller
     public function passwordAction()
     {
         $request = $this->get('request');
-        $cjUser = $this->get('core.session.applicant')->getUser();
-        $sOldPassword = $cjUser->getPassword();
-        $sEmail = $cjUser->getEmail();
-        $form = $this->createForm(new PasswordType(), $cjUser);
+        $User = $this->get('core.session.applicant')->getUser();
+        $sOldPassword = $User->getPassword();
+        $sEmail = $User->getEmail();
+        $form = $this->createForm(new PasswordType(), $User);
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                $cjUser = $form->getData();
-                if ($sOldPassword == $cjUser->getPassword()) {
-                    $sNewPassword = $cjUser->getNewPassword();
-                    $cjUser->setPassword($sNewPassword);
+                $User = $form->getData();
+                if ($sOldPassword == $User->getPassword()) {
+                    $aForm = $request->request->get($form->getName());
+                    $sNewPassword = $aForm['password_new']['Password'];
+                    $User->setPassword($sNewPassword);
                     $em = $this->getDoctrine()->getManager();
-                    $em->persist($cjUser);
+                    $em->persist($User);
                     $em->flush();
                     $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
                 }
@@ -45,7 +46,6 @@ class SettingsController extends Controller
                 'form' => $form->createView()
             )
         );
-
     }
 
     /**

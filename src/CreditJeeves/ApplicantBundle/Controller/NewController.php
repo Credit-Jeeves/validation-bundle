@@ -25,7 +25,6 @@ class NewController extends Controller
         $query = $request->query;
         $Lead = new Lead();
         $User = $this->get('core.session.applicant')->getUser();
-        //$User = new User();
         $Group = new Group();
         if ($request->getMethod() == 'GET') {
             // Group code
@@ -36,7 +35,7 @@ class NewController extends Controller
             $User = $this->bindUserDetails($User, $query);
         }
         $Lead->setUser($User);
-        $Lead->setGroup($Group);
+        //$Lead->setGroup($Group);
         $form = $this->createForm(
             new LeadNewType(),
             $Lead,
@@ -46,21 +45,21 @@ class NewController extends Controller
         );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
-            echo '<pre>';
-            var_dump($form->getErrorsAsString());
-            echo '</pre>';
             if ($form->isValid()) {
                 $Lead = $form->getData();
                 if ($this->validateLead($Lead)) {
                     $User = $Lead->getUser();
                     $User->setUsername($User->getEmail());
+                    $User->setIsVerified('none');
+                    $User->setType('applicant');
+
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($User);
                     $em->persist($Lead);
                     $em->flush();
 
 //                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
-                    return $this->redirect($this->generateUrl('applicant_homepage'));
+                    //return $this->redirect($this->generateUrl('applicant_homepage'));
 
                 } else {
                     // FIXME this text must be moved to i18n file
@@ -71,9 +70,6 @@ class NewController extends Controller
                     );
                 }
             }
-//              else {
-//                 $this->get('session')->getFlashBag()->add('notice', 'Form is not valid');
-//             }
         }
 
         return array(
