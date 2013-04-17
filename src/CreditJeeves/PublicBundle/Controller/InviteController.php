@@ -41,8 +41,9 @@ class InviteController extends Controller
             
         }
         $form = $this->createForm(
-                new UserNewType(),
-                $User);
+            new UserNewType(),
+            $User
+        );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {

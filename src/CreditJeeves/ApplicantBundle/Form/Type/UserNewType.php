@@ -26,14 +26,14 @@ class UserNewType extends AbstractType
                 'constraints' => array(
                     new Length(
                         array(
-                            'min' => 3,
-                            'max' => 5,
-                            'minMessage' => 'error.user.first_name.short',
-                            'maxMessage' => 'error.user.first_name.long'
-                            )
-                        ),
+                        'min' => 3,
+                        'max' => 5,
+                        'minMessage' => 'error.user.first_name.short',
+                        'maxMessage' => 'error.user.first_name.long'
+                        )
                     ),
-                )
+                ),
+            )
         );
         $builder->add(
             'middle_initial',
@@ -52,14 +52,14 @@ class UserNewType extends AbstractType
                 'constraints' => array(
                     new Length(
                         array(
-                            'min' => 3,
-                            'max' => 5,
-                            'minMessage' => 'error.user.last_name.short',
-                            'maxMessage' => 'error.user.last_name.long'
-                            )
-                        ),
+                        'min' => 3,
+                        'max' => 5,
+                        'minMessage' => 'error.user.last_name.short',
+                        'maxMessage' => 'error.user.last_name.long'
+                        )
                     ),
-                )
+                ),
+            )
         );
         $builder->add(
             'email',
