@@ -8,17 +8,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
  * 
- * @Route("/message")
+ * @Route("/invite")
  *
  */
-class MessageController extends Controller
+class InviteController extends Controller
 {
     /**
-     * @Route("/", name="public_message_flash")
+     * @Route(
+     *     "/{code}",
+     *     name="applicant_invite"
+     * )
      * @Template()
+     * @param string $code
+     * @return array
      */
-    public function flashAction()
+    public function indexAction($code)
     {
-        return array();
+        return array('code' => $code);
     }
 }

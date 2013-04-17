@@ -1,20 +1,20 @@
 <?php
 
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace CreditJeeves\PublicBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-use CreditJeeves\ApplicantBundle\Form\Type\LeadType;
+use CreditJeeves\ApplicantBundle\Form\Type\LeadNewType;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Group;
 
-class InviteController extends Controller
+class NewController extends Controller
 {
     /**
-     * @Route("/invite/{code}", name="applicant_invite")
+     * @Route("/new", name="applicant_new")
      * @Template()
      *
      * @return array
@@ -25,7 +25,6 @@ class InviteController extends Controller
         $query = $request->query;
         $Lead = new Lead();
         $User = $this->get('core.session.applicant')->getUser();
-        //$User = new User();
         $Group = new Group();
         if ($request->getMethod() == 'GET') {
             // Group code
@@ -36,45 +35,47 @@ class InviteController extends Controller
             $User = $this->bindUserDetails($User, $query);
         }
         $Lead->setUser($User);
-        $Lead->setGroup($Group);
+        //$Lead->setGroup($Group);
         $form = $this->createForm(
-            new LeadType(),
+            new LeadNewType(),
             $Lead,
             array(
                 'em' => $this->getDoctrine()->getManager()
                 )
         );
-//         if ($request->getMethod() == 'POST') {
-//             $form->bind($request);
-//             echo '<pre>';
-//             var_dump($form->getErrorsAsString());
-//             echo '</pre>';
-//             if ($form->isValid()) {
-//                 $Lead = $form->getData();
-//                 if ($this->validateLead($Lead)) {
-//                     $User = $Lead->getUser();
-//                     $User->setUsername($User->getEmail());
-//                     $em = $this->getDoctrine()->getManager();
-//                     $em->persist($User);
-//                     $em->persist($Lead);
-//                     $em->flush();
-// //                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
-//                     return $this->redirect($this->generateUrl('applicant_homepage'));
-                    
-//                 } else {
-//                     $this->get('session')->getFlashBag()->add(
-//        'notice', 'You are already associated with this dealership. 
-//        Please contact the dealership at '.$Lead->getGroup()->getName().' if you wish to change your salesperson.');
-//                 }
-//             }
-// //              else {
-// //                 $this->get('session')->getFlashBag()->add('notice', 'Form is not valid');
-// //             }
-//         }
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $Lead = $form->getData();
+                if ($this->validateLead($Lead)) {
+                    $User = $Lead->getUser();
+                    $User->setUsername($User->getEmail());
+                    $User->setIsVerified('none');
+                    $User->setType('applicant');
+
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($User);
+                    $em->persist($Lead);
+                    $em->flush();
+
+//                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
+                    //return $this->redirect($this->generateUrl('applicant_homepage'));
+
+                } else {
+                    // FIXME this text must be moved to i18n file
+                    $this->get('session')->getFlashBag()->add(
+                        'notice',
+                        'You are already associated with this dealership. Please contact the dealership at ' .
+                        $Lead->getGroup()->getName() . ' if you wish to change your salesperson.'
+                    );
+                }
+            }
+        }
+
         return array(
             'form' => $form->createView(),
             'nUserId' => $User->getId(),
-            );
+        );
     }
 
     private function validateLead($Lead)
@@ -88,9 +89,10 @@ class InviteController extends Controller
                 array(
                     'cj_applicant_id' => $nUserId,
                     'cj_group_id' => $nGroupId,
-                    )
+                )
             );
         $isExist = count($nLeads);
+
         return $isExist ? false : true;
     }
 
@@ -129,6 +131,7 @@ class InviteController extends Controller
         if ($query->has('ph')) {
             $User->setPhone($query->get('ph'));
         }
+
         return $User;
     }
 }

@@ -1,18 +1,10 @@
 public:
-    resource: "@PublicBundle/Controller/"
+    resource: "@PublicBundle/Controller"
     type:     annotation
-
-#component:
-#    resource:   "@ComponentBundle/Controller"
-#    type:       annotation
 
 core:
     resource:   "@CoreBundle/Controller"
     type:       annotation
-
-#user:
-#    resource:   "@UserBundle/Controller"
-#    type:       annotation
 
 admin:
     resource:   "@AdminBundle/Controller"

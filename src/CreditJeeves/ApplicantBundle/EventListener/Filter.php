@@ -96,15 +96,6 @@ class Filter implements ContainerAwareInterface
     public function checkReport(FilterEvent $event)
     {
         $sRouteName = $this->container->get('request')->get('_route');
-
-        // check new applicant
-        if ($sRouteName == 'applicant_new') {
-            return true;
-        }
-        // check new applicant
-        if ($sRouteName == 'applicant_invite') {
-            return true;
-        }
         // First check data
         if (!$this->getUser()->getHasData()) {
             if ($sRouteName != 'applicant_returned') {
