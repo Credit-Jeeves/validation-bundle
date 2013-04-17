@@ -63,7 +63,7 @@ abstract class BaseTestCase extends Base
         foreach ($list as $file) {
             $requestArray[] = 'list%5B%5D=' . $file;
         }
-        $session = static::getMink()->getSession('goutte');
+        $session = $this->getMink()->getSession('goutte');
 
         $url = 'http://' . static::getContainer()->getParameter('server_name') .
             '/test.php/sfPhpunit/load?' . implode('&', $requestArray);
