@@ -113,7 +113,7 @@ class AppKernel extends Kernel
 
         // prod env
         if ('dev' != $this->getEnvironment()) {
-            $recipients = array('66ton99@gmail.com');
+            $recipients = array('66ton99@gmail.com', 'systems@creditjeeves.com', 'alex.emelyanov.ua@gmail.com');
 
             $this->chainNodeManager->addProvider('default', new ExceptionSubjectProvider());
             $this->chainNodeManager->addProvider('default', new ExceptionSummaryProvider());
