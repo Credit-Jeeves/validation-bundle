@@ -504,6 +504,19 @@ abstract class User extends BaseUser
     }
 
     /**
+     * Set phone
+     *
+     * @param string $phone
+     * @return User
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    
+        return $this;
+    }
+    
+    /**
      * Get phone
      *
      * @return string

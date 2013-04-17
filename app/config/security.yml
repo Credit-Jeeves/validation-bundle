@@ -2,12 +2,6 @@ security:
     encoders:
         CreditJeeves\DataBundle\Entity\User:
             id: user.security.encoder.digest
-#        FOS\UserBundle\Model\UserInterface: md5
-
-#        FOS\UserBundle\Model\UserInterface: plaintext
-#            algorithm: sha512
-#            iterations: 100
-#            encode_as_base64: true 
 
     role_hierarchy:
         ROLE_ADMIN:       ROLE_USER
@@ -29,12 +23,13 @@ security:
 
     access_control:
         - { path: ^/_behat/tests/, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login$,     role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/new$,       role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/invite/,    role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/message,    role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/,     role: ROLE_USER }
-        - { path: ^/,           role: ROLE_USER }
+        - { path: ^/login$,        role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/new$,          role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/invite,        role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/message,       role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/,        role: ROLE_USER }
+        - { path: ^/,              role: ROLE_USER }
+
 # We'll additional pages
 #       - { path: ^/register,   role: IS_AUTHENTICATED_ANONYMOUSLY }
 #       - { path: ^/resetting,  role: IS_AUTHENTICATED_ANONYMOUSLY }
