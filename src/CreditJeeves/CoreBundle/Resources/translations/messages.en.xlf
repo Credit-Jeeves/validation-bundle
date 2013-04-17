@@ -632,6 +632,26 @@
                 <source>pidkiq.error.answers-%SUPPORT_EMAIL%</source>
                 <target>Some of the answers you provided to the questions are incorrect. We're sorry but we cannot authenticate you at this time. Please try again in one hour, or contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
+            <trans-unit id="pidkiq.error.lock">
+                <source>pidkiq.error.lock-%SUPPORT_EMAIL%</source>
+                <target>Your account has been locked after too many failed attempts to authenticate. Please contact %SUPPORT_EMAIL%.</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.title">
+                <source>pidkiq.title</source>
+                <target>Identity Verification</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.why.title">
+                <source>pidkiq.why.title</source>
+                <target>Why do I need to do this?</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.why.text1">
+                <source>pidkiq.why.text1</source>
+                <target>In order to verify you have access to the credit information associated with the identity you provided, we ask a few questions that only the identity owner would know.</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.why.text2">
+                <source>pidkiq.why.text2</source>
+                <target>Please answer these questions carefully. Please note that the correct answer may not be listed, and that some information on your credit file may be from past addresses and employers.</target>
+            </trans-unit>
 
 
             
