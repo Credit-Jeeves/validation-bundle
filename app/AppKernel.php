@@ -13,8 +13,8 @@ use BadaBoom\Serializer\Encoder\TextEncoder;
 use BadaBoom\DataHolder\DataHolder;
 use Fp\BadaBoomBundle\ChainNode\Provider\SessionProvider;
 use Fp\BadaBoomBundle\ChainNode\SafeChainNodeManager;
-use Fp\BadaBoomBundle\ChainNode\SymfonyExceptionHandlerChainNode;
-use Fp\BadaBoomBundle\ExceptionCatcher\ExceptionCatcher;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ChainNode\SymfonyExceptionHandlerChainNode;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Serializer\Serializer;
@@ -32,7 +32,7 @@ class AppKernel extends Kernel
     protected $chainNodeManager;
 
     /**
-     * @var \Fp\BadaBoomBundle\ChainNode\SymfonyExceptionHandlerChainNode
+     * @var SymfonyExceptionHandlerChainNode
      */
     protected $symfonyExceptionHandlerChainNode;
 
@@ -113,7 +113,7 @@ class AppKernel extends Kernel
 
         // prod env
         if ('dev' != $this->getEnvironment()) {
-            $recipients = array('acme@example.com');
+            $recipients = array('66ton99@gmail.com');
 
             $this->chainNodeManager->addProvider('default', new ExceptionSubjectProvider());
             $this->chainNodeManager->addProvider('default', new ExceptionSummaryProvider());
