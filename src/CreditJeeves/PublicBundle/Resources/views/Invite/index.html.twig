@@ -32,8 +32,39 @@
             <h1>Welcome to Credit Jeeves.</h1>
             <div class="row-20"></div>
             <h3>Please enter your information below and we can get started right away.</h3>
-              {{ code }}
-        </div>
+                <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }}>
+                    {% if form_errors(form.tos) %}
+                    <div class="flash-error">
+                        {{ form_errors(form.tos) }}
+                    </div>
+                    {% endif %}
+                    <fieldset>
+                        {% include 'ComponentBundle:User:name.html.twig'     with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        {% include 'ComponentBundle:User:email.html.twig'    with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        <div class="row-20"></div>
+                        {% include 'ComponentBundle:User:ssn.html.twig'      with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        {% include 'ComponentBundle:User:address.html.twig'  with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        {% include 'ComponentBundle:User:phone.html.twig'    with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        <div class="row-20"></div>
+                        {% include 'ComponentBundle:User:tos.html.twig'      with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        {{ form_rest(form) }}
+                        <div class="row-20"></div>
+                        <div class="form-row">
+                            <input class="button large green" type="submit" name="_submit" value="I Agree" />
+                        </div>
+                    </fieldset>
+                </form>
+                      </div>
     </div>
     <div class="clearboth"></div>
 {% endblock %}

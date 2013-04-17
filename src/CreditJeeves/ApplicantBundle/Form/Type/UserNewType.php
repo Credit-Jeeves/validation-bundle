@@ -23,10 +23,16 @@ class UserNewType extends AbstractType
             'text',
             array(
                 'label' => 'Name',
-                'error_bubbling' => true,
-//                 'constraints' => array(
-//                     new Length(array('min' => 3)),
-//                     ),
+                'constraints' => array(
+                    new Length(
+                        array(
+                            'min' => 3,
+                            'max' => 5,
+                            'minMessage' => 'error.user.first_name.short',
+                            'maxMessage' => 'error.user.first_name.long'
+                            )
+                        ),
+                    ),
                 )
         );
         $builder->add(
@@ -42,7 +48,17 @@ class UserNewType extends AbstractType
             'last_name',
             'text',
             array(
-                'label' => ''
+                'label' => '',
+                'constraints' => array(
+                    new Length(
+                        array(
+                            'min' => 3,
+                            'max' => 5,
+                            'minMessage' => 'error.user.last_name.short',
+                            'maxMessage' => 'error.user.last_name.long'
+                            )
+                        ),
+                    ),
                 )
         );
         $builder->add(

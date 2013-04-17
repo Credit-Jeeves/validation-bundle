@@ -654,6 +654,11 @@
             </trans-unit>
 
 
+            <trans-unit id="error.user.first_name.short">
+                <source>error.user.first_name.short</source>
+                <target>First name is too short.</target>
+            </trans-unit>
+
             
         </body>
     </file>
