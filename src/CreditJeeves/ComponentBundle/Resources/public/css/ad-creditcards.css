@@ -1,0 +1,43 @@
+.barclaycard-container {
+  background: url(/bundles/component/images/cj-gradient-bg-arrow.png) no-repeat left center;
+  width:920px;
+  overflow: hidden;
+  height:115px;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border: none;
+  box-shadow: 0 0 2px 2px #CCCCCC;
+  margin-bottom: 20px;
+}
+
+.barclaycard-intro {
+  width:125px;
+  float:left;
+  padding:10px 20px;
+}
+
+.barclaycard-intro h1 {
+  font-size: 18px;
+  font-weight: normal;
+  color:#FF6600;
+  margin:0;
+  margin-bottom:5px;
+  padding:0;
+}
+
+.barclaycard-intro p {
+  font-family: "Helvetica Neue",HelveticaNeue,helvetica-neue,Helvetica,arial,sans-serif;
+  color:#333;
+  font-size: 14px;
+  padding:0;
+  margin:0;
+}
+
+
+.barclaycard-content {
+  float:right;
+  width: 728px;
+  /*height: 115px;*/
+  margin-right:5px;
+  padding-top:12px;
+}
