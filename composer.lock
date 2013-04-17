@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "d91762437f9509685f128ce6a065bc7c",
+    "hash": "02ed29da8bfae9261d58c42cd09ec294",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -430,6 +430,56 @@
             "time": "2013-04-16 17:02:33"
         },
         {
+            "name": "fp/universal-error-catcher",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/formapro/UniversalErrorCatcher",
+                "reference": "1.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/formapro/UniversalErrorCatcher/zipball/1.0.2",
+                "reference": "1.0.2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.2.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "./src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Vadim Tyukov",
+                    "email": "brainreflex@gmail.com"
+                },
+                {
+                    "name": "Maksim Kotlyar",
+                    "email": "kotlyar.maksim@gmail.com"
+                }
+            ],
+            "description": "Easy way to catch and handle all php errors and exceptions.",
+            "homepage": "https://github.com/formapro/UniversalErrorCatcher",
+            "keywords": [
+                "error",
+                "exception"
+            ],
+            "time": "2012-09-24 03:16:08"
+        },
+        {
             "name": "friendsofsymfony/user-bundle",
             "version": "dev-master",
             "target-dir": "FOS/UserBundle",
@@ -501,7 +551,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "6ae403deb7c621aa36ba291ca5fdc86bd7518d10"
+                "reference": "9919d779d87acff17b965909a0849b257d5bd238"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -534,7 +584,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2013-04-13 12:37:23"
+            "time": "2013-04-16 15:36:30"
         },
         {
             "name": "jdorn/sql-formatter",

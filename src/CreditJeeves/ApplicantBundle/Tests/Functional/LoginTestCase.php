@@ -26,7 +26,6 @@ class LoginTestCase extends BaseTestCase
     public function userCanLogin()
     {
         $this->load($this->fixtures, true);
-        $this->getMink()->setDefaultSessionName('selenium2');
         $this->login('emilio@example.com', 'pass');
     }
 
@@ -37,16 +36,6 @@ class LoginTestCase extends BaseTestCase
      */
     public function wrongPassword()
     {
-        $this->load($this->fixtures, true);
-        $this->getMink()->setDefaultSessionName('goutte');
         $this->login('emilio@example.com', '123');
-    }
-
-    /**
-     * @test
-     */
-    public function userMustBeBlockedAfterFewFails()
-    {
-        $this->markTestIncomplete('TODO finish');
     }
 }
