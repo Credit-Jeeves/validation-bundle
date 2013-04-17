@@ -26,9 +26,13 @@ class InviteController extends Controller
      */
     public function indexAction($code)
     {
+        
+        
         $request = $this->get('request');
         $User = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' =>  $code));
         if (empty($User)) {
+            $this->get('session')->getFlashBag()->add('message_title', 'Title');
+            //$this->getContext();//->getI18N()->__();
 //             $this->getSession()->setFlash('message_title', 'Title');
 //             $this->getSession()->setFlash(
 //                     'message_body', 'message'

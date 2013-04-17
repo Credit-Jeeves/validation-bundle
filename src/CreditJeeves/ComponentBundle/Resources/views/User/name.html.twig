@@ -1,3 +1,5 @@
+{% form_theme form ':Form:form_errors.html.twig' %}
+
 <div class="form-row">
     {% if form_errors(form.first_name) or form_errors(form.last_name) %}
     <div class="flash-error">
