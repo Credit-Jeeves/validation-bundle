@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Model\Score as BaseScore;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -8,144 +9,17 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="cj_applicant_score")
  * @ORM\HasLifecycleCallbacks()
  */
-class Score
+class Score extends BaseScore
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $cj_applicant_id;
-
-    /**
-     * @ORM\Column(type="encrypt")
-     */
-    protected $score;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $created_date;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="scores")
-     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
-     */
-    protected $user;
-
-    /**
-     * Get id
-     *
      * @return integer
      */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set cj_applicant_id
-     *
-     * @param integer $cjApplicantId
-     * @return Score
-     */
-    public function setCjApplicantId($cjApplicantId)
-    {
-        $this->cj_applicant_id = $cjApplicantId;
-
-        return $this;
-    }
-
-    /**
-     * Get cj_applicant_id
-     *
-     * @return integer
-     */
-    public function getCjApplicantId()
-    {
-        return $this->cj_applicant_id;
-    }
-
-    /**
-     * Set score
-     *
-     * @param string $score
-     * @return Score
-     */
-    public function setScore($score)
-    {
-        $this->score = $score;
-
-        return $this;
-    }
-
-    /**
-     * Get score
-     *
-     * @return string
-     */
-    public function getScore()
-    {
-        return $this->score;
-    }
-
     public function getFicoScore()
     {
         $nScore = $this->getScore();
         $nFicoScore = round(10 * (($nScore - 483.06) / 11.079) + 490);
 
         return $nFicoScore > 850 ? 850 : $nFicoScore;
-    }
-
-    /**
-     * Set User
-     *
-     * @param User $user
-     * @return Score
-     */
-    public function setUser(User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get User
-     *
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * Set created_date
-     *
-     * @param \DateTime $createdDate
-     * @return Score
-     */
-    public function setCreatedDate($createdDate)
-    {
-        $this->created_date = $createdDate;
-
-        return $this;
-    }
-
-    /**
-     * Get created_date
-     *
-     * @return \DateTime
-     */
-    public function getCreatedDate()
-    {
-        return $this->created_date;
     }
 
     /**
@@ -169,8 +43,45 @@ class Score
         if ($score >= 550) {
             return "7%";
         }
-
         return "2%";
+    }
+
+    /**
+     * 
+     * @param integer $nScore
+     * @return array
+     */
+    public static function getTier($nScore)
+    {
+        if (empty($nScore)) {
+            $nScore = 0;
+        }
+        $nTier = array('value' => 9, 'interval' => '< 300');
+        if ($nScore > 724) {
+            return array('value' => 1, 'interval' => '725-900');
+        }
+        if ($nScore > 699) {
+            return array('value' => 2, 'interval' => '700-724');
+        }
+        if ($nScore > 674) {
+            return array('value' => 3, 'interval' => '675-699');
+        }
+        if ($nScore > 649) {
+            return array('value' => 4, 'interval' => '650-674');
+        }
+        if ($nScore > 599) {
+            return array('value' => 5, 'interval' => '600-649');
+        }
+        if ($nScore > 549) {
+            return array('value' => 6, 'interval' => '550-599');
+        }
+        if ($nScore > 499) {
+            return array('value' => 7, 'interval' => '500-549');
+        }
+        if ($nScore > 299) {
+            return array('value' => 8, 'interval' => '300-499');
+        }
+        return $nTier;
     }
 
     /**
