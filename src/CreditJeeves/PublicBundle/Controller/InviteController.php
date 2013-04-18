@@ -26,23 +26,13 @@ class InviteController extends Controller
      */
     public function indexAction($code)
     {
-        
-        
         $request = $this->get('request');
         $User = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' =>  $code));
         if (empty($User)) {
-            $this->get('session')->getFlashBag()->add('message_title', 'Title');
-            //$this->getContext();//->getI18N()->__();
-//             $this->getSession()->setFlash('message_title', 'Title');
-//             $this->getSession()->setFlash(
-//                     'message_body', 'message'
-//             );
-//             $this->getContext()->getI18N()->__(
-//                     'pidkiq.error.answers-%SUPPORT_EMAIL%',
-//                     array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
-                    
+            $i18n = $this->get('translator');
+            $this->get('session')->getFlashBag()->add('message_title', $i18n->trans('some message'));
+            $this->get('session')->getFlashBag()->add('message_body',  $i18n->trans('some text'));
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
-            
         }
         $form = $this->createForm(
             new UserNewType(),
@@ -51,11 +41,11 @@ class InviteController extends Controller
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                $User->setInviteCode('');
+                //$User->setInviteCode('');
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($User);
                 $em->flush();
-                return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
+                //return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
             }
         }
         return array(
