@@ -10,6 +10,10 @@
                 <source>login.title</source>
                 <target>Member Login</target>
             </trans-unit>
+            <trans-unit id="login.link">
+                <source>login.link</source>
+                <target>Login In</target>
+            </trans-unit>
             <trans-unit id="login.email">
                 <source>login.email</source>
                 <target>Email</target>
@@ -653,10 +657,39 @@
                 <target>Please answer these questions carefully. Please note that the correct answer may not be listed, and that some information on your credit file may be from past addresses and employers.</target>
             </trans-unit>
 
+            <trans-unit id="video.tailored.title">
+                <source>video.tailored.title</source>
+                <target>Tailored to You</target>
+            </trans-unit>
+            <trans-unit id="video.tailored.text">
+                <source>video.tailored.text</source>
+                <target>TCredit Jeeves is a powerful service designed to help you understand, optimize and directly impact your credit score.</target>
+            </trans-unit>
+
 
             <trans-unit id="error.user.first_name.short">
                 <source>error.user.first_name.short</source>
                 <target>First name is too short.</target>
+            </trans-unit>
+            <trans-unit id="error.user.first_name.long">
+                <source>error.user.first_name.long</source>
+                <target>First name is too long.</target>
+            </trans-unit>
+            <trans-unit id="error.user.last_name.short">
+                <source>error.user.last_name.short</source>
+                <target>Last name is too short.</target>
+            </trans-unit>
+            <trans-unit id="error.user.last_name.long">
+                <source>error.user.last_name.long</source>
+                <target>Last name is too long.</target>
+            </trans-unit>
+            <trans-unit id="error.user.absent.title">
+                <source>error.user.absent.title</source>
+                <target>Such user doesn't exist</target>
+            </trans-unit>
+            <trans-unit id="error.user.absent.text">
+                <source>error.user.absent.text</source>
+                <target>Please connect to your dealer.</target>
             </trans-unit>
 
             
