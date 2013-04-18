@@ -1,6 +1,6 @@
 {% extends "::base.html.twig" %}
 
-{% block title "New Appliant" %}
+{% block title "project_name" | trans %}
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
@@ -11,27 +11,29 @@
 
 {% block info %}
 <div class="user-logout">
-    <a href="{{ path('fos_user_security_login') }}">» Log In </a>
+    <a href="{{ path('fos_user_security_login') }}">»&nbsp;{{ 'login.link' | trans }}</a>
 </div>
 {% endblock %}
 
 {% block content %}
     <div class="column-small floatleft">
         <div class="pod-small pod-border pod-padding shadow">
-            <h3>Tailored to You</h3>
-            <iframe src="https://player.vimeo.com/video/50397606?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff&amp;autoplay=false"
-                  width="235"
-                  height="140"
-                  frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen>
-            </iframe>
-            <p>Credit Jeeves is a powerful service designed to help you understand, optimize and directly impact your credit score.</p>
+            {% include 'ComponentBundle:Video:tailored.html.twig' only %}
         </div>
     </div>
     <div class="column-middle floatright">
         <div class="pod-middle pod-border pod-padding shadow">
-            <h1>Welcome to Credit Jeeves.</h1>
+            <h1>{{ 'user.welcome.name' | trans | replace({'%sName%': sName}) }}</h1>
             <div class="row-20"></div>
-            <h3>Please enter your information below and we can get started right away.</h3>
+            <h3 class="green">{{ 'user.invite.title' | trans }}</h3>
+            <div class="row-20"></div>
+            {% if not isFullForm %}
+            <div class="row directions">
+                <p class="arrow-right">{{ 'user.password.choose' | trans }}</p>
+                <p class="arrow-right">{{ 'user.dob.confirm' | trans }}</p>
+            </div>
+            {% endif %}
+            <div class="row-20"></div>
                 <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }}>
                     {% if form_errors(form.tos) %}
                     <div class="flash-error">
@@ -39,6 +41,7 @@
                     </div>
                     {% endif %}
                     <fieldset>
+                    {% if isFullForm %}
                         {% include 'ComponentBundle:User:name.html.twig'     with { 'form' : form } %}
                         <div class="clearboth"></div>
                         {% include 'ComponentBundle:User:email.html.twig'    with { 'form' : form } %}
@@ -55,16 +58,24 @@
                         {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
                         <div class="clearboth"></div>
                         <div class="row-20"></div>
+                    {% else %}
+                        {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        <div class="row-20"></div>
+                        {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
+                        <div class="clearboth"></div>
+                        <div class="row-20"></div>
+                    {% endif %}
                         {% include 'ComponentBundle:User:tos.html.twig'      with { 'form' : form } %}
                         <div class="clearboth"></div>
                         {{ form_rest(form) }}
                         <div class="row-20"></div>
                         <div class="form-row">
-                            <input class="button large green" type="submit" name="_submit" value="I Agree" />
+                            <input class="button large green" type="submit" name="_submit" value="{{ 'common.i_agree' | trans }}" />
                         </div>
                     </fieldset>
                 </form>
-                      </div>
+        </div>
     </div>
     <div class="clearboth"></div>
 {% endblock %}
