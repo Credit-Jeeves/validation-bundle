@@ -70,6 +70,7 @@ class AppKernel extends Kernel
         }
         if (in_array($this->getEnvironment(), array('test'))) {
             $bundles[] = new Behat\MinkBundle\MinkBundle();
+            $bundles[] = new CreditJeeves\TestBundle\TestBundle(); // Must be last included bundle
         }
 
         return $bundles;

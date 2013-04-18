@@ -57,10 +57,7 @@ class ReportController extends Controller
 
     protected function getArf()
     {
-        require_once __DIR__.'/../sfConfig.php';
-        \sfConfig::fill($this->container->getParameter('experian'), 'global_experian');
-        \sfConfig::set('global_host', $this->container->getParameter('server_name'));
-        $this->netConnect->execute();
+        $this->netConnect->execute($this->container);
         return $this->netConnect->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
 
@@ -100,9 +97,8 @@ class ReportController extends Controller
                 try {
                     $this->saveArf();
                 } catch (\Exception $e) {
-                    throw $e;
                     $session->set('cjIsArfProcessing', false);
-//                        fpErrorNotifier::getInstance()->handler()->handleException($e);
+                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     return new JsonResponse('fatal error');
                 }
                 return new JsonResponse('finished');

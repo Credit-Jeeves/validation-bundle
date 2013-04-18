@@ -27,4 +27,17 @@ class Pidkiq extends BasePidkiq
     {
         $this->updated_at = new \DateTime();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setQuestions($q)
+    {
+        parent::setQuestions(serialize($q));
+    }
+
+    public function getQuestions()
+    {
+        return unserialize(parent::getQuestions());
+    }
 }

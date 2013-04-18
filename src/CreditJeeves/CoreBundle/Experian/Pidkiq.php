@@ -3,6 +3,7 @@ namespace CreditJeeves\CoreBundle\Experian;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
+require_once __DIR__.'/../sfConfig.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/Curl.class.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/CurlException.class.php';
 require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/xml/Xml.class.php';
@@ -24,8 +25,10 @@ class Pidkiq extends \Pidkiq
     {
     }
 
-    public function execute()
+    public function execute($container)
     {
+        \sfConfig::fill($container->getParameter('experian'), 'global_experian');
+        \sfConfig::set('global_host', $container->getParameter('server_name'));
         parent::__construct();
     }
 }
