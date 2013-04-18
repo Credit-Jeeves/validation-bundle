@@ -683,6 +683,14 @@
                 <source>error.user.last_name.long</source>
                 <target>Last name is too long.</target>
             </trans-unit>
+            <trans-unit id="error.user.absent.title">
+                <source>error.user.absent.title</source>
+                <target>Such user doesn't exist</target>
+            </trans-unit>
+            <trans-unit id="error.user.absent.text">
+                <source>error.user.absent.text</source>
+                <target>Please connect to your dealer.</target>
+            </trans-unit>
 
             
         </body>

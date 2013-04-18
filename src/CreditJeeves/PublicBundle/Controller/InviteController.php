@@ -30,8 +30,8 @@ class InviteController extends Controller
         $User = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' =>  $code));
         if (empty($User)) {
             $i18n = $this->get('translator');
-            $this->get('session')->getFlashBag()->add('message_title', $i18n->trans('some message'));
-            $this->get('session')->getFlashBag()->add('message_body',  $i18n->trans('some text'));
+            $this->get('session')->getFlashBag()->add('message_title', $i18n->trans('error.user.absent.title'));
+            $this->get('session')->getFlashBag()->add('message_body', $i18n->trans('error.user.absent.text'));
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
         $form = $this->createForm(
