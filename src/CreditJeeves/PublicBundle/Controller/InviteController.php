@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\ApplicantBundle\Form\Type\UserNewType;
+use CreditJeeves\ApplicantBundle\Form\Type\UserInvitePasswordType;
 
 /**
  * 
@@ -26,6 +27,7 @@ class InviteController extends Controller
      */
     public function indexAction($code)
     {
+        $isFullForm = true;
         $request = $this->get('request');
         $User = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' =>  $code));
         if (empty($User)) {
@@ -34,23 +36,42 @@ class InviteController extends Controller
             $this->get('session')->getFlashBag()->add('message_body', $i18n->trans('error.user.absent.text'));
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
-        $form = $this->createForm(
-            new UserNewType(),
-            $User
-        );
+        $sCurrentDob = $User->getDateOfBirth()->format("Y-m-d");
+        $User->setDateOfBirth(new \DateTime());
+        // Check form type
+        $sSsn = $User->getSsn();
+        if ($sSsn) {
+            $isFullForm = false;
+            $form = $this->createForm(
+                new UserInvitePasswordType(),
+                $User
+            );
+        } else {
+            $form = $this->createForm(
+                new UserNewType(),
+                $User
+            );
+        }
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                //$User->setInviteCode('');
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($User);
-                $em->flush();
-                //return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
+                $User = $form->getData();
+                $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
+                echo $sFormDob.'-'.$sCurrentDob;
+                if ($sCurrentDob == $sFormDob) {
+                    $User->setInviteCode('');
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($User);
+                    $em->flush();
+                    return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
+                }
             }
         }
         return array(
             'code' => $code,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'isFullForm' => $isFullForm,
+            'sName' => $User->getFirstName(),
             );
     }
 }

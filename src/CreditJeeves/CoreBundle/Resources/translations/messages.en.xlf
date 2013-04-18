@@ -131,6 +131,10 @@
                 <source>common.account</source>
                 <target>Account</target>
             </trans-unit>
+            <trans-unit id="common.i_agree">
+                <source>common.i_agree</source>
+                <target>I Agree</target>
+            </trans-unit>
             <trans-unit id="common.total">
                 <source>common.total</source>
                 <target>Total</target>
@@ -663,7 +667,7 @@
             </trans-unit>
             <trans-unit id="video.tailored.text">
                 <source>video.tailored.text</source>
-                <target>TCredit Jeeves is a powerful service designed to help you understand, optimize and directly impact your credit score.</target>
+                <target>Credit Jeeves is a powerful service designed to help you understand, optimize and directly impact your credit score.</target>
             </trans-unit>
 
 
@@ -692,6 +696,14 @@
                 <target>Please connect to your dealer.</target>
             </trans-unit>
 
+            <trans-unit id="user.welcome.name">
+                <source>user.welcome.name</source>
+                <target>Welcome to Credit Jeeves, %sName%!</target>
+            </trans-unit>
+            <trans-unit id="user.invite.title">
+                <source>user.invite.title</source>
+                <target>Please enter your information below and we can get started right away.</target>
+            </trans-unit>
             
         </body>
     </file>

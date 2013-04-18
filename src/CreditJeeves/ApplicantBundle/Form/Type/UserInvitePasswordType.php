@@ -5,11 +5,16 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Validator\Constraints\True;
 
-class NewPasswordType extends AbstractType
+class UserInvitePasswordType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->add(
+            'date_of_birth',
+            'birthday'
+        );
         $builder->add(
             'password',
             'repeated',
@@ -17,7 +22,21 @@ class NewPasswordType extends AbstractType
                 'first_name' => 'Password',
                 'second_name' => 'Retype',
                 'type' => 'password',
-            )
+                )
+        );
+        $builder->add(
+                'tos',
+                'hidden',
+                array(
+                        'label' => '',
+                        'data' => 0,
+                        'mapped' => false,
+                        'constraints' => new True(
+                                array(
+                                        'message' => 'Please accept the Terms and conditions in order to register'
+                                )
+                        ),
+                )
         );
     }
 
