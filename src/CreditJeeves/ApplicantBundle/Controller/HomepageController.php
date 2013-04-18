@@ -59,4 +59,24 @@ class HomepageController extends Controller
         $this->get('core.session.applicant')->setLeadId($nLeadId);
         return new JsonResponse('');
     }
+    
+    
+    /**
+     * @Route(
+     *     "/incentives/ajax",
+     *      name="core_report_get_ajax",
+     *      defaults={"_format"="json"},
+     *      requirements={"_format"="html|json"}
+     * )
+     * @Method(
+     *     {"GET", "POST"}
+     * )
+     *
+     * @return array
+     */
+    public function someAction()
+    {
+    
+    }
+        
 }

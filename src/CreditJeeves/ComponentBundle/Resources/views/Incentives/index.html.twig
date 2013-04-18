@@ -1,8 +1,222 @@
+{% if nTotal %}
+
 {% block stylesheets %}
     <link href="{{ asset('bundles/applicant/css/incentives.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
+{% block javascripts %}
+    <script src="{{ asset('bundles/component/js/incentives.js') }}" type="text/javascript"></script>
+{% endblock %}
+
 <div class="pod-large pod-border pod-padding shadow top-20">
-    ****
+<div id="insentives-block">
+<!-- ko if: countTradelines() -->
+<div class='pod pod-full item-status-pod last'>
+  <!-- ko if: aNegativeTradelines().length -->
+  <h3>Potentially Negative Items</h3>
+  <div class="action-steps" id="action-steps">
+    <ul class="zebra-stripe">
+      <!-- ko foreach: { data: aNegativeTradelines() } -->
+      <li>
+        <div class="status-icon-box box">
+          <div data-bind="text: status_thumbnail, css: 'late-payment-status status-icon status-' + status_current "></div>
+          <div class="late-payment-status status-text" data-bind="text: sub_title"></div>
+        </div>
+        <div class="step-box box">
+          <strong class="biggerbold" data-bind="text: title"></strong><br>
+              Potential Impact:
+          <div data-bind="text: points + ' Points'"></div>
+        </div>
+        <div class="action-text-box box">
+
+          <!-- ko if: 'high' == display -->
+            <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_fixed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_disputed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
+            <!-- /ko -->
+            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+              <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+              <span>If this is a valid issue, select "Pay." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133308-pay-down-your-balances"><span class="double-arrow">&raquo;</span> Learn more</a>
+              <!-- /ko -->
+              <!-- ko if: is_fixed -->
+              <span data-bind="i18n: { BANK: tr_subname, ACCOUNT: tr_acctnum, DIFF: diff}">Pay $%DIFF% or more towards your %BANK% account %ACCOUNT%.</span>
+              <!-- /ko -->
+              <!-- ko if: is_disputed -->
+              <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
+              <!-- /ko -->
+              <!-- ko if: is_completed -->
+              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <!-- /ko -->
+            </div>
+          <!-- /ko -->
+
+          <!-- ko if: 'late' == display -->
+            <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum, LATE: days_late }">Your %BANK% account %ACCOUNT% is %LATE% Days past due and shows a balance of $%BALANCE%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_fixed -->
+              <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">Contact %BANK% about your account %ACCOUNT%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_disputed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
+            <!-- /ko -->
+            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+              <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+              <span> If this is a valid issue, select "Pay." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/121856-i-have-a-late-payment-what-should-i-do-"><span class="double-arrow">&raquo;</span> Learn more</a>
+              <!-- /ko -->
+              <!-- ko if: is_fixed -->
+              <span data-bind="i18n: { BANK: tr_subname, ACCOUNT: tr_acctnum, DIFF: diff}"> Negotiate a payment for part or all of your outstanding balance to bring it back to current status.</span>
+              <!-- ko if: phone -->
+              <span data-bind="i18n: {BANK: tr_subname, PHONE: phone }">&nbsp;Call %BANK% at %PHONE%.</span>
+              <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko if: is_disputed -->
+              <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
+              <!-- /ko -->
+              <!-- ko if: is_completed -->
+              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <!-- /ko -->
+            </div>
+          <!-- /ko -->
+
+          <!-- ko if: 'collection' == display -->
+            <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum, BALANCE: tr_balance }">Your %BANK% account is marked for collection and shows a balance of %BALANCE%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_fixed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">Contact %BANK% about your account %ACCOUNT%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_disputed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
+            <!-- /ko -->
+            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+              <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+              <span>If this is a valid issue, select "Settle." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/130867-i-have-a-collection-what-should-i-do-"><span class="double-arrow">&raquo;</span> Learn more</a>
+              <!-- /ko -->
+              <!-- ko if: is_fixed -->
+              <span data-bind="i18n: { BANK: tr_subname, ACCOUNT: tr_acctnum, DIFF: diff}"> Negotiate a payment for part or all of your outstanding balance to bring it back to current status.</span>
+              <!-- ko if: phone -->
+              <span data-bind="i18n: {BANK: tr_subname, PHONE: phone }">&nbsp;Call %BANK% at %PHONE%.</span>
+              <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko if: is_disputed -->
+              <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
+              <!-- /ko -->
+              <!-- ko if: is_completed -->
+              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <!-- /ko -->
+            </div>
+          <!-- /ko -->
+
+          <!-- ko if: 'chargeoff' == display -->
+            <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, BALANCE: tr_balance }"> Your %BANK% account is marked as charged off with a balance of %BALANCE%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_fixed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">Contact %BANK% about your account %ACCOUNT%.</div>
+            <!-- /ko -->
+            <!-- ko if: is_disputed -->
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
+            <!-- /ko -->
+            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+              <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+              <span>If this is a valid issue, select "Settle." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/130818-i-have-a-charge-off-what-should-i-do-"><span class="double-arrow">&raquo;</span> Learn more</a>
+              <!-- /ko -->
+              <!-- ko if: is_fixed -->
+              <span> Negotiate a payment for part or all of your outstanding balance to bring it back to current status.</span>
+                <!-- ko if: phone -->
+                <span data-bind="i18n: {BANK: tr_subname, PHONE: phone }">&nbsp;Call %BANK% at %PHONE%.</span>
+                <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko if: is_disputed -->
+              <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
+              <!-- /ko -->
+              <!-- ko if: is_completed -->
+              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <!-- /ko -->
+            </div>
+          <!-- /ko -->
+
+          </div>
+        <div class="action-box box">
+          <strong>Take Action:</strong>
+          <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
+          <div><a class="fixed"     data-bind="attr: { id: 'fixed-' + id }, text: action" href="#">Pay</a></div>
+          <div><a class="disputed"  data-bind="attr: { id: 'disputed-' + id }"            href="#">Dispute</a></div>
+          <!-- /ko -->
+          <!-- ko if: is_fixed -->
+          <div><a class="completed" data-bind="attr: { id: 'completed-' + id }"        href="#">Completed</a></div>
+          <div><a class="rollback"  data-bind="attr: { id: 'undo-fixed-' + id }"       href="#">Undo</a></div>
+          <!-- /ko -->
+          <!-- ko if: is_disputed -->
+          <div><a class="completed" data-bind="attr: { id: 'completed-' + id }"        href="#">Completed</a></div>
+          <div><a class="rollback"  data-bind="attr: { id: 'undo-disputed-' + id }"    href="#">Undo</a></div>
+          <!-- /ko -->
+        </div>
+      </li>
+      <!-- /ko -->
+    </ul>
+  </div>
+  <!-- /ko -->
+
+  <!-- ko if: aIncentiveTradelines().length -->
+  <div id="addressed-items">
+  <h3 class="section-header">Items You Have Addressed</h3>
+    <div class="action-steps">
+      <ul class="zebra-stripe" id="tradeline-incentives">
+        <!-- ko foreach: { data: aIncentiveTradelines() } -->
+        <li>
+            <div class="status-icon-box box">
+                <div data-bind="attr: { class: 'late-payment-status status-icon status-' + status_current }, text: status_thumbnail"></div>
+                <div class="late-payment-status status-text" data-bind="text: sub_title"></div>
+            </div>
+            <div class="step-box box">
+                <strong class="biggerbold" data-bind="text: title"></strong>
+                Potential Impact:
+                <div data-bind="text: points + ' Points'"></div>
+            </div>
+            <div class="action-text-box-finished box">
+                <div class="action-text" data-bind="i18n: { BANK: tr_subname, ACCOUNT: tr_acctnum}"> The %BANK% account %ACCOUNT% will be updated within 30-60 days.</div>
+                <div class="green">
+                  <img src="/images/green-arrow.png" alt="green arrow">
+                  <!-- ko if: 'collection' == display || 'chargeoff' == display -->
+                    <!-- ko if: is_disputed -->
+                      Tradeline was disputed.&nbsp;
+                    <!-- /ko -->
+                    <!-- ko if: is_fixed -->
+                      Tradeline was fixed.&nbsp;
+                    <!-- /ko -->
+                  <!-- /ko -->  
+                  You may be able to update your credit profile in 24-48 hours. <?php echo linkToUservoice('Learn More', 'knowledgebase/articles/150721-credit-jeeves-instascore', array('i18n' => 'global')) ?>
+                  </div>
+              </div>
+            <div class="action-box-finished box">
+                <img class="checkmark-icon" src="/images/green-checkmark-circle-icon.png" alt="green checkmark"> <span class="biggerbold">Done - Great!</span>
+                <div><strong data-bind="text: incentive"></strong></div>
+            </div>
+        </li>
+        <!-- /ko -->
+      </ul>
+    </div>
+   </div>
+  <!-- /ko -->
+<div class="clear"></div>
 </div>
+<!-- /ko -->
+</div>
+</div>
+<script type="text/javascript">
+<!--
+    var IncentiveModel = new Incentives();
+    IncentiveModel.aNegativeTradelines({% autoescape false %}{{ jsonNegativeTradelines }}{% endautoescape %});
+    IncentiveModel.aIncentiveTradelines({% autoescape false %}{{ jsonIncentivesTradelines }}{% endautoescape %});
+    ko.applyBindings(IncentiveModel, $('#insentives-block').get(0));
+//-->
+</script>
+{% endif %}
 
