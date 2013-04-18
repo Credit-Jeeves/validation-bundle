@@ -25,18 +25,18 @@ class UserInvitePasswordType extends AbstractType
                 )
         );
         $builder->add(
-                'tos',
-                'hidden',
-                array(
-                        'label' => '',
-                        'data' => 0,
-                        'mapped' => false,
-                        'constraints' => new True(
-                                array(
-                                        'message' => 'Please accept the Terms and conditions in order to register'
-                                )
-                        ),
-                )
+            'tos',
+            'hidden',
+            array(
+                'label' => '',
+                'data' => 0,
+                'mapped' => false,
+                'constraints' => new True(
+                    array(
+                        'message' => 'error.user.tos'
+                    )
+                ),
+            )
         );
     }
 

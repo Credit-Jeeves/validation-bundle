@@ -695,6 +695,11 @@
                 <source>error.user.absent.text</source>
                 <target>Please connect to your dealer.</target>
             </trans-unit>
+            <trans-unit id="error.user.tos">
+                <source>error.user.tos</source>
+                <target>Please accept the Terms and conditions in order to register.</target>
+            </trans-unit>
+
 
             <trans-unit id="user.welcome.name">
                 <source>user.welcome.name</source>
@@ -704,6 +709,23 @@
                 <source>user.invite.title</source>
                 <target>Please enter your information below and we can get started right away.</target>
             </trans-unit>
+            <trans-unit id="user.password.choose">
+                <source>user.password.choose</source>
+                <target>Please choose a password.</target>
+            </trans-unit>
+            <trans-unit id="user.password.create">
+                <source>user.password.create</source>
+                <target>Create a password.</target>
+            </trans-unit>
+            <trans-unit id="user.password.retype">
+                <source>user.password.retype</source>
+                <target>Please retype a password.</target>
+            </trans-unit>
+            <trans-unit id="user.dob.confirm">
+                <source>user.dob.confirm</source>
+                <target>Please re-enter your date of birth so we can verify your identity.</target>
+            </trans-unit>
+
             
         </body>
     </file>

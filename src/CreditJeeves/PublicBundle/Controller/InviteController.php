@@ -57,7 +57,6 @@ class InviteController extends Controller
             if ($form->isValid()) {
                 $User = $form->getData();
                 $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
-                echo $sFormDob.'-'.$sCurrentDob;
                 if ($sCurrentDob == $sFormDob) {
                     $User->setInviteCode('');
                     $em = $this->getDoctrine()->getManager();

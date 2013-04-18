@@ -27,8 +27,13 @@
             <div class="row-20"></div>
             <h3 class="green">{{ 'user.invite.title' | trans }}</h3>
             <div class="row-20"></div>
-            {% if isFullForm %}
-            <h3>Please enter your information below and we can get started right away.</h3>
+            {% if not isFullForm %}
+            <div class="row directions">
+                <p class="arrow-right">{{ 'user.password.choose' | trans }}</p>
+                <p class="arrow-right">{{ 'user.dob.confirm' | trans }}</p>
+            </div>
+            {% endif %}
+            <div class="row-20"></div>
                 <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }}>
                     {% if form_errors(form.tos) %}
                     <div class="flash-error">
@@ -36,6 +41,7 @@
                     </div>
                     {% endif %}
                     <fieldset>
+                    {% if isFullForm %}
                         {% include 'ComponentBundle:User:name.html.twig'     with { 'form' : form } %}
                         <div class="clearboth"></div>
                         {% include 'ComponentBundle:User:email.html.twig'    with { 'form' : form } %}
@@ -52,39 +58,23 @@
                         {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
                         <div class="clearboth"></div>
                         <div class="row-20"></div>
-                        {% include 'ComponentBundle:User:tos.html.twig'      with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        {{ form_rest(form) }}
-                        <div class="row-20"></div>
-                        <div class="form-row">
-                            <input class="button large green" type="submit" name="_submit" value="{{ 'common.i_agree' | trans }}" />
-                        </div>
-                    </fieldset>
-                </form>
-                {% else %}
-                <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }}>
-                    {% if form_errors(form.tos) %}
-                    <div class="flash-error">
-                        {{ form_errors(form.tos) }}
-                    </div>
-                    {% endif %}
-                    <fieldset>
+                    {% else %}
                         {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
                         <div class="clearboth"></div>
                         <div class="row-20"></div>
                         {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
                         <div class="clearboth"></div>
                         <div class="row-20"></div>
+                    {% endif %}
                         {% include 'ComponentBundle:User:tos.html.twig'      with { 'form' : form } %}
                         <div class="clearboth"></div>
-                        <div class="row-20"></div>
                         {{ form_rest(form) }}
+                        <div class="row-20"></div>
                         <div class="form-row">
                             <input class="button large green" type="submit" name="_submit" value="{{ 'common.i_agree' | trans }}" />
                         </div>
                     </fieldset>
                 </form>
-                {% endif %}
         </div>
     </div>
     <div class="clearboth"></div>
