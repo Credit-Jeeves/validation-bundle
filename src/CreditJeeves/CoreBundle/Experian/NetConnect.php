@@ -25,8 +25,10 @@ class NetConnect extends \NetConnect
     {
     }
 
-    public function execute()
+    public function execute($container)
     {
+        \sfConfig::fill($container->getParameter('experian'), 'global_experian');
+        \sfConfig::set('global_host', $container->getParameter('server_name'));
         parent::__construct();
     }
 }

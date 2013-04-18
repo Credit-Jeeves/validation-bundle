@@ -6,11 +6,11 @@
             <div class="column column-medium">
                 <fieldset class="buyer-info">
                     <h2>{{ 'pidkiq.title' | trans }}</h2>
-                    <?php echo $form->renderFormTag('') ?>
-                        <p>Please answer the following questions.</p>
-                        <?php echo $form?>
+                    <form action="" method="post" {{ form_enctype(form) }}>
+                        <p>{{ 'pidkiq.why.subtitle' | trans }}</p>
+                        {{ form_widget(form) }}
                         <div class="row submitter-row">
-                            <button type="submit" class="large green submit auto-hide">Submit</button>
+                            <button type="submit" class="large green submit auto-hide">{{ 'common.submit' | trans }}</button>
                         </div>
                     </form>
                 </fieldset>

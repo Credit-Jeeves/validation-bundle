@@ -20,7 +20,7 @@ class ZeroController extends Controller
      */
     public function indexAction()
     {
-        $dfsgdsfg = $dsfgdsfg;
+        var_dump(get_class($this->get('core.experian.pidkiq')));
         return array();
     }
 }
