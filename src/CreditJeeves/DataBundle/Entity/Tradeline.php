@@ -50,4 +50,5 @@ class Tradeline extends BaseTradeline
     public function prePersist()
     {
     }
+    
 }

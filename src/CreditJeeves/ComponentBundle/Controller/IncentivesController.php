@@ -23,9 +23,9 @@ class IncentivesController extends Controller
         $ArfReport = $Report->getArfReport();        
         $aDirectCheck = $Report->getApplicantDirectCheck();
         $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
-        echo '<pre>';
-        print_r($aNegativeTradelines);
-        echo '</pre>';
+//         echo '<pre>';
+//         print_r($aNegativeTradelines);
+//         echo '</pre>';
         
         $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
         $aNegativeCollection = array();
