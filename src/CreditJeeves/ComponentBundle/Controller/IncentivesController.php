@@ -2,8 +2,11 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\DataBundle\Entity\Report;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
+use CreditJeeves\DataBundle\Entity\Report;
+use CreditJeeves\DataBundle\Entity\Tradeline;
+
 
 class IncentivesController extends Controller
 {
@@ -14,23 +17,43 @@ class IncentivesController extends Controller
      */
     public function indexAction()
     {
-        $cjUser = $this->getUser();
+        $cjUser = $this->get('core.session.applicant')->getUser();
+        $Report = $cjUser->getReportsPrequal()->last();
+        $sDate = $Report->getCreatedAt()->format('M j, Y');
+        $ArfReport = $Report->getArfReport();        
+        $aDirectCheck = $Report->getApplicantDirectCheck();
+        $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
+        $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
+        $aApplicantNegativeTradelines = $this->
+            getDoctrine()->
+            getRepository('DataBundle:Tradeline')->
+            findBy(
+                array(
+                    'cj_applicant_id' => $cjUser->getId()
+                    )
+                );
         
-
+        //                 'cj_applicant_id',
+        //                 $this->getUser()->getCjApplicant()->getId()
+        //         ); // query number 1
+        
 //         $cjApplicantReport = $this->getUser()
 //         ->getCjApplicant()
 //         ->getCjApplicantReportPrequals()
 //         ->getLast();
-//         $aDirectCheck            = $cjApplicantReport->getApplicantDirectCheck();
 //         // Prepare two additional arrays in order not to do many queries
 //         $aApplicantNegativeTradelines = cjApplicantTradelinesTable::getInstance()->findBy(
 //                 'cj_applicant_id',
 //                 $this->getUser()->getCjApplicant()->getId()
 //         ); // query number 1
-//         $aNegativeCollection = array();
-//         foreach ($aApplicantNegativeTradelines as $oItem) {
-//             $aNegativeCollection[$oItem->getTradeline()] = $oItem;
-//         }
+         $aNegativeCollection = array();
+         foreach ($aApplicantNegativeTradelines as $oItem) {
+             $aNegativeCollection[$oItem->getTradeline()] = $oItem;
+         }
+         
+         echo '<pre>';
+         print_r($aNegativeTradelines);
+         echo '</pre>';
 //         $ApplicantIncentives = cjApplicantIncentivesTable::getInstance()->findBy(
 //                 'cj_applicant_id',
 //                 $this->getUser()->getCjApplicant()->getId()

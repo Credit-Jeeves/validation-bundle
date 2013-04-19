@@ -206,6 +206,16 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Tradeline",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $tradelines;
+
+    /**
+     * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Order",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},

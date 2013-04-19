@@ -64,7 +64,7 @@ class HomepageController extends Controller
     /**
      * @Route(
      *     "/incentives/ajax",
-     *      name="core_report_get_ajax",
+     *      name="insentives_ajax",
      *      defaults={"_format"="json"},
      *      requirements={"_format"="html|json"}
      * )
