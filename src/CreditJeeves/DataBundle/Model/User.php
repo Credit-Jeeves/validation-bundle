@@ -213,6 +213,16 @@ abstract class User extends BaseUser
      * )
      */
     protected $tradelines;
+    
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\ApplicantIncentive",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $incentives;
 
     /**
      * @ORM\OneToMany(
@@ -272,6 +282,21 @@ abstract class User extends BaseUser
      * )
      */
     protected $pidkiqs;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->reportsPrequal = new ArrayCollection();
+        $this->reportsD2c = new ArrayCollection();
+        $this->scores = new ArrayCollection();
+        $this->orders = new ArrayCollection();
+        $this->user_leads = new ArrayCollection();
+        $this->dealer_leads = new ArrayCollection();
+        $this->groups = new ArrayCollection();
+        $this->pidkiqs = new ArrayCollection();
+        $this->incentives = new ArrayCollection();
+        $this->tradelines = new ArrayCollection();
+    }
 
     /**
      * Get id

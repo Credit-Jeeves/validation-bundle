@@ -23,7 +23,12 @@ class IncentivesController extends Controller
         $ArfReport = $Report->getArfReport();        
         $aDirectCheck = $Report->getApplicantDirectCheck();
         $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
+        echo '<pre>';
+        print_r($aNegativeTradelines);
+        echo '</pre>';
+        
         $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
+        $aNegativeCollection = array();
         $aApplicantNegativeTradelines = $this->
             getDoctrine()->
             getRepository('DataBundle:Tradeline')->
@@ -32,52 +37,40 @@ class IncentivesController extends Controller
                     'cj_applicant_id' => $cjUser->getId()
                     )
                 );
-        
-        //                 'cj_applicant_id',
-        //                 $this->getUser()->getCjApplicant()->getId()
-        //         ); // query number 1
-        
-//         $cjApplicantReport = $this->getUser()
-//         ->getCjApplicant()
-//         ->getCjApplicantReportPrequals()
-//         ->getLast();
-//         // Prepare two additional arrays in order not to do many queries
-//         $aApplicantNegativeTradelines = cjApplicantTradelinesTable::getInstance()->findBy(
-//                 'cj_applicant_id',
-//                 $this->getUser()->getCjApplicant()->getId()
-//         ); // query number 1
-         $aNegativeCollection = array();
          foreach ($aApplicantNegativeTradelines as $oItem) {
              $aNegativeCollection[$oItem->getTradeline()] = $oItem;
          }
-         
-         echo '<pre>';
-         print_r($aNegativeTradelines);
-         echo '</pre>';
-//         $ApplicantIncentives = cjApplicantIncentivesTable::getInstance()->findBy(
-//                 'cj_applicant_id',
-//                 $this->getUser()->getCjApplicant()->getId()
-//         ); // query number 2
-//         $aIncentivesCollection = array();
-//         foreach ($ApplicantIncentives as $oItem) {
-//             $aIncentivesCollection[$oItem->getCjTradelineId()] = $oItem;
-//         }
-//         // Result arrays for the template
-//         $this->aNegativeTradelines   = array();
-//         $this->aIncentivesTradelines = array();
+         $aIncentivesCollection = array();
+         $aApplicantIncentives = $this->
+             getDoctrine()->
+             getRepository('DataBundle:ApplicantIncentive')->
+             findBy(
+                 array(
+                     'cj_applicant_id' => $cjUser->getId()
+                     )
+                 );
+         foreach ($aApplicantIncentives as $oItem) {
+             $aIncentivesCollection[$oItem->getCjTradelineId()] = $oItem;
+         }
+         // Result arrays for the template
+         $aNegativeTradelines   = array();
+         $aIncentivesTradelines = array();
 //         // Get negative tradelines
 //         $allNegativeTradelines = $this->getUser()
 //         ->getCjApplicant()
 //         ->getCjApplicantReportPrequals()
 //         ->getLast()
 //         ->getApplicantNegativeTradeLines(false);
-//         foreach ($allNegativeTradelines as $aTradeline) {
+         foreach ($aNegativeTradelines as $aTradeline) {
 //             // we'll work only with opened tradelines
-//             if ($aTradeline['tr_state'] == 'C' & !in_array($aTradeline['tr_status'], array(93, 97))) {
-//                 continue;
-//             }
+             if ($aTradeline['tr_state'] == 'C' & !in_array($aTradeline['tr_status'], array(93, 97))) {
+                 continue;
+             }
         
-//             $aTradeline     = cjApplicantTradelines::prepareTradeline($aTradeline);
+             $aTradeline     = Tradeline::prepareTradeline($aTradeline);
+             echo '<pre>';
+             print_r($aTradeline);
+             echo '</pre>';
 //             $sTradelineHash = md5($aTradeline['tr_subcode'].$aTradeline['account']);
 //             if (!isset($aNegativeCollection[$sTradelineHash])) {
 //                 continue;
@@ -94,19 +87,23 @@ class IncentivesController extends Controller
 //                 ? $aIncentivesCollection[$aTradeline['id']]->getCjGroupIncentives()->getText() : '';
 //                 $this->aIncentivesTradelines[] = $aTradeline;
 //             }
-//         }
+         }
 //         // Get satisfactory tradelines
 //         $allSatisfactoryTradelines = $this->getUser()
 //         ->getCjApplicant()
 //         ->getCjApplicantReportPrequals()
 //         ->getLast()
 //         ->getApplicantSatisfactoryTradeLines(false);
-//         foreach ($allSatisfactoryTradelines as $aTradeline) {
-//             // we'll work only with opened tradelines
-//             if ($aTradeline['tr_state'] == 'C') {
-//                 continue;
-//             }
-//             $aTradeline = cjApplicantTradelines::prepareTradeline($aTradeline);
+         foreach ($aSatisfactoryTradelines as $aTradeline) {
+             // we'll work only with opened tradelines
+            if ($aTradeline['tr_state'] == 'C') {
+                continue;
+            }
+             $aTradeline = Tradeline::prepareTradeline($aTradeline);
+//              echo '<pre>';
+//              print_r($aTradeline);
+//              echo '</pre>';
+              
 //             $sTradelineHash = md5($aTradeline['tr_subcode'].$aTradeline['account']);
 //             $nTradelineId = isset($aNegativeCollection[$sTradelineHash]) ? $aNegativeCollection[$sTradelineHash]->getId() : 0;
 //             if (!empty($nTradelineId)) {
@@ -120,27 +117,14 @@ class IncentivesController extends Controller
 //                 }
 //             }
         
-//         }
+         }
 //         $this->jsonIncentivesTradelines = json_encode($this->aIncentivesTradelines);
 //         $this->jsonNegativeTradelines   = json_encode($this->aNegativeTradelines);        
         
         
-        $aIncentivesTradelines = array();
-        $aNegativeTradelines = array();
-        
         $nTotal = count($aIncentivesTradelines + $aNegativeTradelines) ? true : false;
-        
-        
-        
         $jsonIncentivesTradelines = json_encode($aIncentivesTradelines);
         $jsonNegativeTradelines = json_encode($aNegativeTradelines);
-        
-        
-        
-        
-        
-       // $Report = $cjUser->getReports()->last();
-        $name   = '***';///$Report->getRawData();
         return array(
             'nTotal' => $nTotal,
             'jsonIncentivesTradelines' => $jsonIncentivesTradelines,

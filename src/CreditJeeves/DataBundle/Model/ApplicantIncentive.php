@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Tradeline
+abstract class ApplicantIncentive
 {
     /**
      * @ORM\Id
@@ -23,7 +23,12 @@ abstract class Tradeline
     /**
      * @ORM\Column(type="integer")
      */
-    protected $cj_group_id;
+    protected $cj_tradeline_id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $cj_incentive_id;
 
     /**
      * @ORM\Column(type="string")
@@ -31,24 +36,9 @@ abstract class Tradeline
     protected $status;
 
     /**
-     * @ORM\Column(type="text")
-     */
-    protected $tradeline;
-
-    /**
      * @ORM\Column(type="boolean")
      */
-    protected $is_fixed;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $is_disputed;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $is_completed;
+    protected $is_verified;
 
     /**
      * @ORM\Column(type="datetime")
@@ -56,14 +46,9 @@ abstract class Tradeline
     protected $created_at;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $updated_at;
-
-    /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\User",
-     *     inversedBy="tradelines"
+     *     inversedBy="incentives"
      * )
      * @ORM\JoinColumn(
      *     name="cj_applicant_id",
@@ -86,7 +71,7 @@ abstract class Tradeline
      * Set cj_applicant_id
      *
      * @param integer $cjApplicantId
-     * @return Tradeline
+     * @return ApplicantIncentive
      */
     public function setCjApplicantId($cjApplicantId)
     {
@@ -105,25 +90,25 @@ abstract class Tradeline
     }
 
     /**
-     * Set cj_group_id
+     * Set cj_tradeline_id
      *
-     * @param integer $cjGrouptId
-     * @return Tradeline
+     * @param integer $cjTradelineId
+     * @return ApplicantIncentive
      */
-    public function setCjGroupId($cjGroupId)
+    public function setCjTradelineId($cjTradelineId)
     {
-        $this->cj_group_id = $cjGroupId;
+        $this->cj_tradeline_id = $cjTradelineId;
         return $this;
     }
 
     /**
-     * Get cj_group_id
+     * Get cj_tradeline_id
      *
      * @return integer
      */
-    public function getCjGroupId()
+    public function getCjTradelineId()
     {
-        return $this->cj_group_id;
+        return $this->cj_tradeline_id;
     }
 
     /**
@@ -149,37 +134,16 @@ abstract class Tradeline
         return $this->status;
     }
 
-    /**
-     * Set tradeline
-     *
-     * @param string $tradeline
-     * @return Tradeline
-     */
-    public function setTradeline($tradeline)
-    {
-        $this->tradeline = $tradeline;
-        return $this;
-    }
-
-    /**
-     * Get tradeline
-     *
-     * @return string
-     */
-    public function getTradeline()
-    {
-        return $this->tradeline;
-    }
     
     /**
-     * Set is_disputed
+     * Set is_verified
      *
-     * @param boolean $isDisputed
+     * @param boolean $isVerified
      * @return Tradeline
      */
-    public function setIsDisputed($isDisputed)
+    public function setIsVerified($isVerified)
     {
-        $this->is_disputed = $isDisputed;
+        $this->is_verified = $isVerified;
         return $this;
     }
     
@@ -188,31 +152,9 @@ abstract class Tradeline
      *
      * @return boolean
      */
-    public function getIsDisputed()
+    public function getIsVerified()
     {
-        return $this->is_disputed;
-    }
-    
-    /**
-     * Set is_completed
-     *
-     * @param boolean $isCompleted
-     * @return Tradeline
-     */
-    public function setIsCompleted($isCompleted)
-    {
-        $this->is_completed = $isCompleted;
-        return $this;
-    }
-    
-    /**
-     * Get is_completed
-     *
-     * @return boolean
-     */
-    public function getIsCompleted()
-    {
-        return $this->is_completed;
+        return $this->is_verified;
     }
 
     /**
@@ -235,28 +177,6 @@ abstract class Tradeline
     public function getCreatedAt()
     {
         return $this->created_at;
-    }
-
-    /**
-     * Set updated_date
-     *
-     * @param \DateTime $updatedAt
-     * @return Tradeline
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updated_at = $updatedAt;
-        return $this;
-    }
-
-    /**
-     * Get updated_at
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updated_at;
     }
 
     /**

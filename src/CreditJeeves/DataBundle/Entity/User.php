@@ -12,18 +12,10 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class User extends BaseUser
 {
-    public function __construct()
-    {
-        parent::__construct();
-        $this->reportsPrequal = new ArrayCollection();
-        $this->reportsD2c = new ArrayCollection();
-        $this->scores = new ArrayCollection();
-        $this->orders = new ArrayCollection();
-        $this->user_leads = new ArrayCollection();
-        $this->dealer_leads = new ArrayCollection();
-        $this->groups = new ArrayCollection();
-        $this->pidkiqs = new ArrayCollection();
-    }
+//     public function __construct()
+//     {
+//         parent::__construct();
+//     }
 
     /**
      * @ORM\PreRemove
