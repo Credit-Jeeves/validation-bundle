@@ -17,18 +17,19 @@ class IncentivesController extends Controller
      */
     public function indexAction()
     {
+        $aNegativeCollection = array();
+        $aNegativeTradelines = array();
+        $aIncentivesCollection = array();
+        $aIncentivesTradelines = array();
+        
         $cjUser = $this->get('core.session.applicant')->getUser();
         $Report = $cjUser->getReportsPrequal()->last();
         $sDate = $Report->getCreatedAt()->format('M j, Y');
         $ArfReport = $Report->getArfReport();        
         $aDirectCheck = $Report->getApplicantDirectCheck();
-        $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
-//         echo '<pre>';
-//         print_r($aNegativeTradelines);
-//         echo '</pre>';
         
+        $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
         $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
-        $aNegativeCollection = array();
         $aApplicantNegativeTradelines = $this->
             getDoctrine()->
             getRepository('DataBundle:Tradeline')->
@@ -40,7 +41,6 @@ class IncentivesController extends Controller
          foreach ($aApplicantNegativeTradelines as $oItem) {
              $aNegativeCollection[$oItem->getTradeline()] = $oItem;
          }
-         $aIncentivesCollection = array();
          $aApplicantIncentives = $this->
              getDoctrine()->
              getRepository('DataBundle:ApplicantIncentive')->
@@ -53,8 +53,7 @@ class IncentivesController extends Controller
              $aIncentivesCollection[$oItem->getCjTradelineId()] = $oItem;
          }
          // Result arrays for the template
-         $aNegativeTradelines   = array();
-         $aIncentivesTradelines = array();
+         
 //         // Get negative tradelines
 //         $allNegativeTradelines = $this->getUser()
 //         ->getCjApplicant()
@@ -68,14 +67,17 @@ class IncentivesController extends Controller
              }
         
              $aTradeline     = Tradeline::prepareTradeline($aTradeline);
-             echo '<pre>';
-             print_r($aTradeline);
-             echo '</pre>';
-//             $sTradelineHash = md5($aTradeline['tr_subcode'].$aTradeline['account']);
-//             if (!isset($aNegativeCollection[$sTradelineHash])) {
-//                 continue;
-//             }
-//             $isCompleted    = $aNegativeCollection[$sTradelineHash]->getIsCompleted();
+             $sTradelineHash = md5($aTradeline['tr_subcode'].$aTradeline['account']);
+             //echo $sTradelineHash;
+             if (!isset($aNegativeCollection[$sTradelineHash])) {
+                 continue;
+             }
+//              echo '<pre>';
+//              print_r($aTradeline);
+//              echo '</pre>';
+             $aTradeline = Tradeline::formatTradelineForIncentive($aTradeline, $aNegativeCollection[$sTradelineHash], $aDirectCheck);
+             $aIncentivesTradelines[] = $aTradeline;
+             //             $isCompleted    = $aNegativeCollection[$sTradelineHash]->getIsCompleted();
 //             $aTradeline = $this->formatTradeline($aTradeline, $aNegativeCollection[$sTradelineHash], $aDirectCheck);
 //             if (empty($aTradeline['display'])) {
 //                 continue;
@@ -97,7 +99,7 @@ class IncentivesController extends Controller
          foreach ($aSatisfactoryTradelines as $aTradeline) {
              // we'll work only with opened tradelines
             if ($aTradeline['tr_state'] == 'C') {
-                continue;
+                //continue;
             }
              $aTradeline = Tradeline::prepareTradeline($aTradeline);
 //              echo '<pre>';
@@ -131,4 +133,38 @@ class IncentivesController extends Controller
             'jsonNegativeTradelines' => $jsonNegativeTradelines,
             );
     }
+
+//     /**
+//      *
+//      * @param array $aTradeline
+//      */
+//     public static function prepareTradeline($aTradeline)
+//     {
+//         // Calculate additional items
+//         $aTradeline['usage'] = 0;
+//         $aTradeline['limit'] = 0;
+//         $nLimit = isset($aTradeline['credit_amounts']['credit_limit']) ? intval($aTradeline['credit_amounts']['credit_limit']) : 0;
+//         if ($nLimit > 0) {
+//             $aTradeline['usage'] = intval($aTradeline['tr_balance']) / $nLimit;
+//             $aTradeline['limit'] = $nLimit;
+//         }
+//         $aTradeline['tr_acctnum'] = isset($aTradeline['tr_acctnum']) ? $aTradeline['tr_acctnum'] : 'XXXX'; // need to display on the page
+//         $aTradeline['account']    = isset($aTradeline['account']) ? $aTradeline['account'] : 'XXXX'; // need for the hash
+//         // unset unnecessary items
+//         unset($aTradeline['payment_history']);
+//         unset($aTradeline['credit_amounts']);
+//         unset($aTradeline['30_day_counter']);
+//         unset($aTradeline['60_day_counter']);
+//         unset($aTradeline['90_day_counter']);
+//         unset($aTradeline['derog_counter']);
+//         unset($aTradeline['ecoa']);
+//         unset($aTradeline['kob']);
+//         unset($aTradeline['tr_amount1']);
+//         unset($aTradeline['tr_amount1_qual']);
+//         unset($aTradeline['tr_amount2']);
+//         unset($aTradeline['tr_amount2_qual']);
+//         unset($aTradeline['special_comment_code']);
+//         return $aTradeline;
+//     }
+    
 }
