@@ -3,7 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use CreditJeeves\DataBundle\Model\Report as BaseReport; 
+use CreditJeeves\DataBundle\Model\Report as BaseReport;
 use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\CoreBundle\Arf\ArfReport;
 use CreditJeeves\CoreBundle\Arf\ArfSummary;
@@ -13,7 +13,6 @@ use CreditJeeves\CoreBundle\Arf\ArfInquiries;
 use CreditJeeves\CoreBundle\Arf\ArfPublicRecords;
 use CreditJeeves\CoreBundle\Arf\ArfAutomotiveDetails;
 use CreditJeeves\CoreBundle\Arf\ArfMessages;
-
 
 /**
  * @ORM\Entity

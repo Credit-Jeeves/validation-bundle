@@ -20,13 +20,14 @@ class Tradeline extends BaseTradeline
         // Calculate additional items
         $aTradeline['usage'] = 0;
         $aTradeline['limit'] = 0;
-        $nLimit = isset($aTradeline['credit_amounts']['credit_limit']) ? intval($aTradeline['credit_amounts']['credit_limit']) : 0;
+        $nLimit = isset($aTradeline['credit_amounts']['credit_limit'])
+            ? intval($aTradeline['credit_amounts']['credit_limit']) : 0;
         if ($nLimit > 0) {
             $aTradeline['usage'] = intval($aTradeline['tr_balance']) / $nLimit;
             $aTradeline['limit'] = $nLimit;
         }
-        $aTradeline['tr_acctnum'] = isset($aTradeline['tr_acctnum']) ? $aTradeline['tr_acctnum'] : 'XXXX'; // need to display on the page
-        $aTradeline['account']    = isset($aTradeline['account']) ? $aTradeline['account'] : 'XXXX'; // need for the hash
+        $aTradeline['tr_acctnum'] = isset($aTradeline['tr_acctnum']) ? $aTradeline['tr_acctnum'] : 'XXXX';
+        $aTradeline['account']    = isset($aTradeline['account']) ? $aTradeline['account'] : 'XXXX';
         // unset unnecessary items
         unset($aTradeline['payment_history']);
         unset($aTradeline['credit_amounts']);
@@ -50,5 +51,4 @@ class Tradeline extends BaseTradeline
     public function prePersist()
     {
     }
-    
 }

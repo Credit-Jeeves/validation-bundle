@@ -7,7 +7,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Tradeline;
 
-
 class IncentivesController extends Controller
 {
     /**
@@ -20,7 +19,7 @@ class IncentivesController extends Controller
         $cjUser = $this->get('core.session.applicant')->getUser();
         $Report = $cjUser->getReportsPrequal()->last();
         $sDate = $Report->getCreatedAt()->format('M j, Y');
-        $ArfReport = $Report->getArfReport();        
+        $ArfReport = $Report->getArfReport();
         $aDirectCheck = $Report->getApplicantDirectCheck();
         $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
 //         echo '<pre>';
@@ -36,19 +35,19 @@ class IncentivesController extends Controller
                 array(
                     'cj_applicant_id' => $cjUser->getId()
                     )
-                );
-         foreach ($aApplicantNegativeTradelines as $oItem) {
-             $aNegativeCollection[$oItem->getTradeline()] = $oItem;
-         }
-         $aIncentivesCollection = array();
-         $aApplicantIncentives = $this->
-             getDoctrine()->
-             getRepository('DataBundle:ApplicantIncentive')->
-             findBy(
-                 array(
-                     'cj_applicant_id' => $cjUser->getId()
-                     )
-                 );
+            );
+        foreach ($aApplicantNegativeTradelines as $oItem) {
+            $aNegativeCollection[$oItem->getTradeline()] = $oItem;
+        }
+        $aIncentivesCollection = array();
+        $aApplicantIncentives = $this->
+            getDoctrine()->
+            getRepository('DataBundle:ApplicantIncentive')->
+            findBy(
+                array(
+                    'cj_applicant_id' => $cjUser->getId()
+                    )
+            );
          foreach ($aApplicantIncentives as $oItem) {
              $aIncentivesCollection[$oItem->getCjTradelineId()] = $oItem;
          }
@@ -61,7 +60,7 @@ class IncentivesController extends Controller
 //         ->getCjApplicantReportPrequals()
 //         ->getLast()
 //         ->getApplicantNegativeTradeLines(false);
-         foreach ($aNegativeTradelines as $aTradeline) {
+        foreach ($aNegativeTradelines as $aTradeline) {
 //             // we'll work only with opened tradelines
              if ($aTradeline['tr_state'] == 'C' & !in_array($aTradeline['tr_status'], array(93, 97))) {
                  continue;

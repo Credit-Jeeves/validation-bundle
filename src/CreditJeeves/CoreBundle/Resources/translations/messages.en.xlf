@@ -615,6 +615,11 @@
                 <source>leads.select.title</source>
                 <target>You have following Leads</target>
             </trans-unit>
+            <trans-unit id="leads.select.target">
+                <source>leads.select.target</source>
+                <target>Select Target</target>
+            </trans-unit>
+            
 
             <trans-unit id="pidkiq.error.timeout">
                 <source>pidkiq.error.timeout-%SUPPORT_EMAIL%</source>

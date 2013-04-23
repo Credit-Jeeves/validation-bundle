@@ -105,5 +105,4 @@ class Report
     {
         return $this->created_at;
     }
-
 }
