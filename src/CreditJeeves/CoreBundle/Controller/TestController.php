@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace CreditJeeves\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -7,20 +7,30 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
  * This page would be usefull for development
- * @author Alex
- * @Route("/")
+ * @Route("/test")
  */
-class ZeroController extends Controller
+class TestController extends Controller
 {
     /**
-     * @Route("/zero", name="applicant_zero_page")
+     * @Route("/", name="core_test")
      * @Template()
      *
      * @return array
      */
     public function indexAction()
     {
-        var_dump(get_class($this->get('experian.pidkiq')));
+        return array();
+    }
+
+    /**
+     * @Route("/error", name="core_test_error")
+     * @Template()
+     *
+     * @return array
+     */
+    public function errorAction()
+    {
+        sdfgsdfgdsg();
         return array();
     }
 }

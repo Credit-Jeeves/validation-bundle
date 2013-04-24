@@ -6,7 +6,7 @@ use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  */
-class LoginTestCase extends BaseTestCase
+class LoginCase extends BaseTestCase
 {
     protected $fixtures = array(
         '001_cj_account_group.yml',

@@ -22,13 +22,14 @@ security:
             anonymous:    true
 
     access_control:
-        - { path: ^/_behat/tests/, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login$,        role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/new$,          role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/invite,        role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/message,       role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/,        role: ROLE_USER }
-        - { path: ^/,              role: ROLE_USER }
+        - { path: ^/_behat/tests/,  role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/test,           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$,         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/new$,           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/,         role: ROLE_USER }
+        - { path: ^/,               role: ROLE_USER }
 
 # We'll additional pages
 #       - { path: ^/register,   role: IS_AUTHENTICATED_ANONYMOUSLY }

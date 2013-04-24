@@ -15,7 +15,8 @@ IGNOR_DIRS="$BASE_DIR/vendor/,$BASE_DIR/data/,\
 $BASE_DIR/web/uploads/,$BASE_DIR/web/js/vendor/,\
 $BASE_DIR/src/*/*/Resources/,$BASE_DIR/web/config_dev.php,\
 $BASE_DIR/src/CreditJeeves/TestBundle/Experian/,\
-$BASE_DIR/src/CreditJeeves/CoreBundle/Experian/,\
+$BASE_DIR/src/CreditJeeves/ExperianBundle/Pidkiq,\
+$BASE_DIR/src/CreditJeeves/ExperianBundle/NetConnect,\
 $BASE_DIR/src/CreditJeeves/CoreBundle/sfConfig.php,\
 $BASE_DIR/src/CreditJeeves/CoreBundle/CS/,$BASE_DIR/src/CreditJeeves/CoreBundle/Arf/,\
 $BASE_DIR/app/"

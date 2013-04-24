@@ -20,11 +20,14 @@ class MessageController extends Controller
      */
     public function flashAction()
     {
-        $sTitle = $this->get('session')->getFlashBag()->get('message_title');
-        $sText = $this->get('session')->getFlashBag()->get('message_text');
-        if (!$sText & !$sTitle) {
-            return new Response('', '404');
+        $title = $this->get('session')->getFlashBag()->get('message_title');
+        $text = $this->get('session')->getFlashBag()->get('message_body');
+        if (!$text & !$title) {
+            throw $this->createNotFoundException('Flashes message not found');
         }
-        return array();
+        return array(
+            'title' => $title,
+            'text' => $text,
+        );
     }
 }
