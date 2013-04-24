@@ -104,10 +104,14 @@ class IncentivesController extends Controller
         $nTotal = count($aIncentivesTradelines + $aNegativeTradelines) ? true : false;
         $jsonIncentivesTradelines = json_encode($aIncentivesTradelines);
         $jsonNegativeTradelines = json_encode($aNegativeTradelines);
+//         echo '<pre>';
+//         print_r($aNegativeTradelines);
+//         echo '</pre>';
         return array(
             'nTotal' => $nTotal,
             'jsonIncentivesTradelines' => $jsonIncentivesTradelines,
             'jsonNegativeTradelines' => $jsonNegativeTradelines,
+            'sUrl' => $this->generateUrl('insentives_ajax'),
             );
     }
 

@@ -75,5 +75,38 @@ class HomepageController extends Controller
      */
     public function someAction()
     {
+        $aResult = array('id' => 0, 'incentive' => '');
+        $request = $this->get('request');
+        $this->createNotFoundException();
+        $nTradelineId = $request->get('tradeline');
+        $sAction      = $request->get('do_action');
+        if (empty($nTradelineId) || empty($sAction)) {
+          return new JsonResponse('error');
+        }
+        $oApplicantTradeline = $this->getDoctrine()->getRepository('DataBundle:Tradeline')->find($nTradelineId);
+        switch ($sAction) {
+          case 'fixed':
+             $oApplicantTradeline->setIsFixed(true);
+            break;
+          case 'disputed':
+            $oApplicantTradeline->setIsDisputed(true);
+            break;
+          case 'completed':
+            $oApplicantTradeline->setIsCompleted(true);
+            break;
+          case 'rollback':
+            $oApplicantTradeline->setIsFixed(false);
+            $oApplicantTradeline->setIsDisputed(false);
+            break;
+        }
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($oApplicantTradeline);
+        $em->flush();
+        
+        $aResult['id'] = $oApplicantTradeline->getId();
+        $aResult['incentive'] = '******';//$oApplicantTradeline->getCjApplicantIncentives()->getCjGroupIncentives()->getText();
+//         $this->renderText(json_encode($aResult));        
+        
+        return new JsonResponse($aResult);
     }
 }

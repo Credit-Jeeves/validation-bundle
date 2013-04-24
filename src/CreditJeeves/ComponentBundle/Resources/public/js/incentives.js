@@ -2,9 +2,10 @@ function Incentives() {
   var self = this;
   this.aNegativeTradelines = ko.observableArray();
   this.aIncentiveTradelines = ko.observableArray();
+  this.sUrl = '';
   this.ajaxAction = function(sAction, nTradelineId) {
     $.ajax({
-      url: Routing.generate('ajax_incentives'),
+      url: this.sUrl,
       type: 'POST',
       dataType: 'json',
       data: {
