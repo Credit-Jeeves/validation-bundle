@@ -16,7 +16,6 @@
         {{ render(controller('ComponentBundle:Target:index', {'Lead': Lead})) }}
     </div>
     <div class="clearboth"></div>
-    <div class="row-20"></div>
     <div class="column-large">
         {% if isSuccess %}
         {{ render(controller('ComponentBundle:Success:index', {'Lead': Lead})) }}
@@ -26,7 +25,7 @@
         <div class="row-20"></div>
         {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
         <div class="row-20"></div>
-        {{ render(controller('ComponentBundle:Incentives:index')) }}
+        {{ render(controller('ComponentBundle:Incentives:index', {'Lead': Lead})) }}
     </div>
     <div class="row-20"></div>
     <div class="column-middle floatleft">

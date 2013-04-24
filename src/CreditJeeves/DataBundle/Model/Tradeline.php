@@ -170,7 +170,29 @@ abstract class Tradeline
     {
         return $this->tradeline;
     }
-    
+
+    /**
+     * Set is_fixed
+     *
+     * @param boolean $isFixed
+     * @return Tradeline
+     */
+    public function setIsFixed($isFixed)
+    {
+      $this->is_fixed = $isFixed;
+      return $this;
+    }
+
+    /**
+     * Get is_fixed
+     *
+     * @return boolean
+     */
+    public function getIsFixed()
+    {
+      return $this->is_fixed;
+    }
+
     /**
      * Set is_disputed
      *
@@ -182,7 +204,7 @@ abstract class Tradeline
         $this->is_disputed = $isDisputed;
         return $this;
     }
-    
+
     /**
      * Get is_disputed
      *
@@ -192,7 +214,7 @@ abstract class Tradeline
     {
         return $this->is_disputed;
     }
-    
+
     /**
      * Set is_completed
      *
@@ -204,7 +226,7 @@ abstract class Tradeline
         $this->is_completed = $isCompleted;
         return $this;
     }
-    
+
     /**
      * Get is_completed
      *

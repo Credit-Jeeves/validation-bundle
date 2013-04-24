@@ -1,7 +1,7 @@
 {% if nTotal %}
 
 {% block stylesheets %}
-    <link href="{{ asset('bundles/applicant/css/incentives.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/incentives.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block javascripts %}
@@ -39,7 +39,7 @@
             <!-- ko if: is_disputed -->
             <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
             <!-- /ko -->
-            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+            <div class="green"><img src="/bundles/core/images/green-arrow.png" alt="green arrow">
               <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
               <span>If this is a valid issue, select "Pay." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133308-pay-down-your-balances"><span class="double-arrow">&raquo;</span> Learn more</a>
               <!-- /ko -->
@@ -65,7 +65,7 @@
             <!-- ko if: is_disputed -->
             <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
             <!-- /ko -->
-            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+            <div class="green"><img src="/bundles/core/images/green-arrow.png" alt="green arrow">
               <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
               <span> If this is a valid issue, select "Pay." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/121856-i-have-a-late-payment-what-should-i-do-"><span class="double-arrow">&raquo;</span> Learn more</a>
               <!-- /ko -->
@@ -94,7 +94,7 @@
             <!-- ko if: is_disputed -->
             <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
             <!-- /ko -->
-            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+            <div class="green"><img src="/bundles/core/images/green-arrow.png" alt="green arrow">
               <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
               <span>If this is a valid issue, select "Settle." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/130867-i-have-a-collection-what-should-i-do-"><span class="double-arrow">&raquo;</span> Learn more</a>
               <!-- /ko -->
@@ -123,7 +123,7 @@
             <!-- ko if: is_disputed -->
             <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
             <!-- /ko -->
-            <div class="green"><img src="/images/green-arrow.png" alt="green arrow">
+            <div class="green"><img src="/bundles/core/images/green-arrow.png" alt="green arrow">
               <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
               <span>If this is a valid issue, select "Settle." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/130818-i-have-a-charge-off-what-should-i-do-"><span class="double-arrow">&raquo;</span> Learn more</a>
               <!-- /ko -->
@@ -183,7 +183,7 @@
             <div class="action-text-box-finished box">
                 <div class="action-text" data-bind="i18n: { BANK: tr_subname, ACCOUNT: tr_acctnum}"> The %BANK% account %ACCOUNT% will be updated within 30-60 days.</div>
                 <div class="green">
-                  <img src="/images/green-arrow.png" alt="green arrow">
+                  <img src="/bundles/core/images/green-arrow.png" alt="green arrow">
                   <!-- ko if: 'collection' == display || 'chargeoff' == display -->
                     <!-- ko if: is_disputed -->
                       Tradeline was disputed.&nbsp;
@@ -196,7 +196,7 @@
                   </div>
               </div>
             <div class="action-box-finished box">
-                <img class="checkmark-icon" src="/images/green-checkmark-circle-icon.png" alt="green checkmark"> <span class="biggerbold">Done - Great!</span>
+                <img class="checkmark-icon" src="/bundles/core/images/green-checkmark-circle-icon.png" alt="green checkmark"> <span class="biggerbold">Done - Great!</span>
                 <div><strong data-bind="text: incentive"></strong></div>
             </div>
         </li>

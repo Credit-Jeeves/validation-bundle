@@ -50,6 +50,11 @@ class Tradeline extends BaseTradeline
      */
     public function prePersist()
     {
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+        $this->setIsFixed(0);
+        $this->setIsDisputed(0);
+        $this->setIsCompleted(0);
     }
 
     public static function formatTradelineForIncentive($aTradeline, $aNegative, $aDirectCheck)
