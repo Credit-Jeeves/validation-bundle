@@ -30,5 +30,6 @@ php bin/composer.phar install # --dev # requires to run tests
 cp app/config/parameters_prod.yml app/config/parameters.yml # or parameters_dev.yml
 #cp data/files/web/* web/ # it need only for dev environment
 ```
+
 Additional required configuration
 http://symfony.com/doc/current/book/installation.html#configuration-and-setup
