@@ -40,6 +40,11 @@ class Atb
      */
     private $arfReport;
 
+    /**
+     * Name normalizer
+     *
+     * @var array
+     */
     private $dataNames = array(
         'transaction_signature' => 'transaction_signature',
         'score_init' => 'scoreInit',
@@ -225,7 +230,6 @@ class Atb
                 }
             }
         }
-
         return $resultArr;
     }
 
@@ -273,6 +277,8 @@ class Atb
     {
         if ($this->catcher) {
             $this->catcher->handleException($e);
+        } else {
+            throw $e;
         }
     }
 
@@ -343,7 +349,7 @@ class Atb
                         $this->handleException(
                             new AtbException(
                                 sprintf(
-                                    "Data was missed",// TODO return back from: \nBlock: %s \nTrade lines: %s
+                                    "Data was missed", // TODO return back from: \nBlock: %s \nTrade lines: %s
                                     print_r($block, true),
                                     print_r($this->getTradeLines(), true)
                                 )
@@ -352,12 +358,10 @@ class Atb
                         continue 2;
                     }
                     break;
-
                 case 20:
                     // TODO add checks
                     $block['tr_acctnum'] = $this->cropCardNumber($block['tr_acctnum']);
                     break;
-
                 case 30:
                 case 40:
                     if (!empty($tradeLine) &&
@@ -373,12 +377,11 @@ class Atb
                         $new['banks'][] = $block['tr_subname'];
                     }
                     continue 2;
-
                 default:
                     $this->handleException(
                         new AtbException(
                             sprintf(
-                                "Unsupported type '%s'",// TODO return back \nBlocks of ATB: %s
+                                "Unsupported type '%s'", // TODO return back \nBlocks of ATB: %s
                                 $resultArr['sim_type'],
                                 print_r($resultArr, true)
                             )
@@ -420,7 +423,7 @@ class Atb
                 $this->handleException(
                     new AtbException(
                         sprintf(
-                            "Data was missed from new account",// TODO return back : %s\nBlocks of ATB:\nTrade lines: %s
+                            "Data was missed from new account", // TODO return back: %s\nBlocks of ATB:\nTrade lines: %s
                             print_r($resultArr, true),
                             print_r($this->getTradeLines(), true)
                         )

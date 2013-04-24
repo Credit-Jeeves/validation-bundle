@@ -5,5 +5,4 @@ use CreditJeeves\ExperianBundle\Exception;
 
 class Atb extends Exception
 {
-
 }
