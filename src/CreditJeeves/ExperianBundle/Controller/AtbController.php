@@ -4,9 +4,11 @@ namespace CreditJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\ExperianBundle\Atb;
+use CreditJeeves\ExperianBundle\Simulation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/atb")
@@ -19,6 +21,35 @@ class AtbController extends Controller
      */
     public function indexAction()
     {
+        if (!$this->getRequest()->isMethod('POST')) {
+            return $this->createNotFoundException('Method must be POST');
+        }
+        $result = array();
+        $this->form = new cjApplicantSimulationForm();
+        if ($this->getRequest()->get($this->form->getName())) {
+            $result = $this->processForm();
+        } elseif ($this->getRequest()->get('score')) {
+            ignore_user_abort();
+            set_time_limit(90);
+            $atbSimulation = atbSimulationTable::getInstance()->increaseScoreByX(
+                $request->getParameter('score'),
+                $this->cjApplicant
+            );
+            if ($request->getParameter('save', false)) {
+                $atbSimulation->save();
+            }
+            $result = $atbSimulation->getResultData();
+        }
+
+        return new JsonResponse($result);
+
+    }
+
+    /**
+     * @return Simulation
+     */
+    protected function getSimulation()
+    {
         /* @var $report Report */
         $report = $this->get('core.session.applicant')->getUser()->getReportsD2c()->last();
         /* @var $atb Atb */
@@ -27,7 +58,28 @@ class AtbController extends Controller
             $this->container->getParameter('experian.atb'),
             $this->get('fp_badaboom.exception_catcher')
         );
+        $simulation = new Simulation($atb);
+        return $simulation;
+    }
 
-        return array();
+    protected function processForm()
+    {
+        $request = $this->getRequest();
+        $this->form->bind($request->getParameter($this->form->getName()));
+        if ($this->form->isValid()) {
+            $input = $this->form->getValues();
+            ignore_user_abort();
+            set_time_limit(90);
+            $atbSimulation = atbSimulationTable::getInstance()->bestUseOfCash(
+                $input['best_use_of_cash'],
+                $this->cjApplicant
+            );
+            if ($request->getParameter('save', false)) {
+                $atbSimulation->save();
+            }
+            return $atbSimulation->getResultData();
+        }
+
+        return array('message' => 'Invalid');
     }
 }
