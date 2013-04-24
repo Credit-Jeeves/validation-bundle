@@ -11,17 +11,25 @@ parameters:
     mink.base_url: 'http://%server_name%/_test.php'
     server: dev
 
-    experian:
-        pidkiq_url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
-        pidkiq_userpwd: 'creditjeeves_pid_demo:ju3CVGlhX4' #required! # overwritten by DB
-        pidkiq_eai: 'HRPCX4RA' #required! # overwritten by DB
-        pidkiq_dbhost: 'PRECISE_ID_TEST' #required!
-        net_connect_url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnectDemo&serviceVersion=2.0&responseType=text/plain' #required!
-        net_connect_userpwd: 'creditjeeves_cs_demo:cAO2Ajd3f9' #required! # overwritten by DB
-        net_connect_eai: 'HRPCX4RA' #required! # overwritten by DB
-        net_connect_dbhost: 'STAR' #required!
-        atb_host: 'http://stg.creditjeeves.com:8080/'
+    experian.logging: true
 
+    experian.pidkiq:
+        url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
+        userpwd: 'creditjeeves_pid_demo:ju3CVGlhX4' #required! # overwritten by DB
+        eai: 'HRPCX4RA' #required! # overwritten by DB
+        dbhost: 'PRECISE_ID_TEST' #required!
+    experian.netConnect:
+        url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnectDemo&serviceVersion=2.0&responseType=text/plain' #required!
+        userpwd: 'creditjeeves_cs_demo:cAO2Ajd3f9' #required! # overwritten by DB
+        eai: 'HRPCX4RA' #required! # overwritten by DB
+        dbhost: 'STAR' #required!
+    experian.atb:
+        default_cash: 1000
+        skip_sim_type_400: true
+        wsdl_url: '%data.dir%/wsdl/ATBWebService.wsdl'
+        location: 'http://stg.creditjeeves.com:8080/'
+        logging: %experian.logging%
+        logs_dir: '%kernel.logs_dir%'
     authorize_net:
         login_id: '54PB5egZ'
         transaction_key: '48V258vr55AE8tcg'

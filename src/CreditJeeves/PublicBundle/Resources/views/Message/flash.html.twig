@@ -1,32 +1,21 @@
-{% extends "::base.html.twig" %}
+{% extends "CoreBundle::base.html.twig" %}
 
 {% block title 'common.messages' | trans %}
 
-{% block info %}
-<div class="user-logout">
-    <a href="{{ path('fos_user_security_login') }}">»&nbsp;{{ 'login.link' | trans }}</a>
-</div>
-{% endblock %}
-
 {% block content %}
-<div class="column-small floatleft">
-    <div class="pod-small pod-border pod-padding shadow">
-        {% include 'ComponentBundle:Video:tailored.html.twig' only %}
+    <div class="column-large">
+        <div class="pod-large pod-border pod-padding shadow">
+            {% for flashMessage in title %}
+                <h1>{{ flashMessage | raw }}</h1>
+                <div class="row-20"></div>
+            {% endfor %}
+            {% for flashMessage in text %}
+                <div class="message-body">
+                    {{ flashMessage | raw }}
+                </div>
+            {% endfor %}
+        </div>
     </div>
-</div>
-<div class="column-middle floatright">
-    <div class="pod-middle pod-border pod-padding shadow">
-        {% for flashMessage in app.session.flashbag.get('message_title') %}
-            <h1>{{ flashMessage }}</h1>
-            <div class="row-20"></div>
-        {% endfor %}
-        {% for flashMessage in app.session.flashbag.get('message_body') %}
-            <div class="message-body">
-                {{ flashMessage }}
-            </div>
-        {% endfor %}
-    </div>
-</div>
-<div class="clearboth"></div>
+    <div class="clearboth"></div>
 {% endblock %}
 

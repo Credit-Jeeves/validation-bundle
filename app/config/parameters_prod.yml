@@ -13,12 +13,7 @@ parameters:
     server: live
     server_name: my.creditjeeves.com
 
-    experian:
-        pidkiq_url: 'https://ss3.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
-        pidkiq_dbhost: 'PRECISE_ID' #required!
-        net_connect_url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnect&serviceVersion=2.0&responseType=text/plain' #required!
-        net_connect_dbhost: 'CIS' #required!
-        atb_host: 'http://stg.creditjeeves.com:8080/'
+    experian.atb.location: 'http://stg.creditjeeves.com:8080/'
 
     authorize_net:
         login_id: '29fDg7sU24G'

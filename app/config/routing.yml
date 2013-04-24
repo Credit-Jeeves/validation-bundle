@@ -1,3 +1,8 @@
+experian:
+    resource: "@ExperianBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 public:
     resource: "@PublicBundle/Controller"
     type:     annotation

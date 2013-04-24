@@ -288,7 +288,7 @@ input {
 
 form label,
 table label {
-    float: left;
+/*    float: left;*/
     color: #333333;
     font-size: 16px;
     font-weight: bold;
@@ -326,16 +326,16 @@ table label {
 
 /*match placeholder/watermark padding to border+padding for input element*/
 label.placeholder {
-cursor: text;
-padding: 4px 4px 4px 4px;
-color: #999999;
+    cursor: text;
+    padding: 4px 4px 4px 4px;
+    color: #999999;
 }
 /* html5 placeholder support */
 input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
-color:#999999;
+    color:#999999;
 }
 input:placeholder, textarea:placeholder {
-color:#999999;
+    color:#999999;
 }
 
 ::-webkit-input-placeholder {
@@ -348,8 +348,17 @@ color:#999999;
     color: #999;
 }
 
+.arrow-right {
+    background: url("/bundles/core/images/arrow-right.png") no-repeat scroll left center transparent;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-left: 27px;
+}
 
-
+.header-tabs {
+    height: 48px;
+}
 
 /*
 

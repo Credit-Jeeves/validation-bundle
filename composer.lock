@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "dd78cb06245dbce3799950c48a01983d",
+    "hash": "bf91401f98821bc88821a79a256f61a2",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "a6fc63f3e7119cde98ac9d22a15d8562e02d7f86"
+                "reference": "77492db3c48c70773d751bb889b44c167dd827b0"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-04-18 09:29:37"
+            "time": "2013-04-19 13:01:15"
         },
         {
             "name": "ajbdev/authorizenet-php-api",

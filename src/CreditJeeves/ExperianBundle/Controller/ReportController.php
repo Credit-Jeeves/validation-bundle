@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\CoreBundle\Controller;
+namespace CreditJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Enum\ReportType;
@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\DiExtraBundle\Annotation as DI;
-use CreditJeeves\CoreBundle\Experian\NetConnect;
+use CreditJeeves\ExperianBundle\NetConnect;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +24,7 @@ class ReportController extends Controller
     protected $reportType = ReportType::PREQUAL;
 
     /**
-     * @var NetConnect
+     * @var \CreditJeeves\ExperianBundle\NetConnect
      */
     protected $netConnect;
 
@@ -112,7 +112,7 @@ class ReportController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "netConnect" = @DI\Inject("core.experian.net_connect")
+     *     "netConnect" = @DI\Inject("experian.net_connect")
      * })
      */
     public function setNetConnect(NetConnect $netConnect)

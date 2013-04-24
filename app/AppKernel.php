@@ -61,6 +61,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
+            new CreditJeeves\ExperianBundle\ExperianBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -89,6 +90,7 @@ class AppKernel extends Kernel
         $parameters = parent::getKernelParameters();
         $parameters['project.root'] = dirname($this->getRootDir());
         $parameters['web.dir'] = $parameters['project.root'] . '/web';
+        $parameters['data.dir'] = $parameters['project.root'] . '/data';
         $parameters['web.upload.dir'] = $parameters['web.dir'] . '/uploads';
         return $parameters;
     }
@@ -114,7 +116,7 @@ class AppKernel extends Kernel
 
         // prod env
         if ('dev' != $this->getEnvironment()) {
-            $recipients = array('66ton99@gmail.com', 'systems@creditjeeves.com', 'alex.emelyanov.ua@gmail.com');
+            $recipients = array('forma@66ton99.org.ua, systems@creditjeeves.com, alex.emelyanov.ua@gmail.com');
 
             $this->chainNodeManager->addProvider('default', new ExceptionSubjectProvider());
             $this->chainNodeManager->addProvider('default', new ExceptionSummaryProvider());

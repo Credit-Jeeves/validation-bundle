@@ -3,11 +3,11 @@ namespace CreditJeeves\TestBundle\Experian;
 
 use JMS\DiExtraBundle\Annotation as DI;
 
-require_once __DIR__ . '/../../CoreBundle/Experian/Pidkiq.php';
+require_once __DIR__ . '/../../ExperianBundle/Pidkiq.php';
 require_once __DIR__ . '/../../../../vendor/CreditJeevesSf1/lib/experian/pidkiq/PidkiqTest.class.php';
 
 /**
- * @DI\Service("core.experian.pidkiq")
+ * @DI\Service("experian.pidkiq")
  */
 class PidkiqTest extends \PidkiqTest
 {

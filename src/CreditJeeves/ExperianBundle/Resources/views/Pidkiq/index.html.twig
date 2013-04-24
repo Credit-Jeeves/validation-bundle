@@ -1,0 +1,43 @@
+{% extends "CoreBundle::base.html.twig" %}
+
+{% block content %}
+
+    {% if form %}
+        {% form_theme form '::form_cj_layout.html.twig' %}
+        <div class="column-middle floatleft">
+            <div class="pod-middle pod-border pod-padding shadow">
+                <h2>{{ 'pidkiq.title' | trans }}</h2>
+                <div class="row-20"></div>
+                <form class="pidkiq-questions" action="" method="post" {{ form_enctype(form) }}>
+                    <p>{{ 'pidkiq.why.subtitle' | trans }}</p>
+                    {{ form_widget(form) }}
+                    <div class="row-20"></div>
+                    <div class="form-row">
+                        <button type="submit" class="button large green">{{ 'common.submit' | trans }}</button>
+                    </div>
+                </form>
+                <div class="clearboth"></div>
+            </div>
+        </div>
+        <div class="column-small floatright">
+            <div class="pod-small pod-border pod-padding shadow">
+                <h3>{{ 'pidkiq.why.title' | trans }}</h3>
+                <p class="spaced-text">
+                    {{ 'pidkiq.why.text1' | trans }}
+                </p>
+                <p class="spaced-text">
+                    {{ 'pidkiq.why.text2' | trans }}
+                </p>
+                <div class="clearboth"></div>
+            </div>
+        </div>
+        <div class="clearboth"></div>
+    {% else %}
+        <div class="column-large">
+            <div class="pod-large pod-border pod-padding shadow">
+                {{ include('CoreBundle::reLoader.html.twig') }}
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -31,7 +31,7 @@ class Applicant extends User
     }
 
     /**
-     * @return CreditJeeves\DataBundle\Entity\User
+     * @return \CreditJeeves\DataBundle\Entity\User
      */
     public function getUser()
     {
