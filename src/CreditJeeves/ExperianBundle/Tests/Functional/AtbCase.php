@@ -35,7 +35,7 @@ class AtbCase extends BaseTestCase
      * @depends increaseScoreByX
      * @test
      */
-    public function increaseScoreByX_error()
+    public function increaseScoreByXError()
     {
         $data = file_get_contents(
             self::getContainer()->getParameter('data.dir') . '/experian/netConnect/Response2.arf'
@@ -75,7 +75,7 @@ class AtbCase extends BaseTestCase
      * @depends bestUseOfCash
      * @test
      */
-    public function bestUseOfCash_error()
+    public function bestUseOfCashError()
     {
         $data = file_get_contents(self::getContainer()->getParameter('data.dir') . '/experian/netConnect/Response.arf');
         $atb = new Atb(
