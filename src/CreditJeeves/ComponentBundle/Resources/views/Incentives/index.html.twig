@@ -43,7 +43,7 @@
             <!-- /ko -->
             <div class="green"><img src="/bundles/core/images/green-arrow.png" alt="green arrow">
               <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
-              <span>If this is a valid issue, select "Pay." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133308-pay-down-your-balances"><span class="double-arrow">&raquo;</span> Learn more</a>
+              <span>If this is a valid issue, select "Pay." Otherwise, select "Dispute."</span> <a class="lightbox-anywhere" href="http://creditjeeves.uservoice.com/knowledgebase/articles/133308-pay-down-your-balances"><span class="double-arrow">&raquo;</span> {{ 'common.learn.more' | trans }}</a>
               <!-- /ko -->
               <!-- ko if: is_fixed -->
               <span data-bind="i18n: { BANK: tr_subname, ACCOUNT: tr_acctnum, DIFF: diff}">Pay $%DIFF% or more towards your %BANK% account %ACCOUNT%.</span>
@@ -52,7 +52,7 @@
               <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
               <!-- /ko -->
               <!-- ko if: is_completed -->
-              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <span>{{ 'incentive.account.update' | trans }}&nbsp;{{ 'common.learn.more' | trans }}</span>
               <!-- /ko -->
             </div>
           <!-- /ko -->
@@ -81,7 +81,7 @@
               <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
               <!-- /ko -->
               <!-- ko if: is_completed -->
-              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <span>{{ 'incentive.account.update' | trans }}&nbsp;{{ 'common.learn.more' | trans }}</span>
               <!-- /ko -->
             </div>
           <!-- /ko -->
@@ -110,7 +110,7 @@
               <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
               <!-- /ko -->
               <!-- ko if: is_completed -->
-              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <span>{{ 'incentive.account.update' | trans }}&nbsp;{{ 'common.learn.more' | trans }}</span>
               <!-- /ko -->
             </div>
           <!-- /ko -->
@@ -139,7 +139,7 @@
               <span>Follow our <a target="_blank" href="http://www.creditjeeves.com/educate/understand-your-credit-score/credit-categories/challenge-process">step by step guide</a> to start the disputing process.</span>
               <!-- /ko -->
               <!-- ko if: is_completed -->
-              <span>You may be able to update your credit profile in 24-48 hours. Learn More</span>
+              <span>{{ 'incentive.account.update' | trans }}&nbsp;{{ 'common.learn.more' | trans }}</span>
               <!-- /ko -->
             </div>
           <!-- /ko -->
@@ -148,16 +148,16 @@
         <div class="action-box box">
           <strong>Take Action:</strong>
           <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
-          <div><a class="fixed"     data-bind="attr: { id: 'fixed-' + id }, text: action" href="#">Pay</a></div>
-          <div><a class="disputed"  data-bind="attr: { id: 'disputed-' + id }"            href="#">Dispute</a></div>
+          <div><a class="fixed"     data-bind="attr: { id: 'fixed-' + id }, text: action" href="#">{{ 'incentive.account.pay' | trans }}</a></div>
+          <div><a class="disputed"  data-bind="attr: { id: 'disputed-' + id }"            href="#">{{ 'incentive.account.dispute' | trans }}</a></div>
           <!-- /ko -->
           <!-- ko if: is_fixed -->
-          <div><a class="completed" data-bind="attr: { id: 'completed-' + id }"        href="#">Completed</a></div>
-          <div><a class="rollback"  data-bind="attr: { id: 'undo-fixed-' + id }"       href="#">Undo</a></div>
+          <div><a class="completed" data-bind="attr: { id: 'completed-' + id }"        href="#">{{ 'incentive.account.completed' | trans }}</a></div>
+          <div><a class="rollback"  data-bind="attr: { id: 'undo-fixed-' + id }"       href="#">{{ 'incentive.account.undo' | trans }}</a></div>
           <!-- /ko -->
           <!-- ko if: is_disputed -->
-          <div><a class="completed" data-bind="attr: { id: 'completed-' + id }"        href="#">Completed</a></div>
-          <div><a class="rollback"  data-bind="attr: { id: 'undo-disputed-' + id }"    href="#">Undo</a></div>
+          <div><a class="completed" data-bind="attr: { id: 'completed-' + id }"        href="#">{{ 'incentive.account.completed' | trans }}</a></div>
+          <div><a class="rollback"  data-bind="attr: { id: 'undo-disputed-' + id }"    href="#">{{ 'incentive.account.undo' | trans }}</a></div>
           <!-- /ko -->
         </div>
       </li>
@@ -179,7 +179,7 @@
             </div>
             <div class="step-box box">
                 <strong class="biggerbold" data-bind="text: title"></strong>
-                Potential Impact:
+                {{ 'incentive.account.impact' | trans }}:
                 <div data-bind="text: points + ' Points'"></div>
             </div>
             <div class="action-text-box-finished box">
@@ -194,7 +194,7 @@
                       Tradeline was fixed.&nbsp;
                     <!-- /ko -->
                   <!-- /ko -->  
-                  You may be able to update your credit profile in 24-48 hours. Lean More
+                  {{ 'incentive.account.update' | trans }}&nbsp;<a href="">{{ 'common.learn.more' | trans }}</a>
                   </div>
               </div>
             <div class="action-box-finished box">

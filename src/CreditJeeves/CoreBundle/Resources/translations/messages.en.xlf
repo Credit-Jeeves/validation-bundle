@@ -751,6 +751,28 @@
                 <source>incentive.account.high.disputed</source>
                 <target>You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</target>
             </trans-unit>
+            <trans-unit id="incentive.account.pay">
+                <source>incentive.account.pay</source>
+                <target>Pay</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.dispute">
+                <source>incentive.account.dispute</source>
+                <target>Dispute</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.undo">
+                <source>incentive.account.undo</source>
+                <target>Undo</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.completed">
+                <source>incentive.account.completed</source>
+                <target>Completed</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.update">
+                <source>incentive.account.update</source>
+                <target>You may be able to update your credit profile in 24-48 hours.</target>
+            </trans-unit>
+            
+            
 
             
         </body>

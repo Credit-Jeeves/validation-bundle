@@ -39,9 +39,7 @@
     {% block header %}{% endblock %}
     {% include 'CoreBundle:Lightbox:index.html.twig' only %}
 <div class="header">
-    <div class="site-logo">
-        <img alt="" src="{{ asset('bundles/core/images/logo/logo.png') }}">
-    </div>
+    <div class="site-logo"></div>
     <div class="info-block">
         {% block info %}
             {% include '::userLogout.html.twig' %}
