@@ -1,0 +1,51 @@
+.status-icon-box {
+  width:45px;
+}
+
+.item-status-pod .action-text-box-finished {
+  width:413px;
+  border-right: 1px solid #ccc;
+  margin-right:15px;
+  padding-right:15px;
+}
+.item-status-pod .action-box-finished {
+  width:190px;
+  font-weight: bold;
+}
+.checkmark-icon {
+  vertical-align: top;
+}
+.item-status-pod .action-text-box {
+  width:520px;
+  border-right:1px solid #ccc;
+  margin-right:20px;
+  padding-right:15px;
+}
+.item-status-pod .step-box {
+  width:122px;
+  margin-right:20px;
+}
+
+.status-icon {
+  color:white;
+  padding:7px 0 0 8px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  font-size: 12px;
+  border:1px solid white;
+  height:23px;
+  width:22px;
+}
+
+.collection-status.status-icon {
+  background: #333333;
+}
+
+.late-payment-status.status-text {
+  color:#ff6600;
+  font-weight: 600;
+}
+
+.grey {
+  color: #999999;
+}

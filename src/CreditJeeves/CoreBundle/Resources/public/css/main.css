@@ -95,8 +95,11 @@ h5 {
 }
 
 .site-logo {
-  float: left;
-  height: 120px;
+    background-image: url("/bundles/core/images/logo/logo.png");
+    background-position: 10px center;
+    float: left;
+    height: 110px;
+    width: 338px;
 }
 .info-block {
   float: right;
@@ -301,7 +304,7 @@ table label {
 }
 
 .dealer-name {
-    top: 135px;
+    top: 110px;
     color: #659E01;
     font-family: astoria-medium;
     font-size: 24px;
@@ -357,7 +360,6 @@ input:placeholder, textarea:placeholder {
 }
 
 .header-tabs {
-    height: 48px;
 }
 
 /*

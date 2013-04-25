@@ -618,6 +618,11 @@
                 <source>leads.select.title</source>
                 <target>You have following Leads</target>
             </trans-unit>
+            <trans-unit id="leads.select.target">
+                <source>leads.select.target</source>
+                <target>Select Target</target>
+            </trans-unit>
+            
 
             <trans-unit id="pidkiq.error.timeout">
                 <source>pidkiq.error.timeout-%SUPPORT_EMAIL%</source>
@@ -732,6 +737,49 @@
                 <source>user.dob.confirm</source>
                 <target>Please re-enter your date of birth so we can verify your identity.</target>
             </trans-unit>
+
+            <trans-unit id="incentive.account.negative">
+                <source>incentive.account.negative</source>
+                <target>Potentially Negative Items</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.impact">
+                <source>incentive.account.impact</source>
+                <target>Potential Impact</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.high.original">
+                <source>incentive.account.high.original</source>
+                <target>The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.high.fixed">
+                <source>incentive.account.high.fixed</source>
+                <target>The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.high.disputed">
+                <source>incentive.account.high.disputed</source>
+                <target>You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.pay">
+                <source>incentive.account.pay</source>
+                <target>Pay</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.dispute">
+                <source>incentive.account.dispute</source>
+                <target>Dispute</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.undo">
+                <source>incentive.account.undo</source>
+                <target>Undo</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.completed">
+                <source>incentive.account.completed</source>
+                <target>Completed</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.update">
+                <source>incentive.account.update</source>
+                <target>You may be able to update your credit profile in 24-48 hours.</target>
+            </trans-unit>
+            
+            
 
             <trans-unit id="exception.error.title">
                 <source>exception.error.title-%%STATUS_TEXT%%</source>
