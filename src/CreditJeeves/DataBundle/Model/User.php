@@ -7,7 +7,7 @@ use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use CreditJeeves\DataBundle\Entity\Lead;
-use CreditJeeves\DataBundle\Entity\Report;
+//use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Vehicle;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -206,6 +206,26 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Tradeline",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $tradelines;
+    
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\ApplicantIncentive",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $incentives;
+
+    /**
+     * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Order",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
@@ -262,6 +282,21 @@ abstract class User extends BaseUser
      * )
      */
     protected $pidkiqs;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->reportsPrequal = new ArrayCollection();
+        $this->reportsD2c = new ArrayCollection();
+        $this->scores = new ArrayCollection();
+        $this->orders = new ArrayCollection();
+        $this->user_leads = new ArrayCollection();
+        $this->dealer_leads = new ArrayCollection();
+        $this->groups = new ArrayCollection();
+        $this->pidkiqs = new ArrayCollection();
+        $this->incentives = new ArrayCollection();
+        $this->tradelines = new ArrayCollection();
+    }
 
     /**
      * Get id

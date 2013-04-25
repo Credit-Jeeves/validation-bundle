@@ -26,8 +26,9 @@
   font-weight: normal;
   font-size: 18px;
   color: #333;
-  margin-top: 6px;
+  margin-top: 2px;
   margin-left: 40px;
+  font-family: "Helvetica Nue", HelveticaNue, helvetica-nue, Helvetica, Arial;
 }
 
 .login-input {
