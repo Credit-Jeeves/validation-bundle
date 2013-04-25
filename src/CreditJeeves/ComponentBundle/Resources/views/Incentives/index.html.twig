@@ -15,7 +15,7 @@
 <!-- ko if: countTradelines() -->
 <div class='pod pod-full item-status-pod last'>
   <!-- ko if: aNegativeTradelines().length -->
-  <h3>Potentially Negative Items</h3>
+  <h3>{{ 'incentive.account.negative' | trans }}</h3>
   <div class="action-steps" id="action-steps">
     <ul class="zebra-stripe">
       <!-- ko foreach: { data: aNegativeTradelines() } -->
@@ -26,20 +26,20 @@
         </div>
         <div class="step-box box">
           <strong class="biggerbold" data-bind="text: title"></strong><br>
-              Potential Impact:
+              {{ 'incentive.account.impact' | trans }}:
           <div data-bind="text: points + ' Points'"></div>
         </div>
         <div class="action-text-box box">
 
           <!-- ko if: 'high' == display -->
             <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
-            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">The balance of your <!--ko text: tr_subname --><!--/ko--> account <!--ko text: tr_acctnum --><!--/ko--> shows a balance of $<!--ko text: tr_balance --><!--/ko-->.</div>
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">{{ 'incentive.account.high.original' | trans }}</div>
             <!-- /ko -->
             <!-- ko if: is_fixed -->
-            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</div>
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">{{ 'incentive.account.high.fixed' | trans }}</div>
             <!-- /ko -->
             <!-- ko if: is_disputed -->
-            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</div>
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname,  ACCOUNT: tr_acctnum }">{{ 'incentive.account.high.disputed' | trans }}</div>
             <!-- /ko -->
             <div class="green"><img src="/bundles/core/images/green-arrow.png" alt="green arrow">
               <!-- ko ifnot: is_fixed || is_disputed || is_completed -->

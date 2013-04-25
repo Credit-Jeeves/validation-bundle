@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\DataBundle\Entity\Lead;
+use CreditJeeves\DataBundle\Entity\Tradeline;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
@@ -73,7 +74,7 @@ class HomepageController extends Controller
      *
      * @return array
      */
-    public function someAction()
+    public function incentiveAction()
     {
         $aResult = array('id' => 0, 'incentive' => '');
         $request = $this->get('request');
@@ -110,18 +111,47 @@ class HomepageController extends Controller
 
     private function changeTradelinesStatus($oApplicantTradeline)
     {
+        $this->checkLeadsTradeline($oApplicantTradeline);
         $sTradelineHash = $oApplicantTradeline->getTradeline();
         $tradelines = $this->
             getDoctrine()->
             getRepository('DataBundle:Tradeline')->
             findBy(array('tradeline' => $sTradelineHash));
+        $em = $this->getDoctrine()->getManager();
         foreach ($tradelines as $tradeline) {
             $tradeline->setIsFixed($oApplicantTradeline->getIsFixed());
             $tradeline->setIsDisputed($oApplicantTradeline->getIsDisputed());
             $tradeline->setIsCompleted($oApplicantTradeline->getIsCompleted());
-            $em = $this->getDoctrine()->getManager();
+            
             $em->persist($tradeline);
             $em->flush();
+        }
+    }
+
+    private function checkLeadsTradeline($oApplicantTradeline)
+    {
+        $User   = $this->get('core.session.applicant')->getUser();
+        $Leads      = $User->getUserLeads();
+        foreach ($Leads as $Lead) {
+            $isExist = $this->
+                getDoctrine()->
+                getRepository('DataBundle:Tradeline')->
+                findOneBy(
+                    array(
+                        'cj_group_id' => $Lead->getCjGroupId(),
+                        'tradeline' => $oApplicantTradeline->getTradeline()
+                        )
+                );
+            if (empty($isExist)) {
+                $em = $this->getDoctrine()->getManager();
+                $tradeline = new Tradeline();
+                $tradeline->setCjGroupId($Lead->getCjGroupId());
+                $tradeline->setUser($Lead->getUser());
+                $tradeline->setTradeline($oApplicantTradeline->getTradeline());
+                $tradeline->setStatus($oApplicantTradeline->getStatus());
+                $em->persist($tradeline);
+                $em->flush();
+            }
         }
     }
 }

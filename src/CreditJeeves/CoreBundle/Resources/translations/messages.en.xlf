@@ -731,6 +731,27 @@
                 <target>Please re-enter your date of birth so we can verify your identity.</target>
             </trans-unit>
 
+            <trans-unit id="incentive.account.negative">
+                <source>incentive.account.negative</source>
+                <target>Potentially Negative Items</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.impact">
+                <source>incentive.account.impact</source>
+                <target>Potential Impact</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.high.original">
+                <source>incentive.account.high.original</source>
+                <target>The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.high.fixed">
+                <source>incentive.account.high.fixed</source>
+                <target>The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</target>
+            </trans-unit>
+            <trans-unit id="incentive.account.high.disputed">
+                <source>incentive.account.high.disputed</source>
+                <target>You will need to contact the credit bureaus to file a formal dispute for the %BANK% %ACCOUNT% account.</target>
+            </trans-unit>
+
             
         </body>
     </file>
