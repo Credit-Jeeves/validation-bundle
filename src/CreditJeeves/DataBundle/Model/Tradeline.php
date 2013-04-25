@@ -179,8 +179,8 @@ abstract class Tradeline
      */
     public function setIsFixed($isFixed)
     {
-      $this->is_fixed = $isFixed;
-      return $this;
+        $this->is_fixed = $isFixed;
+        return $this;
     }
 
     /**
@@ -190,7 +190,7 @@ abstract class Tradeline
      */
     public function getIsFixed()
     {
-      return $this->is_fixed;
+        return $this->is_fixed;
     }
 
     /**

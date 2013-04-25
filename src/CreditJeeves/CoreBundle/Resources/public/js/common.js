@@ -42,4 +42,25 @@ $(document).ready(function(){
   
   jQuery('.user-ssn').ssn();
 
+  
+  
 });
+
+ko.bindingHandlers.i18n = {
+    init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+      // This will be called when the binding is first applied to an element
+      // Set up any initial state, event handlers, etc. here
+      var str = $(element).html();
+      var args = valueAccessor();
+      for (var val in args) {
+        if (!args.hasOwnProperty(val)) continue;
+        str = str.replace(new RegExp('%' + val + '%', "g"), args[val]);
+      }
+      $(element).html(str);
+    },
+    update: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+        // This will be called once when the binding is first applied to an element,
+        // and again whenever the associated observable changes value.
+        // Update the DOM element based on the supplied values here.
+    }
+};    

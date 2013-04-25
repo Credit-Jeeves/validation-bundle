@@ -81,32 +81,47 @@ class HomepageController extends Controller
         $nTradelineId = $request->get('tradeline');
         $sAction      = $request->get('do_action');
         if (empty($nTradelineId) || empty($sAction)) {
-          return new JsonResponse('error');
+            return new JsonResponse('error');
         }
         $oApplicantTradeline = $this->getDoctrine()->getRepository('DataBundle:Tradeline')->find($nTradelineId);
         switch ($sAction) {
-          case 'fixed':
-             $oApplicantTradeline->setIsFixed(true);
-            break;
-          case 'disputed':
-            $oApplicantTradeline->setIsDisputed(true);
-            break;
-          case 'completed':
-            $oApplicantTradeline->setIsCompleted(true);
-            break;
-          case 'rollback':
-            $oApplicantTradeline->setIsFixed(false);
-            $oApplicantTradeline->setIsDisputed(false);
-            break;
+            case 'fixed':
+                $oApplicantTradeline->setIsFixed(true);
+                break;
+            case 'disputed':
+                $oApplicantTradeline->setIsDisputed(true);
+                break;
+            case 'completed':
+                $oApplicantTradeline->setIsCompleted(true);
+                break;
+            case 'rollback':
+                $oApplicantTradeline->setIsFixed(false);
+                $oApplicantTradeline->setIsDisputed(false);
+                break;
         }
         $em = $this->getDoctrine()->getManager();
         $em->persist($oApplicantTradeline);
         $em->flush();
-        
+        $this->changeTradelinesStatus($oApplicantTradeline);
         $aResult['id'] = $oApplicantTradeline->getId();
-        $aResult['incentive'] = '******';//$oApplicantTradeline->getCjApplicantIncentives()->getCjGroupIncentives()->getText();
-//         $this->renderText(json_encode($aResult));        
-        
+        $aResult['incentive'] = '';
         return new JsonResponse($aResult);
+    }
+
+    private function changeTradelinesStatus($oApplicantTradeline)
+    {
+        $sTradelineHash = $oApplicantTradeline->getTradeline();
+        $tradelines = $this->
+            getDoctrine()->
+            getRepository('DataBundle:Tradeline')->
+            findBy(array('tradeline' => $sTradelineHash));
+        foreach ($tradelines as $tradeline) {
+            $tradeline->setIsFixed($oApplicantTradeline->getIsFixed());
+            $tradeline->setIsDisputed($oApplicantTradeline->getIsDisputed());
+            $tradeline->setIsCompleted($oApplicantTradeline->getIsCompleted());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($tradeline);
+            $em->flush();
+        }
     }
 }

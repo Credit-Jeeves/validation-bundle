@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('bundles/core/js/i18n.js') }}" type="text/javascript"></script>
+    
     <script src="{{ asset('bundles/component/js/incentives.js') }}" type="text/javascript"></script>
 {% endblock %}
 
@@ -33,7 +33,7 @@
 
           <!-- ko if: 'high' == display -->
             <!-- ko ifnot: is_fixed || is_disputed || is_completed -->
-            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</div>
+            <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">The balance of your <!--ko text: tr_subname --><!--/ko--> account <!--ko text: tr_acctnum --><!--/ko--> shows a balance of $<!--ko text: tr_balance --><!--/ko-->.</div>
             <!-- /ko -->
             <!-- ko if: is_fixed -->
             <div class="action-text" data-bind="i18n: { BANK: tr_subname, BALANCE: tr_balance, ACCOUNT: tr_acctnum}">The balance of your %BANK% account %ACCOUNT% shows a balance of $%BALANCE%.</div>
@@ -194,7 +194,7 @@
                       Tradeline was fixed.&nbsp;
                     <!-- /ko -->
                   <!-- /ko -->  
-                  You may be able to update your credit profile in 24-48 hours. <?php echo linkToUservoice('Learn More', 'knowledgebase/articles/150721-credit-jeeves-instascore', array('i18n' => 'global')) ?>
+                  You may be able to update your credit profile in 24-48 hours. Lean More
                   </div>
               </div>
             <div class="action-box-finished box">

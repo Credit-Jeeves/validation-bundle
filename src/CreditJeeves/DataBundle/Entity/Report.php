@@ -80,7 +80,6 @@ class Report extends BaseReport
     public function getApplicantDirectCheck()
     {
         $arfDirectCheck = new ArfDirectCheck($this->getArfArray());
-
         return $arfDirectCheck->getDirectCheck();
     }
 
@@ -90,7 +89,6 @@ class Report extends BaseReport
     public function getCreditSummary()
     {
         $arfSummaryInfo = new ArfSummary($this->getArfArray());
-
         return $arfSummaryInfo->getSummaryInfo();
     }
 
@@ -100,10 +98,18 @@ class Report extends BaseReport
     public function getTradelaineCollections($isSecurity = true)
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
-
         return $arfTradeLines->getCollections($isSecurity);
     }
 
+    /**
+     * @return array
+     */
+    public function getApplicantTradeLines($isSecurity = true)
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return $arfTradeLines->getAllTradelines($isSecurity);
+    }
+    
     /**
      * @return array
      */
@@ -219,10 +225,8 @@ class Report extends BaseReport
         } else {
             $aEmployments = $aResult;
         }
-
         return $aEmployments;
     }
-
 
     /**
      * @return array

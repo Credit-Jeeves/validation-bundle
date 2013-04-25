@@ -25,7 +25,6 @@ class Doctrine
         $entity = $eventArgs->getEntity();
         if ($entity instanceof ReportPrequal) {
             $this->setScore($entity, $em);
-            $this->setTradelines($entity, $em);
         }
     }
 
@@ -41,16 +40,5 @@ class Doctrine
         $score->setUser($Report->getUser());
         $score->setScore($newScore);
         $em->persist($score);
-    }
-
-    private function setTradelines(ReportPrequal $Report, $em)
-    {
-        $arfArray = $Report->getArfArray();
-        // apply incentives
-        $oArfTradelines = new ArfTradeLines($Report->getArfArray());
-        $aTradelines    = $oArfTradelines->getAllTradelines(false);
-        $aNegativeCodes = $oArfTradelines->getNegativeCodes();
-//         $oApplicantTradelines = new ApplicantTradelines();
-//         $oApplicantTradelines->applyIncentives($aTradelines, $aNegativeCodes, $nApplicantId, $nGroupId);        
     }
 }
