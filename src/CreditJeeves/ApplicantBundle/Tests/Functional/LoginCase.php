@@ -6,7 +6,7 @@ use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  */
-class LoginTestCase extends BaseTestCase
+class LoginCase extends BaseTestCase
 {
     protected $fixtures = array(
         '001_cj_account_group.yml',
@@ -26,7 +26,6 @@ class LoginTestCase extends BaseTestCase
     public function userCanLogin()
     {
         $this->load($this->fixtures, true);
-        $this->getMink()->setDefaultSessionName('selenium2');
         $this->login('emilio@example.com', 'pass');
     }
 
@@ -37,16 +36,6 @@ class LoginTestCase extends BaseTestCase
      */
     public function wrongPassword()
     {
-        $this->load($this->fixtures, true);
-        $this->getMink()->setDefaultSessionName('goutte');
         $this->login('emilio@example.com', '123');
-    }
-
-    /**
-     * @test
-     */
-    public function userMustBeBlockedAfterFewFails()
-    {
-        $this->markTestIncomplete('TODO finish');
     }
 }

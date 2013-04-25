@@ -1,0 +1,13 @@
+{% extends "CoreBundle::base.html.twig" %}
+
+{% block title 'exception.error.title-%%STATUS_TEXT%%' | trans({'%%STATUS_TEXT%%' : status_text}) %}
+
+{% block content %}
+    <div class="column-large">
+        <h1>{{ 'exception.error.h1' | trans }}</h1>
+        <h2>
+            {{ 'exception.error.text-%%STATUS_CODE%%-%%STATUS_TEXT%%' | trans({'%%STATUS_CODE%%' : status_code, '%%STATUS_TEXT%%' : status_text}) }}
+        </h2>
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}

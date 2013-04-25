@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\CoreBundle\Controller;
+namespace CreditJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Enum\ReportType;
@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\DiExtraBundle\Annotation as DI;
-use CreditJeeves\CoreBundle\Experian\NetConnect;
+use CreditJeeves\ExperianBundle\NetConnect;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +24,7 @@ class ReportController extends Controller
     protected $reportType = ReportType::PREQUAL;
 
     /**
-     * @var NetConnect
+     * @var \CreditJeeves\ExperianBundle\NetConnect
      */
     protected $netConnect;
 
@@ -57,10 +57,7 @@ class ReportController extends Controller
 
     protected function getArf()
     {
-        require_once __DIR__.'/../sfConfig.php';
-        \sfConfig::fill($this->container->getParameter('experian'), 'global_experian');
-        \sfConfig::set('global_host', $this->container->getParameter('server_name'));
-        $this->netConnect->execute();
+        $this->netConnect->execute($this->container);
         return $this->netConnect->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
 
@@ -100,9 +97,8 @@ class ReportController extends Controller
                 try {
                     $this->saveArf();
                 } catch (\Exception $e) {
-                    throw $e;
                     $session->set('cjIsArfProcessing', false);
-//                        fpErrorNotifier::getInstance()->handler()->handleException($e);
+                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     return new JsonResponse('fatal error');
                 }
                 return new JsonResponse('finished');
@@ -116,7 +112,7 @@ class ReportController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "netConnect" = @DI\Inject("core.experian.net_connect")
+     *     "netConnect" = @DI\Inject("experian.net_connect")
      * })
      */
     public function setNetConnect(NetConnect $netConnect)

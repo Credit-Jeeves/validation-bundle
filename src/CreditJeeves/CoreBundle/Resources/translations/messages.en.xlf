@@ -171,7 +171,10 @@
                 <source>common.applicant.tos</source>
                 <target>You understand that by clicking on the I AGREE button immediately following this notice, you are providing ‘written instructions’ to Credit Jeeves, LLC under the Fair Credit Reporting Act authorizing Credit Jeeves, LLC to obtain information from your personal credit profile or other information from Experian. You authorize Credit Jeeves, LLC to obtain such information solely to authenticate your identity, provide you with your score and aggregated credit information, and prequalify you for loan options. You understand that your authorization will permit Credit Jeeves, LLC to obtain your personal consumer credit profile at account set up, and periodically as needed for as long as you are deemed a member of this website for the aforementioned purposes. If at any time you desire to terminate your authorization and written instructions to permit Credit Jeeves, LLC to continue to obtain your personal consumer credit profile, you may do so by contacting Credit Jeeves Support at help@creditjeeves.com. </target>
             </trans-unit>
-            
+            <trans-unit id="common.submit">
+                <source>common.submit</source>
+                <target>Submit</target>
+            </trans-unit>
             
             
             
@@ -657,6 +660,10 @@
                 <source>pidkiq.why.title</source>
                 <target>Why do I need to do this?</target>
             </trans-unit>
+            <trans-unit id="pidkiq.why.subtitle">
+                <source>pidkiq.why.subtitle</source>
+                <target>Please answer the following questions.</target>
+            </trans-unit>
             <trans-unit id="pidkiq.why.text1">
                 <source>pidkiq.why.text1</source>
                 <target>In order to verify you have access to the credit information associated with the identity you provided, we ask a few questions that only the identity owner would know.</target>
@@ -774,6 +781,18 @@
             
             
 
+            <trans-unit id="exception.error.title">
+                <source>exception.error.title-%%STATUS_TEXT%%</source>
+                <target>An Error Occurred: %%STATUS_TEXT%%</target>
+            </trans-unit>
+            <trans-unit id="exception.error.h1">
+                <source>exception.error.h1</source>
+                <target>Oops! An Error Occurred</target>
+            </trans-unit>
+            <trans-unit id="exception.error.text">
+                <source>exception.error.text-%%STATUS_CODE%%-%%STATUS_TEXT%%</source>
+                <target>The server returned a "%%STATUS_CODE%% %%STATUS_TEXT%%".</target>
+            </trans-unit>
             
         </body>
     </file>

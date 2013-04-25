@@ -1,0 +1,25 @@
+{% use "form_div_layout.html.twig" %}
+
+{% block form_row %}
+    {% spaceless %}
+        <div class="form-row">
+            {{ form_label(form, label|default(null)) }}
+            {{ form_errors(form) }}
+            {{ form_widget(form) }}
+        </div>
+    {% endspaceless %}
+{% endblock form_row %}
+
+
+{% block choice_widget_expanded %}
+    {% spaceless %}
+        <div class="children" {{ block('widget_container_attributes') }}>
+            {% for child in form %}
+                <div class="field">
+                    {{ form_widget(child) }}
+                    {{ form_label(child) }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endspaceless %}
+{% endblock choice_widget_expanded %}

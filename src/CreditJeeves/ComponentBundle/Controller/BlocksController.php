@@ -23,6 +23,6 @@ class BlocksController extends Controller
         return array(
             'sEmail' => $sEmail,
             'sGroup' => $sGroup,
-            );
+        );
     }
 }

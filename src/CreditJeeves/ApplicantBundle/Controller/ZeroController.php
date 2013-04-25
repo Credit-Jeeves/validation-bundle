@@ -20,9 +20,7 @@ class ZeroController extends Controller
      */
     public function indexAction()
     {
-        $sEmail = $this->getUser()->getEmail();
-        return array(
-             'sEmail' => $sEmail
-            );
+        var_dump(get_class($this->get('experian.pidkiq')));
+        return array();
     }
 }

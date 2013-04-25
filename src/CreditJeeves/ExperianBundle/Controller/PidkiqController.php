@@ -1,7 +1,8 @@
 <?php
-namespace CreditJeeves\CoreBundle\Controller;
+namespace CreditJeeves\ExperianBundle\Controller;
 
-use CreditJeeves\CoreBundle\Experian\Pidkiq as PidkiqApi;
+use CreditJeeves\CoreBundle\Form\Type\QuestionsType;
+use CreditJeeves\ExperianBundle\Pidkiq as PidkiqApi;
 use CreditJeeves\DataBundle\Entity\Pidkiq;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
@@ -10,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -31,7 +33,7 @@ class PidkiqController extends Controller
     protected $error = '';
 
     /**
-     * @var
+     * @var \Symfony\Component\Form\Form
      */
     protected $form = '';
 
@@ -58,7 +60,7 @@ class PidkiqController extends Controller
         $checkSum = md5(serialize($this->getUser()->getArrayForPidkiq()));
         if ($model) {
             $currentDate = new \DateTime();
-            $dateOfModel = new \DateTime($model->getUpdatedAt());
+            $dateOfModel = $model->getUpdatedAt();
             $dateOfModel->modify('+5 minutes');
             if (!$model->getCheckSumm() || ($dateOfModel >= $currentDate && $model->getCheckSumm() == $checkSum)) {
                 return $model;
@@ -89,7 +91,8 @@ class PidkiqController extends Controller
             $em->persist($pidiqModel);
             $em->flush();
 
-            $questions = $this->pidkiqApi->getResponseOnUserData($this->account);
+            $this->pidkiqApi->execute($this->container);
+            $questions = $this->pidkiqApi->getResponseOnUserData($this->getUser());
 
             $pidiqModel->setQuestions($questions);
             $pidiqModel->setSessionId($this->pidkiqApi->getSessionId());
@@ -102,12 +105,12 @@ class PidkiqController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "pidkiq" = @DI\Inject("core.experian.pidkiq")
+     *     "pidkiqApi" = @DI\Inject("experian.pidkiq")
      * })
      */
-    public function setPidkiqApi(PidkiqApi $pidkiq)
+    public function setPidkiqApi($pidkiqApi)
     {
-        $this->pidkiqApi = $pidkiq;
+        $this->pidkiqApi = $pidkiqApi;
     }
 
     /**
@@ -123,7 +126,7 @@ class PidkiqController extends Controller
             throw $this->createNotFoundException('Account does not found');
         }
         if (UserIsVerified::PASSED == $this->getUser()->getIsVerified()) {
-            $this->redirect($this->generateUrl($this->routeHomepage));
+            $this->redirect($this->generateUrl('applicant_homepage'));
         }
 
         $supportEmail = $this->container->getParameter('support_email');
@@ -142,12 +145,10 @@ class PidkiqController extends Controller
                             array('%SUPPORT_EMAIL%' => $supportEmailTag)
                         );
                     } else {
-                        return $this->renderText(json_encode('finished'));
+                        return new JsonResponse('finished');
                     }
-                } catch (ExperianException $e) {
-                    if (!Server::isTestEnv()) {
-                        fpErrorNotifier::getInstance()->handler()->handleException($e);
-                    }
+                } catch (\ExperianException $e) {
+                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     switch ($e->getCode()) {
                         case E_USER_ERROR:
                             $this->error = $i18n->trans('pidkiq.error.attempts');
@@ -179,24 +180,26 @@ class PidkiqController extends Controller
                     }
                 }
             } catch (\Exception $e) {
-                throw $e;
-//                fpErrorNotifier::getInstance()->handler()->handleException($e); // FIXME
+                $this->get('fp_badaboom.exception_catcher')->handleException($e);
                 return new JsonResponse('error');
             }
         } elseif ($this->questionsData = $this->getPidkiq()->getQuestions()) {
-            $this->form = new cjApplicantQuestionsForm($this->questionsData);
-            if ($request->isMethod(sfRequest::POST) && $request->hasParameter($this->form->getName())) {
-                $this->processForm();
+            $this->form = $this->createForm(new QuestionsType($this->questionsData));
+            if ($request->isMethod('POST')) {
+                if (($response = $this->processForm()) instanceof Response) {
+                    return $response;
+                }
             }
+            $this->form = $this->form->createView();
         }
 
         if (!empty($this->error)) {
-            $this->getSession()->setFlash('message_title', $i18n->trans('pidkiq.title'));
-            $this->getSession()->setFlash('message_body', $this->error);
+            $this->getSession()->getFlashBag()->add('message_title', $i18n->trans('pidkiq.title'));
+            $this->getSession()->getFlashBag()->add('message_body', $this->error);
             if ($request->isXmlHttpRequest()) {
                 return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
             } else {
-                return $this->redirect($this->routeMessage);
+                return $this->redirect($this->generateUrl('public_message_flash'));
             }
         }
         return array(
@@ -212,22 +215,27 @@ class PidkiqController extends Controller
     public function processForm()
     {
         $request = $this->getRequest();
-        $this->form->bind($request->getParameter($this->form->getName()));
+        $this->form->bind($request);
         if ($this->form->isValid()) {
-            $pidkiq = Pidkiq::getInstance();
-            if ($pidkiq->getResult(
-                $this->account->getCjApplicantPidkiq()->getLast()->getSessionId(),
-                $this->form->getValues()
+            $this->pidkiqApi->execute($this->container);
+            $em = $this->getDoctrine()->getManager();
+            if ($this->pidkiqApi->getResult(
+                $this->getUser()->getPidkiqs()->last()->getSessionId(),
+                $this->form->getData()
             )) {
-                $this->account->changeIsVerified(UserIsVerified::PASSED);
-                return $this->redirect($this->routeHomepage);
+                $this->getUser()->setIsVerified(UserIsVerified::PASSED);
+                $em->persist($this->getUser());
+                $em->flush();
+                return $this->redirect($this->generateUrl('applicant_homepage'));
             } else {
-                if (UserIsVerified::NONE == $this->account->getIsVerified()) {
-                    $this->account->changeIsVerified(UserIsVerified::FAILED);
+                if (UserIsVerified::NONE == $this->getUser()->getIsVerified()) {
+                    $this->getUser()->setIsVerified(UserIsVerified::FAILED);
                 } else {
-                    $this->account->changeIsVerified(UserIsVerified::LOCKED);
+                    $this->getUser()->setIsVerified(UserIsVerified::LOCKED);
                 }
-                $this->error = $this->getContext()->getI18N()->__(
+                $em->persist($this->getUser());
+                $em->flush();
+                $this->error = $this->get('translator')->trans(
                     'pidkiq.error.answers-%SUPPORT_EMAIL%',
                     array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
                 );

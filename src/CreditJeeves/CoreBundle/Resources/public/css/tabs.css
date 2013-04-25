@@ -1,8 +1,9 @@
 /* Navigation tabs*/
 
 .top-nav {
- width: 600px;
- margin: 0 auto;
+    width: 600px;
+    margin: 0 auto 0 auto;
+    overflow: hidden;
 }
 
 ul {
@@ -57,7 +58,4 @@ ul {
 }
 .top-nav ul li a:hover .tab-corner {
     background-position: right center;
-}
-
-.header-tabs {
 }

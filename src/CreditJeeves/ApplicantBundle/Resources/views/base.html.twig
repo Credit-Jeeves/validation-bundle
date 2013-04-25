@@ -1,4 +1,4 @@
-{% extends "::base.html.twig" %}
+{% extends "CoreBundle::base.html.twig" %}
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
@@ -32,11 +32,6 @@
     <div class="top-nav">
     {{ knp_menu_render('ApplicantBundle:Builder:mainMenu', { 'template': 'ApplicantBundle:Menu:applicant_tabs.html.twig' }) }}
     </div>
-{% endblock %}
-
-
-{% block info %}
-    {{ render(controller('ComponentBundle:Blocks:info')) }}
 {% endblock %}
 
 {% block footer %}

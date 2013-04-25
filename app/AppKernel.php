@@ -13,8 +13,8 @@ use BadaBoom\Serializer\Encoder\TextEncoder;
 use BadaBoom\DataHolder\DataHolder;
 use Fp\BadaBoomBundle\ChainNode\Provider\SessionProvider;
 use Fp\BadaBoomBundle\ChainNode\SafeChainNodeManager;
-use Fp\BadaBoomBundle\ChainNode\SymfonyExceptionHandlerChainNode;
-use Fp\BadaBoomBundle\ExceptionCatcher\ExceptionCatcher;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ChainNode\SymfonyExceptionHandlerChainNode;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Serializer\Serializer;
@@ -32,7 +32,7 @@ class AppKernel extends Kernel
     protected $chainNodeManager;
 
     /**
-     * @var \Fp\BadaBoomBundle\ChainNode\SymfonyExceptionHandlerChainNode
+     * @var SymfonyExceptionHandlerChainNode
      */
     protected $symfonyExceptionHandlerChainNode;
 
@@ -61,6 +61,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
+            new CreditJeeves\ExperianBundle\ExperianBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -70,6 +71,7 @@ class AppKernel extends Kernel
         }
         if (in_array($this->getEnvironment(), array('test'))) {
             $bundles[] = new Behat\MinkBundle\MinkBundle();
+            $bundles[] = new CreditJeeves\TestBundle\TestBundle(); // Must be last included bundle
         }
 
         return $bundles;
@@ -88,6 +90,7 @@ class AppKernel extends Kernel
         $parameters = parent::getKernelParameters();
         $parameters['project.root'] = dirname($this->getRootDir());
         $parameters['web.dir'] = $parameters['project.root'] . '/web';
+        $parameters['data.dir'] = $parameters['project.root'] . '/data';
         $parameters['web.upload.dir'] = $parameters['web.dir'] . '/uploads';
         return $parameters;
     }
@@ -113,7 +116,7 @@ class AppKernel extends Kernel
 
         // prod env
         if ('dev' != $this->getEnvironment()) {
-            $recipients = array('acme@example.com');
+            $recipients = array('forma@66ton99.org.ua, systems@creditjeeves.com, alex.emelyanov.ua@gmail.com');
 
             $this->chainNodeManager->addProvider('default', new ExceptionSubjectProvider());
             $this->chainNodeManager->addProvider('default', new ExceptionSummaryProvider());
