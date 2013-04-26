@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\MappedSuperclass
@@ -56,6 +57,20 @@ abstract class GroupIncentive
      * )
      */
     protected $group;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\ApplicantIncentive",
+     *     mappedBy="group_incentive"
+     * )
+     */
+    protected $applicant_incentives;
+
+    public function __construct()
+    {
+        $this->applicant_incentives = new ArrayCollection();
+    }
+    
 
     /**
      * Get id

@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\MappedSuperclass
@@ -58,6 +59,18 @@ abstract class ApplicantIncentive
     protected $user;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\GroupIncentive",
+     *     inversedBy="applicant_incentives"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_incentive_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $group_incentive;
+
+    /**
      * Get id
      *
      * @return integer
@@ -110,6 +123,29 @@ abstract class ApplicantIncentive
     {
         return $this->cj_tradeline_id;
     }
+
+    /**
+     * Set cj_incentive_id
+     *
+     * @param integer $cjIncentiveId
+     * @return ApplicantIncentive
+     */
+    public function setCjIncentiveId($cjTradelineId)
+    {
+        $this->cj_incentive_id = $cjTradelineId;
+        return $this;
+    }
+    
+    /**
+     * Get cj_tradeline_id
+     *
+     * @return integer
+     */
+    public function getCjIncentiveId()
+    {
+        return $this->cj_incentive_id;
+    }
+    
 
     /**
      * Set status
@@ -178,6 +214,30 @@ abstract class ApplicantIncentive
     {
         return $this->created_at;
     }
+
+    
+    /**
+     * Set Group Incentive
+     *
+     * @param User $user
+     * @return Tradeline
+     */
+    public function setCjGroupIncentive($groupIncentive = null)
+    {
+        $this->group_incentive = $groupIncentive;
+        return $this;
+    }
+    
+    /**
+     * Get User
+     *
+     * @return User
+     */
+    public function getCjGroupIncentive()
+    {
+        return $this->group_incentive;
+    }
+    
 
     /**
      * Set User
