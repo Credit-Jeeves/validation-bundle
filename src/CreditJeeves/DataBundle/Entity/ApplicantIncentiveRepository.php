@@ -6,6 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 class ApplicantIncentiveRepository extends EntityRepository
 {
+    /**
+     * 
+     */
     public function listIncentivesByUser($User)
     {
         $query = $this->createQueryBuilder('i')
