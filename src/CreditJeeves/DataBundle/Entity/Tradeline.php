@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\ApplicantBundle\ApplicantBundle;
 use CreditJeeves\DataBundle\Model\Tradeline as BaseTradeline;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -57,7 +58,12 @@ class Tradeline extends BaseTradeline
         $this->setIsCompleted(0);
     }
 
-    
+    /**
+     * @ORM\PostUpdate
+     */
+    public function postUpdate()
+    {
+    }
 
     public static function formatTradelineForIncentive($aTradeline, $aNegative, $aDirectCheck)
     {

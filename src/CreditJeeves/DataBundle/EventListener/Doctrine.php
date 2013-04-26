@@ -4,6 +4,8 @@ namespace CreditJeeves\DataBundle\EventListener;
 use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
+use CreditJeeves\DataBundle\Entity\Tradeline;
+use CreditJeeves\DataBundle\Entity\ApplicantIncentive;
 use CreditJeeves\CoreBundle\Arf\ArfTradelines;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
@@ -16,6 +18,7 @@ use JMS\DiExtraBundle\Annotation\Tag;
  * @Service("data.event_listener.doctrine")
  * @Tag("doctrine.event_listener", attributes = { "event" = "prePersist", "method" = "prePersist" })
  * @Tag("doctrine.event_listener", attributes = { "event" = "onFlush", "method" = "onFlush" })
+ * @Tag("doctrine.event_listener", attributes = { "event" = "postUpdate", "method" = "postUpdate" })
  */
 class Doctrine
 {
@@ -28,6 +31,18 @@ class Doctrine
         }
     }
 
+    
+    public function postUpdate(LifecycleEventArgs $eventArgs)
+    {
+        $em = $eventArgs->getEntityManager();
+        $entity = $eventArgs->getEntity();
+        if ($entity instanceof Tradeline) {
+            $this->checkCompleted($entity, $em);
+        }
+        
+    }
+
+    
     public function onFlush(OnFlushEventArgs $eventArgs)
     {
     }
@@ -40,5 +55,15 @@ class Doctrine
         $score->setUser($Report->getUser());
         $score->setScore($newScore);
         $em->persist($score);
+    }
+
+    private function checkCompleted(Tradeline $tradeline, $em)
+    {
+        $isCompleted = $tradeline->getIsCompleted();
+        if ($isCompleted) {
+            $incentive = new ApplicantIncentive();
+            $incentive->createIncentive($tradeline, $em);
+        }
+        
     }
 }

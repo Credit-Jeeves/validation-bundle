@@ -71,7 +71,7 @@
 }
 
 .action-steps .action-text-box {
-  width: 530px;
+  width: 520px;
 }
 
 .action-steps .action-text {
@@ -80,7 +80,7 @@
 }
 
 .action-steps .step-box {
-  width: 100px;
+  width: 120px;
   padding-right: 10px;
   border-right: 1px solid #ccc;
   margin-right: 20px;
