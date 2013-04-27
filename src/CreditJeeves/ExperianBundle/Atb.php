@@ -22,6 +22,8 @@ use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
  * Parsing the response to get required information
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
+ *
+ * @DI\Service("experian.atb")
  */
 class Atb
 {
@@ -87,11 +89,13 @@ class Atb
     private $catcher;
 
     /**
-     * @param ArfParser $arfParser
+     * @DI\InjectParams({
+     *     "configs" = @DI\Inject("%experian.atb%"),
+     *     "catcher" = @DI\Inject("fp_badaboom.exception_catcher")
+     * })
      */
-    public function __construct(ArfParser $arfParser, array $configs, ExceptionCatcher $catcher = null)
+    public function __construct(array $configs, ExceptionCatcher $catcher = null)
     {
-        $this->arfParser = $arfParser;
         $this->configs = $configs;
         $this->catcher = $catcher;
         $this->client = new SoapClient($this->configs['wsdl_url'], array('trace' => 1));
@@ -125,44 +129,51 @@ class Atb
     /**
      * Passes the ARF data and score to ATB to increase the score of a particular user
      *
-     * @param string $data
+     * @param ArfParser $arfParser
      * @param float $score
      *
      * @throws AtbException
      *
      * @return
      */
-    public function increaseScoreByX($score)
+    public function increaseScoreByX(ArfParser $arfParser, $score)
     {
+        $this->arfParser = $arfParser;
         $request = $this->requestParamas;
         $request['data'] = $this->arfParser->getMinimizedArfString();
         $request['score_xpoint'] = $score;
-        return $this->parseATBResponse($this->client->performIncreaseScoreByX_full($request));
+        return $this->getAllBlocks($this->parseATBResponse($this->client->performIncreaseScoreByX_full($request)));
     }
 
     /**
      * Passes the ARF data and max cash to ATB
      *
-     * @param string $data
+     * @param ArfParser $arfParser
      * @param int $maxCash
      *
      * @throws AtbException
      *
      * @return array
      */
-    public function bestUseOfCash($maxCash)
+    public function bestUseOfCash(ArfParser $arfParser, $maxCash)
     {
+        $this->arfParser = $arfParser;
         $request = $this->requestParamas;
         $request['data'] = $this->arfParser->getMinimizedArfString();
         $request['max_cash'] = $maxCash;
-        return $this->parseATBResponse($this->client->performBestUseOfCash_full($request));
+        return $this->getAllBlocks($this->parseATBResponse($this->client->performBestUseOfCash_full($request)));
 
+    }
+
+    public function getConfig($key)
+    {
+        return $this->configs[$key];
     }
 
     /**
      * This function passes the ARF data to ATB to get the Raw Data
      *
-     * @param string $xml
+     * @param ArfParser $arfParser
      * @param string $blockEleName
      *
      * @return array
@@ -246,7 +257,7 @@ class Atb
     /**
      * @return array
      */
-    public function getTradeLines()
+    protected function getTradeLines()
     {
         return $this->getArfReport()->getValue(ArfParser::SEGMENT_TRADELINE) ? : array();
     }
@@ -254,7 +265,7 @@ class Atb
     /**
      * @return array
      */
-    public function getDirectCheck()
+    protected function getDirectCheck()
     {
         if (null === $this->directCheck) {
             $this->directCheck = $this->getArfReport()->getDirectCheck()?:array();
@@ -267,7 +278,7 @@ class Atb
      *
      * @return array
      */
-    public function getAllBlocks(array $resultArr)
+    protected function getAllBlocks(array $resultArr)
     {
         $resultArr = $this->composeBlocks($resultArr);
         return $resultArr;

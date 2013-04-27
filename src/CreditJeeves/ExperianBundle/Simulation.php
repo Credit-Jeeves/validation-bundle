@@ -1,11 +1,24 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
+use CreditJeeves\CoreBundle\Arf\ArfReport;
 use CreditJeeves\DataBundle\Entity\Atb as AtbEntity;
+use CreditJeeves\DataBundle\Entity\AtbRepository;
+use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Enum\AtbType;
+use CreditJeeves\DataBundle\Model\User;
+use Doctrine\ORM\EntityManager;
+use JMS\DiExtraBundle\Annotation as DI;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 
+/**
+ * @DI\Service("experian.simulation")
+ */
 class Simulation
 {
+    protected $isDealerSide = false;
 
+    protected $blocks = array();
     protected $type = '';
     protected $input = 0;
     protected $targetScoreSearchResponse = false;
@@ -25,52 +38,60 @@ class Simulation
      */
     protected $atb;
 
-    public function __construct(Atb $atb)
+    /**
+     * @var User
+     */
+    protected $user;
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var Translator
+     */
+    protected $translator;
+
+    /**
+     * @DI\InjectParams({
+     *     "atb" = @DI\Inject("experian.atb"),
+     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
+     *     "translator" = @DI\Inject("translator.default")
+     * })
+     */
+    public function __construct(Atb $atb, $em, $translator)
     {
         $this->atb = $atb;
+        $this->em = $em;
+        $this->translator = $translator;
     }
 
-    public function getResultData($full = false)
+    public function getResultData($result, $full = false)
     {
-        $return = $this->getResult();
-        $return['type'] = $this->getType();
-        $return['input'] = $this->getInput();
+        $result['type'] = $this->getType();
+        $result['input'] = $this->getInput();
         if (!$full) {
-            unset($return['transaction_signature']);
+            unset($result['transaction_signature']);
         }
 
-        $return['tierBest']= cjApplicantScore::getTier(empty($return['score_best'])?0:$return['score_best']);
+//        $return['tierBest']= cjApplicantScore::getTier(empty($return['score_best'])?0:$return['score_best']);
 
-        if (sfConfig::get('experian_atb_skip_sim_type_400') && 400 == $return['sim_type']) {
-            $return['blocks'] = array();
-            $return['score_best'] = 0;
-            $return['use_cash'] = sfConfig::get('experian_atb_default_cash');
-            return $return;
+        if ($this->atb->getConfig('skip_sim_type_400') && 400 == $result['sim_type']) {
+            $result['blocks'] = array();
+            $result['score_best'] = 0;
+            $result['use_cash'] = $this->atb->getConfig('default_cash');
+            return $result;
         }
 
-        if (!empty($return['blocks'])) {
-            foreach ($return['blocks'] as &$tLine) {
+        if (!empty($result['blocks'])) {
+            foreach ($result['blocks'] as &$tLine) {
                 if (empty($tLine['tr_acctnum'])) continue;
-                $tLine['tr_acctnum'] = cjArfReport::hideAccount($tLine['tr_acctnum']);
+                $tLine['tr_acctnum'] = ArfReport::hideAccount($tLine['tr_acctnum']);
             }
         }
 
-        return $return;
-    }
-
-    protected function getFico()
-    {
-        return getFicoScore($this->score_best);
-    }
-
-    protected function getScoreBest()
-    {
-        if (!empty($this->isDealerSide)) {
-    //      return i18n.__('tier-%TIER%', {TIER: this.tierBest().value}, 'simulation');
-            return $this->tierBest;
-        } else {
-            return $this->score_best;
-        }
+        return $result;
     }
 
     protected function getSimTypeGroup() {
@@ -89,41 +110,107 @@ class Simulation
 //            throw new Error("No data passed");
 //        }
         if ($data['use_cash']) {
-            $this->bestUseOfCash(data.use_cash); //TODO move to config file
+            $this->bestUseOfCash($this->getArfParser(), $data['use_cash']); //TODO move to config file
             return false;
         }
 
-        if (!$isResult && $data['score_best'] < $this->scoreTarget()) {
-            if (false == $this->targetScoreSearchResponse() &&
-                true == $this->targetScoreSearch() &&
-                data.blocks.length
+        if (!$isResult && $data['score_best'] < $this->scoreTarget) {
+            if (false == $this->targetScoreSearchResponse &&
+                true == $this->targetScoreSearch &&
+                count($data['blocks'])
             ) {
-                $this->targetScoreSearchResponse(true);
-                $this->increaseScoreByX(parseInt(data.score_best) - parseInt($this->scoreCurrent()));
+                $this->targetScoreSearchResponse = true;
+                $this->increaseScoreByX($this->user, $data['score_best'] - $this->scoreCurrent);
                 return false;
-            } else if (false == $this->targetScoreSearch() &&
-                'score' == data.type &&
-                !data.blocks.length &&
-                ($this->scoreCurrent() + 1) != $this->scoreTarget()
+            } else if (false == $this->targetScoreSearch &&
+                'score' == $data['type'] &&
+                !count($data['blocks']) &&
+                ($this->scoreCurrent + 1) != $this->scoreTarget
             ) {
-                $this->targetScoreSearch(true);
-                $this->increaseScoreByX(1, false);
+                $this->targetScoreSearch = true;
+                $this->increaseScoreByX($this->user, 1, false);
                 return false;
             }
         }
 
-        jQuery.each(data, function(index, value) {
-                if (self[index]) {
-                    self[index](value);
-          } else {
-                    console.warn('Index "' + index + '" does not exist');
-                }
-        });
-
-        if ($this->message()) { // Dev message
-            console.info($this->message());
-        }
+//        foreach ($data as $index => $value) {
+//            if (self[index]) {
+//                self[index](value);
+//            } else {
+//                console.warn('Index "' + index + '" does not exist');
+//            }
+//        }
+//
+//        if ($this->message) { // Dev message
+//            console.info($this->message());
+//        }
         return true;
+    }
+
+    /**
+     * @return AtbEntity
+     */
+    protected function createEntity()
+    {
+        $entity = new AtbEntity();
+        $entity->setUser($this->user);
+        return $entity;
+    }
+
+    protected function saveEntity($entity)
+    {
+        $this->em->persist($entity);
+        $this->em->flush();
+    }
+
+    protected function getArfParser()
+    {
+        /** @var $report ReportPrequal */
+        $report = $this->user->getReportsPrequal()->last();
+        return is_object($report) ? $report->getArfParser() : null;
+    }
+
+    protected function trans($string, $parameters = array())
+    {
+        return $this->translator->trans($string, $parameters, 'simulation');
+    }
+
+    public function bestUseOfCash(User $user, $cash, $isSave = true)
+    {
+        $this->user = $user;
+        $result = $this->atb->bestUseOfCash($this->getArfParser(), $cash);
+
+        if ($isSave) {
+            $entity = $this->createEntity();
+            $entity->setType(AtbType::CASH);
+            $entity->setInput($cash);
+            $entity->setResult($result);
+            $this->saveEntity($entity);
+        }
+
+        return $result;
+
+    }
+
+    protected function getAllBlocks()
+    {
+        return $this->blocks;
+    }
+
+    public function increaseScoreByX(User $user, $score, $isSave = true)
+    {
+        $this->user = $user;
+        $result = $this->atb->increaseScoreByX($this->getArfParser(), $score);
+
+        if ($isSave) {
+            $entity = $this->createEntity();
+            $entity->setType(AtbType::SCORE);
+            $entity->setInput($score);
+            $entity->setResult($result);
+            $this->saveEntity($entity);
+        }
+
+        return $result;
     }
 
 //var sendData = function(data) {
@@ -155,7 +242,6 @@ class Simulation
 //        throw new Error('Form was changed, need corrections');
 //    }
 //    formData[0].value = cash;
-//
 //    if (typeof(toSave) == "undefined") {
 //        toSave = true;
 //    }
@@ -168,17 +254,6 @@ class Simulation
 //    var data = jQuery.param(formData, false);
 //    sendData(data, toSave);
 //    return false;
-//  };
-//
-//    protected increaseScoreByX = function(score, toSave) {
-//    var data = {score: score};
-//    if (typeof(toSave) == "undefined") {
-//        toSave = true;
-//    }
-//    if (toSave) {
-//        data.save = 1;
-//    }
-//    sendData(data);
 //  };
 
 
@@ -200,7 +275,7 @@ class Simulation
         $placeHolders = $this->getPlaceHolders();
 
         if ($this->getAllBlocks()) {
-            if ('score' == $this->type()) {
+            if ('score' == $this->type) {
                 if ($this->scoreTarget < $this->score_best) {
                     return $this->trans(
                         "score-reach-title-message-%CASH_USED%",
@@ -216,8 +291,8 @@ class Simulation
                         'simulation'
                     );
                 }
-            } else if ('cash' == $this->type()) {
-                if ($this->scoreTarget() < $this->score_best()) {
+            } else if ('cash' == $this->type) {
+                if ($this->scoreTarget < $this->score_best) {
                     return $this->trans(
                         "cash-reach-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%",
                         $placeHolders,
@@ -233,22 +308,22 @@ class Simulation
                     );
                 }
             }
-        } else if ('cash' == $this->type()) {
+        } else if ('cash' == $this->type) {
             return $this->trans(
                 "cash-not-reach-title-message-%CASH%",
-                placeHolders,
+                $placeHolders,
                 'simulation'
             );
-        } else if ($this->scoreCurrent() > $this->scoreTarget()) {
+        } else if ($this->scoreCurrent > $this->scoreTarget) {
             return $this->trans(
                 "reached-score-title-message",
-                placeHolders,
+                $placeHolders,
                 'simulation'
             );
-        } else if ('score' == $this->type()) {
+        } else if ('score' == $this->type) {
             return $this->trans(
                 "score-not-reach-title-message",
-                placeHolders,
+                $placeHolders,
                 'simulation'
             );
         }
@@ -276,7 +351,7 @@ class Simulation
                     );
                 }
             } else if ('cash' == $this->type) {
-                if ($this->scoreTarget() < $this->score_best()) {
+                if ($this->scoreTarget < $this->score_best) {
                     return $this->trans(
                         "cash-reach-title-sub-message",
                         $placeHolders,

@@ -21,6 +21,8 @@ class AtbController extends Controller
      */
     public function indexAction()
     {
+        $this->getSimulation();
+        return array();
         if (!$this->getRequest()->isMethod('POST')) {
             return $this->createNotFoundException('Method must be POST');
         }
@@ -32,10 +34,10 @@ class AtbController extends Controller
             ignore_user_abort();
             set_time_limit(90);
             $atbSimulation = atbSimulationTable::getInstance()->increaseScoreByX(
-                $request->getParameter('score'),
+                $this->getRequest()->getParameter('score'),
                 $this->cjApplicant
             );
-            if ($request->getParameter('save', false)) {
+            if ($this->getRequest()->getParameter('save', false)) {
                 $atbSimulation->save();
             }
             $result = $atbSimulation->getResultData();
@@ -52,13 +54,8 @@ class AtbController extends Controller
     {
         /* @var $report Report */
         $report = $this->get('core.session.applicant')->getUser()->getReportsD2c()->last();
-        /* @var $atb Atb */
-        $atb = new Atb(
-            $report->getArfParser(),
-            $this->container->getParameter('experian.atb'),
-            $this->get('fp_badaboom.exception_catcher')
-        );
-        $simulation = new Simulation($atb);
+        /* @var $simulation Simulation */
+        $simulation = $this->get('experian.simulation');
         return $simulation;
     }
 

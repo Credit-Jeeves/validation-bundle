@@ -23,11 +23,11 @@ class AtbCase extends BaseTestCase
             self::getContainer()->getParameter('data.dir') . '/experian/netConnect/Response2.arf'
         );
         $atb = new Atb(
-            new ArfParser($data),
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->increaseScoreByX(40);
-        $this->assertCount(13, $result['blocks']);
+        $result = $atb->increaseScoreByX(new ArfParser($data), 40);
+        $this->assertCount(1, $result['blocks']);
+        $this->assertArrayHasKey('banks', $result['blocks'][0]);
     }
 
     /**
@@ -41,10 +41,9 @@ class AtbCase extends BaseTestCase
             self::getContainer()->getParameter('data.dir') . '/experian/netConnect/Response2.arf'
         );
         $atb = new Atb(
-            new ArfParser($data),
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->increaseScoreByX(200);
+        $result = $atb->increaseScoreByX(new ArfParser($data), 200);
         $this->assertTrue(empty($result['blocks']));
         $this->assertEquals(
             'None of the simulations can achieve the target score in IncreaseScoreByX_FULL.',
@@ -63,10 +62,9 @@ class AtbCase extends BaseTestCase
             self::getContainer()->getParameter('data.dir') . '/experian/netConnect/Response2.arf'
         );
         $atb = new Atb(
-            new ArfParser($data),
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->bestUseOfCash(100);
+        $result = $atb->bestUseOfCash(new ArfParser($data), 100);
         $this->assertCount(3, $result['blocks']);
     }
 
@@ -79,10 +77,9 @@ class AtbCase extends BaseTestCase
     {
         $data = file_get_contents(self::getContainer()->getParameter('data.dir') . '/experian/netConnect/Response.arf');
         $atb = new Atb(
-            new ArfParser($data),
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->bestUseOfCash(40);
+        $result = $atb->bestUseOfCash(new ArfParser($data), 40);
         $this->assertEquals('None of 6 Best Use of Cash simulations can achieve the target score.', $result['message']);
     }
 }
