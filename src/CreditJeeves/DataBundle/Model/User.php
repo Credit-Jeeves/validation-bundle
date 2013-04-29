@@ -117,12 +117,12 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $score_changed_notification;
+    protected $score_changed_notification = true;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $offer_notification;
+    protected $offer_notification = true;
 
     /**
      * @ORM\Column(type="UserCulture")
@@ -137,17 +137,17 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="UserIsVerified")
      */
-    protected $is_verified;
+    protected $is_verified = 'none';
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $has_report;
+    protected $has_report = false;
 
     /**
      * @ORM\Column(type="UserType")
      */
-    protected $type;
+    protected $type = 'applicant';
 
     /**
      * @ORM\Column(type="bigint")
@@ -157,12 +157,12 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $is_holding_admin;
+    protected $is_holding_admin = false;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $is_super_admin;
+    protected $is_super_admin = false;
 
     /**
      * @ORM\Column(type="datetime")

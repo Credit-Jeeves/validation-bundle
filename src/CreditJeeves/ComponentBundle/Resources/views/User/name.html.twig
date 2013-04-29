@@ -1,13 +1,8 @@
 {% form_theme form ':Form:form_errors.html.twig' %}
 
 <div class="form-row">
-    {% if form_errors(form.first_name) or form_errors(form.last_name) %}
-    <div class="flash-error">
         {{ form_errors(form.first_name) }}
         {{ form_errors(form.last_name) }}
-    </div>
-    <div class="clearboth"></div>
-    {% endif %}
 
     <div class="form-label">{{ form_label(form.first_name) }}</div>
     <div class="form-widget">
