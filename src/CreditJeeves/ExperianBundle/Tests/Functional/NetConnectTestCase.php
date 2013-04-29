@@ -98,4 +98,3 @@ class LibExperianNetConnectFnTestCase extends BaseTestCase
         $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
     }
 }
-
