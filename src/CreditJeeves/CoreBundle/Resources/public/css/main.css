@@ -9,10 +9,10 @@
 body, p {
   margin: 0;
   color: #333333;
-  font-family: helvetica, arial, sans-serif;
+  font-family: "Helvetica Neue", HelveticaNeue, helvetica-neue, helvetica, arial, sans-serif;
   font-size: 14px;
-/*  font-weight: 300;
-  line-height: 135%; */
+  font-weight: 300;
+/*  line-height: 135%; */
 }
 
 a {
