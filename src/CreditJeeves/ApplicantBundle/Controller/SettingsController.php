@@ -125,10 +125,13 @@ class SettingsController extends Controller
                 if ($sPassword == $cjUser->getPassword()) {
                     $em = $this->getDoctrine()->getManager();
                     try {
+                        $newUser = $cjUser->getUserToRemove();
                         $em->getConnection()->beginTransaction();
-                        $em->getRepository('DataBundle:User')->removeUserData($cjUser);
-                        $cjUser->removeData();
-                        $em->persist($cjUser);
+                        //$em->getRepository('DataBundle:User')->removeUserData($cjUser);
+                        //$cjUser->removeData();
+                        $em->remove($cjUser);
+                        $em->flush();
+                        $em->persist($newUser);
                         $em->flush();
                         $em->getConnection()->commit();
                         $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
@@ -142,6 +145,8 @@ class SettingsController extends Controller
                 } else {
                     $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
                 }
+            } else {
+                echo '888';
             }
         }
         return $this->render(

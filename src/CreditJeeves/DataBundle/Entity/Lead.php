@@ -11,4 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Lead extends BaseLead
 {
+    /**
+     * @ORM\PrePersist
+     */
+    public function methodPrePersist()
+    {
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+    }
 }

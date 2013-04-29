@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Model\User as BaseUser;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -12,11 +13,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class User extends BaseUser
 {
-//     public function __construct()
-//     {
-//         parent::__construct();
-//     }
-
     /**
      * @ORM\PreRemove
      */
@@ -177,6 +173,11 @@ class User extends BaseUser
         $this->password = md5($password);
     }
 
+    public function copyPassword($password)
+    {
+        $this->password = $password;
+    }
+
     /**
      * Here would be logic, how we'll get actice lead. Now - simply last
      *
@@ -215,5 +216,18 @@ class User extends BaseUser
             $return[$key] = $this->$key;
         }
         return $return;
+    }
+
+    public function getUserToRemove()
+    {
+        $User = new self();
+        $User->setFirstName($this->getFirstName());
+        $User->setMiddleInitial($this->getMiddleInitial());
+        $User->setLastName($this->getLastName());
+        $User->copyPassword($this->getPassword());
+        $User->setCreatedAt($this->getCreatedAt()); // we'll store user's created date
+        $User->setIsVerified(UserIsVerified::PASSED);
+        $User->setEmail($this->getEmail());
+        return $User;
     }
 }

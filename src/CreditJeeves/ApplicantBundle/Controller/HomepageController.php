@@ -105,7 +105,10 @@ class HomepageController extends Controller
         $em->flush();
         $this->changeTradelinesStatus($oApplicantTradeline);
         $aResult['id'] = $oApplicantTradeline->getId();
-        $aResult['incentive'] = '';
+        $incentive = $this->getDoctrine()->
+            getRepository('DataBundle:ApplicantIncentive')->
+            findOneBy(array('cj_tradeline_id' => $oApplicantTradeline->getId()));
+        $aResult['incentive'] = !empty($incentive) ? $incentive->getCjGroupIncentive()->getText(): '';
         return new JsonResponse($aResult);
     }
 
