@@ -175,6 +175,14 @@
                 <source>common.submit</source>
                 <target>Submit</target>
             </trans-unit>
+            <trans-unit id="common.target">
+                <source>common.target</source>
+                <target>Your Goal</target>
+            </trans-unit>
+            <trans-unit id="common.target.select">
+                <source>common.target.select</source>
+                <target>Select Goal</target>
+            </trans-unit>
             <trans-unit id="common.estimated.fico">
                 <source>common.estimated.fico</source>
                 <target>Estimated FICO:</target>

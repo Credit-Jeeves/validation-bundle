@@ -80,7 +80,7 @@ class IncentivesController extends Controller
                 $aNegativeTradelines[] = $aTradeline;
             } else {
                 $aTradeline['incentive'] = isset($aIncentivesCollection[$aTradeline['id']])
-                ? $aIncentivesCollection[$aTradeline['id']]->getCjGroupIncentives()->getText() : '';
+                ? $aIncentivesCollection[$aTradeline['id']]->getCjGroupIncentive()->getText() : '';
                 $aIncentivesTradelines[] = $aTradeline;
             }
             

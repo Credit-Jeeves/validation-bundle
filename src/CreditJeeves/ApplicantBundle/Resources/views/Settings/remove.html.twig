@@ -21,10 +21,9 @@
                 <div class="background-grey">
                     <h5>{{ 'password.verify' | trans }}</h5>
                     <br>
-                    <div>
-                        {{ form_widget(form) }}
-                    </div>
+                        {{ form_label(form.password) }}&nbsp;&nbsp;{{ form_widget(form.password) }}
                 </div>
+                {{ form_rest(form) }}
                 <div class="row-20"></div>
                 <input class="button large green" type="submit" name="_submit" value="Remove" />
             </form>
