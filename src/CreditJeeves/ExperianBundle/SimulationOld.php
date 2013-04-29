@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 /**
  * @DI\Service("experian.simulation")
  */
-class Simulation
+class SimulationOld
 {
     protected $isDealerSide = false;
 
@@ -86,7 +86,9 @@ class Simulation
 
         if (!empty($result['blocks'])) {
             foreach ($result['blocks'] as &$tLine) {
-                if (empty($tLine['tr_acctnum'])) continue;
+                if (empty($tLine['tr_acctnum'])) {
+                    continue;
+                }
                 $tLine['tr_acctnum'] = ArfReport::hideAccount($tLine['tr_acctnum']);
             }
         }
@@ -94,7 +96,8 @@ class Simulation
         return $result;
     }
 
-    protected function getSimTypeGroup() {
+    protected function getSimTypeGroup()
+    {
         return $this->sim_type / 10;
     }
 
@@ -122,7 +125,7 @@ class Simulation
                 $this->targetScoreSearchResponse = true;
                 $this->increaseScoreByX($this->user, $data['score_best'] - $this->scoreCurrent);
                 return false;
-            } else if (false == $this->targetScoreSearch &&
+            } elseif (false == $this->targetScoreSearch &&
                 'score' == $data['type'] &&
                 !count($data['blocks']) &&
                 ($this->scoreCurrent + 1) != $this->scoreTarget
@@ -212,8 +215,4 @@ class Simulation
 
         return $result;
     }
-
-
-
-
 }

@@ -2,9 +2,11 @@
 namespace CreditJeeves\ExperianBundle\Converter;
 
 use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\CoreBundle\Arf\ArfReport;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\DataBundle\Entity\Atb as AtbEntity;
 use CreditJeeves\ExperianBundle\Model\Atb as Model;
+use Symfony\Bundle\FrameworkBundle\Translation\Translator;
 
 /**
  * @DI\Service("experian.atb.converter")
@@ -18,9 +20,19 @@ class Atb
     protected $model;
 
     /**
+     * @var Translator
+     */
+    protected $translator;
+
+    /**
      * @var ArfParser
      */
     protected $arfParser;
+
+    /**
+     * @var ArfReport
+     */
+    protected $arfReport;
 
     /**
      * @DI\InjectParams({
@@ -37,6 +49,19 @@ class Atb
         return $this->arfParser;
     }
 
+    /**
+     * @return ArfReport
+     */
+    protected function getArfReport()
+    {
+        if (null == $this->arfReport) {
+            $arfArray = $this->getArfParser()->getArfArray();
+            $this->arfReport = new ArfReport($arfArray);
+        }
+
+        return $this->arfReport;
+    }
+
     public function getModel(AtbEntity $entity, ArfParser $arfParser)
     {
         $this->arfParser = $arfParser;
@@ -50,10 +75,11 @@ class Atb
             ->setMessage($result['message'])
             ->setScoreBest($result['score_best'])
             ->setScoreInit($result['score_init'])
+            // TODO find out, maybe it should be changed to lead's value
+            ->setScoreCurrent($this->getArfReport()->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE))
             ->setBlocks($this->getBlocks($entity))
             ->setTitle($this->getTitle())
-            ->setTitleMessage($this->getTitleMessage())
-        ;
+            ->setTitleMessage($this->getTitleMessage());
 
 
         return $this->model;
@@ -64,6 +90,11 @@ class Atb
         return $this->translator->trans($string, $parameters, 'simulation');
     }
 
+    /**
+     * @param AtbEntity $entity
+     *
+     * @return array
+     */
     protected function getBlocks($entity)
     {
         $result = $entity->getResult();
@@ -74,11 +105,11 @@ class Atb
     {
         return array(
             '%STEPS%' => count($this->model->getBlocks()),
-            '%POINTS_INCREASE%' => $this->model->getScoreBest() - $this->scoreCurrent,
-            '%CASH_USED%' => $this->cash_used,
-            '%SCORE_BEST%' => $this->score_best,
-            '%CASH%' => $this->input,
-            '%TIER%' => $this->tierBest
+            '%POINTS_INCREASE%' => $this->model->getScoreBest() - $this->model->getScoreCurrent(),
+            '%CASH_USED%' => $this->model->getCashUsed(),
+            '%SCORE_BEST%' => $this->model->getScoreBest(),
+            '%CASH%' => $this->model->getInput(),
+//            '%TIER%' => $this->model->getT
         );
     }
 
@@ -86,8 +117,8 @@ class Atb
     {
         $placeHolders = $this->getPlaceHolders();
 
-        if ($this->getAllBlocks()) {
-            if ('score' == $this->type) {
+        if ($this->model->getBlocks()) {
+            if ('score' == $this->model->getType()) {
                 if ($this->scoreTarget < $this->score_best) {
                     return $this->trans(
                         "score-reach-title-message-%CASH_USED%",
@@ -97,13 +128,13 @@ class Atb
                 } else {
                     return $this->trans(
                         $this->isDealerSide ?
-                            "dealer-score-search-reach-title-message-%TIER%":
-                            "score-search-reach-title-message-%POINTS_INCREASE%",
+                        "dealer-score-search-reach-title-message-%TIER%":
+                        "score-search-reach-title-message-%POINTS_INCREASE%",
                         $placeHolders,
                         'simulation'
                     );
                 }
-            } else if ('cash' == $this->type) {
+            } elseif ('cash' == $this->type) {
                 if ($this->scoreTarget < $this->score_best) {
                     return $this->trans(
                         "cash-reach-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%",
@@ -113,26 +144,26 @@ class Atb
                 } else {
                     return $this->trans(
                         $this->isDealerSide ?
-                            "dealer-cash-reach-title-message-%TIER%-%STEPS%-%CASH_USED%-%SCORE_BEST%":
-                            "cash-increase-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%",
+                        "dealer-cash-reach-title-message-%TIER%-%STEPS%-%CASH_USED%-%SCORE_BEST%":
+                        "cash-increase-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%",
                         $placeHolders,
                         'simulation'
                     );
                 }
             }
-        } else if ('cash' == $this->type) {
+        } elseif ('cash' == $this->type) {
             return $this->trans(
                 "cash-not-reach-title-message-%CASH%",
                 $placeHolders,
                 'simulation'
             );
-        } else if ($this->scoreCurrent > $this->scoreTarget) {
+        } elseif ($this->scoreCurrent > $this->scoreTarget) {
             return $this->trans(
                 "reached-score-title-message",
                 $placeHolders,
                 'simulation'
             );
-        } else if ('score' == $this->type) {
+        } elseif ('score' == $this->type) {
             return $this->trans(
                 "score-not-reach-title-message",
                 $placeHolders,
@@ -150,8 +181,8 @@ class Atb
                 if ($this->scoreTarget < $this->score_best) {
                     return $this->trans(
                         $this->isDealerSide ?
-                            "dealer-score-reach-title-sub-message-%TIER%" :
-                            "score-reach-title-sub-message-%POINTS_INCREASE%",
+                        "dealer-score-reach-title-sub-message-%TIER%" :
+                        "score-reach-title-sub-message-%POINTS_INCREASE%",
                         $placeHolders,
                         'simulation'
                     );
@@ -162,7 +193,7 @@ class Atb
                         'simulation'
                     );
                 }
-            } else if ('cash' == $this->type) {
+            } elseif ('cash' == $this->type) {
                 if ($this->scoreTarget < $this->score_best) {
                     return $this->trans(
                         "cash-reach-title-sub-message",
@@ -179,13 +210,13 @@ class Atb
                 }
 
             }
-        } else if ($this->scoreCurrent > $this->scoreTarget) {
+        } elseif ($this->scoreCurrent > $this->scoreTarget) {
             return $this->trans(
                 "reached-score-title-sub-message",
                 $placeHolders,
                 'simulation'
             );
-        } else if ('score' == $this->type) {
+        } elseif ('score' == $this->type) {
             return $this->trans(
                 "score-not-reach-title-sub-message",
                 $placeHolders,
