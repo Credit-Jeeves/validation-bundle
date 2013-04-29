@@ -220,24 +220,6 @@ class User extends BaseUser
 
     public function getUserToRemove()
     {
-        $fields = array(
-                'id',
-                'first_name',
-                'middle_initial',
-                'last_name',
-                'email',
-                'is_active',
-                'password',
-                'culture',
-                'type',
-                'username',
-                'username_canonical',
-                'email_canonical',
-                'salt',
-                'plain_password',
-                'created_at',
-                'updated_at',
-        );
         $User = new self();
         $User->setFirstName($this->getFirstName());
         $User->setMiddleInitial($this->getMiddleInitial());
