@@ -72,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "a517e3d96ca4ca20ae2a7c11e80f82dcc6037cf0"
+                    "reference": "340d50c97df02678b310580d0b96c80c548d3190"
                 }
             }
         },
@@ -140,7 +140,8 @@
         "knplabs/knp-menu-bundle": "v1.1.1",
         "fp/badaboom": "dev-ton as dev-not-approved",
         "fp/universal-error-catcher": "1.0.*",
-        "fp/badaboom-bundle": "dev-ton"
+        "fp/badaboom-bundle": "dev-ton",
+        "jms/serializer-bundle": "dev-master"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",

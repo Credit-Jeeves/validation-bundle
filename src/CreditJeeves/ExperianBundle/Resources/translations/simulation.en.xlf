@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="title">
+                <source>title</source>
+                <target>Take Action to Reach Your Target Score</target>
+            </trans-unit>
+            <trans-unit id="simulator_best_use_of_cash_label">
+                <source>simulator_best_use_of_cash_label</source>
+                <target>I have this much cash available:</target>
+            </trans-unit>
+            <trans-unit id="reached-score-title-message">
+                <source>reached-score-title-message</source>
+                <target>You have reached your target score.</target>
+            </trans-unit>
+            <trans-unit id="reached-score-title-sub-message">
+                <source>reached-score-title-sub-message</source>
+                <target>You can still simulate how much higher you can reach by entering a cash value to the right.</target>
+            </trans-unit>
+            <trans-unit id="score-reach-title-message">
+                <source>score-reach-title-message-%CASH_USED%</source>
+                <target>You may be able to reach your dealer's target score. Cash required: $%CASH_USED%</target>
+            </trans-unit>
+            <trans-unit id="score-reach-title-sub-message">
+                <source>score-reach-title-sub-message-%POINTS_INCREASE%</source>
+                <target>The steps below could increase your score by %POINTS_INCREASE% points.</target>
+            </trans-unit>
+            <trans-unit id="score-search-reach-title-message">
+                <source>score-search-reach-title-message-%POINTS_INCREASE%</source>
+                <target>By taking the following steps, you could potentially increase your score by %POINTS_INCREASE% points.</target>
+            </trans-unit>
+            <trans-unit id="score-search-reach-title-sub-message">
+                <source>score-search-reach-title-sub-message-%CASH_USED%</source>
+                <target>Apply $%CASH_USED% in cash by following the steps below.</target>
+            </trans-unit>
+            <trans-unit id="score-not-reach-title-message">
+                <source>score-not-reach-title-message</source>
+                <target>We were unable to meaningfully affect your score in the short term.</target>
+            </trans-unit>
+            <trans-unit id="score-not-reach-title-sub-message">
+                <source>score-not-reach-title-sub-message</source>
+                <target>Review the potentially negative items below to see what is affecting your score.</target>
+            </trans-unit>
+
+            <trans-unit id="cash-reach-title-message">
+                <source>cash-reach-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%</source>
+                <target>By using $%CASH_USED% in cash, you could potentially reach your target score.</target>
+            </trans-unit>
+            <trans-unit id="cash-reach-title-sub-message">
+                <source>cash-reach-title-sub-message</source>
+                <target>Follow the steps below to optimize your credit score.</target>
+            </trans-unit>
+
+            <trans-unit id="cash-increase-title-message">
+                <source>cash-increase-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%</source>
+                <target>By using $%CASH_USED% in cash, you could potentially increase your score by %POINTS_INCREASE% points.</target>
+            </trans-unit>
+            <trans-unit id="cash-increase-title-sub-message">
+                <source>cash-increase-title-sub-message</source>
+                <target>Follow the steps below to optimize your credit score.</target>
+            </trans-unit>
+
+            <trans-unit id="cash-not-reach-title-message">
+                <source>cash-not-reach-title-message-%CASH%</source>
+                <target>We were unable to meaningfully effect your score with $%CASH% cash.</target>
+            </trans-unit>
+            <trans-unit id="step-n">
+                <source>step-%STEP%</source>
+                <target>Step %STEP%</target>
+            </trans-unit>
+            <trans-unit id="re-score">
+                <source>re-score</source>
+                <target>Re-Score</target>
+            </trans-unit>
+            <trans-unit id="group-10x">
+                <source>group-10x</source>
+                <target>Make Payment</target>
+            </trans-unit>
+            <trans-unit id="group-20x">
+                <source>group-20x</source>
+                <target>Establish credit</target>
+            </trans-unit>
+            <trans-unit id="group-30x">
+                <source>group-30x</source>
+                <target>Conaolidate</target>
+            </trans-unit>
+            <trans-unit id="group-40x">
+                <source>group-40x</source>
+                <target>New Loan</target>
+            </trans-unit>
+            <trans-unit id="10x-message">
+                <source>10x-message-%BANK%-%ACCOUNT%-%CASH_DIFF%-%BALANCE%</source>
+                <target>Pay your %BANK% account %ACCOUNT% down by $%CASH_DIFF% to a balance $%BALANCE% or less.</target>
+            </trans-unit>
+            <trans-unit id="10x-sub-message">
+                <source>10x-sub-message-%BANK%-%BANK_PHONE%</source>
+                <target>Call %BANK% at %BANK_PHONE% to arrange payment. This will lower your overall utilization
+                </target>
+            </trans-unit>
+            <trans-unit id="20x-message">
+                <source>20x-message-%AMOUNT1%</source>
+                <target>Open a new credit card with a limit of $%AMOUNT1% and maintain a $0 balance.</target>
+            </trans-unit>
+            <trans-unit id="20x-sub-message">
+                <source>20x-sub-message</source>
+                <target>Establish more revolving credit by opening a new credit card or secured card.</target>
+            </trans-unit>
+
+            <trans-unit id="30x-message">
+                <source>30x-message-%BALANCE%</source>
+                <target>Consolidate some accounts to a new credit card, and pay the overall balance down to less then $%BALANCE%.</target>
+            </trans-unit>
+            <trans-unit id="30x-sub-message">
+                <source>30x-sub-message-%BANKS%</source>
+                <target>Accounts to consolidate: %BANKS%.</target>
+            </trans-unit>
+            <trans-unit id="40x-message">
+                <source>40x-message-%BALANCE%</source>
+                <target>Consolidate some accounts into a new revolving or home equity loan. Consolidated balance: $%BALANCE%.</target>
+            </trans-unit>
+            <trans-unit id="40x-sub-message">
+                <source>40x-sub-message-%BANKS%</source>
+                <target>Accounts to consolidate: %BANKS%.</target>
+            </trans-unit>
+
+            <trans-unit id="tier">
+                <source>tier-%TIER%</source>
+                <target>Tier %TIER%</target>
+            </trans-unit>
+
+            <trans-unit id="dealer-score-reach-title-sub-message">
+                <source>dealer-score-reach-title-sub-message-%TIER%</source>
+                <target>The steps below could help you reach Tier %TIER%.</target>
+            </trans-unit>
+            <trans-unit id="dealer-score-search-reach-title-message">
+                <source>dealer-score-search-reach-title-message-%TIER%</source>
+                <target>By taking the following steps, you could potentially reach tier %TIER%.</target>
+            </trans-unit>
+            <trans-unit id="dealer-cash-reach-title-message">
+                <source>dealer-cash-reach-title-message-%TIER%-%STEPS%-%CASH_USED%-%SCORE_BEST%</source>
+                <target>By using $%CASH_USED% in cash, you could potentially reach tier %TIER%.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

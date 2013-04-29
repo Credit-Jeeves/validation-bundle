@@ -2,7 +2,7 @@
 namespace CreditJeeves\CoreBundle\Session;
 
 use JMS\DiExtraBundle\Annotation\Service;
-use CreditJeeves\DataBundle\Entity\User as cjUser;
+use CreditJeeves\DataBundle\Entity\User as UserEntity;
 
 /**
  * @Service("core.session.applicant")
@@ -10,10 +10,9 @@ use CreditJeeves\DataBundle\Entity\User as cjUser;
 class Applicant extends User
 {
     /**
-     *
-     * @param cjUser $User
+     * @param UserEntity $User
      */
-    public function setUser(cjUser $User)
+    public function setUser(UserEntity $User)
     {
         $this->prepareApplicant($User);
         $this->saveToSession(self::USER_APPLICANT);
@@ -21,9 +20,9 @@ class Applicant extends User
 
     /**
      *
-     * @param cjUser $User
+     * @param UserEntity $User
      */
-    public function prepareApplicant(cjUser $User)
+    public function prepareApplicant(UserEntity $User)
     {
         $Lead = $User->getActiveLead();
         $this->data['user_id'] = $User->getId();
@@ -39,7 +38,7 @@ class Applicant extends User
         if (isset($data['user_id'])) {
             return $this->findUser($data['user_id']);
         }
-        return new cjUser();
+        return new UserEntity();
     }
 
     /**
