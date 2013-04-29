@@ -175,6 +175,10 @@
                 <source>common.submit</source>
                 <target>Submit</target>
             </trans-unit>
+            <trans-unit id="common.estimated.fico">
+                <source>common.estimated.fico</source>
+                <target>Estimated FICO:</target>
+            </trans-unit>
             
             
             

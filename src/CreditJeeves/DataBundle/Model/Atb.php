@@ -19,13 +19,13 @@ abstract class Atb
     /**
      * @ORM\Column(type="integer")
      */
-    protected $cj_applicant_id;
+    protected $cj_applicant_report_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="user_leads")
-     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal")
+     * @ORM\JoinColumn(name="cj_applicant_report_id", referencedColumnName="id")
      */
-    protected $user;
+    protected $report;
 
     /**
      * @ORM\Column(type="AtbType")
@@ -79,9 +79,9 @@ abstract class Atb
      * @param integer $cjApplicantId
      * @return Atb
      */
-    public function setCjApplicantId($cjApplicantId)
+    public function setReportId($reportId)
     {
-        $this->cj_applicant_id = $cjApplicantId;
+        $this->cj_applicant_id = $reportId;
 
         return $this;
     }
@@ -91,7 +91,7 @@ abstract class Atb
      *
      * @return integer
      */
-    public function getCjApplicantId()
+    public function getReportId()
     {
         return $this->cj_applicant_id;
     }
@@ -258,25 +258,25 @@ abstract class Atb
     }
 
     /**
-     * Set user
+     * Set report
      *
-     * @param \CreditJeeves\DataBundle\Entity\User $user
+     * @param \CreditJeeves\DataBundle\Entity\ReportPrequal $report
      * @return Atb
      */
-    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
+    public function setReport(\CreditJeeves\DataBundle\Entity\ReportPrequal $report = null)
     {
-        $this->user = $user;
+        $this->report = $report;
 
         return $this;
     }
 
     /**
-     * Get user
+     * Get report
      *
-     * @return \CreditJeeves\DataBundle\Entity\User
+     * @return \CreditJeeves\DataBundle\Entity\ReportPrequal
      */
-    public function getUser()
+    public function getReport()
     {
-        return $this->user;
+        return $this->report;
     }
 }

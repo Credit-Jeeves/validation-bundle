@@ -66,7 +66,7 @@ class Atb extends BaseAtb
     /**
      * {@inheritdoc}
      */
-    public function setResult(array $result)
+    public function setResult($result)
     {
         $this->setSimType($result['sim_type']);
         $this->setTransactionSignature($result['transaction_signature']);

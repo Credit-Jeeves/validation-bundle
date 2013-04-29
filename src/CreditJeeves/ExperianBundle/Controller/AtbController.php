@@ -4,6 +4,7 @@ namespace CreditJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\ExperianBundle\Atb;
+use CreditJeeves\ExperianBundle\AtbSimulation;
 use CreditJeeves\ExperianBundle\Simulation;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -54,8 +55,9 @@ class AtbController extends Controller
     {
         /* @var $report Report */
         $report = $this->get('core.session.applicant')->getUser()->getReportsD2c()->last();
-        /* @var $simulation Simulation */
-        $simulation = $this->get('experian.simulation');
+        /* @var $simulation AtbSimulation */
+        $simulation = $this->get('experian.atb_simulation');
+        $simulation->setReport($report);
         return $simulation;
     }
 
@@ -78,5 +80,13 @@ class AtbController extends Controller
         }
 
         return array('message' => 'Invalid');
+    }
+
+    /**
+     * @Template()
+     */
+    public function componentAction()
+    {
+
     }
 }
