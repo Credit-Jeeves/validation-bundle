@@ -59,11 +59,26 @@ swiftmailer:
     password:  %mailer_password%
     spool:     { type: memory }
 
+rj_email:
+    locales: [en, es]
+
 #FOSUserBundle
 fos_user:
     db_driver: orm 
     firewall_name: main
     user_class: CreditJeeves\DataBundle\Entity\User
+    service:
+        mailer: rj_email.mailer.twig_swift
+    from_email:
+        address:        support@creditjeeves.com
+        sender_name:    CreditJeeves
+    registration:
+        confirmation:
+            enabled:    true
+            template: 'registration'
+    resetting:
+        email:
+            template: 'resetting'    
 
 #JMS
 jms_di_extra:
