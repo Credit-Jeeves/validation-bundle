@@ -61,6 +61,9 @@ swiftmailer:
 
 rj_email:
     locales: [en, es]
+    default_from_name: %email_from%
+    default_from_email: %email_name%
+    
 
 #FOSUserBundle
 fos_user:
@@ -92,3 +95,19 @@ jms_security_extra:
     secure_all_services: false
     expressions: true
 
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.admin.block.admin_list:
+            contexts:   [admin]
+
+        #sonata.admin_doctrine_orm.block.audit:
+        #    contexts:   [admin]
+
+        sonata.block.service.text:
+        sonata.block.service.rss:
+
+        # Some specific block from the SonataMediaBundle
+        #sonata.media.block.media:
+        #sonata.media.block.gallery:
+        #sonata.media.block.feature_media:

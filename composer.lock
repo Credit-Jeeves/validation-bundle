@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "16b30cc06e4a3a17b852455be2a3c83e",
+    "hash": "38427f65ca229e17a58d35cb14d3a0e1",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -1397,7 +1397,7 @@
         },
         {
             "name": "knplabs/knp-menu-bundle",
-            "version": "v1.1.1",
+            "version": "1.1.x-dev",
             "target-dir": "Knp/Bundle/MenuBundle",
             "source": {
                 "type": "git",
@@ -2272,6 +2272,67 @@
                 "sonata"
             ],
             "time": "2013-03-01 15:47:14"
+        },
+        {
+            "name": "sonata-project/doctrine-orm-admin-bundle",
+            "version": "dev-master",
+            "target-dir": "Sonata/DoctrineORMAdminBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sonata-project/SonataDoctrineORMAdminBundle.git",
+                "reference": "c5c263af5a4effa93267c2a3207eafe442e34aba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/c5c263af5a4effa93267c2a3207eafe442e34aba",
+                "reference": "c5c263af5a4effa93267c2a3207eafe442e34aba",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": ">=2.3,<2.4",
+                "knplabs/knp-menu-bundle": "1.1.x-dev",
+                "sonata-project/admin-bundle": "2.2.*@dev",
+                "sonata-project/block-bundle": "2.2.*@dev",
+                "symfony/symfony": ">=2.2,<2.3"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.0": "2.0.x-dev",
+                    "dev-2.1": "2.1.x-dev",
+                    "dev-master": "2.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Sonata\\DoctrineORMAdminBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Rabaix",
+                    "email": "thomas.rabaix@sonata-project.org",
+                    "homepage": "http://sonata-project.org"
+                },
+                {
+                    "name": "Sonata Community",
+                    "homepage": "https://github.com/sonata-project/SonataDoctrineORMAdminBundle/contributors"
+                }
+            ],
+            "description": "Symfony Sonata / Integrate Doctrine ORM into the SonataAdminBundle",
+            "homepage": "http://sonata-project.org/bundles/admin",
+            "keywords": [
+                "Admin Generator",
+                "admin",
+                "bootstrap",
+                "generator",
+                "sonata"
+            ],
+            "time": "2013-04-08 14:44:41"
         },
         {
             "name": "sonata-project/exporter",
@@ -3610,6 +3671,7 @@
         "kriswallsmith/assetic": 20,
         "friendsofsymfony/user-bundle": 20,
         "hat/environment": 20,
+        "knplabs/knp-menu-bundle": 20,
         "fp/badaboom": 20,
         "fp/badaboom-bundle": 20,
         "jms/serializer-bundle": 20,
@@ -3618,6 +3680,7 @@
         "rj/email-bundle": 20,
         "sonata-project/block-bundle": 20,
         "sonata-project/admin-bundle": 20,
+        "sonata-project/doctrine-orm-admin-bundle": 20,
         "doctrine/data-fixtures": 20,
         "behat/symfony2-extension": 20,
         "behat/mink-bundle": 20
