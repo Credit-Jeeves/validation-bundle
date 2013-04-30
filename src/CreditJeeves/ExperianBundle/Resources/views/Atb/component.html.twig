@@ -1,5 +1,5 @@
 <div class='pod pod-full take-action-pod last' id="simulation-container">
-    <h3><?php echo __('title', array(), 'simulation');?></h3>
+    <h3> {{ 'title' | trans({}, 'simulation')  }}</h3>
     <div class="action-summary green-bg-stripe">
         <div class="rescore-container ko-block-invisible">
             <form action="" class="simulation-form">
@@ -120,26 +120,26 @@
                     <!-- /ko -->
                     <!-- /ko -->
                     <!-- ko ifnot: $data.banks -->
-                    <!-- ko if: 300 == model.simulation.sim_type() -->
-                    <div class="action-text" data-bind="i18n: { _catalogue: 'simulation', BALANCE: tr_balance }">
-                        30x-message-%BALANCE%
-                    </div>
-                    <div class='green'>
-                  <span data-bind="i18n: { _catalogue: 'simulation' }">
-                  </span>
-                        <?php echo $applyNowLink . " " . $consolidateCCLink;?>.
-                    </div>
-                    <!-- /ko -->
-                    <!-- ko if: 400 == model.simulation.sim_type() -->
-                    <div class="action-text" data-bind="i18n: { _catalogue: 'simulation', BALANCE: tr_balance }">
-                        40x-message-%BALANCE%
-                    </div>
-                    <div class='green'>
-                  <span data-bind="i18n: { _catalogue: 'simulation' }">
-                  </span>
-                        <?php echo $consolidateHomeEquityLink;?>.
-                    </div>
-                    <!-- /ko -->
+                        <!-- ko if: 300 == model.simulation.sim_type() -->
+                            <div class="action-text" data-bind="i18n: { _catalogue: 'simulation', BALANCE: tr_balance }">
+                                30x-message-%BALANCE%
+                            </div>
+                            <div class='green'>
+                          <span data-bind="i18n: { _catalogue: 'simulation' }">
+                          </span>
+                                <?php echo $applyNowLink . " " . $consolidateCCLink;?>.
+                            </div>
+                            <!-- /ko -->
+                            <!-- ko if: 400 == model.simulation.sim_type() -->
+                            <div class="action-text" data-bind="i18n: { _catalogue: 'simulation', BALANCE: tr_balance }">
+                                40x-message-%BALANCE%
+                            </div>
+                            <div class='green'>
+                          <span data-bind="i18n: { _catalogue: 'simulation' }">
+                          </span>
+                                <?php echo $consolidateHomeEquityLink;?>.
+                            </div>
+                        <!-- /ko -->
                     <!-- /ko -->
                 </div>
             </li>

@@ -137,7 +137,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="UserIsVerified")
      */
-    protected $is_verified = 'none';
+    protected $is_verified = UserIsVerified::NONE;
 
     /**
      * @ORM\Column(type="boolean")

@@ -21,7 +21,7 @@ use CreditJeeves\ExperianBundle\Exception\Atb as AtbException;
 class AtbSimulation
 {
     /**
-     * @var Report
+     * @var ReportPrequal
      */
     protected $report;
 
@@ -137,7 +137,7 @@ class AtbSimulation
      *
      * @return Model
      */
-    public function simulate($type, $input, ReportPrequal $report, $isSave = false)
+    public function simulate($type, $input, ReportPrequal $report, $targetScore)
     {
         $this->report = $report;
         $arfParser = $report->getArfParser();
@@ -158,13 +158,10 @@ class AtbSimulation
         $entity->setType($type);
         $entity->setInput($input);
         $entity->setResult($result);
+        $this->getEM()->persist($entity);
+        $this->getEM()->flush(); // TODO move it, if it would be required
 
-        if ($isSave) {
-            $this->getEM()->persist($entity);
-            $this->getEM()->flush(); // TODO move it, if it would be required
-        }
-
-        $model = $this->getConverter()->getModel($entity, $arfParser);
+        $model = $this->getConverter()->getModel($entity, $arfParser, $targetScore);
 
         return $model;
     }

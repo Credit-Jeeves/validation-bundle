@@ -3,7 +3,6 @@ namespace CreditJeeves\ExperianBundle\Tests;
 
 use CreditJeeves\CoreBundle\Tests\BaseTestCase;
 use CreditJeeves\ExperianBundle\AtbSimulation;
-use CreditJeeves\ExperianBundle\Simulation;
 use CreditJeeves\DataBundle\Enum\AtbType;
 use CreditJeeves\ExperianBundle\Model\Atb as Model;
 
@@ -32,6 +31,7 @@ class AtbSimulationCase extends BaseTestCase
             array(
                 'getAtb',
                 'getConverter',
+                'getEM',
             ),
             array(),
             '',
@@ -105,11 +105,34 @@ class AtbSimulationCase extends BaseTestCase
             ->method('getArfParser')
             ->will($this->returnValue($arfParser));
 
+        $em = $this->getMock(
+            'Doctrine\ORM\EntityManager',
+            array(
+                'persist',
+                'flush',
+            ),
+            array(),
+            '',
+            false
+        );
+
+        $em->expects($this->any())
+            ->method('persist')
+            ->will($this->returnValue(true));
+
+        $em->expects($this->once())
+            ->method('flush')
+            ->will($this->returnValue(true));
+
+        $report->expects($this->once())
+            ->method('getEM')
+            ->will($this->returnValue($em));
+
 
         /* @var $atbSimulation \CreditJeeves\ExperianBundle\AtbSimulation */
         $this->assertInstanceOf(
             'CreditJeeves\ExperianBundle\Model\Atb',
-            $atbSimulation->simulate(AtbType::CASH, 1000, $report)
+            $atbSimulation->simulate(AtbType::CASH, 1000, $report, 900)
         );
     }
 }

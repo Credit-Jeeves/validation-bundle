@@ -90,7 +90,7 @@
                 <target>New Loan</target>
             </trans-unit>
             <trans-unit id="10x-message">
-                <source>10x-message-%BANK%-%ACCOUNT%-%CASH_DIFF%-%BALANCE%</source>
+                <source>10x-message-%BANK%-%ACCOUNT%-%CASH_DIFF%-%BALANCE%-%AMOUNT1%</source>
                 <target>Pay your %BANK% account %ACCOUNT% down by $%CASH_DIFF% to a balance $%BALANCE% or less.</target>
             </trans-unit>
             <trans-unit id="10x-sub-message">
@@ -99,11 +99,11 @@
                 </target>
             </trans-unit>
             <trans-unit id="20x-message">
-                <source>20x-message-%AMOUNT1%</source>
+                <source>20x-message-%BANK%-%ACCOUNT%-%CASH_DIFF%-%BALANCE%-%AMOUNT1%</source>
                 <target>Open a new credit card with a limit of $%AMOUNT1% and maintain a $0 balance.</target>
             </trans-unit>
             <trans-unit id="20x-sub-message">
-                <source>20x-sub-message</source>
+                <source>20x-sub-message-%BANK%-%BANK_PHONE%</source>
                 <target>Establish more revolving credit by opening a new credit card or secured card.</target>
             </trans-unit>
 
