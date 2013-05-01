@@ -1,3 +1,7 @@
+{% block stylesheets %}
+    <link href="{{ asset('bundles/experian/css/simulation.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
 <div class="pod-large pod-border pod-padding shadow" id="simulation-container">
     <h3> {{ 'title' | trans({}, 'simulation')  }}</h3>
     <div class="action-summary green-bg-stripe">
