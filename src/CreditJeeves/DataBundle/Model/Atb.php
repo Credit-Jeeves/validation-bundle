@@ -49,7 +49,7 @@ abstract class Atb
     protected $transaction_signature;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(type="encryptobject")
      */
     protected $result;
 

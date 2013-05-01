@@ -1,0 +1,72 @@
+<div class="pod-large pod-border pod-padding shadow" id="simulation-container">
+    <h3> {{ 'title' | trans({}, 'simulation')  }}</h3>
+    <div class="action-summary green-bg-stripe">
+        <div class="rescore-container ko-block-invisible">
+            <form action="" class="simulation-form">
+                <div class="errors"></div>
+                <label for="" class="rescore-label">
+                    {{ 'simulator_best_use_of_cash_label' | trans({}, 'simulation')  }}
+                </label>
+                <input type="text" class="money" />
+                <button type="submit" class='button narrow green reload'>
+                    {{ 're-score' | trans({}, 'simulation')  }}
+                </button>
+            </form>
+        </div>
+
+        <div class="score-area">
+            <div class="details"
+                 style="visibility: hidden;"
+                 data-bind="style: { visibility: blocks().length ? 'visible' : 'hidden' }">
+                <span class="arrow-up-icon"></span>
+                <span class="score" data-bind="text: scoreBest"></span>
+                <div class="estimated-fico" data-bind=" visible: !isDealerSide ">
+                    {{ 'common.estimated.fico' | trans }}
+                    <span data-bind="text: getFico()"></span>
+                </div>
+            </div>
+            <div class="comments">
+                <strong id="steps-title" data-bind="html: title"></strong>
+                <div id="steps-message" class="green" data-bind="html: titleMessage"></div>
+            </div>
+        </div>
+    </div>
+    <div class="action-steps ko-block-invisible">
+        <!-- ko if: blocks().length -->
+        <ul class="zebra-stripe">
+            <!-- ko foreach: { data: blocks() } -->
+            <li>
+                <div class="step-box box">
+                    <strong class="biggerbold" data-bind="i18n: { _catalogue: 'simulation', STEP: $index() + 1 }">
+                        {{ 'step-%STEP%' | trans({}, 'simulation')  }}
+                    </strong>
+                    <div>
+                        <!-- ko if: 10 == model.simulation.getSimTypeGroup() -->
+                            {{ 'group-10x' | trans({}, 'simulation')  }}
+                        <!-- /ko -->
+                        <!-- ko if: 20 == model.simulation.getSimTypeGroup() -->
+                            {{ 'group-20x' | trans({}, 'simulation')  }}
+                        <!-- /ko -->
+                        <!-- ko if: 30 == model.simulation.getSimTypeGroup() -->
+                            {{ 'group-30x' | trans({}, 'simulation')  }}
+                        <!-- /ko -->
+                        <!-- ko if: 40 == model.simulation.getSimTypeGroup() -->
+                            {{ 'group-40x' | trans({}, 'simulation')  }}
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <div class="action-text-box box">
+                    <div class="action-text" data-bind="text: message"></div>
+                    <div class="green">
+                        <img src=""  alt="" src="{{ asset('bundles/core/images/green-arrow.png') }}" />
+                        <span data-bind="text: sub_message"></span>
+                        <span class='double-arrow'>&raquo;</span> <a href="" data-bind="text: text"></a>
+                    </div>
+                </div>
+            </li>
+            <!-- /ko -->
+        </ul>
+        <!-- /ko -->
+    </div>
+    <div class="clear"></div>
+</div>

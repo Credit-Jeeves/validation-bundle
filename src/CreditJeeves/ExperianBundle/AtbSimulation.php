@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
+use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\DataBundle\Entity\AtbRepository;
 use CreditJeeves\DataBundle\Enum\AtbType;
 use CreditJeeves\DataBundle\Entity\Atb as Entity;
@@ -61,13 +62,11 @@ class AtbSimulation
     public function __construct(
         Atb $atb,
         Converter $converter,
-        EntityManager $em,
-        AtbRepository $entityRepo
+        EntityManager $em
     ) {
         $this->atb = $atb;
         $this->converter = $converter;
         $this->em = $em;
-        $this->entityRepo = $entityRepo;
     }
 
     /**
@@ -100,25 +99,6 @@ class AtbSimulation
     public function getEM()
     {
         return $this->em;
-    }
-
-    /**
-     * @return AtbRepository
-     */
-    public function getEntityRepo()
-    {
-        return $this->entityRepo;
-    }
-
-    /**
-     * @param User $user
-     *
-     * @return $this
-     */
-    public function setUser(User $user)
-    {
-        $this->user = $user;
-        return $this;
     }
 
     /**
@@ -158,10 +138,13 @@ class AtbSimulation
         $entity->setType($type);
         $entity->setInput($input);
         $entity->setResult($result);
+
         $this->getEM()->persist($entity);
         $this->getEM()->flush(); // TODO move it, if it would be required
 
-        $model = $this->getConverter()->getModel($entity, $arfParser, $targetScore);
+        $scoreCurrent = $arfParser->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
+
+        $model = $this->getConverter()->getModel($entity, $scoreCurrent, $targetScore);
 
         return $model;
     }

@@ -236,7 +236,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Lead",
+     *     targetEntity="Lead",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -246,7 +246,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Lead",
+     *     targetEntity="Lead",
      *     mappedBy="dealer",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -1064,10 +1064,10 @@ abstract class User extends BaseUser
     /**
      * Add user_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
+     * @param Lead $userLeads
      * @return User
      */
-    public function addUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
+    public function addUserLead(Lead $userLeads)
     {
         $this->user_leads[] = $userLeads;
 
@@ -1077,9 +1077,9 @@ abstract class User extends BaseUser
     /**
      * Remove user_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
+     * @param Lead $userLeads
      */
-    public function removeUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
+    public function removeUserLead(Lead $userLeads)
     {
         $this->user_leads->removeElement($userLeads);
     }
@@ -1100,7 +1100,7 @@ abstract class User extends BaseUser
      * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
      * @return User
      */
-    public function addDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
+    public function addDealerLead(Lead $dealerLeads)
     {
         $this->dealer_leads[] = $dealerLeads;
 
@@ -1110,9 +1110,9 @@ abstract class User extends BaseUser
     /**
      * Remove dealer_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
+     * @param Lead $dealerLeads
      */
-    public function removeDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
+    public function removeDealerLead(Lead $dealerLeads)
     {
         $this->dealer_leads->removeElement($dealerLeads);
     }

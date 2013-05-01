@@ -70,16 +70,6 @@ class Atb extends BaseAtb
     {
         $this->setSimType($result['sim_type']);
         $this->setTransactionSignature($result['transaction_signature']);
-        parent::setResult(serialize($result));
-    }
-
-    /**
-     * Get result
-     *
-     * @return array
-     */
-    public function getResult()
-    {
-        return unserialize(parent::getResult());
+        parent::setResult($result);
     }
 }

@@ -106,7 +106,7 @@ class Atb extends Base
 
     public function getSimType()
     {
-        return $this->setSimType;
+        return $this->simType;
     }
 
     public function setSimTypeGroup($simTypeGroup)

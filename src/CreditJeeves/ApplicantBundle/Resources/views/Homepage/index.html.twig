@@ -19,10 +19,10 @@
     <div class="column-large">
         <div class="row-20"></div>
         {% if isSuccess %}
-        {{ render(controller('ComponentBundle:Success:index', {'Lead': Lead})) }}
-        <div class="row-20"></div>
+            {{ render(controller('ComponentBundle:Success:index', {'Lead': Lead})) }}
+            <div class="row-20"></div>
         {% endif %}
-        {{ render(controller('ComponentBundle:Simulation:index')) }}
+        {{ render(controller('ExperianBundle:Atb:simulation')) }}
         <div class="row-20"></div>
         {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
         <div class="row-20"></div>

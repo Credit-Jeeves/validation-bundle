@@ -36,36 +36,43 @@ class Atb
     protected $arfReport;
 
     /**
-     * @DI\InjectParams({
-     *     "translator" = @DI\Inject("translator.default")
-     * })
+     * @var array
      */
-    public function __construct($translator)
-    {
-        $this->translator = $translator;
-    }
-
-    public function getArfParser()
-    {
-        return $this->arfParser;
-    }
+    protected $externalUrls;
 
     /**
-     * @return ArfReport
+     * @DI\InjectParams({
+     *     "translator" = @DI\Inject("translator.default"),
+     *     "externalUrls" = @DI\Inject("%external_urls%")
+     * })
      */
-    protected function getArfReport()
+    public function __construct($translator, array $externalUrls)
     {
-        if (null == $this->arfReport) {
-            $arfArray = $this->getArfParser()->getArfArray();
-            $this->arfReport = new ArfReport($arfArray);
-        }
-
-        return $this->arfReport;
+        $this->translator = $translator;
+        $this->externalUrls = $externalUrls;
     }
 
-    public function getModel(AtbEntity $entity, ArfParser $arfParser, $targetScore)
+//    public function getArfParser()
+//    {
+//        return $this->arfParser;
+//    }
+//
+//    /**
+//     * @return ArfReport
+//     */
+//    protected function getArfReport()
+//    {
+//        if (null == $this->arfReport) {
+//            $arfArray = $this->getArfParser()->getArfArray();
+//            $this->arfReport = new ArfReport($arfArray);
+//        }
+//
+//        return $this->arfReport;
+//    }
+
+    public function getModel(AtbEntity $entity, $scoreCurrent, $targetScore)
     {
-        $this->arfParser = $arfParser;
+//        $this->arfParser = $arfParser;
         $result = $entity->getResult();
 
         $this->model = new Model();
@@ -76,8 +83,7 @@ class Atb
             ->setMessage($result['message'])
             ->setScoreBest($result['score_best'])
             ->setScoreInit($result['score_init'])
-            // TODO find out, maybe it should be changed to lead's value
-            ->setScoreCurrent($this->getArfReport()->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE))
+            ->setScoreCurrent($scoreCurrent)
             ->setScoreTarget($targetScore)
             ->setSimTypeGroup($this->getSimTypeGroup())
             ->setTitle($this->getTitle())
@@ -95,7 +101,7 @@ class Atb
 
     protected function getSimTypeGroup()
     {
-        $simType = $this->model->getSimType();
+        $simType = (string)$this->model->getSimType();
         $simType[2] = 'x';
         return $simType;
     }
@@ -110,25 +116,25 @@ class Atb
         $result = $entity->getResult();
         $blocks = array();
         $subMessage = null;
-        $links = array();
         foreach($result['blocks'] as $val) {
             switch($this->model->getSimTypeGroup())
             {
                 case '10x':
                 case '20x':
                     $message = $this->model->getSimTypeGroup() .
-                    '-message-%BANK%-%ACCOUNT%-%CASH_DIFF%-%BALANCE%-%AMOUNT1%';
-                    $subMessage = $this->model->getSimTypeGroup() . '-sub-message-%BANK%-%BANK_PHONE%';
+                    '-message-%TR_SUBNAME%-%TR_ACCTNUM%-%CASH_DIFF%-%TR_BALANCE%-%TR_AMOUNT1%';
+                    $subMessage = $this->model->getSimTypeGroup() .
+                    '-sub-message-%TR_SUBNAME%-%SUBSCRIBER_PHONE_NUMBER%';
                     break;
                 case '30x':
                 case '40x':
-                    $message = $this->model->getSimTypeGroup() . '-message-%BALANCE%';
+                    $message = $this->model->getSimTypeGroup() . '-message-%TR_BALANCE%-%SUBSCRIBER_PHONE_NUMBER%';
                     if (!empty($val['banks'])) {
                         $subMessage = $this->model->getSimTypeGroup() . '-sub-message-%BANKS%';
                     }
                     break;
                 default:
-                    throw new AtbException($this->model->getSimTypeGroup() .  "sim type group does not found");
+                    throw new AtbException($this->model->getSimTypeGroup() .  " sim type group does not found");
             }
             $blocks[] = array(
                 'message' => $this->trans(
@@ -139,10 +145,70 @@ class Atb
                     $subMessage,
                     $this->getPlaceHoldersForBlock($val)
                 ),
-                'links' => $links,
+                'links' => $this->getLinksForBlock(),
             );
         }
         return $blocks;
+    }
+
+    protected function getLinksForBlock()
+    {
+        $links = array();
+        switch($this->model->getSimTypeGroup()) {
+            case '10x':
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('133308-pay-down-your-balances'),
+                );
+                break;
+            case '20x':
+                $links[] = array(
+                    'text' => $this->trans('link-apply-now'),
+                    'url' => $this->urlForMainSite('offers'),
+                );
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('132849-open-a-new-credit-card'),
+                );
+                break;
+            case '30x':
+                $links[] = array(
+                    'text' => $this->trans('link-apply-now'),
+                    'url' => $this->urlForMainSite('offers'),
+                );
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('133574-consolidate-your-balances-to-a-new-card'),
+                );
+                break;
+            case '40x':
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('133575-consolidate-your-balances-to-a-line-of-credit'),
+                );
+                break;
+            default:
+                throw new AtbException($this->model->getSimTypeGroup() .  " sim type group does not found");
+        }
+        return $links;
+    }
+
+    protected function getExternalUrl($key)
+    {
+        if (!isset($this->externalUrls[$key])) {
+            throw new AtbException("Url by key '{$key}' does not found");
+        }
+        return $this->externalUrls[$key];
+    }
+
+    protected function urlForMainSite($uri)
+    {
+        return 'http://' . $this->getExternalUrl('main_site') . '/' . $uri;
+    }
+
+    protected function urlForUserVoice($uri, $prefix = 'knowledgebase/articles/')
+    {
+        return 'http://' . $this->getExternalUrl('user_voice') . '/' . $prefix . $uri;
     }
 
     protected function getPlaceHoldersForBlock($block)
@@ -151,10 +217,11 @@ class Atb
         foreach($block as $key => $val) {
             $return['%' . strtoupper($key) . '%'] = $val;
         }
+        $return['%CASH_DIFF%'] = $block['arf_balance'] - $block['tr_balance'];
         return $return;
     }
 
-    protected function getPlaceHolders()
+    protected function getPlaceHoldersForTitles()
     {
         return array(
             '%STEPS%' => count($this->model->getBlocks()),
@@ -168,7 +235,7 @@ class Atb
 
     protected function getTitle()
     {
-        $placeHolders = $this->getPlaceHolders();
+        $placeHolders = $this->getPlaceHoldersForTitles();
 
         if ($this->model->getBlocks()) {
             if (AtbType::SCORE == $this->model->getType()) {
@@ -221,7 +288,7 @@ class Atb
 
     protected function getTitleMessage()
     {
-        $placeHolders = $this->getPlaceHolders();
+        $placeHolders = $this->getPlaceHoldersForTitles();
         if ($this->model->getBlocks()) {
             if (AtbType::SCORE == $this->model->getType()) {
                 if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {

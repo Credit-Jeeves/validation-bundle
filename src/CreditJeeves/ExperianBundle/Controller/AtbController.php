@@ -85,8 +85,8 @@ class AtbController extends Controller
     /**
      * @Template()
      */
-    public function componentAction()
+    public function simulationAction()
     {
-
+        return array();
     }
 }
