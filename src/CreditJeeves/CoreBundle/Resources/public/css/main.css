@@ -211,7 +211,7 @@ h5 {
 }
 
 .pod-padding {
- padding: 20px;
+ padding: 10px 20px;
 }
 
 .shadow {
@@ -360,6 +360,11 @@ input:placeholder, textarea:placeholder {
 }
 
 .header-tabs {
+}
+
+.biggerbold {
+    font-size: 18px;
+    font-weight: 600;
 }
 
 /*
