@@ -15,7 +15,7 @@ parameters:
 
     experian.pidkiq:
         url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
-        userpwd: 'creditjeeves_pid_demo:ju3CVGlhX4' #required! # overwritten by DB
+        userpwd: 'creditjeeves_pid_demo:Tjl80jvE5N' #required! # overwritten by DB
         eai: 'HRPCX4RA' #required! # overwritten by DB
         dbhost: 'PRECISE_ID_TEST' #required!
     experian.netConnect:
