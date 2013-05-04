@@ -16,7 +16,8 @@ class AtbSimulationCase extends BaseTestCase
         $atb = $this->getMock('CreditJeeves\ExperianBundle\Atb', array(), array(), '', false);
         $converter = $this->getMock('CreditJeeves\ExperianBundle\Converter\Atb', array(), array(), '', false);
         $em = $this->getMock('Doctrine\ORM\EntityManager', array(), array(), '', false);
-        new AtbSimulation($atb, $converter, $em);
+        $serializer = $this->getMock('JMS\Serializer\Serializer', array(), array(), '', false);
+        new AtbSimulation($atb, $converter, $em, $serializer);
     }
 
     protected function getMockAtbSimulation()
@@ -27,6 +28,7 @@ class AtbSimulationCase extends BaseTestCase
                 'getAtb',
                 'getConverter',
                 'getEM',
+                'findLastSimulationEntity',
             ),
             array(),
             '',
@@ -99,6 +101,10 @@ class AtbSimulationCase extends BaseTestCase
             ->method('getEM')
             ->will($this->returnValue($em));
 
+        $atbSimulation->expects($this->any())
+            ->method('findLastSimulationEntity')
+            ->will($this->returnValue(null));
+
         return $atbSimulation;
     }
 
@@ -107,28 +113,28 @@ class AtbSimulationCase extends BaseTestCase
         $report = $this->getMock(
             'CreditJeeves\DataBundle\Entity\ReportPrequal',
             array(
-                'getArfParser'
+                'getArfReport'
             ),
             array(),
             '',
             false
         );
 
-        $arfParser = $this->getMock(
-            'CreditJeeves\CoreBundle\Arf\ArfParser',
+        $arfReport = $this->getMock(
+            'CreditJeeves\CoreBundle\Arf\ArfReport',
             array('getValue'),
             array(),
             '',
             false
         );
 
-        $arfParser->expects($this->once())
+        $arfReport->expects($this->once())
             ->method('getValue')
             ->will($this->returnValue(600));
 
-        $report->expects($this->once())
-            ->method('getArfParser')
-            ->will($this->returnValue($arfParser));
+        $report->expects($this->any())
+            ->method('getArfReport')
+            ->will($this->returnValue($arfReport));
         return $report;
     }
 
@@ -155,7 +161,13 @@ class AtbSimulationCase extends BaseTestCase
      */
     public function cashSimulationWrongType()
     {
-        $atbSimulation = $this->getMock('CreditJeeves\ExperianBundle\AtbSimulation', null, array(), '', false);
+        $atbSimulation = $this->getMock(
+            'CreditJeeves\ExperianBundle\AtbSimulation',
+            array('findLastSimulationEntity'),
+            array(),
+            '',
+            false
+        );
         $report = $this->getMockReport();
 
         /* @var $atbSimulation \CreditJeeves\ExperianBundle\AtbSimulation */

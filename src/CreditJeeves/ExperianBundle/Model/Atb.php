@@ -3,7 +3,7 @@ namespace CreditJeeves\ExperianBundle\Model;
 
 use  CreditJeeves\ExperianBundle\Model as Base;
 
-class Atb extends Base
+class Atb
 {
     protected $isDealerSide = false;
     protected $type;

@@ -149,6 +149,10 @@
                 <source>dealer-cash-reach-title-message-%TIER%-%STEPS%-%CASH_USED%-%SCORE_BEST%</source>
                 <target>By using $%CASH_USED% in cash, you could potentially reach tier %TIER%.</target>
             </trans-unit>
+            <trans-unit id="invalid-input">
+                <source>invalid-input</source>
+                <target>Invalid value</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

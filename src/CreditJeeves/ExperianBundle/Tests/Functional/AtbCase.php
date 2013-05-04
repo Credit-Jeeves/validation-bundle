@@ -25,7 +25,12 @@ class AtbCase extends BaseTestCase
         $atb = new Atb(
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->increaseScoreByX(new ArfParser($data), 40);
+        $result = $atb->increaseScoreByX(
+            new ArfParser($data),
+            40,
+            'NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3\nicy26YjqrpzMRSGs73qWNpUdTNu+dNLcJWYMrl3' .
+            'h2PbT9dx+42fnTXvAfpLp\nfvJNs0txMOKdBD2xRL45/Ox+8Lik8RTuO7cMd/z12lHBpHU6AQGSm/vEpUwA\nqms5YKSX7Zc4\n'
+        );
         $this->assertCount(1, $result['blocks']);
         $this->assertArrayHasKey('banks', $result['blocks'][0]);
     }
@@ -43,7 +48,12 @@ class AtbCase extends BaseTestCase
         $atb = new Atb(
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->increaseScoreByX(new ArfParser($data), 200);
+        $result = $atb->increaseScoreByX(
+            new ArfParser($data),
+            200,
+            "NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3\nicy26YjqrpzMRSGs73qWNpUdTNu+dNLcJWYMrl3" .
+            "h2PbT9dx+42fnTXvAfpLp\nfvJNs0txMOKdBD2xRL45/Ox+8Lik8RTuO7cMd/z12lHBpHU6AQGSm/vEpUwA\nqms5YKSX7Zc4\n"
+        );
         $this->assertTrue(empty($result['blocks']));
         $this->assertEquals(
             'None of the simulations can achieve the target score in IncreaseScoreByX_FULL.',
@@ -64,7 +74,13 @@ class AtbCase extends BaseTestCase
         $atb = new Atb(
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->bestUseOfCash(new ArfParser($data), 100);
+        $result = $atb->bestUseOfCash(
+            new ArfParser($data),
+            100,
+            "NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3\nicy26YjqrpzMRSGs73qWNpUdTNu+dNLcJWYMrl3" .
+            "h2PbT9dx+42fnTXvAfpLp\nfvJNs0txMOKdBD2xRL45/Ox+8Lik8RTuO7cMd/z12lHBpHU6AQGSm/vEpUwA\nqms5YKSX7Zc4\n"
+        );
+
         $this->assertCount(3, $result['blocks']);
     }
 
@@ -79,7 +95,12 @@ class AtbCase extends BaseTestCase
         $atb = new Atb(
             self::getContainer()->getParameter('experian.atb')
         );
-        $result = $atb->bestUseOfCash(new ArfParser($data), 40);
+        $result = $atb->bestUseOfCash(
+            new ArfParser($data),
+            40,
+            "NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3\nicy26YjqrpzMRSGs73qWNpUdTPI/U8MLfOhcyoYbx" .
+            "2HHAjErKY04E/hFNO9C\nY8EuqbQ98E5eOI2soQZ8aTdBE4ZyGQe3xxA0fB4jhN2XDUaQ/AZsCY/iRKng\nS4MwCa+zYrcd\n"
+        );
         $this->assertEquals('None of 6 Best Use of Cash simulations can achieve the target score.', $result['message']);
     }
 }

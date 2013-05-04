@@ -1,0 +1,101 @@
+.simulation .green-bg-stripe {
+    border-top: 1px solid #bef386;
+    border-bottom: 1px solid #bef386;
+    background: #def9c2;
+    height: 90px;
+    width: 880px;
+    padding: 0 20px;
+    margin-left: -20px;
+    margin-bottom: 18px;
+}
+
+.simulation .simulation-form input {
+    background: white url(/bundles/experian/images/money_symbols_sprite.png) 7px center no-repeat;
+    padding-left: 22px;
+    width: 124px;
+}
+
+.simulation .score-area .details {
+    width: 115px;
+    float: left;
+    margin-top: 0;
+    margin-right: 15px;
+}
+
+.simulation .score-area .estimated-fico {
+    font-size: 12px;
+    color: #999;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.simulation .action-steps .action-text-box {
+    width: 718px;
+}
+
+.simulation .action-steps .step-box {
+    width: 100px;
+}
+
+.action-summary .rescore-container button {
+    position: absolute;
+    margin-top: -1px;
+}
+
+.action-summary .rescore-container input {
+    width: 62px;
+}
+
+.action-summary .rescore-container {
+    background: white;
+    border: 1px solid #bef386;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    float: right;
+    width: 245px;
+    height: 56px;
+    padding: 12px 20px;
+    margin-top: 5px;
+}
+
+.action-summary .score-area {
+    margin-top: 20px;
+    margin-right: 15px;
+    float: left;
+}
+
+.arrow-up-icon {
+    background-image: url('/bundles/core/images/arrow-up-icon.png');
+    width: 31px;
+    height: 37px;
+}
+
+.action-summary .score {
+    float: left;
+    margin-right: 15px;
+    color: #333333;
+    width: 60px;
+    font-weight: bold;
+    font-size: 34px;
+}
+
+.action-summary .rescore-label {
+    font-weight: bold;
+    line-height: 95%;
+    font-size: 13px;;
+}
+
+.action-summary .comments {
+    float: left;
+    width: 445px;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.action-summary .arrow-up-icon {
+    float: left;
+    margin-right: 6px;
+}
+
+
+

@@ -101,12 +101,26 @@ class AtbSimulation
         return $this->em;
     }
 
-    /**
-     * @return User
-     */
-    public function getUser()
+    protected function findLastTransactionSignature($type)
     {
-        return $this->user;
+        $lastSimulationEntity = $this->findLastSimulationEntity(null, array($type));
+        $signature = '';
+
+        if ($lastSimulationEntity) {
+            $signature = $lastSimulationEntity->getTransactionSignature();
+        }
+        return $signature;
+    }
+
+    protected function increaseScoreByX($targetScore, $scoreCurrent)
+    {
+        $signature = $this->findLastTransactionSignature(AtbType::SCORE);
+        $parser = $this->getReport()->getArfParser();
+
+        $input = $targetScore - $scoreCurrent;
+        $result = $this->getAtb()->increaseScoreByX($parser, $input, $signature);
+
+        return $result;
     }
 
     /**
@@ -121,13 +135,27 @@ class AtbSimulation
     {
         $this->report = $report;
         $arfParser = $report->getArfParser();
+        $lastSimulationEntity = $this->findLastSimulationEntity(
+            AtbType::CASH == $type ? null : $targetScore,
+            array($type),
+            $input
+        );
+        if ($lastSimulationEntity) {
+            return $this->getConverter()->getModel($lastSimulationEntity);
+        }
+
+        $scoreCurrent = $report->getArfReport()->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
 
         switch($type) {
             case AtbType::CASH:
-                $result = $this->getAtb()->bestUseOfCash($arfParser, $input);
+                $result = $this->getAtb()->bestUseOfCash(
+                    $arfParser,
+                    $input,
+                    $this->findLastTransactionSignature($type)
+                );
                 break;
             case AtbType::SCORE:
-                $result = $this->getAtb()->increaseScoreByX($arfParser, $input);
+                $result = $this->increaseScoreByX($targetScore, $scoreCurrent);
                 break;
             default:
                 throw new AtbException("Wrong type '{$type}'");
@@ -138,14 +166,43 @@ class AtbSimulation
         $entity->setType($type);
         $entity->setInput($input);
         $entity->setResult($result);
+        $entity->setScoreCurrent($scoreCurrent);
+        $entity->setScoreTarget($targetScore);
 
         $this->getEM()->persist($entity);
         $this->getEM()->flush(); // TODO move it, if it would be required
 
-        $scoreCurrent = $arfParser->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
-
-        $model = $this->getConverter()->getModel($entity, $scoreCurrent, $targetScore);
+        $model = $this->getConverter()->getModel($entity);
 
         return $model;
+    }
+
+    /**
+     * @param ReportPrequal $report
+     * @param $targetScore
+     * @param null $type
+     * @param null $input
+     *
+     * @return Entity | null
+     */
+    protected function findLastSimulationEntity(
+        $targetScore,
+        array $type = array(AtbType::SCORE, AtbType::SEARCH),
+        $input = null
+    ) {
+        $entity = $this->getEM()
+            ->getRepository('DataBundle:Atb')
+            ->findLatsSimulationEntity($this->getReport()->getId(), $targetScore, $type, $input);
+
+        return $entity;
+    }
+
+    public function getLastSimulation(ReportPrequal $report, $targetScore)
+    {
+        $this->report = $report;
+        if (!($entity = $this->findLastSimulationEntity($targetScore))) {
+            return null;
+        }
+        return $this->getConverter()->getModel($entity);
     }
 }

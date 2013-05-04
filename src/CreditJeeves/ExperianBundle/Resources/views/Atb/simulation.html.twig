@@ -1,18 +1,23 @@
 {% block stylesheets %}
     <link href="{{ asset('bundles/experian/css/simulation.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('bundles/experian/js/Simulation.js') }}" type="text/javascript"></script>
+{% endblock %}
 
-<div class="pod-large pod-border pod-padding shadow" id="simulation-container">
+<div class="pod-large pod-border pod-padding shadow simulation" id="simulation-container">
     <h3> {{ 'title' | trans({}, 'simulation')  }}</h3>
     <div class="action-summary green-bg-stripe">
         <div class="rescore-container ko-block-invisible">
-            <form action="" class="simulation-form">
-                <div class="errors"></div>
+            <form action="" class="simulation-form" id="simulator_form">
+                <ul class="error_list" style="display: none" id="simulation_errors">
+                    <li>{{ 'invalid-input' | trans({}, 'simulation')  }}</li>
+                </ul>
                 <label for="" class="rescore-label">
                     {{ 'simulator_best_use_of_cash_label' | trans({}, 'simulation')  }}
                 </label>
-                <input type="text" class="money" />
-                <button type="submit" class='button narrow green reload'>
+                <input type="text" class="money" name="money" />
+                <button type="submit" class='button small green-refresh'>
                     {{ 're-score' | trans({}, 'simulation')  }}
                 </button>
             </form>
@@ -23,15 +28,15 @@
                  style="visibility: hidden;"
                  data-bind="style: { visibility: blocks().length ? 'visible' : 'hidden' }">
                 <span class="arrow-up-icon"></span>
-                <span class="score" data-bind="text: scoreBest"></span>
-                <div class="estimated-fico" data-bind=" visible: !isDealerSide ">
+                <span class="score" data-bind="text: score_best"></span>
+                <div class="estimated-fico" data-bind=" visible: !is_dealer_side() ">
                     {{ 'common.estimated.fico' | trans }}
                     <span data-bind="text: getFico()"></span>
                 </div>
             </div>
             <div class="comments">
-                <strong id="steps-title" data-bind="html: title"></strong>
-                <div id="steps-message" class="green" data-bind="html: titleMessage"></div>
+                <div id="steps-title" data-bind="html: title"></div>
+                <div id="steps-message" class="green" data-bind="html: title_message"></div>
             </div>
         </div>
     </div>
@@ -45,16 +50,16 @@
                         {{ 'step-%STEP%' | trans({}, 'simulation')  }}
                     </strong>
                     <div>
-                        <!-- ko if: 10 == model.simulation.getSimTypeGroup() -->
+                        <!-- ko if: '10x' == model.simulation.sim_type_group() -->
                             {{ 'group-10x' | trans({}, 'simulation')  }}
                         <!-- /ko -->
-                        <!-- ko if: 20 == model.simulation.getSimTypeGroup() -->
+                        <!-- ko if: '20x' == model.simulation.sim_type_group() -->
                             {{ 'group-20x' | trans({}, 'simulation')  }}
                         <!-- /ko -->
-                        <!-- ko if: 30 == model.simulation.getSimTypeGroup() -->
+                        <!-- ko if: '30x' == model.simulation.sim_type_group() -->
                             {{ 'group-30x' | trans({}, 'simulation')  }}
                         <!-- /ko -->
-                        <!-- ko if: 40 == model.simulation.getSimTypeGroup() -->
+                        <!-- ko if: '40x' == model.simulation.sim_type_group() -->
                             {{ 'group-40x' | trans({}, 'simulation')  }}
                         <!-- /ko -->
                     </div>
@@ -62,9 +67,12 @@
                 <div class="action-text-box box">
                     <div class="action-text" data-bind="text: message"></div>
                     <div class="green">
-                        <img src=""  alt="" src="{{ asset('bundles/core/images/green-arrow.png') }}" />
+                        <img alt="" src="{{ asset('bundles/core/images/green-arrow.png') }}" />
                         <span data-bind="text: sub_message"></span>
-                        <span class='double-arrow'>&raquo;</span> <a href="" data-bind="text: text"></a>
+                        <!-- ko foreach: { data: links } -->
+                            <span class='double-arrow'>&raquo;</span>
+                            <a data-bind="text: text, attr: { href: url }"></a>
+                        <!-- /ko -->
                     </div>
                 </div>
             </li>
@@ -74,3 +82,24 @@
     </div>
     <div class="clear"></div>
 </div>
+
+<script type="text/javascript">
+    <!--
+    jQuery(function() {
+        if (!window.model) {
+            window.model = {};
+        }
+
+        window.model.simulation = new Simulation();
+
+        {% if data %}
+            ko.mapping.fromJS({{ data | serialize | raw }}, {}, window.model.simulation);
+        {% else %}
+            window.model.simulation.init();
+        {% endif %}
+
+        ko.applyBindings(window.model.simulation, jQuery("#simulation-container").get(0));
+        jQuery('#simulation-container .ko-block-invisible').css('visibility', 'visible');
+    });
+    //-->
+</script>

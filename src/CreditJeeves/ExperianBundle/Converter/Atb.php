@@ -52,25 +52,7 @@ class Atb
         $this->externalUrls = $externalUrls;
     }
 
-//    public function getArfParser()
-//    {
-//        return $this->arfParser;
-//    }
-//
-//    /**
-//     * @return ArfReport
-//     */
-//    protected function getArfReport()
-//    {
-//        if (null == $this->arfReport) {
-//            $arfArray = $this->getArfParser()->getArfArray();
-//            $this->arfReport = new ArfReport($arfArray);
-//        }
-//
-//        return $this->arfReport;
-//    }
-
-    public function getModel(AtbEntity $entity, $scoreCurrent, $targetScore)
+    public function getModel(AtbEntity $entity)
     {
 //        $this->arfParser = $arfParser;
         $result = $entity->getResult();
@@ -83,12 +65,12 @@ class Atb
             ->setMessage($result['message'])
             ->setScoreBest($result['score_best'])
             ->setScoreInit($result['score_init'])
-            ->setScoreCurrent($scoreCurrent)
-            ->setScoreTarget($targetScore)
+            ->setScoreCurrent($entity->getScoreCurrent())
+            ->setScoreTarget($entity->getScoreTarget())
             ->setSimTypeGroup($this->getSimTypeGroup())
+            ->setBlocks($this->getBlocks($entity))
             ->setTitle($this->getTitle())
-            ->setTitleMessage($this->getTitleMessage())
-            ->setBlocks($this->getBlocks($entity));
+            ->setTitleMessage($this->getTitleMessage());
 
 
         return $this->model;
@@ -116,7 +98,7 @@ class Atb
         $result = $entity->getResult();
         $blocks = array();
         $subMessage = null;
-        foreach($result['blocks'] as $val) {
+        foreach ($result['blocks'] as $val) {
             switch($this->model->getSimTypeGroup())
             {
                 case '10x':
@@ -214,10 +196,12 @@ class Atb
     protected function getPlaceHoldersForBlock($block)
     {
         $return = array();
-        foreach($block as $key => $val) {
+        foreach ($block as $key => $val) {
             $return['%' . strtoupper($key) . '%'] = $val;
         }
-        $return['%CASH_DIFF%'] = $block['arf_balance'] - $block['tr_balance'];
+        if (!empty($block['arf_balance'])) {
+            $return['%CASH_DIFF%'] = $block['arf_balance'] - $block['tr_balance'];
+        }
         return $return;
     }
 
@@ -237,7 +221,7 @@ class Atb
     {
         $placeHolders = $this->getPlaceHoldersForTitles();
 
-        if ($this->model->getBlocks()) {
+        if (count($this->model->getBlocks())) {
             if (AtbType::SCORE == $this->model->getType()) {
                 if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
@@ -252,7 +236,7 @@ class Atb
                         $placeHolders
                     );
                 }
-            } elseif (AtbType::CASH == $this->model->getType()) {
+            } else/*if (AtbType::CASH == $this->model->getType())*/ {
                 if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
                         "cash-reach-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%",
@@ -267,7 +251,7 @@ class Atb
                     );
                 }
             }
-        } elseif (AtbType::CASH == $this->model->getType()) {
+        } elseif (AtbType::CASH == $this->model->getType()) { //if (AtbType::CASH == $this->model->getType()) {
             return $this->trans(
                 "cash-not-reach-title-message-%CASH%",
                 $placeHolders
@@ -277,7 +261,7 @@ class Atb
                 "reached-score-title-message",
                 $placeHolders
             );
-        } elseif (AtbType::SCORE == $this->model->getType()) {
+        } else/*if (AtbType::SCORE == $this->model->getType())*/ {
             return $this->trans(
                 "score-not-reach-title-message",
                 $placeHolders
@@ -289,7 +273,7 @@ class Atb
     protected function getTitleMessage()
     {
         $placeHolders = $this->getPlaceHoldersForTitles();
-        if ($this->model->getBlocks()) {
+        if (count($this->model->getBlocks())) {
             if (AtbType::SCORE == $this->model->getType()) {
                 if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
@@ -304,7 +288,7 @@ class Atb
                         $placeHolders
                     );
                 }
-            } elseif (AtbType::CASH == $this->model->getType()) {
+            } else/*if (AtbType::CASH == $this->model->getType())*/ {
                 if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
                         "cash-reach-title-sub-message",
