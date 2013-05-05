@@ -194,9 +194,10 @@ class LibExperianPidkiqFnTestCase extends BaseTestCase
      * 2013.03.22 It works again
      * 2013.03.29 It does not work
      * 2013.04.29 It works again
+     * 2013.05.05 It does not work
      *
-     * @expectedException \ExperianException
-     * @expectedExceptionMessage No questions returned due to excessive use
+     * @~expectedException \ExperianException
+     * @~expectedExceptionMessage No questions returned due to excessive use
      */
     public function getResponseOnUserDataTimeout()
     {
