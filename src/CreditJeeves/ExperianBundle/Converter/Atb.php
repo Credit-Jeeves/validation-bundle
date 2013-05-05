@@ -3,17 +3,18 @@ namespace CreditJeeves\ExperianBundle\Converter;
 
 use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\CoreBundle\Arf\ArfReport;
+use CreditJeeves\DataBundle\Enum\AtbType;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\DataBundle\Entity\Atb as AtbEntity;
 use CreditJeeves\ExperianBundle\Model\Atb as Model;
 use Symfony\Bundle\FrameworkBundle\Translation\Translator;
+use CreditJeeves\ExperianBundle\Exception\Atb as AtbException;
 
 /**
  * @DI\Service("experian.atb.converter")
  */
 class Atb
 {
-
     /**
      * @var Model
      */
@@ -35,36 +36,25 @@ class Atb
     protected $arfReport;
 
     /**
-     * @DI\InjectParams({
-     *     "translator" = @DI\Inject("translator.default")
-     * })
+     * @var array
      */
-    public function __construct($translator)
-    {
-        $this->translator = $translator;
-    }
-
-    public function getArfParser()
-    {
-        return $this->arfParser;
-    }
+    protected $externalUrls;
 
     /**
-     * @return ArfReport
+     * @DI\InjectParams({
+     *     "translator" = @DI\Inject("translator.default"),
+     *     "externalUrls" = @DI\Inject("%external_urls%")
+     * })
      */
-    protected function getArfReport()
+    public function __construct($translator, array $externalUrls)
     {
-        if (null == $this->arfReport) {
-            $arfArray = $this->getArfParser()->getArfArray();
-            $this->arfReport = new ArfReport($arfArray);
-        }
-
-        return $this->arfReport;
+        $this->translator = $translator;
+        $this->externalUrls = $externalUrls;
     }
 
-    public function getModel(AtbEntity $entity, ArfParser $arfParser)
+    public function getModel(AtbEntity $entity)
     {
-        $this->arfParser = $arfParser;
+//        $this->arfParser = $arfParser;
         $result = $entity->getResult();
 
         $this->model = new Model();
@@ -75,8 +65,9 @@ class Atb
             ->setMessage($result['message'])
             ->setScoreBest($result['score_best'])
             ->setScoreInit($result['score_init'])
-            // TODO find out, maybe it should be changed to lead's value
-            ->setScoreCurrent($this->getArfReport()->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE))
+            ->setScoreCurrent($entity->getScoreCurrent())
+            ->setScoreTarget($entity->getScoreTarget())
+            ->setSimTypeGroup($this->getSimTypeGroup())
             ->setBlocks($this->getBlocks($entity))
             ->setTitle($this->getTitle())
             ->setTitleMessage($this->getTitleMessage());
@@ -90,6 +81,13 @@ class Atb
         return $this->translator->trans($string, $parameters, 'simulation');
     }
 
+    protected function getSimTypeGroup()
+    {
+        $simType = (string)$this->model->getSimType();
+        $simType[2] = 'x';
+        return $simType;
+    }
+
     /**
      * @param AtbEntity $entity
      *
@@ -98,10 +96,116 @@ class Atb
     protected function getBlocks($entity)
     {
         $result = $entity->getResult();
-        return $result['blocks'];
+        $blocks = array();
+        $subMessage = null;
+        foreach ($result['blocks'] as $val) {
+            switch($this->model->getSimTypeGroup())
+            {
+                case '10x':
+                case '20x':
+                    $message = $this->model->getSimTypeGroup() .
+                    '-message-%TR_SUBNAME%-%TR_ACCTNUM%-%CASH_DIFF%-%TR_BALANCE%-%TR_AMOUNT1%';
+                    $subMessage = $this->model->getSimTypeGroup() .
+                    '-sub-message-%TR_SUBNAME%-%SUBSCRIBER_PHONE_NUMBER%';
+                    break;
+                case '30x':
+                case '40x':
+                    $message = $this->model->getSimTypeGroup() . '-message-%TR_BALANCE%-%SUBSCRIBER_PHONE_NUMBER%';
+                    if (!empty($val['banks'])) {
+                        $subMessage = $this->model->getSimTypeGroup() . '-sub-message-%BANKS%';
+                    }
+                    break;
+                default:
+                    throw new AtbException($this->model->getSimTypeGroup() .  " sim type group does not found");
+            }
+            $blocks[] = array(
+                'message' => $this->trans(
+                    $message,
+                    $this->getPlaceHoldersForBlock($val)
+                ),
+                'sub_message' => !$subMessage ? null : $this->trans(
+                    $subMessage,
+                    $this->getPlaceHoldersForBlock($val)
+                ),
+                'links' => $this->getLinksForBlock(),
+            );
+        }
+        return $blocks;
     }
 
-    protected function getPlaceHolders()
+    protected function getLinksForBlock()
+    {
+        $links = array();
+        switch($this->model->getSimTypeGroup()) {
+            case '10x':
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('133308-pay-down-your-balances'),
+                );
+                break;
+            case '20x':
+                $links[] = array(
+                    'text' => $this->trans('link-apply-now'),
+                    'url' => $this->urlForMainSite('offers'),
+                );
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('132849-open-a-new-credit-card'),
+                );
+                break;
+            case '30x':
+                $links[] = array(
+                    'text' => $this->trans('link-apply-now'),
+                    'url' => $this->urlForMainSite('offers'),
+                );
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('133574-consolidate-your-balances-to-a-new-card'),
+                );
+                break;
+            case '40x':
+                $links[] = array(
+                    'text' => $this->trans('link-learn-more'),
+                    'url' => $this->urlForUserVoice('133575-consolidate-your-balances-to-a-line-of-credit'),
+                );
+                break;
+            default:
+                throw new AtbException($this->model->getSimTypeGroup() .  " sim type group does not found");
+        }
+        return $links;
+    }
+
+    protected function getExternalUrl($key)
+    {
+        if (!isset($this->externalUrls[$key])) {
+            throw new AtbException("Url by key '{$key}' does not found");
+        }
+        return $this->externalUrls[$key];
+    }
+
+    protected function urlForMainSite($uri)
+    {
+        return 'http://' . $this->getExternalUrl('main_site') . '/' . $uri;
+    }
+
+    protected function urlForUserVoice($uri, $prefix = 'knowledgebase/articles/')
+    {
+        return 'http://' . $this->getExternalUrl('user_voice') . '/' . $prefix . $uri;
+    }
+
+    protected function getPlaceHoldersForBlock($block)
+    {
+        $return = array();
+        foreach ($block as $key => $val) {
+            $return['%' . strtoupper($key) . '%'] = $val;
+        }
+        if (!empty($block['arf_balance'])) {
+            $return['%CASH_DIFF%'] = $block['arf_balance'] - $block['tr_balance'];
+        }
+        return $return;
+    }
+
+    protected function getPlaceHoldersForTitles()
     {
         return array(
             '%STEPS%' => count($this->model->getBlocks()),
@@ -115,59 +219,52 @@ class Atb
 
     protected function getTitle()
     {
-        $placeHolders = $this->getPlaceHolders();
+        $placeHolders = $this->getPlaceHoldersForTitles();
 
-        if ($this->model->getBlocks()) {
-            if ('score' == $this->model->getType()) {
-                if ($this->scoreTarget < $this->score_best) {
+        if (count($this->model->getBlocks())) {
+            if (AtbType::SCORE == $this->model->getType()) {
+                if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
                         "score-reach-title-message-%CASH_USED%",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
                 } else {
                     return $this->trans(
-                        $this->isDealerSide ?
+                        $this->model->getIsDealerSide() ?
                         "dealer-score-search-reach-title-message-%TIER%":
                         "score-search-reach-title-message-%POINTS_INCREASE%",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
                 }
-            } elseif ('cash' == $this->type) {
-                if ($this->scoreTarget < $this->score_best) {
+            } else/*if (AtbType::CASH == $this->model->getType())*/ {
+                if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
                         "cash-reach-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
                 } else {
                     return $this->trans(
-                        $this->isDealerSide ?
+                        $this->model->getIsDealerSide() ?
                         "dealer-cash-reach-title-message-%TIER%-%STEPS%-%CASH_USED%-%SCORE_BEST%":
                         "cash-increase-title-message-%POINTS_INCREASE%-%STEPS%-%CASH_USED%-%SCORE_BEST%",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
                 }
             }
-        } elseif ('cash' == $this->type) {
+        } elseif (AtbType::CASH == $this->model->getType()) { //if (AtbType::CASH == $this->model->getType()) {
             return $this->trans(
                 "cash-not-reach-title-message-%CASH%",
-                $placeHolders,
-                'simulation'
+                $placeHolders
             );
-        } elseif ($this->scoreCurrent > $this->scoreTarget) {
+        } elseif ($this->model->getScoreCurrent() > $this->model->getScoreTarget()) {
             return $this->trans(
                 "reached-score-title-message",
-                $placeHolders,
-                'simulation'
+                $placeHolders
             );
-        } elseif ('score' == $this->type) {
+        } else/*if (AtbType::SCORE == $this->model->getType())*/ {
             return $this->trans(
                 "score-not-reach-title-message",
-                $placeHolders,
-                'simulation'
+                $placeHolders
             );
         }
         return '';
@@ -175,52 +272,46 @@ class Atb
 
     protected function getTitleMessage()
     {
-        $placeHolders = $this->getPlaceHolders();
-        if ($this->getAllBlocks()) {
-            if ('score' == $this->type) {
-                if ($this->scoreTarget < $this->score_best) {
+        $placeHolders = $this->getPlaceHoldersForTitles();
+        if (count($this->model->getBlocks())) {
+            if (AtbType::SCORE == $this->model->getType()) {
+                if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
-                        $this->isDealerSide ?
+                        $this->model->getIsDealerSide() ?
                         "dealer-score-reach-title-sub-message-%TIER%" :
                         "score-reach-title-sub-message-%POINTS_INCREASE%",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
                 } else {
                     return $this->trans(
                         "score-search-reach-title-sub-message-%CASH_USED%",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
                 }
-            } elseif ('cash' == $this->type) {
-                if ($this->scoreTarget < $this->score_best) {
+            } else/*if (AtbType::CASH == $this->model->getType())*/ {
+                if ($this->model->getScoreTarget() < $this->model->getScoreBest()) {
                     return $this->trans(
                         "cash-reach-title-sub-message",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
 
                 } else {
                     return $this->trans(
                         "cash-increase-title-sub-message",
-                        $placeHolders,
-                        'simulation'
+                        $placeHolders
                     );
                 }
 
             }
-        } elseif ($this->scoreCurrent > $this->scoreTarget) {
+        } elseif ($this->model->getScoreCurrent() > $this->model->getScoreTarget()) {
             return $this->trans(
                 "reached-score-title-sub-message",
-                $placeHolders,
-                'simulation'
+                $placeHolders
             );
-        } elseif ('score' == $this->type) {
+        } elseif (AtbType::SCORE == $this->model->getType()) {
             return $this->trans(
                 "score-not-reach-title-sub-message",
-                $placeHolders,
-                'simulation'
+                $placeHolders
             );
         }
         return '';

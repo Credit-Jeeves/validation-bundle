@@ -27,13 +27,6 @@ class Report extends BaseReport
     private $arfParser;
 
     /**
-     * Cache
-     *
-     * @var array
-     */
-    private $arfArray;
-
-    /**
      * @ORM\PrePersist
      */
     public function prePersist()
@@ -46,16 +39,12 @@ class Report extends BaseReport
      */
     public function getArfArray()
     {
-        if (null == $this->arfArray) {
-            $this->arfArray = $this->getArfParser()->getArfArray();
-        }
-
-        return $this->arfArray;
+        return $this->getArfParser()->getArfArray();
     }
 
 
     /**
-     * @return \CreditJeeves\CoreBundle\Arf\ArfPaser
+     * @return \CreditJeeves\CoreBundle\Arf\ArfParser
      */
     public function getArfParser()
     {

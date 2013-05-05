@@ -1,3 +1,6 @@
 parameters:
     support_email: help@creditjeeves.com
     support_phone: (866)-976-6622
+    external_urls:
+        main_site: 'www.creditjeeves.com'
+        user_voice: 'creditjeeves.uservoice.com'

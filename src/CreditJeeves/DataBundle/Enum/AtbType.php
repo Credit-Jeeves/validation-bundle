@@ -8,4 +8,5 @@ class AtbType extends Base
 {
     const SCORE = 'score';
     const CASH = 'cash';
+    const SEARCH = 'search';
 }

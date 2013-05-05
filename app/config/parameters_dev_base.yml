@@ -24,8 +24,6 @@ parameters:
         eai: 'HRPCX4RA' #required! # overwritten by DB
         dbhost: 'STAR' #required!
     experian.atb:
-        default_cash: 1000
-        skip_sim_type_400: true
         wsdl_url: '%data.dir%/wsdl/ATBWebService.wsdl'
         location: 'http://stg.creditjeeves.com:8080/'
         logging: %experian.logging%

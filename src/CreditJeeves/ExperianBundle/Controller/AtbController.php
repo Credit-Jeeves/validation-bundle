@@ -2,14 +2,17 @@
 
 namespace CreditJeeves\ExperianBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\Report;
+use CreditJeeves\DataBundle\Enum\AtbType;
 use CreditJeeves\ExperianBundle\Atb;
-use CreditJeeves\ExperianBundle\AtbSimulation;
-use CreditJeeves\ExperianBundle\Simulation;
+use CreditJeeves\ExperianBundle\AtbSimulation as Simulation;
+use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/atb")
@@ -17,48 +20,37 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class AtbController extends Controller
 {
     /**
-     * @Route("/")
+     * @Route("/simulate", name="experian_atb_simulate")
      * @Template()
      */
-    public function indexAction()
+    public function simulateAction()
     {
-        $this->getSimulation();
-        return array();
         if (!$this->getRequest()->isMethod('POST')) {
             return $this->createNotFoundException('Method must be POST');
         }
-        $result = array();
-        $this->form = new cjApplicantSimulationForm();
-        if ($this->getRequest()->get($this->form->getName())) {
-            $result = $this->processForm();
-        } elseif ($this->getRequest()->get('score')) {
-            ignore_user_abort();
-            set_time_limit(90);
-            $atbSimulation = atbSimulationTable::getInstance()->increaseScoreByX(
-                $this->getRequest()->getParameter('score'),
-                $this->cjApplicant
-            );
-            if ($this->getRequest()->getParameter('save', false)) {
-                $atbSimulation->save();
-            }
-            $result = $atbSimulation->getResultData();
+        ignore_user_abort();
+        set_time_limit(90);
+
+        /* @var $report Report */
+        $report = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
+
+        /** @var $lead Lead */
+        $lead = $this->get('core.session.applicant')->getLead();
+
+        /** @var $simulation Simulation */
+        $simulation = $this->get('experian.atb_simulation');
+
+        if ($money = $this->getRequest()->get('money')) {
+            $result = $simulation->simulate(AtbType::CASH, $money, $report, $lead->getTargetScore());
+        } else/*if ($this->getRequest()->get('score'))*/ {
+            $result = $simulation->simulate(AtbType::SCORE, null, $report, $lead->getTargetScore());
         }
 
-        return new JsonResponse($result);
+        $response = new Response($this->get('jms_serializer')->serialize($result, 'json'));
+        $response->headers->set('Content-Type', 'application/json');
 
-    }
+        return $response;
 
-    /**
-     * @return Simulation
-     */
-    protected function getSimulation()
-    {
-        /* @var $report Report */
-        $report = $this->get('core.session.applicant')->getUser()->getReportsD2c()->last();
-        /* @var $simulation AtbSimulation */
-        $simulation = $this->get('experian.atb_simulation');
-        $simulation->setReport($report);
-        return $simulation;
     }
 
     protected function processForm()
@@ -67,8 +59,7 @@ class AtbController extends Controller
         $this->form->bind($request->getParameter($this->form->getName()));
         if ($this->form->isValid()) {
             $input = $this->form->getValues();
-            ignore_user_abort();
-            set_time_limit(90);
+
             $atbSimulation = atbSimulationTable::getInstance()->bestUseOfCash(
                 $input['best_use_of_cash'],
                 $this->cjApplicant
@@ -85,8 +76,21 @@ class AtbController extends Controller
     /**
      * @Template()
      */
-    public function componentAction()
+    public function simulationAction()
     {
+        /* @var $report Report */
+        $report = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
 
+        /** @var $lead Lead */
+        $lead = $this->get('core.session.applicant')->getLead();
+
+        /** @var $simulation Simulation */
+        $simulation = $this->get('experian.atb_simulation');
+
+        $data = $simulation->getLastSimulation($report, $lead->getTargetScore());
+
+        return array(
+            'data' => $data
+        );
     }
 }

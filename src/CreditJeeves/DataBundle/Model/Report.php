@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -29,6 +30,21 @@ class Report
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Atb",
+     *     mappedBy="report",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $atbs;
+
+    public function __construct()
+    {
+        $this->atbs = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -104,5 +120,39 @@ class Report
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+
+    /**
+     * Add atbs
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Atb $atb
+     * @return User
+     */
+    public function addAtbs(\CreditJeeves\DataBundle\Entity\Atb $atb)
+    {
+        $this->atbs[] = $atb;
+
+        return $this;
+    }
+
+    /**
+     * Remove atbs
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Atb $atb
+     */
+    public function removeAtbs(\CreditJeeves\DataBundle\Entity\Atb $atb)
+    {
+        $this->atbs->removeElement($atb);
+    }
+
+    /**
+     * Get atbs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAtbs()
+    {
+        return $this->atbs;
     }
 }

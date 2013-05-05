@@ -62,6 +62,7 @@ class AppKernel extends Kernel
             new CreditJeeves\PublicBundle\PublicBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
             new CreditJeeves\ExperianBundle\ExperianBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

@@ -13,7 +13,9 @@ abstract class BaseTestCase extends MinkTestCase
      */
     protected static function getKernelClass()
     {
-        $dir = isset($_SERVER['KERNEL_DIR']) ? $_SERVER['KERNEL_DIR'] : static::getPhpUnitXmlDir();
+        $dir = isset($_SERVER['KERNEL_DIR']) ?
+        static::getPhpUnitXmlDir() . '/' . $_SERVER['KERNEL_DIR'] :
+        static::getPhpUnitXmlDir();
         require_once $dir . 'AppKernel.php';
         require_once $dir . 'AppTestKernel.php';
         return 'AppTestKernel';
