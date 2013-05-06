@@ -21,6 +21,8 @@ use CreditJeeves\ExperianBundle\Exception\Atb as AtbException;
  */
 class AtbSimulation
 {
+    const SEARCH_CASH = 10000;
+
     /**
      * @var ReportPrequal
      */
@@ -112,19 +114,85 @@ class AtbSimulation
         return $signature;
     }
 
+    /**
+     * @param int $targetScore
+     *
+     * @return array | false
+     */
+    protected function cashBinarySearch($targetScore)
+    {
+        $signature = $this->findLastTransactionSignature(AtbType::CASH);
+
+        $parser = $this->getReport()->getArfParser();
+
+        $input = static::SEARCH_CASH;
+
+        $previousInput = null;
+        $bestInput = null;
+
+        $bestResult = false;
+
+        $atb = $this->getAtb();
+
+        while (true) {
+            $tmpResult = $atb->bestUseOfCash($parser, $input, $signature);
+            if (empty($tmpResult)) {
+                throw new AtbException("Empty result of bestUseOfCash with input '{$input}'");
+            }
+            if (!$bestResult && $targetScore > $tmpResult['score_best']) {
+                return false;
+            }
+
+            if ($targetScore <= $tmpResult['score_best']) {
+                $bestResult = $tmpResult;
+                $bestInput = $input;
+                $input = (int)($input / 2);
+            } elseif (100 < ($bestInput - $input) / 2) { // TODO improve logic
+                $input = $bestInput - (int)( ($bestInput - $input) / 2 );
+            } else {
+                return $bestResult;
+            }
+        }
+    }
+
     protected function increaseScoreByX($targetScore, $scoreCurrent)
     {
         $signature = $this->findLastTransactionSignature(AtbType::SCORE);
         $parser = $this->getReport()->getArfParser();
+        $atb = $this->getAtb();
 
         $input = $targetScore - $scoreCurrent;
-        $result = $this->getAtb()->increaseScoreByX($parser, $input, $signature);
+        $result = $atb->increaseScoreByX($parser, $input, $signature);
+
+        if (400 == $result['sim_type']) {
+            $mortgage = $this->getReport()->getArfReport()->getValue(
+                ArfParser::SEGMENT_PROFILE_SUMMARY,
+                ArfParser::REPORT_BALANCE_REAL_ESTATE
+            );
+            if (empty($mortgage)) {
+                if ($result = $this->cashBinarySearch($targetScore)) {
+                    $result['type'] = AtbType::SEARCH;
+                    return $result;
+                }
+            }
+        }
+
+        if (empty($result['blocks'])) {
+            $result = $atb->increaseScoreByX($parser, 1, $signature);
+            if (!empty($result['blocks']) && !empty($result['score_best'])) {
+                $result = $atb->increaseScoreByX($parser, $result['score_best'] - $scoreCurrent, $signature);
+            }
+        }
+
+        if (400 == $result['sim_type'] && empty($mortgage) && empty($result['blocks'])) {
+            $result['type'] = AtbType::SEARCH;
+        }
 
         return $result;
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Enum\AtbType $type
+     * @param AtbType $type
      * @param int $input
      * @param ReportPrequal $report
      * @param bool $isSave
@@ -135,30 +203,43 @@ class AtbSimulation
     {
         $this->report = $report;
         $arfParser = $report->getArfParser();
-        $lastSimulationEntity = $this->findLastSimulationEntity(
-            AtbType::CASH == $type ? null : $targetScore,
-            array($type),
-            $input
-        );
-        if ($lastSimulationEntity) {
-            return $this->getConverter()->getModel($lastSimulationEntity);
-        }
-
         $scoreCurrent = $report->getArfReport()->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
+        if (AtbType::CASH == $type || $scoreCurrent < $targetScore) {
+            $lastSimulationEntity = $this->findLastSimulationEntity(
+                AtbType::CASH == $type ? null : $targetScore,
+                array($type),
+                $input
+            );
+            if ($lastSimulationEntity) {
+                return $this->getConverter()->getModel($lastSimulationEntity);
+            }
 
-        switch($type) {
-            case AtbType::CASH:
-                $result = $this->getAtb()->bestUseOfCash(
-                    $arfParser,
-                    $input,
-                    $this->findLastTransactionSignature($type)
-                );
-                break;
-            case AtbType::SCORE:
-                $result = $this->increaseScoreByX($targetScore, $scoreCurrent);
-                break;
-            default:
-                throw new AtbException("Wrong type '{$type}'");
+            switch($type) {
+                case AtbType::CASH:
+                    $result = $this->getAtb()->bestUseOfCash(
+                        $arfParser,
+                        $input,
+                        $this->findLastTransactionSignature($type)
+                    );
+                    break;
+                case AtbType::SCORE:
+                    $input = $targetScore - $scoreCurrent;
+                    $result = $this->increaseScoreByX($targetScore, $scoreCurrent);
+                    if (!empty($result['type'])) {
+                        $type = $result['type'];
+                        unset($result['type']);
+                    }
+                    break;
+                default:
+                    throw new AtbException("Wrong type '{$type}'");
+            }
+        } else {
+            $input = $targetScore - $scoreCurrent;
+            $result = array(
+                'sim_type' => 0,
+                'transaction_signature' => '',
+                'blocks' => array(),
+            );
         }
 
         $entity = new Entity();

@@ -23,7 +23,8 @@ class AtbRepository extends EntityRepository
         $queryB = $this->createQueryBuilder('a');
 
         $whereArr = array(
-            $queryB->expr()->eq('a.cj_applicant_report_id', $reportId)
+            $queryB->expr()->eq('a.cj_applicant_report_id', $reportId),
+//            $queryB->expr()->neq('a.transaction_signature', ''),
         );
 
         if (null != $targetScore) {

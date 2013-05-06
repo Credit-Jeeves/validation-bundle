@@ -65,6 +65,10 @@
                 <source>cash-not-reach-title-message-%CASH%</source>
                 <target>We were unable to meaningfully effect your score with $%CASH% cash.</target>
             </trans-unit>
+            <trans-unit id="search-not-reach-title-message">
+                <source>search-not-reach-title-message</source>
+                <target>We were unable to meaningfully effect your score.</target>
+            </trans-unit>
             <trans-unit id="step-n">
                 <source>step-%STEP%</source>
                 <target>Step %STEP%</target>

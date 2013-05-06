@@ -251,14 +251,19 @@ class Atb
                     );
                 }
             }
-        } elseif (AtbType::CASH == $this->model->getType()) { //if (AtbType::CASH == $this->model->getType()) {
+        } elseif ($this->model->getScoreCurrent() > $this->model->getScoreTarget()) {
+            return $this->trans(
+                "reached-score-title-message",
+                $placeHolders
+            );
+        } elseif (AtbType::CASH == $this->model->getType()) {
             return $this->trans(
                 "cash-not-reach-title-message-%CASH%",
                 $placeHolders
             );
-        } elseif ($this->model->getScoreCurrent() > $this->model->getScoreTarget()) {
+        } elseif (AtbType::SEARCH == $this->model->getType()) {
             return $this->trans(
-                "reached-score-title-message",
+                "search-not-reach-title-message",
                 $placeHolders
             );
         } else/*if (AtbType::SCORE == $this->model->getType())*/ {

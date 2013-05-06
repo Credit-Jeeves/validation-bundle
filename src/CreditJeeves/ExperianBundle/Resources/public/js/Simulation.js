@@ -38,7 +38,7 @@ function Simulation() {
         jQuery.ajax({
             url: '/_dev.php/atb/simulate', // TODO Routing.generate('experian_atb_simulate'),
             type: 'POST',
-            timeout: 30000, // 30 secs
+            timeout: 85000, // 85 secs
             dataType: 'json',
             data: data,
             error: function(jqXHR, errorThrown, textStatus) {
