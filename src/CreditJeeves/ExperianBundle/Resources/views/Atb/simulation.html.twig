@@ -91,6 +91,7 @@
         }
 
         window.model.simulation = new Simulation();
+        ko.applyBindings(window.model.simulation, jQuery("#simulation-container").get(0));
 
         {% if data %}
             ko.mapping.fromJS({{ data | serialize | raw }}, {}, window.model.simulation);
@@ -98,7 +99,6 @@
             window.model.simulation.init();
         {% endif %}
 
-        ko.applyBindings(window.model.simulation, jQuery("#simulation-container").get(0));
         jQuery('#simulation-container .ko-block-invisible').css('visibility', 'visible');
     });
     //-->
