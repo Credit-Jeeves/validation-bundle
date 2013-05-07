@@ -28,11 +28,19 @@ class ZeroController extends Controller
      */
     public function indexAction()
     {
+        $sTemplate = '';
+        $sEmail = '';
         $User    = $this->get('core.session.applicant')->getUser();
-        $User->setEmail('alex.emelyanov.ua@gmail.com');
-        if ($this->get('creditjeeves.mailer')->sendInviteToApplicant($User)) {
-            echo 'Ok';
+        $request = $this->get('request');
+        if ($request->getMethod() == 'POST') {
+            $sTemplate = $request->request->get('template');
+            $sEmail = $request->request->get('email');
+            $User->setEmail($sEmail);
+            $this->get('creditjeeves.mailer')->sendInviteToApplicant($User);
         }
-        return array();
+        return array(
+            'sTemplate' => $sTemplate,
+            'sEmail' => $sEmail,
+            );
     }
 }
