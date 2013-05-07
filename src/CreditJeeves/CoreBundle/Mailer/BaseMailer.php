@@ -32,30 +32,39 @@ abstract class BaseMailer
         }
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
-        if (!empty($isPlain)) {
-            $textContent = $this->manager->renderEmail($sTemplate.'.text', $user->getCulture(), array('user' => $user));
+        if (!empty($isHtml)) {
+            $htmlContent = $this->manager->renderEmail(
+                $sTemplate.'.html',
+                $user->getCulture(),
+                array('user' => $user)
+            );
             $message = \Swift_Message::newInstance();
-            $message->setSubject($textContent['subject']);
-            $message->setFrom(array($textContent['fromEmail'] => $textContent['fromName']));
+            $message->setSubject($htmlContent['subject']);
+            $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
             $message->setTo($user->getEmail());
-            $message->setBody($textContent['body'], 'text/plain');
-            if (!empty($isHtml)) {
-                $htmlContent = $this->manager->renderEmail(
-                    $sTemplate.'.html',
+            $message->setBody($htmlContent['body'], 'text/html');
+            if (!empty($isPlain)) {
+                $plainContent = $this->manager->renderEmail(
+                    $sTemplate.'.text',
                     $user->getCulture(),
                     array('user' => $user)
                 );
-                $message->addPart($htmlContent['body'], 'text/html');
+                $message->addPart($plainContent['body'], 'text/plain');
             }
             $this->container->get('mailer')->send($message);
             return true;
         }
-        if (!empty($isHtml)) {
-            $htmlContent = $this->manager->renderEmail($sTemplate.'.html', $user->getCulture(), array('user' => $user));
-            $message->setSubject($htmlContent['subject']);
-            $message->setFrom(array($htmlContent['fromEmail'] => $textContent['fromName']));
+        if (!empty($isPlain)) {
+            $plainContent = $this->manager->renderEmail(
+                $sTemplate.'.text',
+                $user->getCulture(),
+                array('user' => $user)
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($plainContent['subject']);
+            $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
             $message->setTo($user->getEmail());
-            $message->setBody($htmlContent['body'], 'text/html');
+            $message->setBody($plainContent['body'], 'text/plain');
             $this->container->get('mailer')->send($message);
             return true;
         }
