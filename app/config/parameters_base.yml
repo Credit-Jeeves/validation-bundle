@@ -4,3 +4,6 @@ parameters:
 
     email_from: support@creditjeeves.com
     email_name: Credit Jeeves
+    external_urls:
+        main_site: 'www.creditjeeves.com'
+        user_voice: 'creditjeeves.uservoice.com'

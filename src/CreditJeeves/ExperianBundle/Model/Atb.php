@@ -3,21 +3,34 @@ namespace CreditJeeves\ExperianBundle\Model;
 
 use  CreditJeeves\ExperianBundle\Model as Base;
 
-class Atb extends Base
+class Atb
 {
+    protected $isDealerSide = false;
     protected $type;
     protected $input;
     protected $scoreInit = 0;
     protected $scoreBest = 0;
-    protected $cashUsed = 0;
-    protected $simType = 0;
-    protected $message = '';
     protected $scoreCurrent = 0;
     protected $scoreTarget = 0;
+    protected $cashUsed = 0;
+    protected $simType;
+    protected $simTypeGroup;
+    protected $message = '';
     protected $blocks = array();
 
     protected $title;
     protected $titleMessage;
+
+    public function setIsDealerSide($isDealerSide)
+    {
+        $this->isDealerSide = $isDealerSide;
+        return $this;
+    }
+
+    public function getIsDealerSide()
+    {
+        return $this->isDealerSide;
+    }
 
     public function setType($type)
     {
@@ -63,6 +76,17 @@ class Atb extends Base
         return $this->scoreBest;
     }
 
+    public function setScoreTarget($scoreTarget)
+    {
+        $this->scoreTarget = $scoreTarget;
+        return $this;
+    }
+
+    public function getScoreTarget()
+    {
+        return $this->scoreTarget;
+    }
+
     public function setCashUsed($cashUsed)
     {
         $this->cashUsed = $cashUsed;
@@ -82,7 +106,18 @@ class Atb extends Base
 
     public function getSimType()
     {
-        return $this->setSimType;
+        return $this->simType;
+    }
+
+    public function setSimTypeGroup($simTypeGroup)
+    {
+        $this->simTypeGroup = $simTypeGroup;
+        return $this;
+    }
+
+    public function getSimTypeGroup()
+    {
+        return $this->simTypeGroup;
     }
 
     public function setMessage($message)

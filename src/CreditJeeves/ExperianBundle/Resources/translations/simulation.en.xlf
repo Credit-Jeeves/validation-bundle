@@ -65,6 +65,10 @@
                 <source>cash-not-reach-title-message-%CASH%</source>
                 <target>We were unable to meaningfully effect your score with $%CASH% cash.</target>
             </trans-unit>
+            <trans-unit id="search-not-reach-title-message">
+                <source>search-not-reach-title-message</source>
+                <target>We were unable to meaningfully effect your score.</target>
+            </trans-unit>
             <trans-unit id="step-n">
                 <source>step-%STEP%</source>
                 <target>Step %STEP%</target>
@@ -72,6 +76,14 @@
             <trans-unit id="re-score">
                 <source>re-score</source>
                 <target>Re-Score</target>
+            </trans-unit>
+            <trans-unit id="link-apply-now">
+                <source>link-apply-now</source>
+                <target>Apply Now</target>
+            </trans-unit>
+            <trans-unit id="link-learn-more">
+                <source>link-learn-more</source>
+                <target>Learn More</target>
             </trans-unit>
             <trans-unit id="group-10x">
                 <source>group-10x</source>
@@ -90,34 +102,34 @@
                 <target>New Loan</target>
             </trans-unit>
             <trans-unit id="10x-message">
-                <source>10x-message-%BANK%-%ACCOUNT%-%CASH_DIFF%-%BALANCE%</source>
-                <target>Pay your %BANK% account %ACCOUNT% down by $%CASH_DIFF% to a balance $%BALANCE% or less.</target>
+                <source>10x-message-%TR_SUBNAME%-%TR_ACCTNUM%-%CASH_DIFF%-%TR_BALANCE%-%TR_AMOUNT1%</source>
+                <target>Pay your %TR_SUBNAME% account %TR_ACCTNUM% down by $%CASH_DIFF% to a balance $%TR_BALANCE% or less.</target>
             </trans-unit>
             <trans-unit id="10x-sub-message">
-                <source>10x-sub-message-%BANK%-%BANK_PHONE%</source>
-                <target>Call %BANK% at %BANK_PHONE% to arrange payment. This will lower your overall utilization
+                <source>10x-sub-message-%TR_SUBNAME%-%SUBSCRIBER_PHONE_NUMBER%</source>
+                <target>Call %TR_SUBNAME% at %SUBSCRIBER_PHONE_NUMBER% to arrange payment. This will lower your overall utilization
                 </target>
             </trans-unit>
             <trans-unit id="20x-message">
-                <source>20x-message-%AMOUNT1%</source>
-                <target>Open a new credit card with a limit of $%AMOUNT1% and maintain a $0 balance.</target>
+                <source>20x-message-%TR_SUBNAME%-%TR_ACCTNUM%-%CASH_DIFF%-%TR_BALANCE%-%TR_AMOUNT1%</source>
+                <target>Open a new credit card with a limit of $%TR_AMOUNT1% and maintain a $0 balance.</target>
             </trans-unit>
             <trans-unit id="20x-sub-message">
-                <source>20x-sub-message</source>
+                <source>20x-sub-message-%TR_SUBNAME%-%SUBSCRIBER_PHONE_NUMBER%</source>
                 <target>Establish more revolving credit by opening a new credit card or secured card.</target>
             </trans-unit>
 
             <trans-unit id="30x-message">
-                <source>30x-message-%BALANCE%</source>
-                <target>Consolidate some accounts to a new credit card, and pay the overall balance down to less then $%BALANCE%.</target>
+                <source>30x-message-%TR_BALANCE%-%SUBSCRIBER_PHONE_NUMBER%</source>
+                <target>Consolidate some accounts to a new credit card, and pay the overall balance down to less then $%TR_BALANCE%.</target>
             </trans-unit>
             <trans-unit id="30x-sub-message">
                 <source>30x-sub-message-%BANKS%</source>
                 <target>Accounts to consolidate: %BANKS%.</target>
             </trans-unit>
             <trans-unit id="40x-message">
-                <source>40x-message-%BALANCE%</source>
-                <target>Consolidate some accounts into a new revolving or home equity loan. Consolidated balance: $%BALANCE%.</target>
+                <source>40x-message-%TR_BALANCE%-%SUBSCRIBER_PHONE_NUMBER%</source>
+                <target>Consolidate some accounts into a new revolving or home equity loan. Consolidated balance: $%TR_BALANCE%.</target>
             </trans-unit>
             <trans-unit id="40x-sub-message">
                 <source>40x-sub-message-%BANKS%</source>
@@ -140,6 +152,10 @@
             <trans-unit id="dealer-cash-reach-title-message">
                 <source>dealer-cash-reach-title-message-%TIER%-%STEPS%-%CASH_USED%-%SCORE_BEST%</source>
                 <target>By using $%CASH_USED% in cash, you could potentially reach tier %TIER%.</target>
+            </trans-unit>
+            <trans-unit id="invalid-input">
+                <source>invalid-input</source>
+                <target>Invalid value</target>
             </trans-unit>
         </body>
     </file>

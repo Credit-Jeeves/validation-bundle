@@ -22,7 +22,7 @@ abstract class Atb
     protected $cj_applicant_report_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", inversedBy="atbs")
      * @ORM\JoinColumn(name="cj_applicant_report_id", referencedColumnName="id")
      */
     protected $report;
@@ -44,12 +44,22 @@ abstract class Atb
     protected $sim_type;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="encrypt")
      */
-    protected $transaction_signature;
+    protected $score_current;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(type="integer")
+     */
+    protected $score_target;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $transaction_signature = '';
+
+    /**
+     * @ORM\Column(type="encryptobject")
      */
     protected $result;
 
@@ -166,6 +176,52 @@ abstract class Atb
     }
 
     /**
+     * Set score_current
+     *
+     * @param integer $scoreCurrent
+     * @return Atb
+     */
+    public function setScoreCurrent($scoreCurrent)
+    {
+        $this->score_current = $scoreCurrent;
+
+        return $this;
+    }
+
+    /**
+     * Get score_current
+     *
+     * @return integer
+     */
+    public function getScoreCurrent()
+    {
+        return $this->score_current;
+    }
+
+    /**
+     * Set score_current
+     *
+     * @param integer $scoreTarget
+     * @return Atb
+     */
+    public function setScoreTarget($scoreTarget)
+    {
+        $this->score_target = $scoreTarget;
+
+        return $this;
+    }
+
+    /**
+     * Get score_current
+     *
+     * @return integer
+     */
+    public function getScoreTarget()
+    {
+        return $this->score_target;
+    }
+
+    /**
      * Set transaction_signature
      *
      * @param string $transactionSignature
@@ -191,10 +247,10 @@ abstract class Atb
     /**
      * Set result
      *
-     * @param string $result
+     * @param array $result
      * @return Atb
      */
-    public function setResult($result)
+    public function setResult(array $result)
     {
         $this->result = $result;
 
@@ -204,7 +260,7 @@ abstract class Atb
     /**
      * Get result
      *
-     * @return string
+     * @return array
      */
     public function getResult()
     {

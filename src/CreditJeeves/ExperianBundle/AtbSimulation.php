@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
+use CreditJeeves\CoreBundle\Arf\ArfParser;
 use CreditJeeves\DataBundle\Entity\AtbRepository;
 use CreditJeeves\DataBundle\Enum\AtbType;
 use CreditJeeves\DataBundle\Entity\Atb as Entity;
@@ -20,8 +21,10 @@ use CreditJeeves\ExperianBundle\Exception\Atb as AtbException;
  */
 class AtbSimulation
 {
+    const SEARCH_CASH = 10000;
+
     /**
-     * @var Report
+     * @var ReportPrequal
      */
     protected $report;
 
@@ -61,13 +64,11 @@ class AtbSimulation
     public function __construct(
         Atb $atb,
         Converter $converter,
-        EntityManager $em,
-        AtbRepository $entityRepo
+        EntityManager $em
     ) {
         $this->atb = $atb;
         $this->converter = $converter;
         $this->em = $em;
-        $this->entityRepo = $entityRepo;
     }
 
     /**
@@ -102,55 +103,143 @@ class AtbSimulation
         return $this->em;
     }
 
-    /**
-     * @return AtbRepository
-     */
-    public function getEntityRepo()
+    protected function findLastTransactionSignature($type)
     {
-        return $this->entityRepo;
+        $lastSimulationEntity = $this->findLastSimulationEntity(null, array($type));
+        $signature = '';
+
+        if ($lastSimulationEntity) {
+            $signature = $lastSimulationEntity->getTransactionSignature();
+        }
+        return $signature;
     }
 
     /**
-     * @param User $user
+     * @param int $targetScore
      *
-     * @return $this
+     * @return array | false
      */
-    public function setUser(User $user)
+    protected function cashBinarySearch($targetScore)
     {
-        $this->user = $user;
-        return $this;
+        $signature = $this->findLastTransactionSignature(AtbType::CASH);
+
+        $parser = $this->getReport()->getArfParser();
+
+        $input = static::SEARCH_CASH;
+
+        $previousInput = null;
+        $bestInput = null;
+
+        $bestResult = false;
+
+        $atb = $this->getAtb();
+
+        while (true) {
+            $tmpResult = $atb->bestUseOfCash($parser, $input, $signature);
+            if (empty($tmpResult)) {
+                throw new AtbException("Empty result of bestUseOfCash with input '{$input}'");
+            }
+            if (!$bestResult && $targetScore > $tmpResult['score_best']) {
+                return false;
+            }
+
+            if ($targetScore <= $tmpResult['score_best']) {
+                $bestResult = $tmpResult;
+                $bestInput = $input;
+                $input = (int)($input / 2);
+            } elseif (100 < ($bestInput - $input) / 2) { // TODO improve logic
+                $input = $bestInput - (int)( ($bestInput - $input) / 2 );
+            } else {
+                return $bestResult;
+            }
+        }
+    }
+
+    protected function increaseScoreByX($targetScore, $scoreCurrent)
+    {
+        $signature = $this->findLastTransactionSignature(AtbType::SCORE);
+        $parser = $this->getReport()->getArfParser();
+        $atb = $this->getAtb();
+
+        $input = $targetScore - $scoreCurrent;
+        $result = $atb->increaseScoreByX($parser, $input, $signature);
+
+        if (400 == $result['sim_type']) {
+            $mortgage = $this->getReport()->getArfReport()->getValue(
+                ArfParser::SEGMENT_PROFILE_SUMMARY,
+                ArfParser::REPORT_BALANCE_REAL_ESTATE
+            );
+            if (empty($mortgage)) {
+                if ($result = $this->cashBinarySearch($targetScore)) {
+                    $result['type'] = AtbType::SEARCH;
+                    return $result;
+                }
+            }
+        }
+
+        if (empty($result['blocks'])) {
+            $result = $atb->increaseScoreByX($parser, 1, $signature);
+            if (!empty($result['blocks']) && !empty($result['score_best'])) {
+                $result = $atb->increaseScoreByX($parser, $result['score_best'] - $scoreCurrent, $signature);
+            }
+        }
+
+        if (400 == $result['sim_type'] && empty($mortgage) && empty($result['blocks'])) {
+            $result['type'] = AtbType::SEARCH;
+        }
+
+        return $result;
     }
 
     /**
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param \CreditJeeves\DataBundle\Enum\AtbType $type
+     * @param AtbType $type
      * @param int $input
      * @param ReportPrequal $report
      * @param bool $isSave
      *
      * @return Model
      */
-    public function simulate($type, $input, ReportPrequal $report, $isSave = false)
+    public function simulate($type, $input, ReportPrequal $report, $targetScore)
     {
         $this->report = $report;
         $arfParser = $report->getArfParser();
+        $scoreCurrent = $report->getArfReport()->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
+        if (AtbType::CASH == $type || $scoreCurrent < $targetScore) {
+            $lastSimulationEntity = $this->findLastSimulationEntity(
+                AtbType::CASH == $type ? null : $targetScore,
+                array($type),
+                $input
+            );
+            if ($lastSimulationEntity) {
+                return $this->getConverter()->getModel($lastSimulationEntity);
+            }
 
-        switch($type) {
-            case AtbType::CASH:
-                $result = $this->getAtb()->bestUseOfCash($arfParser, $input);
-                break;
-            case AtbType::SCORE:
-                $result = $this->getAtb()->increaseScoreByX($arfParser, $input);
-                break;
-            default:
-                throw new AtbException("Wrong type '{$type}'");
+            switch($type) {
+                case AtbType::CASH:
+                    $result = $this->getAtb()->bestUseOfCash(
+                        $arfParser,
+                        $input,
+                        $this->findLastTransactionSignature($type)
+                    );
+                    break;
+                case AtbType::SCORE:
+                    $input = $targetScore - $scoreCurrent;
+                    $result = $this->increaseScoreByX($targetScore, $scoreCurrent);
+                    if (!empty($result['type'])) {
+                        $type = $result['type'];
+                        unset($result['type']);
+                    }
+                    break;
+                default:
+                    throw new AtbException("Wrong type '{$type}'");
+            }
+        } else {
+            $input = $targetScore - $scoreCurrent;
+            $result = array(
+                'sim_type' => 0,
+                'transaction_signature' => '',
+                'blocks' => array(),
+            );
         }
 
         $entity = new Entity();
@@ -158,14 +247,43 @@ class AtbSimulation
         $entity->setType($type);
         $entity->setInput($input);
         $entity->setResult($result);
+        $entity->setScoreCurrent($scoreCurrent);
+        $entity->setScoreTarget($targetScore);
 
-        if ($isSave) {
-            $this->getEM()->persist($entity);
-            $this->getEM()->flush(); // TODO move it, if it would be required
-        }
+        $this->getEM()->persist($entity);
+        $this->getEM()->flush(); // TODO move it, if it would be required
 
-        $model = $this->getConverter()->getModel($entity, $arfParser);
+        $model = $this->getConverter()->getModel($entity);
 
         return $model;
+    }
+
+    /**
+     * @param ReportPrequal $report
+     * @param $targetScore
+     * @param null $type
+     * @param null $input
+     *
+     * @return Entity | null
+     */
+    protected function findLastSimulationEntity(
+        $targetScore,
+        array $type = array(AtbType::SCORE, AtbType::SEARCH),
+        $input = null
+    ) {
+        $entity = $this->getEM()
+            ->getRepository('DataBundle:Atb')
+            ->findLatsSimulationEntity($this->getReport()->getId(), $targetScore, $type, $input);
+
+        return $entity;
+    }
+
+    public function getLastSimulation(ReportPrequal $report, $targetScore)
+    {
+        $this->report = $report;
+        if (!($entity = $this->findLastSimulationEntity($targetScore))) {
+            return null;
+        }
+        return $this->getConverter()->getModel($entity);
     }
 }

@@ -103,17 +103,6 @@ class Atb
     }
 
     /**
-     * @param $signature
-     *
-     * @return $this
-     */
-    public function setTransactionSignature($signature)
-    {
-        $this->requestParamas['transaction_signature'] = $signature;
-        return $this;
-    }
-
-    /**
      * @return ArfDirectCheck
      */
     protected function getArfReport()
@@ -131,17 +120,19 @@ class Atb
      *
      * @param ArfParser $arfParser
      * @param float $score
+     * @param string $signature
      *
      * @throws AtbException
      *
      * @return
      */
-    public function increaseScoreByX(ArfParser $arfParser, $score)
+    public function increaseScoreByX(ArfParser $arfParser, $score, $signature)
     {
         $this->arfParser = $arfParser;
         $request = $this->requestParamas;
         $request['data'] = $this->arfParser->getMinimizedArfString();
         $request['score_xpoint'] = $score;
+        $request['transaction_signature'] = $signature;
         return $this->getAllBlocks($this->parseATBResponse($this->client->performIncreaseScoreByX_full($request)));
     }
 
@@ -150,17 +141,19 @@ class Atb
      *
      * @param ArfParser $arfParser
      * @param int $maxCash
+     * @param string $signature
      *
      * @throws AtbException
      *
      * @return array
      */
-    public function bestUseOfCash(ArfParser $arfParser, $maxCash)
+    public function bestUseOfCash(ArfParser $arfParser, $maxCash, $signature)
     {
         $this->arfParser = $arfParser;
         $request = $this->requestParamas;
         $request['data'] = $this->arfParser->getMinimizedArfString();
         $request['max_cash'] = $maxCash;
+        $request['transaction_signature'] = $signature;
         return $this->getAllBlocks($this->parseATBResponse($this->client->performBestUseOfCash_full($request)));
 
     }

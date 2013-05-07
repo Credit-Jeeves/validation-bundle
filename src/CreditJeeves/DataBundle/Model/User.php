@@ -6,12 +6,12 @@ use CreditJeeves\DataBundle\Enum\UserCulture;
 use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use CreditJeeves\DataBundle\Entity\Lead;
 //use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Vehicle;
 use CreditJeeves\DataBundle\Entity\Order;
 use Symfony\Component\Validator\Constraints as Assert;
+use CreditJeeves\DataBundle\Entity\Lead as LeadEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -137,7 +137,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="UserIsVerified")
      */
-    protected $is_verified = 'none';
+    protected $is_verified = UserIsVerified::NONE;
 
     /**
      * @ORM\Column(type="boolean")
@@ -236,7 +236,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Lead",
+     *     targetEntity="Lead",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -246,7 +246,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Lead",
+     *     targetEntity="Lead",
      *     mappedBy="dealer",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -1064,10 +1064,10 @@ abstract class User extends BaseUser
     /**
      * Add user_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
+     * @param LeadEntity $userLeads
      * @return User
      */
-    public function addUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
+    public function addUserLead(LeadEntity $userLeads)
     {
         $this->user_leads[] = $userLeads;
 
@@ -1077,9 +1077,9 @@ abstract class User extends BaseUser
     /**
      * Remove user_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
+     * @param LeadEntity $userLeads
      */
-    public function removeUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
+    public function removeUserLead(LeadEntity $userLeads)
     {
         $this->user_leads->removeElement($userLeads);
     }
@@ -1097,10 +1097,10 @@ abstract class User extends BaseUser
     /**
      * Add dealer_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
+     * @param LeadEntity $dealerLeads
      * @return User
      */
-    public function addDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
+    public function addDealerLead(LeadEntity $dealerLeads)
     {
         $this->dealer_leads[] = $dealerLeads;
 
@@ -1110,9 +1110,9 @@ abstract class User extends BaseUser
     /**
      * Remove dealer_leads
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
+     * @param LeadEntity $dealerLeads
      */
-    public function removeDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
+    public function removeDealerLead(LeadEntity $dealerLeads)
     {
         $this->dealer_leads->removeElement($dealerLeads);
     }
