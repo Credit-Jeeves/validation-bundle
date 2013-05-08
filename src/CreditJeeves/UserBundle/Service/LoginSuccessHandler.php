@@ -39,17 +39,17 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         switch ($sType) {
             case 'applicant':
                 $this->container->get('core.session.applicant')->setUser($User);
+                $url = $this->container->get('router')->generate($sType.'_homepage');
                 break;
             case 'dealer':
                 $this->container->get('core.session.dealer')->setUser($User);
+                $url = $this->container->get('router')->generate($sType.'_homepage');
                 break;
             case 'admin':
-                //$User()->setRoles(array('ROLE_USER', 'ROLE_ADMIN'));
-                //$User->persist();
                 $this->container->get('core.session.admin')->setUser($User);
+                $url = $this->container->get('router')->generate('sonata_admin_dashboard');
                 break;
         }
-        $url = $this->container->get('router')->generate($sType.'_homepage');
         $response = new RedirectResponse($url);
         return $response;
     }

@@ -14,6 +14,10 @@
                 <source>login.link</source>
                 <target>Login In</target>
             </trans-unit>
+            <trans-unit id="logout.link">
+                <source>logout.link</source>
+                <target>Logout</target>
+            </trans-unit>
             <trans-unit id="login.email">
                 <source>login.email</source>
                 <target>Email</target>

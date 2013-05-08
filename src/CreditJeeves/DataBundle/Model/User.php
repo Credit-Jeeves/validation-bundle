@@ -298,6 +298,22 @@ abstract class User extends BaseUser
         $this->tradelines = new ArrayCollection();
     }
 
+    public function getRoles()
+    {
+        $sType = $this->getType();
+        switch ($sType) {
+            case 'applicant':
+                return array('ROLE_USER');
+                break;
+            case 'dealer':
+                return array('ROLE_DEALER');
+                break;
+            case 'admin':
+                return array('ROLE_USER', 'ROLE_DEALER', 'ROLE_ADMIN');
+                break;
+        }
+    }
+
     /**
      * Get id
      *

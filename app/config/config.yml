@@ -96,11 +96,11 @@ jms_security_extra:
     expressions: true
 
 sonata_admin:
-    title:      Sonata Project
-    title_logo: /bundles/sonataadmin/logo_title.png
+    title:      Credit Jeeves Admin
+    title_logo: /bundles/core/images/logo/logo-small.png
     templates:
         # default global templates
-        layout:  SonataAdminBundle::standard_layout.html.twig
+        layout:  AdminBundle::sonata.html.twig
         ajax:    SonataAdminBundle::ajax_layout.html.twig
 
         # default actions templates, should extend a global templates
