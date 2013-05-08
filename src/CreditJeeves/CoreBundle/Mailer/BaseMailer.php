@@ -42,7 +42,7 @@ abstract class BaseMailer
             $message->setSubject($htmlContent['subject']);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
             $message->setTo($user->getEmail());
-            $message->setBody($htmlContent['body'], 'text/html');
+            $message->addPart($htmlContent['body'], 'text/html');
             if (!empty($isPlain)) {
                 $plainContent = $this->manager->renderEmail(
                     $sTemplate.'.text',
@@ -64,7 +64,7 @@ abstract class BaseMailer
             $message->setSubject($plainContent['subject']);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
             $message->setTo($user->getEmail());
-            $message->setBody($plainContent['body'], 'text/plain');
+            $message->addPart($plainContent['body'], 'text/plain');
             $this->container->get('mailer')->send($message);
             return true;
         }
