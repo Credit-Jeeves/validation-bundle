@@ -4,8 +4,8 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        {% block header %}{% endblock %}
+        {% include 'header.html.twig' only %}
         {% block body %}{% endblock %}
-        {% block footer %}{% endblock %}
+        {% include 'footer.html.twig' only %}
     </body>
 </html>

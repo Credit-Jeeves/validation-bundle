@@ -1,20 +1,37 @@
 {% extends "CoreBundle:Mailer:border.html.twig" %}
 
 {% block content %}
-    <style type="text/css">
-        .h1 {
-            color:#669900;
-            display:block;
-            font-family:"Helvetica Neue", helveticaneue, helvetica-neue, Helvetica, Arial, sans-serif;
-            font-size:24px;
-            font-weight:bold;
-            line-height:100%;
-            margin-top:0;
-            margin-right:0;
-            margin-bottom:10px;
-            margin-left:0;
-            text-align:left;
-            }
-    </style>
-    {% block email %}{% endblock %}
+    <h1 style="
+            color: #669900;
+            display: block;
+            font-family: 'Helvetica Neue', helveticaneue, helvetica-neue, Helvetica, Arial, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+            ">{% block h1 %}{% endblock %}</h1>
+    <h2 style="
+            color: #669900;
+            display: block;
+            font-family: 'Helvetica Neue', helveticaneue, helvetica-neue, Helvetica, Arial, sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 100%;
+            margin-top: 0;
+            margin-right: 0;
+            margin-bottom: 10px;
+            margin-left: 0;
+            text-align: left;
+            ">{% block h2 %}{% endblock %}</h1>
+    <div style="margin-bottom: 10px">{% block email %}{% endblock %}</div>
+    <div style="border: 1px solid #c8c8c8"></div>
+    <div style="clear: both;"></div>
+    <div>
+        We're glad we could help,</br>
+        <b>The Credit Jeeves Team</b>
+    </div>
 {% endblock %}
