@@ -58,7 +58,7 @@
     <div style="
             margin-bottom: 10px;
             ">
-        <p>If you would like to view your latest score, you can log into Credit Jeeves anytime and check.</p>
+        <p>{{ 'email.score.check' | trans }}</p>
         <p><center>
             <a href="#" style="
                 border: none;
@@ -78,14 +78,14 @@
                 -moz-border-radius: 4px;
                 -webkit-border-radius: 4px;
                 border-radius: 4px;
-                ">View Latest Score</a>
+                ">{{ 'email.score.link' | trans }}</a>
             </center>
         </p>
     </div>
     <div style="border-bottom: 1px solid #c8c8c8;"></div>
     <div style="clear: both;"></div>
     <div>
-        <p>We're glad we could help,</p>
-        <p><b>The Credit Jeeves Team</b></p>
+        <p>{{ 'email.glad.help' | trans }}</p>
+        <p><b>{{ 'email.creditjeeves.team' | trans }}</b></p>
     </div>
 {% endblock %}

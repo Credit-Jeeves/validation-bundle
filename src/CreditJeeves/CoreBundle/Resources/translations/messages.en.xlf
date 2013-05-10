@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="login.link">
                 <source>login.link</source>
-                <target>Login In</target>
+                <target>Log In</target>
             </trans-unit>
             <trans-unit id="logout.link">
                 <source>logout.link</source>
@@ -793,6 +793,35 @@
             <trans-unit id="incentive.account.update">
                 <source>incentive.account.update</source>
                 <target>You may be able to update your credit profile in 24-48 hours.</target>
+            </trans-unit>
+
+            <trans-unit id="email.creditjeeves.team">
+                <source>email.creditjeeves.team</source>
+                <target>The Credit Jeeves Team</target>
+            </trans-unit>
+            <trans-unit id="email.glad.help">
+                <source>email.glad.help</source>
+                <target>We're glad we could help,</target>
+            </trans-unit>
+            <trans-unit id="email.score.link">
+                <source>email.score.link</source>
+                <target>View Latest Score</target>
+            </trans-unit>
+            <trans-unit id="email.score.check">
+                <source>email.score.check</source>
+                <target>If you would like to view your latest score, you can log into Credit Jeeves anytime and check.</target>
+            </trans-unit>
+            <trans-unit id="email.help">
+                <source>email.help</source>
+                <target>Help</target>
+            </trans-unit>
+            <trans-unit id="email.company">
+                <source>email.company</source>
+                <target>Company</target>
+            </trans-unit>
+            <trans-unit id="email.blog">
+                <source>email.blog</source>
+                <target>Blog</target>
             </trans-unit>
             
             
