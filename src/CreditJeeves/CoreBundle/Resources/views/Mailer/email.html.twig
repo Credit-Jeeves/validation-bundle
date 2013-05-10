@@ -4,8 +4,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
     <body>
-        {% include "CoreBundle:Mailer:header.html.twig" only %}
-        {% block body %}{% endblock %}
-        {% include "CoreBundle:Mailer:footer.html.twig" only %}
+        <div style="
+                width: 600px;
+                margin: 0 auto;
+                ">
+            {% include "CoreBundle:Mailer:header.html.twig" only %}
+            {% block body %}{% endblock %}
+            {% include "CoreBundle:Mailer:footer.html.twig" only %}
+        </div>
     </body>
 </html>
