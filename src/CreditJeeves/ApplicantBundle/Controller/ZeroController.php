@@ -35,8 +35,10 @@ class ZeroController extends Controller
         if ($request->getMethod() == 'POST') {
             $sTemplate = $request->request->get('template');
             $sEmail = $request->request->get('email');
+            $sOldEmail = $User->getEmail();
             $User->setEmail($sEmail);
             $this->get('creditjeeves.mailer')->sendInviteToApplicant($User);
+            $User->setEmail($sOldEmail);
         }
         return array(
             'sTemplate' => $sTemplate,
