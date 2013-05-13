@@ -34,6 +34,39 @@
                 <source>login.remember</source>
                 <target>Remember My Email</target>
             </trans-unit>
+
+            <trans-unit id="resetting.title">
+                <source>resetting.title</source>
+                <target>Forgot your password?</target>
+            </trans-unit>
+            <trans-unit id="resetting.link">
+                <source>login.resetting.link</source>
+                <target>Get a new one</target>
+            </trans-unit>
+            <trans-unit id="resetting.request.username">
+                <source>resetting.request.username</source>
+                <target>Your Email</target>
+            </trans-unit>
+            <trans-unit id="resetting.request.submit">
+                <source>resetting.request.submit</source>
+                <target>Get New Password</target>
+            </trans-unit>
+            <trans-unit id="resetting.request.invalid_username">
+                <source>resetting.request.invalid_username</source>
+                <target>The email address "%username%" does not exist.</target>
+            </trans-unit>
+            <trans-unit id="resetting.text">
+                <source>resetting.text</source>
+                <target>You will receive a new password in your email. Log in with this password and choose a new one under the 'My Account' tab.</target>
+            </trans-unit>
+            <trans-unit id="resetting.check_email.title">
+                <source>resetting.check_email.title</source>
+                <target>New Password Sent</target>
+            </trans-unit>
+            <trans-unit id="resetting.check_email">
+                <source>resetting.check_email-%email%</source>
+                <target>A new password has been sent to your email address %email%. Please check your inbox for the new password, then return to the</target>
+            </trans-unit>
             
             <trans-unit id="project.questions">
                 <source>project.questions</source>
@@ -190,6 +223,10 @@
             <trans-unit id="common.estimated.fico">
                 <source>common.estimated.fico</source>
                 <target>Estimated FICO:</target>
+            </trans-unit>
+            <trans-unit id="common.login_screen">
+                <source>common.login_screen</source>
+                <target>Login Screen</target>
             </trans-unit>
             
             

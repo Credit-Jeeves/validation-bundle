@@ -28,6 +28,11 @@ button, .button {
     padding-left: 22px;
 }
 
+.button.long, button.long {
+    width: 194px;
+    padding-left: 15px;
+}
+
 .button.large, button.large {
     width: 178px;
     height: 44px;
@@ -52,4 +57,8 @@ button, .button {
 
 .button.small.green-refresh, button.small.green-refresh {
     background-image: url(/bundles/core/images/buttons/small_green_refresh.png);
+}
+
+.button.small.green, button.small.green {
+    background-image: url(/bundles/core/images/buttons/small_green.png);
 }
