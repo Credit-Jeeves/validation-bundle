@@ -59,11 +59,29 @@ swiftmailer:
     password:  %mailer_password%
     spool:     { type: memory }
 
+rj_email:
+    locales: [en, es]
+    default_from_name: %email_name%
+    default_from_email: %email_from%
+    
+
 #FOSUserBundle
 fos_user:
     db_driver: orm 
     firewall_name: main
     user_class: CreditJeeves\DataBundle\Entity\User
+    service:
+        mailer: rj_email.mailer.twig_swift
+    from_email:
+        address:        support@creditjeeves.com
+        sender_name:    CreditJeeves
+    registration:
+        confirmation:
+            enabled:    true
+            template: 'registration'
+    resetting:
+        email:
+            template: 'resetting'    
 
 #JMS
 jms_di_extra:
@@ -77,3 +95,29 @@ jms_security_extra:
     secure_all_services: false
     expressions: true
 
+sonata_admin:
+    title:      Credit Jeeves Admin
+    title_logo: /bundles/core/images/logo/logo-small.png
+    templates:
+        # default global templates
+        layout:  AdminBundle::sonata.html.twig
+        ajax:    SonataAdminBundle::ajax_layout.html.twig
+
+        # default actions templates, should extend a global templates
+        list:    SonataAdminBundle:CRUD:list.html.twig
+        show:    SonataAdminBundle:CRUD:show.html.twig
+        edit:    SonataAdminBundle:CRUD:edit.html.twig
+
+    dashboard:
+        blocks:
+            # display a dashboard block
+            - { position: left, type: sonata.admin.block.admin_list }
+
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        sonata.admin.block.admin_list:
+            contexts:   [admin]
+
+#        sonata.block.service.text:
+#        sonata.block.service.rss:

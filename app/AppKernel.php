@@ -62,6 +62,11 @@ class AppKernel extends Kernel
             new CreditJeeves\PublicBundle\PublicBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
             new CreditJeeves\ExperianBundle\ExperianBundle(),
+            new Rj\EmailBundle\RjEmailBundle(),
+            new Sonata\AdminBundle\SonataAdminBundle(),
+            new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+            new Sonata\jQueryBundle\SonatajQueryBundle(),
+            new Sonata\BlockBundle\SonataBlockBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
         );
 

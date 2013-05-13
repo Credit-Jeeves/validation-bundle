@@ -18,5 +18,6 @@ class Lead extends BaseLead
     {
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
+        $this->status = 'new';
     }
 }

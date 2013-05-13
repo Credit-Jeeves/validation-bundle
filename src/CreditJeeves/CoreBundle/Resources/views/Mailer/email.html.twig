@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    </head>
+    <body>
+        <div style="
+                width: 600px;
+                margin: 0 auto;
+                font-family: 'Helvetica Neue', helveticaneue, helvetica-neue, Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                color: #000000;
+                ">
+            {% include "CoreBundle:Mailer:header.html.twig" only %}
+            {% block body %}{% endblock %}
+            {% include "CoreBundle:Mailer:footer.html.twig" only %}
+        </div>
+    </body>
+</html>

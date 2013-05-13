@@ -137,11 +137,17 @@
         "payum/payum-bundle": "0.3.*",
         "payum/authorize-net-aim": "0.3.*",
         "hat/environment": "dev-ton",
-        "knplabs/knp-menu-bundle": "v1.1.1",
+        "knplabs/knp-menu-bundle": "1.1.x-dev",
         "fp/badaboom": "dev-ton as dev-not-approved",
         "fp/universal-error-catcher": "1.0.*",
         "fp/badaboom-bundle": "dev-ton",
-        "jms/serializer-bundle": "dev-master"
+        "jms/serializer-bundle": "dev-master",
+        "stof/doctrine-extensions-bundle": "dev-master",
+        "a2lix/translation-form-bundle": "dev-master",
+        "rj/email-bundle": "dev-master",
+        "sonata-project/block-bundle": "dev-master",
+        "sonata-project/admin-bundle": "dev-master",
+        "sonata-project/doctrine-orm-admin-bundle": "dev-master"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",

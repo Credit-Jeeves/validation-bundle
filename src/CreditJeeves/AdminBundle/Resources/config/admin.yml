@@ -1,0 +1,23 @@
+services:
+    sonata.admin.group:
+        class: CreditJeeves\AdminBundle\Admin\GroupAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Groups" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\Group
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.user:
+        class: CreditJeeves\AdminBundle\Admin\UserAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Users" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+

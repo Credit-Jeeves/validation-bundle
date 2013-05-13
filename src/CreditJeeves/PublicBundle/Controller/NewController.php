@@ -58,8 +58,8 @@ class NewController extends Controller
                     $em->persist($Lead);
                     $em->flush();
 
-//                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
-                    //return $this->redirect($this->generateUrl('applicant_homepage'));
+                    $this->get('core.session.applicant')->setLeadId($Lead->getId());
+                    return $this->redirect($this->generateUrl('applicant_homepage'));
 
                 } else {
                     // FIXME this text must be moved to i18n file
