@@ -19,6 +19,7 @@ $BASE_DIR/src/CreditJeeves/ExperianBundle/Pidkiq,\
 $BASE_DIR/src/CreditJeeves/ExperianBundle/NetConnect,\
 $BASE_DIR/src/CreditJeeves/CoreBundle/sfConfig.php,\
 $BASE_DIR/src/CreditJeeves/CoreBundle/CS/,$BASE_DIR/src/CreditJeeves/CoreBundle/Arf/,\
+$BASE_DIR/bin/doctrine.php,\
 $BASE_DIR/app/"
 
 $CS_PATH -d memory_limit=1024M --standard=$BASE_DIR/src/CreditJeeves/CoreBundle/CS -p --ignore=$IGNOR_DIRS $1

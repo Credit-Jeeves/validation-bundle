@@ -1,0 +1,46 @@
+{% block stylesheets %}
+    <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset('bundles/component/css/footer.css') }}" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block fos_user_content %}
+    <div class="form-login pod-border shadow">
+        <h1>{{ 'resetting.title' | trans }}</h1>
+
+        <p>
+            {{ 'resetting.text' | trans }}
+        </p>
+
+        <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+            <table class="form-table">
+                {% if invalid_username is defined %}
+                    <tr>
+                        <td colspan="2">
+                            <div class="login-error">
+                                {{ 'resetting.request.invalid_username' | trans({'%username%': invalid_username}) }}
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td class="align-right">
+                        <label for="username">{{ 'resetting.request.username' | trans }}</label>
+                    </td>
+                    <td>
+                        <input type="text" id="username" name="username" required="required" />
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+
+                        <input type="submit"
+                               value="{{ 'resetting.request.submit'|trans }}"
+                               class="button small green long"
+                        />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+{% endblock fos_user_content %}

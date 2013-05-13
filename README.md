@@ -29,6 +29,9 @@ cd FOLDER
 php bin/composer.phar install # --dev # requires to run tests
 cp app/config/parameters_prod.yml app/config/parameters.yml # or parameters_dev.yml
 #cp data/files/web/* web/ # it need only for dev environment
+cd vendor/CreditJeevesSf1
+./bin/build.sh
+
 ```
 
 Additional required configuration
