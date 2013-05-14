@@ -32,3 +32,7 @@ parameters:
         login_id: '54PB5egZ'
         transaction_key: '48V258vr55AE8tcg'
         sandbox: true
+
+    email_admins:
+      - alex.emelyanov.ua@gmail.com
+      - darryl@creditjeeves.com

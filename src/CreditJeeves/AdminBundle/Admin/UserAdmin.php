@@ -50,16 +50,17 @@ class UserAdmin extends Admin
              ->add('first_name')
              ->add('middle_initial')
              ->add('last_name')
+             ->add('type')
 //             ->add('commentsEnabled')
          ;
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-//         $datagridMapper
-//             ->add('title')
+         $datagridMapper
+             ->add('type')
 //             ->add('enabled')
 //             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
-//         ;
+         ;
     }
 }

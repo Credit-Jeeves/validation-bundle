@@ -30,6 +30,9 @@ abstract class BaseMailer
         if (empty($user) || empty($sTemplate)) {
             return false;
         }
+        $user = $this->prepareUser($user);
+        print_r($user);
+        exit;
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         if (!empty($isHtml)) {
@@ -69,5 +72,48 @@ abstract class BaseMailer
             return true;
         }
         return false;
+    }
+
+    public function sendTestEmail($sTemplate, $sType = 'text/html')
+    {
+        if (empty($sTemplate)) {
+            return false;
+        }
+        $isExist = $this->manager->findTemplateByName($sTemplate);
+        if (!empty($isExist)) {
+            $user = $this->container->get('core.session.admin')->getUser();
+            $aEmails = $this->container->getParameter('email_admins');
+            $content = $this->manager->renderEmail(
+                $sTemplate,
+                null,
+                array('user' => $this->prepareUser($user))
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($content['subject']);
+            $message->setFrom(array($content['fromEmail'] => $content['fromName']));
+            $message->setTo($aEmails);
+            $message->addPart($content['body'], $sType);
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+        return false;
+    }
+
+    public function prepareUser($User)
+    {
+        $aResult = array();
+        $aResult['first_name'] = $User->getFirstName();
+        $aResult['middle_initial'] = $User->getMiddleInitial();
+        $aResult['last_name'] = $User->getLastName();
+        $aResult['full_name'] = $User->getFullName();
+        $aResult['email'] = $User->getEmail();
+        $score = $User->getScores();
+        if (!empty($score)) {
+            $aResult['score'] = $score->last()->getScore();
+        }
+        
+        $aResult['ssn'] = $User->displaySsn();
+        
+        return $aResult;
     }
 }

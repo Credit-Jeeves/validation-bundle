@@ -20,4 +20,16 @@ class Admin extends User
     {
         $this->data['user_id'] = $User->getId();
     }
+
+    /**
+     * @return \CreditJeeves\DataBundle\Entity\User
+     */
+    public function getUser()
+    {
+        $data = $this->getFromSession(self::USER_ADMIN);
+        if (isset($data['user_id'])) {
+            return $this->findUser($data['user_id']);
+        }
+        return new UserEntity();
+    }
 }

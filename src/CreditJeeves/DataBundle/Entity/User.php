@@ -165,6 +165,19 @@ class User extends BaseUser
     }
 
     /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        return sprintf(
+            "%s %s",
+            (!empty($this->middle_name)
+                ? $this->getFirstName() . ' ' . $this->getMiddleInitial() : $this->getFirstName()),
+            $this->getLastName()
+        );
+    }
+
+    /**
      * (non-PHPdoc)
      * @see FOS\UserBundle\Model.User::setPassword()
      */
