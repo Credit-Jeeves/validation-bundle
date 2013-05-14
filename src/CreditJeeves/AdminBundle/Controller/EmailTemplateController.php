@@ -24,7 +24,6 @@ class EmailTemplateController extends Controller
         $sTemplate = $email->getName();
         $sType = 'text/plain';
         if (preg_match('/(.+)\.(html|text)$/i', $sTemplate, $matches)) {
-            $sTemplate = $matches[1];
             if ( $matches[2] == 'html') {
                 $sType = 'text/html';
             }
