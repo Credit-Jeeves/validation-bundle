@@ -11,6 +11,11 @@ core:
     resource:   "@CoreBundle/Controller"
     type:       annotation
 
+admin_common:
+    resource:   "@AdminBundle/Controller"
+    type:       annotation
+    prefix:     /admin
+
 admin:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
     prefix: /admin
@@ -19,7 +24,6 @@ _sonata_admin:
     resource: .
     type: sonata_admin
     prefix: /admin
-
 
 dealer:
     resource:   "@DealerBundle/Controller"

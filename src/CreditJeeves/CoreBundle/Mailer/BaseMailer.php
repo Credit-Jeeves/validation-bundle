@@ -70,4 +70,29 @@ abstract class BaseMailer
         }
         return false;
     }
+
+    public function sendTestEmail($sTemplate, $sType = 'text/html')
+    {
+        if (empty($sTemplate)) {
+            return false;
+        }
+        $isExist = $this->manager->findTemplateByName($sTemplate);
+        if (!empty($isExist)) {
+            $user = $this->container->get('core.session.admin')->getUser();
+            $aEmails = $this->container->getParameter('email_admins');
+            $content = $this->manager->renderEmail(
+                $sTemplate,
+                null,
+                array('user' => $user)
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($content['subject']);
+            $message->setFrom(array($content['fromEmail'] => $content['fromName']));
+            $message->setTo($aEmails);
+            $message->addPart($content['body'], $sType);
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+        return false;
+    }
 }
