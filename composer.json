@@ -147,7 +147,8 @@
         "rj/email-bundle": "dev-master",
         "sonata-project/block-bundle": "dev-master",
         "sonata-project/admin-bundle": "dev-master",
-        "sonata-project/doctrine-orm-admin-bundle": "dev-master"
+        "sonata-project/doctrine-orm-admin-bundle": "dev-master",
+        "friendsofsymfony/jsrouting-bundle": "~1.1"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",
