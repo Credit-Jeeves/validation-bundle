@@ -36,7 +36,7 @@ function Simulation() {
         var form = jQuery('#' + _formId);
 
         jQuery.ajax({
-            url: '/_dev.php/atb/simulate', // TODO Routing.generate('experian_atb_simulate'),
+            url: '/atb/simulate', // TODO Routing.generate('experian_atb_simulate'),
             type: 'POST',
             timeout: 85000, // 85 secs
             dataType: 'json',
