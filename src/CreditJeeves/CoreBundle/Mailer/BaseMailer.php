@@ -30,6 +30,9 @@ abstract class BaseMailer
         if (empty($user) || empty($sTemplate)) {
             return false;
         }
+        $user = $this->prepareUser($user);
+        print_r($user);
+        exit;
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         if (!empty($isHtml)) {
@@ -83,7 +86,7 @@ abstract class BaseMailer
             $content = $this->manager->renderEmail(
                 $sTemplate,
                 null,
-                array('user' => $user)
+                array('user' => $this->prepareUser($user))
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($content['subject']);
@@ -94,5 +97,23 @@ abstract class BaseMailer
             return true;
         }
         return false;
+    }
+
+    public function prepareUser($User)
+    {
+        $aResult = array();
+        $aResult['first_name'] = $User->getFirstName();
+        $aResult['middle_initial'] = $User->getMiddleInitial();
+        $aResult['last_name'] = $User->getLastName();
+        $aResult['full_name'] = $User->getFullName();
+        $aResult['email'] = $User->getEmail();
+        $score = $User->getScores();
+        if (!empty($score)) {
+            $aResult['score'] = $score->last()->getScore();
+        }
+        
+        $aResult['ssn'] = $User->displaySsn();
+        
+        return $aResult;
     }
 }

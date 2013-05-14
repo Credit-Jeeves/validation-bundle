@@ -21,3 +21,13 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+    rj_email.email_admin:
+        class: CreditJeeves\AdminBundle\Admin\EmailTemplateAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Emails" }
+        arguments:
+            - ~
+            - Rj\EmailBundle\Entity\EmailTemplate
+            - 'RjEmailBundle:EmailTemplateAdmin'
+        calls:
+            - [ setLocales, [%rj_email.locales%]]
