@@ -105,9 +105,9 @@ abstract class BaseMailer
         $aResult['last_name'] = $User->getLastName();
         $aResult['full_name'] = $User->getFullName();
         $aResult['email'] = $User->getEmail();
-        $score = $User->getScores();
+        $score = $User->getScores()->last();
         if (!empty($score)) {
-            $aResult['score'] = $score->last()->getScore();
+            $aResult['score'] = $score->getScore();
         }
         $aResult['culture'] = $User->getCulture();
         $aResult['ssn'] = $User->displaySsn();
