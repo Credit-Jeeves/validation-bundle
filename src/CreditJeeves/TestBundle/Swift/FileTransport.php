@@ -18,14 +18,14 @@ class FileTransport implements Swift_Transport
      *
      * @var Swift_Events_EventDispatcher
      */
-    private $_eventDispatcher;
+    private $eventDispatcher;
 
     /**
      * Not in use
      *
      * @var An invoker that calls the mail() function
      */
-    private $_invoker;
+    private $invoker;
 
     /**
      * Create a new MailTransport with the $log.
@@ -37,8 +37,8 @@ class FileTransport implements Swift_Transport
      */
     public function __construct(Swift_Transport_MailInvoker $invoker, Swift_Events_EventDispatcher $eventDispatcher)
     {
-        $this->_invoker = $invoker;
-        $this->_eventDispatcher = $eventDispatcher;
+        $this->invoker = $invoker;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -78,8 +78,8 @@ class FileTransport implements Swift_Transport
     {
         $failedRecipients = (array)$failedRecipients;
 
-        if ($evt = $this->_eventDispatcher->createSendEvent($this, $message)) {
-            $this->_eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+        if ($evt = $this->eventDispatcher->createSendEvent($this, $message)) {
+            $this->eventDispatcher->dispatchEvent($evt, 'beforeSendPerformed');
             if ($evt->bubbleCancelled()) {
                 return 0;
             }
@@ -97,7 +97,7 @@ class FileTransport implements Swift_Transport
         $to = $toHeader->getFieldBody();
         $subject = $subjectHeader->getFieldBody();
 
-        $reversePath = $this->_getReversePath($message);
+        $reversePath = $this->getReversePath($message);
 
         //Remove headers that would otherwise be duplicated
         $message->getHeaders()->remove('Subject');
@@ -118,12 +118,10 @@ class FileTransport implements Swift_Transport
 
         unset($messageStr);
 
-        if ("\r\n" != PHP_EOL) //Non-windows (not using SMTP)
-        {
+        if ("\r\n" != PHP_EOL) { //Non-windows (not using SMTP)
             $headers = str_replace("\r\n", PHP_EOL, $headers);
             $body = str_replace("\r\n", PHP_EOL, $body);
-        } else //Windows, using SMTP
-        {
+        } else { //Windows, using SMTP
             $headers = str_replace("\r\n.", "\r\n..", $headers);
             $body = str_replace("\r\n.", "\r\n..", $body);
         }
@@ -176,7 +174,7 @@ class FileTransport implements Swift_Transport
      */
     public function registerPlugin(Swift_Events_EventListener $plugin)
     {
-        $this->_eventDispatcher->bindEventListener($plugin);
+        $this->eventDispatcher->bindEventListener($plugin);
     }
 
     // -- Private methods
@@ -188,7 +186,7 @@ class FileTransport implements Swift_Transport
      *
      * @return string
      */
-    private function _getReversePath(Swift_Mime_Message $message)
+    private function getReversePath(Swift_Mime_Message $message)
     {
         $return = $message->getReturnPath();
         $sender = $message->getSender();
