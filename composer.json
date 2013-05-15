@@ -72,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "bd382e38ed518271d4fe408e682783ac72b6c195"
+                    "reference": "f6740ab95d6fa3e246451a5567e78766efcf7dfe"
                 }
             }
         },
@@ -147,7 +147,8 @@
         "rj/email-bundle": "dev-master",
         "sonata-project/block-bundle": "dev-master",
         "sonata-project/admin-bundle": "dev-master",
-        "sonata-project/doctrine-orm-admin-bundle": "dev-master"
+        "sonata-project/doctrine-orm-admin-bundle": "dev-master",
+        "friendsofsymfony/jsrouting-bundle": "~1.1"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",
