@@ -36,18 +36,18 @@ abstract class BaseMailer
         if (!empty($isHtml)) {
             $htmlContent = $this->manager->renderEmail(
                 $sTemplate.'.html',
-                $user->getCulture(),
+                $user['culture'],
                 array('user' => $user)
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($htmlContent['subject']);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
-            $message->setTo($user->getEmail());
+            $message->setTo($user['email']);
             $message->addPart($htmlContent['body'], 'text/html');
             if (!empty($isPlain)) {
                 $plainContent = $this->manager->renderEmail(
                     $sTemplate.'.text',
-                    $user->getCulture(),
+                    $user['culture'],
                     array('user' => $user)
                 );
                 $message->addPart($plainContent['body'], 'text/plain');
@@ -58,13 +58,13 @@ abstract class BaseMailer
         if (!empty($isPlain)) {
             $plainContent = $this->manager->renderEmail(
                 $sTemplate.'.text',
-                $user->getCulture(),
+                $user['culture'],
                 array('user' => $user)
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($plainContent['subject']);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
-            $message->setTo($user->getEmail());
+            $message->setTo($user['email']);
             $message->addPart($plainContent['body'], 'text/plain');
             $this->container->get('mailer')->send($message);
             return true;
@@ -109,7 +109,7 @@ abstract class BaseMailer
         if (!empty($score)) {
             $aResult['score'] = $score->last()->getScore();
         }
-        
+        $aResult['culture'] = $User->getCulture();
         $aResult['ssn'] = $User->displaySsn();
         
         return $aResult;
