@@ -41,8 +41,19 @@ abstract class BaseTestCase extends Base
      */
     public function setUp()
     {
-        $this->session = static::getMink()->getSession();
+        $this->session = $this->getMink()->getSession();
         $this->page = $this->session->getPage();
+    }
+
+    /**
+     * Local implementation of $this->getMink()->setDefaultSessionName($name);
+     *
+     * @param string $name
+     */
+    protected function setDefaultSession($name)
+    {
+        $this->getMink()->setDefaultSessionName($name);
+        $this->setUp();
     }
 
     /**
@@ -137,7 +148,7 @@ abstract class BaseTestCase extends Base
                 } else {
                     $form->fillField($field, $value);
                 }
-            } catch (PHPUnit_Framework_ExpectationFailedException $e) {
+            } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
                 $this->assertNotNull(
                     $fieldElement = $form->find('css', '#' . $field . '_link'),
                     "Fields '{$field}' or '{$field}_link' have not been found"
@@ -232,7 +243,7 @@ abstract class BaseTestCase extends Base
      */
     protected function acceptAlert()
     {
-        if ('selenium2' == static::getMink()->getDefaultSessionName()) {
+        if ('selenium2' == $this->getMink()->getDefaultSessionName()) {
             static::getMink()->getSession()->getDriver()->getWebDriverSession()->accept_alert();
         }
     }
