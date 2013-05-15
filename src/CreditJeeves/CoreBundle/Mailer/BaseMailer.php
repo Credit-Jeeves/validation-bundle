@@ -31,8 +31,6 @@ abstract class BaseMailer
             return false;
         }
         $user = $this->prepareUser($user);
-        print_r($user);
-        exit;
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         if (!empty($isHtml)) {
