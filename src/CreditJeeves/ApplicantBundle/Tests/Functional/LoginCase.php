@@ -27,7 +27,7 @@ class LoginCase extends BaseTestCase
     public function userCanLogin()
     {
         $this->load($this->fixtures, true);
-//        $this->setDefaultSession('zombie');
+//        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->logout();
     }
