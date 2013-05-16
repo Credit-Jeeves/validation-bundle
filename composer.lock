@@ -711,12 +711,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "3ddc575429f867a379375e9e8d336adb2a9bb04e"
+                "reference": "7f8a21875eb424ca62ee79df7bd63325be5283fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/3ddc575429f867a379375e9e8d336adb2a9bb04e",
-                "reference": "3ddc575429f867a379375e9e8d336adb2a9bb04e",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/7f8a21875eb424ca62ee79df7bd63325be5283fd",
+                "reference": "7f8a21875eb424ca62ee79df7bd63325be5283fd",
                 "shasum": ""
             },
             "require": {
@@ -768,7 +768,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2013-05-09 21:16:30"
+            "time": "2013-05-16 07:52:28"
         },
         {
             "name": "gedmo/doctrine-extensions",
@@ -1504,12 +1504,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "1b17f9a239276f24344f9f7d7be8293f6dca4e19"
+                "reference": "386d37e6b70f267e55009304a94dfda108b1799c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/1b17f9a239276f24344f9f7d7be8293f6dca4e19",
-                "reference": "1b17f9a239276f24344f9f7d7be8293f6dca4e19",
+                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/386d37e6b70f267e55009304a94dfda108b1799c",
+                "reference": "386d37e6b70f267e55009304a94dfda108b1799c",
                 "shasum": ""
             },
             "require": {
@@ -1524,9 +1524,9 @@
                 "leafo/scssphp": "*",
                 "leafo/scssphp-compass": "*",
                 "mrclay/minify": "*",
-                "phpunit/phpunit": "3.7.*",
+                "phpunit/phpunit": ">=3.7,<4.0",
                 "ptachoire/cssembed": "*",
-                "twig/twig": ">=1.6.0,<2.0"
+                "twig/twig": ">=1.6,<2.0"
             },
             "suggest": {
                 "leafo/lessphp": "Assetic provides the integration with the lessphp LESS compiler",
@@ -1567,7 +1567,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2013-04-27 14:32:20"
+            "time": "2013-05-16 13:10:17"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -2271,12 +2271,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataBlockBundle.git",
-                "reference": "26300bd2c19cb3a7f65f3cf14012bf3fe3a8db35"
+                "reference": "feba925f8ec2a1172089426a5e173a7891e54dba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/26300bd2c19cb3a7f65f3cf14012bf3fe3a8db35",
-                "reference": "26300bd2c19cb3a7f65f3cf14012bf3fe3a8db35",
+                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/feba925f8ec2a1172089426a5e173a7891e54dba",
+                "reference": "feba925f8ec2a1172089426a5e173a7891e54dba",
                 "shasum": ""
             },
             "require": {
@@ -2325,7 +2325,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2013-05-07 16:24:48"
+            "time": "2013-05-13 09:02:55"
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
@@ -3210,8 +3210,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/66Ton99/MinkBundle",
-                "reference": "c8e0522a6a20f228c67879e7cadc416674ced830"
+                "url": "git@github.com:66Ton99/MinkBundle.git",
+                "reference": "26d1ef27ed9a734a307564ef73adee1f6f02e9dc"
             },
             "require": {
                 "behat/mink": "1.4.*",
@@ -3252,7 +3252,7 @@
                 "test",
                 "web"
             ],
-            "time": "2013-04-03 19:14:52"
+            "time": "2013-05-16 15:11:41"
         },
         {
             "name": "behat/mink-goutte-driver",
