@@ -67,7 +67,7 @@ swiftmailer:
     spool:     { type: memory }
 
 rj_email:
-    locales: [en, es]
+    locales: [en]
     default_from_name: %email_name%
     default_from_email: %email_from%
     

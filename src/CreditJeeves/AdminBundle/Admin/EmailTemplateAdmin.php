@@ -15,6 +15,23 @@ use Rj\EmailBundle\Admin\EmailTemplateAdmin as BaseAdmin;
 
 class EmailTemplateAdmin extends BaseAdmin
 {
+    //list
+    protected function configureListFields(ListMapper $listMapper)
+    {
+      $listMapper
+      ->addIdentifier('name')
+      ->addIdentifier('createdAt')
+      ->addIdentifier('updatedAt')
+      ->add('_action', 'actions', array(
+          'actions' => array(
+              'edit' => array(),
+              'delete' => array(),
+          )
+      ))
+      ;
+    }
+
+    // edit
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
@@ -52,4 +69,13 @@ class EmailTemplateAdmin extends BaseAdmin
                 ->end();
         }
     }
+
+    // filter
+    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
+    {
+      $datagridMapper
+      ->add('name')
+      ;
+    }
+    
 }

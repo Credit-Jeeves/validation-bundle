@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4fb242bd99f999074d1e92d3c8ab9e08",
+    "hash": "f50c911b09bd67ff62213f8aaa41e828",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "7369e19cf1fbb755a1e11b9a823da2f95b4adc95"
+                "reference": "bd382e38ed518271d4fe408e682783ac72b6c195"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-05-05 16:22:04"
+            "time": "2013-05-13 14:55:10"
         },
         {
             "name": "a2lix/translation-form-bundle",
@@ -1450,12 +1450,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "1b17f9a239276f24344f9f7d7be8293f6dca4e19"
+                "reference": "80a13792d38652d6f3bcb938c83a67836ad7a48d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/1b17f9a239276f24344f9f7d7be8293f6dca4e19",
-                "reference": "1b17f9a239276f24344f9f7d7be8293f6dca4e19",
+                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/80a13792d38652d6f3bcb938c83a67836ad7a48d",
+                "reference": "80a13792d38652d6f3bcb938c83a67836ad7a48d",
                 "shasum": ""
             },
             "require": {
@@ -1470,9 +1470,9 @@
                 "leafo/scssphp": "*",
                 "leafo/scssphp-compass": "*",
                 "mrclay/minify": "*",
-                "phpunit/phpunit": "3.7.*",
+                "phpunit/phpunit": ">=3.7,<4.0",
                 "ptachoire/cssembed": "*",
-                "twig/twig": ">=1.6.0,<2.0"
+                "twig/twig": ">=1.6,<2.0"
             },
             "suggest": {
                 "leafo/lessphp": "Assetic provides the integration with the lessphp LESS compiler",
@@ -1513,7 +1513,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2013-04-27 14:32:20"
+            "time": "2013-05-14 23:15:02"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -2217,12 +2217,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataBlockBundle.git",
-                "reference": "26300bd2c19cb3a7f65f3cf14012bf3fe3a8db35"
+                "reference": "feba925f8ec2a1172089426a5e173a7891e54dba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/26300bd2c19cb3a7f65f3cf14012bf3fe3a8db35",
-                "reference": "26300bd2c19cb3a7f65f3cf14012bf3fe3a8db35",
+                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/feba925f8ec2a1172089426a5e173a7891e54dba",
+                "reference": "feba925f8ec2a1172089426a5e173a7891e54dba",
                 "shasum": ""
             },
             "require": {
@@ -2271,7 +2271,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2013-05-07 16:24:48"
+            "time": "2013-05-13 09:02:55"
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
