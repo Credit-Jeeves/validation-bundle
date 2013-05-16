@@ -25,31 +25,29 @@ abstract class BaseMailer
         $this->manager = $this->container->get('rj_email.email_template_manager');
     }
 
-    protected function sendEmail($user, $sTemplate)
+    public function sendEmail($user, $sTemplate)
     {
         if (empty($user) || empty($sTemplate)) {
             return false;
         }
         $user = $this->prepareUser($user);
-        print_r($user);
-        exit;
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         if (!empty($isHtml)) {
             $htmlContent = $this->manager->renderEmail(
                 $sTemplate.'.html',
-                $user->getCulture(),
+                $user['culture'],
                 array('user' => $user)
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($htmlContent['subject']);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
-            $message->setTo($user->getEmail());
+            $message->setTo($user['email']);
             $message->addPart($htmlContent['body'], 'text/html');
             if (!empty($isPlain)) {
                 $plainContent = $this->manager->renderEmail(
                     $sTemplate.'.text',
-                    $user->getCulture(),
+                    $user['culture'],
                     array('user' => $user)
                 );
                 $message->addPart($plainContent['body'], 'text/plain');
@@ -60,13 +58,13 @@ abstract class BaseMailer
         if (!empty($isPlain)) {
             $plainContent = $this->manager->renderEmail(
                 $sTemplate.'.text',
-                $user->getCulture(),
+                $user['culture'],
                 array('user' => $user)
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($plainContent['subject']);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
-            $message->setTo($user->getEmail());
+            $message->setTo($user['email']);
             $message->addPart($plainContent['body'], 'text/plain');
             $this->container->get('mailer')->send($message);
             return true;
@@ -107,11 +105,11 @@ abstract class BaseMailer
         $aResult['last_name'] = $User->getLastName();
         $aResult['full_name'] = $User->getFullName();
         $aResult['email'] = $User->getEmail();
-        $score = $User->getScores();
+        $score = $User->getScores()->last();
         if (!empty($score)) {
-            $aResult['score'] = $score->last()->getScore();
+            $aResult['score'] = $score->getScore();
         }
-        
+        $aResult['culture'] = $User->getCulture();
         $aResult['ssn'] = $User->displaySsn();
         
         return $aResult;

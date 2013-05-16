@@ -37,6 +37,13 @@ assetic:
         #yui_css:
         #    jar: %kernel.root_dir%/Resources/java/yuicompressor-2.4.7.jar
 
+stof_doctrine_extensions:
+    default_locale: en_US
+    orm:
+        default:
+            tree: true
+            timestampable: true # not needed: listeners are not enabled by default
+
 # Doctrine Configuration
 doctrine:
     dbal:
@@ -60,7 +67,7 @@ swiftmailer:
 #    spool:     { type: memory }
 
 rj_email:
-    locales: [en, es]
+    locales: [en]
     default_from_name: %email_name%
     default_from_email: %email_from%
     
