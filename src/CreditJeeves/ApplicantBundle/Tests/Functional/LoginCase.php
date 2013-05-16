@@ -22,12 +22,12 @@ class LoginCase extends BaseTestCase
 
     /**
      * @test
-     * @~expectedException \Symfony\Component\Security\Core\Exception\AccessDeniedException
+     * @expectedException \Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
     public function userCanLogin()
     {
         $this->load($this->fixtures, true);
-//        $this->setDefaultSession('selenium2');
+//        $this->setDefaultSession('zombie');
         $this->login('emilio@example.com', 'pass');
         $this->logout();
     }
