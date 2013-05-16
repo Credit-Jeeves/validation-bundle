@@ -12,4 +12,9 @@ class Mailer extends BaseMailer
     {
         return $this->sendEmail($user, $sTemplate);
     }
+
+    public function sendWelcomeEmailToApplicant($user, $sTemplate = 'welcome')
+    {
+        return $this->sendEmail($user, $sTemplate);
+    }
 }

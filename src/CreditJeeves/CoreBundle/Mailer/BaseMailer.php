@@ -25,7 +25,7 @@ abstract class BaseMailer
         $this->manager = $this->container->get('rj_email.email_template_manager');
     }
 
-    protected function sendEmail($user, $sTemplate)
+    public function sendEmail($user, $sTemplate)
     {
         if (empty($user) || empty($sTemplate)) {
             return false;

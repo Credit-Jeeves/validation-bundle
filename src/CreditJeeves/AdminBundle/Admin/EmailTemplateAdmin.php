@@ -18,17 +18,20 @@ class EmailTemplateAdmin extends BaseAdmin
     //list
     protected function configureListFields(ListMapper $listMapper)
     {
-      $listMapper
-      ->addIdentifier('name')
-      ->addIdentifier('createdAt')
-      ->addIdentifier('updatedAt')
-      ->add('_action', 'actions', array(
-          'actions' => array(
-              'edit' => array(),
-              'delete' => array(),
-          )
-      ))
-      ;
+        $listMapper
+        ->addIdentifier('name')
+        ->addIdentifier('createdAt')
+        ->addIdentifier('updatedAt')
+        ->add(
+            '_action',
+            'actions',
+            array(
+                    'actions' => array(
+                    'edit' => array(),
+                    'delete' => array(),
+                )
+            )
+        );
     }
 
     // edit
@@ -73,9 +76,7 @@ class EmailTemplateAdmin extends BaseAdmin
     // filter
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-      $datagridMapper
-      ->add('name')
-      ;
+        $datagridMapper
+        ->add('name');
     }
-    
 }
