@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AtbController extends Controller
 {
     /**
-     * @Route("/simulate", name="experian_atb_simulate")
+     * @Route("/simulate", name="experian_atb_simulate", options={"expose"=true})
      * @Template()
      */
     public function simulateAction()

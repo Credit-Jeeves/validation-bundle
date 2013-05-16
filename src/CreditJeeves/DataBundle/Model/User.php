@@ -1,17 +1,12 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use FOS\UserBundle\Entity\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
-use FOS\UserBundle\Entity\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-//use CreditJeeves\DataBundle\Entity\Report;
-use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Vehicle;
-use CreditJeeves\DataBundle\Entity\Order;
 use Symfony\Component\Validator\Constraints as Assert;
-use CreditJeeves\DataBundle\Entity\Lead as LeadEntity;
 
 /**
  * @ORM\MappedSuperclass
@@ -176,7 +171,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -186,7 +181,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\ReportD2c",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -226,7 +221,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Order",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -255,7 +250,7 @@ abstract class User extends BaseUser
     protected $dealer_leads;
 
     /**
-     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
+     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
      * @ORM\JoinTable(
      *      name="cj_dealer_group",
      *      joinColumns={@ORM\JoinColumn(name="dealer_id", referencedColumnName="id")},
@@ -266,7 +261,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Vehicle",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Vehicle",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
@@ -1080,10 +1075,10 @@ abstract class User extends BaseUser
     /**
      * Add user_leads
      *
-     * @param LeadEntity $userLeads
+     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
      * @return User
      */
-    public function addUserLead(LeadEntity $userLeads)
+    public function addUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
     {
         $this->user_leads[] = $userLeads;
 
@@ -1093,9 +1088,9 @@ abstract class User extends BaseUser
     /**
      * Remove user_leads
      *
-     * @param LeadEntity $userLeads
+     * @param \CreditJeeves\DataBundle\Entity\Lead $userLeads
      */
-    public function removeUserLead(LeadEntity $userLeads)
+    public function removeUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
     {
         $this->user_leads->removeElement($userLeads);
     }
@@ -1113,10 +1108,10 @@ abstract class User extends BaseUser
     /**
      * Add dealer_leads
      *
-     * @param LeadEntity $dealerLeads
+     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
      * @return User
      */
-    public function addDealerLead(LeadEntity $dealerLeads)
+    public function addDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
     {
         $this->dealer_leads[] = $dealerLeads;
 
@@ -1126,9 +1121,9 @@ abstract class User extends BaseUser
     /**
      * Remove dealer_leads
      *
-     * @param LeadEntity $dealerLeads
+     * @param \CreditJeeves\DataBundle\Entity\Lead $dealerLeads
      */
-    public function removeDealerLead(LeadEntity $dealerLeads)
+    public function removeDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
     {
         $this->dealer_leads->removeElement($dealerLeads);
     }

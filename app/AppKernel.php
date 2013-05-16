@@ -2,6 +2,7 @@
 
 use BadaBoom\Adapter\Logger\NativeLoggerAdapter;
 use BadaBoom\Adapter\Mailer\NativeMailerAdapter;
+use BadaBoom\ChainNode\Filter\ExceptionClassFilter;
 use BadaBoom\ChainNode\Provider\EnvironmentProvider;
 use BadaBoom\ChainNode\Provider\ExceptionStackTraceProvider;
 use BadaBoom\ChainNode\Provider\ExceptionSubjectProvider;
@@ -69,6 +70,7 @@ class AppKernel extends Kernel
             new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
             new JMS\SerializerBundle\JMSSerializerBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -131,6 +133,12 @@ class AppKernel extends Kernel
             $this->chainNodeManager->addProvider('default', new ServerProvider());
             $this->chainNodeManager->addProvider('default', new SessionProvider());
             $this->chainNodeManager->addProvider('default', new EnvironmentProvider());
+
+            $filter = new ExceptionClassFilter();
+            $filter->allow('Exception');
+            $filter->deny('SuppressedErrorException');
+
+            $this->chainNodeManager->addFilter('default', $filter);
 
             $serializer = new Serializer(
                 array(/*new DataHolderNormalizer()*/),
