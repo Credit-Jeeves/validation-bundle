@@ -36,6 +36,11 @@ abstract class BaseTestCase extends Base
         return $this->url;
     }
 
+    protected function visitEmailsPage()
+    {
+        $this->session->visit('http://' . static::getContainer()->getParameter('server_name') . '/test.php/sfEmail');
+    }
+
     /**
      * (@inheritdoc}
      */
@@ -76,15 +81,15 @@ abstract class BaseTestCase extends Base
         }
         $session = $this->getMink()->getSession('goutte');
 
-        $url = 'http://' . static::getContainer()->getParameter('server_name') .
-            '/test.php/sfPhpunit/load?' . implode('&', $requestArray);
-        $session->visit($url);
+        $baseUrl = 'http://' . static::getContainer()->getParameter('server_name') . '/test.php/sfPhpunit/';
+
+        $loadUrl = $baseUrl . 'load?' . implode('&', $requestArray);
+        $session->visit($loadUrl);
 
         if ('Fixtures loaded successful.' != ($response = $session->getPage()->getText())) {
-            $this->fail('Fixtures load fail by: ' . $url . ' With response: ' . $response);
+            $this->fail('Fixtures load fail by: ' . $loadUrl . ' With response: ' . $response);
         }
-//        $url = $this->getUrl() . 'sfPhpunit/cc'; // FIXME
-        $session->visit($url);
+        $session->visit($baseUrl . 'cc');
 
         self::$isFixturesLoaded = true;
     }

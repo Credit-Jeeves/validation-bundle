@@ -11,7 +11,10 @@
             {{ 'resetting.text' | trans }}
         </p>
 
-        <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+        <form action="{{ path('fos_user_resetting_send_email') }}"
+              method="POST"
+              class="fos_user_resetting_request"
+              id="fos_user_resetting_request">
             <table class="form-table">
                 {% if invalid_username is defined %}
                     <tr>

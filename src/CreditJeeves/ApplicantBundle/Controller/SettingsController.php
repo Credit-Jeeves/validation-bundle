@@ -14,6 +14,7 @@ class SettingsController extends Controller
 {
     /**
      * @Route("/password", name="applicant_password")
+     * @Route("/profile/")
      * @Template()
      */
     public function passwordAction()
