@@ -15,6 +15,7 @@ class ResettingCase extends BaseTestCase
         '007_cj_applicant_score.yml',
         '010_cj_affiliate.yml',
         '013_cj_holding_account.yml',
+        '019_atb_simulation.yml',
         '020_email.yml',
         '021_email_translations.yml',
     );
@@ -25,7 +26,6 @@ class ResettingCase extends BaseTestCase
      */
     public function resettingPassword()
     {
-        $this->markTestIncomplete('Finish');
         $this->load($this->fixtures, true);
         $this->setDefaultSession('goutte');
         $this->session->visit($this->getUrl() . 'login');
@@ -47,18 +47,39 @@ class ResettingCase extends BaseTestCase
 
         $this->page->clickLink('email_1');
 
-        $this->assertNotNull($subject = $this->page->find('css', 'h1'));
+        $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
         $this->assertEquals('Reset Password', $subject->getText());
 
         $this->page->clickLink('text/html');
 
-        $this->assertEquals(1, preg_match("/Password:(.*)/", $this->page->getText(), $matches));
+        $this->assertEquals(
+            1,
+            preg_match("/To reset your password - please visit ([^ ]*) /", $this->page->getText(), $matches)
+        );
         $this->assertNotEmpty($matches[1]);
-
         $this->session->visit($matches[1]);
 
-        sleep(10);
+        $form = $this->page->find('css', '#fos_user_resetting_form');
+        $this->assertNotNull($form);
 
+        $this->fillForm(
+            $form,
+            array(
+                'fos_user_resetting_form_plainPassword_first' => '123',
+                'fos_user_resetting_form_plainPassword_second' => '123',
+            )
+        );
+        $this->page->pressButton('resetting.request.submit');
+
+        $this->markTestIncomplete('Does not work change password and standard login');
+
+        $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs active first a'));
+
+        $this->assertEquals('tabs.action_plan', $activeTab->getText());
+
+        $this->logout();
+
+        $this->login('emilio@example.com', '123');
         $this->logout();
     }
 }
