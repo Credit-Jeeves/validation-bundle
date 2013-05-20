@@ -1,8 +1,11 @@
 <?php
 namespace CreditJeeves\CoreBundle\Mailer;
 
+use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use \Exception;
+use \RuntimeException;
 
 abstract class BaseMailer
 {
@@ -11,18 +14,37 @@ abstract class BaseMailer
      */
     protected $container;
 
-    protected $manager;
     /**
+     * @var ExceptionCatcher
+     */
+    private $catcher;
+
+    protected $manager;
+
+    /**
+     * @todo remove container and pass all required services
+     *
      * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
+     *     "container" = @DI\Inject("service_container"),
+     *     "catcher" = @DI\Inject("fp_badaboom.exception_catcher")
      * })
      *
      * {@inheritdoc}
      */
-    public function __construct(ContainerInterface $container = null)
+    public function __construct(ContainerInterface $container, ExceptionCatcher $catcher = null)
     {
+        $this->catcher = $catcher;
         $this->container = $container;
         $this->manager = $this->container->get('rj_email.email_template_manager');
+    }
+
+    protected function handleException(Exception $e)
+    {
+        if ($this->catcher) {
+            $this->catcher->handleException($e);
+        } else {
+            throw $e;
+        }
     }
 
     public function sendEmail($user, $sTemplate, array $vars = array())
@@ -35,7 +57,7 @@ abstract class BaseMailer
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         if (empty($isPlain) && empty($isHtml)) {
-            throw new \RuntimeException("Template with key '{$sTemplate}' not found");
+            $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
         }
 
         if (!empty($isHtml)) {
