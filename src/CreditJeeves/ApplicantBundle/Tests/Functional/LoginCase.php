@@ -18,6 +18,8 @@ class LoginCase extends BaseTestCase
         '007_cj_applicant_score.yml',
         '010_cj_affiliate.yml',
         '013_cj_holding_account.yml',
+        '020_email.yml',
+        '021_email_translations.yml',
     );
 
     /**

@@ -8,4 +8,3 @@ parameters:
 
     server: local
     server_name: creditjeeves2.tonpc.forma-dev.com
-    mink.zombie.node_bin: nodejs

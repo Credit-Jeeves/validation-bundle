@@ -38,18 +38,8 @@ class LastLogin implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-                FOSUserEvents::SECURITY_IMPLICIT_LOGIN => array('onImplicitLogin', 255),
                 SecurityEvents::INTERACTIVE_LOGIN => array('onSecurityInteractiveLogin', 255),
         );
-    }
-
-    public function onImplicitLogin(UserEvent $event)
-    {
-        $user = $event->getUser();
-        $lastLogin = $user->getLastLogin();
-        if (empty($lastLogin)) {
-            $this->mailer->sendWelcomeEmailToApplicant($user);
-        }
     }
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)

@@ -78,7 +78,7 @@ fos_user:
     firewall_name: main
     user_class: CreditJeeves\DataBundle\Entity\User
     service:
-        mailer: rj_email.mailer.twig_swift
+        mailer: creditjeeves.mailer
     from_email:
         address:        support@creditjeeves.com
         sender_name:    CreditJeeves
