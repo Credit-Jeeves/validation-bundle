@@ -18,6 +18,8 @@ class DashboardCase extends BaseTestCase
         '007_cj_applicant_score.yml',
         '010_cj_affiliate.yml',
         '013_cj_holding_account.yml',
+        '020_email.yml',
+        '021_email_translations.yml',
     );
 
     /**
@@ -41,7 +43,6 @@ class DashboardCase extends BaseTestCase
      */
     public function userDashboardVehicle()
     {
-        //$this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));
         $this->assertEquals('Honda Civic', $target->getText(), 'Wrong target');
@@ -54,7 +55,6 @@ class DashboardCase extends BaseTestCase
      */
     public function userFeaturedOffer()
     {
-        //$this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($offer = $this->page->find('css', '.barclaycard-intro h1'));
         $this->assertEquals('Featured Offer', $offer->getText(), 'Wrong offer');
@@ -67,7 +67,6 @@ class DashboardCase extends BaseTestCase
      */
     public function userAccountStatus()
     {
-        //$this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($this->page->find('css', '#account-status'));
         $this->assertNotNull($header = $this->page->find('css', '#account-status h3'));
@@ -83,7 +82,6 @@ class DashboardCase extends BaseTestCase
      */
     public function userDidYouKnow()
     {
-        //$this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($this->page->find('css', '#did-you-know'));
         $this->assertNotNull($title = $this->page->find('css', '#did-you-know h3'));

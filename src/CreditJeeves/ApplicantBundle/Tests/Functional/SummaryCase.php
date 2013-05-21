@@ -4,9 +4,9 @@ namespace CreditJeeves\ApplicantBundle\Tests\Functional;
 use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
 
 /**
- * @author Ton Sharp <66ton99@gmail.com>
+ * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
-class LoginCase extends BaseTestCase
+class SummaryCase extends BaseTestCase
 {
     protected $fixtures = array(
         '001_cj_account_group.yml',
@@ -24,22 +24,17 @@ class LoginCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
-    public function userCanLogin()
+    public function userCreditBalance()
     {
         $this->load($this->fixtures, true);
+        $this->setDefaultSession('goutte');
         $this->login('emilio@example.com', 'pass');
+        $this->page->clickLink('tabs.summary');
+        $this->assertNotNull($this->page->find('css', '.credit-balances-left'));
+        $this->assertNotNull($this->page->find('css', '.credit-balances-right'));
+        $this->assertNotNull($items = $this->page->findAll('css', '.credit-balances-block ul li'));
+        $this->assertCount(3, $items, 'Wrong of items');
         $this->logout();
-    }
-
-    /**
-     * @test
-     * @depends userCanLogin
-     * @expectedException PHPUnit_Framework_AssertionFailedError
-     */
-    public function wrongPassword()
-    {
-        $this->login('emilio@example.com', '123');
     }
 }
