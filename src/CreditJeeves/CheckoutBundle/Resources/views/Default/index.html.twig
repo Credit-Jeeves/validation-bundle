@@ -1,0 +1,53 @@
+{% extends "ApplicantBundle::base.html.twig" %}
+{% trans_default_domain 'checkout' %}
+
+{% block content %}
+    {% form_theme form '::form_cj_layout.html.twig' %}
+    <div class='column-xsmall floatleft'>
+        <div class="pod-small pod-border pod-padding shadow">
+            <h3>{{ 'paypal-pro-info-box-title' | trans }}</h3>
+            <p>
+                {{ 'paypal-pro-info-box-message' | trans | raw }}
+            </p>
+        </div>
+        <div class="row-20"></div>
+        <div class="pod-small pod-border pod-padding shadow">
+            <h3>{{ 'individual-report-info-box-title' | trans }}</h3>
+            <p>
+                <strong>{{ 'individual-report-info-box-price' | trans }}</strong><br />
+                {{ 'individual-report-info-box-message' | trans | raw }}
+            </p>
+        </div>
+        <div class="row-20"></div>
+        <div style="padding-left: 55px;">
+            {% include 'CheckoutBundle::authorize.html.twig' %}
+        </div>
+    </div>
+    <div class='column-xmiddle floatright'>
+        <div class='pod-middle pod-border pod-padding shadow'>
+            <h1 class='orange'>
+                {{ 'buy-report-form-title' | trans }}
+            </h1>
+            <div class="row-20"></div>
+            <div class='form'>
+                <form action="">
+
+                    {{ form_widget(form) }}
+
+                    <div class="row-20"></div>
+                    <div class='help'>
+                        {{ 'buy-report-form-help' | trans }}<br />
+                        <br />
+                    </div>
+                    <div class='row submit-row'>
+                        <button class='large green auto-hide' type="submit">
+                            {{ 'buy-report-form-submit' | trans }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class='clear'></div>
+        </div>
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}
