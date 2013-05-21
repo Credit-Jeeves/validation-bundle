@@ -361,6 +361,19 @@
                 <target>Public Records</target>
             </trans-unit>
 
+            <trans-unit id="component.didyouknow.title">
+                <source>component.didyouknow.title</source>
+                <target>Did you know?</target>
+            </trans-unit>
+            <trans-unit id="component.didyouknow.header">
+                <source>component.didyouknow.header</source>
+                <target>Your tax refund can help.</target>
+            </trans-unit>
+            <trans-unit id="component.didyouknow.text">
+                <source>component.didyouknow.text</source>
+                <target>A third of Americans use their tax refund to pay down high-interest debt. File your taxes today.</target>
+            </trans-unit>
+
             <trans-unit id="component.account_status.header">
                 <source>component.account_status.header</source>
                 <target>Status of Accounts used in This Simulation</target>
