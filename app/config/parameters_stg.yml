@@ -5,7 +5,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: localhost
     database_port: null
-    database_name: credit_jeeves
+    database_name: cj_stg
     database_user: root
     database_password: 'passw0rd'
     mailer_transport: smtp
