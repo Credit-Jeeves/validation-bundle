@@ -47,6 +47,16 @@ button, .button {
     padding-left: 36px;
 }
 
+a.button {
+    display: block;
+}
+
+a.button.small {
+    padding-left: 20px;
+    width: 113px;
+    line-height: 35px;
+}
+
 .button.large.green, button.large.green {
     background-image: url(/bundles/core/images/buttons/btn_lg_green.png);
 }
@@ -61,4 +71,8 @@ button, .button {
 
 .button.small.green, button.small.green {
     background-image: url(/bundles/core/images/buttons/small_green.png);
+}
+
+.button.small.blue.narrow, button.small.blue.narrow {
+    background-image: url(/bundles/core/images/buttons/small_blue_narrow.png);
 }

@@ -71,8 +71,6 @@ class ResettingCase extends BaseTestCase
         );
         $this->page->pressButton('resetting.request.submit');
 
-        $this->markTestIncomplete('Does not work change password and standard login');
-
         $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs active first a'));
 
         $this->assertEquals('tabs.action_plan', $activeTab->getText());

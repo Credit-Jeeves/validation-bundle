@@ -11,7 +11,7 @@ parameters:
     mink.base_url: 'http://%server_name%/_test.php'
     server: dev
 
-    experian.logging: true
+    experian.logging: false
 
     experian.pidkiq:
         url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
@@ -23,16 +23,9 @@ parameters:
         userpwd: 'creditjeeves_cs_demo:e1oKIoRUPW' #required! # overwritten by DB
         eai: 'HRPCX4RA' #required! # overwritten by DB
         dbhost: 'STAR' #required!
-    experian.atb:
-        wsdl_url: '%data.dir%/wsdl/ATBWebService.wsdl'
-        location: 'http://stg.creditjeeves.com:8080/'
-        logging: %experian.logging%
-        logs_dir: '%kernel.logs_dir%'
+
     authorize_net:
         login_id: '54PB5egZ'
         transaction_key: '48V258vr55AE8tcg'
         sandbox: true
 
-    email_admins:
-      - alex.emelyanov.ua@gmail.com
-      - darryl@creditjeeves.com

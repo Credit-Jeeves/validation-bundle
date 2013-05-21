@@ -1,0 +1,14 @@
+{% trans_default_domain 'checkout' %}
+<div class="pod-small pod-border pod-padding shadow checkout-buy-box" id="checkout_buy_box">
+    <h3>{{ 'box-title' | trans }}</h3>
+    <p>
+        {{ boxMessage | trans }}
+    </p>
+
+    <a href="" class="button small blue narrow">{{ 'buy-link' | trans }}</a>
+
+    <div class="note-text biggerbold">
+        {{ boxNote | trans }}
+    </div>
+</div>
+
