@@ -1,3 +1,6 @@
+imports:
+    - { resource: parameters_dev_base.yml }
+
 parameters:
     database_driver: pdo_mysql
     database_host: 127.0.0.1
@@ -10,8 +13,8 @@ parameters:
     mailer_user: null
     mailer_password: null
 
-    server: live
-    server_name: my.creditjeeves.com
+    server: stg
+    server_name: stg2.creditjeeves.com
 
     authorize_net:
         login_id: '29fDg7sU24G'

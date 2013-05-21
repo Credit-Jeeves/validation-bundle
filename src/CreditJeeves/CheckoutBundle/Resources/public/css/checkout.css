@@ -1,0 +1,17 @@
+.checkout-buy-box {
+    background: transparent right bottom no-repeat url(/bundles/checkout/images/only-9-dollars.png);
+
+}
+
+.checkout-buy-box p {
+    font-size: 16px;
+}
+
+.checkout-buy-box .button {
+    margin: 10px 0 10px 0;
+}
+
+.checkout-buy-box .note-text {
+    text-align: center;
+    width: 123px;
+}

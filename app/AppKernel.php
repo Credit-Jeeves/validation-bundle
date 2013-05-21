@@ -74,6 +74,7 @@ class AppKernel extends Kernel
             new CreditJeeves\AdminBundle\AdminBundle(),
             new CreditJeeves\DealerBundle\DealerBundle(),
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
+            new CreditJeeves\CheckoutBundle\CheckoutBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
