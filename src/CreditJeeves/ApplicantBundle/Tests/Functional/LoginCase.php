@@ -29,6 +29,7 @@ class LoginCase extends BaseTestCase
     public function userCanLogin()
     {
         $this->load($this->fixtures, true);
+        $this->setDefaultSession('goutte');
         $this->login('emilio@example.com', 'pass');
         $this->logout();
     }
