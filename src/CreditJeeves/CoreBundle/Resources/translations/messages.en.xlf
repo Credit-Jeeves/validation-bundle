@@ -212,6 +212,10 @@
                 <source>common.submit</source>
                 <target>Submit</target>
             </trans-unit>
+            <trans-unit id="common.update">
+                <source>common.update</source>
+                <target>Update</target>
+            </trans-unit>
             <trans-unit id="common.target">
                 <source>common.target</source>
                 <target>Your Goal</target>
