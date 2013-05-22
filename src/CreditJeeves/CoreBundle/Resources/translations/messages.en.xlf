@@ -128,6 +128,10 @@
                 <source>common.learn.more</source>
                 <target>Learn more</target>
             </trans-unit>
+            <trans-unit id="common.get.score">
+                <source>common.learn.get.score</source>
+                <target>Get Score</target>
+            </trans-unit>
             <trans-unit id="common.mortgage">
                 <source>common.mortgage</source>
                 <target>Mortgage</target>
@@ -790,11 +794,15 @@
                 <target>Please accept the Terms and conditions in order to register.</target>
             </trans-unit>
 
-
+            <trans-unit id="user.welcome">
+                <source>user.welcome</source>
+                <target>Welcome to Credit Jeeves.</target>
+            </trans-unit>
             <trans-unit id="user.welcome.name">
                 <source>user.welcome.name</source>
                 <target>Welcome to Credit Jeeves, %sName%!</target>
             </trans-unit>
+            
             <trans-unit id="user.invite.title">
                 <source>user.invite.title</source>
                 <target>Please enter your information below and we can get started right away.</target>
