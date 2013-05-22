@@ -142,11 +142,20 @@ h5 {
   text-align: left;
 }
 
+.column-xsmall {
+    width: 220px;
+}
+
 .column-small {
     width: 275px;
 }
+
 .column-middle {
     width: 625px;
+}
+
+.column-xmiddle {
+    width: 680px;
 }
 
 .column-large {

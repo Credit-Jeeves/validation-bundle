@@ -26,6 +26,8 @@ class ResettingCase extends BaseTestCase
      */
     public function resettingPassword()
     {
+        $this->markTestIncomplete('Depends on FOS user bundle fixes');
+
         $this->load($this->fixtures, true);
         $this->setDefaultSession('goutte');
         $this->session->visit($this->getUrl() . 'login');
@@ -70,8 +72,6 @@ class ResettingCase extends BaseTestCase
             )
         );
         $this->page->pressButton('resetting.request.submit');
-
-        $this->markTestIncomplete('Does not work change password and standard login');
 
         $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs active first a'));
 

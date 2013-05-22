@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="buy-link">
+                <source>buy-link</source>
+                <target>Buy Now</target>
+            </trans-unit>
+            <trans-unit id="box-title">
+                <source>box-title</source>
+                <target>Buy Full Credit Report</target>
+            </trans-unit>
+            <trans-unit id="box-message">
+                <source>box-message</source>
+                <target>View your loans and payment history in detail. Check for mistakes.</target>
+            </trans-unit>
+            <trans-unit id="box-message-expired">
+                <source>box-message-expired</source>
+                <target>Your Credit Report is over a month old. Find out what's changed.</target>
+            </trans-unit>
+            <trans-unit id="box-note">
+                <source>box-note</source>
+                <target>What impacts your score?</target>
+            </trans-unit>
+            <trans-unit id="box-note-expired">
+                <source>box-note-expired</source>
+                <target>Get Your Latest Report</target>
+            </trans-unit>
+            <trans-unit id="paypal-pro-info-box-title">
+                <source>paypal-pro-info-box-title</source>
+                <target>Why Buy Your Full Credit Report?</target>
+            </trans-unit>
+            <trans-unit id="paypal-pro-info-box-message">
+                <source>paypal-pro-info-box-message</source>
+                <target>
+                    If you feel like your score is lower than it should be,
+                    it is a good idea to &lt;strong&gt;review your entire credit report&lt;/strong&gt; for any errors,
+                    issues, or unknown accounts.
+                </target>
+            </trans-unit>
+            <trans-unit id="individual-report-info-box-title">
+                <source>individual-report-info-box-title</source>
+                <target>Your Purchase</target>
+            </trans-unit>
+            <trans-unit id="individual-report-info-box-message">
+                <source>individual-report-info-box-message</source>
+                <target>
+                    The information in this report is for your review only. It does not include a new score, and will
+                    not be used in your action plan or simulations.
+                </target>
+            </trans-unit>
+            <trans-unit id="individual-report-info-box-price">
+                <source>individual-report-info-box-price</source>
+                <target>
+                    One Credit Report: $9
+                </target>
+            </trans-unit>
+            <trans-unit id="buy-report-form-title">
+                <source>buy-report-form-title</source>
+                <target>Buy Full Credit Report</target>
+            </trans-unit>
+            <trans-unit id="buy-report-form-help">
+                <source>buy-report-form-help</source>
+                <target>
+                    You understand that by clicking on the "Buy Report" button below to purchase your credit file,
+                    you are providing "written instructions"in accordance with the Fair Credit Reporting Act
+                    for Credit Jeeves LLC to obtain information from your personal credit profile
+                    or other information from Experian for your own use.
+                </target>
+            </trans-unit>
+            <trans-unit id="buy-report-form-submit">
+                <source>buy-report-form-submit</source>
+                <target>Buy Report</target>
+            </trans-unit>
+            <trans-unit id="buy-report-form-fieldset-legend">
+                <source>buy-report-form-fieldset-legend</source>
+                <target>Please Enter Your Billing Address</target>
+            </trans-unit>
+
+            <trans-unit id="authorize-net-aim-error-main-message-2">
+                <source>authorize-net-aim-error-main-message-2-%MESSAGE%-%SUPPORT_EMAIL%</source>
+                <target>This transaction has been declined. %MESSAGE% Please contact %SUPPORT_EMAIL% if you feel this is
+                    an error.
+                </target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-main-message-3">
+                <source>authorize-net-aim-error-main-message-3-%MESSAGE%-%SUPPORT_EMAIL%</source>
+                <target>There has been an error processing this transaction. %MESSAGE% Please try again or contact
+                    %SUPPORT_EMAIL% if the error continues.
+                </target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-main-message-4">
+                <source>authorize-net-aim-error-main-message-4-%MESSAGE%-%SUPPORT_EMAIL%</source>
+                <target>The transaction is being held for review. Someone from %SUPPORT_EMAIL% should contact you
+                    soon.
+                </target>
+            </trans-unit>
+
+            <trans-unit id="authorize-net-aim-error-message-6">
+                <source>authorize-net-aim-error-message-6</source>
+                <target>The credit card number is invalid.</target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-message-37">
+                <source>authorize-net-aim-error-message-37</source>
+                <target>The credit card number is invalid.</target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-message-7">
+                <source>authorize-net-aim-error-message-7</source>
+                <target>The credit card expiration date is invalid.</target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-message-8">
+                <source>authorize-net-aim-error-message-8</source>
+                <target>The credit card is expired.</target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-message-127">
+                <source>authorize-net-aim-error-message-127</source>
+                <target>The address provided does not match the billing address associated with the cardholder.</target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-message-290">
+                <source>authorize-net-aim-error-message-290</source>
+                <target>The address provided does not match the billing address associated with the cardholder.</target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-message-44">
+                <source>authorize-net-aim-error-message-44</source>
+                <target>The card verification code (CVC) is invalid.</target>
+            </trans-unit>
+            <trans-unit id="authorize-net-aim-error-message-78">
+                <source>authorize-net-aim-error-message-78</source>
+                <target>The card verification code (CVC) is invalid.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

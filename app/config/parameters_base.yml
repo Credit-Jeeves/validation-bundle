@@ -4,6 +4,16 @@ parameters:
 
     email_from: support@creditjeeves.com
     email_name: Credit Jeeves
+    email_admins:
+        - alex.emelyanov.ua@gmail.com
+        - darryl@creditjeeves.com
+
     external_urls:
         main_site: 'www.creditjeeves.com'
         user_voice: 'creditjeeves.uservoice.com'
+
+    experian.atb:
+        wsdl_url: '%data.dir%/wsdl/ATBWebService.wsdl'
+        location: 'http://stg.creditjeeves.com:8080/'
+        logging: %experian.logging%
+        logs_dir: '%kernel.logs_dir%'
