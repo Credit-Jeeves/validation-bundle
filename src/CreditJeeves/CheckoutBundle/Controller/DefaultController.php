@@ -31,15 +31,18 @@ class DefaultController extends Controller
     protected function createPurchaseForm()
     {
         return $this->createFormBuilder()
-            ->add('amount', null, array(
-                    'data' => 1.23,
-                    'constraints' => array(new Range(array('max' => 2)))
-                ))
-            ->add('card_number', null, array('data' => '4007000000027'))
-            ->add('card_expiration_date', null, array('data' => '10/16'))
+                ->add(
+                    'amount',
+                    null,
+                    array(
+                        'data' => 1.23,
+                        'constraints' => array(new Range(array('max' => 2)))
+                    )
+                )
+                ->add('card_number', null, array('data' => '4007000000027'))
+                ->add('card_expiration_date', null, array('data' => '10/16'))
 
-            ->getForm()
-            ;
+                ->getForm();
     }
 
     /**
