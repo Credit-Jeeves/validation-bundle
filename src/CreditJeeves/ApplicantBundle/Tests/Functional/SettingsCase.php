@@ -92,16 +92,16 @@ class SettingsCase extends BaseTestCase
         $this->assertCount(2, $check, 'Wrong number of checkboxes');
         $check[0]->click();
         $this->session->wait(
-                $this->timeout + 10000,
-                "jQuery('form .checkbox-off').length > 0"
+            $this->timeout + 10000,
+            "jQuery('form .checkbox-off').length > 0"
         );
         $this->assertNotNull($check = $this->page->findAll('css', '.checkbox-on'));
         $this->assertCount(1, $check, 'Wrong number of checkboxes');
         
         $check[0]->click();
         $this->session->wait(
-                $this->timeout + 10000,
-                "jQuery('form .checkbox-off').length > 1"
+            $this->timeout + 10000,
+            "jQuery('form .checkbox-off').length > 1"
         );
         $submit->click();
         $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
@@ -123,10 +123,10 @@ class SettingsCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.remove'));
         $this->fillForm(
-                $form,
-                array(
-                        'remove_password' => $this->password
-                )
+            $form,
+            array(
+                'remove_password' => $this->password
+            )
         );
         $submit->click();
         $this->login('emilio@example.com', $this->password);
