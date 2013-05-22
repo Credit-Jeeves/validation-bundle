@@ -216,6 +216,14 @@
                 <source>common.update</source>
                 <target>Update</target>
             </trans-unit>
+            <trans-unit id="common.remove">
+                <source>common.remove</source>
+                <target>Remove</target>
+            </trans-unit>
+            <trans-unit id="common.save">
+                <source>common.save</source>
+                <target>Save</target>
+            </trans-unit>
             <trans-unit id="common.target">
                 <source>common.target</source>
                 <target>Your Goal</target>

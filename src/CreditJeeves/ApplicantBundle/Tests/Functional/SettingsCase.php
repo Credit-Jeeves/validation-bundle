@@ -30,10 +30,11 @@ class SettingsCase extends BaseTestCase
     public function userChangePassword()
     {
         $this->load($this->fixtures, true);
-        $this->setDefaultSession('selenium2');
+        //$this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->login('emilio@example.com', 'pass');
         $this->page->clickLink('tabs.settings');
-        $this->assertNotNull($form = $this->page->find('css', '.column-middle form'));
+        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.update'));
         $this->fillForm(
             $form,
@@ -44,7 +45,8 @@ class SettingsCase extends BaseTestCase
             )
         );
         $submit->click();
-        //sleep(5);
+        $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
+        $this->assertEquals('Information has been updated', $notice->getText(), 'Wrong notice');
         $this->logout();
     }
 
@@ -52,11 +54,82 @@ class SettingsCase extends BaseTestCase
      * @test
      * @depends userChangePassword
      */
-    public function userCreditSummary()
+    public function userContactInformation()
     {
-//         $this->setDefaultSession('goutte');
+        //$this->setDefaultSession('goutte');
+        //$this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('settings.contact_information');
+        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
+        $this->assertNotNull($submit = $form->findButton('common.update'));
+        $this->fillForm(
+            $form,
+            array(
+                'contact_phone_type' => 0,
+                'contact_phone' => 123456789,
+            )
+        );
+        $submit->click();
+        $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
+        $this->assertEquals('Information has been updated', $notice->getText(), 'Wrong notice');
+        $this->logout();
+    }
+
+    /**
+     * @test
+     * @depends userChangePassword
+     */
+    public function userEmailSettings()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->login('emilio@example.com', $this->password);
+        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('settings.email');
+        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
+        $this->assertNotNull($submit = $form->findButton('common.save'));
+        $this->assertNotNull($check = $this->page->findAll('css', '.checkbox-on'));
+        $this->assertCount(2, $check, 'Wrong number of checkboxes');
+        $check[0]->click();
+        $this->session->wait(
+                $this->timeout + 10000,
+                "jQuery('form .checkbox-off').length > 0"
+        );
+        $this->assertNotNull($check = $this->page->findAll('css', '.checkbox-on'));
+        $this->assertCount(1, $check, 'Wrong number of checkboxes');
+        
+        $check[0]->click();
+        $this->session->wait(
+                $this->timeout + 10000,
+                "jQuery('form .checkbox-off').length > 1"
+        );
+        $submit->click();
+        $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
+        $this->assertEquals('Information has been updated', $notice->getText(), 'Wrong notice');
+        $this->logout();
+        
+    }
+
+    /**
+     * @test
+     * @depends userChangePassword
+     */
+    public function userRemoveData()
+    {
+        $this->setDefaultSession('goutte');
+        $this->login('emilio@example.com', $this->password);
+        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('settings.remove');
+        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
+        $this->assertNotNull($submit = $form->findButton('common.remove'));
+        $this->fillForm(
+                $form,
+                array(
+                        'remove_password' => $this->password
+                )
+        );
+        $submit->click();
+        $this->login('emilio@example.com', $this->password);
         $this->logout();
     }
 }
