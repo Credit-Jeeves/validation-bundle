@@ -37,4 +37,21 @@ class SummaryCase extends BaseTestCase
         $this->assertCount(3, $items, 'Wrong of items');
         $this->logout();
     }
+
+    /**
+     * @test
+     * @depends userCreditBalance
+     */
+    public function userCreditSummary()
+    {
+        $this->load($this->fixtures, true);
+        $this->setDefaultSession('goutte');
+        $this->login('emilio@example.com', 'pass');
+        $this->page->clickLink('tabs.summary');
+        $this->assertNotNull($title = $this->page->find('css', '.summary h3'));
+        $this->assertEquals('component.credit.summary', $title->getText(), 'Wrong title');
+        $this->assertNotNull($blocks = $this->page->findAll('css', '.summary .summary-block'));
+        $this->assertCount(3, $blocks, 'Wrong number of blocks');
+        $this->logout();
+    }
 }

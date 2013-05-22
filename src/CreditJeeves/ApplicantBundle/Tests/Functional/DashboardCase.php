@@ -101,8 +101,24 @@ class DashboardCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#simulation-container .overlay').length > 0"
+        );
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#simulation-container .overlay').length == 0"
+        );
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#simulation-container .scroller ul').children().length > 0"
+        );
         $this->assertNotNull($select = $this->page->find('css', '#lead-select-button'));
         $select->click();
+        $this->session->wait(
+            $this->timeout + 3000,
+            "jQuery('#lead-select-form .lead-select-lead').length > 0"
+        );
         $this->assertNotNull($form = $this->page->find('css', '#lead-select-form'));
         $this->assertNotNull($links = $this->page->findAll('css', '.lead-select-lead'));
         $this->assertCount(3, $links, 'Wrong number of accounts');
@@ -111,13 +127,41 @@ class DashboardCase extends BaseTestCase
             $this->timeout + 3000,
             "jQuery('#lightbox-container').css('display') == 'none'"
         );
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#simulation-container .overlay').length > 0"
+        );
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#simulation-container .overlay').length == 0"
+        );
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#simulation-container .scroller ul').children().length > 0"
+        );
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));
         $this->assertEquals('BMW X5', $target->getText(), 'Wrong target');
         $select->click();
+        $this->session->wait(
+            $this->timeout + 3000,
+            "jQuery('#lead-select-form .lead-select-lead').length > 0"
+        );
         $links[1]->click();
         $this->session->wait(
             $this->timeout + 3000,
             "jQuery('#lightbox-container').css('display') == 'none'"
+        );
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#simulation-container .overlay').length > 0"
+        );
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#simulation-container .overlay').length == 0"
+        );
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#simulation-container .scroller ul').children().length > 0"
         );
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));
         $this->assertEquals('Honda Civic', $target->getText(), 'Wrong target');
