@@ -1,11 +1,14 @@
 <?php
 namespace CreditJeeves\CheckoutBundle\Controller;
 
+use CreditJeeves\CheckoutBundle\Form\Type\CheckoutAuthorizeNetAimType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use \DateTime;
 use Symfony\Component\Validator\Constraints\Range;
+use Payum\Registry\AbstractRegistry;
 
 /**
  * @method \CreditJeeves\DataBundle\Entity\Applicant getUser
@@ -13,35 +16,51 @@ use Symfony\Component\Validator\Constraints\Range;
 class DefaultController extends Controller
 {
     /**
+     */
+    protected function getPayum()
+    {
+        return $this->get('payum');
+    }
+
+    /**
      * @Route("/checkout", name="checkout_default")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $form = $this->createPurchaseForm();
+
+        $form = $this->createForm(new CheckoutAuthorizeNetAimType($this->getUser()));
+
+        if ($request->isMethod('POST')) {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $data = $form->getData();
+
+                $storage = $this->getPayum()->getStorageForClass(
+                    'Acme\PaymentBundle\Model\AuthorizeNetPaymentDetails',
+                    'authorize_net'
+                );
+
+                $paymentDetails = $storage->createModel();
+                $paymentDetails->setAmount($data['amount']);
+                $paymentDetails->setCardNum($data['card_number']);
+                $paymentDetails->setExpDate($data['card_expiration_date']);
+
+                $storage->updateModel($paymentDetails);
+
+                $captureToken = $this->getTokenizedTokenService()->createTokenForCaptureRoute(
+                    'authorize_net',
+                    $paymentDetails,
+                    'acme_payment_details_view'
+                );
+
+                return $this->redirect($this->generateUrl('applicant_report'));
+            }
+        }
 
         return array(
             'form' => $form->createView()
         );
-    }
-
-    /**
-     * @return \Symfony\Component\Form\Form
-     */
-    protected function createPurchaseForm()
-    {
-        return $this->createFormBuilder()
-            ->add(
-                'amount',
-                null,
-                array(
-                    'data' => 1.23,
-                    'constraints' => array(new Range(array('max' => 2)))
-                )
-            )
-            ->add('card_number', null, array('data' => '4007000000027'))
-            ->add('card_expiration_date', null, array('data' => '10/16'))
-            ->getForm();
     }
 
     /**

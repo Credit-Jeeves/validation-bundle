@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
@@ -146,7 +147,7 @@ class User extends BaseUser
         $aOrders = $this->getOrders();
         foreach ($aOrders as $Order) {
             $sStatus = $Order->getStatus();
-            if ($sStatus == Order::STATUS_COMPLETE) {
+            if ($sStatus == OrderType::COMPLETE) {
                 return true;
             }
         }

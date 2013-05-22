@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Controller;
 
-use CreditJeeves\CoreBundle\Form\Type\QuestionsType;
+use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use CreditJeeves\ExperianBundle\Pidkiq as PidkiqApi;
 use CreditJeeves\DataBundle\Entity\Pidkiq;
 use CreditJeeves\DataBundle\Entity\User;

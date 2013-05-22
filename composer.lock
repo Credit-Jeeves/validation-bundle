@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "a037ebbb4456e2a57c0630a6d4c16b3d",
+    "hash": "87b84c31a064950b11b79bddb14629cb",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -711,12 +711,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "7f8a21875eb424ca62ee79df7bd63325be5283fd"
+                "reference": "2c3b05b52c96b91255afc6d0d03dd97b03d17c4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/7f8a21875eb424ca62ee79df7bd63325be5283fd",
-                "reference": "7f8a21875eb424ca62ee79df7bd63325be5283fd",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/2c3b05b52c96b91255afc6d0d03dd97b03d17c4d",
+                "reference": "2c3b05b52c96b91255afc6d0d03dd97b03d17c4d",
                 "shasum": ""
             },
             "require": {
@@ -768,20 +768,20 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2013-05-16 07:52:28"
+            "time": "2013-05-17 17:32:40"
         },
         {
             "name": "gedmo/doctrine-extensions",
-            "version": "v2.3.5",
+            "version": "v2.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/l3pp4rd/DoctrineExtensions.git",
-                "reference": "v2.3.5"
+                "reference": "v2.3.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/v2.3.5",
-                "reference": "v2.3.5",
+                "url": "https://api.github.com/repos/l3pp4rd/DoctrineExtensions/zipball/v2.3.6",
+                "reference": "v2.3.6",
                 "shasum": ""
             },
             "require": {
@@ -789,10 +789,11 @@
                 "php": ">=5.3.2"
             },
             "require-dev": {
-                "doctrine/dbal": ">=2.2",
-                "doctrine/mongodb": "1.0.1",
-                "doctrine/mongodb-odm": "1.0.0-BETA7",
-                "doctrine/orm": ">=2.2",
+                "doctrine/common": ">=2.4.0-BETA2",
+                "doctrine/dbal": ">=2.4.0-BETA2",
+                "doctrine/mongodb": ">=1.0.2",
+                "doctrine/mongodb-odm": ">=1.0.0-BETA8",
+                "doctrine/orm": ">=2.4.0-BETA2",
                 "symfony/yaml": "2.*"
             },
             "suggest": {
@@ -847,7 +848,7 @@
                 "tree",
                 "uploadable"
             ],
-            "time": "2013-03-05 06:32:22"
+            "time": "2013-05-21 12:09:55"
         },
         {
             "name": "hat/environment",
@@ -1500,16 +1501,16 @@
         },
         {
             "name": "kriswallsmith/assetic",
-            "version": "dev-master",
+            "version": "1.1.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "386d37e6b70f267e55009304a94dfda108b1799c"
+                "reference": "1853a98c521c194678d30a0d8f1583ba43a4a342"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/386d37e6b70f267e55009304a94dfda108b1799c",
-                "reference": "386d37e6b70f267e55009304a94dfda108b1799c",
+                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/1853a98c521c194678d30a0d8f1583ba43a4a342",
+                "reference": "1853a98c521c194678d30a0d8f1583ba43a4a342",
                 "shasum": ""
             },
             "require": {
@@ -1567,7 +1568,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2013-05-16 13:10:17"
+            "time": "2013-05-22 16:55:21"
         },
         {
             "name": "kriswallsmith/buzz",
@@ -1681,21 +1682,21 @@
         },
         {
             "name": "payum/authorize-net-aim",
-            "version": "0.3.0",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Payum/AuthorizeNetAim.git",
-                "reference": "0.3.0"
+                "reference": "0.4.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Payum/AuthorizeNetAim/zipball/0.3.0",
-                "reference": "0.3.0",
+                "url": "https://api.github.com/repos/Payum/AuthorizeNetAim/zipball/0.4.0",
+                "reference": "0.4.0",
                 "shasum": ""
             },
             "require": {
                 "ajbdev/authorizenet-php-api": "1.1.*",
-                "payum/payum": "0.3.*",
+                "payum/payum": "0.4.*",
                 "php": ">=5.3.2"
             },
             "require-dev": {
@@ -1704,7 +1705,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3-dev"
+                    "dev-master": "0.4-dev"
                 }
             },
             "autoload": {
@@ -1728,20 +1729,20 @@
                 "authorizenet",
                 "payment"
             ],
-            "time": "2013-03-19 20:04:21"
+            "time": "2013-04-04 20:00:32"
         },
         {
             "name": "payum/payum",
-            "version": "0.3.1",
+            "version": "0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Payum/Payum.git",
-                "reference": "0.3.1"
+                "reference": "0.4.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Payum/Payum/zipball/0.3.1",
-                "reference": "0.3.1",
+                "url": "https://api.github.com/repos/Payum/Payum/zipball/0.4.0",
+                "reference": "0.4.0",
                 "shasum": ""
             },
             "require": {
@@ -1761,7 +1762,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3-dev"
+                    "dev-master": "0.4-dev"
                 }
             },
             "autoload": {
@@ -1783,36 +1784,36 @@
             "keywords": [
                 "payment"
             ],
-            "time": "2013-03-28 09:53:59"
+            "time": "2013-04-04 19:52:14"
         },
         {
             "name": "payum/payum-bundle",
-            "version": "0.3.0",
+            "version": "0.4.1",
             "target-dir": "Payum/Bundle/PayumBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Payum/PayumBundle.git",
-                "reference": "0.3.0"
+                "reference": "0.4.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Payum/PayumBundle/zipball/0.3.0",
-                "reference": "0.3.0",
+                "url": "https://api.github.com/repos/Payum/PayumBundle/zipball/0.4.1",
+                "reference": "0.4.1",
                 "shasum": ""
             },
             "require": {
-                "payum/payum": "0.3.*",
+                "payum/payum": "0.4.*",
                 "php": ">=5.3.2",
                 "symfony/framework-bundle": "2.*"
             },
             "require-dev": {
                 "doctrine/orm": "*",
                 "fp/testo": "@dev",
-                "payum/authorize-net-aim": "0.3.x-dev",
-                "payum/be2bill": "0.3.x-dev",
-                "payum/omnipay-bridge": "0.3.x-dev",
-                "payum/paypal-express-checkout-nvp": "0.3.x-dev",
-                "payum/paypal-pro-checkout-nvp": "0.3.x-dev",
+                "payum/authorize-net-aim": "0.4.x-dev",
+                "payum/be2bill": "0.4.x-dev",
+                "payum/omnipay-bridge": "0.4.x-dev",
+                "payum/paypal-express-checkout-nvp": "0.4.x-dev",
+                "payum/paypal-pro-checkout-nvp": "0.4.x-dev",
                 "phpunit/phpunit": "*"
             },
             "suggest": {
@@ -1825,7 +1826,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.3-dev"
+                    "dev-master": "0.4-dev"
                 }
             },
             "autoload": {
@@ -1854,9 +1855,12 @@
                 "be2bill",
                 "omnipay",
                 "payment",
-                "paypal"
+                "paypal",
+                "paypal express checkout",
+                "paypal pro checkout",
+                "paypal recurring payment"
             ],
-            "time": "2013-03-19 20:14:23"
+            "time": "2013-05-16 14:50:01"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -2196,12 +2200,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "6bc9128445c51506280c0a6b82d07af446fc77fd"
+                "reference": "29b8ffcc65fb1f538de186ced7aaeac343a9dc2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/6bc9128445c51506280c0a6b82d07af446fc77fd",
-                "reference": "6bc9128445c51506280c0a6b82d07af446fc77fd",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/29b8ffcc65fb1f538de186ced7aaeac343a9dc2a",
+                "reference": "29b8ffcc65fb1f538de186ced7aaeac343a9dc2a",
                 "shasum": ""
             },
             "require": {
@@ -2210,18 +2214,18 @@
                 "sonata-project/block-bundle": ">=2.2.1,<3.0",
                 "sonata-project/exporter": "1.*",
                 "sonata-project/jquery-bundle": "1.8.*",
-                "symfony/config": ">=2.2,<2.3-dev",
-                "symfony/console": ">=2.2,<2.3-dev",
-                "symfony/form": ">=2.2,<2.3-dev",
-                "symfony/http-foundation": ">=2.2,<2.3-dev",
-                "symfony/routing": ">=2.2,<2.3-dev",
-                "symfony/security-bundle": ">=2.2,<2.3-dev",
-                "symfony/twig-bridge": ">=2.2,<2.3-dev",
-                "symfony/validator": ">=2.2,<2.3-dev",
+                "symfony/config": ">=2.2,<2.4-dev",
+                "symfony/console": ">=2.2,<2.4-dev",
+                "symfony/form": ">=2.2,<2.4-dev",
+                "symfony/http-foundation": ">=2.2,<2.4-dev",
+                "symfony/routing": ">=2.2,<2.4-dev",
+                "symfony/security-bundle": ">=2.2,<2.4-dev",
+                "symfony/twig-bridge": ">=2.2,<2.4-dev",
+                "symfony/validator": ">=2.2,<2.4-dev",
                 "twig/twig": ">=1.12,<2.0-dev"
             },
             "require-dev": {
-                "jms/translation-bundle": "*",
+                "jms/translation-bundle": "*@dev",
                 "sonata-project/intl-bundle": "2.1.*"
             },
             "suggest": {
@@ -2262,7 +2266,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-05-09 20:37:49"
+            "time": "2013-05-22 15:15:28"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -2271,17 +2275,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataBlockBundle.git",
-                "reference": "feba925f8ec2a1172089426a5e173a7891e54dba"
+                "reference": "2.2.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/feba925f8ec2a1172089426a5e173a7891e54dba",
-                "reference": "feba925f8ec2a1172089426a5e173a7891e54dba",
+                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/2.2.2",
+                "reference": "2.2.2",
                 "shasum": ""
             },
             "require": {
-                "symfony/form": ">=2.2,<2.3-dev",
-                "symfony/http-foundation": ">=2.2,<2.3-dev"
+                "symfony/form": ">=2.2,<2.4-dev",
+                "symfony/http-foundation": ">=2.2,<2.4-dev"
             },
             "require-dev": {
                 "sonata-project/admin-bundle": "2.2.*@dev",
@@ -2325,7 +2329,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2013-05-13 09:02:55"
+            "time": "2013-05-21 17:07:40"
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
@@ -2334,19 +2338,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataDoctrineORMAdminBundle.git",
-                "reference": "4edd2bd4e79e97c23281f4bba8dcda9dc46bb122"
+                "reference": "1c68877f58d8150274f39fc02ddfd2fd7d3a2c01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/4edd2bd4e79e97c23281f4bba8dcda9dc46bb122",
-                "reference": "4edd2bd4e79e97c23281f4bba8dcda9dc46bb122",
+                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/1c68877f58d8150274f39fc02ddfd2fd7d3a2c01",
+                "reference": "1c68877f58d8150274f39fc02ddfd2fd7d3a2c01",
                 "shasum": ""
             },
             "require": {
                 "doctrine/orm": ">=2.3,<3.0",
                 "knplabs/knp-menu-bundle": ">=1.1,<2.0",
                 "sonata-project/admin-bundle": ">=2.2.2",
-                "symfony/symfony": ">=2.2,<2.3"
+                "symfony/symfony": ">=2.2,<2.4"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -2383,7 +2387,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2013-05-07 13:41:40"
+            "time": "2013-05-19 09:56:25"
         },
         {
             "name": "sonata-project/exporter",

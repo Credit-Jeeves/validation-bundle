@@ -133,9 +133,9 @@
         "jms/security-extra-bundle": "1.4.*",
         "jms/di-extra-bundle": "1.3.*",
         "friendsofsymfony/user-bundle": "dev-master",
-        "payum/payum": "0.3.*",
-        "payum/payum-bundle": "0.3.*",
-        "payum/authorize-net-aim": "0.3.*",
+        "payum/payum": "0.4.*",
+        "payum/payum-bundle": "0.4.*",
+        "payum/authorize-net-aim": "0.4.*",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",
         "fp/badaboom": "dev-ton as dev-not-approved",
@@ -148,7 +148,8 @@
         "sonata-project/block-bundle": "dev-master",
         "sonata-project/admin-bundle": "dev-master",
         "sonata-project/doctrine-orm-admin-bundle": "dev-master",
-        "friendsofsymfony/jsrouting-bundle": "~1.1"
+        "friendsofsymfony/jsrouting-bundle": "~1.1",
+        "kriswallsmith/assetic": "1.1.x-dev"
     },
     "require-dev": {
         "doctrine/data-fixtures": "1.0.x-dev",
