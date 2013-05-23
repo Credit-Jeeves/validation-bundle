@@ -69,6 +69,7 @@ class DefaultController extends Controller
                 return $this->render('CoreBundle::empty.html.twig');
             }
         }
+
         return array(
             'boxMessage' => $boxMessage,
             'boxNote' => $boxNote,
