@@ -15,6 +15,12 @@ class Lead
     const STATUS_NEW = 'new';
 
     /**
+     * 
+     * @var string
+     */
+    const STATUS_ACTIVE = 'active';
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")

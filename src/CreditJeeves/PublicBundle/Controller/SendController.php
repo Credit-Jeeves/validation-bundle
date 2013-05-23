@@ -21,7 +21,7 @@ class SendController extends Controller
         }
         $code = $user->getInviteCode();
         if (empty($code)) {
-            //return $this->redirect($this->generateUrl('applicant_homepage'));
+            return $this->redirect($this->generateUrl('applicant_homepage'));
         }
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {

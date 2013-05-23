@@ -21,58 +21,19 @@ class CheckController extends Controller
      */
     public function indexAction($code)
     {
-//         $request = $this->get('request');
-//         $query = $request->query;
-//         $Lead = new Lead();
-//         $User = $this->get('core.session.applicant')->getUser();
-//         $Group = new Group();
-//         if ($request->getMethod() == 'GET') {
-//             // Group code
-//             if ($query->has('g')) {
-//                 $Group->setCode($query->get('g'));
-//             }
-//             // User details
-//             $User = $this->bindUserDetails($User, $query);
-//         }
-//         $Lead->setUser($User);
-//         //$Lead->setGroup($Group);
-//         $form = $this->createForm(
-//             new LeadNewType(),
-//             $Lead,
-//             array(
-//                 'em' => $this->getDoctrine()->getManager()
-//                 )
-//         );
-//         if ($request->getMethod() == 'POST') {
-//             $form->bind($request);
-//             if ($form->isValid()) {
-//                 $Lead = $form->getData();
-//                 if ($this->validateLead($Lead)) {
-//                     $User = $Lead->getUser();
-//                     $User->setUsername($User->getEmail());
-//                     $User->setIsVerified('none');
-//                     $User->setType('applicant');
-
-//                     $em = $this->getDoctrine()->getManager();
-//                     $em->persist($User);
-//                     $em->persist($Lead);
-//                     $em->flush();
-
-//                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
-//                     $this->get('creditjeeves.mailer')->sendCheckEmail($User);
-//                     return $this->redirect($this->generateUrl('applicant_homepage'));
-
-//                 } else {
-//                     // FIXME this text must be moved to i18n file
-//                     $this->get('session')->getFlashBag()->add(
-//                         'notice',
-//                         'You are already associated with this dealership. Please contact the dealership at ' .
-//                         $Lead->getGroup()->getName() . ' if you wish to change your salesperson.'
-//                     );
-//                 }
-//             }
-//         }
-
+        $user = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' => $code));
+        if (empty($user)) {
+            return $this->redirect($this->generateUrl('applicant_homepage')); 
+        }
+        $em = $this->getDoctrine()->getManager();
+        $leads = $user->getUserLeads();
+        foreach ($leads as $lead) {
+            $lead->setStatus(Lead::STATUS_ACTIVE);
+            $em->flush();
+        }
+        $user->setInviteCode(null);
+        $user->setIsActive(true);
+        $em->flush();
         return array(
         );
     }
