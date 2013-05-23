@@ -128,3 +128,10 @@ sonata_block:
 
 #        sonata.block.service.text:
 #        sonata.block.service.rss:
+
+payum:
+    contexts:
+        simple_purchase_authorize_net:
+            authorize_net_aim_payment:
+                api:
+                    options: %authorize_net%

@@ -62,7 +62,7 @@ class AppKernel extends Kernel
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
-
+            new Payum\Bundle\PayumBundle\PayumBundle(),
 
             // Must be last in the list
             new CreditJeeves\CoreBundle\CoreBundle(),

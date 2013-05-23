@@ -72,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "c2f721caac3fbcf6f499bb60f8c3a9dd42ddffeb"
+                    "reference": "dcd38f6a2d4aeb4997607441a2b588fae0aa9f93"
                 }
             }
         },
@@ -103,6 +103,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/FpBadaBoomBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/SensioGeneratorBundle.git"
         }
     ],
     "require": {

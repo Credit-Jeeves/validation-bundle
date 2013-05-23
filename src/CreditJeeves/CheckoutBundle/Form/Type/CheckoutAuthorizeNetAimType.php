@@ -60,6 +60,13 @@ class CheckoutAuthorizeNetAimType extends AbstractType
                 )
             )
             ->add(
+                'city',
+                'text',
+                array(
+                    'data' => $this->user->getCity()
+                )
+            )
+            ->add(
                 'state',
                 'text',
                 array(

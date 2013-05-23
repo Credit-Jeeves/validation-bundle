@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "87b84c31a064950b11b79bddb14629cb",
+    "hash": "90ff9e263a371c3d123bea33b6ea92ce",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "c2f721caac3fbcf6f499bb60f8c3a9dd42ddffeb"
+                "reference": "dcd38f6a2d4aeb4997607441a2b588fae0aa9f93"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-05-22 13:00:59"
+            "time": "2013-05-23 17:25:44"
         },
         {
             "name": "a2lix/translation-form-bundle",
@@ -2147,27 +2147,21 @@
         },
         {
             "name": "sensio/generator-bundle",
-            "version": "v2.2.1",
+            "version": "v2.2.2",
             "target-dir": "Sensio/Bundle/GeneratorBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sensio/SensioGeneratorBundle.git",
-                "reference": "v2.2.1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sensio/SensioGeneratorBundle/zipball/v2.2.1",
-                "reference": "v2.2.1",
-                "shasum": ""
+                "url": "git@github.com:66Ton99/SensioGeneratorBundle.git",
+                "reference": "v2.2.2"
             },
             "require": {
-                "symfony/console": ">=2.0,<3.0",
-                "symfony/framework-bundle": ">=2.2,<3.0"
+                "symfony/console": "~2.0",
+                "symfony/framework-bundle": "~2.2"
             },
             "require-dev": {
-                "doctrine/orm": ">=2.2,<3.0,>=2.2.3",
-                "symfony/doctrine-bridge": ">=2.2,<3.0",
-                "twig/twig": ">=1.11.0,<2.0"
+                "doctrine/orm": "~2.2,>=2.2.3",
+                "symfony/doctrine-bridge": "~2.2",
+                "twig/twig": "~1.11"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -2180,7 +2174,6 @@
                     "Sensio\\Bundle\\GeneratorBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2191,7 +2184,7 @@
                 }
             ],
             "description": "This bundle generates code for you",
-            "time": "2013-03-21 16:38:44"
+            "time": "2013-05-23 11:44:45"
         },
         {
             "name": "sonata-project/admin-bundle",
@@ -2200,12 +2193,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "29b8ffcc65fb1f538de186ced7aaeac343a9dc2a"
+                "reference": "fc875e2221692cc2fe40619e727246450c57be2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/29b8ffcc65fb1f538de186ced7aaeac343a9dc2a",
-                "reference": "29b8ffcc65fb1f538de186ced7aaeac343a9dc2a",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/fc875e2221692cc2fe40619e727246450c57be2a",
+                "reference": "fc875e2221692cc2fe40619e727246450c57be2a",
                 "shasum": ""
             },
             "require": {
@@ -2266,7 +2259,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-05-22 15:15:28"
+            "time": "2013-05-23 09:51:42"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -2275,15 +2268,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataBlockBundle.git",
-                "reference": "2.2.2"
+                "reference": "18a2d99e4abd497ecf6c471c65cc2051912525ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/2.2.2",
-                "reference": "2.2.2",
+                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/18a2d99e4abd497ecf6c471c65cc2051912525ba",
+                "reference": "18a2d99e4abd497ecf6c471c65cc2051912525ba",
                 "shasum": ""
             },
             "require": {
+                "doctrine/common": ">=2.3,<2.5-dev",
                 "symfony/form": ">=2.2,<2.4-dev",
                 "symfony/http-foundation": ">=2.2,<2.4-dev"
             },
@@ -2329,7 +2323,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2013-05-21 17:07:40"
+            "time": "2013-05-23 09:32:41"
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
