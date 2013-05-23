@@ -91,8 +91,8 @@ class SettingsCase extends BaseTestCase
         );
         $this->page->clickLink('settings.email');
         $this->session->wait(
-                $this->timeout + 1000,
-                "jQuery('.pod-small ul li').length > 0"
+            $this->timeout + 1000,
+            "jQuery('.pod-small ul li').length > 0"
         );
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.save'));

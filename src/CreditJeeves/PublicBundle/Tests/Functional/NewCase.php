@@ -48,9 +48,9 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_state' => 'AL',
                 'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '२६',//'26',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '१२', //'Dec',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '१९५८',//'1958',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
             )
         );
         $this->assertNotNull(
@@ -107,25 +107,24 @@ class NewCase extends BaseTestCase
             "jQuery('form .checkbox-on').length > 0"
         );
         $this->fillForm(
-                $form,
-                array(
-                        'creditjeeves_applicantbundle_leadnewtype_user_password_Password' => 'pass',
-                        'creditjeeves_applicantbundle_leadnewtype_user_password_Retype' => 'pass',
-                )
+            $form,
+            array(
+                'creditjeeves_applicantbundle_leadnewtype_user_password_Password' => 'pass',
+                'creditjeeves_applicantbundle_leadnewtype_user_password_Retype' => 'pass',
+            )
         );
         $submit->click();
-        //$this->visitEmailsPage();
-        sleep(5);
+        $this->assertNotNull($title = $this->page->find('css', 'h1'));
+        $this->assertEquals('user.email.verify', $title->getText(), 'Wrong score');
+        $this->assertNotNull($form = $this->page->find('css', 'form'));
+        $this->assertNotNull($submit = $form->findButton('user.email.again'));
+        $submit->click();
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(2, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
+        $this->assertNotNull($body = $this->page->find('css', '#body'));
     }
-
-//     /**
-//      * @test
-//      * @depends userNewForm
-//      */
-//     public function userNewLogin()
-//     {
-//         $this->setDefaultSession('selenium2');
-//         $this->login('angela@example.com', 'pass');
-//         $this->logout();
-//     }
 }

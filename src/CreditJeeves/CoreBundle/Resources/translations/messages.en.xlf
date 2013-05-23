@@ -810,6 +810,12 @@
                 <source>user.email.check</source>
                 <target>An email has been sent to %EMAIL%. Please click on the link in your email to verify your address.</target>
             </trans-unit>
+            <trans-unit id="user.email.see">
+                <source>user.email.see</source>
+                <target>If you do not see an email from Credit Jeeves, click on the "Send Email Again" button below and we\'ll send you a new one.</target>
+            </trans-unit>
+            
+            
             <trans-unit id="user.email.again">
                 <source>user.email.again</source>
                 <target>Send Email Again</target>
