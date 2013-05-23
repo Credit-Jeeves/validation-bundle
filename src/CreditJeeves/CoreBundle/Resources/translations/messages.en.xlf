@@ -802,6 +802,21 @@
                 <source>user.welcome.name</source>
                 <target>Welcome to Credit Jeeves, %sName%!</target>
             </trans-unit>
+            <trans-unit id="user.email.verify">
+                <source>user.email.verify</source>
+                <target>Please Verify Your Email</target>
+            </trans-unit>
+            <trans-unit id="user.email.check">
+                <source>user.email.check</source>
+                <target>An email has been sent to %EMAIL%. Please click on the link in your email to verify your address.</target>
+            </trans-unit>
+            <trans-unit id="user.email.again">
+                <source>user.email.again</source>
+                <target>Send Email Again</target>
+            </trans-unit>
+            
+            
+            
             
             <trans-unit id="user.invite.title">
                 <source>user.invite.title</source>

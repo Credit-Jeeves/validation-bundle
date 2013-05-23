@@ -1,0 +1,19 @@
+{% extends "::base.html.twig" %}
+
+{% block title 'common.messages' | trans %}
+
+{% block info %}
+{% endblock %}
+
+{% block content %}
+    <div class="column-large">
+        <h1>{{ 'user.email.verify' | trans }}</h1>
+        <p>{{ 'user.email.check' | trans | replace({'%EMAIL%': email})}}</p>
+        <p></p>
+        <form method="post">
+            <input class="button large green" type="submit" name="_submit" value="{{ 'user.email.again' | trans }}" />
+        </form>
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}
+

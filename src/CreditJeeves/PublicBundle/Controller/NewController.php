@@ -59,8 +59,9 @@ class NewController extends Controller
                     $em->flush();
 
                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
-                    //$this->get('creditjeeves.mailer')->send
-                    return $this->redirect($this->generateUrl('applicant_homepage'));
+                    $this->get('core.session.applicant')->setUser($User);
+                    $this->get('creditjeeves.mailer')->sendCheckEmail($User);
+                    return $this->redirect($this->generateUrl('applicant_new_send'));
 
                 } else {
                     // FIXME this text must be moved to i18n file

@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ApplicantBundle\Tests\Functional;
+namespace CreditJeeves\PublicBundle\Tests\Functional;
 
 use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
 
@@ -48,9 +48,9 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_state' => 'AL',
                 'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '२६',//'26',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '१२', //'Dec',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '१९५८',//'1958',
             )
         );
         $this->assertNotNull(
@@ -114,7 +114,8 @@ class NewCase extends BaseTestCase
                 )
         );
         $submit->click();
-        $this->visitEmailsPage();
+        //$this->visitEmailsPage();
+        sleep(5);
     }
 
 //     /**
