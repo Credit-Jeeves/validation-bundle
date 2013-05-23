@@ -59,6 +59,7 @@ class NewController extends Controller
                     $em->flush();
 
                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
+                    //$this->get('creditjeeves.mailer')->send
                     return $this->redirect($this->generateUrl('applicant_homepage'));
 
                 } else {

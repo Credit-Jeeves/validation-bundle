@@ -27,7 +27,7 @@ class UserNewType extends AbstractType
                     new Length(
                         array(
                         'min' => 3,
-                        'max' => 5,
+                        'max' => 255,
                         'minMessage' => 'error.user.first_name.short',
                         'maxMessage' => 'error.user.first_name.long'
                         )
@@ -53,7 +53,7 @@ class UserNewType extends AbstractType
                     new Length(
                         array(
                         'min' => 3,
-                        'max' => 5,
+                        'max' => 255,
                         'minMessage' => 'error.user.last_name.short',
                         'maxMessage' => 'error.user.last_name.long'
                         )

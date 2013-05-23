@@ -85,7 +85,15 @@ class SettingsCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->page->clickLink('tabs.settings');
+        $this->session->wait(
+            $this->timeout + 1000,
+            "jQuery('.pod-small ul li').length > 0"
+        );
         $this->page->clickLink('settings.email');
+        $this->session->wait(
+                $this->timeout + 1000,
+                "jQuery('.pod-small ul li').length > 0"
+        );
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.save'));
         $this->assertNotNull($check = $this->page->findAll('css', '.checkbox-on'));
@@ -211,6 +219,12 @@ class SettingsCase extends BaseTestCase
             "jQuery('form .checkbox-on').length > 0"
         );
         $submit->click();
+        $this->session->wait(
+            $this->timeout + 5000,
+            "jQuery('.score-current').length > 0"
+        );
+        $this->assertNotNull($score = $this->page->find('css', '.score-current'));
+        $this->assertEquals(530, $score->getText(), 'Wrong score');
         $this->logout();
     }
 }

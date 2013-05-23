@@ -35,6 +35,7 @@ class User extends BaseUser
         $this->enabled = 1;
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
+        $this->setInviteCode(strtoupper(base_convert(uniqid(), 16, 36)));
     }
 
     /**

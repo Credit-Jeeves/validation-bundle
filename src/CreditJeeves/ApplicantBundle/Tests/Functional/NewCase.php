@@ -1,0 +1,130 @@
+<?php
+namespace CreditJeeves\ApplicantBundle\Tests\Functional;
+
+use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
+
+/**
+ * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
+ */
+class NewCase extends BaseTestCase
+{
+    protected $fixtures = array(
+        '001_cj_account_group.yml',
+        '002_cj_admin_account.yml',
+        '003_cj_dealer_account.yml',
+        '004_cj_applicant.yml',
+        '005_cj_lead.yml',
+        '006_cj_applicant_report.yml',
+        '007_cj_applicant_score.yml',
+        '010_cj_affiliate.yml',
+        '013_cj_holding_account.yml',
+        '020_email.yml',
+        '021_email_translations.yml',
+    );
+
+    /**
+     * @test
+     */
+    public function userNewForm()
+    {
+        $this->load($this->fixtures, true);
+        $this->setDefaultSession('selenium2');
+        $this->session->visit($this->getUrl() . 'new');
+        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
+        $this->assertNotNull($submit = $form->findButton('common.get.score'));
+        $this->fillForm(
+            $form,
+            array(
+                'creditjeeves_applicantbundle_leadnewtype_code' => 'DVRWP2NFQ6',
+                'creditjeeves_applicantbundle_leadnewtype_user_first_name' => 'ANGELA',
+                'creditjeeves_applicantbundle_leadnewtype_user_middle_initial' => 'LEE',
+                'creditjeeves_applicantbundle_leadnewtype_user_last_name' => 'PARKER',
+                'creditjeeves_applicantbundle_leadnewtype_user_email' => 'angela@example.com',
+                'creditjeeves_applicantbundle_leadnewtype_user_password_Password' => 'pass',
+                'creditjeeves_applicantbundle_leadnewtype_user_password_Retype' => 'pass',
+                'creditjeeves_applicantbundle_leadnewtype_user_street_address1' => 'USS SIERRA AD-18',
+                'creditjeeves_applicantbundle_leadnewtype_user_unit_no' => 'S-1',
+                'creditjeeves_applicantbundle_leadnewtype_user_city' => 'FPO',
+                'creditjeeves_applicantbundle_leadnewtype_user_state' => 'AL',
+                'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
+                'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
+            )
+        );
+        $this->assertNotNull(
+            $ssn1 = $this->page->find(
+                'css',
+                '#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn1'
+            )
+        );
+        $ssn1->click();
+        $this->fillForm(
+            $form,
+            array(
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn1' => '666',
+            )
+        );
+        $submit->click();
+        $this->assertNotNull(
+            $ssn2 = $this->page->find(
+                'css',
+                '#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2'
+            )
+        );
+        $ssn2->click();
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2').css('display') == 'none'"
+        );
+        $this->fillForm(
+            $form,
+            array(
+                 'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2' => '36',
+            )
+        );
+        $submit->click();
+        $this->assertNotNull(
+            $ssn3 = $this->page->find(
+                'css',
+                '#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn3'
+            )
+        );
+        $ssn3->click();
+        $this->fillForm(
+            $form,
+            array(
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn3' => '6977',
+            )
+        );
+        $submit->click();
+        $this->assertNotNull($check = $this->page->findAll('css', 'form .checkbox-off'));
+        $this->assertCount(1, $check, 'Wrong number of checkboxes');
+        $check[0]->click();
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('form .checkbox-on').length > 0"
+        );
+        $this->fillForm(
+                $form,
+                array(
+                        'creditjeeves_applicantbundle_leadnewtype_user_password_Password' => 'pass',
+                        'creditjeeves_applicantbundle_leadnewtype_user_password_Retype' => 'pass',
+                )
+        );
+        $submit->click();
+        $this->visitEmailsPage();
+    }
+
+//     /**
+//      * @test
+//      * @depends userNewForm
+//      */
+//     public function userNewLogin()
+//     {
+//         $this->setDefaultSession('selenium2');
+//         $this->login('angela@example.com', 'pass');
+//         $this->logout();
+//     }
+}
