@@ -806,6 +806,22 @@
                 <source>user.email.verify</source>
                 <target>Please Verify Your Email</target>
             </trans-unit>
+            <trans-unit id="user.email.verified">
+                <source>user.email.verified</source>
+                <target>Email Verified</target>
+            </trans-unit>
+            <trans-unit id="user.email.thank">
+                <source>user.email.thank</source>
+                <target>Thank you for verifying your email.</target>
+            </trans-unit>
+            <trans-unit id="user.email.next">
+                <source>user.email.next</source>
+                <target>You may now sign in to see your score and action plan.</target>
+            </trans-unit>
+            <trans-unit id="user.email.signin">
+                <source>user.email.signin</source>
+                <target>Go to Sign In</target>
+            </trans-unit>
             <trans-unit id="user.email.check">
                 <source>user.email.check</source>
                 <target>An email has been sent to %EMAIL%. Please click on the link in your email to verify your address.</target>

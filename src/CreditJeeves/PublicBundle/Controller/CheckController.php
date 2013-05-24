@@ -35,6 +35,7 @@ class CheckController extends Controller
         $user->setIsActive(true);
         $em->flush();
         return array(
+            'signinUrl' => $this->get('router')->generate('fos_user_security_login')
         );
     }
 }
