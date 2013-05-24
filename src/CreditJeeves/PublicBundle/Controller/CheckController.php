@@ -23,7 +23,7 @@ class CheckController extends Controller
     {
         $user = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' => $code));
         if (empty($user)) {
-            return $this->redirect($this->generateUrl('applicant_homepage')); 
+            return $this->redirect($this->generateUrl('applicant_homepage'));
         }
         $em = $this->getDoctrine()->getManager();
         $leads = $user->getUserLeads();
