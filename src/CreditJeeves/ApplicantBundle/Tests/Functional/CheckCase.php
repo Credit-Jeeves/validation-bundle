@@ -58,8 +58,8 @@ class CheckCase extends BaseTestCase
     {
         $this->login('john@example.com', 'pass');
         $this->session->wait(
-                $this->timeout + 5000,
-                "jQuery('#entryForm form').children().length > 0"
+            $this->timeout + 5000,
+            "jQuery('#entryForm form').children().length > 0"
         );
     }
 
@@ -68,13 +68,13 @@ class CheckCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.submit'));
         $this->fillForm(
-                $form,
-                array(
-                        'questions_OutWalletAnswer1_0' => 1,
-                        'questions_OutWalletAnswer2_0' => 1,
-                        'questions_OutWalletAnswer3_0' => 1,
-                        'questions_OutWalletAnswer4_0' => 1,
-                )
+            $form,
+            array(
+                'questions_OutWalletAnswer1_0' => 1,
+                'questions_OutWalletAnswer2_0' => 1,
+                'questions_OutWalletAnswer3_0' => 1,
+                'questions_OutWalletAnswer4_0' => 1,
+            )
         );
         $submit->click();
         $this->assertNotNull($title = $this->page->find('css', '.pod-large h1'));
@@ -86,13 +86,13 @@ class CheckCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.submit'));
         $this->fillForm(
-                $form,
-                array(
-                        'questions_OutWalletAnswer1_0' => 1,
-                        'questions_OutWalletAnswer2_1' => 1,
-                        'questions_OutWalletAnswer3_2' => 1,
-                        'questions_OutWalletAnswer4_3' => 1,
-                )
+            $form,
+            array(
+                'questions_OutWalletAnswer1_0' => 1,
+                'questions_OutWalletAnswer2_1' => 1,
+                'questions_OutWalletAnswer3_2' => 1,
+                'questions_OutWalletAnswer4_3' => 1,
+            )
         );
         $submit->click();
         $this->session->wait(
