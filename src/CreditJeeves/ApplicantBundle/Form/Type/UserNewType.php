@@ -166,7 +166,13 @@ class UserNewType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('data_class' => 'CreditJeeves\DataBundle\Entity\User'));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'cascade_validation' => true,
+//                 'validation_groups' => array('CreditJeeves\DataBundle\Entity\User', 'determineValidationGroups'),
+            )
+        );
     }
 
     public function getName()

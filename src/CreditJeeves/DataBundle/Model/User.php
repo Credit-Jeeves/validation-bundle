@@ -22,6 +22,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank()
      */
     protected $first_name;
 
