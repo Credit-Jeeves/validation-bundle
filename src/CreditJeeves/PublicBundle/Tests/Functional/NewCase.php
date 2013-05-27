@@ -48,9 +48,9 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_state' => 'AL',
                 'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '२६',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '०१',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '१९५८',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26', //'२६',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec', //'०१',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958', //'१९५८',
             )
         );
         $this->assertNotNull(
