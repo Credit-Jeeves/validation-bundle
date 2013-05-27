@@ -143,7 +143,7 @@ abstract class BaseTestCase extends Base
                         $fieldElement->click(); // FIXME it does not work
                     } else {
                         /* @var $selectList \Behat\Mink\Element\NodeElement */
-                        $this->assertNotNull($radioLabel = $form->find('css', '#' . $field . '_label'));
+                        $this->assertNotNull($radioLabel = $form->find('css', '#' . $field));
                         $radioLabel->click();
                     }
                 } elseif ('checkbox' == $fieldElement->getAttribute('type')) {
