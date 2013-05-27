@@ -125,6 +125,14 @@ class NewCase extends BaseTestCase
         $email = array_pop($email);
         $email->click();
         $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
+        $this->assertEquals('Check Email', $subject->getText());
         $this->assertNotNull($body = $this->page->find('css', '#body'));
+        $this->assertNotNull($htmlLink = $this->page->find('css', 'a'));
+        $htmlLink->click();
+        $this->assertNotNull($body = $this->page->find('css', '#email-body'));
+        $this->assertNotEquals(false, $url = $this->retrieveAbsoluteUrl($body->getText()));
+        $this->session->visit($url);
+        $this->login('angela@example.com', 'pass');
+        $this->logout();
     }
 }

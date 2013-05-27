@@ -49,6 +49,7 @@ class NewController extends Controller
                 $Lead = $form->getData();
                 if ($this->validateLead($Lead)) {
                     $User = $Lead->getUser();
+                    $User->setCulture($request->getLocale());
                     $User->setUsername($User->getEmail());
                     $User->setIsVerified('none');
                     $User->setType('applicant');
