@@ -19,7 +19,7 @@ class AppTestKernel extends AppKernel
         return $bundles;
     }
 
-    public function __construct($environment, $debug, $catch = false)
+    public function __construct($environment, $debug, $catch = true)
     {
         parent::__construct($environment, $debug);
         $this->catch = $catch;
