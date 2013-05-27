@@ -10,7 +10,7 @@ use Symfony\Component\Config\Loader\LoaderInterface;
  */
 class AppTestKernel extends AppKernel
 {
-    private $catch;
+    private $catch = true;
 
     public function registerBundles()
     {
@@ -19,7 +19,7 @@ class AppTestKernel extends AppKernel
         return $bundles;
     }
 
-    public function __construct($environment, $debug, $catch = false)
+    public function __construct($environment, $debug, $catch = true)
     {
         parent::__construct($environment, $debug);
         $this->catch = $catch;

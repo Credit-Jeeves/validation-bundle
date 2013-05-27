@@ -128,6 +128,23 @@
                 <source>authorize-net-aim-error-message-78</source>
                 <target>The card verification code (CVC) is invalid.</target>
             </trans-unit>
+
+            <trans-unit id="order.authorize.card_number">
+                <source>order_authorize_authorize_card_number</source>
+                <target>Card Number</target>
+            </trans-unit>
+            <trans-unit id="order.authorize.card_csc">
+                <source>order_authorize_authorize_card_csc</source>
+                <target>CSC</target>
+            </trans-unit>
+            <trans-unit id="order.authorize.expiration">
+                <source>order_authorize_authorize_card_expiration_date_month</source>
+                <target>Expiration</target>
+            </trans-unit>
+            <trans-unit id="order_authorize_authorize_we_accept">
+                <source>order_authorize_authorize_we_accept</source>
+                <target>We Accept</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

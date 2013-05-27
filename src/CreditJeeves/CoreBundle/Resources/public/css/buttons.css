@@ -2,7 +2,7 @@ button, .button {
     border: none;
     padding-left: 15px;
     text-align: left;
-    color: white;
+    color: white !important;
     font-size: 18px;
     font-family: astoria-medium;
     text-shadow: 1px 1px 3px #636363;
@@ -22,7 +22,7 @@ button, .button {
 }
 
 .button.small, button.small {
-    width: 132px;
+    width: 195px;
     height: 34px;
     font-size: 18px;
     padding-left: 22px;

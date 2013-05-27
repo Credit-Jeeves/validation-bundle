@@ -128,6 +128,10 @@
                 <source>common.learn.more</source>
                 <target>Learn more</target>
             </trans-unit>
+            <trans-unit id="common.get.score">
+                <source>common.learn.get.score</source>
+                <target>Get Score</target>
+            </trans-unit>
             <trans-unit id="common.mortgage">
                 <source>common.mortgage</source>
                 <target>Mortgage</target>
@@ -211,6 +215,18 @@
             <trans-unit id="common.submit">
                 <source>common.submit</source>
                 <target>Submit</target>
+            </trans-unit>
+            <trans-unit id="common.update">
+                <source>common.update</source>
+                <target>Update</target>
+            </trans-unit>
+            <trans-unit id="common.remove">
+                <source>common.remove</source>
+                <target>Remove</target>
+            </trans-unit>
+            <trans-unit id="common.save">
+                <source>common.save</source>
+                <target>Save</target>
             </trans-unit>
             <trans-unit id="common.target">
                 <source>common.target</source>
@@ -359,6 +375,19 @@
             <trans-unit id="records.public.total">
                 <source>records.public.total</source>
                 <target>Public Records</target>
+            </trans-unit>
+
+            <trans-unit id="component.didyouknow.title">
+                <source>component.didyouknow.title</source>
+                <target>Did you know?</target>
+            </trans-unit>
+            <trans-unit id="component.didyouknow.header">
+                <source>component.didyouknow.header</source>
+                <target>Your tax refund can help.</target>
+            </trans-unit>
+            <trans-unit id="component.didyouknow.text">
+                <source>component.didyouknow.text</source>
+                <target>A third of Americans use their tax refund to pay down high-interest debt. File your taxes today.</target>
             </trans-unit>
 
             <trans-unit id="component.account_status.header">
@@ -765,11 +794,52 @@
                 <target>Please accept the Terms and conditions in order to register.</target>
             </trans-unit>
 
-
+            <trans-unit id="user.welcome">
+                <source>user.welcome</source>
+                <target>Welcome to Credit Jeeves.</target>
+            </trans-unit>
             <trans-unit id="user.welcome.name">
                 <source>user.welcome.name</source>
                 <target>Welcome to Credit Jeeves, %sName%!</target>
             </trans-unit>
+            <trans-unit id="user.email.verify">
+                <source>user.email.verify</source>
+                <target>Please Verify Your Email</target>
+            </trans-unit>
+            <trans-unit id="user.email.verified">
+                <source>user.email.verified</source>
+                <target>Email Verified</target>
+            </trans-unit>
+            <trans-unit id="user.email.thank">
+                <source>user.email.thank</source>
+                <target>Thank you for verifying your email.</target>
+            </trans-unit>
+            <trans-unit id="user.email.next">
+                <source>user.email.next</source>
+                <target>You may now sign in to see your score and action plan.</target>
+            </trans-unit>
+            <trans-unit id="user.email.signin">
+                <source>user.email.signin</source>
+                <target>Go to Sign In</target>
+            </trans-unit>
+            <trans-unit id="user.email.check">
+                <source>user.email.check</source>
+                <target>An email has been sent to %EMAIL%. Please click on the link in your email to verify your address.</target>
+            </trans-unit>
+            <trans-unit id="user.email.see">
+                <source>user.email.see</source>
+                <target>If you do not see an email from Credit Jeeves, click on the "Send Email Again" button below and we\'ll send you a new one.</target>
+            </trans-unit>
+            
+            
+            <trans-unit id="user.email.again">
+                <source>user.email.again</source>
+                <target>Send Email Again</target>
+            </trans-unit>
+            
+            
+            
+            
             <trans-unit id="user.invite.title">
                 <source>user.invite.title</source>
                 <target>Please enter your information below and we can get started right away.</target>

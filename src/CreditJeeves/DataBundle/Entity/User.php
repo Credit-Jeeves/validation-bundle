@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,6 +36,7 @@ class User extends BaseUser
         $this->enabled = 1;
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
+        $this->setInviteCode(strtoupper(base_convert(uniqid(), 16, 36)));
     }
 
     /**
@@ -146,7 +148,7 @@ class User extends BaseUser
         $aOrders = $this->getOrders();
         foreach ($aOrders as $Order) {
             $sStatus = $Order->getStatus();
-            if ($sStatus == Order::STATUS_COMPLETE) {
+            if ($sStatus == OrderStatus::COMPLETE) {
                 return true;
             }
         }

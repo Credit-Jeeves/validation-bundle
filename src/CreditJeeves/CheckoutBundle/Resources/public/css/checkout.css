@@ -15,3 +15,11 @@
     text-align: center;
     width: 123px;
 }
+
+.checkout.form.authorize .form-row label {
+    width: 148px;
+    float: left;
+    display: block;
+    margin-bottom: 10px;
+    margin-top: 2px;
+}

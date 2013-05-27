@@ -8,6 +8,9 @@ parameters:
         - alex.emelyanov.ua@gmail.com
         - darryl@creditjeeves.com
 
+    date_short: 'M j, Y'
+    date_full: 'F j, Y'
+
     external_urls:
         main_site: 'www.creditjeeves.com'
         user_voice: 'creditjeeves.uservoice.com'

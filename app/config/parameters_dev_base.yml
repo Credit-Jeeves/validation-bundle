@@ -25,7 +25,7 @@ parameters:
         dbhost: 'STAR' #required!
 
     authorize_net:
-        login_id: '54PB5egZ'
-        transaction_key: '48V258vr55AE8tcg'
+        login_id: '7hNc5K44'
+        transaction_key: '5588K4QpHFhhqL5A'
         sandbox: true
 

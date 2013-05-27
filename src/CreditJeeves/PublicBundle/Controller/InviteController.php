@@ -36,7 +36,12 @@ class InviteController extends Controller
             $this->get('session')->getFlashBag()->add('message_body', $i18n->trans('error.user.absent.text'));
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
-        $sCurrentDob = $User->getDateOfBirth()->format("Y-m-d");
+        $date = $User->getDateOfBirth();
+        $sCurrentDob = null;
+        if (!empty($date)) {
+            $sCurrentDob = $date->format("Y-m-d");
+        }
+        
         $User->setDateOfBirth(new \DateTime());
         // Check form type
         $sSsn = $User->getSsn();
@@ -57,8 +62,16 @@ class InviteController extends Controller
             if ($form->isValid()) {
                 $User = $form->getData();
                 $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
-                if ($sCurrentDob == $sFormDob) {
-                    $User->setInviteCode('');
+                if (!empty($sCurrentDob)) {
+                    if ($sCurrentDob == $sFormDob) {
+                        $User->setInviteCode(null);
+                        $em = $this->getDoctrine()->getManager();
+                        $em->persist($User);
+                        $em->flush();
+                        return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
+                    }
+                } else {
+                    $User->setInviteCode(null);
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($User);
                     $em->flush();

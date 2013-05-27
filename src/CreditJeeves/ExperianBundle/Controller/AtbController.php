@@ -53,26 +53,6 @@ class AtbController extends Controller
 
     }
 
-    protected function processForm()
-    {
-        $request = $this->getRequest();
-        $this->form->bind($request->getParameter($this->form->getName()));
-        if ($this->form->isValid()) {
-            $input = $this->form->getValues();
-
-            $atbSimulation = atbSimulationTable::getInstance()->bestUseOfCash(
-                $input['best_use_of_cash'],
-                $this->cjApplicant
-            );
-            if ($request->getParameter('save', false)) {
-                $atbSimulation->save();
-            }
-            return $atbSimulation->getResultData();
-        }
-
-        return array('message' => 'Invalid');
-    }
-
     /**
      * @Template()
      */
