@@ -33,7 +33,7 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($score = $this->page->find('css', '.score-current'));
         $this->assertEquals(530, $score->getText(), 'Wrong score');
         $this->assertNotNull($score = $this->page->find('css', '.score-target'));
-        $this->assertEquals(650, $score->getText(), 'Wrong score');
+        $this->assertEquals(620, $score->getText(), 'Wrong score');
         $this->logout();
     }
 
