@@ -54,9 +54,9 @@ class InviteCase extends BaseTestCase
             array(
                 'creditjeeves_applicantbundle_newpasswordtype_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_newpasswordtype_password_Retype' => 'pass',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_day' => '1',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_month' => 'Jan',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_year' => '1937',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_day' => '1', //'०१',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_month' => 'Jan', //'०१',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_year' => '1937', //'१९३७',
             )
         );
         $submit->click();
@@ -87,9 +87,9 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_usernewtype_state' => 'CA',
                 'creditjeeves_applicantbundle_usernewtype_zip' => '91605',
                 'creditjeeves_applicantbundle_usernewtype_phone' => '8189976080',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '1',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '1', //'०१',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan', //'०१',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940', //'१९४०',
             )
         );
         $this->assertNotNull(
