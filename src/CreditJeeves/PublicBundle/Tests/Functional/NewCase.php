@@ -48,9 +48,9 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_state' => 'AL',
                 'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '२६',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '०१',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '१९५८',
             )
         );
         $this->assertNotNull(
@@ -134,5 +134,17 @@ class NewCase extends BaseTestCase
         $this->session->visit($url);
         $this->login('angela@example.com', 'pass');
         $this->logout();
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(3, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->assertNotNull($subject = $this->page->find('css', '#subject span'));
+        $this->assertEquals('Welcome to Credit Jeeves', $subject->getText());
+        $this->assertNotNull($body = $this->page->find('css', '#body'));
+        $this->assertNotNull($htmlLink = $this->page->find('css', 'a'));
+        $htmlLink->click();
+        $this->assertNotNull($title = $this->page->find('css', 'h1'));
+        $this->assertEquals('Welcome to CreditJeeves', $title->getText());
     }
 }
