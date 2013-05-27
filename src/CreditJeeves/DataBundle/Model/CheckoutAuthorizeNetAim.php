@@ -19,12 +19,8 @@ class CheckoutAuthorizeNetAim extends PaymentDetails
     protected $id;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Order",
-     *     mappedBy="CheckoutAuthorizeNetAim",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Order")
+     * @ORM\JoinColumn(name="cj_order_id", referencedColumnName="id")
      */
     protected $order;
 
@@ -129,9 +125,9 @@ class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var string
      *
-     * @ORM\Column(name="car", type="string", length=25)
+     * @ORM\Column(name="card_code", type="string", length=25)
      */
-    protected $car;
+    protected $cardCode;
 
     /**
      * @var string
@@ -163,6 +159,11 @@ class CheckoutAuthorizeNetAim extends PaymentDetails
     public function getId()
     {
         return $this->id;
+    }
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -508,12 +509,12 @@ class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * Set car
      *
-     * @param string $car
+     * @param string $cardCode
      * @return CheckoutAuthorizeNetAim
      */
-    public function setCar($car)
+    public function setCardCode($cardCode)
     {
-        $this->car = $car;
+        $this->cardCode = $cardCode;
     
         return $this;
     }
@@ -523,9 +524,9 @@ class CheckoutAuthorizeNetAim extends PaymentDetails
      *
      * @return string 
      */
-    public function getCar()
+    public function getCardCode()
     {
-        return $this->car;
+        return $this->cardCode;
     }
 
     /**

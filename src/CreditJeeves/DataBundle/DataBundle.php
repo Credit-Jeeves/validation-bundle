@@ -22,7 +22,7 @@ class DataBundle extends Bundle
             Type::addType('UserType', 'CreditJeeves\DataBundle\Enum\UserType');
             Type::addType('UserCulture', 'CreditJeeves\DataBundle\Enum\UserCulture');
             Type::addType('AtbType', 'CreditJeeves\DataBundle\Enum\AtbType');
-            Type::addType('OrderType', 'CreditJeeves\DataBundle\Enum\OrderType');
+            Type::addType('OrderStatus', 'CreditJeeves\DataBundle\Enum\OrderStatus');
             Type::addType('OperationType', 'CreditJeeves\DataBundle\Enum\OperationType');
         }
     }

@@ -138,6 +138,7 @@ abstract class BaseMailer
         }
         $aResult['culture'] = $User->getCulture();
         $aResult['ssn'] = $User->displaySsn();
+        $aResult['code'] = $User->getInviteCode();
         
         return $aResult;
     }

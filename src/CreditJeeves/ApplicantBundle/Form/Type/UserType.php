@@ -1,5 +1,4 @@
 <?php
-
 namespace CreditJeeves\ApplicantBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;

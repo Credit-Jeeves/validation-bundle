@@ -20,6 +20,23 @@ class Mailer extends BaseMailer implements MailerInterface
         return $this->sendEmail($user, $sTemplate);
     }
 
+    public function sendCheckEmail($user, $sTemplate = 'check')
+    {
+        $url = $this->container->get('router')->generate(
+            'applicant_new_check',
+            array('code' => $user->getInviteCode()),
+            true
+        );
+        
+        return $this->sendEmail(
+            $user,
+            $sTemplate,
+            array(
+               'checkUrl' => $url
+            )
+        );
+    }
+
     public function sendConfirmationEmailMessage(UserInterface $user)
     {
         $url = $this->container->get('router')->generate(

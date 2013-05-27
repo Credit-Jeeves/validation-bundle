@@ -21,7 +21,7 @@ class Order
     protected $cj_applicant_id;
 
     /**
-     * @ORM\Column(type="OrderType")
+     * @ORM\Column(type="OrderStatus")
      */
     protected $status;
 
@@ -40,6 +40,11 @@ class Order
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
     protected $user;
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime();
+    }
 
     /**
      * Get id
@@ -77,7 +82,7 @@ class Order
     /**
      * Set status
      *
-     * @param string $status
+     * @param OrderStatus $status
      * @return Order
      */
     public function setStatus($status)
@@ -90,7 +95,7 @@ class Order
     /**
      * Get status
      *
-     * @return string
+     * @return OrderStatus
      */
     public function getStatus()
     {

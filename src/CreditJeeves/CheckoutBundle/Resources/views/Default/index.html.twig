@@ -1,5 +1,9 @@
 {% extends "ApplicantBundle::base.html.twig" %}
 {% trans_default_domain 'checkout' %}
+{% block stylesheets %}
+    <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
+    {{ parent() }}
+{% endblock %}
 
 {% block content %}
     {% form_theme form '::form_cj_layout.html.twig' %}
@@ -29,10 +33,54 @@
                 {{ 'buy-report-form-title' | trans }}
             </h1>
             <div class="row-20"></div>
-            <div class='form'>
-                <form action="" method="post">
+            <div class='form checkout authorize'>
+                <form action="" method="post" id="checkout_authorize_net_aim_type" {{ form_enctype(form) }}>
+                    {% if form_errors(form) | length > 0 %}
+                        <div class="flash-error">
+                            {{ form_errors(form) }}
+                        </div>
+                    {% endif %}
 
-                    {{ form_widget(form) }}
+                    {{ form_errors(form.user) }}
+
+                    <fieldset>
+                        {% include 'ComponentBundle:User:name.html.twig'     with { 'form' : form.user } %}
+                        <div class="clearboth"></div>
+                        <div class="form-row background-grey">
+                            <div class="row-20"></div>
+                            <h5>{{ 'buy-report-form-fieldset-legend' | trans }}</h5>
+                            {% include 'ComponentBundle:User:address.html.twig'  with { 'form' : form.user } %}
+                            <div class="clearboth"></div>
+                            <div class="row-20"></div>
+                        </div>
+
+                        <div class="clearboth"></div>
+
+                        <div class="row-20"></div>
+                        <div class="form-row">
+                            <div class="form-label">
+                                <label>
+                                    {{ 'order_authorize_authorize_we_accept' | trans }}
+                                </label>
+
+                            </div>
+                            <div class="form-widget">
+                                <img alt="" src="{{ asset('bundles/core/images/cc.png') }}" />
+                            </div>
+                        </div>
+                        {{ form_row(form.authorize.card_number) }}
+                        {{ form_row(form.authorize.card_csc) }}
+
+                        <div class="form-row">
+                            <div class="form-label">{{ form_label(form.authorize.card_expiration_date_month) }}</div>
+                            <div class="form-widget">
+                                {{ form_widget(form.authorize.card_expiration_date_month) }}
+                                {{ form_widget(form.authorize.card_expiration_date_year) }}
+                            </div>
+                        </div>
+
+                        {{ form_rest(form) }}
+                    </fieldset>
 
 
                     <div class="clearboth"></div>

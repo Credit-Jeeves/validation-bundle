@@ -38,7 +38,7 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-                <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }}>
+                <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }} novalidate>
                     {% if form_errors(form) | length > 0 %}
                     <div class="flash-error">
                         {{ form_errors(form) }}
@@ -69,7 +69,7 @@
                         {{ form_rest(form) }}
                         <div class="row-20"></div>
                         <div class="form-row">
-                            <input class="button large green" type="submit" name="_submit" value="Get Score" />
+                            <input class="button large green" type="submit" name="_submit" value="{{ 'common.get.score' | trans }}" />
                         </div>
                     </fieldset>
                 </form>

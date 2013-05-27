@@ -4,7 +4,7 @@ namespace CreditJeeves\DataBundle\Enum;
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  */
-class OrderType extends Base
+class OrderStatus extends Base
 {
     const NEWONE = 'new';
     const COMPLETE = 'complete';

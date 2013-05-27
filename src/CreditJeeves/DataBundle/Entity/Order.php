@@ -16,6 +16,12 @@ class Order extends BaseOrder
      */
     public function prePersist()
     {
-        $this->created_date = new \DateTime();
+        $this->updated_at = new \DateTime();
     }
+
+    public function setAuthorize()
+    {}
+
+    public function getAuthorize()
+    {}
 }

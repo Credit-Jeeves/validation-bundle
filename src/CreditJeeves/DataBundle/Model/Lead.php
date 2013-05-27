@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -13,6 +14,12 @@ class Lead
      * @var string
      */
     const STATUS_NEW = 'new';
+
+    /**
+     * 
+     * @var string
+     */
+    const STATUS_ACTIVE = 'active';
 
     /**
      * @ORM\Id
@@ -96,6 +103,7 @@ class Lead
     /**
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="user_leads")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
+     * @Assert\Type(type="CreditJeeves\DataBundle\Entity\User")
      */
     protected $user;
 

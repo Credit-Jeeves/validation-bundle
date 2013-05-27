@@ -12,18 +12,22 @@
                 }
             })
         }}
-        {{ form_widget(
-            form.unit_no,
-            { 'attr':
-                {
-                    'class': 'user-input user-unit user-margin',
-                    'placeholder': 'Unit #',
-                    'maxlength' : 15
-                }
-            })
-        }}</div>
+
+        {% if form.middle_initial is defined %}
+            {{ form_widget(
+                form.unit_no,
+                { 'attr':
+                    {
+                        'class': 'user-input user-unit user-margin',
+                        'placeholder': 'Unit #',
+                        'maxlength' : 15
+                    }
+                })
+            }}
+        {% endif %}
+        </div>
         <div>
-{{ form_widget(
+        {{ form_widget(
             form.city,
             { 'attr':
                 {

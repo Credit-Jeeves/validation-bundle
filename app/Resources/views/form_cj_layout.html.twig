@@ -1,5 +1,5 @@
 {% use "form_div_layout.html.twig" %}
-
+{% form_theme form ':Form:form_errors.html.twig' %}
 {% block form_row %}
     {% spaceless %}
         <div class="form-row">
@@ -23,3 +23,33 @@
         </div>
     {% endspaceless %}
 {% endblock choice_widget_expanded %}
+
+{% block form_enctype %}
+    {% spaceless %}
+        {% if multipart %}enctype="multipart/form-data"{% endif %}
+        {% if 'test' == app.environment %} novalidate{% endif %}
+    {% endspaceless %}
+{% endblock form_enctype %}
+
+{% block field_label %}
+    {% spaceless %}
+        {% if label is not sameas(false) %}
+            {% if not compound %}
+                {% set label_attr = label_attr|merge({'for': id}) %}
+            {% endif %}
+            {% if required %}
+                {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+            {% endif %}
+            {% if label is empty %}
+                {% set label = id %}
+            {% endif %}
+            <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+                {{ label|trans({}, translation_domain) }}
+            </label>
+        {% endif %}
+
+        {#% if required %}
+            <span class="required"> *</span>
+        {% endif %#}
+    {% endspaceless %}
+{% endblock field_label %}

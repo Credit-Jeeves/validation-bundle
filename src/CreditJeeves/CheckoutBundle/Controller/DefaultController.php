@@ -1,17 +1,19 @@
 <?php
 namespace CreditJeeves\CheckoutBundle\Controller;
 
-use CreditJeeves\CheckoutBundle\Form\Type\CheckoutAuthorizeNetAimType;
+use CreditJeeves\CheckoutBundle\Form\Type\OrderAuthorizeType;
 use CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim;
 use CreditJeeves\DataBundle\Entity\Order;
-use Payum\AuthorizeNet\Aim\PaymentInstruction;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use Payum\AuthorizeNet\Aim\Model\PaymentDetails;
+use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use \DateTime;
 use Symfony\Component\Validator\Constraints\Range;
+use \DateTime;
 
 /**
  * @method \CreditJeeves\DataBundle\Entity\Applicant getUser
@@ -23,9 +25,13 @@ class DefaultController extends Controller
      */
     protected $order;
 
+    /**
+     * @var string
+     */
     protected $message = '';
 
     /**
+     * @return \Payum\Bundle\PayumBundle\Context\ContextRegistry
      */
     protected function getPayum()
     {
@@ -38,16 +44,22 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-
-        $form = $this->createForm(new CheckoutAuthorizeNetAimType($this->getUser()));
+        $this->order = new Order();
+        $this->order->setUser($this->getUser());
+        $form = $this->createForm(new OrderAuthorizeType(), $this->order);
 
         if ($request->isMethod('POST')) {
             $form->bind($request);
             if ($form->isValid()) {
-
-                $this->order = new Order();
+                die('isValid');
+                $this->order->setStatus(OrderStatus::NEWONE);
+                $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
+                $this->get('doctrine.orm.default_entity_manager')->flush();
 
                 if ($this->process($form->getData())) {
+                    $this->order->setStatus(OrderStatus::COMPLETE);
+                    $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
+                    $this->get('doctrine.orm.default_entity_manager')->flush();
                     return $this->redirect($this->generateUrl('applicant_report'));
                 }
             }
@@ -60,60 +72,61 @@ class DefaultController extends Controller
 
     protected function process($data)
     {
-        $model = new CheckoutAuthorizeNetAim();
-        $model->setOrder($this->order);
-        $model->setFirstName($data['first_name']);
-        $model->setLastName($data['last_name']);
-        $model->setAddress($data['address1'] . ' ' . $data['address2']);
-        $model->setCity($data['city']);
-        $model->setState($data['state']);
-        $model->setZip($data['zip']);
-        $model->setCardNum($data['card_number']);
-        $model->setCardCode($data['card_csc']);
-        $model->setExpDate(
+        $paymentDetails = new PaymentDetails();
+        $paymentDetails->setFirstName($data['first_name']);
+        $paymentDetails->setLastName($data['last_name']);
+        $paymentDetails->setAddress($data['address1'] . ' ' . $data['address2']);
+        $paymentDetails->setCity($data['city']);
+        $paymentDetails->setState($data['state']);
+        $paymentDetails->setZip($data['zip']);
+        $paymentDetails->setCardNum($data['card_number']);
+        $paymentDetails->setCardCode($data['card_csc']);
+        $paymentDetails->setExpDate(
             (2==strlen($data['card_expiration_date_month'])?
                 $data['card_expiration_date_month']:
                 '0' . $data['card_expiration_date_month']) .
             $data['card_expiration_date_year']
         );
-        $model->setAmount('9.00');
+        $paymentDetails->setAmount('9.00');
 //        $model->setCurrency('USD');
 
         $context = $this->getPayum()->getContext('simple_purchase_authorize_net');
 
-        if ($interactiveRequest = $context->getPayment()->execute(new CaptureRequest($model))) {
-//            $context->getStorage()->updateModel($model);
+        $captureRequest = new CaptureRequest($paymentDetails);
+        $context->getPayment()->execute($captureRequest);
 
-            return $this->handle($context->getCaptureInteractiveController(), array(
-                    'context' => $context,
-                    'interactiveRequest' => $interactiveRequest
-                ));
-        }
+        $authorize = new CheckoutAuthorizeNetAim();
+        $authorize->setOrder($this->order);
+        $authorize->setCode($paymentDetails->getResponseCode());
+        $authorize->setSubcode($paymentDetails->getResponseSubcode());
+        $authorize->setReasonCode($paymentDetails->getResponseReasonCode());
+        $authorize->setReasonText($paymentDetails->getResponseReasonText());
+        $authorize->setAuthorizationCode($paymentDetails->getAuthorizationCode());
+        $authorize->setAvs($paymentDetails->getAvsResponse());
+        $authorize->setTransactionId($paymentDetails->getTransactionId());
+        $authorize->setInvoiceNumber($paymentDetails->getInvoiceNumber());
+        $authorize->setDescription($paymentDetails->getDescription());
+        $authorize->setMethod($paymentDetails->getMethod());
+        $authorize->setTransactionType($paymentDetails->getTransactionType());
+        $authorize->setMd5Hash($paymentDetails->getMd5Hash());
+        $authorize->setPurchaseOrderNumber($paymentDetails->getPurchaseOrderNumber());
+        $authorize->setCardCode($paymentDetails->getCardCodeResponse());
+        $authorize->setCardholderAuthenticationValue($paymentDetails->getCardholderAuthenticationValue());
+        $authorize->setSplitTenderId($paymentDetails->getSplitTenderId());
 
-        $statusRequest = $context->createStatusRequest($model);
-        if ($interactiveRequest = $context->getPayment()->execute($statusRequest)) {
-            throw new LogicException('Unsupported interactive request.', null, $interactiveRequest);
-        }
 
-        $response = $this->handle($context->getCaptureFinishedController(), array(
-                'context' => $context,
-                'statusRequest' => $statusRequest
-            ));
+        $this->get('doctrine.orm.default_entity_manager')->persist($authorize);
+        $this->get('doctrine.orm.default_entity_manager')->flush(); // TODO remove and check
 
-        $this->get('octrine.orm.default_entity_manager')->persist($model);
-        $this->get('octrine.orm.default_entity_manager')->flush();
-
-        var_dump($response);die('OK');
-
-        if (\AuthorizeNetAIM_Response::APPROVED != $model->getResponseCode()) {
-            $code = $model->getResponseReasonCode();
+        if (\AuthorizeNetAIM_Response::APPROVED != $paymentDetails->getResponseCode()) {
+            $code = $paymentDetails->getResponseReasonCode();
             $message = '';
             if (in_array($code, array(6, 37, 7, 8, 27, 127, 290, 78, 44))) {
                 $message = "authorize-net-aim-error-message-{$code}";
             }
 
             $this->message = 'authorize-net-aim-error-main-message-' .
-                $model->getResponseCode() . '-%MESSAGE%-%SUPPORT_EMAIL%';
+                $paymentDetails->getResponseCode() . '-%MESSAGE%-%SUPPORT_EMAIL%';
 //            $this->form->getErrorSchema()->addError(
 //                new sfValidatorError(
 //                    $this->form->getValidatorSchema(),

@@ -14,7 +14,10 @@ use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\SsnToPartsTransformer;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
-class UserNewType extends AbstractType
+/**
+ * FIXME it must extends UserType form
+ */
+class UserNewType extends AbstractType //UserType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -27,7 +30,7 @@ class UserNewType extends AbstractType
                     new Length(
                         array(
                         'min' => 3,
-                        'max' => 5,
+                        'max' => 255,
                         'minMessage' => 'error.user.first_name.short',
                         'maxMessage' => 'error.user.first_name.long'
                         )
@@ -53,7 +56,7 @@ class UserNewType extends AbstractType
                     new Length(
                         array(
                         'min' => 3,
-                        'max' => 5,
+                        'max' => 255,
                         'minMessage' => 'error.user.last_name.short',
                         'maxMessage' => 'error.user.last_name.long'
                         )
@@ -166,7 +169,13 @@ class UserNewType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('data_class' => 'CreditJeeves\DataBundle\Entity\User'));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'cascade_validation' => true,
+//                 'validation_groups' => array('CreditJeeves\DataBundle\Entity\User', 'determineValidationGroups'),
+            )
+        );
     }
 
     public function getName()
