@@ -20,8 +20,10 @@ class Order extends BaseOrder
     }
 
     public function setAuthorize()
-    {}
+    {
+    }
 
     public function getAuthorize()
-    {}
+    {
+    }
 }
