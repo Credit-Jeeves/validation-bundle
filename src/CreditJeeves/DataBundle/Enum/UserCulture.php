@@ -8,5 +8,5 @@ class UserCulture extends Base
 {
     const EN = 'en';
     const FR = 'fr';
-    const TEST = 'hi';
+    const TEST = 'test';
 }
