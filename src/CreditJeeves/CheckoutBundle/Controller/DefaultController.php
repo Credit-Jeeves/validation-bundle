@@ -9,6 +9,7 @@ use Payum\AuthorizeNet\Aim\Model\PaymentDetails;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -26,9 +27,9 @@ class DefaultController extends Controller
     protected $order;
 
     /**
-     * @var string
+     * @var \Symfony\Component\Form\Form
      */
-    protected $message = '';
+    protected $form;
 
     /**
      * @return \Payum\Bundle\PayumBundle\Context\ContextRegistry
@@ -46,17 +47,16 @@ class DefaultController extends Controller
     {
         $this->order = new Order();
         $this->order->setUser($this->getUser());
-        $form = $this->createForm(new OrderAuthorizeType(), $this->order);
+        $this->form = $this->createForm(new OrderAuthorizeType(), $this->order);
 
         if ($request->isMethod('POST')) {
-            $form->bind($request);
-            if ($form->isValid()) {
-                die('isValid');
+            $this->form->bind($request);
+            if ($this->form->isValid()) {
                 $this->order->setStatus(OrderStatus::NEWONE);
                 $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
                 $this->get('doctrine.orm.default_entity_manager')->flush();
 
-                if ($this->process($form->getData())) {
+                if ($this->process($this->form->getData())) {
                     $this->order->setStatus(OrderStatus::COMPLETE);
                     $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
                     $this->get('doctrine.orm.default_entity_manager')->flush();
@@ -66,26 +66,27 @@ class DefaultController extends Controller
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $this->form->createView()
         );
     }
 
-    protected function process($data)
+    protected function process(Order $data)
     {
+        $authorize = $data->getAuthorize();
         $paymentDetails = new PaymentDetails();
-        $paymentDetails->setFirstName($data['first_name']);
-        $paymentDetails->setLastName($data['last_name']);
-        $paymentDetails->setAddress($data['address1'] . ' ' . $data['address2']);
-        $paymentDetails->setCity($data['city']);
-        $paymentDetails->setState($data['state']);
-        $paymentDetails->setZip($data['zip']);
-        $paymentDetails->setCardNum($data['card_number']);
-        $paymentDetails->setCardCode($data['card_csc']);
+        $paymentDetails->setFirstName($data->getUser()->getFirstName());
+        $paymentDetails->setLastName($data->getUser()->getLastName());
+        $paymentDetails->setAddress($data->getUser()->getStreetAddress1());
+        $paymentDetails->setCity($data->getUser()->getCity());
+        $paymentDetails->setState($data->getUser()->getState());
+        $paymentDetails->setZip($data->getUser()->getZip());
+        $paymentDetails->setCardNum($authorize['card_number']);
+        $paymentDetails->setCardCode($authorize['card_csc']);
         $paymentDetails->setExpDate(
-            (2==strlen($data['card_expiration_date_month'])?
-                $data['card_expiration_date_month']:
-                '0' . $data['card_expiration_date_month']) .
-            $data['card_expiration_date_year']
+            (2==strlen($authorize['card_expiration_date_month'])?
+                $authorize['card_expiration_date_month']:
+                '0' . $authorize['card_expiration_date_month']) .
+            $authorize['card_expiration_date_year']
         );
         $paymentDetails->setAmount('9.00');
 //        $model->setCurrency('USD');
@@ -125,22 +126,20 @@ class DefaultController extends Controller
                 $message = "authorize-net-aim-error-message-{$code}";
             }
 
-            $this->message = 'authorize-net-aim-error-main-message-' .
+            $baseMessage = 'authorize-net-aim-error-main-message-' .
                 $paymentDetails->getResponseCode() . '-%MESSAGE%-%SUPPORT_EMAIL%';
-//            $this->form->getErrorSchema()->addError(
-//                new sfValidatorError(
-//                    $this->form->getValidatorSchema(),
-//                    $this->getContext()->getI18N()->__(
-//                        $this->message,
-//                        array(
-//                            '%MESSAGE%' => $this->getContext()->getI18N()->__($message, array(), 'checkout'),
-//                            '%SUPPORT_EMAIL%' => sfConfig::get('app_support_email'),
-//                        ),
-//                        'checkout'
-//                    )
-//                ),
-//                $this->message
-//            );
+            $this->form->addError(
+                new FormError(
+                    $this->get('translator.default')->trans(
+                        $baseMessage,
+                        array(
+                            '%MESSAGE%' => $this->get('translator.default')->trans($message, array(), 'checkout'),
+                            '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')
+                        ),
+                        'checkout'
+                    )
+                )
+            );
             return false;
         }
 
