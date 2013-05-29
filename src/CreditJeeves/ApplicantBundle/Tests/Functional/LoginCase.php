@@ -24,7 +24,6 @@ class LoginCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
     public function userCanLogin()
     {

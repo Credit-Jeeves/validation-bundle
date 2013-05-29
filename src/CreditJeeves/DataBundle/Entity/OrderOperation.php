@@ -12,4 +12,12 @@ use CreditJeeves\DataBundle\Model\OrderOperation as Base;
  */
 class OrderOperation extends Base
 {
+    /**
+     * @var integer
+     *
+     * @ORM\Id
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
 }
