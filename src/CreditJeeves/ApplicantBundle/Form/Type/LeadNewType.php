@@ -17,7 +17,6 @@ class LeadNewType extends AbstractType
     {
         $entityManager = $options['em'];
         $groupTransformer = new CodeToGroupTransformer($entityManager);
-        //$userTransformer = new EmailToUserTransformer($entityManager);
         $builder->add(
             'user',
             new UserNewType()
@@ -32,15 +31,6 @@ class LeadNewType extends AbstractType
                     )
             )->addModelTransformer($groupTransformer)
         );
-//         $builder->add(
-//             $builder->create(
-//                 'email',
-//                 'email',
-//                 array(
-//                     'property_path' => 'user'
-//                     )
-//             )->addModelTransformer($userTransformer)
-//         );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -48,7 +38,7 @@ class LeadNewType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'CreditJeeves\DataBundle\Entity\Lead',
-                'cascade_validation' => true,
+                'validation_groups' => array('registration_new'),
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token

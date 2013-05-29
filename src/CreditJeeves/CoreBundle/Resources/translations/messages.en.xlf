@@ -129,7 +129,7 @@
                 <target>Learn more</target>
             </trans-unit>
             <trans-unit id="common.get.score">
-                <source>common.learn.get.score</source>
+                <source>common.get.score</source>
                 <target>Get Score</target>
             </trans-unit>
             <trans-unit id="common.mortgage">
