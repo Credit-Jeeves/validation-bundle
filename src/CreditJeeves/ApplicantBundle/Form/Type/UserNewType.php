@@ -158,9 +158,11 @@ class UserNewType extends AbstractType //UserType
                 'label' => '',
                 'data' => 0,
                 'mapped' => false,
+                
                 'constraints' => new True(
                     array(
-                            'message' => 'Please accept the Terms and conditions in order to register'
+                            'message' => 'Please accept the Terms and conditions in order to register',
+                            'groups' => 'registration_new'
                         )
                     ),
                 )
@@ -173,7 +175,7 @@ class UserNewType extends AbstractType //UserType
             array(
                 'data_class' => 'CreditJeeves\DataBundle\Entity\User',
                 'cascade_validation' => true,
-//                 'validation_groups' => array('CreditJeeves\DataBundle\Entity\User', 'determineValidationGroups'),
+                'validation_groups' => array('registration_new'),
             )
         );
     }

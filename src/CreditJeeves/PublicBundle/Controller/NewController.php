@@ -74,17 +74,24 @@ class NewController extends Controller
                 }
             }
         }
-
+//         echo '<pre>';
+//         print_r($form->getErrorsAsString());
+//         echo '</pre>';
+        
+        //         die();
         return array(
             'form' => $form->createView(),
-            'nUserId' => $User->getId(),
         );
     }
 
     private function validateLead($Lead)
     {
+        $Group = $Lead->getGroup();
+        if (empty($Group)) {
+            return false;
+        }
         $nUserId = $Lead->getUser()->getId();
-        $nGroupId = $Lead->getGroup()->getid();
+        $nGroupId = $Group->getId();
         $nLeads = $this->
             getDoctrine()->
             getRepository('DataBundle:Lead')->

@@ -104,12 +104,14 @@ class Lead
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="user_leads")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      * @Assert\Type(type="CreditJeeves\DataBundle\Entity\User")
+     * @Assert\Valid()
      */
     protected $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="dealer_leads")
      * @ORM\JoinColumn(name="cj_account_id", referencedColumnName="id")
+     * @Assert\Type(type="CreditJeeves\DataBundle\Entity\User")
      */
     protected $dealer;
 
@@ -117,6 +119,7 @@ class Lead
     /**
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="leads")
      * @ORM\JoinColumn(name="cj_group_id", referencedColumnName="id")
+     * @Assert\Type(type="CreditJeeves\DataBundle\Entity\Group")
      */
     protected $group;
 
@@ -390,7 +393,7 @@ class Lead
      * @param \CreditJeeves\DataBundle\Entity\User $user
      * @return Lead
      */
-    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
+    public function setUser($user = null)
     {
         $this->user = $user;
 
@@ -413,7 +416,7 @@ class Lead
      * @param \CreditJeeves\DataBundle\Entity\Group $group
      * @return Lead
      */
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group = null)
+    public function setGroup($group = null)
     {
         $this->group = $group;
 
@@ -436,7 +439,7 @@ class Lead
      * @param \CreditJeeves\DataBundle\Entity\User $dealer
      * @return Lead
      */
-    public function setDealer(\CreditJeeves\DataBundle\Entity\User $dealer = null)
+    public function setDealer($dealer = null)
     {
         $this->dealer = $dealer;
 

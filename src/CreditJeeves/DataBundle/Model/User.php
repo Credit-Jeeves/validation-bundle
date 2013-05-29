@@ -22,7 +22,18 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      */
     protected $first_name;
 
@@ -33,30 +44,56 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      */
     protected $last_name;
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      * @Assert\Length(
-     *     max = "255"
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "registration_new"
+     *     }
      * )
      */
     protected $street_address1;
 
     /**
      * @ORM\Column(type="encrypt")
-     * @Assert\Length(
-     *     max = "255"
-     * )
      */
     protected $street_address2;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      * @Assert\Length(
-     *     max = "31",
-     *     maxMessage = "Your unit number cannot be longer than {{ limit }} characters length"
+     *     min=1,
+     *     max=31,
+     *     groups={
+     *         "registration_new"
+     *     }
      * )
      */
     protected $unit_no;
@@ -68,14 +105,35 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      */
     protected $state;
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      * @Assert\Length(
-     *     max = "15",
-     *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length"
+     *     min=1,
+     *     max=15,
+     *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length",
+     *     groups={
+     *         "registration_new"
+     *     }
      * )
      */
     protected $zip;
@@ -92,11 +150,28 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      */
     protected $date_of_birth;
 
     /**
      * @ORM\Column(type="encrypt")
+     * @Assert\NotBlank(
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=9,
+     *     max=9,
+     *     groups={
+     *         "registration_new"
+     *     }
+     * )
      */
     protected $ssn;
 
