@@ -38,7 +38,7 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-                <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }} novalidate>
+                <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }}>
                     {% if form_errors(form) | length > 0 %}
                     <div class="flash-error">
                         {{ form_errors(form) }}

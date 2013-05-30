@@ -34,7 +34,7 @@
             </div>
             {% endif %}
             <div class="row-20"></div>
-                <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }} novalidate>
+                <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }}>
                     {% if form_errors(form) | length > 0 %}
                     <div class="flash-error">
                         {{ form_errors(form) }}
