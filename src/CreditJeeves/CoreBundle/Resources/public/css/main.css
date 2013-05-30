@@ -390,6 +390,17 @@ input:placeholder, textarea:placeholder {
     z-index: 50;
 }
 
+ul.error_list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.error_list li {
+    color: #cc0000;
+    font-weight: bold;
+    font-size: 16px;
+}
+
 /*
 
 .customer-info {

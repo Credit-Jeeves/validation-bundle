@@ -19,7 +19,7 @@ class AuthorizeNetAimType extends AbstractType
             array('Month') + range(0, 12)
         );
         $years = array_combine(
-            array('') + range(date('y') - 1, date('y') + 12),
+            array('') + range(date('Y') - 1, date('Y') + 12),
             array('Year') + range(date('Y') - 1, date('Y') + 12)
         );
 
