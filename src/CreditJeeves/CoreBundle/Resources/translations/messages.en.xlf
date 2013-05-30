@@ -945,6 +945,15 @@
                 <source>exception.error.text-%%STATUS_CODE%%-%%STATUS_TEXT%%</source>
                 <target>The server returned a "%%STATUS_CODE%% %%STATUS_TEXT%%".</target>
             </trans-unit>
+
+            <trans-unit id="error.fatal.title">
+                <source>error.fatal.title</source>
+                <target>Fatal error</target>
+            </trans-unit>
+            <trans-unit id="error.fatal.message">
+                <source>error.fatal.message-%SUPPORT_EMAIL%</source>
+                <target>YOops! An Error Occurred. Please contact %SUPPORT_EMAIL%.</target>
+            </trans-unit>
             
         </body>
     </file>

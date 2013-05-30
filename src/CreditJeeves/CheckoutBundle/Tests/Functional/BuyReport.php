@@ -26,10 +26,12 @@ class BuyReportCase extends BaseTestCase
         '019_atb_simulation.yml',
         '017_cj_order.yml',
         '018_cj_operation.yml',
+        '020_email.yml',
+        '021_email_translations.yml',
     );
 
     /**
-     * @test
+     * @~test
      */
     public function checkBuyReportBox()
     {
@@ -44,7 +46,7 @@ class BuyReportCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * @~test
      */
     public function checkCurrentDownloadedData()
     {
@@ -93,13 +95,13 @@ class BuyReportCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#checkout_authorize_net_aim_type'));
 
         $form->pressButton('buy-report-form-submit');
-        $this->assertCount(4, $form->findAll('css', '.error_list'), "Number of errors is wrong");
+        $this->assertCount(3, $form->findAll('css', '.error_list'), 'Number of errors is wrong');
 
         $formData = array(
-            'order_authorize_authorize_card_number' => '0005105105105100',
-            'order_authorize_authorize_card_csc' => '000',
-            'order_authorize_authorize_card_expiration_date_month' => date('n'),
-            'order_authorize_authorize_card_expiration_date_year' => date('Y'),
+            'order_authorize_authorize_card_num' => '0005105105105100',
+            'order_authorize_authorize_card_code' => '000',
+            'order_authorize_authorize_exp_date_month' => date('m'),
+            'order_authorize_authorize_exp_date_year' => date('Y'),
         );
 
         // Fake data: card number
@@ -113,20 +115,18 @@ class BuyReportCase extends BaseTestCase
             static::getContainer()->getParameter('support_email'),
             $globalErrors[0]->getText()
         );
-        $formData['order_authorize_authorize_card_number'] = '4111111111111111';
+        $formData['order_authorize_authorize_card_num'] = '4111111111111111';
         $this->fillForm($form, $formData);
         $form->pressButton('buy-report-form-submit');
 
-        $this->markTestIncomplete('Finish');
-        
         $this->session->wait(
-            $this->timeout + 30000,
-            "jQuery('#main .summary').children().length > 0"
+            $this->timeout,
+            "jQuery('#report_page').children().length > 0"
         );
 
-        $this->assertNotNull($date = $this->page->find('css', '.pod.segment .datetime.floatright'));
+        $this->assertNotNull($date = $this->page->find('css', '.pod-large .datetime.floatright'));
 
-        $this->assertEquals('updated-' . date(sfConfig::get('app_format_date-short')), $date->getText());
+        $this->assertEquals(date('M j, Y'), $date->getText());
     }
 
     /**
@@ -138,7 +138,7 @@ class BuyReportCase extends BaseTestCase
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(2, $email, 'Wrong number of emails');
+        $this->assertCount(1, $email, 'Wrong number of emails');
         $email = array_pop($email);
 
         $email->click();
@@ -146,7 +146,9 @@ class BuyReportCase extends BaseTestCase
         $this->assertEquals('Receipt from Credit Jeeves', $subject->getText());
         $this->assertNotNull($body = $this->page->find('css', '#body'));
 
-        $this->assertEquals(1, preg_match("/Reference Number: (.*)/", $body->getText(), $matches));
+        $this->page->clickLink('text/html');
+
+        $this->assertEquals(1, preg_match("/Reference Number: (.*)/", $this->page->getText(), $matches));
         $this->assertNotEmpty($matches[1]);
     }
 }

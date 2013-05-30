@@ -68,16 +68,16 @@
                                 <img alt="" src="{{ asset('bundles/core/images/cc.png') }}" />
                             </div>
                         </div>
-                        {{ form_row(form.authorize.card_number) }}
-                        {{ form_row(form.authorize.card_csc) }}
+                        {{ form_row(form.authorize.card_num) }}
+                        {{ form_row(form.authorize.card_code) }}
 
                         <div class="form-row">
-                            {{ form_errors(form.authorize.card_expiration_date_month) }}
-                            {{ form_errors(form.authorize.card_expiration_date_year) }}
-                            <div class="form-label">{{ form_label(form.authorize.card_expiration_date_month) }}</div>
+                            {{ form_errors(form.authorize.exp_date) }}
+                            <div class="form-label">{{ form_label(form.authorize.exp_date) }}</div>
                             <div class="form-widget">
-                                {{ form_widget(form.authorize.card_expiration_date_month) }}
-                                {{ form_widget(form.authorize.card_expiration_date_year) }}
+                                {{ form_widget(form.authorize.exp_date.year) }}
+                                {{ form_widget(form.authorize.exp_date.month) }}
+                                {{ form_widget(form.authorize.exp_date.day) }}
                             </div>
                         </div>
 

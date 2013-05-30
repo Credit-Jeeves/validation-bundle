@@ -12,11 +12,4 @@ use CreditJeeves\DataBundle\Model\Operation as Base;
  */
 class Operation extends Base
 {
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->createdAt = new \DateTime();
-    }
 }

@@ -1,8 +1,11 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Enum\ReportType;
+use CreditJeeves\DataBundle\Entity\ReportD2c;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -33,9 +36,33 @@ class ReportController extends Controller
      *
      * @return bool
      */
-    protected function isReportLoadAllowed()
+    protected function isReportLoadAllowed($isD2c = false)
     {
+        if ($isD2c) {
+            if ($order = $this->getUser()->getOrders()->last()) {
+                return !($operation = $order->getOperations()->last());
+            }
+            return true;
+        }
         return !$this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
+    }
+
+    /**
+     * @Route("/get/d2c", name="core_report_get_d2c")
+     * @Template("ExperianBundle:Report:get.html.twig")
+     *
+     * @return array
+     */
+    public function getD2cAction()
+    {
+        if (!$this->isReportLoadAllowed(true)) {
+            return new RedirectResponse($this->generateUrl('applicant_homepage'));
+        }
+        $this->get('session')->getFlashBag()->set('isD2cReport', true);
+        return array(
+            'url' => $this->generateUrl('core_report_get_ajax'),
+            'redirect' => $this->generateUrl('applicant_report')
+        );
     }
 
     /**
@@ -61,15 +88,27 @@ class ReportController extends Controller
         return $this->netConnect->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
 
-    protected function saveArf()
+    protected function saveArf($isD2c = false)
     {
-        if (!$this->isReportLoadAllowed()) {
+        if (!$this->isReportLoadAllowed($isD2c)) {
             return false;
         }
-        $report = new ReportPrequal();
+
+        $em = $this->getDoctrine()->getManager();
+        if ($isD2c) {
+            $report = new ReportD2c();
+            $operation = new Operation();
+            $order = $this->getUser()->getOrders()->last();
+            $operation->setReportD2c($report);
+            $em->persist($operation);
+            $order->addOperation($operation);
+            $em->persist($order);
+
+        } else {
+            $report = new ReportPrequal();
+        }
         $report->setRawData($this->getArf());
         $report->setUser($this->get('core.session.applicant')->getUser());
-        $em = $this->getDoctrine()->getManager();
         $em->persist($report);
         $em->flush();
         return true;
@@ -95,12 +134,31 @@ class ReportController extends Controller
             if (!$session->get('cjIsArfProcessing', false)) {
                 $session->set('cjIsArfProcessing', true);
                 try {
-                    $this->saveArf();
+                    $isD2cReport = $this->get('session')->getFlashBag()->get('isD2cReport');
+                    try {
+                        $this->saveArf($isD2cReport);
+                    } catch (DBALException $e) {
+                        $this->get('fp_badaboom.exception_catcher')->handleException($e);
+                        $this->get('session')->getFlashBag()->set(
+                            'message_title',
+                            $this->get('translator.default')->trans('error.fatal.title')
+                        );
+                        $this->get('session')->getFlashBag()->set(
+                            'message_body',
+                            $this->get('translator.default')->trans(
+                                'error.fatal.message-%SUPPORT_EMAIL%',
+                                array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                            )
+                        );
+                        return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
+                    }
                 } catch (\Exception $e) {
+                    $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);
                     $session->set('cjIsArfProcessing', false);
                     $this->get('fp_badaboom.exception_catcher')->handleException($e);
-                    return new JsonResponse('fatal error');
+                    return new JsonResponse('warning');
                 }
+                $session->set('cjIsArfProcessing', false);
                 return new JsonResponse('finished');
             }
             return new JsonResponse('processing');

@@ -1,6 +1,8 @@
 <?php
 namespace CreditJeeves\CoreBundle\Mailer;
 
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
@@ -67,6 +69,19 @@ class Mailer extends BaseMailer implements MailerInterface
             'resetting',
             array(
                 'confirmationUrl' => $url
+            )
+        );
+    }
+
+    public function sendReceipt(Order $order)
+    {
+        return $this->sendEmail(
+            $order->getUser(),
+            'receipt',
+            array(
+                'date' => $order->getCreatedAt()->format('M j, Y'),
+                'amout' => '$9.00', // TODO move to config file and add correct currency formatting
+                'number' => $order->getAuthorize()->getTransactionId(),
             )
         );
     }
