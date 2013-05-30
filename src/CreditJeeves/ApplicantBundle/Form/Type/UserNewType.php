@@ -26,16 +26,16 @@ class UserNewType extends AbstractType //UserType
             'text',
             array(
                 'label' => 'Name',
-                'constraints' => array(
-                    new Length(
-                        array(
-                        'min' => 3,
-                        'max' => 255,
-                        'minMessage' => 'error.user.first_name.short',
-                        'maxMessage' => 'error.user.first_name.long'
-                        )
-                    ),
-                ),
+//                 'constraints' => array(
+//                     new Length(
+//                         array(
+//                         'min' => 3,
+//                         'max' => 255,
+//                         'minMessage' => 'error.user.first_name.short',
+//                         'maxMessage' => 'error.user.first_name.long'
+//                         )
+//                     ),
+//                 ),
             )
         );
         $builder->add(
@@ -52,16 +52,16 @@ class UserNewType extends AbstractType //UserType
             'text',
             array(
                 'label' => '',
-                'constraints' => array(
-                    new Length(
-                        array(
-                        'min' => 3,
-                        'max' => 255,
-                        'minMessage' => 'error.user.last_name.short',
-                        'maxMessage' => 'error.user.last_name.long'
-                        )
-                    ),
-                ),
+//                 'constraints' => array(
+//                     new Length(
+//                         array(
+//                         'min' => 3,
+//                         'max' => 255,
+//                         'minMessage' => 'error.user.last_name.short',
+//                         'maxMessage' => 'error.user.last_name.long'
+//                         )
+//                     ),
+//                 ),
             )
         );
         $builder->add(
@@ -158,11 +158,10 @@ class UserNewType extends AbstractType //UserType
                 'label' => '',
                 'data' => 0,
                 'mapped' => false,
-                
                 'constraints' => new True(
                     array(
-                            'message' => 'Please accept the Terms and conditions in order to register',
-                            'groups' => 'registration_new'
+                            'message' => 'error.user.tos',
+                            'groups' => 'registration_tos'
                         )
                     ),
                 )
@@ -174,8 +173,11 @@ class UserNewType extends AbstractType //UserType
         $resolver->setDefaults(
             array(
                 'data_class' => 'CreditJeeves\DataBundle\Entity\User',
-                'cascade_validation' => true,
-                'validation_groups' => array('registration_new'),
+                'validation_groups' => array(
+                    'registration_tos',
+                    'user_profile',
+                    'user_address',
+                ),
             )
         );
     }

@@ -33,7 +33,8 @@ class UserInvitePasswordType extends AbstractType
                 'mapped' => false,
                 'constraints' => new True(
                     array(
-                        'message' => 'error.user.tos'
+                        'message' => 'error.user.tos',
+                        'groups' => 'registration_tos'
                     )
                 ),
             )
@@ -45,6 +46,9 @@ class UserInvitePasswordType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'validation_groups' => array(
+                    'registration_tos'
+                ),
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token
