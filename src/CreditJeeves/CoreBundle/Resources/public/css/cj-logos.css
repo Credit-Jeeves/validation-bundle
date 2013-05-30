@@ -1,0 +1,7 @@
+.site-logo {
+    background-image: url("/bundles/core/images/logo/cj-logo.png");
+    background-position: 10px center;
+    float: left;
+    height: 110px;
+    width: 338px;
+}
