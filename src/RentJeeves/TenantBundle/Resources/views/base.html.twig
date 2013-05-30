@@ -16,7 +16,7 @@
     <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/ad-creditcards.css') }}" rel="stylesheet" type="text/css" />
     
-    <link href="{{ asset('bundles/core/css/cj-logos.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/rj-logos.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/check.css') }}" rel="stylesheet" type="text/css" />
@@ -32,7 +32,7 @@
 
 {% block tabs %}
     <div class="top-nav">
-    {{ knp_menu_render('ApplicantBundle:Builder:mainMenu', { 'template': 'ApplicantBundle:Menu:applicant_tabs.html.twig' }) }}
+    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': 'TenantBundle:Menu:applicant_tabs.html.twig' }) }}
     </div>
 {% endblock %}
 

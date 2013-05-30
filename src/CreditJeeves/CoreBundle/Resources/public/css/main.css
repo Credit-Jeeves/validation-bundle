@@ -94,13 +94,6 @@ h5 {
   text-align: center;
 }
 
-.site-logo {
-    background-image: url("/bundles/core/images/logo/logo.png");
-    background-position: 10px center;
-    float: left;
-    height: 110px;
-    width: 338px;
-}
 .info-block {
   float: right;
   margin-right: 30px;
