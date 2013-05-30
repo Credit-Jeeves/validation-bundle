@@ -82,7 +82,7 @@ class BuyReportCase extends BaseTestCase
      */
     public function authorizeNetAim()
     {
-//        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('selenium2');
         $this->load($this->fixtures, false);
 
         $this->login('emilio@example.com', 'pass');
@@ -96,28 +96,29 @@ class BuyReportCase extends BaseTestCase
         $this->assertCount(4, $form->findAll('css', '.error_list'), "Number of errors is wrong");
 
         $formData = array(
-            'authorize_net_aim_card' => '0005105105105100',
-            'authorize_net_aim_csc' => '000',
-            'authorize_net_aim_expiration_month' => date('n'),
-            'authorize_net_aim_expiration_year' => date('Y'),
+            'order_authorize_authorize_card_number' => '0005105105105100',
+            'order_authorize_authorize_card_csc' => '000',
+            'order_authorize_authorize_card_expiration_date_month' => date('n'),
+            'order_authorize_authorize_card_expiration_date_year' => date('Y'),
         );
 
         // Fake data: card number
         $this->fillForm($form, $formData);
         $form->pressButton('buy-report-form-submit');
 
-        $this->assertNotNull($globalErrors = $form->findAll('css', '.global_errors li'));
+        $this->assertNotNull($globalErrors = $form->findAll('css', '.flash-error li'));
         $this->assertCount(1, $globalErrors);
         $this->assertEquals(
-            'authorize-net-aim-error-main-message-3-authorize-net-aim-error-message-6-' . sfConfig::get(
-                'app_support_email'
-            ),
+            'authorize-net-aim-error-main-message-3-authorize-net-aim-error-message-6-' .
+            static::getContainer()->getParameter('support_email'),
             $globalErrors[0]->getText()
         );
-        $formData['authorize_net_aim_card'] = '4111111111111111';
+        $formData['order_authorize_authorize_card_number'] = '4111111111111111';
         $this->fillForm($form, $formData);
         $form->pressButton('buy-report-form-submit');
 
+        $this->markTestIncomplete('Finish');
+        
         $this->session->wait(
             $this->timeout + 30000,
             "jQuery('#main .summary').children().length > 0"
