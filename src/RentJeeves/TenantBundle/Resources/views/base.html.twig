@@ -1,0 +1,41 @@
+{% extends "CoreBundle::base.html.twig" %}
+
+{% block stylesheets %}
+    <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/report.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/tradelines-history.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/credit-summary.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/score.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/credit-balance.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/account-status.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/goods.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/inquiries.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/automotive-details.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/footer.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/component/css/ad-creditcards.css') }}" rel="stylesheet" type="text/css" />
+    
+    <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/check.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/checkout/css/checkout.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block google_api %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart", "gauge"]});
+    </script>
+{% endblock %}
+
+{% block tabs %}
+    <div class="top-nav">
+    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': 'TenantBundle:Menu:applicant_tabs.html.twig' }) }}
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {{ render(controller('ComponentBundle:Footer:index')) }}
+{% endblock %}
+
