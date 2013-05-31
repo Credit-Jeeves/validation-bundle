@@ -395,7 +395,19 @@ abstract class User extends BaseUser
                 return array('ROLE_DEALER');
                 break;
             case 'admin':
-                return array('ROLE_USER', 'ROLE_DEALER', 'ROLE_ADMIN');
+                return array(
+                    'ROLE_USER',
+                    'ROLE_DEALER',
+                    'ROLE_ADMIN',
+                    'ROLE_TENANT',
+                    'ROLE_LANDLORD'
+                );
+                break;
+            case 'tenant':
+                return array('ROLE_TENANT');
+                break;
+            case 'landlord':
+                return array('ROLE_LANDLORD');
                 break;
         }
     }

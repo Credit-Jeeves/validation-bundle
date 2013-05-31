@@ -49,6 +49,14 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 $this->container->get('core.session.admin')->setUser($User);
                 $url = $this->container->get('router')->generate('sonata_admin_dashboard');
                 break;
+            case 'tenant':
+                $this->container->get('core.session.tenant')->setUser($User);
+                $url = $this->container->get('router')->generate('tenant_homepage');
+                break;
+            case 'landlord':
+                $this->container->get('core.session.landlord')->setUser($User);
+                $url = $this->container->get('router')->generate('landlord_homepage');
+                break;
         }
         $response = new RedirectResponse($url);
         return $response;
