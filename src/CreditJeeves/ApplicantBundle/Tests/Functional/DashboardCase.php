@@ -28,7 +28,6 @@ class DashboardCase extends BaseTestCase
     public function userDashboardScore()
     {
         $this->load($this->fixtures, true);
-        $this->setDefaultSession('goutte');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($score = $this->page->find('css', '.score-current'));
         $this->assertEquals(530, $score->getText(), 'Wrong score');
@@ -217,5 +216,57 @@ class DashboardCase extends BaseTestCase
         $this->assertCount(1, $incentives, 'Wrong undo links');
         $this->logout();
         $this->setDefaultSession('goutte');
+    }
+
+    /**
+     * Good, and our customer would visit the first page
+     *
+     * @depends userDashboardScore
+     * @test
+     */
+    public function getReportPrequalAndAutoSimulation()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load($this->fixtures, true);
+        $this->login('marion@example.com', 'pass');
+        $this->session->wait($this->timeout + 10000, "jQuery('#action_plan_page .score-column').children().length > 0");
+        $this->assertNotNull($score = $this->page->find('css', '#action_plan_page .score-column .score-current'));
+        $this->assertEquals(535, $score->getText(), 'Wrong score');
+        $this->assertNotNull($score = $this->page->find('css', '#action_plan_page .score-column-target .score-target'));
+        $this->assertEquals(600, $score->getText(), 'Wrong target score');
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#simulation-container .action-steps ul').children().length > 0"
+        );
+
+        $this->assertNotNull($steps = $this->page->findAll('css', '#simulation-container .action-steps ul li'));
+        $this->assertCount(1, $steps);
+        $this->assertNotNull($stepsTitle = $this->page->find('css', '#simulation-container #steps-title'));
+        $this->assertEquals('score-reach-title-message-0', $stepsTitle->getText());
+//        $this->logout();
+    }
+
+    /**
+     * @test
+     * @depends getReportPrequalAndAutoSimulation
+     */
+    public function manualSimulation()
+    {
+//        $this->load($this->fixtures, false);
+//        $this->login('emilio@example.com', 'pass');
+        $this->assertNotNull($form = $this->page->find('css', '#simulator_form'));
+        $this->fillForm($form, array('money' => '700'));
+        $this->assertNotNull($submit = $form->findButton('re-score'));
+        $submit->click();
+        $this->session->wait($this->timeout, "jQuery('#simulation-container .overlay').length > 0");
+        $this->session->wait($this->timeout, "jQuery('#simulation-container .overlay').length == 0");
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#simulation-container .action-steps ul').children().length > 0"
+        );
+
+        $this->assertNotNull($steps = $this->page->findAll('css', '#simulation-container .action-steps ul li'));
+        $this->assertCount(4, $steps);
+        $this->logout();
     }
 }
