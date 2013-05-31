@@ -1,0 +1,22 @@
+parameters:
+    support_email: help@creditjeeves.com
+    support_phone: (866)-976-6622
+
+    email_from: support@creditjeeves.com
+    email_name: Credit Jeeves
+    email_admins:
+        - alex.emelyanov.ua@gmail.com
+        - darryl@creditjeeves.com
+
+    date_short: 'M j, Y'
+    date_full: 'F j, Y'
+
+    external_urls:
+        main_site: 'www.creditjeeves.com'
+        user_voice: 'creditjeeves.uservoice.com'
+
+    experian.atb:
+        wsdl_url: '%data.dir%/wsdl/ATBWebService.wsdl'
+        location: 'http://stg.creditjeeves.com:8080/'
+        logging: %experian.logging%
+        logs_dir: '%kernel.logs_dir%'
