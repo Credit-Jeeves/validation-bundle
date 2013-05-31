@@ -54,9 +54,9 @@ class InviteCase extends BaseTestCase
             array(
                 'creditjeeves_applicantbundle_newpasswordtype_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_newpasswordtype_password_Retype' => 'pass',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_day' => '1', //'०१',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_month' => 'Jan', //'०१',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_year' => '1937', //'१९३७',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_day' => '1', //'01',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_month' => 'Jan', //'01',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_year' => '1937',
             )
         );
         $submit->click();
@@ -68,7 +68,7 @@ class InviteCase extends BaseTestCase
      * @test
      * @depends userInvite
      */
-    public function userInviteBlaBla()
+    public function userInviteFull()
     {
         $this->session->visit($this->getUrl() . 'invite/TESTFULL');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
@@ -87,9 +87,9 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_usernewtype_state' => 'CA',
                 'creditjeeves_applicantbundle_usernewtype_zip' => '91605',
                 'creditjeeves_applicantbundle_usernewtype_phone' => '8189976080',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '1', //'०१',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan', //'०१',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940', //'१९४०',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '1', //'01',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan', // '01',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940',
             )
         );
         $this->assertNotNull(
@@ -135,6 +135,14 @@ class InviteCase extends BaseTestCase
             $form,
             array(
                 'creditjeeves_applicantbundle_usernewtype_ssn_ssn3' => '6977',
+            )
+        );
+        $submit->click();
+        $this->fillForm(
+            $form,
+            array(
+                'creditjeeves_applicantbundle_usernewtype_password_Password' => 'pass',
+                'creditjeeves_applicantbundle_usernewtype_password_Retype' => 'pass',
             )
         );
         $this->assertNotNull($check = $this->page->findAll('css', 'form .checkbox-off'));

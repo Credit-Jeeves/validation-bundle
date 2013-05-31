@@ -35,9 +35,9 @@
             {% endif %}
             <div class="row-20"></div>
                 <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }}>
-                    {% if form_errors(form.tos) %}
+                    {% if form_errors(form) | length > 0 %}
                     <div class="flash-error">
-                        {{ form_errors(form.tos) }}
+                        {{ form_errors(form) }}
                     </div>
                     {% endif %}
                     <fieldset>

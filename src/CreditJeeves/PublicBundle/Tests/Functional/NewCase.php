@@ -119,6 +119,7 @@ class NewCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($submit = $form->findButton('user.email.again'));
         $submit->click();
+        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
