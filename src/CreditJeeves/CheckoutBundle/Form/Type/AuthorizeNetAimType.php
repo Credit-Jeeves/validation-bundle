@@ -2,6 +2,7 @@
 namespace CreditJeeves\CheckoutBundle\Form\Type;
 
 use CreditJeeves\CheckoutBundle\Form\Type\UserType;
+use CreditJeeves\CoreBundle\Form\Widget\MonthYearType;
 use CreditJeeves\DataBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,19 +15,9 @@ class AuthorizeNetAimType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $months = array_combine(
-            array('') + range(0, 12),
-            array('Month') + range(0, 12)
-        );
-        $years = array_combine(
-            array('') + range(date('Y') - 1, date('Y') + 12),
-            array('Year') + range(date('Y') - 1, date('Y') + 12)
-        );
-
-
         $builder
             ->add(
-                'card_number',
+                'card_num',
                 'text',
                 array(
                     'constraints' => array(
@@ -35,7 +26,7 @@ class AuthorizeNetAimType extends AbstractType
                 )
             )
             ->add(
-                'card_csc',
+                'card_code',
                 'text',
                 array(
                     'constraints' => array(
@@ -44,21 +35,19 @@ class AuthorizeNetAimType extends AbstractType
                 )
             )
             ->add(
-                'card_expiration_date_month',
-                'choice',
+                'exp_date',
+                new MonthYearType(),
                 array(
-                    'choices' => $months,
-                    'constraints' => array(
-                        new NotBlank(),
-                    )
-                )
-            )
-            ->add(
-                'card_expiration_date_year',
-                'choice',
-                array(
-                    'label'  => false,
-                    'choices' => $years,
+                    'input' => 'string',
+                    'format' => 'MMyyyy-d',
+                    'years' => range(date('Y'), date('Y') + 12),
+                    'months' => range(1, 12),
+                    'days' => array(1),
+                    'empty_value' => array(
+                        'year' => 'Year',
+                        'month' => 'Month',
+                        'day' => 1,
+                    ),
                     'constraints' => array(
                         new NotBlank(),
                     )
@@ -72,6 +61,7 @@ class AuthorizeNetAimType extends AbstractType
             array(
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
+                'data_class' => 'CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim',
             )
         );
     }

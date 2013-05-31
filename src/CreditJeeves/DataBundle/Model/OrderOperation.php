@@ -30,6 +30,18 @@ class OrderOperation
      */
     private $cjOperationId;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Order", inversedBy="orderOperations")
+     * @ORM\JoinColumn(name="cj_order_id", referencedColumnName="id")
+     */
+    protected $order;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Operation", inversedBy="orderOperations")
+     * @ORM\JoinColumn(name="cj_operation_id", referencedColumnName="id")
+     */
+    protected $operation;
+
 
     /**
      * Get id
@@ -62,6 +74,24 @@ class OrderOperation
     public function getCjOrderId()
     {
         return $this->cjOrderId;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\Order $order
+     * @return CheckoutAuthorizeNetAim
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+        return $this;
+    }
+
+    /**
+     * @return \CreditJeeves\DataBundle\Entity\Order
+     */
+    public function getOrder()
+    {
+        return $this->order;
     }
 
     /**

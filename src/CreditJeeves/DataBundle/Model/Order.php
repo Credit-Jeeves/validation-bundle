@@ -1,6 +1,8 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,6 +38,44 @@ class Order
     protected $updated_at;
 
     /**
+     * @var CheckoutAuthorizeNetAim
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim",
+     *     mappedBy="order",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     *
+     * @ORM\JoinColumn(name="id", referencedColumnName="cj_order_id")
+     */
+    protected $authorize;
+
+//    /**
+//     * @var ArrayCollection
+//     *
+//     * @ORM\OneToMany(
+//     *     targetEntity="OrderOperation",
+//     *     mappedBy="order",
+//     *     cascade={"persist", "remove", "merge"},
+//     *     orphanRemoval=true
+//     * )
+//     */
+//    protected $orderOperations;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Operation", inversedBy="orders")
+     * @ORM\JoinTable(
+     *      name="cj_order_operation",
+     *      joinColumns={@ORM\JoinColumn(name="cj_order_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="cj_operation_id", referencedColumnName="id")}
+     * )
+     */
+    protected $operations;
+
+    /**
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="orders")
      * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
@@ -43,6 +83,8 @@ class Order
 
     public function __construct()
     {
+//        $this->orderOperations = new ArrayCollection();
+        $this->operations = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
 
@@ -122,7 +164,7 @@ class Order
      */
     public function getCreatedAt()
     {
-        return $this->created_At;
+        return $this->created_at;
     }
 
     /**
@@ -169,5 +211,51 @@ class Order
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize
+     */
+    public function setAuthorize(\CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim $authorize = null)
+    {
+        $this->authorize = $authorize;
+    }
+
+    public function getAuthorize()
+    {
+        return $this->authorize;
+    }
+
+    /**
+     * Add order's operation
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Operation $orderOperations
+     * @return User
+     */
+    public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    {
+        $this->operations[] = $operation;
+
+        return $this;
+    }
+
+    /**
+     * Remove scores
+     *
+     * @param \CreditJeeves\DataBundle\Entity\OrderOperation $operation
+     */
+    public function removeOperation(\CreditJeeves\DataBundle\Entity\OrderOperation $operation)
+    {
+        $this->orderOperations->removeElement($operation);
+    }
+
+    /**
+     * Get scores
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOperations()
+    {
+        return $this->operations;
     }
 }

@@ -19,6 +19,18 @@ class ReportD2c extends Report
      */
     protected $id;
 
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
+     *     mappedBy="reportD2c",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $operation;
+
+
     /**
      * Get id
      *
