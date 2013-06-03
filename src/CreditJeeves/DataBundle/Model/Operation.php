@@ -1,6 +1,8 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\OperationType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,7 +24,7 @@ class Operation
      *
      * @ORM\Column(name="type", type="OperationType")
      */
-    protected $type;
+    protected $type = OperationType::REPORT;
 
     /**
      * @var integer
@@ -37,6 +39,43 @@ class Operation
      * @ORM\Column(name="created_at", type="datetime")
      */
     protected $createdAt;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Order", mappedBy="operations")
+     */
+    protected $orders;
+
+//    /**
+//     * @var ArrayCollection
+//     *
+//     * @ORM\OneToMany(
+//     *     targetEntity="OrderOperation",
+//     *     mappedBy="operation",
+//     *     cascade={"persist", "remove", "merge"},
+//     *     orphanRemoval=true
+//     * )
+//     */
+//    protected $orderOperations;
+
+    /**
+     * @var \CreditJeeves\DataBundle\Entity\ReportD2c
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
+     *     inversedBy="operation"
+     * )
+     *
+     * @ORM\JoinColumn(name="cj_applicant_report_id", referencedColumnName="id")
+     */
+    protected $reportD2c;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+        $this->orders = new ArrayCollection();
+    }
 
 
     /**
@@ -116,5 +155,61 @@ class Operation
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Add reportsD2c
+     *
+     * @param \CreditJeeves\DataBundle\Entity\ReportD2c $reportD2c
+     * @return User
+     */
+    public function setReportD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportD2c)
+    {
+        $this->reportD2c = $reportD2c;
+
+        return $this;
+    }
+
+    /**
+     * Get reportsD2c
+     *
+     * @return \CreditJeeves\DataBundle\Entity\ReportD2c
+     */
+    public function getReportD2c()
+    {
+        return $this->reportD2c;
+    }
+
+    /**
+     * Add orders
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Order $orders
+     * @return User
+     */
+    public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
+    {
+        $this->orders[] = $orders;
+
+        return $this;
+    }
+
+    /**
+     * Remove orders
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Order $orders
+     */
+    public function removeOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
+    {
+        $this->orders->removeElement($orders);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
     }
 }

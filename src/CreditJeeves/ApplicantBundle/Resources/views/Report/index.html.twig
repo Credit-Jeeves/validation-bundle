@@ -3,34 +3,36 @@
 {% block title 'common.applicant.dashboard' | trans  %}
 
 {% block content %}
-    <div class="column-middle floatleft">
-        {{ render(controller('ComponentBundle:PersonalInfo:index', {'Report': Report})) }}
-    </div>
-    <div class="column-small floatright">
-        {{ render(controller('ComponentBundle:Questions:index')) }}
-    </div>
-    <div class="clearboth"></div>
-    <div class="row-20"></div>
-    <div class="column-large">
-        {{ render(controller('ComponentBundle:ReportSummary:index', {'Report': Report})) }}
+    <div id="report_page">
+        <div class="column-middle floatleft">
+            {{ render(controller('ComponentBundle:PersonalInfo:index', {'Report': Report})) }}
+        </div>
+        <div class="column-small floatright">
+            {{ render(controller('ComponentBundle:Questions:index')) }}
+        </div>
+        <div class="clearboth"></div>
         <div class="row-20"></div>
-        {{ render(controller('ComponentBundle:TradelinesHistory:index', {'Report': Report})) }}
-        {{ render(controller('ComponentBundle:AutomotiveDetails:index', {'Report': Report})) }}
-        {{ render(controller('ComponentBundle:RegularInquiries:index', {'Report': Report})) }}
-        {{ render(controller('ComponentBundle:PublicRecords:index', {'Report': Report})) }}
-        {{ render(controller('ComponentBundle:Messages:index', {'Report': Report})) }}
+        <div class="column-large">
+            {{ render(controller('ComponentBundle:ReportSummary:index', {'Report': Report})) }}
+            <div class="row-20"></div>
+            {{ render(controller('ComponentBundle:TradelinesHistory:index', {'Report': Report})) }}
+            {{ render(controller('ComponentBundle:AutomotiveDetails:index', {'Report': Report})) }}
+            {{ render(controller('ComponentBundle:RegularInquiries:index', {'Report': Report})) }}
+            {{ render(controller('ComponentBundle:PublicRecords:index', {'Report': Report})) }}
+            {{ render(controller('ComponentBundle:Messages:index', {'Report': Report})) }}
+            <div class="row-20"></div>
+            {{ render(controller('ComponentBundle:Rights:index')) }}
+        </div>
         <div class="row-20"></div>
-        {{ render(controller('ComponentBundle:Rights:index')) }}
+        <div class="next-tips">
+            <h3>What&rsquo;s next?</h3>
+            <span>If you have any questions, please contact us immediately:</span><br>
+            <a href="mailto: {{ sSupportEmail }}">{{ sSupportEmail }}</a>&nbsp;|
+            <b>{{ sSupportPhone }}</b>
+        </div>
+        <div class="button-print">
+            <button  onclick="window.print()" class="green button x-large">Print This Report</button>
+        </div>
+        <div class="clearboth"></div>
     </div>
-    <div class="row-20"></div>
-    <div class="next-tips">
-        <h3>What&rsquo;s next?</h3>
-        <span>If you have any questions, please contact us immediately:</span><br>
-        <a href="mailto: {{ sSupportEmail }}">{{ sSupportEmail }}</a>&nbsp;|
-        <b>{{ sSupportPhone }}</b>
-    </div>
-    <div class="button-print">
-        <button  onclick="window.print()" class="green button x-large">Print This Report</button>
-    </div>
-    <div class="clearboth"></div>
 {% endblock %}

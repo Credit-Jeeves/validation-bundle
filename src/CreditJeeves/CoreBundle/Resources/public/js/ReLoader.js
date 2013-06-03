@@ -17,7 +17,7 @@ function ReLoader(url, redirect) {
                     window.location.href = status.url;
                     return false;
                 }
-                if (status == 'finished') {
+                if ('finished' == status) {
                     if (!redirect) {
                         location.reload();
                     } else {
@@ -25,9 +25,9 @@ function ReLoader(url, redirect) {
                         return true;
                     }
                     return false;
+                } else if ('processing' != status && 'warning' != status ) {
+                    return false;
                 }
-            },
-            complete: function () {
                 timeoutId = setTimeout(checkStatus, nDelay);
             }
         });

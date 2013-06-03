@@ -2,6 +2,9 @@
 
 namespace CreditJeeves\ApplicantBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -16,15 +19,29 @@ class ReportController extends Controller
      */
     public function indexAction()
     {
-        $Report = $this->get('core.session.applicant')->getUser()->getReportsD2c()->last();
-        $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
-        $sSupportEmail = $this->container->getParameter('support_email');
-        $sSupportPhone = $this->container->getParameter('support_phone');
+        // TODO add check for admin
+
+        /* @var User $User */
+        $User = $this->get('core.session.applicant')->getUser();
+
+//        $Report = $User->getReportsD2c()->last();
+
+        /** @var Order $Order */
+        if ($Order = $User->getOrders()->last()) {
+            /** @var Operation $Operation */
+            if ($Operation = $Order->getOperations()->last()) {
+                $Report = $Operation->getReportD2c();
+            } else {
+                return $this->redirect($this->generateUrl('core_report_get_d2c'));
+            }
+        } else {
+            return $this->createNotFoundException('Order does not found');
+        }
+
         return array(
-            'sEmail' => $sEmail,
             'Report' => $Report,
-            'sSupportEmail' => $sSupportEmail,
-            'sSupportPhone' => $sSupportPhone,
+            'sSupportEmail' => $this->container->getParameter('support_email'),
+            'sSupportPhone' => $this->container->getParameter('support_phone'),
         );
     }
 }

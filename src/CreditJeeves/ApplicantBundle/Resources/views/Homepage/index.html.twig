@@ -9,33 +9,35 @@
 {% endblock %}
 
 {% block content %}
-    <div class="column-middle floatleft">
-        {{ render(controller('ComponentBundle:Score:index', {'Lead': Lead})) }}
-    </div>
-    <div class="column-small floatright">
-        {{ render(controller('ComponentBundle:Target:index', {'Lead': Lead})) }}
-    </div>
-    <div class="clearboth"></div>
-    <div class="column-large">
-        <div class="row-20"></div>
-        {% if isSuccess %}
-            {{ render(controller('ComponentBundle:Success:index', {'Lead': Lead})) }}
+    <div id="action_plan_page">
+        <div class="column-middle floatleft">
+            {{ render(controller('ComponentBundle:Score:index', {'Lead': Lead})) }}
+        </div>
+        <div class="column-small floatright">
+            {{ render(controller('ComponentBundle:Target:index', {'Lead': Lead})) }}
+        </div>
+        <div class="clearboth"></div>
+        <div class="column-large">
             <div class="row-20"></div>
-        {% endif %}
-        {{ render(controller('ExperianBundle:Atb:simulation' )) }}
+            {% if isSuccess %}
+                {{ render(controller('ComponentBundle:Success:index', {'Lead': Lead})) }}
+                <div class="row-20"></div>
+            {% endif %}
+            {{ render(controller('ExperianBundle:Atb:simulation' )) }}
+            <div class="row-20"></div>
+            {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
+            <div class="row-20"></div>
+            {{ render(controller('ComponentBundle:Incentives:index', {'Lead': Lead})) }}
+        </div>
         <div class="row-20"></div>
-        {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
-        <div class="row-20"></div>
-        {{ render(controller('ComponentBundle:Incentives:index', {'Lead': Lead})) }}
+        <div class="column-middle floatleft">
+            {{ render(controller('ComponentBundle:AccountStatus:index', {'Report': Report})) }}
+        </div>
+        <div class="column-small floatright">
+            {{ render(controller('ComponentBundle:DidYouKnow:index')) }}
+        </div>
+        <div class="clearboth"></div>
     </div>
-    <div class="row-20"></div>
-    <div class="column-middle floatleft">
-        {{ render(controller('ComponentBundle:AccountStatus:index', {'Report': Report})) }}
-    </div>
-    <div class="column-small floatright">
-        {{ render(controller('ComponentBundle:DidYouKnow:index')) }}
-    </div>
-    <div class="clearboth"></div>
 {% endblock %}
 
 {% block javascripts %}

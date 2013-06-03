@@ -24,6 +24,11 @@ class DataBundle extends Bundle
             Type::addType('AtbType', 'CreditJeeves\DataBundle\Enum\AtbType');
             Type::addType('OrderStatus', 'CreditJeeves\DataBundle\Enum\OrderStatus');
             Type::addType('OperationType', 'CreditJeeves\DataBundle\Enum\OperationType');
+
+            $this->container->get('doctrine.orm.default_entity_manager')
+                ->getConnection()
+                ->getDatabasePlatform()
+                ->registerDoctrineTypeMapping('enum', 'string');
         }
     }
 }

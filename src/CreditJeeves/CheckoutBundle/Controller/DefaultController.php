@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\CheckoutBundle\Controller;
 
+use CreditJeeves\CheckoutBundle\Form\Type\AuthorizeNetAimType;
 use CreditJeeves\CheckoutBundle\Form\Type\OrderAuthorizeType;
 use CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -53,13 +54,26 @@ class DefaultController extends Controller
             $this->form->bind($request);
             if ($this->form->isValid()) {
                 $this->order->setStatus(OrderStatus::NEWONE);
+                $authorize = $this->order->getAuthorize();
+                $authorize->setOrder($this->order);
+                $authorize->setFirstName($this->form->getData()->getUser()->getFirstName());
+                $authorize->setLastName($this->form->getData()->getUser()->getLastName());
+                $authorize->setAddress($this->form->getData()->getUser()->getStreetAddress1());
+                $authorize->setCity($this->form->getData()->getUser()->getCity());
+                $authorize->setState($this->form->getData()->getUser()->getState());
+                $authorize->setZip($this->form->getData()->getUser()->getZip());
+                $authorize->setAmount('9.00');
+                $this->order->setAuthorize(); // TODO Fix it
                 $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
                 $this->get('doctrine.orm.default_entity_manager')->flush();
 
-                if ($this->process($this->form->getData())) {
+                if ($this->process($authorize)) {
                     $this->order->setStatus(OrderStatus::COMPLETE);
                     $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
                     $this->get('doctrine.orm.default_entity_manager')->flush();
+
+                    $this->order->setAuthorize($authorize); // TODO Fix it
+                    $this->get('creditjeeves.mailer')->sendReceipt($this->order);
                     return $this->redirect($this->generateUrl('applicant_report'));
                 }
             }
@@ -70,64 +84,34 @@ class DefaultController extends Controller
         );
     }
 
-    protected function process(Order $data)
+    protected function process(CheckoutAuthorizeNetAim $authorize)
     {
-        $authorize = $data->getAuthorize();
-        $paymentDetails = new PaymentDetails();
-        $paymentDetails->setFirstName($data->getUser()->getFirstName());
-        $paymentDetails->setLastName($data->getUser()->getLastName());
-        $paymentDetails->setAddress($data->getUser()->getStreetAddress1());
-        $paymentDetails->setCity($data->getUser()->getCity());
-        $paymentDetails->setState($data->getUser()->getState());
-        $paymentDetails->setZip($data->getUser()->getZip());
-        $paymentDetails->setCardNum($authorize['card_number']);
-        $paymentDetails->setCardCode($authorize['card_csc']);
-        $paymentDetails->setExpDate(
-            (2==strlen($authorize['card_expiration_date_month'])?
-                $authorize['card_expiration_date_month']:
-                '0' . $authorize['card_expiration_date_month']) .
-            $authorize['card_expiration_date_year']
-        );
-        $paymentDetails->setAmount('9.00');
+
 //        $model->setCurrency('USD');
 
         $context = $this->getPayum()->getContext('simple_purchase_authorize_net');
 
-        $captureRequest = new CaptureRequest($paymentDetails);
+        $captureRequest = new CaptureRequest($authorize);
         $context->getPayment()->execute($captureRequest);
 
-        $authorize = new CheckoutAuthorizeNetAim();
-        $authorize->setOrder($this->order);
-        $authorize->setCode($paymentDetails->getResponseCode());
-        $authorize->setSubcode($paymentDetails->getResponseSubcode());
-        $authorize->setReasonCode($paymentDetails->getResponseReasonCode());
-        $authorize->setReasonText($paymentDetails->getResponseReasonText());
-        $authorize->setAuthorizationCode($paymentDetails->getAuthorizationCode());
-        $authorize->setAvs($paymentDetails->getAvsResponse());
-        $authorize->setTransactionId($paymentDetails->getTransactionId());
-        $authorize->setInvoiceNumber($paymentDetails->getInvoiceNumber());
-        $authorize->setDescription($paymentDetails->getDescription());
-        $authorize->setMethod($paymentDetails->getMethod());
-        $authorize->setTransactionType($paymentDetails->getTransactionType());
-        $authorize->setMd5Hash($paymentDetails->getMd5Hash());
-        $authorize->setPurchaseOrderNumber($paymentDetails->getPurchaseOrderNumber());
-        $authorize->setCardCode($paymentDetails->getCardCodeResponse());
-        $authorize->setCardholderAuthenticationValue($paymentDetails->getCardholderAuthenticationValue());
-        $authorize->setSplitTenderId($paymentDetails->getSplitTenderId());
+//        var_dump($paymentDetails);die('OK');
 
+        $authorize = $captureRequest->getModel();
 
         $this->get('doctrine.orm.default_entity_manager')->persist($authorize);
         $this->get('doctrine.orm.default_entity_manager')->flush(); // TODO remove and check
 
-        if (\AuthorizeNetAIM_Response::APPROVED != $paymentDetails->getResponseCode()) {
-            $code = $paymentDetails->getResponseReasonCode();
+
+
+        if (\AuthorizeNetAIM_Response::APPROVED != $authorize->getResponseCode()) {
+            $code = $authorize->getResponseReasonCode();
             $message = '';
             if (in_array($code, array(6, 37, 7, 8, 27, 127, 290, 78, 44))) {
                 $message = "authorize-net-aim-error-message-{$code}";
             }
 
             $baseMessage = 'authorize-net-aim-error-main-message-' .
-                $paymentDetails->getResponseCode() . '-%MESSAGE%-%SUPPORT_EMAIL%';
+                $authorize->getResponseCode() . '-%MESSAGE%-%SUPPORT_EMAIL%';
             $this->form->addError(
                 new FormError(
                     $this->get('translator.default')->trans(
@@ -142,7 +126,6 @@ class DefaultController extends Controller
             );
             return false;
         }
-
         return true;
     }
 

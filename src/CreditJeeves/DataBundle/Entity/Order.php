@@ -11,23 +11,11 @@ use CreditJeeves\DataBundle\Model\Order as BaseOrder;
  */
 class Order extends BaseOrder
 {
-    protected $authorize;
-
     /**
      * @ORM\PrePersist
      */
     public function prePersist()
     {
         $this->updated_at = new \DateTime();
-    }
-
-    public function setAuthorize($authorize)
-    {
-        $this->authorize = $authorize;
-    }
-
-    public function getAuthorize()
-    {
-        return $this->authorize;
     }
 }
