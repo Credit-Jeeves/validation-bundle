@@ -1,11 +1,4 @@
-imports:
-    - { resource: parameters_dev_base.yml }
-
 parameters:
-    database_name: credit_jeeves2
-    database_user: credit_jeeves2
-    database_password: 'passw0rd'
-
     server: dev
-    server_name: cj2
-    mink.selenium2.wd_host: 'http://127.0.0.1:4444/wd/hub'
+    server_name: dev2.creditjeeves.com
+    mink.selenium2.wd_host: 'http://10.46.179.1:4444/wd/hub'

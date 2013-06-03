@@ -11,17 +11,8 @@ imports:
     - { resource: ../base/assetic.yml }
     - { resource: ../base/email.yml }
     - { resource: ../base/experian.yml }
+    - { resource: ../base/framework.yml }
 
 framework:
-    translator:      { fallback: en }
-    secret:          50d18dbac33bbebe9fdd694d1d06d55499ce6d9v
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
-        strict_requirements: %kernel.debug%
-    form:            true
-    csrf_protection: true
-    validation:      { enable_annotations: true }
-    templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
-    default_locale:  "en"
-    trusted_proxies: ~
-    session:         ~

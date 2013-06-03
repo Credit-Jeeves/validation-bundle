@@ -1,6 +1,3 @@
-imports:
-    - { resource: parameters_dev_base.yml }
-
 parameters:
     database_name: credit_jeeves2
     database_user: credit_jeeves2

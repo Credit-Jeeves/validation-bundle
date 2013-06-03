@@ -1,8 +1,8 @@
 imports:
-    - { resource: parameters_base.yml }
-    - { resource: parameters.yml }
-    - { resource: security.yml }
-    - { resource: ../base/parameters.yml }
+    - { resource: ../base/parameters.yml } #different for each application
+    - { resource: parameters_base.yml } #different for each application
+    - { resource: parameters.yml } # would be generated from parameters_env.yml depends on enviroment
+    - { resource: security.yml } #different for each application
     - { resource: ../base/fos.yml }
     - { resource: ../base/doctrine.yml }
     - { resource: ../base/jms.yml }
@@ -13,17 +13,8 @@ imports:
     - { resource: ../base/experian.yml }
     - { resource: ../base/payum.yml }
     - { resource: ../base/sonata.yml }
+    - { resource: ../base/framework.yml }
 
 framework:
-    translator:      { fallback: en }
-    secret:          50d18dbac33bbebe9fdd694d1d06d55499ce6d9v
     router:
         resource: "%kernel.root_dir%/config/cj/routing.yml"
-        strict_requirements: %kernel.debug%
-    form:            true
-    csrf_protection: true
-    validation:      { enable_annotations: true }
-    templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
-    default_locale:  "en"
-    trusted_proxies: ~
-    session:         ~

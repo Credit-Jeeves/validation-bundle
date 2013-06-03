@@ -4,7 +4,11 @@ parameters:
     database_host: 127.0.0.1
     database_driver: pdo_mysql
     database_port: null
+    database_name: credit_jeeves2
+    database_user: credit_jeeves2
+    database_password: 'passw0rd'
     mailer_transport: mail
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
+    mink.selenium2.wd_host: 'http://10.46.179.1:4444/wd/hub'
