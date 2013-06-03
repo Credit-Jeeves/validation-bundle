@@ -4,10 +4,10 @@ security:
             id: user.security.encoder.digest
 
     role_hierarchy:
-        ROLE_USER:     ROLE_USER
+#        ROLE_USER:     ROLE_USER
         ROLE_TENANR:   ROLE_TENANT
         ROLE_LANDLORD: ROLE_LANDLORD
-        ROLE_DEALER:   ROLE_DEALER
+#        ROLE_DEALER:   ROLE_DEALER
         ROLE_ADMIN:    ROLE_ADMIN
 
     providers:
@@ -38,10 +38,10 @@ security:
         - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/,         role: ROLE_ADMIN }
-        - { path: ^/dealer/,        role: ROLE_DEALER }
+#        - { path: ^/dealer/,        role: ROLE_DEALER }
         - { path: ^/landlord/,      role: ROLE_USER }
-        - { path: ^/tenant/,        role: ROLE_TENANT }
-        - { path: ^/,               role: ROLE_USER }
+#        - { path: ^/tenant/,        role: ROLE_TENANT }
+        - { path: ^/,               role: ROLE_TENANT }
         
 
 # We'll additional pages

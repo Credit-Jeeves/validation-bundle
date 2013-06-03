@@ -1,0 +1,10 @@
+parameters:
+    date_short: 'M j, Y'
+    date_full: 'F j, Y'
+    database_host: 127.0.0.1
+    database_driver: pdo_mysql
+    database_port: null
+    mailer_transport: mail
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null

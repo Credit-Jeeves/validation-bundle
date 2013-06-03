@@ -11,12 +11,14 @@ imports:
     - { resource: ../base/assetic.yml }
     - { resource: ../base/email.yml }
     - { resource: ../base/experian.yml }
+    - { resource: ../base/payum.yml }
+    - { resource: ../base/sonata.yml }
 
 framework:
     translator:      { fallback: en }
     secret:          50d18dbac33bbebe9fdd694d1d06d55499ce6d9v
     router:
-        resource: "%kernel.root_dir%/config/rj/routing.yml"
+        resource: "%kernel.root_dir%/config/cj/routing.yml"
         strict_requirements: %kernel.debug%
     form:            true
     csrf_protection: true

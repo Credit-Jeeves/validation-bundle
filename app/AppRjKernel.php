@@ -31,10 +31,10 @@ class AppRjKernel extends AppKernel
                 new Knp\Bundle\MenuBundle\KnpMenuBundle(),
                 new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
                 new Rj\EmailBundle\RjEmailBundle(),
-                new Sonata\AdminBundle\SonataAdminBundle(),
-                new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
-                new Sonata\jQueryBundle\SonatajQueryBundle(),
-                new Sonata\BlockBundle\SonataBlockBundle(),
+//                 new Sonata\AdminBundle\SonataAdminBundle(),
+//                 new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+//                 new Sonata\jQueryBundle\SonatajQueryBundle(),
+//                 new Sonata\BlockBundle\SonataBlockBundle(),
                 new Payum\Bundle\PayumBundle\PayumBundle(),
     
                 // Must be last in the list

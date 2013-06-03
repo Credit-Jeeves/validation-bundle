@@ -1,0 +1,17 @@
+jms_di_extra:
+    locations:
+        all_bundles: true
+    automatic_controller_injections:
+        method_calls:
+            setContainer: ["@service_container"]
+
+jms_security_extra:
+    secure_all_services: false
+    expressions: true
+
+payum:
+    contexts:
+        simple_purchase_authorize_net:
+            authorize_net_aim_payment:
+                api:
+                    options: %authorize_net%
