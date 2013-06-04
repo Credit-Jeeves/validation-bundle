@@ -61,6 +61,8 @@ class InviteController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $User = $form->getData();
+                $User->setPassword($this->container->get('user.security.encoder.digest')
+                    ->encodePassword($User->getPassword(), $User->getSalt()));
                 $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
                 if (!empty($sCurrentDob)) {
                     if ($sCurrentDob == $sFormDob) {

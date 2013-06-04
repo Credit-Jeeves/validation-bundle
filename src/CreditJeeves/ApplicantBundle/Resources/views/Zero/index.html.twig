@@ -1,15 +1,8 @@
-{% extends "ApplicantBundle::base.html.twig" %}
+{% extends "::base.html.twig" %}
 
 {% block title "appliant_dashboard_title"|trans %}
 
 {% block content %}
-    <div class="column-large">
-        <form method="post">
-            <input type="text" name="template" value="{{ sTemplate }}">
-            <input type="text" name="email" value="{{ sEmail }}">
-            <input type="submit" value="Send">
-        </form>
-    </div>
-    <div class="clearboth"></div>
+
 {% endblock %}
 

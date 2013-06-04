@@ -188,7 +188,7 @@ class User extends BaseUser
      */
     public function setPassword($password)
     {
-        $this->password = md5($password);
+        $this->password = $password;
     }
 
     public function copyPassword($password)

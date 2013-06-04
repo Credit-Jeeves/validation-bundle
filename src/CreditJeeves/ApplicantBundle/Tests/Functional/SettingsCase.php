@@ -121,16 +121,13 @@ class SettingsCase extends BaseTestCase
         $this->page->clickLink('tabs.settings');
         $this->page->clickLink('settings.remove');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->assertNotNull($submit = $form->findButton('common.remove'));
         $this->fillForm(
             $form,
             array(
                 'remove_password' => $this->password
             )
         );
-        $submit->click();
-        $this->login('emilio@example.com', $this->password);
-        $this->logout();
+        $form->pressButton('common.remove');
     }
 
     /**
