@@ -22,15 +22,14 @@ class ResettingCase extends BaseTestCase
 
     /**
      * @test
-     * @~expectedException \Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
     public function resettingPassword()
     {
-        $this->markTestIncomplete('Depends on FOS user bundle fixes');
-
+        $this->setDefaultSession('symfony');
+//        $this->setDefaultSession('selenium2');
         $this->load($this->fixtures, true);
-        $this->setDefaultSession('goutte');
         $this->session->visit($this->getUrl() . 'login');
+
         $this->page->clickLink('login.resetting.link');
 
         $form = $this->page->find('css', '#fos_user_resetting_request');
@@ -42,6 +41,16 @@ class ResettingCase extends BaseTestCase
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
         $this->assertEquals('resetting.check_email.title', $title->getText());
 
+    }
+
+    /**
+     * @test
+     * @depends resettingPassword
+     */
+    public function checkEmail()
+    {
+        $this->markTestIncomplete('TODO Finish');
+//        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
 
         $this->assertNotNull($links = $this->page->findAll('css', 'a'));
@@ -59,8 +68,17 @@ class ResettingCase extends BaseTestCase
             preg_match("/To reset your password - please visit ([^ ]*) /", $this->page->getText(), $matches)
         );
         $this->assertNotEmpty($matches[1]);
+//        $this->setDefaultSession('symfony');
+        $this->setDefaultSession('selenium2');
         $this->session->visit($matches[1]);
-
+//    }
+//
+//    /**
+//     * @test
+//     * @depends checkEmail
+//     */
+//    public function fillPassword()
+//    {
         $form = $this->page->find('css', '#fos_user_resetting_form');
         $this->assertNotNull($form);
 

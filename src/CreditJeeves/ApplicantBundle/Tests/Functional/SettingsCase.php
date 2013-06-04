@@ -18,8 +18,6 @@ class SettingsCase extends BaseTestCase
         '007_cj_applicant_score.yml',
         '010_cj_affiliate.yml',
         '013_cj_holding_account.yml',
-        '020_email.yml',
-        '021_email_translations.yml',
     );
 
     protected $password = '123123';
@@ -30,8 +28,8 @@ class SettingsCase extends BaseTestCase
     public function userChangePassword()
     {
         $this->load($this->fixtures, true);
+        $this->setDefaultSession('symfony');
         //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('goutte');
         $this->login('emilio@example.com', 'pass');
         $this->page->clickLink('tabs.settings');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
@@ -56,7 +54,6 @@ class SettingsCase extends BaseTestCase
      */
     public function userContactInformation()
     {
-        //$this->setDefaultSession('goutte');
         //$this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->page->clickLink('tabs.settings');
@@ -82,38 +79,33 @@ class SettingsCase extends BaseTestCase
      */
     public function userEmailSettings()
     {
-        $this->setDefaultSession('selenium2');
+//        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->page->clickLink('tabs.settings');
-        $this->session->wait(
-            $this->timeout + 1000,
-            "jQuery('.pod-small ul li').length > 0"
-        );
         $this->page->clickLink('settings.email');
-        $this->session->wait(
-            $this->timeout + 1000,
-            "jQuery('.pod-small ul li').length > 0"
-        );
+
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->assertNotNull($submit = $form->findButton('common.save'));
-        $this->assertNotNull($check = $this->page->findAll('css', '.checkbox-on'));
-        $this->assertCount(2, $check, 'Wrong number of checkboxes');
-        $check[0]->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('form .checkbox-off').length > 0"
+
+        $this->fillForm(
+            $form,
+            array(
+                'notification_score_changed_notification' => false,
+                'notification_offer_notification' => true,
+            )
         );
-        $this->assertNotNull($check = $this->page->findAll('css', '.checkbox-on'));
-        $this->assertCount(1, $check, 'Wrong number of checkboxes');
-        
-        $check[0]->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('form .checkbox-off').length > 1"
-        );
-        $submit->click();
+
+        $form->pressButton('common.save');
         $this->assertNotNull($notice = $this->page->find('css', '.flash-notice'));
         $this->assertEquals('Information has been updated', $notice->getText(), 'Wrong notice');
+
+        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('settings.email');
+
+        $this->assertNotNull($notifications = $form->find('css', '#notification_score_changed_notification'));
+        $this->assertFalse($notifications->isChecked());
+        $this->assertNotNull($offers = $form->find('css', '#notification_offer_notification'));
+        $this->assertTrue($offers->isChecked());
+
         $this->logout();
         
     }
@@ -124,7 +116,7 @@ class SettingsCase extends BaseTestCase
      */
     public function userRemoveData()
     {
-        $this->setDefaultSession('goutte');
+//        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->page->clickLink('tabs.settings');
         $this->page->clickLink('settings.remove');
@@ -143,13 +135,18 @@ class SettingsCase extends BaseTestCase
 
     /**
      * @test
+     * @depends userChangePassword
      */
     public function userReturned()
     {
-        $this->setDefaultSession('selenium2');
+//        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->assertNotNull($submit = $form->findButton('common.get.score'));
+        //FIXME check errors
+//        $form->pressButton('common.get.score');
+//        $this->assertCount(2, $this->page->findAll('css', '234'));
+
+
         $this->fillForm(
             $form,
             array(
@@ -163,68 +160,15 @@ class SettingsCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_day' => '19',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_month' => 'Feb',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_year' => '1957',
-            )
-        );
-        $this->assertNotNull(
-            $ssn1 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn1'
-            )
-        );
-        $ssn1->click();
-        $this->fillForm(
-            $form,
-            array(
                 'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn1' => '666',
-            )
-        );
-        $submit->click();
-        $this->assertNotNull(
-            $ssn2 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn2'
-            )
-        );
-        $ssn2->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('#ssn_creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn2').css('display') == 'none'"
-        );
-        $this->fillForm(
-            $form,
-            array(
-                 'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn2' => '81',
-            )
-        );
-        $submit->click();
-        $this->assertNotNull(
-            $ssn3 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn3'
-            )
-        );
-        $ssn3->click();
-        $this->fillForm(
-            $form,
-            array(
+                'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn2' => '81',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn3' => '0987',
+                'creditjeeves_applicantbundle_leadreturnedtype_user_tos' => true,
             )
         );
-        $submit->click();
-        $this->assertNotNull($check = $this->page->findAll('css', 'form .checkbox-off'));
-        $this->assertCount(1, $check, 'Wrong number of checkboxes');
-        $check[0]->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('form .checkbox-on').length > 0"
-        );
-        $submit->click();
-        $this->session->wait(
-            $this->timeout + 5000,
-            "jQuery('.score-current').length > 0"
-        );
-        $this->assertNotNull($score = $this->page->find('css', '.score-current'));
-        $this->assertEquals(530, $score->getText(), 'Wrong score');
+        $form->pressButton('common.get.score');
+        $this->assertNotNull($loading = $this->page->find('css', '.loading h4'));
+        $this->assertEquals('common.loading.text', $loading->getText());
         $this->logout();
     }
 }

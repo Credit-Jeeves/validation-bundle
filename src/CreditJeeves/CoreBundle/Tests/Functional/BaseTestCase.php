@@ -139,7 +139,7 @@ abstract class BaseTestCase extends Base
             try {
                 $this->assertNotNull($fieldElement = $form->findField($field));
                 if ('radio' == $fieldElement->getAttribute('type')) {
-                    if ('goutte' == $this->getMink()->getDefaultSessionName()) {
+                    if (in_array($this->getMink()->getDefaultSessionName(), array('goutte', 'symfony'))) {
                         $fieldElement->click(); // FIXME it does not work
                     } else {
                         /* @var $selectList \Behat\Mink\Element\NodeElement */
@@ -147,8 +147,14 @@ abstract class BaseTestCase extends Base
                         $radioLabel->click();
                     }
                 } elseif ('checkbox' == $fieldElement->getAttribute('type')) {
-                    $fieldElement->check();
-                } elseif ('select-one' == $fieldElement->getAttribute('type')) {
+                    if ($value) {
+                        $fieldElement->check();
+                    } else {
+                        $fieldElement->uncheck();
+                    }
+                } elseif ('select-one' == $fieldElement->getAttribute('type') ||
+                    'select' == $fieldElement->getTagName()
+                ) {
                     $fieldElement->selectOption($value);
                 } else {
                     $form->fillField($field, $value);
