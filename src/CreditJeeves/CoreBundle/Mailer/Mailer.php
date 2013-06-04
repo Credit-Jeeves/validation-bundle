@@ -63,9 +63,6 @@ class Mailer extends BaseMailer implements MailerInterface
             array('token' => $user->getConfirmationToken()),
             true
         );
-//var_dump($url);
-//        var_dump($this->container->get('router')->getContext());die("Ok\n");
-
 
         return $this->sendEmail(
             $user,
