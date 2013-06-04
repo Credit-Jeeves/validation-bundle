@@ -52,6 +52,11 @@ class LeadReturnedType extends AbstractType
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token
                 'intention' => 'username',
+                'validation_groups' => array(
+                    'registration_tos',
+                    'user_profile',
+                    'user_address',
+                ),
             )
         );
 

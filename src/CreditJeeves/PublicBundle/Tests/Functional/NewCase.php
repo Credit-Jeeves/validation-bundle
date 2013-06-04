@@ -28,10 +28,9 @@ class NewCase extends BaseTestCase
     public function userNewForm()
     {
         $this->load($this->fixtures, true);
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('symfony');
         $this->session->visit($this->getUrl() . 'new');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->assertNotNull($submit = $form->findButton('common.get.score'));
         $this->fillForm(
             $form,
             array(
@@ -42,6 +41,9 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_email' => 'angela@example.com',
                 'creditjeeves_applicantbundle_leadnewtype_user_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_leadnewtype_user_password_Retype' => 'pass',
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn1' => '666',
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2' => '36',
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn3' => '6977',
                 'creditjeeves_applicantbundle_leadnewtype_user_street_address1' => 'USS SIERRA AD-18',
                 'creditjeeves_applicantbundle_leadnewtype_user_unit_no' => 'S-1',
                 'creditjeeves_applicantbundle_leadnewtype_user_city' => 'FPO',
@@ -53,67 +55,20 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958', //'१९५८',
             )
         );
-        $this->assertNotNull(
-            $ssn1 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn1'
-            )
-        );
-        $ssn1->click();
-        $this->fillForm(
-            $form,
-            array(
-                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn1' => '666',
-            )
-        );
-        $submit->click();
-        $this->assertNotNull(
-            $ssn2 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2'
-            )
-        );
-        $ssn2->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2').css('display') == 'none'"
-        );
-        $this->fillForm(
-            $form,
-            array(
-                 'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2' => '36',
-            )
-        );
-        $submit->click();
-        $this->assertNotNull(
-            $ssn3 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn3'
-            )
-        );
-        $ssn3->click();
-        $this->fillForm(
-            $form,
-            array(
-                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn3' => '6977',
-            )
-        );
-        $submit->click();
-        $this->assertNotNull($check = $this->page->findAll('css', 'form .checkbox-off'));
-        $this->assertCount(1, $check, 'Wrong number of checkboxes');
-        $check[0]->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('form .checkbox-on').length > 0"
-        );
+        $form->pressButton('common.get.score');
+
+        // FIXME check error message
+
         $this->fillForm(
             $form,
             array(
                 'creditjeeves_applicantbundle_leadnewtype_user_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_leadnewtype_user_password_Retype' => 'pass',
+                'creditjeeves_applicantbundle_leadnewtype_user_tos' => true
             )
         );
-        $submit->click();
+        $form->pressButton('common.get.score');
+
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
         $this->assertEquals('user.email.verify', $title->getText(), 'Wrong score');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
