@@ -68,7 +68,7 @@ class ResettingCase extends BaseTestCase
             preg_match("/To reset your password - please visit ([^ ]*) /", $this->page->getText(), $matches)
         );
         $this->assertNotEmpty($matches[1]);
-        die('OK');
+//        die('OK');
 //        $this->setDefaultSession('symfony');
 //        $this->setDefaultSession('selenium2');
         $this->session->visit($matches[1]);
