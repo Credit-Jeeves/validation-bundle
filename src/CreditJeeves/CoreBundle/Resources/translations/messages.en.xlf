@@ -765,6 +765,15 @@
             </trans-unit>
 
 
+            <trans-unit id="error.user.date">
+                <source>error.user.date</source>
+                <target>This value is not a valid date.</target>
+            </trans-unit>
+
+            <trans-unit id="error.user.first_name.empty">
+                <source>error.user.first_name.empty</source>
+                <target>First couldn't be empty</target>
+            </trans-unit>
             <trans-unit id="error.user.first_name.short">
                 <source>error.user.first_name.short</source>
                 <target>First name is too short.</target>
@@ -773,6 +782,10 @@
                 <source>error.user.first_name.long</source>
                 <target>First name is too long.</target>
             </trans-unit>
+            <trans-unit id="error.user.last_name.empty">
+                <source>error.user.last_name.empty</source>
+                <target>Last couldn't be empty</target>
+            </trans-unit>
             <trans-unit id="error.user.last_name.short">
                 <source>error.user.last_name.short</source>
                 <target>Last name is too short.</target>
@@ -780,6 +793,46 @@
             <trans-unit id="error.user.last_name.long">
                 <source>error.user.last_name.long</source>
                 <target>Last name is too long.</target>
+            </trans-unit>
+            <trans-unit id="error.user.email.empty">
+                <source>error.user.email.empty</source>
+                <target>Email couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.zip.empty">
+                <source>error.user.zip.empty</source>
+                <target>ZIP couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.ssn.empty">
+                <source>error.user.ssn.empty</source>
+                <target>SSN couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.city.empty">
+                <source>error.user.city.empty</source>
+                <target>City couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.password.empty">
+                <source>error.user.password.empty</source>
+                <target>Password couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.group.code.empty">
+                <source>error.group.code.empty</source>
+                <target>Group code couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.address.empty">
+                <source>error.user.address.empty</source>
+                <target>Address couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.unit.empty">
+                <source>error.user.unit.empty</source>
+                <target>Unit No couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.state.empty">
+                <source>error.user.state.empty</source>
+                <target>Please, select state</target>
+            </trans-unit>
+            <trans-unit id="error.user.email.error">
+                <source>error.user.email.error</source>
+                <target>This value is not a valid email address.</target>
             </trans-unit>
             <trans-unit id="error.user.absent.title">
                 <source>error.user.absent.title</source>

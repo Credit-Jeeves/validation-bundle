@@ -10,6 +10,7 @@ use CreditJeeves\ApplicantBundle\Form\DataTransformer\EmailToUserTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class LeadNewType extends AbstractType
 {
@@ -27,8 +28,17 @@ class LeadNewType extends AbstractType
                 'text',
                 array(
                     'property_path' => 'group',
+                    'error_bubbling' => true,
                     'label' => 'Dealer Code',
+                    'constraints' => array(
+                        new NotBlank(
+                            array(
+                                'groups' => 'user_profile',
+                                'message' => 'error.group.code.empty',
+                            )
+                        )
                     )
+                )
             )->addModelTransformer($groupTransformer)
         );
     }
@@ -38,7 +48,10 @@ class LeadNewType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'CreditJeeves\DataBundle\Entity\Lead',
-                'validation_groups' => array('registration_new'),
+                'validation_groups' => array(
+                    'user_profile',
+                    'user_address'
+                ),
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token
