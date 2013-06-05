@@ -32,6 +32,39 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+    sonata.admin.tenant:
+        class: CreditJeeves\AdminBundle\Admin\TenantAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Tenants" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.landlord:
+        class: CreditJeeves\AdminBundle\Admin\LandlordAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Landlords" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.admin:
+        class: CreditJeeves\AdminBundle\Admin\AdminAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Admins" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
     rj_email.email_admin:
         class: CreditJeeves\AdminBundle\Admin\EmailTemplateAdmin
         tags:

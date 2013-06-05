@@ -12,11 +12,50 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class DealerAdmin extends Admin
 {
+    /**
+     *
+     * @var string
+     */
+    const TYPE = 'dealer';
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $query = parent::createQuery($context);
+    
+        $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
+    
+        return $query;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRouteName()
+    {
+        return 'admin_rj_user_'.self::TYPE;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRoutePattern()
+    {
+        return '/rj/user/'.self::TYPE;
+    }
+    
+    /**
+     *
+     * @var string
+     */
+    
     public function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
             ->add('email')
-             ->add('first_name')
+             ->add('full_name')
 //             ->add('title')
 //             ->add('abstract')
 //             ->add('content')
@@ -65,33 +104,33 @@ class DealerAdmin extends Admin
          ;
     }
     
-    /**
-     * {@inheritdoc}
-     */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
+//     /**
+//      * {@inheritdoc}
+//      */
+//     public function createQuery($context = 'list')
+//     {
+//         $query = parent::createQuery($context);
     
-        $query->getQueryBuilder()
-        ->andWhere('o.type = :type')
-        ->setParameter('type', 'dealer')
-        ;
+//         $query->getQueryBuilder()
+//         ->andWhere('o.type = :type')
+//         ->setParameter('type', 'dealer')
+//         ;
     
-        return $query;
-    }    
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRouteName()
-    {
-        return 'admin_rj_user_dealer';
-    }
+//         return $query;
+//     }    
+//     /**
+//      * {@inheritdoc}
+//      */
+//     public function getBaseRouteName()
+//     {
+//         return 'admin_rj_user_dealer';
+//     }
     
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRoutePattern()
-    {
-        return '/rj/user/dealer';  
-    } 
+//     /**
+//      * {@inheritdoc}
+//      */
+//     public function getBaseRoutePattern()
+//     {
+//         return '/rj/user/dealer';  
+//     } 
 }

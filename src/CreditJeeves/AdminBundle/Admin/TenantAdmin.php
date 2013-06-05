@@ -8,15 +8,16 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\QueryBuilder;
 
+
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
-class ApplicantAdmin extends Admin
+class TenantAdmin extends Admin
 {
     /**
      *
      * @var string
      */
-    const TYPE = 'applicant';
+    const TYPE = 'tenant';
     
     /**
      * {@inheritdoc}
@@ -45,6 +46,8 @@ class ApplicantAdmin extends Admin
     {
         return '/rj/user/'.self::TYPE;
     }    
+    
+    
     public function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
