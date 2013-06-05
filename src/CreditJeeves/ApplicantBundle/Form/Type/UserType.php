@@ -117,10 +117,10 @@ class UserType extends AbstractType
         );
         $builder->add(
             'tos',
-            'hidden',
+            'checkbox',
             array(
                 'label' => '',
-                'data' => 0,
+                'data' => false,
                 'mapped' => false,
                 'constraints' => new True(
                     array(

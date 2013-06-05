@@ -27,28 +27,23 @@ class InviteCase extends BaseTestCase
      */
     public function userInvite()
     {
+        $this->setDefaultSession('symfony');
         $this->load($this->fixtures, true);
-        $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'invite/TESTCODE');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->assertNotNull($submit = $form->findButton('common.i_agree'));
         $this->fillForm(
             $form,
             array(
                 'creditjeeves_applicantbundle_newpasswordtype_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_newpasswordtype_password_Retype' => 'pass',
+                'creditjeeves_applicantbundle_newpasswordtype_tos' => true,
             )
         );
-        $this->assertNotNull($check = $this->page->findAll('css', 'form .checkbox-off'));
-        $this->assertCount(1, $check, 'Wrong number of checkboxes');
-        $check[0]->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('form .checkbox-on').length > 0"
-        );
-        $submit->click();
+        $form->pressButton('common.i_agree');
+
+        // FIXME check error message
+
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->assertNotNull($submit = $form->findButton('common.i_agree'));
         $this->fillForm(
             $form,
             array(
@@ -59,17 +54,17 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_year' => '1937',
             )
         );
-        $submit->click();
+        $form->pressButton('common.i_agree');
         $this->login('app14@example.com', 'pass');
         $this->logout();
     }
 
     /**
      * @test
-     * @depends userInvite
      */
     public function userInviteFull()
     {
+        $this->load($this->fixtures, false);
         $this->session->visit($this->getUrl() . 'invite/TESTFULL');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.i_agree'));
@@ -81,6 +76,11 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_usernewtype_last_name' => 'LEMOINE',
                 'creditjeeves_applicantbundle_usernewtype_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_usernewtype_password_Retype' => 'pass',
+                'creditjeeves_applicantbundle_usernewtype_password_Password' => 'pass',
+                'creditjeeves_applicantbundle_usernewtype_password_Retype' => 'pass',
+                'creditjeeves_applicantbundle_usernewtype_ssn_ssn1' => '666',
+                'creditjeeves_applicantbundle_usernewtype_ssn_ssn2' => '36',
+                'creditjeeves_applicantbundle_usernewtype_ssn_ssn3' => '6977',
                 'creditjeeves_applicantbundle_usernewtype_street_address1' => '7635 LANKERSHIM BLVD',
                 'creditjeeves_applicantbundle_usernewtype_unit_no' => 'APT 16',
                 'creditjeeves_applicantbundle_usernewtype_city' => 'NORTH HOLLYWOOD',
@@ -90,67 +90,8 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '1', //'01',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan', // '01',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940',
+                'creditjeeves_applicantbundle_usernewtype_tos' => true,
             )
-        );
-        $this->assertNotNull(
-            $ssn1 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_usernewtype_ssn_ssn1'
-            )
-        );
-        $ssn1->click();
-        $this->fillForm(
-            $form,
-            array(
-                'creditjeeves_applicantbundle_usernewtype_ssn_ssn1' => '666',
-            )
-        );
-        $submit->click();
-        $this->assertNotNull(
-            $ssn2 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_usernewtype_ssn_ssn2'
-            )
-        );
-        $ssn2->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('#ssn_creditjeeves_applicantbundle_usernewtype_ssn_ssn2').css('display') == 'none'"
-        );
-        $this->fillForm(
-            $form,
-            array(
-                'creditjeeves_applicantbundle_usernewtype_ssn_ssn2' => '36',
-            )
-        );
-        $submit->click();
-        $this->assertNotNull(
-            $ssn3 = $this->page->find(
-                'css',
-                '#ssn_creditjeeves_applicantbundle_usernewtype_ssn_ssn3'
-            )
-        );
-        $ssn3->click();
-        $this->fillForm(
-            $form,
-            array(
-                'creditjeeves_applicantbundle_usernewtype_ssn_ssn3' => '6977',
-            )
-        );
-        $submit->click();
-        $this->fillForm(
-            $form,
-            array(
-                'creditjeeves_applicantbundle_usernewtype_password_Password' => 'pass',
-                'creditjeeves_applicantbundle_usernewtype_password_Retype' => 'pass',
-            )
-        );
-        $this->assertNotNull($check = $this->page->findAll('css', 'form .checkbox-off'));
-        $this->assertCount(1, $check, 'Wrong number of checkboxes');
-        $check[0]->click();
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('form .checkbox-on').length > 0"
         );
         $submit->click();
         $this->login('linda@example.com', 'pass');
