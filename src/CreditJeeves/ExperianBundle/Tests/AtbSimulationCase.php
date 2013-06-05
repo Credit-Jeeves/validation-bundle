@@ -1,12 +1,12 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests;
 
-use CreditJeeves\CoreBundle\Tests\BaseTestCase;
+use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\AtbSimulation;
 use CreditJeeves\DataBundle\Enum\AtbType;
 use CreditJeeves\ExperianBundle\Model\Atb as Model;
 
-class AtbSimulationCase extends BaseTestCase
+class AtbSimulationCase extends \CreditJeeves\TestBundle\BaseTestCase
 {
     /**
      * @test

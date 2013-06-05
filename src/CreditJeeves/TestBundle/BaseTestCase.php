@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\CoreBundle\Tests;
+namespace CreditJeeves\TestBundle;
 
 use Behat\MinkBundle\Test\MinkTestCase;
 use \ReflectionClass;
@@ -9,6 +9,8 @@ use \ReflectionClass;
  */
 abstract class BaseTestCase extends MinkTestCase
 {
+    const APP = 'AppCj';
+
     /**
      * {@inheritdoc}
      */
@@ -18,9 +20,9 @@ abstract class BaseTestCase extends MinkTestCase
         static::getPhpUnitXmlDir() . '/' . $_SERVER['KERNEL_DIR'] :
         static::getPhpUnitXmlDir();
         require_once $dir . 'AppKernel.php';
-        require_once $dir . 'AppCjKernel.php';
-        require_once $dir . 'AppCjTestKernel.php';
-        return 'AppCjTestKernel';
+        require_once $dir . static::APP . 'Kernel.php';
+        require_once $dir . static::APP . 'TestKernel.php';
+        return static::APP . 'TestKernel';
     }
 
     /**

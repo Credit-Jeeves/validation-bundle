@@ -1,8 +1,7 @@
 imports:
-    - { resource: parameters_base.yml }
-    - { resource: parameters.yml }
-    - { resource: security.yml }
-    - { resource: ../base/parameters.yml }
+    - { resource: ../base/config.yml }
+    - { resource: ../parameters.yml } # would be generated from parameters_SERVER.yml depends on SERVER
+    - { resource: security.yml } #different for each application
     - { resource: ../base/fos.yml }
     - { resource: ../base/doctrine.yml }
     - { resource: ../base/jms.yml }
@@ -10,8 +9,20 @@ imports:
     - { resource: ../base/swiftmailer.yml }
     - { resource: ../base/assetic.yml }
     - { resource: ../base/email.yml }
-    - { resource: ../base/experian.yml }
     - { resource: ../base/framework.yml }
+
+parameters:
+    server_name: '%server_name_rj%'
+    support_email: help@rentjeeves.com
+    support_phone: (866)-976-6622
+
+    email_from: support@renttjeeves.com
+    email_name: Credit Jeeves
+
+    external_urls:
+        main_site: 'www.rentjeeves.com'
+        user_voice: 'creditjeeves.uservoice.com'
+
 
 framework:
     router:

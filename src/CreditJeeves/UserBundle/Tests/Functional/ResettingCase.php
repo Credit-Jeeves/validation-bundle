@@ -1,9 +1,9 @@
 <?php
 namespace CreditJeeves\UserBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
+use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
-class ResettingCase extends BaseTestCase
+class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
 {
     protected $fixtures = array(
         '001_cj_account_group.yml',
