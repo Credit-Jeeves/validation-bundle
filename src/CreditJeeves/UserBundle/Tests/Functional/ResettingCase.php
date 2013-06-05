@@ -80,7 +80,7 @@ class ResettingCase extends BaseTestCase
      */
     public function fillPassword()
     {
-        $this->markTestIncomplete('FINISH');
+//        $this->markTestIncomplete('FINISH');
         $form = $this->page->find('css', '#fos_user_resetting_form');
         $this->assertNotNull($form);
 
@@ -93,7 +93,7 @@ class ResettingCase extends BaseTestCase
         );
         $this->page->pressButton('resetting.request.submit');
 
-        $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs active first a'));
+        $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs .active.first a'));
 
         $this->assertEquals('tabs.action_plan', $activeTab->getText());
 

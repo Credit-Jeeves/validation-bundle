@@ -55,6 +55,10 @@ class NewController extends Controller
                     $User->setType('applicant');
 
                     $em = $this->getDoctrine()->getManager();
+                    $User->setPassword(
+                        $this->container->get('user.security.encoder.digest')
+                            ->encodePassword($User->getPassword(), $User->getSalt())
+                    );
                     $em->persist($User);
                     $em->persist($Lead);
                     $em->flush();

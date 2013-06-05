@@ -2,7 +2,11 @@
 namespace CreditJeeves\UserBundle\Security\Encoder;
 
 use Symfony\Component\Security\Core\Encoder;
+use JMS\DiExtraBundle\Annotation as DI;
 
+/**
+ * @DI\Service("user.security.encoder.digest")
+ */
 class MessageDigestPasswordEncoder extends Encoder\BasePasswordEncoder
 {
     public function encodePassword($raw, $salt)
