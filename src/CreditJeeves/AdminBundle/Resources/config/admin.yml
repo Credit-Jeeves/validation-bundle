@@ -10,10 +10,21 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
-    sonata.admin.user:
-        class: CreditJeeves\AdminBundle\Admin\UserAdmin
+    sonata.admin.applicant:
+        class: CreditJeeves\AdminBundle\Admin\ApplicantAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Users" }
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Applicants" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.dealer:
+        class: CreditJeeves\AdminBundle\Admin\DealerAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Dealers" }
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
