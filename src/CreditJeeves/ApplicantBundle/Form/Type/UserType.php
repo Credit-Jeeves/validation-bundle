@@ -23,9 +23,6 @@ class UserType extends AbstractType
             array(
                 'label' => 'Name',
                 'error_bubbling' => true,
-//                 'constraints' => array(
-//                     new Length(array('min' => 3)),
-//                     ),
             )
         );
         $builder->add(
@@ -48,7 +45,17 @@ class UserType extends AbstractType
             'ssn',
             new SsnType(),
             array(
-                'label' => 'SSN'
+                'label' => 'SSN',
+                'error_bubbling' => true,
+                
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => 'user_profile',
+                            'message' => 'error.user.ssn.empty'
+                        )
+                    )
+                )
             )
         );
         $builder->add(
@@ -63,6 +70,7 @@ class UserType extends AbstractType
             'text',
             array(
                 'label' => 'Address',
+                    'error_bubbling' => true,
             )
         );
         $builder->add(
@@ -92,7 +100,8 @@ class UserType extends AbstractType
             'zip',
             'text',
             array(
-                'label' => ''
+                'label' => '',
+                    'error_bubbling' => true,
             )
         );
         $builder->add(
@@ -117,14 +126,16 @@ class UserType extends AbstractType
         );
         $builder->add(
             'tos',
-            'hidden',
+            'checkbox',
             array(
                 'label' => '',
-                'data' => 0,
+                'data' => false,
                 'mapped' => false,
                 'constraints' => new True(
                     array(
-                        'message' => 'Please accept the Terms and conditions in order to register'
+                            'message' => 'error.user.tos',
+                            'groups' => 'registration_tos'
+                            
                     )
                 ),
             )
@@ -133,7 +144,16 @@ class UserType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array('data_class' => 'CreditJeeves\DataBundle\Entity\User'));
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'validation_groups' => array(
+                        'registration_tos',
+                        'user_profile',
+                        'user_address',
+                ),
+            )
+        );
     }
 
     public function getName()

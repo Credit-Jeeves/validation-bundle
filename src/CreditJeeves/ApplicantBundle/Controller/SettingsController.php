@@ -20,7 +20,8 @@ class SettingsController extends Controller
     public function passwordAction()
     {
         $request = $this->get('request');
-        $User = $this->get('core.session.applicant')->getUser();
+        /** @var \CreditJeeves\DataBundle\Entity\User $User */
+        $User = $this->getUser();
         $sOldPassword = $User->getPassword();
         $sEmail = $User->getEmail();
         $form = $this->createForm(new PasswordType(), $User);
@@ -28,9 +29,12 @@ class SettingsController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $User = $form->getData();
-                if ($sOldPassword == $User->getPassword()) {
+                $reEnteredPassword = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($User->getPassword(), $User->getSalt());
+                if ($sOldPassword == $reEnteredPassword) {
                     $aForm = $request->request->get($form->getName());
-                    $sNewPassword = $aForm['password_new']['Password'];
+                    $sNewPassword = $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($aForm['password_new']['Password'], $User->getSalt());
                     $User->setPassword($sNewPassword);
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($User);
@@ -116,27 +120,29 @@ class SettingsController extends Controller
     public function removeAction()
     {
         $request = $this->get('request');
-        $cjUser = $this->get('core.session.applicant')->getUser();
-        $sEmail = $cjUser->getEmail();
-        $sPassword = $cjUser->getPassword();
-        $form = $this->createForm(new RemoveType(), $cjUser);
+        $User = $this->get('core.session.applicant')->getUser();
+        $sEmail = $User->getEmail();
+        $sPassword = $User->getPassword();
+        $form = $this->createForm(new RemoveType(), $User);
         if ($request->getMethod() == 'POST') {
+            $newUser = $User->getUserToRemove();
             $form->bind($request);
             if ($form->isValid()) {
-                if ($sPassword == $cjUser->getPassword()) {
+                $reEnteredPassword = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($User->getPassword(), $User->getSalt());
+                if ($sPassword == $reEnteredPassword) {
                     $em = $this->getDoctrine()->getManager();
                     try {
-                        $newUser = $cjUser->getUserToRemove();
                         $em->getConnection()->beginTransaction();
                         //$em->getRepository('DataBundle:User')->removeUserData($cjUser);
                         //$cjUser->removeData();
-                        $em->remove($cjUser);
+                        $em->remove($User);
                         $em->flush();
                         $em->persist($newUser);
                         $em->flush();
                         $em->getConnection()->commit();
                         $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         $em->getConnection()->rollback();
                         $em->close();
                         throw $e;

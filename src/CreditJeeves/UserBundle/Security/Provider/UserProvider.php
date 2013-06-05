@@ -5,11 +5,20 @@ use FOS\UserBundle\Model\UserManagerInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use JMS\DiExtraBundle\Annotation as DI;
 
+/**
+ * @DI\Service("user.user_provider", public=false)
+ */
 class UserProvider implements UserProviderInterface
 {
     private $userManager;
 
+    /**
+     * @DI\InjectParams({
+     *     "userManager" = @DI\Inject("fos_user.user_manager")
+     * })
+     */
     public function __construct(UserManagerInterface $userManager)
     {
         $this->userManager = $userManager;

@@ -22,15 +22,15 @@ class ResettingCase extends BaseTestCase
 
     /**
      * @test
-     * @~expectedException \Symfony\Component\Security\Core\Exception\AccessDeniedException
      */
     public function resettingPassword()
     {
-        $this->markTestIncomplete('Depends on FOS user bundle fixes');
-
-        $this->load($this->fixtures, true);
+        $this->setDefaultSession('symfony');
         $this->setDefaultSession('goutte');
+//        $this->setDefaultSession('selenium2');
+        $this->load($this->fixtures, true);
         $this->session->visit($this->getUrl() . 'login');
+
         $this->page->clickLink('login.resetting.link');
 
         $form = $this->page->find('css', '#fos_user_resetting_request');
@@ -42,6 +42,15 @@ class ResettingCase extends BaseTestCase
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
         $this->assertEquals('resetting.check_email.title', $title->getText());
 
+    }
+
+    /**
+     * @test
+     * @depends resettingPassword
+     */
+    public function checkEmail()
+    {
+        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
 
         $this->assertNotNull($links = $this->page->findAll('css', 'a'));
@@ -59,21 +68,32 @@ class ResettingCase extends BaseTestCase
             preg_match("/To reset your password - please visit ([^ ]*) /", $this->page->getText(), $matches)
         );
         $this->assertNotEmpty($matches[1]);
+//        die('OK');
+//        $this->setDefaultSession('symfony');
+//        $this->setDefaultSession('selenium2');
         $this->session->visit($matches[1]);
-
+    }
+//
+    /**
+     * @test
+     * @depends checkEmail
+     */
+    public function fillPassword()
+    {
+//        $this->markTestIncomplete('FINISH');
         $form = $this->page->find('css', '#fos_user_resetting_form');
         $this->assertNotNull($form);
 
         $this->fillForm(
             $form,
             array(
-                'fos_user_resetting_form_plainPassword_first' => '123',
-                'fos_user_resetting_form_plainPassword_second' => '123',
+                'fos_user_resetting_form_new_first' => '123',
+                'fos_user_resetting_form_new_second' => '123',
             )
         );
         $this->page->pressButton('resetting.request.submit');
 
-        $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs active first a'));
+        $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs .active.first a'));
 
         $this->assertEquals('tabs.action_plan', $activeTab->getText());
 

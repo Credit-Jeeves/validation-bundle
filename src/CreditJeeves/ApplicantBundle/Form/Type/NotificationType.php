@@ -13,14 +13,14 @@ class NotificationType extends AbstractType
     {
         $builder->add(
             'score_changed_notification',
-            'hidden',
+            'checkbox',
             array(
                 'required'  => false,
             )
         );
         $builder->add(
             'offer_notification',
-            'hidden',
+            'checkbox',
             array(
                 'required'  => false,
             )
