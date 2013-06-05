@@ -31,6 +31,9 @@ class NewCase extends BaseTestCase
         $this->setDefaultSession('symfony');
         $this->session->visit($this->getUrl() . 'new');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
+        $form->pressButton('common.get.score');
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
+        $this->assertCount(11, $errors, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -50,15 +53,15 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_state' => 'AL',
                 'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26', //'२६',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec', //'०१',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958', //'१९५८',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
             )
         );
         $form->pressButton('common.get.score');
-
-        // FIXME check error message
-
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
+        $this->assertCount(1, $errors, 'Wrong number of errors');
+        $this->assertEquals('error.user.tos', $errors[0]->getText(), 'Wrong error');
         $this->fillForm(
             $form,
             array(
@@ -68,7 +71,6 @@ class NewCase extends BaseTestCase
             )
         );
         $form->pressButton('common.get.score');
-
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
         $this->assertEquals('user.email.verify', $title->getText(), 'Wrong score');
         $this->assertNotNull($form = $this->page->find('css', 'form'));

@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Email;
 
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
@@ -26,16 +27,7 @@ class UserNewType extends AbstractType //UserType
             'text',
             array(
                 'label' => 'Name',
-//                 'constraints' => array(
-//                     new Length(
-//                         array(
-//                         'min' => 3,
-//                         'max' => 255,
-//                         'minMessage' => 'error.user.first_name.short',
-//                         'maxMessage' => 'error.user.first_name.long'
-//                         )
-//                     ),
-//                 ),
+                'error_bubbling' => true,
             )
         );
         $builder->add(
@@ -52,45 +44,54 @@ class UserNewType extends AbstractType //UserType
             'text',
             array(
                 'label' => '',
-//                 'constraints' => array(
-//                     new Length(
-//                         array(
-//                         'min' => 3,
-//                         'max' => 255,
-//                         'minMessage' => 'error.user.last_name.short',
-//                         'maxMessage' => 'error.user.last_name.long'
-//                         )
-//                     ),
-//                 ),
+                'error_bubbling' => true,
             )
         );
         $builder->add(
             'email',
             'email',
             array(
-                'label' => 'Email'
+                'label' => 'Email',
+                'error_bubbling' => true,
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => 'user_profile',
+                            'message' => 'error.user.email.empty',
+                        )
+                    ),
+                    new Email(
+                        array(
+                            'groups' => 'user_profile',
+                            'message' => 'error.user.email.error',
+                        )
+                    ),
+                ),
             )
         );
         $builder->add(
             'ssn',
             new SsnType(),
             array(
-                'label' => 'SSN'
+                'label' => 'SSN',
+                'error_bubbling' => true,
                 )
         );
         $builder->add(
             'date_of_birth',
             'birthday',
             array(
-                'label' => 'Date of Birth'
-                )
+                'label' => 'Date of Birth',
+                'error_bubbling' => true,
+            )
         );
         $builder->add(
             'street_address1',
             'text',
             array(
                 'label' => 'Address',
-                )
+                'error_bubbling' => true,
+            )
         );
         $builder->add(
             'password',
@@ -99,37 +100,50 @@ class UserNewType extends AbstractType //UserType
                 'first_name' => 'Password',
                 'second_name' => 'Retype',
                 'type' => 'password',
+                'error_bubbling' => true,
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => 'user_profile',
+                            'message' => 'error.user.password.empty',
+                        )
+                    ),
                 )
+            )
         );
         $builder->add(
             'unit_no',
             'text',
             array(
                 'label' => '',
-                )
+                'error_bubbling' => true,
+            )
         );
         $builder->add(
             'city',
             'text',
             array(
-                'label' => ''
-                )
+                'label' => '',
+                'error_bubbling' => true,
+            )
         );
         $builder->add(
             'state',
             'choice',
             array(
                 'label' => '',
+                'error_bubbling' => true,
                 'choice_list' =>  new StateChoiceList(),
                 'required' => true,
-                )
+            )
         );
         $builder->add(
             'zip',
             'text',
             array(
-                    'label' => ''
-                )
+                'label' => '',
+                'error_bubbling' => true,
+            )
         );
         $builder->add(
             'phone_type',
@@ -158,13 +172,14 @@ class UserNewType extends AbstractType //UserType
                 'label' => '',
                 'data' => false,
                 'mapped' => false,
+                'error_bubbling' => true,
                 'constraints' => new True(
                     array(
-                            'message' => 'error.user.tos',
-                            'groups' => 'registration_tos'
-                        )
-                    ),
-                )
+                        'message' => 'error.user.tos',
+                        'groups' => 'registration_tos'
+                    )
+                ),
+            )
         );
     }
 

@@ -23,6 +23,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(
+     *     message="error.user.first_name.empty",
      *     groups={
      *         "user_profile",
      *         "buy_report"
@@ -31,6 +32,8 @@ abstract class User extends BaseUser
      * @Assert\Length(
      *     min=2,
      *     max=255,
+     *     minMessage="error.user.first_name.short",
+     *     maxMessage="error.user.first_name.long",
      *     groups={
      *         "user_profile",
      *         "buy_report"
@@ -47,6 +50,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(
+     *     message="error.user.last_name.empty",
      *     groups={
      *         "user_profile",
      *         "buy_report"
@@ -55,6 +59,8 @@ abstract class User extends BaseUser
      * @Assert\Length(
      *     min=2,
      *     max=255,
+     *     minMessage="error.user.last_name.short",
+     *     maxMessage="error.user.last_name.long",
      *     groups={
      *         "user_profile",
      *         "buy_report"
@@ -66,6 +72,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="encrypt")
      * @Assert\NotBlank(
+     *     message="error.user.address.empty",
      *     groups={
      *         "user_address",
      *         "buy_report"
@@ -90,6 +97,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(
+     *     message="error.user.unit.empty",
      *     groups={
      *         "user_address"
      *     }
@@ -107,6 +115,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(
+     *     message="error.user.city.empty",
      *     groups={
      *         "buy_report"
      *     }
@@ -117,6 +126,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(
+     *     message="error.user.state.empty",
      *     groups={
      *         "user_address",
      *         "buy_report"
@@ -136,6 +146,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank(
+     *     message="error.user.zip.empty",
      *     groups={
      *         "user_address",
      *         "buy_report"
@@ -165,7 +176,8 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank(
+     * @Assert\Date(
+     *     message="error.user.date",
      *     groups={
      *         "user_profile"
      *     }
@@ -176,6 +188,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="encrypt")
      * @Assert\NotBlank(
+     *     message="error.user.ssn.empty",
      *     groups={
      *         "user_profile"
      *     }

@@ -79,7 +79,6 @@ class SettingsCase extends BaseTestCase
      */
     public function userEmailSettings()
     {
-//        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->page->clickLink('tabs.settings');
         $this->page->clickLink('settings.email');
@@ -116,7 +115,6 @@ class SettingsCase extends BaseTestCase
      */
     public function userRemoveData()
     {
-//        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->page->clickLink('tabs.settings');
         $this->page->clickLink('settings.remove');
@@ -136,14 +134,10 @@ class SettingsCase extends BaseTestCase
      */
     public function userReturned()
     {
-//        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', $this->password);
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        //FIXME check errors
-//        $form->pressButton('common.get.score');
-//        $this->assertCount(2, $this->page->findAll('css', '234'));
-
-
+        $form->pressButton('common.get.score');
+        $this->assertCount(7, $this->page->findAll('css', '.error_list li'));
         $this->fillForm(
             $form,
             array(
