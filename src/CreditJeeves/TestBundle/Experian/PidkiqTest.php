@@ -17,7 +17,6 @@ class PidkiqTest extends \PidkiqTest
 
     public function execute($container)
     {
-        \sfConfig::fill($container->getParameter('experian.pidkiq'), 'global_experian_pidkiq');
         \sfConfig::set('global_host', $container->getParameter('server_name'));
         parent::__construct();
     }

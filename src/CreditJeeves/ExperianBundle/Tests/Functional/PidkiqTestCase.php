@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Tests\BaseTestCase;
+use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\ExperianBundle\Pidkiq;
 

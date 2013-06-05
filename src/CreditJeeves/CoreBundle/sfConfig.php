@@ -62,6 +62,15 @@ class sfConfig
         self::$config['sf_log_dir'] = self::getRoot() . '/app/logs';
         self::$config['sf_upload_dir'] = self::getRoot() . '/web/uploads';
 
+
+        try {
+            $vars = Yaml::parse(self::getRoot() . '/vendor/CreditJeevesSf1/config/vars.yml');
+        } catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
+            $vars = Yaml::parse(self::getRoot() . '/vendor/CreditJeevesSf1/config/vars_dev_base.yml');
+        }
+        self::fill($vars['all']['experian'], 'global_experian');
+        self::fill($vars['all']['experian'], 'global_experian');
+
         $configs = Yaml::parse(self::getRoot() . '/vendor/CreditJeevesSf1/config/experian.yml');
         self::fill($configs['all'], 'experian');
         self::$init = true;

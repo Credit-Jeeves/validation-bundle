@@ -1,4 +1,0 @@
-parameters:
-    mink.browser_name: 'firefox'
-    mink.base_url: 'http://%server_name%/_test.php'
-    server: dev

@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace CreditJeeves\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Admin\Admin;
@@ -16,8 +16,7 @@ class UserAdmin extends Admin
     {
         $showMapper
             ->add('email')
-             ->add('first_name')
-//             ->add('title')
+            ->add('first_name')//             ->add('title')
 //             ->add('abstract')
 //             ->add('content')
 //             ->add('tags')
@@ -46,39 +45,37 @@ class UserAdmin extends Admin
 
     public function configureListFields(ListMapper $listMapper)
     {
-         $listMapper
+        $listMapper
 //             ->addIdentifier('title')
-             ->add('first_name')
-             ->add('middle_initial')
-             ->add('last_name')
-//             ->add('type')
+            ->add('first_name')
+            ->add('middle_initial')
+            ->add('last_name')//             ->add('type')
 //             ->add('commentsEnabled')
-         ;
+        ;
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-         $datagridMapper
-             ->add('type')
-//             ->add('enabled')
+        $datagridMapper
+            ->add('type')//             ->add('enabled')
 //             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
-         ;
+        ;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function createQuery($context = 'list')
     {
         $query = parent::createQuery($context);
-    
+
         $query->getQueryBuilder()
-        ->andWhere('o.type = :type')
-        ->setParameter('type', 'applicant')
-        ;
-    
+            ->andWhere('o.type = :type')
+            ->setParameter('type', 'applicant');
+
         return $query;
-    }    
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -86,12 +83,12 @@ class UserAdmin extends Admin
     {
         return 'admin_rj_user_applicant';
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/user/applicant';  
-    } 
+        return '/rj/user/applicant';
+    }
 }
