@@ -1,0 +1,18 @@
+imports:
+    - { resource: parameters_base.yml }
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: ../base/parameters.yml }
+    - { resource: ../base/fos.yml }
+    - { resource: ../base/doctrine.yml }
+    - { resource: ../base/jms.yml }
+    - { resource: ../base/twig.yml }
+    - { resource: ../base/swiftmailer.yml }
+    - { resource: ../base/assetic.yml }
+    - { resource: ../base/email.yml }
+    - { resource: ../base/experian.yml }
+    - { resource: ../base/framework.yml }
+
+framework:
+    router:
+        resource: "%kernel.root_dir%/config/rj/routing.yml"

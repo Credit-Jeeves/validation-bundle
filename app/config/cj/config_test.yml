@@ -5,7 +5,7 @@ parameters:
     router.request_context.base_url: '/_test.php'
 
 framework:
-    router:   { resource: "%kernel.root_dir%/config/routing_test.yml" }
+    router:   { resource: "%kernel.root_dir%/config/cj/routing_test.yml" }
     translator: { fallback: 'test' }
     default_locale: 'test'
     test: ~

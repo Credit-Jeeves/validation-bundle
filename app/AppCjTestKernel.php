@@ -8,10 +8,12 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  */
-class AppTestKernel extends AppKernel
+class AppCjTestKernel extends AppCjKernel
 {
     private $catch = true;
 
+    public function init(){}
+    
     public function registerBundles()
     {
         $bundles = parent::registerBundles();

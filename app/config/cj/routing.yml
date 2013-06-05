@@ -1,13 +1,3 @@
-rent_jeeves_landlord:
-    resource: "@LandlordBundle/Controller/"
-    type:     annotation
-    prefix:   /landlord
-
-rent_jeeves_tenant:
-    resource: "@TenantBundle/Controller/"
-    type:     annotation
-    prefix:   /tenant
-
 checkout:
     resource: "@CheckoutBundle/Controller/"
     type:     annotation

@@ -1,0 +1,4 @@
+parameters:
+    server: dev
+    server_name: dev2.creditjeeves.com
+    mink.selenium2.wd_host: 'http://10.46.179.1:4444/wd/hub'

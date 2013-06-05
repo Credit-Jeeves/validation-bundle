@@ -5,8 +5,6 @@ security:
 
     role_hierarchy:
         ROLE_USER:     ROLE_USER
-        ROLE_TENANR:   ROLE_TENANT
-        ROLE_LANDLORD: ROLE_LANDLORD
         ROLE_DEALER:   ROLE_DEALER
         ROLE_ADMIN:    ROLE_ADMIN
 
@@ -39,8 +37,6 @@ security:
         - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/admin/,         role: ROLE_ADMIN }
         - { path: ^/dealer/,        role: ROLE_DEALER }
-        - { path: ^/landlord/,      role: ROLE_USER }
-        - { path: ^/tenant/,        role: ROLE_USER }
         - { path: ^/,               role: ROLE_USER }
         
 

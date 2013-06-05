@@ -1,0 +1,17 @@
+#FOSUserBundle
+fos_user:
+    db_driver: orm 
+    firewall_name: main
+    user_class: CreditJeeves\DataBundle\Entity\User
+    service:
+        mailer: creditjeeves.mailer
+    from_email:
+        address:        support@creditjeeves.com
+        sender_name:    CreditJeeves
+    registration:
+        confirmation:
+            enabled:    true
+            template: 'registration'
+    resetting:
+        email:
+            template: 'resetting'

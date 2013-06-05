@@ -26,6 +26,18 @@ abstract class User
      */
     const USER_ADMIN = 'admin';
 
+    /**
+     * 
+     * @var string
+     */
+    const USER_TENANT = 'tenant';
+
+    /**
+     * 
+     * @var string
+     */
+    const USER_LANDLORD = 'landlord';
+
     protected $data = array();
 
     protected $em;

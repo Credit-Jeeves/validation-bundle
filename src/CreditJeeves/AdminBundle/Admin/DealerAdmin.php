@@ -10,7 +10,7 @@ use Doctrine\ORM\QueryBuilder;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
-class ApplicantAdmin extends Admin
+class DealerAdmin extends Admin
 {
     public function configureShowFields(ShowMapper $showMapper)
     {
@@ -74,7 +74,7 @@ class ApplicantAdmin extends Admin
     
         $query->getQueryBuilder()
         ->andWhere('o.type = :type')
-        ->setParameter('type', 'applicant')
+        ->setParameter('type', 'dealer')
         ;
     
         return $query;
@@ -84,7 +84,7 @@ class ApplicantAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_user_applicant';
+        return 'admin_rj_user_dealer';
     }
     
     /**
@@ -92,6 +92,6 @@ class ApplicantAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/user/applicant';  
+        return '/rj/user/dealer';  
     } 
 }

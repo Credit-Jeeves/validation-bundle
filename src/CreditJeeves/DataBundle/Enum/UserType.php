@@ -9,4 +9,6 @@ class UserType extends Base
     const APPLICANT = 'applicant';
     const ADMIN = 'admin';
     const DEALER = 'dealer';
+    const TETNANT = 'tenant';
+    const LANDLORD = 'landlord';
 }

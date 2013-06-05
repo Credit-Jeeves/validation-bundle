@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Doctrine\ORM\QueryBuilder;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
@@ -50,7 +51,7 @@ class UserAdmin extends Admin
              ->add('first_name')
              ->add('middle_initial')
              ->add('last_name')
-             ->add('type')
+//             ->add('type')
 //             ->add('commentsEnabled')
          ;
     }
@@ -63,4 +64,34 @@ class UserAdmin extends Admin
 //             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
          ;
     }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $query = parent::createQuery($context);
+    
+        $query->getQueryBuilder()
+        ->andWhere('o.type = :type')
+        ->setParameter('type', 'applicant')
+        ;
+    
+        return $query;
+    }    
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRouteName()
+    {
+        return 'admin_rj_user_applicant';
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRoutePattern()
+    {
+        return '/rj/user/applicant';  
+    } 
 }

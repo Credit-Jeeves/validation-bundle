@@ -40,3 +40,6 @@
     {{ render(controller('ComponentBundle:Footer:index')) }}
 {% endblock %}
 
+{% block info %}
+    {% include '::userLogout.html.twig' %}
+{% endblock %}
