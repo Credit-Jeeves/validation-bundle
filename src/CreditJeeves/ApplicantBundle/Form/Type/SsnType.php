@@ -9,6 +9,8 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\ReversedTransformer;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SsnType extends AbstractType
 {
@@ -20,7 +22,17 @@ class SsnType extends AbstractType
                 'text',
                 array(
                     'label' => '',
-                    )
+                    'error_bubbling' => true,
+                    'constraints' => array(
+                        new NotBlank(),
+                        new Length(
+                            array(
+                                'min' => 3,
+                                'max' => 3
+                            )
+                        ),
+                    ),
+                )
             )->
             add(
                 'ssn2',
