@@ -172,6 +172,7 @@ class UserNewType extends AbstractType //UserType
                 'label' => '',
                 'data' => false,
                 'mapped' => false,
+                'error_bubbling' => true,
                 'constraints' => new True(
                     array(
                         'message' => 'error.user.tos',
