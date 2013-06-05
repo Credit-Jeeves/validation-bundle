@@ -54,7 +54,7 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '12',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
             )
         );
@@ -68,12 +68,12 @@ class NewCase extends BaseTestCase
             )
         );
         $form->pressButton('common.get.score');
-
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
         $this->assertEquals('user.email.verify', $title->getText(), 'Wrong score');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($submit = $form->findButton('user.email.again'));
         $submit->click();
+        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
@@ -86,9 +86,11 @@ class NewCase extends BaseTestCase
         $htmlLink->click();
         $this->assertNotNull($body = $this->page->find('css', '#email-body'));
         $this->assertNotEquals(false, $url = $this->retrieveAbsoluteUrl($body->getText()));
+        $this->setDefaultSession('symfony');
         $this->session->visit($url);
         $this->login('angela@example.com', 'pass');
         $this->logout();
+        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(3, $email, 'Wrong number of emails');
@@ -101,5 +103,6 @@ class NewCase extends BaseTestCase
         $htmlLink->click();
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
         $this->assertEquals('Welcome to CreditJeeves', $title->getText());
+        $this->setDefaultSession('symfony');
     }
 }
