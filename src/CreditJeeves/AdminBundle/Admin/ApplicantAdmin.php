@@ -44,7 +44,7 @@ class ApplicantAdmin extends Admin
     public function getBaseRoutePattern()
     {
         return '/rj/user/'.self::TYPE;
-    }    
+    }
     public function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -94,5 +94,4 @@ class ApplicantAdmin extends Admin
 //             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
         ;
     }
-
 }

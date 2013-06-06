@@ -101,5 +101,4 @@ class DealerAdmin extends Admin
 //             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
         ;
     }
-
 }

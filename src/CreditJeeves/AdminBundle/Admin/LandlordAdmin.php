@@ -51,11 +51,7 @@ class LandlordAdmin extends Admin
     {
         $showMapper
             ->add('email')
-            ->add('first_name')//             ->add('title')
-//             ->add('abstract')
-//             ->add('content')
-//             ->add('tags')
-        ;
+            ->add('full_name');
     }
 
     public function configureFormFields(FormMapper $formMapper)

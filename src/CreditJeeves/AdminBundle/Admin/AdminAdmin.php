@@ -59,8 +59,7 @@ class AdminAdmin extends Admin
                         'delete' => array(),
                     )
                 )
-            )
-        ;
+            );
     }
 
     public function configureFormFields(FormMapper $formMapper)
@@ -74,16 +73,14 @@ class AdminAdmin extends Admin
                 ->add('password', 'text', array('required' => false))
                 ->add('is_active', null, array('required' => false))
                 ->add('is_super_admin', null, array('required' => false))
-            ->end()
-         ;
+            ->end();
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
             ->add('is_active')
-            ->add('is_super_admin')
-        ;
+            ->add('is_super_admin');
     }
 
     public function preUpdate($user)
@@ -103,5 +100,5 @@ class AdminAdmin extends Admin
     public function getUserManager()
     {
         return $this->userManager;
-    }    
+    }
 }

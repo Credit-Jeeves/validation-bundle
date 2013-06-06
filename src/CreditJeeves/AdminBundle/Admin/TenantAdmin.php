@@ -38,16 +38,15 @@ class TenantAdmin extends Admin
     {
         return 'admin_rj_user_'.self::TYPE;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getBaseRoutePattern()
     {
         return '/rj/user/'.self::TYPE;
-    }    
-    
-    
+    }
+
     public function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -100,5 +99,4 @@ class TenantAdmin extends Admin
 //             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
          ;
     }
-
 }
