@@ -7,7 +7,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\QueryBuilder;
-use FOS\UserBundle\Model\UserManagerInterface;
+use Sonata\AdminBundle\Validator\ErrorElement;
 
 class AdminAdmin extends Admin
 {
@@ -70,7 +70,9 @@ class AdminAdmin extends Admin
                 ->add('middle_initial', null, array('required' => false))
                 ->add('last_name')
                 ->add('email')
-                ->add('password', 'text', array('required' => false))
+                ->add('password', 'hidden',array('required' => false))
+                ->add('password_new', 'password', array('required' => false, 'mapped' => false))
+                ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
                 ->add('is_active', null, array('required' => false))
                 ->add('is_super_admin', null, array('required' => false))
             ->end();
@@ -83,22 +85,30 @@ class AdminAdmin extends Admin
             ->add('is_super_admin');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function preUpdate($user)
     {
-        $this->getUserManager()->updateCanonicalFields($user);
-        $this->getUserManager()->updatePassword($user);
+        $request = $this->getRequest();
+        $formData = $request->request->get($this->getUniqid());
+        $password_new = $formData['password_new'];
+        $password_retype = $formData['password_retype'];
+        $password = $user->getPassword();
+        if (!empty($password_new) && $password_new === $password_retype) {
+            $user->setPassword(md5($password_new));
+        }
+        if (empty($password_new) || empty($password)) {
+            //return false;
+        }
     }
-    
-    public function setUserManager(UserManagerInterface $userManager)
-    {
-        $this->userManager = $userManager;
-    }
-    
+
     /**
-     * @return UserManagerInterface
+     * {@inheritdoc}
      */
-    public function getUserManager()
+    public function prePersist($user)
     {
-        return $this->userManager;
+        $user->setType(self::TYPE);
+        $this->preUpdate($user);
     }
 }
