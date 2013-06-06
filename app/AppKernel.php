@@ -60,7 +60,7 @@ abstract class AppKernel extends Kernel
         $this->catch = (bool)$boolean;
     }
 
-    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = false)
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
         if (static::IS_TEST) {
             return parent::handle($request, $type, $this->catch);
