@@ -7,7 +7,6 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\QueryBuilder;
-use Sonata\AdminBundle\Validator\ErrorElement;
 
 class AdminAdmin extends Admin
 {
@@ -90,17 +89,7 @@ class AdminAdmin extends Admin
      */
     public function preUpdate($user)
     {
-        $request = $this->getRequest();
-        $formData = $request->request->get($this->getUniqid());
-        $password_new = $formData['password_new'];
-        $password_retype = $formData['password_retype'];
-        $password = $user->getPassword();
-        if (!empty($password_new) && $password_new === $password_retype) {
-            $user->setPassword(md5($password_new));
-        }
-        if (empty($password_new) || empty($password)) {
-            //return false;
-        }
+        $user = $this->checkPassword($user);
     }
 
     /**
@@ -109,6 +98,27 @@ class AdminAdmin extends Admin
     public function prePersist($user)
     {
         $user->setType(self::TYPE);
-        $this->preUpdate($user);
+        $user = $this->checkPassword($user);
+    }
+
+    private function checkPassword($user)
+    {
+        $isValid = false;
+        $password = $user->getPassword();
+        $request = $this->getRequest();
+        $formData = $request->request->get($this->getUniqid());
+        $password_new = $formData['password_new'];
+        $password_retype = $formData['password_retype'];
+        if (!empty($password)) {
+            $isValid = true;
+        }
+        if (!empty($password_new) && $password_new === $password_retype) {
+            $isValid = true;
+            $user->setPassword(md5($password_new));
+        }
+        if (!$isValid) {
+            $request->getSession()->getFlashBag()->add('sonata_flash_error', 'Please, enter password for this admin' );
+        }
+        return $user;
     }
 }
