@@ -2,7 +2,7 @@
 namespace CreditJeeves\ExperianBundle\Tests;
 
 use \stdClass;
-use CreditJeeves\CoreBundle\Tests\BaseTestCase;
+use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\Atb;
 
 /**
@@ -10,7 +10,7 @@ use CreditJeeves\ExperianBundle\Atb;
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class AtbCase extends BaseTestCase
+class AtbCase extends \CreditJeeves\TestBundle\BaseTestCase
 {
 
     private $blocksHead = array(

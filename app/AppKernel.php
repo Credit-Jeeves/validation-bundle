@@ -16,12 +16,21 @@ use Fp\BadaBoomBundle\ChainNode\Provider\SessionProvider;
 use Fp\BadaBoomBundle\ChainNode\SafeChainNodeManager;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ChainNode\SymfonyExceptionHandlerChainNode;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\Serializer\Serializer;
 
-class AppKernel extends Kernel
+abstract class AppKernel extends Kernel
 {
+    const IS_TEST = false;
+
+    /**
+     * @var bool
+     */
+    private $catch = true;
+
     /**
      * @var \Fp\BadaBoomBundle\ExceptionCatcher\ExceptionCatcherInterface
      */
@@ -37,64 +46,60 @@ class AppKernel extends Kernel
      */
     protected $symfonyExceptionHandlerChainNode;
 
-    public function registerBundles()
+    public function __construct($environment, $debug, $catch = true)
     {
-//         $bundles = array(
-//             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
-//             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-//             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
-//             new Symfony\Bundle\TwigBundle\TwigBundle(),
-//             new Symfony\Bundle\MonologBundle\MonologBundle(),
-//             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-//             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-//             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-//             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-//             new JMS\AopBundle\JMSAopBundle(),
-//             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
-//             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
-//             new JMS\SerializerBundle\JMSSerializerBundle(),
-//             new FOS\UserBundle\FOSUserBundle(),
-//             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
-//             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
-//             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
-//             new Rj\EmailBundle\RjEmailBundle(),
-//             new Sonata\AdminBundle\SonataAdminBundle(),
-//             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
-//             new Sonata\jQueryBundle\SonatajQueryBundle(),
-//             new Sonata\BlockBundle\SonataBlockBundle(),
-//             new Payum\Bundle\PayumBundle\PayumBundle(),
-
-//             // Must be last in the list
-//             new CreditJeeves\CoreBundle\CoreBundle(),
-//             new CreditJeeves\DataBundle\DataBundle(),
-//             new CreditJeeves\ComponentBundle\ComponentBundle(),
-//             new CreditJeeves\PublicBundle\PublicBundle(),
-//             new CreditJeeves\ExperianBundle\ExperianBundle(),
-//             new CreditJeeves\UserBundle\UserBundle(),
-//             new CreditJeeves\AdminBundle\AdminBundle(),
-//             new CreditJeeves\DealerBundle\DealerBundle(),
-//             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
-//             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
-//             new RentJeeves\TenantBundle\TenantBundle(),
-//             new RentJeeves\LandlordBundle\LandlordBundle(),
-//         );
-
-//         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-//             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
-//             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
-//             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
-//         }
-//         if (in_array($this->getEnvironment(), array('test'))) {
-//             $bundles[] = new Behat\MinkBundle\MinkBundle();
-//             $bundles[] = new CreditJeeves\TestBundle\TestBundle(); // Must be last included bundle
-//         }
-
-//         return $bundles;
+        parent::__construct($environment, $debug);
+        $this->catch = $catch;
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
+    /**
+     * @param bool $boolean
+     */
+    public function setCatchException($boolean)
     {
-//         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+        $this->catch = (bool)$boolean;
+    }
+
+    public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = false)
+    {
+        if (static::IS_TEST) {
+            return parent::handle($request, $type, $this->catch);
+        }
+
+        return parent::handle($request, $type, $catch);
+    }
+
+    /**
+     * This is test speed suggested by Kris Wallsmith ih his blog
+     *
+     * @link http://kriswallsmith.net/post/27979797907/get-fast-an-easy-symfony2-phpunit-optimization
+     */
+    protected function initializeContainer()
+    {
+        if (!static::IS_TEST) {
+            return parent::initializeContainer();
+        }
+
+        static $first = true;
+
+        $debug = $this->debug;
+
+        if (false == $first) {
+            // disable debug mode on all but the first initialization
+            $this->debug = false;
+        }
+
+        // will not work with --process-isolation
+        $first = false;
+
+        try {
+            parent::initializeContainer();
+        } catch (\Exception $e) {
+            $this->debug = $debug;
+            throw $e;
+        }
+
+        $this->debug = $debug;
     }
 
     /**

@@ -19,19 +19,19 @@ class EmailTemplateAdmin extends BaseAdmin
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-        ->addIdentifier('name')
-        ->addIdentifier('createdAt')
-        ->addIdentifier('updatedAt')
-        ->add(
-            '_action',
-            'actions',
-            array(
+            ->addIdentifier('name')
+            ->addIdentifier('createdAt')
+            ->addIdentifier('updatedAt')
+            ->add(
+                '_action',
+                'actions',
+                array(
                     'actions' => array(
-                    'edit' => array(),
-                    'delete' => array(),
+                        'edit' => array(),
+                        'delete' => array(),
+                    )
                 )
-            )
-        );
+            );
     }
 
     // edit
@@ -53,7 +53,7 @@ class EmailTemplateAdmin extends BaseAdmin
                     array(
                         'label' => $locale,
                         'property_path' => sprintf('translationProxies[%s].subject', $locale),
-                        )
+                    )
                 )
                 ->end();
         }
@@ -61,14 +61,14 @@ class EmailTemplateAdmin extends BaseAdmin
         foreach ($locales as $locale) {
             $formMapper
                 ->with(sprintf("Body", $locale))
-                    ->add(
-                        sprintf("translationProxies_%s_body", $locale),
-                        'textarea',
-                        array(
-                            'label' => $locale,
-                            'property_path' => sprintf('translationProxies[%s].body', $locale),
-                        )
+                ->add(
+                    sprintf("translationProxies_%s_body", $locale),
+                    'textarea',
+                    array(
+                        'label' => $locale,
+                        'property_path' => sprintf('translationProxies[%s].body', $locale),
                     )
+                )
                 ->end();
         }
     }
@@ -77,6 +77,6 @@ class EmailTemplateAdmin extends BaseAdmin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-        ->add('name');
+            ->add('name');
     }
 }

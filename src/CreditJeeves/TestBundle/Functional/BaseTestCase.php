@@ -1,7 +1,7 @@
 <?php
-namespace CreditJeeves\CoreBundle\Tests\Functional;
+namespace CreditJeeves\TestBundle\Functional;
 
-use CreditJeeves\CoreBundle\Tests\BaseTestCase as Base;
+use CreditJeeves\TestBundle\BaseTestCase as Base;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>

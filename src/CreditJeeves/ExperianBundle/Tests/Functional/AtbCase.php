@@ -2,7 +2,7 @@
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
 use CreditJeeves\CoreBundle\Arf\ArfParser;
-use CreditJeeves\CoreBundle\Tests\BaseTestCase;
+use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\Atb;
 
 /**

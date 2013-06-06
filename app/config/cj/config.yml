@@ -1,7 +1,6 @@
 imports:
-    - { resource: ../base/parameters.yml } #different for each application
-    - { resource: parameters_base.yml } #different for each application
-    - { resource: parameters.yml } # would be generated from parameters_env.yml depends on enviroment
+    - { resource: ../base/config.yml }
+    - { resource: ../parameters.yml } # would be generated from parameters_SERVER.yml depends on SERVER
     - { resource: security.yml } #different for each application
     - { resource: ../base/fos.yml }
     - { resource: ../base/doctrine.yml }
@@ -10,10 +9,21 @@ imports:
     - { resource: ../base/swiftmailer.yml }
     - { resource: ../base/assetic.yml }
     - { resource: ../base/email.yml }
-    - { resource: ../base/experian.yml }
     - { resource: ../base/payum.yml }
     - { resource: ../base/sonata.yml }
     - { resource: ../base/framework.yml }
+
+parameters:
+    server_name: '%server_name_cj%'
+    support_email: help@creditjeeves.com
+    support_phone: (866)-976-6622
+
+    email_from: support@creditjeeves.com
+    email_name: Credit Jeeves
+
+    external_urls:
+        main_site: 'www.creditjeeves.com'
+        user_voice: 'creditjeeves.uservoice.com'
 
 framework:
     router:
