@@ -31,7 +31,7 @@ class BuyReportCase extends BaseTestCase
     );
 
     /**
-     * @~test
+     * @test
      */
     public function checkBuyReportBox()
     {

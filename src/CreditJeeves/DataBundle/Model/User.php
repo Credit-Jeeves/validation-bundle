@@ -382,6 +382,7 @@ abstract class User extends BaseUser
         $this->pidkiqs = new ArrayCollection();
         $this->incentives = new ArrayCollection();
         $this->tradelines = new ArrayCollection();
+        $this->created_at = new \DateTime();
     }
 
     public function getRoles()
