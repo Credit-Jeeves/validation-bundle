@@ -53,14 +53,14 @@ class LandlordAdmin extends Admin
             ->add('is_active')
             ->add('last_login', 'date')
             ->add(
-                    '_action',
-                    'actions',
-                    array(
-                            'actions' => array(
-                                    'edit' => array(),
-                                    'delete' => array(),
-                            )
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                        'delete' => array(),
                     )
+                )
             );
     }
 
@@ -72,7 +72,7 @@ class LandlordAdmin extends Admin
                 ->add('middle_initial', null, array('required' => false))
                 ->add('last_name')
                 ->add('email')
-                ->add('password', 'hidden',array('required' => false))
+                ->add('password', 'hidden', array('required' => false))
                 ->add('password_new', 'password', array('required' => false, 'mapped' => false))
                 ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
                 ->add('is_active', null, array('required' => false))
@@ -119,7 +119,10 @@ class LandlordAdmin extends Admin
             $user->setPassword(md5($password_new));
         }
         if (!$isValid) {
-            $request->getSession()->getFlashBag()->add('sonata_flash_error', 'Please, enter password for '.$user->getFullName() );
+            $request->getSession()->getFlashBag()->add(
+                'sonata_flash_error',
+                'Please, enter password for '.$user->getFullName()
+            );
         }
         return $user;
     }

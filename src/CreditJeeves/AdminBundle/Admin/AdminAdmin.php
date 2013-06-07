@@ -69,7 +69,7 @@ class AdminAdmin extends Admin
                 ->add('middle_initial', null, array('required' => false))
                 ->add('last_name')
                 ->add('email')
-                ->add('password', 'hidden',array('required' => false))
+                ->add('password', 'hidden', array('required' => false))
                 ->add('password_new', 'password', array('required' => false, 'mapped' => false))
                 ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
                 ->add('is_active', null, array('required' => false))
@@ -117,7 +117,7 @@ class AdminAdmin extends Admin
             $user->setPassword(md5($password_new));
         }
         if (!$isValid) {
-            $request->getSession()->getFlashBag()->add('sonata_flash_error', 'Please, enter password for this admin' );
+            $request->getSession()->getFlashBag()->add('sonata_flash_error', 'Please, enter password for this admin');
         }
         return $user;
     }
