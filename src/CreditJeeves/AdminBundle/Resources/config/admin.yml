@@ -1,30 +1,9 @@
 services:
-    sonata.admin.group:
-        class: CreditJeeves\AdminBundle\Admin\GroupAdmin
+# Admin groups for all applications
+    sonata.admin.admin:
+        class: CreditJeeves\AdminBundle\Admin\AdminAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Groups" }
-        arguments:
-            - ~
-            - CreditJeeves\DataBundle\Entity\Group
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
-    sonata.admin.applicant:
-        class: CreditJeeves\AdminBundle\Admin\ApplicantAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Applicants" }
-        arguments:
-            - ~
-            - CreditJeeves\DataBundle\Entity\User
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
-    sonata.admin.dealer:
-        class: CreditJeeves\AdminBundle\Admin\DealerAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Dealers" }
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Admins" }
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
@@ -42,3 +21,62 @@ services:
             - 'RjEmailBundle:EmailTemplateAdmin'
         calls:
             - [ setLocales, [%rj_email.locales%]]
+
+
+#Credit jeeves application
+    sonata.admin.group:
+        class: CreditJeeves\AdminBundle\Admin\GroupAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Groups" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\Group
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.applicant:
+        class: CreditJeeves\AdminBundle\Admin\ApplicantAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Applicants" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.dealer:
+        class: CreditJeeves\AdminBundle\Admin\DealerAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Dealers" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+# RentJeeves application
+    sonata.admin.tenant:
+        class: CreditJeeves\AdminBundle\Admin\TenantAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Tenants" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.landlord:
+        class: CreditJeeves\AdminBundle\Admin\LandlordAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Landlords" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\User
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
