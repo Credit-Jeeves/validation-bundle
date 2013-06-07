@@ -4,11 +4,8 @@ security:
             id: user.security.encoder.digest
 
     role_hierarchy:
-#        ROLE_USER:     ROLE_USER
         ROLE_TENANR:   ROLE_TENANT
         ROLE_LANDLORD: ROLE_LANDLORD
-#        ROLE_DEALER:   ROLE_DEALER
-        ROLE_ADMIN:    ROLE_ADMIN
 
     providers:
         custom:
@@ -25,11 +22,9 @@ security:
             anonymous:    true
 
     access_control:
-        - { path: ^/_behat/tests/,  role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_profiler/,     role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/_profiler/,     role: ROLE_USER }
-        - { path: ^/_profiler/,     role: ROLE_DEALER }
-        - { path: ^/_profiler/,     role: ROLE_ADMIN }
+        - { path: ^/_profiler/,     role: ROLE_LANDLORD }
+        - { path: ^/_profiler/,     role: ROLE_TENANT }
         - { path: ^/test,           role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting,      role: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -37,13 +32,5 @@ security:
         - { path: ^/new/,           role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/,         role: ROLE_ADMIN }
-#        - { path: ^/dealer/,        role: ROLE_DEALER }
-        - { path: ^/landlord/,      role: ROLE_USER }
-#        - { path: ^/tenant/,        role: ROLE_TENANT }
+        - { path: ^/landlord/,      role: ROLE_LANDLORD }
         - { path: ^/,               role: ROLE_TENANT }
-        
-
-# We'll additional pages
-#       - { path: ^/register,   role: IS_AUTHENTICATED_ANONYMOUSLY }
-#       - { path: ^/resetting,  role: IS_AUTHENTICATED_ANONYMOUSLY }
