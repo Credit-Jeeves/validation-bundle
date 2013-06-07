@@ -12,6 +12,39 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class ApplicantAdmin extends Admin
 {
+    /**
+     *
+     * @var string
+     */
+    const TYPE = 'applicant';
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $query = parent::createQuery($context);
+    
+        $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
+    
+        return $query;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRouteName()
+    {
+        return 'admin_rj_user_'.self::TYPE;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRoutePattern()
+    {
+        return '/rj/user/'.self::TYPE;
+    }
     public function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -60,35 +93,5 @@ class ApplicantAdmin extends Admin
             ->add('type')//             ->add('enabled')
 //             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-
-        $query->getQueryBuilder()
-            ->andWhere('o.type = :type')
-            ->setParameter('type', 'applicant');
-
-        return $query;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRouteName()
-    {
-        return 'admin_rj_user_applicant';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRoutePattern()
-    {
-        return '/rj/user/applicant';
     }
 }
