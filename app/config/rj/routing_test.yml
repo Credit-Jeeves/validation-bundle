@@ -1,7 +1,2 @@
 _main:
     resource: routing.yml
-
-_mink_bundle:
-    resource: "@MinkBundle/Resources/config/routing.yml"
-    prefix:   /
-

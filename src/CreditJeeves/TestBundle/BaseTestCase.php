@@ -42,16 +42,4 @@ abstract class BaseTestCase extends MinkTestCase
         $method->setAccessible(true);
         return $method->invokeArgs($obj, $args);
     }
-
-    protected function cleanDataInDB()
-    {
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $metadatas = $em->getMetadataFactory()->getAllMetadata();
-
-        if (!empty($metadatas)) {
-            $tool = new SchemaTool($em);
-            $tool->dropSchema($metadatas);
-            $tool->createSchema($metadatas);
-        }
-    }
 }

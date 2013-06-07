@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints\True;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\Table(name="cj_user")
  * @ORM\HasLifecycleCallbacks()
  */
