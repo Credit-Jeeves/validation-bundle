@@ -8,6 +8,8 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\QueryBuilder;
 
+use Doctrine\ORM\Query;
+
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class ApplicantAdmin extends Admin
@@ -17,19 +19,32 @@ class ApplicantAdmin extends Admin
      * @var string
      */
     const TYPE = 'applicant';
-    
+
+    protected $formOptions = array(
+            'validation_groups' => 'user_admin'
+    );
+
     /**
      * {@inheritdoc}
      */
     public function createQuery($context = 'list')
     {
         $query = parent::createQuery($context);
-    
-        $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
-    
+        $alias = $query->getRootAlias();
+        
+        $query->innerJoin($alias.'.scores', 's')
+            ->andWhere($alias.'.type = :type')
+            ->setParameter('type', self::TYPE);
+            
+            //->addOrderBy('s.id',  'DESC');
+            //
+        
+//         echo '<pre>';
+//         print_r($query->execute(array(), Query::HYDRATE_ARRAY));
+//         exit;
         return $query;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -37,7 +52,7 @@ class ApplicantAdmin extends Admin
     {
         return 'admin_rj_user_'.self::TYPE;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -45,53 +60,57 @@ class ApplicantAdmin extends Admin
     {
         return '/rj/user/'.self::TYPE;
     }
-    public function configureShowFields(ShowMapper $showMapper)
-    {
-        $showMapper
-            ->add('email')
-            ->add('first_name')//             ->add('title')
-//             ->add('abstract')
-//             ->add('content')
-//             ->add('tags')
-        ;
-    }
-
-    public function configureFormFields(FormMapper $formMapper)
-    {
-//         $formMapper
-//             ->with('General')
-//                 ->add('enabled', null, array('required' => false))
-//                 ->add('author', 'sonata_type_model', array(), array('edit' => 'list'))
-//                 ->add('title')
-//                 ->add('abstract')
-//                 ->add('content')
-//             ->end()
-//             ->with('Tags')
-//                 ->add('tags', 'sonata_type_model', array('expanded' => true))
-//             ->end()
-//             ->with('Options', array('collapsed' => true))
-//                 ->add('commentsCloseAt')
-//                 ->add('commentsEnabled', null, array('required' => false))
-//             ->end()
-//         ;
-    }
 
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-//             ->addIdentifier('title')
             ->add('first_name')
             ->add('middle_initial')
-            ->add('last_name')//             ->add('type')
-//             ->add('commentsEnabled')
-        ;
+            ->add('last_name')
+            ->add('email')
+            ->add('state')
+            ->add('zip')
+            ->add('city')
+            ->add('phone')
+            ->add('score')
+            ->add('Group')
+            ->add('Target')
+            ->add('is_verified')
+            ->add('is_active')
+            ->add('has_report')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                        'delete' => array(),
+                        //'report' => array(),
+                    )
+                )
+            );
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('type')//             ->add('enabled')
-//             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
-        ;
+            ->add('email')
+            ->add('first_name')
+            ->add('middle_initial')
+            ->add('last_name')
+            ->add('is_verified');
+    }
+
+    public function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->with('General')
+                ->add('first_name')
+                ->add('middle_initial')
+                ->add('last_name')
+                ->add('email')
+                ->add('is_verified')
+                ->add('culture')
+            ->end();
     }
 }

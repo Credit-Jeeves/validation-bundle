@@ -19,6 +19,10 @@ class LandlordAdmin extends Admin
      */
     const TYPE = 'landlord';
 
+    protected $formOptions = array(
+            'validation_groups' => 'user_admin'
+    );
+
     /**
      * {@inheritdoc}
      */
@@ -76,7 +80,6 @@ class LandlordAdmin extends Admin
                 ->add('password_new', 'password', array('required' => false, 'mapped' => false))
                 ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
                 ->add('is_active', null, array('required' => false))
-//                ->add('is_super_admin', null, array('required' => false))
             ->end();
     }
 
