@@ -104,6 +104,14 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertCount(7, $list, 'Wrong number of blocks');
         $link = $list[1]->getParent();
         $link->click();
+        $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));
+        $this->assertCount(1, $admins);
+        $this->page->clickLink('link_action_create');
+        $this->assertNotNull($form = $this->page->find('css', 'form'));
+        $this->assertNotNull($submit = $form->findButton('btn_create_and_edit_again'));
+        $submit->click();
+        $this->assertNotNull($error = $this->page->find('css', '.alert-error'));
+        
         $this->logout();
     }
 
