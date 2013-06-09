@@ -96,7 +96,6 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function adminManageAdmins()
     {
-        $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
         $this->assertCount(3, $tables, 'Wrong number of blocks');
@@ -111,7 +110,28 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($submit = $form->findButton('btn_create_and_edit_again'));
         $submit->click();
         $this->assertNotNull($error = $this->page->find('css', '.alert-error'));
-        
+        $this->assertNotNull($fields = $this->page->findAll('css', 'form input'));
+        $this->assertCount(13, $fields, 'wrong number of inputs');
+        $this->fillForm(
+            $form,
+            array(
+                $fields[0]->getAttribute('id') => 'test',
+                $fields[2]->getAttribute('id') => 'test',
+                $fields[3]->getAttribute('id') => 'test@admin.com',
+            )
+        );
+        $submit->click();
+        $this->page->clickLink('User List');
+        $this->assertNotNull($admins = $this->page->findAll('css', 'a.delete_link'));
+        $this->assertCount(2, $admins);
+        $admins[1]->click();
+        $this->assertNotNull($form = $this->page->find('css', 'form'));
+        $this->assertNotNull($delete = $form->findButton('btn_delete'));
+        $delete->click();
+        $this->assertNotNull($message = $this->page->find('css', '.alert-success'));
+        $this->assertEquals('flash_delete_success', $message->getText());
+        $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));
+        $this->assertCount(1, $admins);
         $this->logout();
     }
 
