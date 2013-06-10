@@ -8,7 +8,6 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\QueryBuilder;
 
-
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class TenantAdmin extends Admin
@@ -18,25 +17,27 @@ class TenantAdmin extends Admin
      * @var string
      */
     const TYPE = 'tenant';
-    
+
+    protected $formOptions = array(
+            'validation_groups' => 'user_admin'
+    );
+
     /**
      * {@inheritdoc}
      */
     public function createQuery($context = 'list')
     {
         $query = parent::createQuery($context);
-    
         $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
-    
         return $query;
     }
-    
+
     /**
      * {@inheritdoc}
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_user_'.self::TYPE;
+        return 'admin_rj_'.self::TYPE;
     }
 
     /**
@@ -44,59 +45,58 @@ class TenantAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/user/'.self::TYPE;
+        return '/rj/'.self::TYPE;
     }
 
-    public function configureShowFields(ShowMapper $showMapper)
+    /**
+     * {@inheritdoc}
+     */
+    public function prePersist($user)
     {
-        $showMapper
-            ->add('email')
-             ->add('first_name')
-//             ->add('title')
-//             ->add('abstract')
-//             ->add('content')
-//             ->add('tags')
-        ;
-    }
-
-    public function configureFormFields(FormMapper $formMapper)
-    {
-//         $formMapper
-//             ->with('General')
-//                 ->add('enabled', null, array('required' => false))
-//                 ->add('author', 'sonata_type_model', array(), array('edit' => 'list'))
-//                 ->add('title')
-//                 ->add('abstract')
-//                 ->add('content')
-//             ->end()
-//             ->with('Tags')
-//                 ->add('tags', 'sonata_type_model', array('expanded' => true))
-//             ->end()
-//             ->with('Options', array('collapsed' => true))
-//                 ->add('commentsCloseAt')
-//                 ->add('commentsEnabled', null, array('required' => false))
-//             ->end()
-//         ;
+        $user->setType(self::TYPE);
     }
 
     public function configureListFields(ListMapper $listMapper)
     {
-         $listMapper
-//             ->addIdentifier('title')
-             ->add('first_name')
-             ->add('middle_initial')
-             ->add('last_name')
-//             ->add('type')
-//             ->add('commentsEnabled')
-         ;
+        $listMapper
+            ->add('first_name')
+            ->add('middle_initial')
+            ->add('last_name')
+            ->add('email')
+            ->add('state')
+            ->add('zip')
+            ->add('city')
+            ->add('phone')
+            ->add('is_active')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                        'delete' => array(),
+                    )
+                )
+            );
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-         $datagridMapper
-             ->add('type')
-//             ->add('enabled')
-//             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
-         ;
+        $datagridMapper
+            ->add('is_active')
+            ->add('state')
+            ->add('city');
+    }
+
+    public function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->with('Profile')
+            ->add('first_name')
+            ->add('middle_initial')
+            ->add('last_name')
+            ->add('email')
+            ->add('culture')
+            ->end();
     }
 }

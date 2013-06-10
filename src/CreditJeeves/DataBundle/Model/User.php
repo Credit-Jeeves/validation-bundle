@@ -26,7 +26,8 @@ abstract class User extends BaseUser
      *     message="error.user.first_name.empty",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      * @Assert\Length(
@@ -36,7 +37,8 @@ abstract class User extends BaseUser
      *     maxMessage="error.user.first_name.long",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      */
@@ -53,7 +55,8 @@ abstract class User extends BaseUser
      *     message="error.user.last_name.empty",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      * @Assert\Length(
@@ -63,11 +66,27 @@ abstract class User extends BaseUser
      *     maxMessage="error.user.last_name.long",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      */
     protected $last_name;
+
+    /**
+     * @Assert\NotBlank(
+     *     message="error.user.last_name.empty",
+     *     groups={
+     *         "user_admin"
+     *     }
+     * )
+     * @Assert\Email(
+     *     groups={
+     *         "user_admin"
+     *     }
+     * )
+     */
+    protected $email;
 
     /**
      * @ORM\Column(type="encrypt")

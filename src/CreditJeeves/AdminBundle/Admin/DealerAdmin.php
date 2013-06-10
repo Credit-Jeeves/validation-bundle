@@ -35,7 +35,7 @@ class DealerAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_user_'.self::TYPE;
+        return 'admin_cj_'.self::TYPE;
     }
     
     /**
@@ -43,7 +43,7 @@ class DealerAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/user/'.self::TYPE;
+        return '/cj/'.self::TYPE;
     }
     
     /**

@@ -6,6 +6,14 @@
                 <source>project_name</source>
                 <target>CreditJeeves</target>
             </trans-unit>
+            <trans-unit id="action_observe">
+                <source>action_observe</source>
+                <target>Observe</target>
+            </trans-unit>
+            <trans-unit id="action_report">
+                <source>action_report</source>
+                <target>Report</target>
+            </trans-unit>
             <trans-unit id="login.title">
                 <source>login.title</source>
                 <target>Member Login</target>
