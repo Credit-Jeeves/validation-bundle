@@ -37,7 +37,7 @@ class NetConnectCase extends BaseTestCase
         $netConnect = new NetConnect();
         $netConnect->execute(self::getContainer());
 
-        $aplicant = new User();
+        $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
