@@ -36,7 +36,7 @@ class TenantAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_user_'.self::TYPE;
+        return 'admin_rj_'.self::TYPE;
     }
 
     /**
@@ -44,7 +44,7 @@ class TenantAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/user/'.self::TYPE;
+        return '/rj/'.self::TYPE;
     }
 
     public function configureShowFields(ShowMapper $showMapper)

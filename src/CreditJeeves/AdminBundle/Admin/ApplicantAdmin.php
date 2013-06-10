@@ -6,8 +6,9 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
-use Doctrine\ORM\QueryBuilder;
+use Sonata\AdminBundle\Route\RouteCollection;
 
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
@@ -50,7 +51,7 @@ class ApplicantAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_user_'.self::TYPE;
+        return 'admin_cj_'.self::TYPE;
     }
 
     /**
@@ -58,7 +59,15 @@ class ApplicantAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/user/'.self::TYPE;
+        return '/cj/'.self::TYPE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function configureRoutes(RouteCollection $collection)
+    {
+        $collection->add('observe', $this->getRouterIdParameter().'/observe');
     }
 
     public function configureListFields(ListMapper $listMapper)
@@ -85,7 +94,12 @@ class ApplicantAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
-                        //'report' => array(),
+                        'show' => array(
+                             'template' => 'AdminBundle:CRUD:list__action_show.html.twig'
+                        ),
+                        'observe' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_observe.html.twig'
+                        ),
                     )
                 )
             );

@@ -42,7 +42,7 @@ services:
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
-            - 'SonataAdminBundle:CRUD'
+            - AdminBundle:ApplicantAdmin
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
