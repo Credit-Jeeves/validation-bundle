@@ -16,6 +16,10 @@ class AdminAdmin extends Admin
      */
     const TYPE = 'admin';
 
+    protected $formOptions = array(
+            'validation_groups' => 'user_admin'
+        );
+
     /**
      * {@inheritdoc}
      */
@@ -65,7 +69,7 @@ class AdminAdmin extends Admin
     {
         $formMapper
             ->with('General')
-                ->add('first_name')
+                ->add('first_name', 'text', array('required' => true, 'validation_groups' => array('user_profile')))
                 ->add('middle_initial', null, array('required' => false))
                 ->add('last_name')
                 ->add('email')
