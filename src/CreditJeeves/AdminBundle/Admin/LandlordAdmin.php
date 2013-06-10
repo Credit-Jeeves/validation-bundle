@@ -26,16 +26,6 @@ class LandlordAdmin extends Admin
     /**
      * {@inheritdoc}
      */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-        $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
-        return $query;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getBaseRouteName()
     {
         return 'admin_rj_'.self::TYPE;
@@ -102,7 +92,7 @@ class LandlordAdmin extends Admin
      */
     public function prePersist($user)
     {
-        $user->setType(self::TYPE);
+//        $user->setType(self::TYPE);
         $user = $this->checkPassword($user);
     }
 
@@ -119,6 +109,7 @@ class LandlordAdmin extends Admin
         }
         if (!empty($password_new) && $password_new === $password_retype) {
             $isValid = true;
+            // FIXME DO NOT HARDCODE IT!!!
             $user->setPassword(md5($password_new));
         }
         if (!$isValid) {

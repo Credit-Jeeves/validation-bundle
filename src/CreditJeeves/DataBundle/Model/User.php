@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use FOS\UserBundle\Entity\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
@@ -263,8 +264,9 @@ abstract class User extends BaseUser
     protected $has_report = false;
 
     /**
+     * @ORM\Column(type="UserType")
      */
-    protected $type = 'applicant';
+    protected $type;
 
     /**
      * @ORM\Column(type="bigint")
@@ -418,15 +420,14 @@ abstract class User extends BaseUser
 
     public function getRoles()
     {
-        $sType = $this->getType();
-        switch ($sType) {
-            case 'applicant':
+        switch ($this->getType()) {
+            case UserType::APPLICANT:
                 return array('ROLE_USER');
-                break;
-            case 'dealer':
+
+            case UserType::DEALER:
                 return array('ROLE_DEALER');
-                break;
-            case 'admin':
+
+            case UserType::ADMIN:
                 return array(
                     'ROLE_USER',
                     'ROLE_DEALER',
@@ -434,14 +435,14 @@ abstract class User extends BaseUser
                     'ROLE_TENANT',
                     'ROLE_LANDLORD'
                 );
-                break;
-            case 'tenant':
+
+            case UserType::TETNANT:
                 return array('ROLE_TENANT');
-                break;
-            case 'landlord':
+
+            case UserType::LANDLORD:
                 return array('ROLE_LANDLORD');
-                break;
         }
+        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
 
     /**

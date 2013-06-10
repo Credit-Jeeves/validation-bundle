@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -8,4 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Admin extends User
 {
+    /**
+     * @var string
+     */
+    protected $type = UserType::ADMIN;
 }

@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\True;
  * @ORM\Table(name="cj_user")
  * @ORM\HasLifecycleCallbacks()
  */
-class User extends BaseUser
+abstract class User extends BaseUser
 {
     /**
      * @ORM\PreRemove
@@ -237,7 +237,7 @@ class User extends BaseUser
 
     public function getUserToRemove()
     {
-        $User = new self();
+        $User = new static();
         $User->setFirstName($this->getFirstName());
         $User->setMiddleInitial($this->getMiddleInitial());
         $User->setLastName($this->getLastName());

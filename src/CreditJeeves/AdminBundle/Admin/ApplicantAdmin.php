@@ -33,9 +33,7 @@ class ApplicantAdmin extends Admin
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
         
-        $query->innerJoin($alias.'.scores', 's')
-            ->andWhere($alias.'.type = :type')
-            ->setParameter('type', self::TYPE);
+        $query->innerJoin($alias.'.scores', 's');
             
             //->addOrderBy('s.id',  'DESC');
             //

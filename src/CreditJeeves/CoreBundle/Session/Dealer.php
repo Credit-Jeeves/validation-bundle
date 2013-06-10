@@ -2,7 +2,7 @@
 namespace CreditJeeves\CoreBundle\Session;
 
 use JMS\DiExtraBundle\Annotation\Service;
-use CreditJeeves\DataBundle\Entity\User as cjUser;
+use CreditJeeves\DataBundle\Entity\Dealer as UserEntity;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 /**
@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
  */
 class Dealer extends User
 {
-    public function setUser(cjUser $User)
+    public function setUser(UserEntity $User)
     {
     }
 }
