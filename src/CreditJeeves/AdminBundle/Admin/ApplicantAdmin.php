@@ -68,6 +68,7 @@ class ApplicantAdmin extends Admin
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->add('observe', $this->getRouterIdParameter().'/observe');
+        $collection->add('report', $this->getRouterIdParameter().'/report');
     }
 
     public function configureListFields(ListMapper $listMapper)
@@ -94,8 +95,8 @@ class ApplicantAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
-                        'show' => array(
-                             'template' => 'AdminBundle:CRUD:list__action_show.html.twig'
+                        'report' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_report.html.twig'
                         ),
                         'observe' => array(
                             'template' => 'AdminBundle:CRUD:list__action_observe.html.twig'

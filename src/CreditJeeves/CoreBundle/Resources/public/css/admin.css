@@ -11,3 +11,8 @@
 .sonata-bc .icon-report {
     background-position: -24px -23px;
 }
+
+.sonata-bc .btn {
+    margin: 1px;
+    width: 85px;
+}

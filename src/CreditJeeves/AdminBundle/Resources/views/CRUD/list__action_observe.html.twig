@@ -9,8 +9,8 @@ file that was distributed with this source code.
 
 #}
 {% if admin.isGranted('EDIT', object) and admin.hasRoute('observe') %}
-    <a href="{{ admin.generateObjectUrl('observe', object) }}" class="btn edit_link" title="{{ 'action_edit'|trans({}, 'SonataAdminBundle') }}">
-        <i class="icon-report"></i>
-        {{ 'action_edit'|trans({}, 'SonataAdminBundle') }}
+    <a href="{{ admin.generateObjectUrl('observe', object) }}" class="btn edit_link" title="{{ 'action_observe'|trans({}) }}">
+        <i class="icon-show"></i>
+        {{ 'action_observe'|trans({}) }}
     </a>
 {% endif %}
