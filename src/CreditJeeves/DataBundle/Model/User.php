@@ -244,7 +244,6 @@ abstract class User extends BaseUser
     protected $has_report = false;
 
     /**
-     * @ORM\Column(type="UserType")
      */
     protected $type = 'applicant';
 
