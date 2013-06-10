@@ -3,7 +3,7 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\TestBundle\BaseTestCase;
-use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\ExperianBundle\Pidkiq;
 
 /**
@@ -106,7 +106,7 @@ class PidkiqCase extends BaseTestCase
         $pidkiq = new Pidkiq();
         $pidkiq->execute(self::getContainer());
 
-        $aplicant = new User();
+        $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
