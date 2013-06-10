@@ -4,7 +4,7 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\NetConnect;
-use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Applicant;
 
 /**
  * NetConnect test case.
