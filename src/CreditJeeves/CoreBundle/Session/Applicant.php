@@ -2,7 +2,7 @@
 namespace CreditJeeves\CoreBundle\Session;
 
 use JMS\DiExtraBundle\Annotation\Service;
-use CreditJeeves\DataBundle\Entity\User as UserEntity;
+use CreditJeeves\DataBundle\Entity\Applicant as UserEntity;
 
 /**
  * @Service("core.session.applicant")
