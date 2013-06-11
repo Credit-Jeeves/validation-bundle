@@ -21,18 +21,6 @@ class DealerAdmin extends Admin
     /**
      * {@inheritdoc}
      */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-    
-        $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
-    
-        return $query;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
     public function getBaseRouteName()
     {
         return 'admin_cj_'.self::TYPE;
@@ -96,9 +84,9 @@ class DealerAdmin extends Admin
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper
-            ->add('type')//             ->add('enabled')
-//             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
-        ;
+//        $datagridMapper
+//            ->add('type')//             ->add('enabled')
+////             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
+//        ;
     }
 }

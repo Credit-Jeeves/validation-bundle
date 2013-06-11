@@ -25,16 +25,6 @@ class TenantAdmin extends Admin
     /**
      * {@inheritdoc}
      */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-        $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
-        return $query;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getBaseRouteName()
     {
         return 'admin_rj_'.self::TYPE;

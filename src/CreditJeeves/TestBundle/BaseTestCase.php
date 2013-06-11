@@ -2,6 +2,7 @@
 namespace CreditJeeves\TestBundle;
 
 use Behat\MinkBundle\Test\MinkTestCase;
+use Doctrine\ORM\Tools\SchemaTool;
 use \ReflectionClass;
 
 /**

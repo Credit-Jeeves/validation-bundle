@@ -121,7 +121,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
             )
         );
         $submit->click();
-        $this->page->clickLink('User List');
+        $this->page->clickLink('Admin List');
         $this->assertNotNull($admins = $this->page->findAll('css', 'a.delete_link'));
         $this->assertCount(2, $admins);
         $admins[1]->click();

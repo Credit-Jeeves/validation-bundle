@@ -29,14 +29,13 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
     {
         $this->load($this->fixtures, true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
-        $this->assertCount(3, $tables, 'Wrong number of blocks');
-        $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(7, $list, 'Wrong number of blocks');
-        $link = $list[6]->getParent();
-        $link->click();
-        $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));
-        $this->assertCount(1, $admins);
+        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_landlords'));
+
+        $tableBlock->clickLink('link_list');
+
+
+        $this->assertNotNull($landlords = $this->page->findAll('css', 'a.edit_link'));
+        $this->assertCount(1, $landlords);
         $this->page->clickLink('link_action_create');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($submit = $form->findButton('btn_create_and_edit_again'));
@@ -53,17 +52,17 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
             )
         );
         $submit->click();
-        $this->page->clickLink('User List');
-        $this->assertNotNull($admins = $this->page->findAll('css', 'a.delete_link'));
-        $this->assertCount(2, $admins);
-        $admins[1]->click();
+        $this->page->clickLink('Landlord List');
+        $this->assertNotNull($landlords = $this->page->findAll('css', 'a.delete_link'));
+        $this->assertCount(2, $landlords);
+        $landlords[1]->click();
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($delete = $form->findButton('btn_delete'));
         $delete->click();
         $this->assertNotNull($message = $this->page->find('css', '.alert-success'));
         $this->assertEquals('flash_delete_success', $message->getText());
-        $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));
-        $this->assertCount(1, $admins);
+        $this->assertNotNull($landlords = $this->page->findAll('css', 'a.edit_link'));
+        $this->assertCount(1, $landlords);
         $this->logout();
     }
 }
