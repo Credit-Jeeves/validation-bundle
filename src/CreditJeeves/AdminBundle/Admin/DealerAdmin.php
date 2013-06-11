@@ -46,6 +46,19 @@ class DealerAdmin extends Admin
         return '/cj/'.self::TYPE;
     }
     
+    
+    public function configureListFields(ListMapper $listMapper)
+    {
+        $listMapper
+        //             ->addIdentifier('title')
+        ->add('first_name')
+        ->add('middle_initial')
+        ->add('last_name')//             ->add('type')
+        //             ->add('commentsEnabled')
+        ;
+    }
+    
+    
     /**
      *
      * @var string
@@ -83,16 +96,6 @@ class DealerAdmin extends Admin
 //         ;
     }
 
-    public function configureListFields(ListMapper $listMapper)
-    {
-        $listMapper
-//             ->addIdentifier('title')
-            ->add('first_name')
-            ->add('middle_initial')
-            ->add('last_name')//             ->add('type')
-//             ->add('commentsEnabled')
-        ;
-    }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {

@@ -2,16 +2,20 @@
 namespace CreditJeeves\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Admin\Admin;
-use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Form\FormMapper;
+// use Sonata\AdminBundle\Datagrid\DatagridMapper;
+// use Sonata\AdminBundle\Datagrid\ListMapper;
+// use Sonata\AdminBundle\Show\ShowMapper;
+// use Sonata\AdminBundle\Route\RouteCollection;
 
-use Doctrine\ORM\QueryBuilder;
+// use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Query;
 
-use Knp\Menu\ItemInterface as MenuItemInterface;
+// use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class ApplicantAdmin extends Admin
 {
@@ -60,32 +64,6 @@ class ApplicantAdmin extends Admin
     public function getBaseRoutePattern()
     {
         return '/cj/'.self::TYPE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        $collection->remove('export');
-        $collection->remove('observe');
-        $collection->add(
-            $name = 'observe',
-            $pattern = $this->getRouterIdParameter().'/observe',
-            $defaults = array(
-                '_controller' => 'AdminBundle:ApplicantAdmin:observe',
-                //'_sonata_admin' => 'sonata.admin.applicant'
-            )
-        );
-        $collection->remove('report');
-        $collection->add(
-            $name = 'report',
-            $pattern = $this->getRouterIdParameter().'/report',
-            $defaults = array(
-                '_controller' => 'AdminBundle:ApplicantAdmin:report',
-                //'_sonata_admin' => 'sonata.admin.applicant'
-            )
-        );
     }
 
     public function configureListFields(ListMapper $listMapper)

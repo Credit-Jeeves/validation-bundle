@@ -7,7 +7,7 @@ services:
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
-            - 'AdminBundle:AdminAdmin'
+            - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -31,7 +31,7 @@ services:
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\Group
-            - 'AdminBundle:GroupAdmin'
+            - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -42,7 +42,7 @@ services:
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
-            - 'AdminBundle:ApplicantAdmin'
+            - 'SonataAdminBundle:CRUD'
 #        calls:
 #            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -53,7 +53,7 @@ services:
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
-            - 'AdminBundle:DealerAdmin'
+            - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -65,7 +65,7 @@ services:
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
-            - 'AdminBundle:TenantAdmin'
+            - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -76,7 +76,7 @@ services:
         arguments:
             - ~
             - CreditJeeves\DataBundle\Entity\User
-            - 'AdminBundle:LandlordAdmin'
+            - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
