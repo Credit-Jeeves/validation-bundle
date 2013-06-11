@@ -6,13 +6,8 @@ services:
             - { name: sonata.admin, manager_type: orm, group: admin, label: "Admins" }
         arguments:
             - ~
-<<<<<<< HEAD
             - CreditJeeves\DataBundle\Entity\User
             - 'SonataAdminBundle:CRUD'
-=======
-            - CreditJeeves\DataBundle\Entity\Admin
-            - 'AdminBundle:AdminAdmin'
->>>>>>> a565867c7e278da6faac6ec5194230980c58851e
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -46,13 +41,8 @@ services:
             - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Applicants" }
         arguments:
             - ~
-<<<<<<< HEAD
             - CreditJeeves\DataBundle\Entity\User
             - 'SonataAdminBundle:CRUD'
-=======
-            - CreditJeeves\DataBundle\Entity\Applicant
-            - 'AdminBundle:ApplicantAdmin'
->>>>>>> a565867c7e278da6faac6ec5194230980c58851e
 #        calls:
 #            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -62,13 +52,8 @@ services:
             - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Dealers" }
         arguments:
             - ~
-<<<<<<< HEAD
             - CreditJeeves\DataBundle\Entity\User
             - 'SonataAdminBundle:CRUD'
-=======
-            - CreditJeeves\DataBundle\Entity\Dealer
-            - 'AdminBundle:DealerAdmin'
->>>>>>> a565867c7e278da6faac6ec5194230980c58851e
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -79,13 +64,8 @@ services:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Tenants" }
         arguments:
             - ~
-<<<<<<< HEAD
             - CreditJeeves\DataBundle\Entity\User
             - 'SonataAdminBundle:CRUD'
-=======
-            - CreditJeeves\DataBundle\Entity\Tenant
-            - 'AdminBundle:TenantAdmin'
->>>>>>> a565867c7e278da6faac6ec5194230980c58851e
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
@@ -95,13 +75,8 @@ services:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Landlords" }
         arguments:
             - ~
-<<<<<<< HEAD
             - CreditJeeves\DataBundle\Entity\User
             - 'SonataAdminBundle:CRUD'
-=======
-            - CreditJeeves\DataBundle\Entity\Landlord
-            - 'AdminBundle:LandlordAdmin'
->>>>>>> a565867c7e278da6faac6ec5194230980c58851e
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
