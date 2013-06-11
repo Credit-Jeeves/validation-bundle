@@ -72,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "327236713b72ee7786ce00cc154749b6844ddaf3"
+                    "reference": "d4f0312a3d46ea097a5de6ef8cbc128d8aa3b976"
                 }
             }
         },
@@ -103,6 +103,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/SensioGeneratorBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/KhepinYamlFixturesBundle.git"
         }
     ],
     "require": {
@@ -151,14 +155,16 @@
         "sonata-project/doctrine-orm-admin-bundle": "dev-master"
     },
     "require-dev": {
-        "doctrine/data-fixtures": "1.0.x-dev",
         "qunit": "v1",
         "envjs": "v1",
         "sinon": "1.5.0",
         "behat/mink-bundle": "dev-master",
         "behat/mink-selenium2-driver": "1.1.*",
         "behat/mink-zombie-driver": "1.1.*",
-        "behat/mink-goutte-driver": "1.0.*"
+        "behat/mink-goutte-driver": "1.0.*",
+        "doctrine/data-fixtures": "dev-master",
+        "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
+        "khepin/yaml-fixtures-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

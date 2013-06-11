@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\AdminBundle\Admin;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -17,21 +18,11 @@ class LandlordAdmin extends Admin
      *
      * @var string
      */
-    const TYPE = 'landlord';
+    const TYPE = UserType::LANDLORD;
 
     protected $formOptions = array(
             'validation_groups' => 'user_admin'
     );
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-        $query->getQueryBuilder()->andWhere('o.type = :type')->setParameter('type', self::TYPE);
-        return $query;
-    }
 
     /**
      * {@inheritdoc}
@@ -119,6 +110,7 @@ class LandlordAdmin extends Admin
         }
         if (!empty($password_new) && $password_new === $password_retype) {
             $isValid = true;
+            // FIXME DO NOT HARDCODE IT!!!
             $user->setPassword(md5($password_new));
         }
         if (!$isValid) {

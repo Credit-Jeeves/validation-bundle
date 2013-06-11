@@ -1,8 +1,9 @@
 <?php
 namespace CreditJeeves\CoreBundle\Session;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Service;
-use CreditJeeves\DataBundle\Entity\User as cjUser;
+use CreditJeeves\DataBundle\Entity\Admin as UserEntity;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 /**
@@ -10,13 +11,13 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
  */
 class Admin extends User
 {
-    public function setUser(cjUser $User)
+    public function setUser(UserEntity $User)
     {
         $this->prepareAdmin($User);
-        $this->saveToSession(self::USER_ADMIN);
+        $this->saveToSession(UserType::ADMIN);
     }
 
-    public function prepareAdmin(cjUser $User)
+    public function prepareAdmin(UserEntity $User)
     {
         $this->data['user_id'] = $User->getId();
     }
@@ -26,7 +27,7 @@ class Admin extends User
      */
     public function getUser()
     {
-        $data = $this->getFromSession(self::USER_ADMIN);
+        $data = $this->getFromSession(UserType::ADMIN);
         if (isset($data['user_id'])) {
             return $this->findUser($data['user_id']);
         }

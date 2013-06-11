@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "9fbae6548e31ef13010af64205ea80ef",
+    "hash": "2d83d8c851cb68808a056e85cf340e8e",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "327236713b72ee7786ce00cc154749b6844ddaf3"
+                "reference": "d4f0312a3d46ea097a5de6ef8cbc128d8aa3b976"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-05-29 20:32:09"
+            "time": "2013-05-31 13:57:18"
         },
         {
             "name": "a2lix/translation-form-bundle",
@@ -3366,6 +3366,58 @@
             "time": "2013-04-11 23:14:04"
         },
         {
+            "name": "doctrine/doctrine-fixtures-bundle",
+            "version": "v2.1.0-ALPHA",
+            "target-dir": "Doctrine/Bundle/FixturesBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/DoctrineFixturesBundle.git",
+                "reference": "v2.1.0-ALPHA"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/DoctrineFixturesBundle/zipball/v2.1.0-ALPHA",
+                "reference": "v2.1.0-ALPHA",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/data-fixtures": "*",
+                "php": ">=5.3.2",
+                "symfony/symfony": ">=2.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Bundle\\FixturesBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Doctrine Project",
+                    "homepage": "http://www.doctrine-project.org"
+                }
+            ],
+            "description": "Symfony DoctrineFixturesBundle",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "Fixture",
+                "persistence"
+            ],
+            "time": "2012-01-18 16:33:12"
+        },
+        {
             "name": "envjs",
             "version": "v1",
             "source": {
@@ -3576,6 +3628,50 @@
             "time": "2013-02-19 18:37:07"
         },
         {
+            "name": "khepin/yaml-fixtures-bundle",
+            "version": "dev-master",
+            "target-dir": "Khepin/YamlFixturesBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/KhepinYamlFixturesBundle.git",
+                "reference": "50d756d3e2b41510d6747d4d9794f63745cbfa8a"
+            },
+            "require": {
+                "doctrine/data-fixtures": "dev-master",
+                "doctrine/doctrine-bundle": "*",
+                "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
+                "doctrine/orm": "2.*"
+            },
+            "require-dev": {
+                "doctrine/mongodb": "*@beta",
+                "doctrine/mongodb-odm": "*@beta",
+                "doctrine/mongodb-odm-bundle": "3.*@beta",
+                "mockery/mockery": "dev-master"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Khepin\\YamlFixturesBundle": "",
+                    "Khepin": "tests"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sébastien Armand",
+                    "email": "khepin@gmail.com"
+                }
+            ],
+            "description": "Symfony bundle for easy loading of YAML based fixtures.",
+            "homepage": "https://github.com/khepin/KhepinYamlFixturesBundle",
+            "keywords": [
+                "data fixtures doctrine yaml"
+            ],
+            "time": "2013-06-06 13:33:30"
+        },
+        {
             "name": "qunit",
             "version": "v1",
             "source": {
@@ -3622,8 +3718,10 @@
         "sonata-project/block-bundle": 20,
         "sonata-project/admin-bundle": 20,
         "sonata-project/doctrine-orm-admin-bundle": 20,
+        "behat/mink-bundle": 20,
         "doctrine/data-fixtures": 20,
-        "behat/mink-bundle": 20
+        "doctrine/doctrine-fixtures-bundle": 15,
+        "khepin/yaml-fixtures-bundle": 20
     },
     "platform": {
         "php": ">=5.3.3",

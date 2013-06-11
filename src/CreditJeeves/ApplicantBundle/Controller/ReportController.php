@@ -24,10 +24,8 @@ class ReportController extends Controller
         /* @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
 
-//        $Report = $User->getReportsD2c()->last();
-
         /** @var Order $Order */
-        if ($Order = $User->getOrders()->last()) {
+        if ($Order = $User->getLastCompleteOrder()) {
             /** @var Operation $Operation */
             if ($Operation = $Order->getOperations()->last()) {
                 $Report = $Operation->getReportD2c();

@@ -12,32 +12,33 @@ use Symfony\Component\Validator\Constraints\True;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\UserRepository")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="type", type="UserType")
  * @ORM\Table(name="cj_user")
  * @ORM\HasLifecycleCallbacks()
  */
-class User extends BaseUser
+abstract class User extends BaseUser
 {
     /**
      * @ORM\PreRemove
      */
-    public function methodPreRemove()
+    public function preRemove()
     {
     }
 
     /**
      * @ORM\PostRemove
      */
-    public function methodPostRemove()
+    public function postRemove()
     {
     }
 
     /**
      * @ORM\PrePersist
      */
-    public function methodPrePersist()
+    public function prePersist()
     {
         $this->enabled = 1;
-        $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
         $this->setInviteCode(strtoupper(base_convert(uniqid(), 16, 36)));
     }
@@ -45,14 +46,14 @@ class User extends BaseUser
     /**
      * @ORM\PostPersist
      */
-    public function methodPostPersist()
+    public function postPersist()
     {
     }
 
     /**
      * @ORM\PreUpdate
      */
-    public function methodPreUpdate()
+    public function preUpdate()
     {
         $this->updated_at = new \DateTime();
     }
@@ -60,14 +61,14 @@ class User extends BaseUser
     /**
      * @ORM\PostUpdate
      */
-    public function methodPostUpdate()
+    public function postUpdate()
     {
     }
 
     /**
      * @ORM\PostLoad
      */
-    public function methodPostLoad()
+    public function postLoad()
     {
     }
 
@@ -146,17 +147,24 @@ class User extends BaseUser
         return $phone;
     }
 
-    public function isCompleteOrderExist()
+    /**
+     * @return Order | null
+     */
+    public function getLastCompleteOrder()
     {
-        $aOrders = $this->getOrders();
-        foreach ($aOrders as $Order) {
-            $sStatus = $Order->getStatus();
-            if ($sStatus == OrderStatus::COMPLETE) {
-                return true;
+        $return = null;
+        $orders = $this->getOrders();
+        foreach ($orders as $order) {
+            if (OrderStatus::COMPLETE == $order->getStatus()) {
+                $return = $order;
             }
         }
+        return $return;
+    }
 
-        return false;
+    public function isCompleteOrderExist()
+    {
+        return null != $this->getLastCompleteOrder();
     }
 
     /**
@@ -180,15 +188,6 @@ class User extends BaseUser
                 ? $this->getFirstName() . ' ' . $this->getMiddleInitial() : $this->getFirstName()),
             $this->getLastName()
         );
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see FOS\UserBundle\Model.User::setPassword()
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
     }
 
     public function copyPassword($password)
@@ -238,7 +237,7 @@ class User extends BaseUser
 
     public function getUserToRemove()
     {
-        $User = new self();
+        $User = new static();
         $User->setFirstName($this->getFirstName());
         $User->setMiddleInitial($this->getMiddleInitial());
         $User->setLastName($this->getLastName());

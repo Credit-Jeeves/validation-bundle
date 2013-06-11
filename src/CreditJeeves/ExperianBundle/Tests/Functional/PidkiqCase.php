@@ -1,8 +1,9 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\TestBundle\BaseTestCase;
-use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\ExperianBundle\Pidkiq;
 
 /**
@@ -10,7 +11,7 @@ use CreditJeeves\ExperianBundle\Pidkiq;
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class LibExperianPidkiqFnTestCase extends BaseTestCase
+class PidkiqCase extends BaseTestCase
 {
 
     protected $users = array(
@@ -105,7 +106,7 @@ class LibExperianPidkiqFnTestCase extends BaseTestCase
         $pidkiq = new Pidkiq();
         $pidkiq->execute(self::getContainer());
 
-        $aplicant = new User();
+        $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
@@ -138,16 +139,48 @@ class LibExperianPidkiqFnTestCase extends BaseTestCase
      */
     public function getResponseOnUserDataErrorAddressUserPwdFromSettings()
     {
-        $this->markTestIncomplete('Implement db settings');
-        sfConfig::set('experian_pidkiq_userpwd', '');
-        $this->fixture()->loadSymfony('011_cj_settings');
+        require_once __DIR__.'/../../../CoreBundle/sfConfig.php';
 
-        $event = new sfEvent('Test', 'cj_post_user_init');
-        cjContext::getInstance()->getEventDispatcher()->notify($event);
+        $em = $this->getMock(
+            '\Doctrine\ORM\EntityManager',
+            array('getRepository'),
+            array(),
+            '',
+            false
+        );
+
+        $settings = new Settings();
+        $settings->setPidkiqPassword(\sfConfig::get('experian_pidkiq_userpwd'));
+        $xmlRoot = \sfConfig::get('experian_pidkiq_XML_root');
+        $settings->setPidkiqEai($xmlRoot['EAI']);
+
+        $repo = $this->getMock(
+            '\Doctrine\ORM\EntityRepository',
+            array('find'),
+            array(),
+            '',
+            false
+        );
+
+        $repo->expects($this->once())
+            ->method('find')
+            ->will($this->returnValue($settings));
+
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repo));
+
+
+        \sfConfig::set('experian_net_connect_userpwd', '');
+
+        $this->getContainer()->get('experian.pidkiq')->initConfigs(
+            $this->getContainer()->getParameter('server_name'),
+            $em
+        );
 
         $data = $this->users[0];
         $data['CurrentAddress']['Zip'] = '99999';
-        $resp = $this->getResponseOnUserData($data);
+        $this->getResponseOnUserData($data);
     }
 
     /**

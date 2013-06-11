@@ -1,16 +1,17 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\NetConnect;
-use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Applicant;
 
 /**
  * NetConnect test case.
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class LibExperianNetConnectFnTestCase extends BaseTestCase
+class NetConnectCase extends BaseTestCase
 {
 
     protected $user = array(
@@ -36,7 +37,7 @@ class LibExperianNetConnectFnTestCase extends BaseTestCase
         $netConnect = new NetConnect();
         $netConnect->execute(self::getContainer());
 
-        $aplicant = new User();
+        $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
@@ -88,12 +89,44 @@ class LibExperianNetConnectFnTestCase extends BaseTestCase
      */
     public function getResponseOnUserDataCorrectFromSettings()
     {
-        $this->markTestIncomplete('Implement db settings');
-        sfConfig::set('experian_net_connect_userpwd', '');
-        $this->fixture()->loadSymfony('011_cj_settings');
+        require_once __DIR__.'/../../../CoreBundle/sfConfig.php';
 
-        $event = new sfEvent('Test', 'cj_post_user_init');
-        cjContext::getInstance()->getEventDispatcher()->notify($event);
+        $em = $this->getMock(
+            '\Doctrine\ORM\EntityManager',
+            array('getRepository'),
+            array(),
+            '',
+            false
+        );
+
+        $settings = new Settings();
+        $settings->setNetConnectPassword(\sfConfig::get('experian_net_connect_userpwd'));
+        $xmlRoot = \sfConfig::get('experian_net_connect_XML_root');
+        $settings->setNetConnectEai($xmlRoot['EAI']);
+
+        $repo = $this->getMock(
+            '\Doctrine\ORM\EntityRepository',
+            array('find'),
+            array(),
+            '',
+            false
+        );
+
+        $repo->expects($this->once())
+            ->method('find')
+            ->will($this->returnValue($settings));
+
+        $em->expects($this->once())
+            ->method('getRepository')
+            ->will($this->returnValue($repo));
+
+
+        \sfConfig::set('experian_net_connect_userpwd', '');
+
+        $this->getContainer()->get('experian.net_connect')->initConfigs(
+            $this->getContainer()->getParameter('server_name'),
+            $em
+        );
 
         $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
     }

@@ -7,10 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity
  */
-class Applicant extends User
+class Landlord extends User
 {
     /**
      * @var string
      */
-    protected $type = UserType::APPLICANT;
+    protected $type = UserType::LANDLORD;
 }

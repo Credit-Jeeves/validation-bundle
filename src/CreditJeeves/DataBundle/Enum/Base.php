@@ -37,7 +37,12 @@ abstract class Base extends Type
      */
     public static function all()
     {
-        return static::getRC()->getConstants();
+        $reflection = static::getRC();
+        $buffer = $reflection->getConstants();
+        foreach (array($reflection->getParentClass()) + $reflection->getInterfaces() as $fill) {
+            $buffer = array_diff_key($buffer, $fill->getConstants());
+        }
+        return $buffer;
     }
 
     /**

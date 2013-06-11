@@ -1,8 +1,9 @@
 <?php
 namespace CreditJeeves\CoreBundle\Session;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Service;
-use CreditJeeves\DataBundle\Entity\User as UserEntity;
+use CreditJeeves\DataBundle\Entity\Tenant as UserEntity;
 
 /**
  * @Service("core.session.tenant")
@@ -14,7 +15,7 @@ class Tenant extends User
      */
     public function setUser(UserEntity $User)
     {
-        $this->saveToSession(self::USER_TENANT);
+        $this->saveToSession(UserType::TETNANT);
     }
 
     /**
@@ -22,7 +23,7 @@ class Tenant extends User
      */
     public function getUser()
     {
-        $data = $this->getFromSession(self::USER_TENANT);
+        $data = $this->getFromSession(UserType::TETNANT);
         if (isset($data['user_id'])) {
             return $this->findUser($data['user_id']);
         }

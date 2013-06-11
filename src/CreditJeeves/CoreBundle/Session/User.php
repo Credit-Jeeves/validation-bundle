@@ -8,36 +8,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
 
 abstract class User
 {
-    /**
-     * @TODO move to Enum
-     * @var string
-     */
-    const USER_APPLICANT = 'applicant';
-
-    /**
-     * @TODO move to Enum
-     * @var string
-     */
-    const USER_DEALER = 'dealer';
-
-    /**
-     *
-     * @var string
-     */
-    const USER_ADMIN = 'admin';
-
-    /**
-     * 
-     * @var string
-     */
-    const USER_TENANT = 'tenant';
-
-    /**
-     * 
-     * @var string
-     */
-    const USER_LANDLORD = 'landlord';
-
     protected $data = array();
 
     protected $em;
