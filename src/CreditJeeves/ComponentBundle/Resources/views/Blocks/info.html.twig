@@ -1,3 +1,7 @@
 <p class="user-email">{{ sEmail }} </p>
+{% if isAdmin %}
+<a href="{{ path('admin_cj_applicant_list') }}">Back to Admin</a>
+{% else %}
 {% include '::userLogout.html.twig' %}
+{% endif %}
 <div id="dealer-select" class="dealer-name">{{ sGroup }}</div>

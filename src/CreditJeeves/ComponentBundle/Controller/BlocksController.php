@@ -15,7 +15,13 @@ class BlocksController extends Controller
     public function infoAction()
     {
         $sGroup = '';
-        $sEmail = $this->getUser()->getEmail();
+        $isAdmin = false;
+        $user = $this->getUser();
+        $type =  $user->getType();
+        if ($type == 'admin') {
+            $isAdmin = true;
+        }
+        $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
         $Lead = $this->get('core.session.applicant')->getLead();
         if ($Lead) {
             $sGroup = $Lead->getGroup()->getName();
@@ -23,6 +29,7 @@ class BlocksController extends Controller
         return array(
             'sEmail' => $sEmail,
             'sGroup' => $sGroup,
+            'isAdmin' => $isAdmin,
         );
     }
 }
