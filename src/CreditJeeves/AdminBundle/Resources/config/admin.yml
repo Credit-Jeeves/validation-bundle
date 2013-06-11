@@ -6,7 +6,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: admin, label: "Admins" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\User
+            - CreditJeeves\DataBundle\Entity\Admin
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
@@ -41,7 +41,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Applicants" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\User
+            - CreditJeeves\DataBundle\Entity\Applicant
             - 'SonataAdminBundle:CRUD'
 #        calls:
 #            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
@@ -52,7 +52,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Dealers" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\User
+            - CreditJeeves\DataBundle\Entity\Dealer
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
@@ -64,7 +64,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Tenants" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\User
+            - CreditJeeves\DataBundle\Entity\Tenant
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
@@ -75,7 +75,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Landlords" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\User
+            - CreditJeeves\DataBundle\Entity\Landlord
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
