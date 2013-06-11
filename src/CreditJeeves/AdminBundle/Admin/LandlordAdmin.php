@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\AdminBundle\Admin;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -17,7 +18,7 @@ class LandlordAdmin extends Admin
      *
      * @var string
      */
-    const TYPE = 'landlord';
+    const TYPE = UserType::LANDLORD;
 
     protected $formOptions = array(
             'validation_groups' => 'user_admin'
@@ -92,7 +93,7 @@ class LandlordAdmin extends Admin
      */
     public function prePersist($user)
     {
-//        $user->setType(self::TYPE);
+        $user->setType(self::TYPE);
         $user = $this->checkPassword($user);
     }
 

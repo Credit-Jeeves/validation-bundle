@@ -422,10 +422,8 @@ abstract class User extends BaseUser
         switch ($this->getType()) {
             case UserType::APPLICANT:
                 return array('ROLE_USER');
-
             case UserType::DEALER:
                 return array('ROLE_DEALER');
-
             case UserType::ADMIN:
                 return array(
                     'ROLE_USER',
@@ -434,10 +432,8 @@ abstract class User extends BaseUser
                     'ROLE_TENANT',
                     'ROLE_LANDLORD'
                 );
-
             case UserType::TETNANT:
                 return array('ROLE_TENANT');
-
             case UserType::LANDLORD:
                 return array('ROLE_LANDLORD');
         }

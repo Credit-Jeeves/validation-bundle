@@ -1,6 +1,7 @@
 <?php 
 namespace CreditJeeves\AdminBundle\Admin;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -11,10 +12,9 @@ use Doctrine\ORM\QueryBuilder;
 class AdminAdmin extends Admin
 {
     /**
-     *
      * @var string
      */
-    const TYPE = 'admin';
+    const TYPE = UserType::ADMIN;
 
     protected $formOptions = array(
             'validation_groups' => 'user_admin'
