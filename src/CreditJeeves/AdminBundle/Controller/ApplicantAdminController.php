@@ -7,10 +7,15 @@ class ApplicantAdminController extends Controller
 {
     public function observeAction($id = null)
     {
+        echo __METHOD__;
+        die;
         return array();
     }
+    
     public function reportAction($id = null)
     {
+        echo __METHOD__;
+        die;
         return array();
     }
 }

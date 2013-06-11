@@ -67,8 +67,25 @@ class ApplicantAdmin extends Admin
      */
     protected function configureRoutes(RouteCollection $collection)
     {
-        $collection->add('observe', $this->getRouterIdParameter().'/observe');
-        $collection->add('report', $this->getRouterIdParameter().'/report');
+        $collection->remove('export');
+        $collection->remove('observe');
+        $collection->add(
+            $name = 'observe',
+            $pattern = $this->getRouterIdParameter().'/observe',
+            $defaults = array(
+                '_controller' => 'AdminBundle:ApplicantAdmin:observe',
+                //'_sonata_admin' => 'sonata.admin.applicant'
+            )
+        );
+        $collection->remove('report');
+        $collection->add(
+            $name = 'report',
+            $pattern = $this->getRouterIdParameter().'/report',
+            $defaults = array(
+                '_controller' => 'AdminBundle:ApplicantAdmin:report',
+                //'_sonata_admin' => 'sonata.admin.applicant'
+            )
+        );
     }
 
     public function configureListFields(ListMapper $listMapper)
