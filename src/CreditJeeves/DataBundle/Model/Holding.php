@@ -1,54 +1,62 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
- * @ORM\HasLifecycleCallbacks()
  */
 abstract class Holding
 {
     /**
-     * @var string
-     *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(
+     *     groups={
+     *         "holding"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "holding",
+     *     }
+     * )
      */
-    private $name;
+    protected $name;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
+    protected $updatedAt;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     mappedBy="holding",
+     *     cascade={
+     *         "remove",
+     *         },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $groups;
 
     public function __construct()
     {
         $this->createdAt = new \DateTime();
-    }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdate()
-    {
-        $this->updated_at = new \DateTime();
+        $this->groups = new ArrayCollection();
     }
 
     /**
@@ -128,5 +136,38 @@ abstract class Holding
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Add groups
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $groups
+     * @return Holding
+     */
+    public function addGroup(\CreditJeeves\DataBundle\Entity\Group $groups)
+    {
+        $this->groups[] = $groups;
+    
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $groups
+     */
+    public function removeGroup(\CreditJeeves\DataBundle\Entity\Group $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

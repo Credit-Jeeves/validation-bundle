@@ -29,12 +29,9 @@ class TenantCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
     {
         $this->load($this->fixtures, true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
-        $this->assertCount(3, $tables, 'Wrong number of blocks');
-        $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(7, $list, 'Wrong number of blocks');
-        $link = $list[5]->getParent();
-        $link->click();
+        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_tenants'));
+        
+        $tableBlock->clickLink('link_list');
         $this->assertNotNull($tenants = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(1, $tenants);
         $this->page->clickLink('link_action_create');

@@ -104,6 +104,31 @@ class Group
      */
     protected $incentives;
 
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *     inversedBy="groups"
+     * )
+     * @ORM\JoinColumn(
+     *     name="holding_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $holding;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Affiliate",
+     *     inversedBy="groups"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_affiliate_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $affiliate;
+    
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();

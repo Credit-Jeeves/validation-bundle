@@ -32,7 +32,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
         $this->assertCount(3, $tables, 'Wrong number of blocks');
         $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(7, $list, 'Wrong number of blocks');
+        $this->assertCount(9, $list, 'Wrong number of blocks');
         $link = $list[0]->getParent();
         $link->click();
         $this->assertNotNull($emails = $this->page->findAll('css', 'a.edit_link'));
@@ -100,7 +100,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
         $this->assertCount(3, $tables, 'Wrong number of blocks');
         $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(7, $list, 'Wrong number of blocks');
+        $this->assertCount(9, $list, 'Wrong number of blocks');
         $link = $list[1]->getParent();
         $link->click();
         $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));
@@ -132,21 +132,6 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertEquals('flash_delete_success', $message->getText());
         $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(1, $admins);
-        $this->logout();
-    }
-
-    /**
-     * @test
-     */
-    public function adminManageLandlords()
-    {
-        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
-        $this->assertCount(3, $tables, 'Wrong number of blocks');
-        $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(7, $list, 'Wrong number of blocks');
-        $link = $list[6]->getParent();
-        $link->click();
         $this->logout();
     }
 }

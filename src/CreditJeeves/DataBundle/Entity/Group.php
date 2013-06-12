@@ -60,4 +60,9 @@ class Group extends BaseGroup
         $aResult[] = implode(' ', $aAddress);
         return $aResult;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

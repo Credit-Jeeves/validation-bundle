@@ -34,16 +34,33 @@ class DealerAdmin extends Admin
         return '/cj/'.self::TYPE;
     }
     
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
     
+        $query->innerJoin($alias.'.scores', 's');
+    
+        //->addOrderBy('s.id',  'DESC');
+        //
+    
+        //         echo '<pre>';
+        //         print_r($query->execute(array(), Query::HYDRATE_ARRAY));
+        //         exit;
+        return $query;
+    }
+
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
         //             ->addIdentifier('title')
-        ->add('first_name')
-        ->add('middle_initial')
-        ->add('last_name')//             ->add('type')
-        //             ->add('commentsEnabled')
-        ;
+            ->add('first_name')
+            ->add('middle_initial')
+            ->add('last_name');
     }
     
     
@@ -56,12 +73,7 @@ class DealerAdmin extends Admin
     {
         $showMapper
             ->add('email')
-             ->add('full_name')
-//             ->add('title')
-//             ->add('abstract')
-//             ->add('content')
-//             ->add('tags')
-        ;
+             ->add('full_name');
     }
 
     public function configureFormFields(FormMapper $formMapper)

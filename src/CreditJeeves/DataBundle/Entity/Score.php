@@ -91,4 +91,10 @@ class Score extends BaseScore
     {
         $this->created_date = new \DateTime();
     }
+
+    public function __toString()
+    {
+        $score = $this->getScore();
+        return $score;
+    }
 }

@@ -15,6 +15,16 @@ sonata_admin:
         blocks:
             # display a dashboard block
             - { position: left, type: sonata.admin.block.admin_list }
+        groups:
+          admin: ~
+          CreditJeeves:
+            items:
+              - sonata.admin.holding
+              - sonata.admin.group
+              - sonata.admin.affiliate
+              - sonata.admin.dealer
+              - sonata.admin.applicant
+          RentJeeves: ~
 
 sonata_block:
     default_contexts: [cms]
