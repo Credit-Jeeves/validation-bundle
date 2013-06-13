@@ -38,8 +38,10 @@ class GroupAdmin extends Admin
     {
         $listMapper
             ->addIdentifier('name')
+            ->add('holding')
             ->add('type')
             ->add('fee_type')
+            ->add('count_leads')
             ->add(
                 '_action',
                 'actions',

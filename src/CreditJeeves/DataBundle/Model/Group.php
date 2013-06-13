@@ -567,4 +567,20 @@ class Group
     {
         return $this->target_score;
     }
+
+    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
+    {
+        $this->holding = $holding;
+        return $this;
+    }
+
+    public function getHolding()
+    {
+        return $this->holding;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

@@ -43,6 +43,18 @@ abstract class Holding
 
     /**
      * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     mappedBy="holding",
+     *     cascade={
+     *         "remove",
+     *         },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $dealers;
+
+    /**
+     * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     mappedBy="holding",
      *     cascade={
@@ -57,6 +69,7 @@ abstract class Holding
     {
         $this->createdAt = new \DateTime();
         $this->groups = new ArrayCollection();
+        $this->dealers = new ArrayCollection();
     }
 
     /**
@@ -169,5 +182,38 @@ abstract class Holding
     public function getGroups()
     {
         return $this->groups;
+    }
+
+    /**
+     * Add dealer
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Dealer $dealer
+     * @return Holding
+     */
+    public function addDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer)
+    {
+        $this->dealers[] = $dealer;
+    
+        return $this;
+    }
+
+    /**
+     * Remove dealer
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Dealer $dealer
+     */
+    public function removeDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer)
+    {
+        $this->dealers->removeElement($dealer);
+    }
+
+    /**
+     * Get dealers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDealers()
+    {
+        return $this->dealers;
     }
 }

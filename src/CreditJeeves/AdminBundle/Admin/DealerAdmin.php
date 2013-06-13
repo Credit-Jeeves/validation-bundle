@@ -39,23 +39,43 @@ class DealerAdmin extends Admin
      */
     public function createQuery($context = 'list')
     {
-        $nGroupId = $this->getRequest()->get('group_id', null);
+        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-        if (!empty($nGroupId)) {
-            $query->andWhere($alias.'.cj_group_id = :group_id');
-            $query->setParameter('group_id', $nGroupId);
-        }
+//         if (!empty($nGroupId)) {
+//             $this->request->getSession()->set('group_id', $nGroupId);
+//             $query->andWhere($alias.'.cj_group_id = :group_id');
+//             $query->setParameter('group_id', $nGroupId);
+//         }
         return $query;
     }
 
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-        //             ->addIdentifier('title')
-            ->add('first_name')
-            ->add('middle_initial')
-            ->add('last_name');
+            ->add('full_name')
+            ->add('holding')
+            ->add('email')
+            ->add('is_active')
+            ->add('last_login')
+            ->add('is_super_admin')
+            ->add('dealer_groups')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                        'delete' => array(),
+                        'leads' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
+                        ),
+                        'observe' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_observe.html.twig'
+                        ),
+                    )
+                )
+            );
     }
     
     
