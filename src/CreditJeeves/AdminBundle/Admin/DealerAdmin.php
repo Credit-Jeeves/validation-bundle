@@ -39,18 +39,13 @@ class DealerAdmin extends Admin
      */
     public function createQuery($context = 'list')
     {
-        
+        $nGroupId = $this->getRequest()->get('group_id', null);
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-    
-        $query->innerJoin($alias.'.scores', 's');
-    
-        //->addOrderBy('s.id',  'DESC');
-        //
-    
-        //         echo '<pre>';
-        //         print_r($query->execute(array(), Query::HYDRATE_ARRAY));
-        //         exit;
+        if (!empty($nGroupId)) {
+            $query->andWhere($alias.'.cj_group_id = :group_id');
+            $query->setParameter('group_id', $nGroupId);
+        }
         return $query;
     }
 

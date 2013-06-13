@@ -50,6 +50,9 @@ class GroupAdmin extends Admin
                         'leads' => array(
                             'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
                         ),
+                        'dealers' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
+                        ),
                     )
                 )
             );
