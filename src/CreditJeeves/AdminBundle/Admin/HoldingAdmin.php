@@ -2,21 +2,24 @@
 namespace CreditJeeves\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Admin\Admin;
-use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
+use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
+use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 
-class GroupAdmin extends Admin
+class HoldingAdmin extends Admin
 {
     /**
      *
      * @var string
      */
-    const TYPE = 'group';
+    const TYPE = 'holding';
 
     protected $formOptions = array(
             'validation_groups' => 'holding'
     );
+
 
     /**
      * {@inheritdoc}
@@ -34,14 +37,11 @@ class GroupAdmin extends Admin
         return '/cj/'.self::TYPE;
     }
 
-    protected function configureListFields(ListMapper $listMapper)
+    public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->addIdentifier('name')
-            ->add('holding')
-            ->add('type')
-            ->add('fee_type')
-            ->add('count_leads')
+            ->add('groups')
             ->add(
                 '_action',
                 'actions',
@@ -49,26 +49,25 @@ class GroupAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
-                        'leads' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
-                        ),
-                        'dealers' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
-                        ),
                     )
                 )
             );
     }
 
-    protected function configureFormFields(FormMapper $formMapper)
-    {
-        $formMapper
-            ->add('name');
-    }
-
-    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
+    public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name');
+           ->add('name');
+    }
+
+    public function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->with('Holding')
+                ->add('name')
+            ->end()
+            ->with('Groups')
+                ->add('groups', 'sonata_type_model', array('expanded' => true, 'multiple' => true))
+            ->end();
     }
 }

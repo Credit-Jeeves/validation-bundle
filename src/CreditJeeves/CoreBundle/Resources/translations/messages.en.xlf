@@ -10,6 +10,14 @@
                 <source>action_observe</source>
                 <target>Observe</target>
             </trans-unit>
+            <trans-unit id="dashboard.action_leads">
+                <source>dashboard.action_leads</source>
+                <target>Leads</target>
+            </trans-unit>
+            <trans-unit id="dashboard.action_dealers">
+                <source>dashboard.action_dealers</source>
+                <target>Dealers</target>
+            </trans-unit>
             <trans-unit id="action_report">
                 <source>action_report</source>
                 <target>Report</target>

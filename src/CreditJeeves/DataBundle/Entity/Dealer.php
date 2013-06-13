@@ -8,4 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Dealer extends User
 {
+    public function getHoldingName()
+    {
+        $holding = $this->getHolding();
+        return $holding ? $holding->getName(): '';
+    }
 }

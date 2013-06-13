@@ -75,9 +75,8 @@ class ApplicantAdmin extends Admin
             ->add('zip')
             ->add('city')
             ->add('phone')
-            ->add('score')
-            ->add('Group')
-            ->add('Target')
+            ->add('current_score')
+            ->add('user_leads')
             ->add('is_verified')
             ->add('is_active')
             ->add('has_report')
@@ -119,6 +118,7 @@ class ApplicantAdmin extends Admin
                 ->add('email')
                 ->add('is_verified')
                 ->add('culture')
+                ->add('user_leads', 'sonata_type_model', array('expanded' => true, 'multiple' => true))
             ->end();
     }
 }

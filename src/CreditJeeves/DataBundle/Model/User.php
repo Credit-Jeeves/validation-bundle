@@ -392,6 +392,17 @@ abstract class User extends BaseUser
      */
     protected $vehicle;
 
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *     inversedBy="dealers"
+     * )
+     * @ORM\JoinColumn(
+     *     name="holding_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $holding;
 
     /**
      * @ORM\OneToMany(
@@ -1356,5 +1367,16 @@ abstract class User extends BaseUser
     public function getPidkiqs()
     {
         return $this->pidkiqs;
+    }
+
+    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
+    {
+        $this->holding = $holding;
+        return $this;
+    }
+
+    public function getHolding()
+    {
+        return $this->holding;
     }
 }
