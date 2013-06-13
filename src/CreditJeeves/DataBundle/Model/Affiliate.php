@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\MappedSuperclass
  */
-class Affiliate
+abstract class Affiliate
 {
     /**
      * @ORM\Column(

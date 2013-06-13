@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-class OrderOperation
+abstract class OrderOperation
 {
     /**
      * @ORM\Id

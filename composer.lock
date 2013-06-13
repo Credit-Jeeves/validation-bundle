@@ -2008,12 +2008,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Remixjobs/RjEmailBundle.git",
-                "reference": "862f6413c96873366370255889a1459cade47d21"
+                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/862f6413c96873366370255889a1459cade47d21",
-                "reference": "862f6413c96873366370255889a1459cade47d21",
+                "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
+                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
                 "shasum": ""
             },
             "require": {
@@ -2052,7 +2052,7 @@
             "keywords": [
                 "email"
             ],
-            "time": "2013-05-27 01:51:04"
+            "time": "2013-06-13 16:37:55"
         },
         {
             "name": "sensio/distribution-bundle",
