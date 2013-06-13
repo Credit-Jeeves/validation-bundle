@@ -1,105 +1,110 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
- * @ORM\HasLifecycleCallbacks()
  */
 class Affiliate
 {
     /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(
+     *     name="name",
+     *     type="string",
+     *     length=255
+     * )
+     * @Assert\NotBlank(
+     *     groups={
+     *         "affiliate"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "affiliate",
+     *     }
+     * )
      */
-    private $name;
+    protected $name;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="phone", type="string", length=255)
+     * @ORM\Column(
+     *     name="phone",
+     *     type="string",
+     *     length=255
+     * )
      */
-    private $phone;
+    protected $phone;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="fax", type="string", length=255)
+     * @ORM\Column(
+     *     name="fax",
+     *     type="string",
+     *     length=255
+     * )
      */
-    private $fax;
+    protected $fax;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="street_address1", type="string", length=255)
      */
-    private $streetAddress1;
+    protected $streetAddress1;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="street_address2", type="string", length=255)
      */
-    private $streetAddress2;
+    protected $streetAddress2;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="city", type="string", length=255)
      */
-    private $city;
+    protected $city;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="state", type="string", length=7)
      */
-    private $state;
+    protected $state;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="zip", type="string", length=15)
      */
-    private $zip;
+    protected $zip;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
+    protected $updatedAt;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     mappedBy="affiliate",
+     *     cascade={
+     *         "remove",
+     *         },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $groups;
 
     public function __construct()
     {
+        $this->groups = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdate()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
 
     /**
      * Get id
@@ -327,7 +332,6 @@ class Affiliate
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
-    
         return $this;
     }
 
@@ -339,5 +343,37 @@ class Affiliate
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Add groups
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $groups
+     * @return Holding
+     */
+    public function addGroup(\CreditJeeves\DataBundle\Entity\Group $groups)
+    {
+        $this->groups[] = $groups;
+        return $this;
+    }
+
+    /**
+     * Remove groups
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $groups
+     */
+    public function removeGroup(\CreditJeeves\DataBundle\Entity\Group $groups)
+    {
+        $this->groups->removeElement($groups);
+    }
+
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroups()
+    {
+        return $this->groups;
     }
 }

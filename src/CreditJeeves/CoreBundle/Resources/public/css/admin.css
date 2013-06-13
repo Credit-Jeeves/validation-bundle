@@ -12,6 +12,14 @@
     background-position: -24px -23px;
 }
 
+.sonata-bc .icon-dealer {
+    background-position: -168px 1px;
+}
+
+.sonata-bc .icon-lead {
+    background-position: -217px -119px;
+}
+
 .sonata-bc .btn {
     margin: 1px;
     width: 85px;

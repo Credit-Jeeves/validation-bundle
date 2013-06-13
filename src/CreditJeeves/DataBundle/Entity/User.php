@@ -247,4 +247,10 @@ abstract class User extends BaseUser
         $User->setEmail($this->getEmail());
         return $User;
     }
+
+    public function getCurrentScore()
+    {
+        $score = $this->getScores()->last();
+        return $score ? $score->getScore(): 0;
+    }
 }
