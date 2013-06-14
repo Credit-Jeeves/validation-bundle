@@ -14,18 +14,21 @@ use CreditJeeves\DataBundle\Entity\Group;
 class NewController extends Controller
 {
     /**
-     * @Route("/new", name="applicant_new")
+     * @Route("/new/{dealer}/{code}", name="applicant_new")
      * @Template()
      *
      * @return array
      */
-    public function indexAction()
+    public function indexAction($code = null, $dealer = 'dealer')
     {
         $request = $this->get('request');
         $query = $request->query;
         $Lead = new Lead();
         $User = $this->get('core.session.applicant')->getUser();
         $Group = new Group();
+        if ($code) {
+            $Group->setCode($code);
+        }
         if ($request->getMethod() == 'GET') {
             // Group code
             if ($query->has('g')) {
@@ -33,9 +36,9 @@ class NewController extends Controller
             }
             // User details
             $User = $this->bindUserDetails($User, $query);
+            $Lead->setGroup($Group);
         }
         $Lead->setUser($User);
-        //$Lead->setGroup($Group);
         $form = $this->createForm(
             new LeadNewType(),
             $Lead,
