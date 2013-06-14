@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block fos_user_content %}
-    <div class="form-login pod-border shadow">
+    <div class="form-login pod-border shadow floatleft">
         <h1>{{ 'login.title' | trans }}</h1>
 
         <form action="{{ path("fos_user_security_check") }}" method="post" id="login_form">
@@ -61,6 +61,11 @@
             </table>
         </form>
     </div>
+    <div class="business-logins floatleft">
+        <h2>Business Logins:</h2>
+        <a href="/dealer.php">» {{ 'login.dealership' | trans }} </a>
+    </div>
+    <div class="clearboth"></div>
     <p class="login-pod-footer">
         {{ 'resetting.title' | trans }}
         <a href="{{ path('fos_user_resetting_request') }}">» {{ 'login.resetting.link' | trans }} </a>

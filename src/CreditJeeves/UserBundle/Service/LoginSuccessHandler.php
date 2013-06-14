@@ -54,6 +54,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             case 'dealer':
                 $this->container->get('core.session.dealer')->setUser($User);
                 $url = $this->container->get('router')->generate($sType.'_homepage');
+                return new RedirectResponse('/dealer.php');
                 break;
             case 'admin':
                 $this->container->get('core.session.admin')->setUser($User);

@@ -10,6 +10,10 @@
                 <source>login.title</source>
                 <target>Member Login</target>
             </trans-unit>
+            <trans-unit id="login.dealership">
+                <source>login.dealership</source>
+                <target>Dealership</target>
+            </trans-unit>
             <trans-unit id="login.link">
                 <source>login.link</source>
                 <target>Log In</target>
