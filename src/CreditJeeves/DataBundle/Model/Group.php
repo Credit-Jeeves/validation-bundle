@@ -85,6 +85,11 @@ class Group
     protected $zip;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    protected $fee_type;
+
+    /**
      * @ORM\Column(type="text")
      */
     protected $description;
@@ -520,6 +525,17 @@ class Group
     public function getZip()
     {
         return $this->zip;
+    }
+
+    public function setFeeType($type)
+    {
+        $this->fee_type = $type;
+        return $this;
+    }
+
+    public function getFeeType()
+    {
+        return $this->fee_type;
     }
 
     /**
