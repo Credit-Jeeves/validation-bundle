@@ -14,12 +14,13 @@ use CreditJeeves\DataBundle\Entity\Group;
 class NewController extends Controller
 {
     /**
-     * @Route("/new/{dealer}/{code}", name="applicant_new")
+     * @Route("/new/dealer/{code}", name="applicant_new")
+     * @Route("/new",              name="applicant_new_code", defaults={"code"=null})
      * @Template()
      *
      * @return array
      */
-    public function indexAction($code = null, $dealer = 'dealer')
+    public function indexAction($code = null)
     {
         $request = $this->get('request');
         $query = $request->query;
