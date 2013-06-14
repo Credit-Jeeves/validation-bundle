@@ -40,6 +40,7 @@ class InviteController extends Controller
         $sCurrentDob = null;
         if (!empty($date)) {
             $sCurrentDob = $date->format("Y-m-d");
+            $User->setDateOfBirth(null);
         }
         
         //$User->setDateOfBirth(new \DateTime());
