@@ -42,7 +42,7 @@ class InviteController extends Controller
             $sCurrentDob = $date->format("Y-m-d");
         }
         
-        $User->setDateOfBirth(new \DateTime());
+        //$User->setDateOfBirth(new \DateTime());
         // Check form type
         $sSsn = $User->getSsn();
         if ($sSsn) {
