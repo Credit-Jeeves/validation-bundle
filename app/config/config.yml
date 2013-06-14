@@ -43,6 +43,7 @@ stof_doctrine_extensions:
         default:
             tree: true
             timestampable: true # not needed: listeners are not enabled by default
+            loggable: true
 
 # Doctrine Configuration
 doctrine:

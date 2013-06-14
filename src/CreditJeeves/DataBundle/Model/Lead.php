@@ -1,8 +1,10 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -47,43 +49,51 @@ class Lead
 
     /**
      * @ORM\Column(type="integer")
+     * @Gedmo\Versioned
      */
     protected $target_score;
 
     /**
      * @ORM\Column(type="text")
+     * @Gedmo\Versioned
      */
     protected $target_name;
 
     /**
      * @ORM\Column(type="text")
+     * @Gedmo\Versioned
      */
     protected $target_url;
 
     /**
      * @ORM\Column(type="integer")
+     * @Gedmo\Versioned
      */
     protected $state;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Gedmo\Versioned
      */
     protected $trade_in;
 
     /**
      * @ORM\Column(type="integer")
+     * @Gedmo\Versioned
      */
     protected $down_payment;
 
     /**
      * @ORM\Column(type="integer")
+     * @Gedmo\Versioned
      */
     protected $fraction;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="LeadStatus")
+     * @Gedmo\Versioned
      */
-    protected $status;
+    protected $status = LeadStatus::NEWONE;
 
     /**
      * @ORM\Column(type="string")
@@ -97,6 +107,7 @@ class Lead
 
     /**
      * @ORM\Column(type="datetime")
+     * @Gedmo\Versioned
      */
     protected $updated_at;
 
