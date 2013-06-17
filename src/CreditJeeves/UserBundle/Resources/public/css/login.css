@@ -1,7 +1,8 @@
 .form-login {
   padding: 20px;
-  width: 600px;
-  margin: 0 auto;
+  width: 570px;
+  /*margin: 0 auto;*/
+  margin-left: 100px;
   border: none;
   padding: 20px 10px 20px 20px;
 }
@@ -54,4 +55,13 @@
     font-size: 18px;
     width: 541px;
     margin: 10px 0 0 150px;
+}
+
+.business-logins {
+    margin-left: 40px;
+    margin-top: 85px;
+}
+
+.business-logins a {
+    font-size: 18px;
 }

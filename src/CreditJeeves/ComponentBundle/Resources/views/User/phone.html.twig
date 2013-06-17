@@ -1,10 +1,10 @@
 <div class="form-row">
     <div class="form-label">{{ form_label(form.phone) }}</div>
-    <div class="form-widget">{{ form_widget(
+    <div class="form-widget form-line">{{ form_widget(
             form.phone_type,
             { 'attr':
                 {
-                    'class': 'user-input user-margin floatleft'
+                    'class': 'user-input form-margin floatleft'
                 }
             })
         }}
@@ -12,7 +12,7 @@
             form.phone,
             { 'attr':
                 {
-                    'class': 'user-input user-address user-margin',
+                    'class': 'user-input user-address form-margin',
                     'placeholder': 'Phone',
                     'maxlength' : 255
                 }

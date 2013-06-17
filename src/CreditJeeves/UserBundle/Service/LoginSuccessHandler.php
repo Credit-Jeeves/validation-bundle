@@ -52,8 +52,11 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 $url = $this->container->get('router')->generate($sType.'_homepage');
                 break;
             case 'dealer':
-                $this->container->get('core.session.dealer')->setUser($User);
-                $url = $this->container->get('router')->generate($sType.'_homepage');
+                $url = $this->container->get('router')->generate('fos_user_security_login');
+                $this->container->get('session')->getFlashBag()->add(
+                        'notice',
+                        'Please log in using the Dealership link to the right.'
+                );
                 break;
             case 'admin':
                 $this->container->get('core.session.admin')->setUser($User);
