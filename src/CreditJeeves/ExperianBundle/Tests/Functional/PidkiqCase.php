@@ -230,9 +230,10 @@ class PidkiqCase extends BaseTestCase
      * 2013.05.05 It does not work
      * 2013.05.15 It works again
      * 2013.06.12 It does not work
+     * 2013.06.17 It works again
      *
-     * @~expectedException \ExperianException
-     * @~expectedExceptionMessage No questions returned due to excessive use
+     * @expectedException \ExperianException
+     * @expectedExceptionMessage No questions returned due to excessive use
      */
     public function getResponseOnUserDataTimeout()
     {

@@ -1,5 +1,4 @@
 <?php
-
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -14,13 +13,14 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @deprecated Not in use?
  */
 class GroupAffiliate
-{   /**
- * @var integer
- *
- * @ORM\Column(name="id", type="integer")
- * @ORM\Id
- * @ORM\GeneratedValue(strategy="AUTO")
- */
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
     private $id;
 
     /**
