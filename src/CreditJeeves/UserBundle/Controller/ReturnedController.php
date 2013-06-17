@@ -1,19 +1,17 @@
 <?php
-
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace CreditJeeves\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use CreditJeeves\ApplicantBundle\Form\Type\LeadReturnedType;
+use CreditJeeves\UserBundle\Form\Type\LeadReturnedType;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Lead;
-use CreditJeeves\ApplicantBundle\Form\DataTransformer\CodeToGroupTransformer;
 
 class ReturnedController extends Controller
 {
     /**
-     * @Route("/returned", name="applicant_returned")
+     * @Route("/returned", name="user_returned")
      * @Template()
      *
      * @return array
@@ -21,6 +19,7 @@ class ReturnedController extends Controller
     public function indexAction()
     {
         $request = $this->get('request');
+        /** @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
         $Lead = new Lead();
         
@@ -29,9 +28,7 @@ class ReturnedController extends Controller
         $form = $this->createForm(
             new LeadReturnedType(),
             $Lead,
-            array(
-                'em' => $this->getDoctrine()->getManager()
-                )
+            array('em' => $this->getDoctrine()->getManager())
         );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);

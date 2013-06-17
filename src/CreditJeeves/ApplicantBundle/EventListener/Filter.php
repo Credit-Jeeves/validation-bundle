@@ -66,6 +66,24 @@ class Filter implements ContainerAwareInterface
         return $this->container->get('translator')->trans($text, $arr);
     }
 
+
+
+    /**
+     * @DI\Observe("applicant.filter")
+     */
+    public function isReturned(FilterEvent $event)
+    {
+        // First check data
+        if (!$this->getUser()->getHasData()) {
+            $event->stopPropagation();
+            return $event->getResponseEvent()->setResponse(
+                new RedirectResponse(
+                    $this->getRoute()->generate('user_returned')
+                )
+            );
+        }
+    }
+
     /**
      * @DI\Observe("applicant.filter")
      */
@@ -80,10 +98,12 @@ class Filter implements ContainerAwareInterface
                     array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
                 )
             );
+            $event->stopPropagation();
             return $event->getResponseEvent()->setResponse(
                 new RedirectResponse($this->getRoute()->generate('public_message_flash'))
             );
         } elseif (UserIsVerified::PASSED != $this->getUser()->getIsVerified()) {
+            $event->stopPropagation();
             return $event->getResponseEvent()->setResponse(
                 new RedirectResponse($this->getRoute()->generate('core_pidkiq'))
             );
@@ -95,21 +115,9 @@ class Filter implements ContainerAwareInterface
      */
     public function checkReport(FilterEvent $event)
     {
-        $sRouteName = $this->container->get('request')->get('_route');
-        // First check data
-        if (!$this->getUser()->getHasData()) {
-            if ($sRouteName != 'applicant_returned') {
-                return $event->getResponseEvent()->setResponse(
-                    new RedirectResponse(
-                        $this->getRoute()->generate('applicant_returned')
-                    )
-                );
-            } else {
-                return true;
-            }
-        }
         // Second - check if report exists
         if (!$this->getUser()->getReportsPrequal()->last()) {
+            $event->stopPropagation();
             return $event->getResponseEvent()->setResponse(
                 new RedirectResponse($this->getRoute()->generate('core_report_get'))
             );

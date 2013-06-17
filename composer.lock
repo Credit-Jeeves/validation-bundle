@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "0ffaca43eca84ee03319d237dfad6ec7",
+    "hash": "3c56919702aad35acdc80145e5d151bf",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "be9c858514a7f779a85c94615663b89d6cc16e5f"
+                "reference": "b390ba363c65825bb64f8d2c831fc4db552b98cc"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-06-12 18:19:52"
+            "time": "2013-06-14 11:29:52"
         },
         {
             "name": "a2lix/translation-form-bundle",
@@ -2008,12 +2008,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Remixjobs/RjEmailBundle.git",
-                "reference": "862f6413c96873366370255889a1459cade47d21"
+                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/862f6413c96873366370255889a1459cade47d21",
-                "reference": "862f6413c96873366370255889a1459cade47d21",
+                "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
+                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
                 "shasum": ""
             },
             "require": {
@@ -2052,7 +2052,7 @@
             "keywords": [
                 "email"
             ],
-            "time": "2013-05-27 01:51:04"
+            "time": "2013-06-13 16:37:55"
         },
         {
             "name": "sensio/distribution-bundle",
