@@ -45,6 +45,9 @@ stof_doctrine_extensions:
             timestampable: true # not needed: listeners are not enabled by default
             loggable: true
 
+    class:
+      loggable: CreditJeeves\CoreBundle\EventListener\Loggable
+
 # Doctrine Configuration
 doctrine:
     dbal:

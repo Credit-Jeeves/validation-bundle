@@ -6,6 +6,7 @@ use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
 use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -120,6 +121,7 @@ class SettingsController extends Controller
     public function removeAction()
     {
         $request = $this->get('request');
+        /** @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
         $sEmail = $User->getEmail();
         $sPassword = $User->getPassword();
@@ -134,8 +136,6 @@ class SettingsController extends Controller
                     $em = $this->getDoctrine()->getManager();
                     try {
                         $em->getConnection()->beginTransaction();
-                        //$em->getRepository('DataBundle:User')->removeUserData($cjUser);
-                        //$cjUser->removeData();
                         $em->remove($User);
                         $em->flush();
                         $em->persist($newUser);
@@ -147,13 +147,12 @@ class SettingsController extends Controller
                         $em->close();
                         throw $e;
                     }
+                    $this->get('request')->getSession()->invalidate();
                     // Commented for develop
-                    return $this->redirect($this->generateUrl('fos_user_security_logout'));
+                    return $this->redirect($this->generateUrl('fos_user_security_login'));
                 } else {
                     $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
                 }
-            } else {
-                echo '888';
             }
         }
         return $this->render(
