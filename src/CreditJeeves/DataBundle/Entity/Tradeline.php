@@ -151,7 +151,8 @@ class Tradeline extends BaseTradeline
             $aTradeline['title']     = 'High Balance';
             $aTradeline['points']    = '10-25';
             $aTradeline['display']   = 'high';
+            return $aTradeline;
         }
-        return $aTradeline;
+        return array();
     }
 }
