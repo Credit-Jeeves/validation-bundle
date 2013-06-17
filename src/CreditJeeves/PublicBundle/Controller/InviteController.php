@@ -42,9 +42,6 @@ class InviteController extends Controller
             $sCurrentDob = $date->format("Y-m-d");
             $User->setDateOfBirth(null);
         }
-        
-        //$User->setDateOfBirth(new \DateTime());
-        // Check form type
         $sSsn = $User->getSsn();
         if ($sSsn) {
             $isFullForm = false;
