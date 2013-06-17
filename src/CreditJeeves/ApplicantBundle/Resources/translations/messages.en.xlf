@@ -2,10 +2,6 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
-            <trans-unit id="appliant_dashboard_title">
-                <source>appliant_dashboard_title</source>
-                <target>Appliant Dasboard</target>
-            </trans-unit>
             <trans-unit id="action_plan">
                 <source>action_plan</source>
                 <target>Action Plan</target>
