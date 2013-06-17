@@ -45,3 +45,7 @@ stof_doctrine_extensions:
             tree: true
             timestampable: true
 #            gedmo_loggable: true
+            loggable: true
+    class:
+        loggable: CreditJeeves\CoreBundle\EventListener\Loggable
+

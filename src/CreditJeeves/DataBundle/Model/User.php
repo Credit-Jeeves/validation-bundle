@@ -454,6 +454,18 @@ abstract class User extends BaseUser
     /**
      * Get id
      *
+     * @param int $id
+     * @return User
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * Get id
+     *
      * @return integer
      */
     public function getId()

@@ -75,6 +75,9 @@ class IncentivesController extends Controller
                 $aNegativeCollection[$sTradelineHash],
                 $aDirectCheck
             );
+            if (empty($aTradeline)) {
+                continue;
+            }
             $isCompleted    = $aNegativeCollection[$sTradelineHash]->getIsCompleted();
             if (!$isCompleted) {
                 $aNegativeTradelines[] = $aTradeline;
@@ -101,6 +104,9 @@ class IncentivesController extends Controller
                     $aNegativeCollection[$sTradelineHash],
                     $aDirectCheck
                 );
+                if (empty($aTradeline)) {
+                    continue;
+                }
                 $aTradeline['incentive'] = isset($aIncentivesCollection[$aTradeline['id']])
                 ? $aIncentivesCollection[$aTradeline['id']]->getCjGroupIncentives()->getText() : '';
                 if ($aTradeline['is_completed']) {
