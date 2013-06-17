@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-class Operation
+abstract class Operation
 {
     /**
      * @var integer

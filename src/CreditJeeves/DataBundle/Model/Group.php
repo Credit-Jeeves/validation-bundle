@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\MappedSuperclass
  */
-class Group
+abstract class Group
 {
     /**
      * @ORM\Id
