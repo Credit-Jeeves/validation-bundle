@@ -18,6 +18,10 @@ class SummaryController extends Controller
     {
         $cjUser = $this->get('core.session.applicant')->getUser();
         $sEmail = $cjUser->getEmail();
-        return array('sEmail' => $sEmail);
+        $Report  = $cjUser->getReportsPrequal()->last();
+        return array(
+            'sEmail' => $sEmail,
+            'Report' => $Report,
+        );
     }
 }

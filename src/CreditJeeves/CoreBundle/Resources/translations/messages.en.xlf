@@ -1011,6 +1011,50 @@
                 <source>error.fatal.message-%SUPPORT_EMAIL%</source>
                 <target>YOops! An Error Occurred. Please contact %SUPPORT_EMAIL%.</target>
             </trans-unit>
+            <!-- Did you know component -->
+            <trans-unit id="dyk.subheading.default">
+                <source>dyk.subheading.default</source>
+                <target>Your tax refund can help.</target>
+            </trans-unit>
+            <trans-unit id="dyk.subheading.cash_in_home">
+                <source>dyk.subheading.cash_in_home</source>
+                <target>There may be cash in your home.</target>
+            </trans-unit>
+            <trans-unit id="dyk.subheading.new_credit">
+                <source>dyk.subheading.new_credit</source>
+                <target>A new credit may help.</target>
+            </trans-unit>
+
+            <trans-unit id="dyk.hreftext.view_no">
+                <source>dyk.hreftext.view_no</source>
+                <target>View Credit Cards for No Credit or Building Credit</target>
+            </trans-unit>
+            <trans-unit id="dyk.hreftext.view_good">
+                <source>dyk.hreftext.view_good</source>
+                <target>View Credit Cards for Good or Excellent Credit</target>
+            </trans-unit>
+
+            <trans-unit id="dyk.message.default">
+                <source>dyk.message.default</source>
+                <target>A third of Americans use their tax refund to pay down high-interest debt. File your taxes today with H&amp;R Block.</target>
+            </trans-unit>
+            <trans-unit id="dyk.message.additional">
+                <source>dyk.message.additional</source>
+                <target>If you are responsible with your credit, additional cards may help establish more payment history.</target>
+            </trans-unit>
+            <trans-unit id="dyk.message.no_credit">
+                <source>dyk.message.no_credit</source>
+                <target>It looks like you might not have a credit card in your profile. By opening a new card, you'll add to the mix of credit you're using which may help your score.</target>
+            </trans-unit>
+            <trans-unit id="dyk.message.mortgage">
+                <source>dyk.message.mortgage</source>
+                <target>Mortgage rates are still at historic lows. You may be able to refinance at a lower rate and get cash out to help you with your other debt. Submit a loan request at Lending Tree to see offers from a variety of lenders.</target>
+            </trans-unit>
+            <trans-unit id="dyk.message.utilization">
+                <source>dyk.message.utilization</source>
+                <target>Your credit card utilization is %AVAILABLE_DEBT%%. By opening a new card and maintaining a zero balance, you could lower your overall utilization which may help your score.</target>
+            </trans-unit>
+            
             
         </body>
     </file>
