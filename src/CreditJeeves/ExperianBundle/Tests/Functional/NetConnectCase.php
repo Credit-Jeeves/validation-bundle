@@ -47,7 +47,7 @@ class NetConnectCase extends BaseTestCase
         $aplicant->setState($data['CurrentAddress']['State']);
         $aplicant->setZip($data['CurrentAddress']['Zip']);
         $tries = 5;
-        while($tries) {
+        while ($tries) {
             try {
                 return $netConnect->getResponseOnUserData($aplicant);
             } catch (\CurlException $e) {
