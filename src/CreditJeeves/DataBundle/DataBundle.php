@@ -1,5 +1,4 @@
 <?php
-
 namespace CreditJeeves\DataBundle;
 
 use Doctrine\DBAL\Types\Type;
@@ -7,7 +6,11 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class DataBundle extends Bundle
 {
+    /**
+     * @var bool
+     */
     protected static $isLoaded = false;
+
     /**
      * {@inheritdoc}
      */
@@ -17,6 +20,7 @@ class DataBundle extends Bundle
             static::$isLoaded = true;
             Type::addType('encrypt', 'CreditJeeves\DataBundle\Type\Encrypt');
             Type::addType('encryptobject', 'CreditJeeves\DataBundle\Type\EncryptObject');
+
             Type::addType('ReportType', 'CreditJeeves\DataBundle\Enum\ReportType');
             Type::addType('UserIsVerified', 'CreditJeeves\DataBundle\Enum\UserIsVerified');
             Type::addType('UserType', 'CreditJeeves\DataBundle\Enum\UserType');

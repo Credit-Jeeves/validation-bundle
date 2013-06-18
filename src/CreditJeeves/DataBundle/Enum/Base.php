@@ -157,9 +157,9 @@ abstract class Base extends Type
      *
      * @return string
      */
-    public static function implode($separator = ', ')
+    public static function implode($separator = "', '")
     {
-        return implode($separator, static::values());
+        return "'" . implode($separator, static::values()) . "'";
     }
 
     /**
@@ -235,7 +235,7 @@ abstract class Base extends Type
      */
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return "ENUM(" . static::implode() . ")COMMENT '(DC2Type:" . $this->getName() . ")'";
+        return "ENUM(" . static::implode() . ") COMMENT '(DC2Type:" . $this->getName() . ")'";
     }
 
     /**

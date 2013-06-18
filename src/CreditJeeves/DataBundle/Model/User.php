@@ -395,7 +395,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="dealers"
+     *     inversedBy="users"
      * )
      * @ORM\JoinColumn(
      *     name="holding_id",
