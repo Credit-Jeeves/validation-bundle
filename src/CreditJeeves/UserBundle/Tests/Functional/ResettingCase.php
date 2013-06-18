@@ -91,7 +91,7 @@ class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
                 'fos_user_resetting_form_new_second' => '123',
             )
         );
-        $this->page->pressButton('resetting.request.submit');
+        $this->page->pressButton('resetting.reset.submit');
 
         $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs .active.first a'));
 

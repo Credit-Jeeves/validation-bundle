@@ -11,12 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Holding extends BaseHolding
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
 
     /**
      * @ORM\PrePersist

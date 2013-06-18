@@ -11,6 +11,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 abstract class Holding
 {
     /**
+     * @ORM\Id
+     * @ORM\Column(type="bigint")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank(
      *     groups={
@@ -45,21 +52,17 @@ abstract class Holding
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\User",
      *     mappedBy="holding",
-     *     cascade={
-     *         "remove",
-     *         },
+     *     cascade={"remove"},
      *     orphanRemoval=true
      * )
      */
-    protected $dealers;
+    protected $users;
 
     /**
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     mappedBy="holding",
-     *     cascade={
-     *         "remove",
-     *         },
+     *     cascade={"remove"},
      *     orphanRemoval=true
      * )
      */
@@ -69,7 +72,7 @@ abstract class Holding
     {
         $this->createdAt = new \DateTime();
         $this->groups = new ArrayCollection();
-        $this->dealers = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
@@ -192,7 +195,7 @@ abstract class Holding
      */
     public function addDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer)
     {
-        $this->dealers[] = $dealer;
+        $this->users[] = $dealer;
     
         return $this;
     }
@@ -204,7 +207,7 @@ abstract class Holding
      */
     public function removeDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer)
     {
-        $this->dealers->removeElement($dealer);
+        $this->users->removeElement($dealer);
     }
 
     /**
@@ -212,8 +215,8 @@ abstract class Holding
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getDealers()
+    public function getUsers()
     {
-        return $this->dealers;
+        return $this->users;
     }
 }

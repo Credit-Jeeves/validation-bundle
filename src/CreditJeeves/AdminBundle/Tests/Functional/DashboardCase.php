@@ -29,20 +29,15 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
     {
         $this->load($this->fixtures, true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
-        $this->assertCount(3, $tables, 'Wrong number of blocks');
-        $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(9, $list, 'Wrong number of blocks');
-        $link = $list[0]->getParent();
-        $link->click();
+        $this->assertNotNull($tableTr = $this->page->find('css', '#id_block_emails'));
+        $tableTr->clickLink('link_list');
         $this->assertNotNull($emails = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(10, $emails);
         $this->page->clickLink('link_action_create');
         $this->assertNotNull($tabs = $this->page->findAll('css', 'form ul li a'));
         $this->assertCount(3, $tabs, 'wrong number of tabs');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
-        $this->assertNotNull($submit = $form->findButton('btn_create_and_edit_again'));
-        $submit->click();
+        $form->pressButton('btn_create_and_edit_again');
         $this->assertNotNull($error = $this->page->find('css', '.alert-error'));
         $this->assertEquals('flash_create_error', $error->getText());
         $this->assertNotNull($inputs = $this->page->findAll('css', 'form input[type="text"]'));
@@ -70,7 +65,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
                 $id => 'test',
             )
         );
-        $submit->click();
+        $form->pressButton('btn_create_and_edit_again');
         $this->assertNotNull($message = $this->page->find('css', '.alert-success'));
         $this->assertEquals('flash_create_success', $message->getText());
         $this->page->clickLink('Email Template List');

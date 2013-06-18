@@ -85,26 +85,6 @@ abstract class User extends BaseUser
         return $this;
     }
 
-    public function removeData()
-    {
-        $this->setFirstName('');
-        $this->setMiddleInitial('');
-        $this->setLastName('');
-        $this->setHasData(false);
-        $this->setHasReport(false);
-        $this->setIsActive(false);
-        $this->setSsn('');
-        $this->setUnitNo('');
-        $this->setCity('');
-        $this->setState('');
-        $this->setZip('');
-        $this->setPhone('');
-        $this->setScoreChangedNotification(false);
-        $this->setOfferNotification(false);
-
-        return $this;
-    }
-
     private function formatPhoneOutput($phone)
     {
         $sPhoneNumber = $this->getPhone();
@@ -196,7 +176,7 @@ abstract class User extends BaseUser
     }
 
     /**
-     * Here would be logic, how we'll get actice lead. Now - simply last
+     * Here would be logic, how we'll get active lead. Now - simply last
      *
      * @return Lead
      */
@@ -237,20 +217,15 @@ abstract class User extends BaseUser
 
     public function getUserToRemove()
     {
+        /** @var User $User */
         $User = new static();
+        $User->setId($this->getId());
         $User->setFirstName($this->getFirstName());
         $User->setMiddleInitial($this->getMiddleInitial());
         $User->setLastName($this->getLastName());
         $User->copyPassword($this->getPassword());
         $User->setCreatedAt($this->getCreatedAt()); // we'll store user's created date
-        $User->setIsVerified(UserIsVerified::PASSED);
         $User->setEmail($this->getEmail());
         return $User;
-    }
-
-    public function getCurrentScore()
-    {
-        $score = $this->getScores()->last();
-        return $score ? $score->getScore(): 0;
     }
 }

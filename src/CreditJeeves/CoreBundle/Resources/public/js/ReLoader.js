@@ -26,6 +26,7 @@ function ReLoader(url, redirect) {
                     }
                     return false;
                 } else if ('processing' != status && 'warning' != status ) {
+                    console.log('Fail');
                     return false;
                 }
                 timeoutId = setTimeout(checkStatus, nDelay);
