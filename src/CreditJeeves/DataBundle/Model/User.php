@@ -395,7 +395,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="dealers"
+     *     inversedBy="users"
      * )
      * @ORM\JoinColumn(
      *     name="holding_id",
@@ -449,6 +449,18 @@ abstract class User extends BaseUser
                 return array('ROLE_LANDLORD');
         }
         throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
+    }
+
+    /**
+     * Get id
+     *
+     * @param int $id
+     * @return User
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**

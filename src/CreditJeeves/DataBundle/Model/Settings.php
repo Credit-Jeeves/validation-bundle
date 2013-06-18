@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-class Settings
+abstract class Settings
 {
     /**
      * @ORM\Id

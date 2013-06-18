@@ -10,12 +10,12 @@
 
     <div class="form-label">{{ form_label(form.street_address1) }}</div>
     <div class="form-widget">
-        <div>
+        <div class="form-line">
         {{ form_widget(
             form.street_address1,
             { 'attr':
                 {
-                    'class': 'user-input user-address user-margin',
+                    'class': 'user-input user-address form-margin',
                     'maxlength' : 255,
                     'placeholder': 'Street'
                 }
@@ -27,7 +27,7 @@
                 form.unit_no,
                 { 'attr':
                     {
-                        'class': 'user-input user-unit user-margin',
+                        'class': 'user-input user-unit form-margin',
                         'placeholder': 'Unit #',
                         'maxlength' : 15
                     }
@@ -35,12 +35,12 @@
             }}
         {% endif %}
         </div>
-        <div>
+        <div class="form-line">
         {{ form_widget(
             form.city,
             { 'attr':
                 {
-                    'class': 'user-input user-city user-margin floatleft',
+                    'class': 'user-input user-city form-margin floatleft',
                     'placeholder': 'City',
                     'maxlength' : 255
                 }
@@ -50,7 +50,7 @@
             form.state,
             { 'attr':
                 {
-                    'class': 'user-input user-state user-margin',
+                    'class': 'user-input user-state form-margin',
                     'maxlength' : 2
                 }
             })
@@ -59,7 +59,7 @@
             form.zip,
             { 'attr':
                 {
-                    'class': 'user-input user-unit user-margin',
+                    'class': 'user-input user-unit form-margin',
                     'placeholder': 'ZIP',
                     'maxlength' : 15
                 }

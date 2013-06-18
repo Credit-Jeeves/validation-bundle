@@ -16,6 +16,10 @@ core:
     resource:   "@CoreBundle/Controller"
     type:       annotation
 
+user:
+    resource:   "@UserBundle/Controller"
+    type:       annotation
+
 admin_common:
     resource:   "@AdminBundle/Controller"
     type:       annotation

@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ApplicantBundle\Form\Type;
+namespace CreditJeeves\UserBundle\Form\Type;
 
 use CreditJeeves\ApplicantBundle\Form\Type\GroupType;
 use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;

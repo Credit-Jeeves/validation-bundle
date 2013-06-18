@@ -7,7 +7,7 @@ use Payum\AuthorizeNet\Aim\Model\PaymentDetails;
 /**
  * @ORM\MappedSuperclass
  */
-class CheckoutAuthorizeNetAim extends PaymentDetails
+abstract class CheckoutAuthorizeNetAim extends PaymentDetails
 {
     /**
      * @var integer

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-class Report
+abstract class Report
 {
     /**
      * @ORM\Id
