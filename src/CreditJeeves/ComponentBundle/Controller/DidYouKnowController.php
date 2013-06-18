@@ -17,8 +17,8 @@ class DidYouKnowController extends Controller
     {
         $this->aOffers = array(
             $default = array(
-                'subheading' => 'Your tax refund can help.',
-                'message' => 'A third of Americans use their tax refund to pay down high-interest debt. File your taxes today with H&R Block.',
+                'subheading' => 'dyk.subheading.default',
+                'message' => 'dyk.message.default',
                 'href' => 'http://www.kqzyfj.com/click-6606250-10523214',
                 'href_text' => '',
                 'img' => 'https://www.lduhtrp.net/image-6606250-10523214',
@@ -35,13 +35,13 @@ class DidYouKnowController extends Controller
     private function addMortgageOffer()
     {
         $nMortgageDebt = $this->cjArfReport->getValue(
-              ArfParser::SEGMENT_PROFILE_SUMMARY,
-              ArfParser::REPORT_BALANCE_REAL_ESTATE
+            ArfParser::SEGMENT_PROFILE_SUMMARY,
+            ArfParser::REPORT_BALANCE_REAL_ESTATE
         );
         if ($nMortgageDebt > 5000) {
             $this->aOffers[] = array(
-                'subheading' => 'There may be cash in your home.',
-                'message' => 'Mortgage rates are still at historic lows. You may be able to refinance at a lower rate and get cash out to help you with your other debt. Submit a loan request at Lending Tree to see offers from a variety of lenders.',
+                'subheading' => 'dyk.subheading.cash_in_home',
+                'message' => 'dyk.message.mortgage',
                 'href' => 'http://www.credit.com/r2/loans/af=p96545&c=271202-607a665380',
                 'href_text' => '',
                 'img' => 'http://www.credit.com/c/loans/af=p96545&c=271329-785973021d',
@@ -61,53 +61,63 @@ class DidYouKnowController extends Controller
             if ($this->nScore >= 700) {
                 $this->aOffers[] = array(
                     'subheading' => 'A new credit may help.',
-                    'message' => 'It looks like you might not have a credit card in your profile. By opening a new card, you\'ll add to the mix of credit you\'re using which may help your score.',
+                    'message' => 'dyk.message.no_credit',
                     'href' => 'offers/credit-cards-for-good-credit-or-excellent-credit',
-                    'href_text' => 'View Credit Cards for Good or Excellent Credit',
+                    'href_text' => 'dyk.hreftext.view_good',
                     'img' => false
                 );
             } else {
                 $this->aOffers[] = array(
-                    'subheading' => 'A new credit may help.',
-                    'message' => 'It looks like you might not have a credit card in your profile. By opening a new card, you\'ll add to the mix of credit you\'re using which may help your score.',
-                        'href' => 'offers/credit-cards-for-bad-credit-or-no-credit',
-                        'href_text' => 'View Credit Cards for No Credit or Building Credit',
-                        'img' => false,
+                    'subheading' => 'dyk.subheading.new_credit',
+                    'message' => 'dyk.message.no_credit',
+                    'href' => 'offers/credit-cards-for-bad-credit-or-no-credit',
+                    'href_text' => 'dyk.hreftext.view_no',
+                    'img' => false,
                 );
             }
         } elseif ($nAvailableDebt >= 30) {
             if ($this->nScore >= 700) {
                 $this->aOffers[] = array(
-                    'subheading' => 'A new credit card can help.',
-                    'message' => 'Your credit card utilization is '.$nAvailableDebt.'%. By opening a new card and maintaining a zero balance, you could lower your overall utilization which may help your score.',
+                    'subheading' => 'dyk.subheading.new_credit',
+                    'message' => $this->get('translator.default')->trans(
+                        'dyk.message.utilization',
+                        array(
+                            '%AVAILABLE_DEBT%' => $nAvailableDebt,
+                        )
+                    ),
                     'href' => 'offers/credit-cards-for-good-credit-or-excellent-credit',
-                    'href_text' => 'View Credit Cards for Good or Excellent Credit',
+                    'href_text' => 'dyk.hreftext.view_no',
                     'img' => false,
                 );
             } else {
                 $this->aOffers[] = array(
-                    'subheading' => 'A new credit card can help.',
-                    'message' => 'Your credit card utilization is '.$nAvailableDebt.'%. By opening a new card and maintaining a zero balance, you could lower your overall utilization which may help your score.',
+                    'subheading' => 'dyk.subheading.new_credit',
+                    'message' => $this->get('translator.default')->trans(
+                        'dyk.message.utilization',
+                        array(
+                            '%AVAILABLE_DEBT%' => $nAvailableDebt,
+                        )
+                    ),
                     'href' => 'offers/credit-cards-for-bad-credit-or-no-credit',
-                    'href_text' => 'View Credit Cards for No Credit or Building Credit',
+                    'href_text' => 'dyk.hreftext.view_no',
                     'img' => false,
                 );
             }
         } else {
             if ($this->nScore >= 700) {
-                    $this->aOffers[] = array(
-                        'subheading' => 'A new credit card can help.',
-                        'message' => 'If you are responsible with your credit, additional cards may help establish more payment history.',
-                        'href' => 'offers/credit-cards-for-good-credit-or-excellent-credit',
-                        'href_text' => 'View Credit Cards for Good or Excellent Credit',
-                        'img' => false,
-                    );
+                $this->aOffers[] = array(
+                    'subheading' => 'dyk.subheading.new_credit',
+                    'message' => 'dyk.message.additional',
+                    'href' => 'offers/credit-cards-for-good-credit-or-excellent-credit',
+                    'href_text' => 'dyk.hreftext.view_no',
+                    'img' => false,
+                );
             } else {
                 $this->aOffers[] = array(
-                    'subheading' => 'A new credit card can help.',
-                    'message' => 'If you are responsible with your credit, additional cards may help establish more payment history.',
+                    'subheading' => 'dyk.subheading.new_credit',
+                    'message' => 'dyk.message.additional',
                     'href' => 'offers/credit-cards-for-bad-credit-or-no-credit',
-                    'href_text' => 'View Credit Cards for No Credit or Building Credit',
+                    'href_text' => 'dyk.hreftext.view_no',
                     'img' => false,
                 );
             }

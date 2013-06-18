@@ -7,7 +7,7 @@
             {% if img %}
                 <img src="{{ img }}" width="120" height="60" alt="Online - H&R Block At Home Free Edition " border="0"/>
             {% else %}
-                {{ href_text }}
+                {{ href_text | trans }}
             {% endif %}
         </a>
     </div>
