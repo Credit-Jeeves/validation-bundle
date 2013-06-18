@@ -1,6 +1,6 @@
 {% extends "ApplicantBundle::base.html.twig" %}
 
-{% block title "Appliant Dasboard" %}
+{% block title "common.applicant.dashboard"|trans %}
 
 {% block content %}
     <div id="summary_page">
@@ -26,7 +26,7 @@
         <div class="column-small floatright">
             {{ render(controller('CheckoutBundle:Default:box')) }}
             <div class="row-20"></div>
-            {{ render(controller('ComponentBundle:DidYouKnow:index')) }}
+            {{ render(controller('ComponentBundle:DidYouKnow:index', {'Report': Report})) }}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:LearnMore:index')) }}
         </div>
