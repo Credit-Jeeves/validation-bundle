@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @ORM\MappedSuperclass
  */
-class Group
+abstract class Group
 {
     /**
      * @ORM\Id
@@ -103,6 +103,31 @@ class Group
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupIncentive", mappedBy="group")
      */
     protected $incentives;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *     inversedBy="groups"
+     * )
+     * @ORM\JoinColumn(
+     *     name="holding_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $holding;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Affiliate",
+     *     inversedBy="groups"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_affiliate_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $affiliate;
+    
 
     public function __construct()
     {
@@ -541,5 +566,21 @@ class Group
     public function getTargetScore()
     {
         return $this->target_score;
+    }
+
+    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
+    {
+        $this->holding = $holding;
+        return $this;
+    }
+
+    public function getHolding()
+    {
+        return $this->holding;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

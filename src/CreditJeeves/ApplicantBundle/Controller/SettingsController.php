@@ -22,7 +22,7 @@ class SettingsController extends Controller
     {
         $request = $this->get('request');
         /** @var \CreditJeeves\DataBundle\Entity\User $User */
-        $User = $this->getUser();
+        $User = $this->get('core.session.applicant')->getUser();
         $sOldPassword = $User->getPassword();
         $sEmail = $User->getEmail();
         $form = $this->createForm(new PasswordType(), $User);

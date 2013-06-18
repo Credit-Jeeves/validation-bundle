@@ -1,12 +1,12 @@
 <?php
 namespace CreditJeeves\ApplicantBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
+use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
-class SettingsCase extends BaseTestCase
+class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
 {
     protected $fixtures = array(
         '001_cj_account_group.yml',

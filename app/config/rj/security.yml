@@ -1,0 +1,36 @@
+security:
+    encoders:
+        CreditJeeves\DataBundle\Entity\User:
+            id: user.security.encoder.digest
+
+    role_hierarchy:
+        ROLE_TENANR:   ROLE_TENANT
+        ROLE_LANDLORD: ROLE_LANDLORD
+
+    providers:
+        custom:
+            id: user.user_provider
+
+    firewalls:
+        main:
+            pattern: ^/
+            form_login:
+                provider: custom 
+                csrf_provider: form.csrf_provider
+                success_handler: user.service.login_success_handler
+            logout:       true
+            anonymous:    true
+
+    access_control:
+        - { path: ^/_profiler/,     role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_profiler/,     role: ROLE_LANDLORD }
+        - { path: ^/_profiler/,     role: ROLE_TENANT }
+        - { path: ^/test,           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$,         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting,      role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/new$,           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/new/,           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/landlord/,      role: ROLE_LANDLORD }
+        - { path: ^/,               role: ROLE_TENANT }

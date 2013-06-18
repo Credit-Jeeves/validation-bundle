@@ -1,65 +1,124 @@
-<?php 
+<?php
 namespace CreditJeeves\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Admin\Admin;
-use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Form\FormMapper;
+// use Sonata\AdminBundle\Datagrid\DatagridMapper;
+// use Sonata\AdminBundle\Datagrid\ListMapper;
+// use Sonata\AdminBundle\Show\ShowMapper;
+// use Sonata\AdminBundle\Route\RouteCollection;
 
-use Knp\Menu\ItemInterface as MenuItemInterface;
+// use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Query;
+
+// use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class ApplicantAdmin extends Admin
 {
-    public function configureShowFields(ShowMapper $showMapper)
+    /**
+     *
+     * @var string
+     */
+    const TYPE = 'applicant';
+
+    protected $formOptions = array(
+            'validation_groups' => 'user_admin'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
     {
-        $showMapper
-            ->add('email')
-             ->add('first_name')
-//             ->add('title')
-//             ->add('abstract')
-//             ->add('content')
-//             ->add('tags')
-        ;
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        
+        $query->innerJoin($alias.'.scores', 's');
+            
+            //->addOrderBy('s.id',  'DESC');
+            //
+        
+//         echo '<pre>';
+//         print_r($query->execute(array(), Query::HYDRATE_ARRAY));
+//         exit;
+        return $query;
     }
 
-    public function configureFormFields(FormMapper $formMapper)
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRouteName()
     {
-//         $formMapper
-//             ->with('General')
-//                 ->add('enabled', null, array('required' => false))
-//                 ->add('author', 'sonata_type_model', array(), array('edit' => 'list'))
-//                 ->add('title')
-//                 ->add('abstract')
-//                 ->add('content')
-//             ->end()
-//             ->with('Tags')
-//                 ->add('tags', 'sonata_type_model', array('expanded' => true))
-//             ->end()
-//             ->with('Options', array('collapsed' => true))
-//                 ->add('commentsCloseAt')
-//                 ->add('commentsEnabled', null, array('required' => false))
-//             ->end()
-//         ;
+        return 'admin_cj_'.self::TYPE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRoutePattern()
+    {
+        return '/cj/'.self::TYPE;
     }
 
     public function configureListFields(ListMapper $listMapper)
     {
-         $listMapper
-//             ->addIdentifier('title')
-             ->add('first_name')
-             ->add('middle_initial')
-             ->add('last_name')
-//             ->add('commentsEnabled')
-         ;
+        $listMapper
+            ->add('first_name')
+            ->add('middle_initial')
+            ->add('last_name')
+            ->add('email')
+            ->add('state')
+            ->add('zip')
+            ->add('city')
+            ->add('phone')
+            ->add('current_score')
+            ->add('user_leads')
+            ->add('is_verified')
+            ->add('is_active')
+            ->add('has_report')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                        'delete' => array(),
+                        'report' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_report.html.twig'
+                        ),
+                        'observe' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_observe.html.twig'
+                        ),
+                    )
+                )
+            );
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-//         $datagridMapper
-//             ->add('title')
-//             ->add('enabled')
-//             ->add('tags', null, array('filter_field_options' => array('expanded' => true, 'multiple' => true)))
-//         ;
+        $datagridMapper
+            ->add('email')
+            ->add('first_name')
+            ->add('middle_initial')
+            ->add('last_name')
+            ->add('is_verified');
+    }
+
+    public function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->with('General')
+                ->add('first_name')
+                ->add('middle_initial')
+                ->add('last_name')
+                ->add('email')
+                ->add('is_verified')
+                ->add('culture')
+                ->add('user_leads', 'sonata_type_model', array('expanded' => true, 'multiple' => true))
+            ->end();
     }
 }

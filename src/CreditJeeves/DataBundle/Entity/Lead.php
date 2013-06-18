@@ -23,4 +23,14 @@ class Lead extends BaseLead
         $this->updated_at = new \DateTime();
         $this->status = 'new';
     }
+    
+    public function __toString()
+    {
+        return (string)$this->getGroup()->getName().' '.$this->getTargetScore();
+    }
+
+    public function getGroupName()
+    {
+        return $this->getGroup()->getName();
+    }
 }

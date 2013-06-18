@@ -1,9 +1,9 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Tests\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Settings;
-use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\TestBundle\BaseTestCase;
+use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\ExperianBundle\Pidkiq;
 
 /**
@@ -106,7 +106,7 @@ class PidkiqCase extends BaseTestCase
         $pidkiq = new Pidkiq();
         $pidkiq->execute(self::getContainer());
 
-        $aplicant = new User();
+        $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
@@ -230,7 +230,7 @@ class PidkiqCase extends BaseTestCase
      * 2013.05.05 It does not work
      * 2013.05.15 It works again
      * 2013.06.12 It does not work
-     * 2013.06.13 It works again
+     * 2013.06.17 It works again
      *
      * @expectedException \ExperianException
      * @expectedExceptionMessage No questions returned due to excessive use

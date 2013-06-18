@@ -129,15 +129,15 @@
                 <target>The card verification code (CVC) is invalid.</target>
             </trans-unit>
 
-            <trans-unit id="order_authorize_card_num">
+            <trans-unit id="order.authorize.card_num">
                 <source>order_authorize_authorize_card_num</source>
                 <target>Card Number</target>
             </trans-unit>
-            <trans-unit id="order_authorize_card_code">
+            <trans-unit id="order.authorize.card_code">
                 <source>order_authorize_authorize_card_code</source>
                 <target>CSC</target>
             </trans-unit>
-            <trans-unit id="order_authorize_authorize_exp_date">
+            <trans-unit id="order.authorize.exp_date">
                 <source>order_authorize_authorize_exp_date</source>
                 <target>Expiration</target>
             </trans-unit>

@@ -60,4 +60,15 @@ class Group extends BaseGroup
         $aResult[] = implode(' ', $aAddress);
         return $aResult;
     }
+
+    public function getCountLeads()
+    {
+        $leads = $this->getLeads();
+        return $leads ? count($leads) : 0;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

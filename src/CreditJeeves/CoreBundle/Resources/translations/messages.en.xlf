@@ -6,6 +6,22 @@
                 <source>project_name</source>
                 <target>CreditJeeves</target>
             </trans-unit>
+            <trans-unit id="action_observe">
+                <source>action_observe</source>
+                <target>Observe</target>
+            </trans-unit>
+            <trans-unit id="dashboard.action_leads">
+                <source>dashboard.action_leads</source>
+                <target>Leads</target>
+            </trans-unit>
+            <trans-unit id="dashboard.action_dealers">
+                <source>dashboard.action_dealers</source>
+                <target>Dealers</target>
+            </trans-unit>
+            <trans-unit id="action_report">
+                <source>action_report</source>
+                <target>Report</target>
+            </trans-unit>
             <trans-unit id="login.title">
                 <source>login.title</source>
                 <target>Member Login</target>
@@ -55,6 +71,10 @@
                 <source>resetting.request.submit</source>
                 <target>Get New Password</target>
             </trans-unit>
+            <trans-unit id="resetting.reset.submit">
+                <source>resetting.reset.submit</source>
+                <target>Save New Password</target>
+            </trans-unit>
             <trans-unit id="resetting.request.invalid_username">
                 <source>resetting.request.invalid_username</source>
                 <target>The email address "%username%" does not exist.</target>
@@ -69,7 +89,7 @@
             </trans-unit>
             <trans-unit id="resetting.check_email">
                 <source>resetting.check_email-%email%</source>
-                <target>A new password has been sent to your email address %email%. Please check your inbox for the new password, then return to the</target>
+                <target>A link to reset your password has been sent to your email %email%. Please check your inbox and click on the link.</target>
             </trans-unit>
             
             <trans-unit id="project.questions">

@@ -1,11 +1,10 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Tests\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Settings;
+use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\NetConnect;
-use CreditJeeves\DataBundle\Entity\User;
-use Doctrine\Tests\Mocks\EntityManagerMock;
+use CreditJeeves\DataBundle\Entity\Applicant;
 
 /**
  * NetConnect test case.
@@ -38,7 +37,7 @@ class NetConnectCase extends BaseTestCase
         $netConnect = new NetConnect();
         $netConnect->execute(self::getContainer());
 
-        $aplicant = new User();
+        $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
@@ -47,8 +46,15 @@ class NetConnectCase extends BaseTestCase
         $aplicant->setCity($data['CurrentAddress']['City']);
         $aplicant->setState($data['CurrentAddress']['State']);
         $aplicant->setZip($data['CurrentAddress']['Zip']);
-
-        return $netConnect->getResponseOnUserData($aplicant);
+        $tries = 5;
+        while ($tries) {
+            try {
+                return $netConnect->getResponseOnUserData($aplicant);
+            } catch (\CurlException $e) {
+                $tries--;
+            }
+        }
+        $this->fail('NetConnect is broken');
     }
 
     /**
@@ -128,7 +134,6 @@ class NetConnectCase extends BaseTestCase
             $this->getContainer()->getParameter('server_name'),
             $em
         );
-
         $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
     }
 }

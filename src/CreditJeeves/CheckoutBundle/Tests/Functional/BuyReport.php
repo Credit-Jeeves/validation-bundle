@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\CheckoutBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
+use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
  * Dealer's login tests

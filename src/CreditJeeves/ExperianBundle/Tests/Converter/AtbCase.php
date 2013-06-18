@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Converter;
 
-use CreditJeeves\CoreBundle\Tests\BaseTestCase;
+use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Enum\AtbType;
 use CreditJeeves\ExperianBundle\Converter\Atb as Converter;
 use CreditJeeves\DataBundle\Entity\Atb as Entity;

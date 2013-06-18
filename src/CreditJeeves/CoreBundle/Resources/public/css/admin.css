@@ -3,3 +3,24 @@
     font-size: 20px;
     margin-top: 10px;
 }
+
+.sonata-bc .icon-show {
+    background-position: -1px -23px;
+}
+
+.sonata-bc .icon-report {
+    background-position: -24px -23px;
+}
+
+.sonata-bc .icon-dealer {
+    background-position: -168px 1px;
+}
+
+.sonata-bc .icon-lead {
+    background-position: -217px -119px;
+}
+
+.sonata-bc .btn {
+    margin: 1px;
+    width: 85px;
+}

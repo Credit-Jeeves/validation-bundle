@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\UserBundle\Tests\Controller;
 
-use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
+use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
 class ReturnedCase extends BaseTestCase
 {

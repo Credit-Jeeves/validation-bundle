@@ -8,8 +8,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
+ * @~Gedmo\Loggable
  */
-class Lead
+abstract class Lead
 {
     /**
      * 

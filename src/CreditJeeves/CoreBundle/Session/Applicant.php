@@ -1,8 +1,9 @@
 <?php
 namespace CreditJeeves\CoreBundle\Session;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Service;
-use CreditJeeves\DataBundle\Entity\User as UserEntity;
+use CreditJeeves\DataBundle\Entity\Applicant as UserEntity;
 
 /**
  * @Service("core.session.applicant")
@@ -15,7 +16,7 @@ class Applicant extends User
     public function setUser(UserEntity $User)
     {
         $this->prepareApplicant($User);
-        $this->saveToSession(self::USER_APPLICANT);
+        $this->saveToSession(UserType::APPLICANT);
     }
 
     /**
@@ -34,7 +35,7 @@ class Applicant extends User
      */
     public function getUser()
     {
-        $data = $this->getFromSession(self::USER_APPLICANT);
+        $data = $this->getFromSession(UserType::APPLICANT);
         if (isset($data['user_id'])) {
             return $this->findUser($data['user_id']);
         }
@@ -46,7 +47,7 @@ class Applicant extends User
      */
     public function getLeadId()
     {
-        $data = $this->getFromSession(self::USER_APPLICANT);
+        $data = $this->getFromSession(UserType::APPLICANT);
 
         return isset($data['lead_id']) ? $data['lead_id'] : null;
     }
@@ -57,9 +58,9 @@ class Applicant extends User
      */
     public function setLeadId($nLeadId)
     {
-        $this->data = $this->getFromSession(self::USER_APPLICANT);
+        $this->data = $this->getFromSession(UserType::APPLICANT);
         $this->data['lead_id'] = $nLeadId;
-        $this->saveToSession(self::USER_APPLICANT);
+        $this->saveToSession(UserType::APPLICANT);
     }
 
     public function getLead()

@@ -37,7 +37,12 @@ abstract class Base extends Type
      */
     public static function all()
     {
-        return static::getRC()->getConstants();
+        $reflection = static::getRC();
+        $buffer = $reflection->getConstants();
+        foreach (array($reflection->getParentClass()) + $reflection->getInterfaces() as $fill) {
+            $buffer = array_diff_key($buffer, $fill->getConstants());
+        }
+        return $buffer;
     }
 
     /**
@@ -152,9 +157,9 @@ abstract class Base extends Type
      *
      * @return string
      */
-    public static function implode($separator = ', ')
+    public static function implode($separator = "', '")
     {
-        return implode($separator, static::values());
+        return "'" . implode($separator, static::values()) . "'";
     }
 
     /**
@@ -230,7 +235,7 @@ abstract class Base extends Type
      */
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return "ENUM(" . static::implode() . ")COMMENT '(DC2Type:" . $this->getName() . ")'";
+        return "ENUM(" . static::implode() . ") COMMENT '(DC2Type:" . $this->getName() . ")'";
     }
 
     /**

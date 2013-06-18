@@ -11,21 +11,7 @@ parameters:
     mink.base_url: 'http://%server_name%/_test.php'
     server: dev
 
-    experian.logging: false
-
-    experian.pidkiq:
-        url: 'https://dm2.experian.com/fraudsolutions/xmlgateway/preciseid' #required!
-        userpwd: 'creditjeeves_pid_demo:Tjl80jvE5N' #required! # overwritten by DB
-        eai: 'HRPCX4RA' #required! # overwritten by DB
-        dbhost: 'PRECISE_ID_TEST' #required!
-    experian.netConnect:
-        url: 'http://www.experian.com/lookupServlet1?lookupServiceName=AccessPoint&lookupServiceVersion=1.0&serviceName=NetConnectDemo&serviceVersion=2.0&responseType=text/plain' #required!
-        userpwd: 'creditjeeves_cs_demo:e1oKIoRUPW' #required! # overwritten by DB
-        eai: 'HRPCX4RA' #required! # overwritten by DB
-        dbhost: 'STAR' #required!
-
     authorize_net:
         login_id: '7hNc5K44'
         transaction_key: '5588K4QpHFhhqL5A'
         sandbox: true
-

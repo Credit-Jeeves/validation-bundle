@@ -1,9 +1,9 @@
 <?php
 namespace CreditJeeves\UserBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Tests\Functional\BaseTestCase;
+use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
-class ResettingCase extends BaseTestCase
+class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
 {
     protected $fixtures = array(
         '001_cj_account_group.yml',
@@ -91,7 +91,7 @@ class ResettingCase extends BaseTestCase
                 'fos_user_resetting_form_new_second' => '123',
             )
         );
-        $this->page->pressButton('resetting.request.submit');
+        $this->page->pressButton('resetting.reset.submit');
 
         $this->assertNotNull($activeTab = $this->page->find('css', '.header-tabs .active.first a'));
 

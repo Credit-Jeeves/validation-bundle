@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\MappedSuperclass
  */
-class Order
+abstract class Order
 {
     /**
      * @ORM\Id

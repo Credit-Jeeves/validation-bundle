@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use FOS\UserBundle\Entity\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserCulture;
@@ -26,7 +27,8 @@ abstract class User extends BaseUser
      *     message="error.user.first_name.empty",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      * @Assert\Length(
@@ -36,7 +38,8 @@ abstract class User extends BaseUser
      *     maxMessage="error.user.first_name.long",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      */
@@ -53,7 +56,8 @@ abstract class User extends BaseUser
      *     message="error.user.last_name.empty",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      * @Assert\Length(
@@ -63,11 +67,27 @@ abstract class User extends BaseUser
      *     maxMessage="error.user.last_name.long",
      *     groups={
      *         "user_profile",
-     *         "buy_report"
+     *         "buy_report",
+     *         "user_admin"
      *     }
      * )
      */
     protected $last_name;
+
+    /**
+     * @Assert\NotBlank(
+     *     message="error.user.last_name.empty",
+     *     groups={
+     *         "user_admin"
+     *     }
+     * )
+     * @Assert\Email(
+     *     groups={
+     *         "user_admin"
+     *     }
+     * )
+     */
+    protected $email;
 
     /**
      * @ORM\Column(type="encrypt")
@@ -244,9 +264,8 @@ abstract class User extends BaseUser
     protected $has_report = false;
 
     /**
-     * @ORM\Column(type="UserType")
      */
-    protected $type = 'applicant';
+    protected $type;
 
     /**
      * @ORM\Column(type="bigint")
@@ -373,6 +392,17 @@ abstract class User extends BaseUser
      */
     protected $vehicle;
 
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *     inversedBy="users"
+     * )
+     * @ORM\JoinColumn(
+     *     name="holding_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $holding;
 
     /**
      * @ORM\OneToMany(
@@ -400,18 +430,25 @@ abstract class User extends BaseUser
 
     public function getRoles()
     {
-        $sType = $this->getType();
-        switch ($sType) {
-            case 'applicant':
+        switch ($this->getType()) {
+            case UserType::APPLICANT:
                 return array('ROLE_USER');
-                break;
-            case 'dealer':
+            case UserType::DEALER:
                 return array('ROLE_DEALER');
-                break;
-            case 'admin':
-                return array('ROLE_USER', 'ROLE_DEALER', 'ROLE_ADMIN');
-                break;
+            case UserType::ADMIN:
+                return array(
+                    'ROLE_USER',
+                    'ROLE_DEALER',
+                    'ROLE_ADMIN',
+                    'ROLE_TENANT',
+                    'ROLE_LANDLORD'
+                );
+            case UserType::TETNANT:
+                return array('ROLE_TENANT');
+            case UserType::LANDLORD:
+                return array('ROLE_LANDLORD');
         }
+        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
 
     /**
@@ -1342,5 +1379,16 @@ abstract class User extends BaseUser
     public function getPidkiqs()
     {
         return $this->pidkiqs;
+    }
+
+    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
+    {
+        $this->holding = $holding;
+        return $this;
+    }
+
+    public function getHolding()
+    {
+        return $this->holding;
     }
 }
