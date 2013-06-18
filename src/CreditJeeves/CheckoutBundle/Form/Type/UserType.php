@@ -28,4 +28,19 @@ class UserType extends BaseUserType
         }
 
     }
+
+
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'CreditJeeves\DataBundle\Entity\User',
+                'validation_groups' => array(
+                    'buy_report',
+                ),
+            )
+        );
+    }
+
 }

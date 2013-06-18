@@ -6,7 +6,7 @@ use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
 use Gedmo\Loggable\Mapping\Event\LoggableAdapter;
 use Gedmo\Tool\Wrapper\AbstractWrapper;
-use CreditJeeves\DataBundle\Entity\LeadHistory;
+use CreditJeeves\DataBundle\Entity\Lead;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -18,7 +18,7 @@ class Loggable extends Base
      */
     protected function createLogEntry($action, $object, LoggableAdapter $ea)
     {
-        if (($object instanceof LeadHistory) && self::ACTION_REMOVE === $action) {
+        if (($object instanceof Lead) && self::ACTION_REMOVE === $action) {
             return;
         }
 
@@ -70,7 +70,7 @@ class Loggable extends Base
                 return;
             }
 
-            if (!($object instanceof LeadHistory)) {
+            if (!($object instanceof Lead)) {
                 $version = 1;
                 if ($action !== self::ACTION_CREATE) {
                     $version = $ea->getNewVersion($logEntryMeta, $object);

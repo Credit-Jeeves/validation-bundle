@@ -71,6 +71,10 @@
                 <source>resetting.request.submit</source>
                 <target>Get New Password</target>
             </trans-unit>
+            <trans-unit id="resetting.reset.submit">
+                <source>resetting.reset.submit</source>
+                <target>Save New Password</target>
+            </trans-unit>
             <trans-unit id="resetting.request.invalid_username">
                 <source>resetting.request.invalid_username</source>
                 <target>The email address "%username%" does not exist.</target>
@@ -85,7 +89,7 @@
             </trans-unit>
             <trans-unit id="resetting.check_email">
                 <source>resetting.check_email-%email%</source>
-                <target>A new password has been sent to your email address %email%. Please check your inbox for the new password, then return to the</target>
+                <target>A link to reset your password has been sent to your email %email%. Please check your inbox and click on the link.</target>
             </trans-unit>
             
             <trans-unit id="project.questions">
