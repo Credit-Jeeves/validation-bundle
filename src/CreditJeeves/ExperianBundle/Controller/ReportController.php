@@ -131,6 +131,7 @@ class ReportController extends Controller
             $session = $this->getRequest()->getSession();
             ignore_user_abort();
             set_time_limit(90);
+            require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/CurlException.class.php';
             if (!$session->get('cjIsArfProcessing', false)) {
                 $session->set('cjIsArfProcessing', true);
                 try {
@@ -152,10 +153,9 @@ class ReportController extends Controller
                         );
                         return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
                     }
-                } catch (\Exception $e) {
+                } catch (\CurlException $e) {
                     $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);
                     $session->set('cjIsArfProcessing', false);
-                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     return new JsonResponse('warning');
                 }
                 $session->set('cjIsArfProcessing', false);

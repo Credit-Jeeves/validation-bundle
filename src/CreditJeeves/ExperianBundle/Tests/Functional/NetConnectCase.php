@@ -46,8 +46,15 @@ class NetConnectCase extends BaseTestCase
         $aplicant->setCity($data['CurrentAddress']['City']);
         $aplicant->setState($data['CurrentAddress']['State']);
         $aplicant->setZip($data['CurrentAddress']['Zip']);
-
-        return $netConnect->getResponseOnUserData($aplicant);
+        $tries = 5;
+        while($tries) {
+            try {
+                return $netConnect->getResponseOnUserData($aplicant);
+            } catch (\CurlException $e) {
+                $tries--;
+            }
+        }
+        $this->fail('NetConnect is broken');
     }
 
     /**
@@ -127,7 +134,6 @@ class NetConnectCase extends BaseTestCase
             $this->getContainer()->getParameter('server_name'),
             $em
         );
-
         $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
     }
 }

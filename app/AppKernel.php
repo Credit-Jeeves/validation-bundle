@@ -41,11 +41,6 @@ abstract class AppKernel extends Kernel
      */
     protected $chainNodeManager;
 
-    /**
-     * @var SymfonyExceptionHandlerChainNode
-     */
-    protected $symfonyExceptionHandlerChainNode;
-
     public function __construct($environment, $debug, $catch = true)
     {
         parent::__construct($environment, $debug);
@@ -131,19 +126,17 @@ abstract class AppKernel extends Kernel
 
     public function initializeChainNodeManager()
     {
-        $this->symfonyExceptionHandlerChainNode = new SymfonyExceptionHandlerChainNode($this->isDebug());
-        $this->chainNodeManager->addSender('default', $this->symfonyExceptionHandlerChainNode);
+        $this->chainNodeManager->addSender('default', new SymfonyExceptionHandlerChainNode($this->isDebug()));
+        $this->chainNodeManager->addProvider('default', new ExceptionSubjectProvider());
+        $this->chainNodeManager->addProvider('default', new ExceptionSummaryProvider());
+        $this->chainNodeManager->addProvider('default', new ExceptionStackTraceProvider());
+        $this->chainNodeManager->addProvider('default', new ServerProvider());
+        $this->chainNodeManager->addProvider('default', new SessionProvider());
+        $this->chainNodeManager->addProvider('default', new EnvironmentProvider());
 
         // prod env
         if ('dev' != $this->getEnvironment()) {
             $recipients = array('forma@66ton99.org.ua, systems@creditjeeves.com, alex.emelyanov.ua@gmail.com');
-
-            $this->chainNodeManager->addProvider('default', new ExceptionSubjectProvider());
-            $this->chainNodeManager->addProvider('default', new ExceptionSummaryProvider());
-            $this->chainNodeManager->addProvider('default', new ExceptionStackTraceProvider());
-            $this->chainNodeManager->addProvider('default', new ServerProvider());
-            $this->chainNodeManager->addProvider('default', new SessionProvider());
-            $this->chainNodeManager->addProvider('default', new EnvironmentProvider());
 
             $filter = new ExceptionClassFilter();
             $filter->allow('Exception');
@@ -156,19 +149,19 @@ abstract class AppKernel extends Kernel
                 array(new TextEncoder())
             );
 
-            touch($logFile = $this->getRootDir().'/logs/'.$this->getEnvironment().'-exceptions.log');
-            $this->chainNodeManager->addSender(
-                'default',
-                new LogSender(
-                    new NativeLoggerAdapter($logFile),
-                    $serializer,
-                    new DataHolder(
-                        array(
-                            'format' => 'text'
-                        )
-                    )
-                )
-            );
+//            touch($logFile = $this->getRootDir().'/logs/'.$this->getEnvironment().'-exceptions.log');
+//            $this->chainNodeManager->addSender(
+//                'default',
+//                new LogSender(
+//                    new NativeLoggerAdapter($logFile),
+//                    $serializer,
+//                    new DataHolder(
+//                        array(
+//                            'format' => 'text'
+//                        )
+//                    )
+//                )
+//            );
 
             $domain = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : 'my.creditjeeves.com';
             $this->chainNodeManager->addSender(
