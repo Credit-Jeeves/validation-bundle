@@ -1,9 +1,15 @@
 <div id="did-you-know" class="pod-small pod-border pod-padding shadow">
     <h3>{{ 'component.didyouknow.title' | trans }}</h3>
-    <strong>{{ 'component.didyouknow.header' | trans }}</strong>
-    <p class='spaced-text'>{{ 'component.didyouknow.text' | trans }}</p>
+    <strong>{{ subheading | trans }}</strong>
+    <p class='spaced-text'>{{ message | trans }}</p>
     <div>
-        <a href="http://www.kqzyfj.com/click-6606250-10523214" target="_blank"><img src="https://www.lduhtrp.net/image-6606250-10523214" width="120" height="60" alt="Online - H&R Block At Home Free Edition " border="0"/></a>
+        <a href="{{ href }}" target="_blank">
+            {% if img %}
+                <img src="{{ img }}" width="120" height="60" alt="Online - H&R Block At Home Free Edition " border="0"/>
+            {% else %}
+                {{ href_text }}
+            {% endif %}
+        </a>
     </div>
 </div>
 
