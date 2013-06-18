@@ -1,6 +1,6 @@
 {% extends "ApplicantBundle::base.html.twig" %}
 
-{% block title "appliant_dashboard_title"|trans %}
+{% block title "common.applicant.dashboard"|trans %}
 
 {% block header %}
     {% if nLeads > 1 %}
@@ -34,7 +34,7 @@
             {{ render(controller('ComponentBundle:AccountStatus:index', {'Report': Report})) }}
         </div>
         <div class="column-small floatright">
-            {{ render(controller('ComponentBundle:DidYouKnow:index')) }}
+            {{ render(controller('ComponentBundle:DidYouKnow:index', {'Report': Report})) }}
         </div>
         <div class="clearboth"></div>
     </div>
