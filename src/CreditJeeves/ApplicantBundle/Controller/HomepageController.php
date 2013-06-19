@@ -1,6 +1,8 @@
 <?php
 namespace CreditJeeves\ApplicantBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -23,16 +25,21 @@ class HomepageController extends Controller
      */
     public function indexAction()
     {
-        $User    = $this->get('core.session.applicant')->getUser();
+        /** @var User $User */
+        $User = $this->get('core.session.applicant')->getUser();
+        /** @var ReportPrequal $Report */
+        $Report  = $User->getReportsPrequal()->last();
+
+        /** @var Lead $Lead */
+        $Lead = $this->get('core.session.applicant')->getLead();
+
         $nLeads = $User->getUserLeads()->count();
-        $Lead    = $this->get('core.session.applicant')->getLead();
         $nTarget = $Lead->getTargetScore();
         $nScore  = $User->getScores()->last()->getScore();
         $isSuccess = false;
         if ($nScore >= $nTarget) {
             $isSuccess = true;
         }
-        $Report  = $User->getReportsPrequal()->last();
         $sEmail  = $User->getEmail();
         return array(
             'Report' => $Report,
@@ -40,7 +47,7 @@ class HomepageController extends Controller
             'sEmail' => $sEmail,
             'isSuccess' => $isSuccess,
             'nLeads' => $nLeads,
-            );
+        );
     }
 
     /**
