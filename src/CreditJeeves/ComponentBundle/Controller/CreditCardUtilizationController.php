@@ -9,7 +9,7 @@ class CreditCardUtilizationController extends Controller
 {
     public function indexAction()
     {
-        $ArfReport = $this->getUser()->getReportsPrequal()->last()->getArfReport();
+        $ArfReport = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getArfReport();
         $nRevolvingDept = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_TOTAL_REVOLVING

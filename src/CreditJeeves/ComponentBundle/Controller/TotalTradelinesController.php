@@ -7,8 +7,8 @@ class TotalTradelinesController extends Controller
 {
     public function indexAction()
     {
-        $nOpened = $this->getUser()->getReportsPrequal()->last()->getCountApplicantOpenedTradelines();
-        $nClosed = $this->getUser()->getReportsPrequal()->last()->getCountApplicantClosedTradelines();
+        $nOpened = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getCountApplicantOpenedTradelines();
+        $nClosed = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getCountApplicantClosedTradelines();
         $nTotal = $nOpened + $nClosed;
 
         return $this->render(
