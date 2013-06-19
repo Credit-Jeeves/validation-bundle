@@ -14,7 +14,7 @@
                     <li>{{ 'invalid-input' | trans({}, 'simulation')  }}</li>
                 </ul>
                 <label for="" class="rescore-label">
-                    {{ 'simulator_best_use_of_cash_label' | trans({}, 'simulation')  }}
+                    {{ 'simulator-best_use_of_cash-label' | trans({}, 'simulation')  }}
                 </label>
                 <input type="text" class="money" name="money" />
                 <button type="submit" class='button small green-refresh'>
@@ -49,19 +49,7 @@
                     <strong class="biggerbold" data-bind="i18n: { _catalogue: 'simulation', STEP: $index() + 1 }">
                         {{ 'step-%STEP%' | trans({}, 'simulation')  }}
                     </strong>
-                    <div>
-                        <!-- ko if: '10x' == model.simulation.sim_type_group() -->
-                            {{ 'group-10x' | trans({}, 'simulation')  }}
-                        <!-- /ko -->
-                        <!-- ko if: '20x' == model.simulation.sim_type_group() -->
-                            {{ 'group-20x' | trans({}, 'simulation')  }}
-                        <!-- /ko -->
-                        <!-- ko if: '30x' == model.simulation.sim_type_group() -->
-                            {{ 'group-30x' | trans({}, 'simulation')  }}
-                        <!-- /ko -->
-                        <!-- ko if: '40x' == model.simulation.sim_type_group() -->
-                            {{ 'group-40x' | trans({}, 'simulation')  }}
-                        <!-- /ko -->
+                    <div data-bind="text: $root.sim_type_message">
                     </div>
                 </div>
                 <div class="action-text-box box">

@@ -13,6 +13,7 @@ function Simulation() {
     this.cash_used = ko.observable(0);
     this.sim_type = ko.observable(0);
     this.sim_type_group = ko.observable('');
+    this.sim_type_message = ko.observable('');
     this.message = ko.observable('');
     this.blocks = ko.observableArray([]);
     this.title = ko.observable('');

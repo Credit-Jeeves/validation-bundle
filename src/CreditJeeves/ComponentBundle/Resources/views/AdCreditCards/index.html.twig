@@ -1,44 +1,49 @@
 {% block google_api %}
     <script type='text/javascript'>
-      var googletag = googletag || {};
-      googletag.cmd = googletag.cmd || [];
-      (function() {
-        var gads = document.createElement('script');
-        gads.async = true;
-        gads.type = 'text/javascript';
-        var useSSL = 'https:' == document.location.protocol;
-        gads.src = (useSSL ? 'https:' : 'http:') + 
-        '//www.googletagservices.com/tag/js/gpt.js';
-        var node = document.getElementsByTagName('script')[0];
-        node.parentNode.insertBefore(gads, node);
-      })();
+        var googletag = googletag || {};
+        googletag.cmd = googletag.cmd || [];
+        (function () {
+            var gads = document.createElement('script');
+            gads.async = true;
+            gads.type = 'text/javascript';
+            var useSSL = 'https:' == document.location.protocol;
+            gads.src = (useSSL ? 'https:' : 'http:') +
+                    '//www.googletagservices.com/tag/js/gpt.js';
+            var node = document.getElementsByTagName('script')[0];
+            node.parentNode.insertBefore(gads, node);
+        })();
     </script>
 {% endblock %}
 
 <script type='text/javascript'>
-  googletag.cmd.push(function() {
-    googletag.defineSlot('/14904575/ActionPlanLeaderboard', [728, 90], 'div-gpt-ad-1365400293067-0').addService(googletag.pubads());
-    googletag.pubads().enableSingleRequest();
-    googletag.pubads().setTargeting("mort",   "{{ isMortgage }}");
-    googletag.pubads().setTargeting("revolv", "{{ isRevolving }}");
-    googletag.pubads().setTargeting("util",   "{{ sUtilization }}");
-    googletag.pubads().setTargeting("tier",   "{{ nTier.value }}");
-    googletag.pubads().setTargeting("numtl",  "{{ sTotal }}");
-    googletag.pubads().setTargeting("inq6mo", "{{ sInquiries }}");
-    googletag.pubads().setTargeting("brpt",   "{{ sBankruptcy }}");
-    googletag.enableServices();
-  });
+    googletag.cmd.push(function () {
+        googletag.defineSlot('/14904575/ActionPlanLeaderboard', [728, 90], 'div-gpt-ad-1365400293067-0').addService(googletag.pubads());
+        googletag.pubads().enableSingleRequest();
+        googletag.pubads().setTargeting("mort", "{{ isMortgage }}");
+        googletag.pubads().setTargeting("revolv", "{{ isRevolving }}");
+        googletag.pubads().setTargeting("util", "{{ sUtilization }}");
+        googletag.pubads().setTargeting("tier", "{{ nTier.value }}");
+        googletag.pubads().setTargeting("numtl", "{{ sTotal }}");
+        googletag.pubads().setTargeting("inq6mo", "{{ sInquiries }}");
+        googletag.pubads().setTargeting("brpt", "{{ sBankruptcy }}");
+        googletag.enableServices();
+
+        GA_googleAddAttr("sim", "{{ simTypeGroup | default('NA') }}");
+    });
 </script>
 
 <div class="barclaycard-container">
-  <div class="barclaycard-intro">
-    <h1>Featured Offer</h1>
-    <p>Based on certain characteristics of your credit profile.</p>
-  </div>
-  <div id='div-gpt-ad-1365400293067-0' class="barclaycard-content">
-    <script type='text/javascript'>
-      googletag.cmd.push(function() { googletag.display('div-gpt-ad-1365400293067-0'); });
-    </script>
-  </div>
+    <div class="barclaycard-intro">
+        <h1>Featured Offer</h1>
+
+        <p>Based on certain characteristics of your credit profile.</p>
+    </div>
+    <div id='div-gpt-ad-1365400293067-0' class="barclaycard-content">
+        <script type='text/javascript'>
+            googletag.cmd.push(function () {
+                googletag.display('div-gpt-ad-1365400293067-0');
+            });
+        </script>
+    </div>
 </div>
 <div class="clear"></div>
