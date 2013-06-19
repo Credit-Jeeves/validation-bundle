@@ -85,7 +85,7 @@ abstract class Address
     private $updatedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="orders")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="addresses")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;
