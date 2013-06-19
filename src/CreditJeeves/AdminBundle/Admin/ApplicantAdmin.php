@@ -26,27 +26,8 @@ class ApplicantAdmin extends Admin
     const TYPE = 'applicant';
 
     protected $formOptions = array(
-            'validation_groups' => 'user_admin'
+        'validation_groups' => 'user_admin'
     );
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-        $alias = $query->getRootAlias();
-        
-        $query->innerJoin($alias.'.scores', 's');
-            
-            //->addOrderBy('s.id',  'DESC');
-            //
-        
-//         echo '<pre>';
-//         print_r($query->execute(array(), Query::HYDRATE_ARRAY));
-//         exit;
-        return $query;
-    }
 
     /**
      * {@inheritdoc}
@@ -64,6 +45,12 @@ class ApplicantAdmin extends Admin
         return '/cj/'.self::TYPE;
     }
 
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection->remove('delete');
+        $collection->remove('export');
+    }
+
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -76,10 +63,20 @@ class ApplicantAdmin extends Admin
             ->add('city')
             ->add('phone')
             ->add('current_score')
-            ->add('user_leads')
+            ->add(
+                'user_leads',
+                null,
+                array(
+                    'route' => array(
+                        'name' => 'show'
+                    )
+                )
+            )
             ->add('is_verified')
             ->add('is_active')
             ->add('has_report')
+            ->add('last_login', 'date')
+            ->add('created_at', 'date')
             ->add(
                 '_action',
                 'actions',
@@ -118,7 +115,7 @@ class ApplicantAdmin extends Admin
                 ->add('email')
                 ->add('is_verified')
                 ->add('culture')
-                ->add('user_leads', 'sonata_type_model', array('expanded' => true, 'multiple' => true))
+//                 ->add('user_leads', 'sonata_type_model', array('expanded' => true, 'multiple' => true))
             ->end();
     }
 }

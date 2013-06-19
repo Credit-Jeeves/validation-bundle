@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
+use Sonata\AdminBundle\Route\RouteCollection;
 
 use Sonata\AdminBundle\Admin\AdminInterface;
 use Knp\Menu\ItemInterface as MenuItemInterface;
@@ -33,6 +34,12 @@ class LeadAdmin extends Admin
     public function getBaseRoutePattern()
     {
         return '/cj/'.self::TYPE;
+    }
+
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection->remove('delete');
+        $collection->remove('export');
     }
 
     /**
@@ -75,13 +82,13 @@ class LeadAdmin extends Admin
                 )
             )
             ->add(
-                'user.current_score',
+                'current_score',
                 'text',
                 array(
                     'label' => 'Score'
                 )
             )
-            ->addIdentifier('target_score')
+            ->add('target_score')
             ->add('status')
             ->add(
                 'user.is_active',
@@ -90,7 +97,16 @@ class LeadAdmin extends Admin
                     'label' => 'Is active'
                 )
             )
-            ->add('updatedAt', 'date');
+            ->add('updatedAt', 'date')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'view' => array(),
+                    )
+                )
+            );
     }
 
     protected function configureFormFields(FormMapper $formMapper)
@@ -106,6 +122,17 @@ class LeadAdmin extends Admin
             ->add('target_score');
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function configureShowFields(ShowMapper $filter)
+    {
+        $filter
+        ->add('target_score')
+        ->add('target_name', 'text', array('label' => 'Goal'))
+        ->add('status');
+    }
+    
     /**
      * {@inheritdoc}
      */

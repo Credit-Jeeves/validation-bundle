@@ -42,6 +42,15 @@ class Report extends BaseReport
         return $this->getArfParser()->getArfArray();
     }
 
+    /**
+     * @return integer
+     * @access public
+     */
+    public function getReportScore()
+    {
+        $oArfReport = $this->getArfReport();
+        return intval($oArfReport->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE));
+    }
 
     /**
      * @return \CreditJeeves\CoreBundle\Arf\ArfParser
@@ -263,5 +272,26 @@ class Report extends BaseReport
         $arfMessages = new ArfMessages($this->getArfArray());
 
         return $arfMessages->getMessages();
+    }
+
+    /**
+     * @return integer
+     * @access public
+     */
+    public function getTotalMonthlyPayment()
+    {
+        $aSummary = $this->getApplicantSummaryInfo();
+        return isset($aSummary['monthly_payment']) ? $aSummary['monthly_payment'] : 0;
+    }
+
+    
+    /**
+     * @return array
+     * @access public
+     */
+    public function getApplicantSummaryInfo()
+    {
+        $arfSummaryInfo = new ArfSummary($this->getArfArray());
+        return $arfSummaryInfo->getSummaryInfo();
     }
 }
