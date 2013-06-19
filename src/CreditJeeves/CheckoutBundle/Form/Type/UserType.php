@@ -11,7 +11,6 @@ class UserType extends BaseUserType
     {
         parent::buildForm($builder, $options);
 
-
         $fields = array(
             'first_name',
             'last_name',
@@ -26,10 +25,7 @@ class UserType extends BaseUserType
                 $builder->remove($key);
             }
         }
-
     }
-
-
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -42,5 +38,4 @@ class UserType extends BaseUserType
             )
         );
     }
-
 }

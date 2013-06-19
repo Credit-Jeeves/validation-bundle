@@ -66,7 +66,7 @@ class Loggable extends Base
                 $logEntry->setData($newValues);
             }
             
-            if($action === self::ACTION_UPDATE && 0 === count($newValues)) {
+            if ($action === self::ACTION_UPDATE && 0 === count($newValues)) {
                 return;
             }
 
