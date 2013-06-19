@@ -42,11 +42,12 @@ class DealerAdmin extends Admin
         $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-//         if (!empty($nGroupId)) {
-//             $this->request->getSession()->set('group_id', $nGroupId);
-//             $query->andWhere($alias.'.cj_group_id = :group_id');
-//             $query->setParameter('group_id', $nGroupId);
-//         }
+        if (!empty($nGroupId)) {
+            $this->request->getSession()->set('group_id', $nGroupId);
+            $query->innerJoin($alias.'.dealer_groups', 'g');
+            $query->andWhere('g.id = :group_id');
+            $query->setParameter('group_id', $nGroupId);
+        }
         return $query;
     }
 
