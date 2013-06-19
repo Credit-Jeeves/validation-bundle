@@ -21,6 +21,7 @@ class BlocksController extends Controller
         if ($type == 'admin') {
             $isAdmin = true;
         }
+        $user = $this->get('core.session.applicant')->getUser();
         $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
         $Lead = $this->get('core.session.applicant')->getLead();
         if ($Lead) {

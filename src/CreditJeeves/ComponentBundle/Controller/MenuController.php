@@ -18,7 +18,7 @@ class MenuController extends Controller
      */
     public function tabsAction()
     {
-        $nCountReports = $this->getUser()->getReportsD2c()->count();
+        $nCountReports = $this->get('core.session.applicant')->getUser()->getReportsD2c()->count();
         $sRouteName = $this->getRequest()->get('_route');
 
         //echo $sRouteName;
