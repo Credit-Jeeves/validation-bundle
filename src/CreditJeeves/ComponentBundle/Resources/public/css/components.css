@@ -89,3 +89,8 @@
 .success-address {
     width: 220px;
 }
+
+.component-rights {
+    height: 160px;
+    overflow: auto;
+}
