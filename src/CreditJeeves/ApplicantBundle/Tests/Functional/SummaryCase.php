@@ -28,7 +28,7 @@ class SummaryCase extends BaseTestCase
     public function userCreditBalance()
     {
         $this->load($this->fixtures, true);
-        $this->setDefaultSession('goutte');
+        $this->setDefaultSession('symfony');
         $this->login('emilio@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
         $this->assertNotNull($this->page->find('css', '.credit-balances-left'));
@@ -44,8 +44,8 @@ class SummaryCase extends BaseTestCase
      */
     public function userCreditSummary()
     {
-        $this->load($this->fixtures, true);
-        $this->setDefaultSession('goutte');
+        $this->load($this->fixtures, false);
+        $this->setDefaultSession('symfony');
         $this->login('emilio@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
         $this->assertNotNull($title = $this->page->find('css', '.summary h3'));
