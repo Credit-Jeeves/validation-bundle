@@ -36,3 +36,22 @@ cd vendor/CreditJeevesSf1
 
 Additional required configuration
 http://symfony.com/doc/current/book/installation.html#configuration-and-setup
+
+RentJeeves
+==========
+
+Installation
+------------
+
+To be done.
+
+Manual Installation for dev env
+-------------------------------
+
+```
+./bin/console doctrine:database:drop --force
+./bin/console doctrine:database:create
+./bin/console doctrine:schema:create
+./bin/console khepin:yamlfixtures:load
+```
+
