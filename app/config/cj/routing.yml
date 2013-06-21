@@ -43,6 +43,16 @@ applicant:
     resource:   "@ApplicantBundle/Controller"
     type:       annotation
 
+landlord:
+    resource: "@LandlordBundle/Controller/"
+    type:     annotation
+    prefix:   /landlord
+
+tenant:
+    resource: "@TenantBundle/Controller/"
+    type:     annotation
+    prefix:   /tenant
+
 fos_user_security:
     resource:   "@FOSUserBundle/Resources/config/routing/security.xml"
 

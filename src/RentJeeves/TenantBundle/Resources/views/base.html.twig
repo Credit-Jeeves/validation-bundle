@@ -1,4 +1,4 @@
-{% extends "CoreBundle::base.html.twig" %}
+{% extends "CoreBundle::rj_base.html.twig" %}
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
@@ -32,7 +32,7 @@
 
 {% block tabs %}
     <div class="top-nav">
-    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': 'TenantBundle:Menu:applicant_tabs.html.twig' }) }}
+    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': 'CoreBundle:Menu:user_tabs.html.twig' }) }}
     </div>
 {% endblock %}
 
@@ -40,6 +40,3 @@
     {{ render(controller('ComponentBundle:Footer:index')) }}
 {% endblock %}
 
-{% block info %}
-    {% include '::userLogout.html.twig' %}
-{% endblock %}

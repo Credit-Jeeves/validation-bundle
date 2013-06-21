@@ -9,20 +9,20 @@ class Builder extends ContainerAware
     public function mainMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
-        $menu->addChild('tabs.action_plan', array('route' => 'tenant_homepage'));
-        $menu->addChild('tabs.summary', array('route' => 'tenant_homepage'));
-        $User = $this->container->get('core.session.applicant')->getUser();
+        $menu->addChild('tabs.dashboard', array('route' => 'tenant_homepage'));
+        //$menu->addChild('tabs.summary', array('route' => 'tenant_homepage'));
+        $User = $this->container->get('core.session.tenant')->getUser();
         $isCompleteOrder = $User->isCompleteOrderExist();
 
         if ($isCompleteOrder) {
             $menu->addChild('tabs.report', array('route' => 'tenant_homepage'));
         }
-        $menu->addChild('tabs.settings', array('route' => 'tenant_homepage'));
+        $menu->addChild('tabs.settings', array('route' => 'tenant_password'));
 
         $sRoute = $this->container->get('request')->get('_route');
         switch ($sRoute) {
             case 'tenant_homepage':
-                $menu['tabs.action_plan']->setAttribute('class', 'active');
+                $menu['tabs.dashboard']->setAttribute('class', 'active');
                 break;
             case 'tenant_homepage':
                 $menu['tabs.summary']->setAttribute('class', 'active');
