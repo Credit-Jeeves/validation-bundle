@@ -1,24 +1,88 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Model;
 
-use  CreditJeeves\ExperianBundle\Model as Base;
+use CreditJeeves\ExperianBundle\Model as Base;
 
+/**
+ * Atb data model
+ *
+ * @author Ton Sharp <66ton99@gmail.com>
+ */
 class Atb
 {
+    /**
+     * @var bool
+     */
     protected $isDealerSide = false;
+
+    /**
+     * @var \CreditJeeves\DataBundle\Enum\AtbType
+     */
     protected $type;
+
+    /**
+     * @var int
+     */
     protected $input;
+
+    /**
+     * @var int
+     */
     protected $scoreInit = 0;
+
+    /**
+     * @var int
+     */
     protected $scoreBest = 0;
+
+    /**
+     * @var int
+     */
     protected $scoreCurrent = 0;
+
+    /**
+     * @var int
+     */
     protected $scoreTarget = 0;
+
+    /**
+     * @var int
+     */
     protected $cashUsed = 0;
+
+    /**
+     * @var int
+     */
     protected $simType;
+
+    /**
+     * @var string
+     */
     protected $simTypeGroup;
+
+    /**
+     * @var string
+     */
+    protected $simTypeMessage;
+
+    /**
+     * @var string
+     */
     protected $message = '';
+
+    /**
+     * @var array
+     */
     protected $blocks = array();
 
+    /**
+     * @var string
+     */
     protected $title;
+
+    /**
+     * @var string
+     */
     protected $titleMessage;
 
     public function setIsDealerSide($isDealerSide)
@@ -118,6 +182,17 @@ class Atb
     public function getSimTypeGroup()
     {
         return $this->simTypeGroup;
+    }
+
+    public function setSimTypeMessage($simTypeMessage)
+    {
+        $this->simTypeMessage = $simTypeMessage;
+        return $this;
+    }
+
+    public function getSimTypeMessage()
+    {
+        return $this->simTypeMessage;
     }
 
     public function setMessage($message)

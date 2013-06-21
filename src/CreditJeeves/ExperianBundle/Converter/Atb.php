@@ -68,6 +68,7 @@ class Atb
             ->setScoreCurrent($entity->getScoreCurrent())
             ->setScoreTarget($entity->getScoreTarget())
             ->setSimTypeGroup($this->getSimTypeGroup())
+            ->setSimTypeMessage($this->getSimTypeMessage())
             ->setBlocks($this->getBlocks($entity))
             ->setTitle($this->getTitle())
             ->setTitleMessage($this->getTitleMessage());
@@ -86,6 +87,16 @@ class Atb
         $simType = (string)$this->model->getSimType();
         $simType[2] = 'x';
         return $simType;
+    }
+
+    protected function getSimTypeMessage()
+    {
+        $textKey = 'group-' . $this->getSimTypeGroup();
+        if ('20x' == $this->getSimTypeGroup() && 600 < $this->model->getScoreCurrent()) {
+            $textKey .= '-more-then-600';
+        }
+
+        return $this->trans($textKey);
     }
 
     /**

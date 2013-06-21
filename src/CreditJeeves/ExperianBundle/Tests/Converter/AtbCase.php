@@ -34,6 +34,7 @@ class AtbCase extends BaseTestCase
         $model = new Model();
         $model->setSimType(102)
             ->setSimTypeGroup('10x')
+            ->setSimTypeMessage('group-10x')
             ->setScoreCurrent(600)
             ->setScoreTarget(900)
             ->setCashUsed(10)
@@ -138,6 +139,7 @@ class AtbCase extends BaseTestCase
     "cash_used" :10,
     "sim_type": 102,
     "sim_type_group": "10x",
+    "sim_type_message": "group-10x",
     "message": "message",
     "blocks": [
         {
