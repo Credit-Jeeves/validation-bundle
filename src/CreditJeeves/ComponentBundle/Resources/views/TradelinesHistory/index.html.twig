@@ -33,6 +33,23 @@
 </div>
 {% endif %}
 
+{% if aIndefiniteTradelines | length > 0 %}
+<div class="row-20"></div>
+<div class="pod-large pod-border pod-padding shadow">
+    <h3>{{ 'tradelines.history.indefinite' | trans }}</h3>
+    {% for aTradeline in aIndefiniteTradelines %}
+        {% include 'ComponentBundle:TradelinesHistory:tradelineRow.html.twig' 
+            with {
+                'aTradeline': aTradeline,
+                'isNegative': false,
+                'aMonthes': aMonthes
+                }
+        %}
+    {% endfor %}
+    <div class="clearboth"></div>
+</div>
+{% endif %}
+
 {% if aClosedTradelines | length > 0 %}
 <div class="row-20"></div>
 <div class="pod-large pod-border pod-padding shadow">
