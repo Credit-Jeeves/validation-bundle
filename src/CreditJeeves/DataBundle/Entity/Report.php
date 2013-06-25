@@ -98,14 +98,13 @@ class Report extends BaseReport
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
         return $arfTradeLines->getAllTradelines($isSecurity);
     }
-    
+
     /**
      * @return array
      */
     public function getApplicantNegativeTradeLines($isSecurity = true)
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
-
         return $arfTradeLines->getNegativeDetails($isSecurity);
     }
 
@@ -115,8 +114,16 @@ class Report extends BaseReport
     public function getApplicantSatisfactoryTradeLines($isSecurity = true)
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
-
         return $arfTradeLines->getSatisfactoryDetails($isSecurity);
+    }
+
+    /**
+     * @return array
+     */
+    public function getApplicantIndefiniteTradeLines($isSecurity = true)
+    {
+        $arfTradeLines = new ArfTradeLines($this->getArfArray());
+        return $arfTradeLines->getIndefiniteDetails($isSecurity);
     }
 
     /**
@@ -125,7 +132,6 @@ class Report extends BaseReport
     public function getCountApplicantTotalTradelines()
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
-
         return count($arfTradeLines->getTradeLines());
     }
 
@@ -135,7 +141,6 @@ class Report extends BaseReport
     public function getCountApplicantOpenedTradelines()
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
-
         return count($arfTradeLines->getOpenedTradelines());
     }
 
@@ -145,7 +150,6 @@ class Report extends BaseReport
     public function getCountApplicantClosedTradelines()
     {
         $arfTradeLines = new ArfTradeLines($this->getArfArray());
-
         return count($arfTradeLines->getClosedTradelines());
     }
 
@@ -163,7 +167,6 @@ class Report extends BaseReport
     public function getAutomotiveSummary()
     {
         $oArfReport = $this->getArfReport();
-
         return $oArfReport->getValue(ArfParser::SEGMENT_AUTOMOTIVE_PROFILE);
     }
 
@@ -174,7 +177,6 @@ class Report extends BaseReport
     {
         $oArfReport = $this->getArfReport();
         $aTradeLines = $oArfReport->getValue(ArfParser::SEGMENT_TRADELINE);
-
         return $aTradeLines;
     }
 
@@ -185,7 +187,6 @@ class Report extends BaseReport
     {
         $oArfReport = $this->getArfReport();
         $aNames = $oArfReport->getValue(ArfParser::SEGMENT_NAME);
-
         return (isset($aNames['name_text'])) ? $aNames['name_text'] : $aNames[0]['name_text'];
     }
 
@@ -197,7 +198,6 @@ class Report extends BaseReport
     {
         $oArfReport = $this->getArfReport();
         $aAddresses = $oArfReport->getValue(ArfParser::SEGMENT_ADDRESS);
-
         return $aAddresses;
     }
 
@@ -223,7 +223,6 @@ class Report extends BaseReport
     public function getApplicantInquiries()
     {
         $arfInquiries = new ArfInquiries($this->getArfArray());
-
         return $arfInquiries->getInquiries();
     }
 
@@ -241,7 +240,6 @@ class Report extends BaseReport
     public function getApplicantPublicRecords()
     {
         $arfPublicRecords = new ArfPublicRecords($this->getArfArray());
-
         return $arfPublicRecords->getPublicRecords();
     }
 
@@ -251,7 +249,6 @@ class Report extends BaseReport
     public function getApplicantAutomotiveDetails()
     {
         $arfAutomotiveDetails = new ArfAutomotiveDetails($this->getArfArray());
-
         return $arfAutomotiveDetails->getAutomotiveDetails();
     }
 
@@ -261,7 +258,6 @@ class Report extends BaseReport
     public function getApplicantMessages()
     {
         $arfMessages = new ArfMessages($this->getArfArray());
-
         return $arfMessages->getMessages();
     }
 }

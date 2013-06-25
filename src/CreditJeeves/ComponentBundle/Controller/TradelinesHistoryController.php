@@ -15,6 +15,7 @@ class TradelinesHistoryController extends Controller
     {
         $aNegativeTradelines = $Report->getApplicantNegativeTradeLines();
         $aSatisfactoryTradelines = $Report->getApplicantSatisfactoryTradeLines();
+        $aIndefiniteTradelines = $Report->getApplicantIndefiniteTradelines();
         $aDirectCheck = $Report->getApplicantDirectCheck();
         $aMonthes = array();
         for ($i = 1; $i < 13; $i++) {
@@ -61,6 +62,7 @@ class TradelinesHistoryController extends Controller
         return array(
             'aNegativeTradelines' => $aNegativeTradelines,
             'aSatisfactoryTradelines' => $aSatisfactoryTradelines,
+            'aIndefiniteTradelines' => $aIndefiniteTradelines,
             'aClosedTradelines' => $aClosedTradelines,
             'aMonthes' => $aMonthes,
         );
