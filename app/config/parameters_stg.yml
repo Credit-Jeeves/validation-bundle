@@ -1,7 +1,4 @@
 imports:
-    email_admins:
-        - alex.emelyanov.ua@gmail.com
-        - darryl@rentjeeves.com
     - { resource: parameters_dev_base.yml }
 
 parameters:
