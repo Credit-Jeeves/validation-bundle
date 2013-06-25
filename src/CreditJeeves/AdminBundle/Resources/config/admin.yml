@@ -88,6 +88,15 @@ services:
 #        calls:
 #            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+    sonata.admin.report:
+        class: CreditJeeves\AdminBundle\Admin\ReportAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Reports" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\Report
+            - 'SonataAdminBundle:CRUD'
+
 
 # RentJeeves application
     sonata.admin.tenant:

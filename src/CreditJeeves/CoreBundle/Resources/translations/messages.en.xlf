@@ -651,6 +651,10 @@
                 <target>FTC</target>
             </trans-unit>
 
+            <trans-unit id="tabs.dashboard">
+                <source>tabs.dashboard</source>
+                <target>Dashboard</target>
+            </trans-unit>
             <trans-unit id="tabs.action_plan">
                 <source>tabs.action_plan</source>
                 <target>Action Plan</target>
