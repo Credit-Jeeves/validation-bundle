@@ -1,5 +1,5 @@
 model: CreditJeeves\DataBundle\Entity\Settings
-tags: [ settings ]
+#tags: [ settings ]
 fixtures:
     settings:
         pidkiq_password: "123"

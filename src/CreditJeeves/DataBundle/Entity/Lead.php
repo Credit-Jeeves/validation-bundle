@@ -33,4 +33,9 @@ class Lead extends BaseLead
     {
         return $this->getGroup()->getName();
     }
+
+    public function getCurrentScore()
+    {
+        return $this->getUser()->getCurrentScore();
+    }
 }

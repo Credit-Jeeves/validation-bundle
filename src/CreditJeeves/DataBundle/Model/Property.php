@@ -8,7 +8,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class Address
+abstract class Property
 {
     /**
      * @var integer
@@ -33,12 +33,6 @@ abstract class Address
      */
     private $address1;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="address2", type="string", length=255)
-     */
-    private $address2;
 
     /**
      * @var string
@@ -84,11 +78,11 @@ abstract class Address
      */
     private $updatedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="addresses")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    protected $user;
+//     /**
+//      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="properties")
+//      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+//      */
+//     protected $user;
 
     /**
      * Get id
@@ -144,29 +138,6 @@ abstract class Address
     public function getAddress1()
     {
         return $this->address1;
-    }
-
-    /**
-     * Set address2
-     *
-     * @param string $address2
-     * @return Address
-     */
-    public function setAddress2($address2)
-    {
-        $this->address2 = $address2;
-    
-        return $this;
-    }
-
-    /**
-     * Get address2
-     *
-     * @return string 
-     */
-    public function getAddress2()
-    {
-        return $this->address2;
     }
 
     /**

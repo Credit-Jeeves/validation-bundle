@@ -6,8 +6,8 @@
                 <source>title</source>
                 <target>Take Action to Reach Your Target Score</target>
             </trans-unit>
-            <trans-unit id="simulator_best_use_of_cash_label">
-                <source>simulator_best_use_of_cash_label</source>
+            <trans-unit id="simulator-best_use_of_cash-label">
+                <source>simulator-best_use_of_cash-label</source>
                 <target>I have this much cash available:</target>
             </trans-unit>
             <trans-unit id="reached-score-title-message">
@@ -91,7 +91,11 @@
             </trans-unit>
             <trans-unit id="group-20x">
                 <source>group-20x</source>
-                <target>Establish credit</target>
+                <target>Establish Credit</target>
+            </trans-unit>
+            <trans-unit id="group-20x-more-then-600">
+                <source>group-20x-more-then-600</source>
+                <target>Extend Credit</target>
             </trans-unit>
             <trans-unit id="group-30x">
                 <source>group-30x</source>

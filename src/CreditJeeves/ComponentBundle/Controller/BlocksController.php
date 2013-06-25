@@ -12,7 +12,7 @@ class BlocksController extends Controller
      *
      * @return array
      */
-    public function infoAction()
+    public function infoAction($site = 'cj')
     {
         $sGroup = '';
         $isAdmin = false;
@@ -21,16 +21,25 @@ class BlocksController extends Controller
         if ($type == 'admin') {
             $isAdmin = true;
         }
-        $user = $this->get('core.session.applicant')->getUser();
-        $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
-        $Lead = $this->get('core.session.applicant')->getLead();
-        if ($Lead) {
-            $sGroup = $Lead->getGroup()->getName();
+        switch ($site) {
+            case 'rj':
+                $user = $this->get('core.session.tenant')->getUser();
+                $sEmail = $this->get('core.session.tenant')->getUser()->getEmail();
+                break;
+            default:
+                $user = $this->get('core.session.applicant')->getUser();
+                $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
+                $Lead = $this->get('core.session.applicant')->getLead();
+                if ($Lead) {
+                    $sGroup = $Lead->getGroup()->getName();
+                }
+                break;
         }
         return array(
             'sEmail' => $sEmail,
             'sGroup' => $sGroup,
             'isAdmin' => $isAdmin,
+            'site' => $site,
         );
     }
 }

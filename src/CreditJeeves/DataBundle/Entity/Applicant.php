@@ -13,4 +13,10 @@ class Applicant extends User
      * @var string
      */
     protected $type = UserType::APPLICANT;
+
+    public function getCurrentScore()
+    {
+        $score = $this->getScores()->last();
+        return $score ? $score->getScore() : 0;
+    }
 }
