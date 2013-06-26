@@ -2,15 +2,16 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Entity\Report;
 
 class CreditAverageAgeController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Report $Report)
     {
         $nOldest = 0;
         $nAge = 0;
         $nTotal = 0;
-        $aTradelines = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getTradeLines();
+        $aTradelines = $Report->getTradeLines();
         $oCurrentDate = new \DateTime('now');
         foreach ($aTradelines as $aTradeline) {
             $nTotal++;

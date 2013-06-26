@@ -13,9 +13,9 @@ class DealerController extends Controller
      */
     public function observeAction($id = null)
     {
-      $user = $this->getDoctrine()->getRepository('DataBundle:User')->find($id);
-      $this->get('core.session.dealer')->setUser($user);
-      $url = $this->get('router')->generate('dealer_homepage');
-      return new RedirectResponse($url);
+        $user = $this->getDoctrine()->getRepository('DataBundle:User')->find($id);
+        $this->get('core.session.dealer')->setUser($user);
+        $url = $this->get('router')->generate('dealer_homepage');
+        return new RedirectResponse($url);
     }
 }

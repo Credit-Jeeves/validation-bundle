@@ -2,13 +2,12 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Entity\Report;
 
 class CreditSummaryController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Report $Report)
     {
-        $cjUser = $this->get('core.session.applicant')->getUser();
-        $Report = $cjUser->getReportsPrequal()->last();
         $sDate = $Report->getCreatedAt()->format('M j, Y');
         $aCreditSummary = $Report->getCreditSummary();
         $aCreditSummary['collections'] = $Report->getCountTradelineCollections();

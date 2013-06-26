@@ -48,6 +48,6 @@ class ApplicantController extends Controller
     {
         $this->report = $user->getReportsPrequal()->last();
         $this->target = $this->getLead()->getTargetScore();
-        $this->score = $user->getScores()->last()->getScore();
+        $this->score = $user->getScores()->last();
     }
 }

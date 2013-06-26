@@ -16,12 +16,14 @@ class SummaryController extends Controller
      */
     public function indexAction()
     {
-        $cjUser = $this->getUser();
-        $sEmail = $cjUser->getEmail();
+        $user = $this->getUser();
+        $sEmail = $user->getEmail();
         $Report  = $this->getReport();
+        $Score = $this->getScore();
         return array(
             'sEmail' => $sEmail,
             'Report' => $Report,
+            'Score' => $Score,
         );
     }
 }

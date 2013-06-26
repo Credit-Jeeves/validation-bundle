@@ -34,7 +34,7 @@ class HomepageController extends Controller
 
         $nLeads = $User->getUserLeads()->count();
         $nTarget = $this->getTarget();
-        $nScore  = $this->getScore();
+        $nScore  = $this->getScore()->getScore();
         $isSuccess = false;
         if ($nScore >= $nTarget) {
             $isSuccess = true;

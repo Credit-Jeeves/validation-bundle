@@ -3,6 +3,7 @@ namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\DataBundle\Entity\Report;
 
 class LoanTypesController extends Controller
 {
@@ -12,9 +13,9 @@ class LoanTypesController extends Controller
      */
     const MAX_DIAL = 12;
 
-    public function indexAction()
+    public function indexAction(Report $Report)
     {
-        $ArfReport = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getArfReport();
+        $ArfReport = $Report->getArfReport();
         $RevolvingDept = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_TOTAL_REVOLVING
