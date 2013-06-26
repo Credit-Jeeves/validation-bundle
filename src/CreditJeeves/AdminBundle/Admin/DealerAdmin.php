@@ -72,7 +72,7 @@ class DealerAdmin extends Admin
                             'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
                         ),
                         'observe' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_observe.html.twig'
+                            'template' => 'AdminBundle:CRUD:list__dealer_observe.html.twig'
                         ),
                     )
                 )

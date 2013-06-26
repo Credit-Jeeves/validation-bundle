@@ -66,7 +66,7 @@ class TenantAdmin extends Admin
                         'edit' => array(),
                         'delete' => array(),
                         'observe' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_tenant.html.twig'
+                            'template' => 'AdminBundle:CRUD:list__tenant_observe.html.twig'
                         ),
                     )
                 )
