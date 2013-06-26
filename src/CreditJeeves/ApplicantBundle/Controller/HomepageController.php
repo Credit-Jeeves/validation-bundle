@@ -4,7 +4,6 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
-//use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\DataBundle\Entity\Lead;
@@ -140,7 +139,7 @@ class HomepageController extends Controller
 
     private function checkLeadsTradeline($oApplicantTradeline)
     {
-        $User   = $this->get('core.session.applicant')->getUser();
+        $User   = $this->getUser();
         $Leads      = $User->getUserLeads();
         foreach ($Leads as $Lead) {
             $isExist = $this->

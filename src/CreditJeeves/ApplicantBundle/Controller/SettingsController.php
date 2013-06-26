@@ -5,9 +5,8 @@ use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
 use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
 use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
-
 use CreditJeeves\DataBundle\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -22,7 +21,7 @@ class SettingsController extends Controller
     {
         $request = $this->get('request');
         /** @var \CreditJeeves\DataBundle\Entity\User $User */
-        $User = $this->get('core.session.applicant')->getUser();
+        $User = $this->getUser();
         $sOldPassword = $User->getPassword();
         $sEmail = $User->getEmail();
         $form = $this->createForm(new PasswordType(), $User);
@@ -61,7 +60,7 @@ class SettingsController extends Controller
     public function contactAction()
     {
         $request = $this->get('request');
-        $cjUser = $this->get('core.session.applicant')->getUser();
+        $cjUser = $this->getUser();
         $sEmail = $cjUser->getEmail();
         $form = $this->createForm(new ContactType(), $cjUser);
         if ($request->getMethod() == 'POST') {
@@ -91,7 +90,7 @@ class SettingsController extends Controller
     public function emailAction()
     {
         $request = $this->get('request');
-        $cjUser = $this->get('core.session.applicant')->getUser();
+        $cjUser = $this->getUser();
         $sEmail = $cjUser->getEmail();
         $form = $this->createForm(new NotificationType(), $cjUser);
         if ($request->getMethod() == 'POST') {
@@ -122,7 +121,7 @@ class SettingsController extends Controller
     {
         $request = $this->get('request');
         /** @var User $User */
-        $User = $this->get('core.session.applicant')->getUser();
+        $User = $this->getUser();
         $sEmail = $User->getEmail();
         $sPassword = $User->getPassword();
         $form = $this->createForm(new RemoveType(), $User);

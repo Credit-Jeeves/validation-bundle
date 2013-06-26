@@ -2,7 +2,7 @@
 
 namespace CreditJeeves\ApplicantBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -16,9 +16,9 @@ class SummaryController extends Controller
      */
     public function indexAction()
     {
-        $cjUser = $this->get('core.session.applicant')->getUser();
+        $cjUser = $this->getUser();
         $sEmail = $cjUser->getEmail();
-        $Report  = $cjUser->getReportsPrequal()->last();
+        $Report  = $this->getReport();
         return array(
             'sEmail' => $sEmail,
             'Report' => $Report,

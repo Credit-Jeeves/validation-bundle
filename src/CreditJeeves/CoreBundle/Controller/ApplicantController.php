@@ -12,6 +12,7 @@ class ApplicantController extends Controller
     public function getUser()
     {
         if ($user = parent::getUser()) {
+            $isAdmin = ('admin' == $user->getType()) ? true: false;
             $user = $this->get('core.session.applicant')->getUser();
             $this->getUserDetails($user);
             return $user;
