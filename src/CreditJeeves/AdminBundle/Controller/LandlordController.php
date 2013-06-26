@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class LandlordController extends Controller
 {
     /**
-     * @Route("/cj/landlord/{id}/observe", name="admin_landlord_observe")
+     * @Route("/rj/landlord/{id}/observe", name="admin_landlord_observe")
      */
     public function observeAction($id = null)
     {
