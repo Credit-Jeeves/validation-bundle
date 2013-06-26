@@ -1,10 +1,10 @@
-{% extends "ApplicantBundle::base.html.twig" %}
+{% extends "TenantBundle::base.html.twig" %}
 
 {% block content %}
     <div class="column-small floatleft">
         <div class="pod-small pod-border pod-padding shadow">
             <h2>{{ 'settings.title' | trans }}</h2>
-            {{ knp_menu_render('ApplicantBundle:Builder:settingsMenu', { 'template': 'ApplicantBundle:Menu:applicant_settings.html.twig' }) }}
+            {{ knp_menu_render('TenantBundle:Builder:settingsMenu', { 'template': 'CoreBundle:Menu:user_settings.html.twig' }) }}
         </div>
     </div>
     <div class="column-middle floatright">

@@ -40,23 +40,23 @@ class Builder extends ContainerAware
     public function settingsMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
-        $menu->addChild('settings.password', array('route' => 'applicant_password'));
-        $menu->addChild('settings.contact_information', array('route' => 'applicant_contact'));
-        $menu->addChild('settings.email', array('route' => 'applicant_email'));
-        $menu->addChild('settings.remove', array('route' => 'applicant_remove'));
+        $menu->addChild('settings.password', array('route' => 'tenant_password'));
+        $menu->addChild('settings.contact_information', array('route' => 'tenant_contact'));
+        $menu->addChild('settings.email', array('route' => 'tenant_email'));
+        $menu->addChild('settings.remove', array('route' => 'tenant_remove'));
 
         $sRoute = $this->container->get('request')->get('_route');
         switch ($sRoute) {
-            case 'applicant_password':
+            case 'tenant_password':
                 $menu['settings.password']->setUri('');
                 break;
-            case 'applicant_contact':
+            case 'tenant_contact':
                 $menu['settings.contact_information']->setUri('');
                 break;
-            case 'applicant_email':
+            case 'tenant_email':
                 $menu['settings.email']->setUri('');
                 break;
-            case 'applicant_remove':
+            case 'tenant_remove':
                 $menu['settings.remove']->setUri('');
                 break;
         }

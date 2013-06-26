@@ -55,7 +55,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/contact", name="applicant_contact")
+     * @Route("/contact", name="tenant_contact")
      * @Template()
      */
     public function contactAction()
@@ -75,7 +75,7 @@ class SettingsController extends Controller
         }
 
         return $this->render(
-            'ApplicantBundle:Settings:contact.html.twig',
+            'TenantBundle:Settings:contact.html.twig',
             array(
                 'sEmail' => $sEmail,
                 'form' => $form->createView()
@@ -85,7 +85,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/email", name="applicant_email")
+     * @Route("/email", name="tenant_email")
      * @Template()
      */
     public function emailAction()
@@ -105,7 +105,7 @@ class SettingsController extends Controller
         }
 
         return $this->render(
-            'ApplicantBundle:Settings:email.html.twig',
+            'TenantBundle:Settings:email.html.twig',
             array(
                 'sEmail' => $sEmail,
                 'form' => $form->createView()
@@ -115,7 +115,7 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/remove", name="applicant_remove")
+     * @Route("/remove", name="tenant_remove")
      * @Template()
      */
     public function removeAction()
@@ -156,7 +156,7 @@ class SettingsController extends Controller
             }
         }
         return $this->render(
-            'ApplicantBundle:Settings:remove.html.twig',
+            'TenantBundle:Settings:remove.html.twig',
             array(
                 'sEmail' => $sEmail,
                 'form' => $form->createView()
