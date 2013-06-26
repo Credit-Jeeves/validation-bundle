@@ -55,7 +55,7 @@ class AppRjKernel extends AppKernel
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test', 'cli'))) {
-            $bundles[] = new Khepin\YamlFixturesBundle\KhepinYamlFixturesBundle();
+            //$bundles[] = new Khepin\YamlFixturesBundle\KhepinYamlFixturesBundle();
         }
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
