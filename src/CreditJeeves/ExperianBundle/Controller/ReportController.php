@@ -73,13 +73,34 @@ class ReportController extends Controller
      */
     public function getAction()
     {
+        $user = $this->get('core.session.applicant')->getUser();
+        $type = $user->getType();
         if (!$this->isReportLoadAllowed()) {
-            return new RedirectResponse($this->generateUrl('applicant_homepage'));
+            switch ($type) {
+                case 'tenant':
+                    return new RedirectResponse($this->generateUrl('tenant_summary'));
+                    break;
+                default:
+                    return new RedirectResponse($this->generateUrl('applicant_homepage'));
+                    break;
+            }
         }
-        return array(
-            'url' => $this->generateUrl('core_report_get_ajax'),
-            'redirect' => null//$this->getRequest()->headers->get('referer'),
-        );
+        switch ($type) {
+            case 'tenant':
+                return $this->render(
+                    'ExperianBundle:Report:rj_get.html.twig',
+                    array(
+                        'url' => $this->generateUrl('core_report_get_ajax'),
+                        'redirect' => null//$this->getRequest()->headers->get('referer'),
+                    )
+                );
+                break;
+            default:
+                array(
+                    'url' => $this->generateUrl('core_report_get_ajax'),
+                    'redirect' => null//$this->getRequest()->headers->get('referer'),
+                );
+        }
     }
 
     protected function getArf()

@@ -7,14 +7,23 @@ class TenantController extends Controller
 {
     protected $report;
 
+    protected $score;
+
     public function getUser()
     {
         if ($user = parent::getUser()) {
+            
+            $user = $this->get('core.session.applicant')->getUser();
             $this->getUserDetails($user);
-            $user = $this->get('core.session.tenant')->getUser();
             return $user;
         }
     }
+
+    public function getScore()
+    {
+        return $this->score;
+    }
+
     public function getReport()
     {
         return $this->report;
@@ -23,5 +32,6 @@ class TenantController extends Controller
     private function getUserDetails($user)
     {
         $this->report = $user->getReportsPrequal()->last();
+        $this->score = $user->getScores()->last();
     }
 }
