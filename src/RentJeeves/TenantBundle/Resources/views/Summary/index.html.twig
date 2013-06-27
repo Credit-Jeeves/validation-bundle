@@ -4,7 +4,17 @@
 
 {% block content %}
     <div id="summary_page">
+        <div class="column-middle floatleft">
+            {{ render(controller('ComponentBundle:Score:index', {'user': User})) }}
+        </div>
+        <div class="column-small floatright">
+            
+        </div>
+        <div class="clearboth"></div>
         <div class="column-large">
+            <div class="row-20"></div>
+            {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
+            <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditBalance:index', {'Report': Report, 'Score': Score})) }}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditSummary:index', {'Report': Report})) }}

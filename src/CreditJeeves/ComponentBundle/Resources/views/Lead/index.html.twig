@@ -11,13 +11,18 @@
     </div>
     
   </div>
+  {% if nTargetScore > 0 %}
+  <div class="score-column-target">
+    <div class="score-target" style="top:{{ nTop }}px;">{{ nTargetScore }}</div>
+  </div>
+  {% endif %}
   <div class="clearboth"></div>
 </div>
 
 <script type="text/javascript">
   google.setOnLoadCallback(function() {
     var data = new google.visualization.arrayToDataTable([
-          ['Year', 'Applicant'],
+          ['Year', 'Applicant', 'Target'],
           {% autoescape false %}{{ chartData }}{% endautoescape %}
           ]);
 

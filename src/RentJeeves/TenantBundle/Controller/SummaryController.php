@@ -26,6 +26,7 @@ class SummaryController extends Controller
             'sEmail' => $sEmail,
             'Report' => $Report,
             'Score' => $Score,
+            'User' => $user,
         );
     }
 }
