@@ -96,7 +96,7 @@ class ReportController extends Controller
                 );
                 break;
             default:
-                array(
+                return array(
                     'url' => $this->generateUrl('core_report_get_ajax'),
                     'redirect' => null//$this->getRequest()->headers->get('referer'),
                 );
