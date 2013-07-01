@@ -177,29 +177,37 @@ class ReportController extends Controller
             require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/CurlException.class.php';
             if (false == $session->get('cjIsArfProcessing', false)) {
                 $session->set('cjIsArfProcessing', true);
+                $isD2cReport = $this->get('session')->getFlashBag()->get('isD2cReport');
                 try {
-                    $isD2cReport = $this->get('session')->getFlashBag()->get('isD2cReport');
-                    try {
-                        $this->saveArf($isD2cReport);
-                    } catch (DBALException $e) {
-                        $this->get('fp_badaboom.exception_catcher')->handleException($e);
-                        $this->get('session')->getFlashBag()->set(
-                            'message_title',
-                            $this->get('translator.default')->trans('error.fatal.title')
-                        );
-                        $this->get('session')->getFlashBag()->set(
-                            'message_body',
-                            $this->get('translator.default')->trans(
-                                'error.fatal.message-%SUPPORT_EMAIL%',
-                                array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
-                            )
-                        );
-                        return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
-                    }
+                    $this->saveArf($isD2cReport);
+                } catch (DBALException $e) {
+                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
+                    $this->get('session')->getFlashBag()->set(
+                        'message_title',
+                        $this->get('translator.default')->trans('error.fatal.title')
+                    );
+                    $this->get('session')->getFlashBag()->set(
+                        'message_body',
+                        $this->get('translator.default')->trans(
+                            'error.fatal.message-%SUPPORT_EMAIL%',
+                            array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                        )
+                    );
+                    return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
                 } catch (\CurlException $e) {
+                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
                     $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);
                     $session->set('cjIsArfProcessing', false);
                     return new JsonResponse('warning');
+                } catch (\ExperianException $e) {
+                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
+                    if (4000 == $e->getCode()) {
+                        $this->get('session')->getFlashBag()->set('isD2cReport', $isD2cReport);
+                        $session->set('cjIsArfProcessing', false);
+                        return new JsonResponse('warning');
+                    } else {
+                        throw $e;
+                    }
                 }
                 $session->set('cjIsArfProcessing', false);
                 return new JsonResponse('finished');

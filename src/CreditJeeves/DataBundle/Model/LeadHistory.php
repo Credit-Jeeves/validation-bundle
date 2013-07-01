@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 
@@ -12,7 +13,7 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -21,65 +22,76 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * @var integer
      *
-     * @ORM\Column(name="editor_id", type="bigint")
+     * @ORM\Column(name="editor_id", type="bigint", nullable=true)
      */
     protected $editorId;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="target_score", type="bigint")
+     * @ORM\Column(name="object_id", type="bigint", nullable=true)
+     */
+    protected $objectId;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Lead", inversedBy="histories")
+     * @ORM\JoinColumn(name="object_id", referencedColumnName="id")
+     */
+    protected $object;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="target_score", type="bigint", nullable=true)
      */
     protected $targetScore;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="target_name", type="text")
+     * @ORM\Column(name="target_name", type="text", nullable=true)
      */
     protected $targetName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="target_url", type="text")
+     * @ORM\Column(name="target_url", type="text", nullable=true)
      */
     protected $targetUrl;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="state", type="bigint")
+     * @ORM\Column(name="state", type="bigint", nullable=true)
      */
     protected $state;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="trade_in", type="smallint")
+     * @ORM\Column(name="trade_in", type="boolean", nullable=true)
      */
     protected $tradeIn;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="down_payment", type="bigint")
+     * @ORM\Column(name="down_payment", type="bigint", nullable=true)
      */
     protected $downPayment;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="fraction", type="smallint")
+     * @ORM\Column(name="fraction", type="smallint", nullable=true, options={"default"="0"})
      */
-    protected $fraction;
+    protected $fraction = 0;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="status", type="LeadStatus")
+     * @ORM\Column(name="status", type="LeadStatus", options={"default"="new"})
      */
-    protected $status;
+    protected $status = LeadStatus::NEWONE;
 
     /**
      * @var \DateTime
@@ -112,7 +124,7 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * @var integer $version
      *
-     * @~ORM\Column(type="integer")
+     * @~ORM\Column(type="bigint")
      */
     protected $version;
 

@@ -13,60 +13,66 @@ abstract class Address
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="user_id", type="integer")
+     * @ORM\Column(name="user_id", type="bigint")
      */
-    private $userId;
+    protected $userId;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="addresses")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    protected $user;
 
     /**
      * @var string
      *
      * @ORM\Column(name="address1", type="string", length=255)
      */
-    private $address1;
+    protected $address1;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="address2", type="string", length=255)
+     * @ORM\Column(name="address2", type="string", length=255, nullable=true)
      */
-    private $address2;
+    protected $address2;
 
     /**
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=255)
      */
-    private $city;
+    protected $city;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="state", type="string", length=7)
+     * @ORM\Column(name="state", type="string", length=7, nullable=true)
      */
-    private $state;
+    protected $state;
 
     /**
      * @var string
      *
      * @ORM\Column(name="zip", type="string", length=15)
      */
-    private $zip;
+    protected $zip;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="country", type="string", length=3)
+     * @ORM\Column(name="country", type="string", length=3, nullable=true)
      */
-    private $country;
+    protected $country = 'USA';
 
     /**
      * @var \DateTime
@@ -74,7 +80,7 @@ abstract class Address
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
@@ -82,13 +88,7 @@ abstract class Address
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="addresses")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     */
-    protected $user;
+    protected $updatedAt;
 
     /**
      * Get id

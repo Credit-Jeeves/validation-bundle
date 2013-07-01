@@ -11,13 +11,13 @@ abstract class Atb
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $cj_applicant_report_id;
 
@@ -34,12 +34,12 @@ abstract class Atb
 
     /**
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $input;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $sim_type;
 
@@ -49,7 +49,7 @@ abstract class Atb
     protected $score_current;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $score_target;
 

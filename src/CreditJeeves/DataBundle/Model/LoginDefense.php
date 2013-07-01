@@ -15,32 +15,32 @@ abstract class LoginDefense
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="user_id", type="integer")
+     * @ORM\Column(name="user_id", type="bigint")
      */
-    private $userId;
+    protected $userId;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="attempts", type="integer")
+     * @ORM\Column(name="attempts", type="bigint")
      */
-    private $attempts;
+    protected $attempts;
 
     /**
      * @var string
      *
      * @ORM\Column(name="type", type="string", length=255)
      */
-    private $type;
+    protected $type;
 
     /**
      * @var \DateTime
@@ -48,7 +48,7 @@ abstract class LoginDefense
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
+    protected $updatedAt;
 
 
     /**

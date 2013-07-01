@@ -11,6 +11,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 abstract class Affiliate
 {
     /**
+     * @ORM\Id
+     * @ORM\Column(name="id", type="bigint")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
      * @ORM\Column(
      *     name="name",
      *     type="string",
@@ -35,7 +42,8 @@ abstract class Affiliate
      * @ORM\Column(
      *     name="phone",
      *     type="string",
-     *     length=255
+     *     length=255,
+     *     nullable=true
      * )
      */
     protected $phone;
@@ -44,33 +52,34 @@ abstract class Affiliate
      * @ORM\Column(
      *     name="fax",
      *     type="string",
-     *     length=255
+     *     length=255,
+     *     nullable=true
      * )
      */
     protected $fax;
 
     /**
-     * @ORM\Column(name="street_address1", type="string", length=255)
+     * @ORM\Column(name="street_address1", type="string", length=255, nullable=true)
      */
     protected $streetAddress1;
 
     /**
-     * @ORM\Column(name="street_address2", type="string", length=255)
+     * @ORM\Column(name="street_address2", type="string", length=255, nullable=true)
      */
     protected $streetAddress2;
 
     /**
-     * @ORM\Column(name="city", type="string", length=255)
+     * @ORM\Column(name="city", type="string", length=255, nullable=true)
      */
     protected $city;
 
     /**
-     * @ORM\Column(name="state", type="string", length=7)
+     * @ORM\Column(name="state", type="string", length=7, nullable=true)
      */
     protected $state;
 
     /**
-     * @ORM\Column(name="zip", type="string", length=15)
+     * @ORM\Column(name="zip", type="string", length=15, nullable=true)
      */
     protected $zip;
 
@@ -90,11 +99,9 @@ abstract class Affiliate
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Group",
      *     mappedBy="affiliate",
-     *     cascade={
-     *         "remove",
-     *         },
+     *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
      */

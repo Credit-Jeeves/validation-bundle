@@ -16,13 +16,13 @@ abstract class User extends BaseUser
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.first_name.empty",
      *     groups={
@@ -46,12 +46,12 @@ abstract class User extends BaseUser
     protected $first_name;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $middle_initial;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.last_name.empty",
      *     groups={
@@ -90,7 +90,7 @@ abstract class User extends BaseUser
     protected $email;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(type="encrypt", nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.address.empty",
      *     groups={
@@ -110,12 +110,12 @@ abstract class User extends BaseUser
     protected $street_address1;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(type="encrypt", nullable=true)
      */
     protected $street_address2;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=31, nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.unit.empty",
      *     groups={
@@ -133,7 +133,7 @@ abstract class User extends BaseUser
     protected $unit_no;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.city.empty",
      *     groups={
@@ -144,7 +144,7 @@ abstract class User extends BaseUser
     protected $city;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=7, nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.state.empty",
      *     groups={
@@ -164,7 +164,7 @@ abstract class User extends BaseUser
     protected $state;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=15, nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.zip.empty",
      *     groups={
@@ -185,17 +185,17 @@ abstract class User extends BaseUser
     protected $zip;
 
     /**
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="bigint", nullable=true)
      */
     protected $phone_type;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $phone;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      * @Assert\Date(
      *     message="error.user.date",
      *     groups={
@@ -206,7 +206,7 @@ abstract class User extends BaseUser
     protected $date_of_birth;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(type="encrypt", nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.ssn.empty",
      *     groups={
@@ -224,61 +224,61 @@ abstract class User extends BaseUser
     protected $ssn;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
-    protected $is_active;
+    protected $is_active = false;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     protected $invite_code;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
      */
     protected $score_changed_notification = true;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
     protected $offer_notification = true;
 
     /**
-     * @ORM\Column(type="UserCulture")
+     * @ORM\Column(type="UserCulture", options={"default"="en"})
      */
     protected $culture = UserCulture::EN;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default"="1"})
      */
-    protected $has_data = false;
+    protected $has_data = true;
 
     /**
-     * @ORM\Column(type="UserIsVerified")
+     * @ORM\Column(type="UserIsVerified", options={"default"="none"})
      */
     protected $is_verified = UserIsVerified::NONE;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      */
-    protected $has_report = false;
+    protected $has_report;
 
     /**
      */
     protected $type;
 
     /**
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="bigint", nullable=true)
      */
     protected $holding_id;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
     protected $is_holding_admin = false;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
     protected $is_super_admin = false;
 
@@ -383,6 +383,16 @@ abstract class User extends BaseUser
     protected $dealer_groups;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     mappedBy="dealers",
+     *     cascade={"remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $dealer_to_groups;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Vehicle",
      *     mappedBy="user",
@@ -412,6 +422,14 @@ abstract class User extends BaseUser
      */
     protected $pidkiqs;
 
+    /**
+     * @ORM\OneToMany(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
+     *      mappedBy="user"
+     * )
+     */
+    protected $addresses;
+
     public function __construct()
     {
         parent::__construct();
@@ -425,6 +443,7 @@ abstract class User extends BaseUser
         $this->pidkiqs = new ArrayCollection();
         $this->incentives = new ArrayCollection();
         $this->tradelines = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
 

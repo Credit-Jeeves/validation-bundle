@@ -36,7 +36,7 @@ class AppRjKernel extends AppKernel
 //                 new Sonata\jQueryBundle\SonatajQueryBundle(),
 //                 new Sonata\BlockBundle\SonataBlockBundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
-
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
 
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),

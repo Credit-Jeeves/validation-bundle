@@ -16,25 +16,25 @@ class Pricing
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_account_group_id", type="integer")
+     * @ORM\Column(name="cj_account_group_id", type="bigint")
      */
-    private $cjAccountGroupId;
+    protected $cjAccountGroupId;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="amount", type="bigint")
      */
-    private $amount;
+    protected $amount;
 
 
     /**

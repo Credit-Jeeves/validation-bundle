@@ -17,32 +17,32 @@ class Purchase
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="amount", type="bigint")
      */
-    private $amount;
+    protected $amount;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_lead_id", type="integer")
+     * @ORM\Column(name="cj_lead_id", type="bigint")
      */
-    private $cjLeadId;
+    protected $cjLeadId;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="cj_account_id", type="bigint")
      */
-    private $cjAccountId;
+    protected $cjAccountId;
 
     /**
      * @var \DateTime
@@ -50,7 +50,7 @@ class Purchase
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
 
     /**

@@ -15,6 +15,7 @@ use BadaBoom\DataHolder\DataHolder;
 use Fp\BadaBoomBundle\ChainNode\Provider\SessionProvider;
 use Fp\BadaBoomBundle\ChainNode\SafeChainNodeManager;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
+//use Fp\BadaBoomBundle\ChainNode\SymfonyExceptionHandlerChainNode;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ChainNode\SymfonyExceptionHandlerChainNode;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -126,7 +127,6 @@ abstract class AppKernel extends Kernel
 
     public function initializeChainNodeManager()
     {
-        $this->chainNodeManager->addSender('default', new SymfonyExceptionHandlerChainNode($this->isDebug()));
         $this->chainNodeManager->addProvider('default', new ExceptionSubjectProvider());
         $this->chainNodeManager->addProvider('default', new ExceptionSummaryProvider());
         $this->chainNodeManager->addProvider('default', new ExceptionStackTraceProvider());
@@ -178,6 +178,8 @@ abstract class AppKernel extends Kernel
                     ))
                 )
             );
+        } else {
+            $this->chainNodeManager->addSender('default', new SymfonyExceptionHandlerChainNode($this->isDebug()));
         }
     }
 }

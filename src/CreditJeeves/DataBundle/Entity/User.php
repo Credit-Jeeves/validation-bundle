@@ -85,7 +85,7 @@ abstract class User extends BaseUser
         return $this;
     }
 
-    private function formatPhoneOutput($phone)
+    protected function formatPhoneOutput($phone)
     {
         $sPhoneNumber = $this->getPhone();
         // remove all empty spaces and not number signs
@@ -111,7 +111,7 @@ abstract class User extends BaseUser
         return parent::setPhone($this->formatPhoneInput($phone));
     }
 
-    private function formatPhoneInput($phone)
+    protected function formatPhoneInput($phone)
     {
         $phone = trim($phone);
         $phone = preg_replace(

@@ -24,7 +24,7 @@ use CreditJeeves\CoreBundle\Arf\ArfMessages;
  */
 class Report extends BaseReport
 {
-    private $arfParser;
+    protected $arfParser;
 
     /**
      * @ORM\PrePersist

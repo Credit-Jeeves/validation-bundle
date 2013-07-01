@@ -13,12 +13,14 @@ class TestController extends Controller
 {
     /**
      * @Route("/", name="core_test")
-     * @Template()
+     * @Template("CoreBundle::empty.html.twig")
      *
      * @return array
      */
     public function indexAction()
     {
+
+        $this->get('fp_badaboom.exception_catcher')->handleException(new \Exception('test'));
         return array();
     }
 

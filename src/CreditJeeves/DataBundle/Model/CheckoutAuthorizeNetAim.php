@@ -13,7 +13,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
      * @var integer
      *
      * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
@@ -21,7 +21,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_order_id", type="integer")
+     * @ORM\Column(name="cj_order_id", type="bigint")
      */
     protected $cjOrderId;
 
@@ -34,7 +34,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var integer
      *
-     * @ORM\Column(name="code", type="integer")
+     * @ORM\Column(name="code", type="bigint")
      */
     protected $response_code;
 
@@ -48,7 +48,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var string
      *
-     * @ORM\Column(name="reason_code", type="integer")
+     * @ORM\Column(name="reason_code", type="bigint")
      */
     protected $response_reason_code;
 

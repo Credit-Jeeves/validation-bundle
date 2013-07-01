@@ -157,7 +157,7 @@ abstract class Base extends Type
      *
      * @return string
      */
-    public static function implode($separator = "', '")
+    public static function implode($separator = "','")
     {
         return "'" . implode($separator, static::values()) . "'";
     }
@@ -260,6 +260,6 @@ abstract class Base extends Type
      */
     public function getName()
     {
-        return get_called_class();
+        return substr(get_called_class(), strrpos(get_called_class(), '\\') + 1);
     }
 }

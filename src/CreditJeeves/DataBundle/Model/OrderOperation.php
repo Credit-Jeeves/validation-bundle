@@ -11,30 +11,30 @@ abstract class OrderOperation
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_order_id", type="integer")
+     * @ORM\Column(name="cj_order_id", type="bigint")
      */
-    private $cjOrderId;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="cj_operation_id", type="integer")
-     */
-    private $cjOperationId;
+    protected $cjOrderId;
 
     /**
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Order", inversedBy="orderOperations")
      * @ORM\JoinColumn(name="cj_order_id", referencedColumnName="id")
      */
     protected $order;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="cj_operation_id", type="bigint")
+     */
+    protected $cjOperationId;
 
     /**
      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Operation", inversedBy="orderOperations")

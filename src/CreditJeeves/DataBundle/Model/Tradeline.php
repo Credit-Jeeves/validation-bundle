@@ -10,55 +10,15 @@ abstract class Tradeline
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $cj_applicant_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $cj_group_id;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $status;
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    protected $tradeline;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $is_fixed;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $is_disputed;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected $is_completed;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $created_at;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $updated_at;
 
     /**
      * @ORM\ManyToOne(
@@ -71,6 +31,46 @@ abstract class Tradeline
      * )
      */
     protected $user;
+
+    /**
+     * @ORM\Column(type="bigint")
+     */
+    protected $cj_group_id;
+
+    /**
+     * @ORM\Column(type="string", length=2)
+     */
+    protected $status;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    protected $tradeline;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
+     */
+    protected $is_fixed = 0;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
+     */
+    protected $is_disputed = 0;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
+     */
+    protected $is_completed = 0;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $created_at;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated_at;
 
     /**
      * Get id
