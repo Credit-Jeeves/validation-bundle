@@ -26,12 +26,13 @@ class Lead extends BaseLead
     
     public function __toString()
     {
-        return (string)$this->getGroup()->getName().' '.$this->getTargetScore();
+        return (string)$this->getGroupName().' '.$this->getTargetScore();
     }
 
     public function getGroupName()
     {
-        return $this->getGroup()->getName();
+        $group = $this->getGroup();
+        return $group ? $group->getName() : '';
     }
 
     public function getCurrentScore()

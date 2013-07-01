@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>{% block title %}{{ 'project_name'|trans }}{% endblock %}</title>
-    {% block stylesheets %}{% endblock %}
+    
     <link href="{{ asset('bundles/core/css/main.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/linkselect.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/buttons.css') }}" rel="stylesheet" type="text/css" />
@@ -29,6 +29,7 @@
     
     <link href="{{ asset('bundles/core/css/cj-logos.css') }}" rel="stylesheet" type="text/css" />
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    {% block stylesheets %}{% endblock %}
     {% block google_api %}{% endblock %}
     <!--[if gte IE 9]>
         <style type="text/css">

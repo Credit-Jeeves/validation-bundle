@@ -1,15 +1,9 @@
 <?php
 namespace CreditJeeves\ApplicantBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-
-
-use Sonata\AdminBundle\Controller\CRUDController;
-use Rj\EmailBundle\Swift\Message;
-use FOS\RestBundle\Controller\Annotations\View;
-use Rj\EmailBundle\Entity\EmailTemplate;
 
 use CreditJeeves\CoreBundle\Mailer\Mailer;
 

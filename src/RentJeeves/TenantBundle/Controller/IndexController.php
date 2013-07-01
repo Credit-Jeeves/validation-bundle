@@ -2,7 +2,7 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 

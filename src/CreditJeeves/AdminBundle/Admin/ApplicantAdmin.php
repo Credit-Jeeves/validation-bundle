@@ -88,7 +88,7 @@ class ApplicantAdmin extends Admin
                             'template' => 'AdminBundle:CRUD:list__action_report.html.twig'
                         ),
                         'observe' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_observe.html.twig'
+                            'template' => 'AdminBundle:CRUD:list__applicant_observe.html.twig'
                         ),
                     )
                 )

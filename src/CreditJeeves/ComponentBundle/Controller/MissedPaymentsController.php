@@ -2,15 +2,16 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Entity\Report;
 
 class MissedPaymentsController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Report $Report)
     {
         $nTotal = 0;
         $nLate = 0;
         
-        $aTradelines = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getTradeLines();
+        $aTradelines = $Report->getTradeLines();
         foreach ($aTradelines as $aTradeline) {
             $aTradeline['months_reviewed'] = isset($aTradeline['months_reviewed']) ? $aTradeline['months_reviewed'] : 0;
             $aTradeline['30_day_counter'] = isset($aTradeline['30_day_counter']) ? $aTradeline['30_day_counter'] : 0;

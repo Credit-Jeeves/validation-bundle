@@ -7,7 +7,7 @@ use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
 
 use CreditJeeves\DataBundle\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -22,7 +22,7 @@ class SettingsController extends Controller
     {
         $request = $this->get('request');
         /** @var \CreditJeeves\DataBundle\Entity\User $User */
-        $User = $this->get('core.session.tenant')->getUser();
+        $User = $this->getUser();
         $sOldPassword = $User->getPassword();
         $sEmail = $User->getEmail();
         $form = $this->createForm(new PasswordType(), $User);
@@ -55,13 +55,13 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/contact", name="applicant_contact")
+     * @Route("/contact", name="tenant_contact")
      * @Template()
      */
     public function contactAction()
     {
         $request = $this->get('request');
-        $cjUser = $this->get('core.session.applicant')->getUser();
+        $cjUser = $this->getUser();
         $sEmail = $cjUser->getEmail();
         $form = $this->createForm(new ContactType(), $cjUser);
         if ($request->getMethod() == 'POST') {
@@ -75,7 +75,7 @@ class SettingsController extends Controller
         }
 
         return $this->render(
-            'ApplicantBundle:Settings:contact.html.twig',
+            'TenantBundle:Settings:contact.html.twig',
             array(
                 'sEmail' => $sEmail,
                 'form' => $form->createView()
@@ -85,13 +85,13 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/email", name="applicant_email")
+     * @Route("/email", name="tenant_email")
      * @Template()
      */
     public function emailAction()
     {
         $request = $this->get('request');
-        $cjUser = $this->get('core.session.applicant')->getUser();
+        $cjUser = $this->getUser();
         $sEmail = $cjUser->getEmail();
         $form = $this->createForm(new NotificationType(), $cjUser);
         if ($request->getMethod() == 'POST') {
@@ -105,7 +105,7 @@ class SettingsController extends Controller
         }
 
         return $this->render(
-            'ApplicantBundle:Settings:email.html.twig',
+            'TenantBundle:Settings:email.html.twig',
             array(
                 'sEmail' => $sEmail,
                 'form' => $form->createView()
@@ -115,14 +115,14 @@ class SettingsController extends Controller
     }
 
     /**
-     * @Route("/remove", name="applicant_remove")
+     * @Route("/remove", name="tenant_remove")
      * @Template()
      */
     public function removeAction()
     {
         $request = $this->get('request');
         /** @var User $User */
-        $User = $this->get('core.session.applicant')->getUser();
+        $User = $this->getUser();
         $sEmail = $User->getEmail();
         $sPassword = $User->getPassword();
         $form = $this->createForm(new RemoveType(), $User);
@@ -156,7 +156,7 @@ class SettingsController extends Controller
             }
         }
         return $this->render(
-            'ApplicantBundle:Settings:remove.html.twig',
+            'TenantBundle:Settings:remove.html.twig',
             array(
                 'sEmail' => $sEmail,
                 'form' => $form->createView()

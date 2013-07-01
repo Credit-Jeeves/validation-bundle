@@ -3,7 +3,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\DataBundle\Entity\Lead;
@@ -26,16 +26,15 @@ class HomepageController extends Controller
     public function indexAction()
     {
         /** @var User $User */
-        $User = $this->get('core.session.applicant')->getUser();
+        $User = $this->getUser();
         /** @var ReportPrequal $Report */
-        $Report  = $User->getReportsPrequal()->last();
-
+        $Report  = $this->getReport();
         /** @var Lead $Lead */
-        $Lead = $this->get('core.session.applicant')->getLead();
+        $Lead = $this->getLead();
 
         $nLeads = $User->getUserLeads()->count();
-        $nTarget = $Lead->getTargetScore();
-        $nScore  = $User->getScores()->last()->getScore();
+        $nTarget = $this->getTarget();
+        $nScore  = $this->getScore()->getScore();
         $isSuccess = false;
         if ($nScore >= $nTarget) {
             $isSuccess = true;
@@ -64,7 +63,7 @@ class HomepageController extends Controller
     public function changeAction()
     {
         $nLeadId = $this->getRequest()->get('lead_id');
-        $this->get('core.session.applicant')->setLeadId($nLeadId);
+        $this->setLeadId($nLeadId);
         return new JsonResponse('');
     }
 
@@ -140,7 +139,7 @@ class HomepageController extends Controller
 
     private function checkLeadsTradeline($oApplicantTradeline)
     {
-        $User   = $this->get('core.session.applicant')->getUser();
+        $User   = $this->getUser();
         $Leads      = $User->getUserLeads();
         foreach ($Leads as $Lead) {
             $isExist = $this->

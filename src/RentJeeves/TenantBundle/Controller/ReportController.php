@@ -1,6 +1,6 @@
 <?php
 
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace RentJeeves\TenantBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class ReportController extends Controller
 {
     /**
-     * @Route("/report", name="applicant_report")
+     * @Route("/report", name="tenant_report")
      * @Template()
      *
      * @return array
@@ -20,7 +20,6 @@ class ReportController extends Controller
     public function indexAction()
     {
         // TODO add check for admin
-
         /* @var User $User */
         $User = $this->getUser();
 

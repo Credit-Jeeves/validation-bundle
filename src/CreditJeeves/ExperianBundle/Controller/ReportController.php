@@ -55,14 +55,36 @@ class ReportController extends Controller
      */
     public function getD2cAction()
     {
+        $user = $this->get('core.session.applicant')->getUser();
+        $type = $user->getType();
         if (!$this->isReportLoadAllowed(true)) {
-            return new RedirectResponse($this->generateUrl('applicant_homepage'));
+            switch ($type) {
+                case 'tenant':
+                    return new RedirectResponse($this->generateUrl('tenant_homepage'));
+                    break;
+                default:
+                    return new RedirectResponse($this->generateUrl('applicant_homepage'));
+                    break;
+            }
         }
         $this->get('session')->getFlashBag()->set('isD2cReport', true);
-        return array(
-            'url' => $this->generateUrl('core_report_get_ajax'),
-            'redirect' => $this->generateUrl('applicant_report')
-        );
+        switch ($type) {
+            case 'tenant':
+                return $this->render(
+                    'ExperianBundle:Report:rj_get.html.twig',
+                    array(
+                        'url' => $this->generateUrl('core_report_get_ajax'),
+                    'redirect' => $this->generateUrl('tenant_report'),
+                        )
+                );
+                break;
+            default:
+                return array(
+                    'url' => $this->generateUrl('core_report_get_ajax'),
+                    'redirect' => $this->generateUrl('applicant_report'),
+                );
+                break;
+        }
     }
 
     /**
@@ -73,13 +95,34 @@ class ReportController extends Controller
      */
     public function getAction()
     {
+        $user = $this->get('core.session.applicant')->getUser();
+        $type = $user->getType();
         if (!$this->isReportLoadAllowed()) {
-            return new RedirectResponse($this->generateUrl('applicant_homepage'));
+            switch ($type) {
+                case 'tenant':
+                    return new RedirectResponse($this->generateUrl('tenant_summary'));
+                    break;
+                default:
+                    return new RedirectResponse($this->generateUrl('applicant_homepage'));
+                    break;
+            }
         }
-        return array(
-            'url' => $this->generateUrl('core_report_get_ajax'),
-            'redirect' => null//$this->getRequest()->headers->get('referer'),
-        );
+        switch ($type) {
+            case 'tenant':
+                return $this->render(
+                    'ExperianBundle:Report:rj_get.html.twig',
+                    array(
+                        'url' => $this->generateUrl('core_report_get_ajax'),
+                        'redirect' => null//$this->getRequest()->headers->get('referer'),
+                    )
+                );
+                break;
+            default:
+                return array(
+                    'url' => $this->generateUrl('core_report_get_ajax'),
+                    'redirect' => null//$this->getRequest()->headers->get('referer'),
+                );
+        }
     }
 
     protected function getArf()
@@ -132,7 +175,7 @@ class ReportController extends Controller
             ignore_user_abort();
             set_time_limit(90);
             require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/CurlException.class.php';
-            if (!$session->get('cjIsArfProcessing', false)) {
+            if (false == $session->get('cjIsArfProcessing', false)) {
                 $session->set('cjIsArfProcessing', true);
                 try {
                     $isD2cReport = $this->get('session')->getFlashBag()->get('isD2cReport');

@@ -5,24 +5,30 @@
     <div class="score-date">as of&nbsp;{{sDate}}</div>
     <div class="score-fico">{{ 'common.estimated.fico' | trans }}&nbsp;{{ nFicoScore }}</div>
   </div>
-  <div class="score-column score-tenant">
+  <div class="score-column">
+    <div class="vertical-rainbow-chart">
       <div id="score-chart" class="score-chart"></div>
-      <div class="clearboth"></div>
+    </div>
+    
   </div>
+  {% if nTargetScore > 0 %}
+  <div class="score-column-target">
+    <div class="score-target" style="top:{{ nTop }}px;">{{ nTargetScore }}</div>
+  </div>
+  {% endif %}
   <div class="clearboth"></div>
 </div>
 
 <script type="text/javascript">
   google.setOnLoadCallback(function() {
     var data = new google.visualization.arrayToDataTable([
-          ['Year', 'Applicant'],
+          ['Year', 'Applicant', 'Target'],
           {% autoescape false %}{{ chartData }}{% endautoescape %}
           ]);
 
     var options = {
       curveType: 'function',
-      height: 180,
-      width: 400,
+      height: 171,
       hAxis: {'baseline': 300, 'baselineColor': '#D3D3D3', 'format': 'MMM d', 'textPosition': 'out', 'gridlines': {'color': '#D3D3D3', 'count': 2}, 'textStyle': {color: '#D3D3D3', fontSize: 9}},
       vAxis: {'baselineColor': '#D3D3D3', 'maxValue': 900, 'textPosition': 'in', 'minValue': 300, 'gridlines': {'color': '#D3D3D3', 'count': 11}, 'textStyle': {color: '#D3D3D3', fontSize: 9}},
       series: {0:{color: '#87CEFA', lineWidth: 8, pointSize: 12, visibleInLegend: false}, 1:{color: '#1985EA', visibleInLegend: false}},

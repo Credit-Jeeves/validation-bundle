@@ -3,6 +3,7 @@ namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\DataBundle\Entity\Report;
 
 class HardInquiriesController extends Controller
 {
@@ -11,9 +12,9 @@ class HardInquiriesController extends Controller
      */
     const MAX_DIAL = 12;
 
-    public function indexAction()
+    public function indexAction(Report $Report)
     {
-        $ArfReport = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getArfReport();
+        $ArfReport = $Report->getArfReport();
         $nInquiries = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_INQUIRIES_DURING_LAST_6_MONTHS_COUNTER
