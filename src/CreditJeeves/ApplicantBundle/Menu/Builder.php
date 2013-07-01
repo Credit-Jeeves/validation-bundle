@@ -27,6 +27,7 @@ class Builder extends ContainerAware
             case 'applicant_summary':
                 $menu['tabs.summary']->setAttribute('class', 'active');
                 break;
+            case 'core_report_get_d2c':
             case 'applicant_report':
                 $menu['tabs.report']->setAttribute('class', 'active');
                 break;

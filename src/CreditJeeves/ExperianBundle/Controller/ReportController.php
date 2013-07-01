@@ -175,7 +175,7 @@ class ReportController extends Controller
             ignore_user_abort();
             set_time_limit(90);
             require_once __DIR__.'/../../../../vendor/CreditJeevesSf1/lib/curl/CurlException.class.php';
-            if (!$session->get('cjIsArfProcessing', false)) {
+            if (false == $session->get('cjIsArfProcessing', false)) {
                 $session->set('cjIsArfProcessing', true);
                 try {
                     $isD2cReport = $this->get('session')->getFlashBag()->get('isD2cReport');
