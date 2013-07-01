@@ -18,7 +18,7 @@ class AdCreditCardsController extends Controller
      *
      * @return array
      */
-    public function indexAction(Report $Report, Lead $Lead)
+    public function indexAction(Report $Report, Lead $Lead = null)
     {
         $cjArfReport = $Report->getArfReport();
         $nInquiries = $cjArfReport->getValue(
@@ -52,20 +52,20 @@ class AdCreditCardsController extends Controller
         $aRecords = $Report->getApplicantPublicRecords();
         $sBankruptcy = $this->formatBankruptcy($aRecords);
 
-        $simTypeGroup = null;
-
-        /** @var AtbRepository $repo */
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Atb');
-        $atb = $repo->findLatsSimulationEntity(
-            $Report->getId(),
-            $Lead->getTargetScore(),
-            array(AtbType::SCORE, AtbType::SEARCH)
-        );
-
-        if (!empty($atb)) {
-            $simTypeGroup = $atb->getSimType() ? substr((string)$atb->getSimType(), 0, 2) : null;
+        $simTypeGroup = 'NA';
+        if (!empty($Lead)) {
+            /** @var AtbRepository $repo */
+            $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Atb');
+            $atb = $repo->findLatsSimulationEntity(
+                $Report->getId(),
+                $Lead->getTargetScore(),
+                array(AtbType::SCORE, AtbType::SEARCH)
+            );
+    
+            if (!empty($atb)) {
+                $simTypeGroup = $atb->getSimType() ? substr((string)$atb->getSimType(), 0, 2) : null;
+            }
         }
-
         return array(
             'isMortgage' => $isMortgage,
             'isRevolving' => $isRevolving,

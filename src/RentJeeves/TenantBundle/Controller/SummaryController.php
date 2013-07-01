@@ -1,29 +1,32 @@
 <?php
 
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace RentJeeves\TenantBundle\Controller;
 
-use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
+use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class SummaryController extends Controller
 {
     /**
-     * @Route("/summary", name="applicant_summary")
+     * @Route("/summary", name="tenant_summary")
      * @Template()
-     *
-     * @return array
      */
     public function indexAction()
     {
         $user = $this->getUser();
         $sEmail = $user->getEmail();
         $Report  = $this->getReport();
+        if (!$Report) {
+            return new RedirectResponse($this->get('router')->generate('core_report_get'));
+        }
         $Score = $this->getScore();
         return array(
             'sEmail' => $sEmail,
             'Report' => $Report,
             'Score' => $Score,
+            'User' => $user,
         );
     }
 }

@@ -16,7 +16,7 @@ class Tenant extends User
     public function setUser(UserEntity $User)
     {
         $this->data['user_id'] = $User->getId();
-        $this->saveToSession(UserType::TETNANT);
+        $this->saveToSession(UserType::APPLICANT);
     }
 
     /**
@@ -24,7 +24,7 @@ class Tenant extends User
      */
     public function getUser()
     {
-        $data = $this->getFromSession(UserType::TETNANT);
+        $data = $this->getFromSession(UserType::APPLICANT);
         if (isset($data['user_id'])) {
             return $this->findUser($data['user_id']);
         }

@@ -7,9 +7,9 @@ use CreditJeeves\CoreBundle\Arf\ArfParser;
 
 class CreditCardUtilizationController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Report $Report)
     {
-        $ArfReport = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last()->getArfReport();
+        $ArfReport = $Report->getArfReport();
         $nRevolvingDept = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_TOTAL_REVOLVING

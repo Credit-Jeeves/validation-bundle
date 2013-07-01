@@ -2,21 +2,14 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Entity\Report;
 
 class TotalTradelinesController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Report $Report)
     {
-        $nOpened = $this->get('core.session.applicant')
-            ->getUser()
-            ->getReportsPrequal()
-            ->last()
-            ->getCountApplicantOpenedTradelines();
-        $nClosed = $this->get('core.session.applicant')
-            ->getUser()
-            ->getReportsPrequal()
-            ->last()
-            ->getCountApplicantClosedTradelines();
+        $nOpened = $Report->getCountApplicantOpenedTradelines();
+        $nClosed = $Report->getCountApplicantClosedTradelines();
         $nTotal = $nOpened + $nClosed;
 
         return $this->render(

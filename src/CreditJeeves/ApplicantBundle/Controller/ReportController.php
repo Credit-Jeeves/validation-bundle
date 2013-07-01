@@ -5,7 +5,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -22,7 +22,7 @@ class ReportController extends Controller
         // TODO add check for admin
 
         /* @var User $User */
-        $User = $this->get('core.session.applicant')->getUser();
+        $User = $this->getUser();
 
         /** @var Order $Order */
         if ($Order = $User->getLastCompleteOrder()) {

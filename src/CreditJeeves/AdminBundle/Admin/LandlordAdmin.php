@@ -54,6 +54,9 @@ class LandlordAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
+                        'observe' => array(
+                            'template' => 'AdminBundle:CRUD:list__landlord_observe.html.twig'
+                        ),
                     )
                 )
             );

@@ -11,7 +11,7 @@
 {% block content %}
     <div id="action_plan_page">
         <div class="column-middle floatleft">
-            {{ render(controller('ComponentBundle:Score:index', {'Lead': Lead})) }}
+            {{ render(controller('ComponentBundle:Lead:index', {'Lead': Lead})) }}
         </div>
         <div class="column-small floatright">
             {{ render(controller('ComponentBundle:Target:index', {'Lead': Lead})) }}
