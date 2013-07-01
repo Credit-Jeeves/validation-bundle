@@ -94,7 +94,8 @@ class DefaultController extends Controller
                     'CheckoutBundle:Default:rj_index.html.twig',
                     array(
                         'form' => $this->form->createView()
-                    ));                
+                    )
+                );
                 break;
             default:
                 return array(
