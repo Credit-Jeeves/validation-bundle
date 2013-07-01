@@ -23,7 +23,7 @@ class DashboardCase extends BaseTestCase
     );
 
     /**
-     * @~test
+     * @test
      */
     public function userDashboardScore()
     {
@@ -62,7 +62,7 @@ class DashboardCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function userAccountStatus()
     {
@@ -76,7 +76,7 @@ class DashboardCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function userDidYouKnow()
     {
