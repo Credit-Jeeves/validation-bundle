@@ -43,12 +43,15 @@ class DefaultController extends Controller
 
     /**
      * @Route("/checkout", name="checkout_default")
+     * @Route("/tenant/checkout", name="checkout_tenant")
      * @Template()
      */
     public function indexAction(Request $request)
     {
+        $user = $this->getuser();
+        $type = $user->getType();
         $this->order = new Order();
-        $this->order->setUser($this->getUser());
+        $this->order->setUser($user);
         $this->form = $this->createForm(new OrderAuthorizeType(), $this->order);
 
         if ($request->isMethod('POST')) {
@@ -72,37 +75,43 @@ class DefaultController extends Controller
                     $this->order->setStatus(OrderStatus::COMPLETE);
                     $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
                     $this->get('doctrine.orm.default_entity_manager')->flush();
-
                     $this->order->setAuthorize($authorize); // TODO Fix it
-                    $this->get('creditjeeves.mailer')->sendReceipt($this->order);
-                    return $this->redirect($this->generateUrl('applicant_report'));
+                    switch ($type) {
+                        case 'tenant':
+                            return $this->redirect($this->generateUrl('tenant_report'));
+                            break;
+                        default:
+                            $this->get('creditjeeves.mailer')->sendReceipt($this->order);
+                            return $this->redirect($this->generateUrl('applicant_report'));
+                            break;
+                    }
                 }
             }
         }
-
-        return array(
-            'form' => $this->form->createView()
-        );
+        switch ($type) {
+            case 'tenant':
+                return $this->render(
+                    'CheckoutBundle:Default:rj_index.html.twig',
+                    array(
+                        'form' => $this->form->createView()
+                    ));                
+                break;
+            default:
+                return array(
+                    'form' => $this->form->createView()
+                );
+            break;
+        }
     }
 
     protected function process(CheckoutAuthorizeNetAim $authorize)
     {
-
-//        $model->setCurrency('USD');
-
         $context = $this->getPayum()->getContext('simple_purchase_authorize_net');
-
         $captureRequest = new CaptureRequest($authorize);
         $context->getPayment()->execute($captureRequest);
-
-//        var_dump($paymentDetails);die('OK');
-
         $authorize = $captureRequest->getModel();
-
         $this->get('doctrine.orm.default_entity_manager')->persist($authorize);
         $this->get('doctrine.orm.default_entity_manager')->flush(); // TODO remove and check
-
-
 
         if (\AuthorizeNetAIM_Response::APPROVED != $authorize->getResponseCode()) {
             $code = $authorize->getResponseReasonCode();
@@ -159,7 +168,16 @@ class DefaultController extends Controller
     {
         $boxMessage = 'box-message';
         $boxNote = 'box-note';
-
+        $user = $this->getUser();
+        $type = $user->getType();
+        switch ($type) {
+            case 'tenant':
+                $link = 'checkout_tenant';
+                break;
+            default:
+                $link = 'checkout_default';
+                break;
+        }
         /** @var \CreditJeeves\DataBundle\Entity\Report $report */
         $report = $this->getUser()
             ->getReportsD2c()
@@ -178,6 +196,7 @@ class DefaultController extends Controller
         return array(
             'boxMessage' => $boxMessage,
             'boxNote' => $boxNote,
+            'link' => $link,
         );
     }
 }

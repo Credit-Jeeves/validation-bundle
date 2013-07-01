@@ -15,7 +15,7 @@ class Builder extends ContainerAware
         $isCompleteOrder = $User->isCompleteOrderExist();
 
         if ($isCompleteOrder) {
-            $menu->addChild('tabs.report', array('route' => 'tenant_homepage'));
+            $menu->addChild('tabs.report', array('route' => 'tenant_report'));
         }
         $menu->addChild('tabs.settings', array('route' => 'tenant_password'));
 
@@ -24,9 +24,11 @@ class Builder extends ContainerAware
             case 'tenant_homepage':
                 $menu['tabs.rent']->setAttribute('class', 'active');
                 break;
+            case 'core_report_get':
             case 'tenant_summary':
                 $menu['tabs.summary']->setAttribute('class', 'active');
                 break;
+            case 'core_report_get_d2c':
             case 'tenant_report':
                 $menu['tabs.report']->setAttribute('class', 'active');
                 break;
