@@ -29,9 +29,9 @@ abstract class Order
     protected $user;
 
     /**
-     * @ORM\Column(type="OrderStatus")
+     * @ORM\Column(type="OrderStatus", options={"default"="new"})
      */
-    protected $status;
+    protected $status = OrderStatus::NEWONE;
 
     /**
      * @ORM\Column(type="datetime")

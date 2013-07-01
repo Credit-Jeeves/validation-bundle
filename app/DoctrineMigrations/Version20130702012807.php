@@ -8,7 +8,7 @@ use Doctrine\DBAL\Migrations\AbstractMigration,
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20130701224904 extends AbstractMigration
+class Version20130702012807 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -26,7 +26,7 @@ class Version20130701224904 extends AbstractMigration
                 city VARCHAR(255) NOT NULL,
                 state VARCHAR(7) DEFAULT NULL,
                 zip VARCHAR(15) NOT NULL,
-                country VARCHAR(3) DEFAULT NULL,
+                country VARCHAR(3) DEFAULT 'USA',
                 created_at DATETIME NOT NULL,
                 updated_at DATETIME NOT NULL,
                 INDEX IDX_274F987CA76ED395 (user_id),
@@ -58,16 +58,16 @@ class Version20130701224904 extends AbstractMigration
                 FOREIGN KEY email_translation_translatable_id_email_id"
         );
         $this->addSql(
-            "ALTER TABLE email
-                CHANGE id id INT AUTO_INCREMENT NOT NULL,
-                CHANGE name name VARCHAR(255) NOT NULL"
-        );
-        $this->addSql(
             "ALTER TABLE email_translation
                 CHANGE id id INT AUTO_INCREMENT NOT NULL,
                 CHANGE translatable_id translatable_id INT DEFAULT NULL,
                 CHANGE locale locale VARCHAR(8) NOT NULL,
                 CHANGE property property VARCHAR(32) NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE email
+                CHANGE id id INT AUTO_INCREMENT NOT NULL,
+                CHANGE name name VARCHAR(255) NOT NULL"
         );
         $this->addSql(
             "ALTER TABLE email_translation
@@ -96,6 +96,36 @@ class Version20130701224904 extends AbstractMigration
                 CHANGE contenttype contentType VARCHAR(255) NOT NULL"
         );
         $this->addSql(
+            "ALTER TABLE cj_applicant_incentives
+                DROP
+                FOREIGN KEY ccci_1"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_applicant_incentives
+                DROP
+                FOREIGN KEY cj_applicant_incentives_cj_applicant_id_cj_user_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_applicant_incentives
+                DROP
+                FOREIGN KEY cj_applicant_incentives_cj_incentive_id_cj_group_incentives_id"
+        );
+        $this->addSql(
+            "DROP INDEX cj_tradeline_id_idx ON cj_applicant_incentives"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_applicant_incentives
+                ADD CONSTRAINT FK_61F54ABB1846CDE5
+                FOREIGN KEY (cj_applicant_id)
+                REFERENCES cj_user (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_applicant_incentives
+                ADD CONSTRAINT FK_61F54ABB7E2A1DEB
+                FOREIGN KEY (cj_incentive_id)
+                REFERENCES cj_group_incentives (id)"
+        );
+        $this->addSql(
             "ALTER TABLE cj_account_group_affiliate
                 DROP
                 FOREIGN KEY ccci"
@@ -115,6 +145,63 @@ class Version20130701224904 extends AbstractMigration
             "ALTER TABLE cj_account_group_affiliate
                 CHANGE culture culture ENUM('en','hi','test','es')
                     COMMENT '(DC2Type:UserCulture)' DEFAULT 'en' NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_vehicle
+                DROP INDEX cj_applicant_id_idx,
+                ADD UNIQUE INDEX UNIQ_1AFD06AD1846CDE5 (cj_applicant_id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_vehicle
+                DROP
+                FOREIGN KEY cj_vehicle_cj_applicant_id_cj_user_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_vehicle
+                ADD CONSTRAINT FK_1AFD06AD1846CDE5
+                FOREIGN KEY (cj_applicant_id)
+                REFERENCES cj_user (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead
+                DROP
+                FOREIGN KEY cj_lead_cj_account_id_cj_user_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead
+                DROP
+                FOREIGN KEY cj_lead_cj_applicant_id_cj_user_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead
+                DROP
+                FOREIGN KEY cj_lead_cj_group_id_cj_account_group_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead
+                CHANGE fraction fraction SMALLINT DEFAULT '0',
+                CHANGE status status ENUM('new','prequal','active','idle','ready','finished','expired','processed')
+                    COMMENT '(DC2Type:LeadStatus)' DEFAULT 'new' NOT NULL,
+                CHANGE source source ENUM('office','webpage')
+                    COMMENT '(DC2Type:LeadSource)' DEFAULT 'office'"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead
+                ADD CONSTRAINT FK_3DCB43F71846CDE5
+                FOREIGN KEY (cj_applicant_id)
+                REFERENCES cj_user (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead
+                ADD CONSTRAINT FK_3DCB43F7ED8F6A55
+                FOREIGN KEY (cj_account_id)
+                REFERENCES cj_user (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead
+                ADD CONSTRAINT FK_3DCB43F752E95DE5
+                FOREIGN KEY (cj_group_id)
+                REFERENCES cj_account_group (id)"
         );
         $this->addSql(
             "DROP INDEX email ON cj_user"
@@ -180,61 +267,61 @@ class Version20130701224904 extends AbstractMigration
                 group_id)"
         );
         $this->addSql(
-            "ALTER TABLE cj_vehicle
-                DROP INDEX cj_applicant_id_idx,
-                ADD UNIQUE INDEX UNIQ_1AFD06AD1846CDE5 (cj_applicant_id)"
+            "DROP INDEX cj_login_defense_type_idx ON cj_login_defense"
         );
         $this->addSql(
-            "ALTER TABLE cj_vehicle
+            "ALTER TABLE atb_simulation
                 DROP
-                FOREIGN KEY cj_vehicle_cj_applicant_id_cj_user_id"
+                FOREIGN KEY atb_simulation_cj_applicant_report_id_cj_applicant_report_id"
         );
         $this->addSql(
-            "ALTER TABLE cj_vehicle
-                ADD CONSTRAINT FK_1AFD06AD1846CDE5
+            "ALTER TABLE atb_simulation
+                CHANGE type type ENUM('score','cash','search')
+                    COMMENT '(DC2Type:AtbType)' DEFAULT 'score' NOT NULL,
+                CHANGE score_current score_current LONGTEXT NOT NULL,
+                CHANGE result result LONGTEXT NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE atb_simulation
+                ADD CONSTRAINT FK_BD5BF4F22A26A0ED
+                FOREIGN KEY (cj_applicant_report_id)
+                REFERENCES cj_applicant_report (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_applicant_report
+                DROP
+                FOREIGN KEY cj_applicant_report_cj_applicant_id_cj_user_id"
+        );
+        $this->addSql(
+            "DROP INDEX cj_applicant_report_type_idx ON cj_applicant_report"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_applicant_report
+                CHANGE raw_data raw_data LONGTEXT NOT NULL,
+                CHANGE type type ENUM('d2c','prequal')
+                    COMMENT '(DC2Type:ReportType)' NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_applicant_report
+                ADD CONSTRAINT FK_DA7942E81846CDE5
                 FOREIGN KEY (cj_applicant_id)
                 REFERENCES cj_user (id)"
         );
         $this->addSql(
-            "ALTER TABLE cj_account_group
+            "ALTER TABLE cj_purchase
                 DROP
-                FOREIGN KEY cj_account_group_cj_affiliate_id_cj_affiliate_id"
+                FOREIGN KEY cj_purchase_cj_account_id_cj_user_id"
         );
         $this->addSql(
-            "ALTER TABLE cj_account_group
+            "ALTER TABLE cj_purchase
                 DROP
-                FOREIGN KEY cj_account_group_dealer_id_cj_user_id"
+                FOREIGN KEY cj_purchase_cj_lead_id_cj_lead_id"
         );
         $this->addSql(
-            "DROP INDEX code ON cj_account_group"
+            "DROP INDEX cj_account_id_idx ON cj_purchase"
         );
         $this->addSql(
-            "ALTER TABLE cj_account_group
-                CHANGE fee_type fee_type ENUM('flat','lead')
-                    COMMENT '(DC2Type:GroupFeeType)' DEFAULT 'flat' NOT NULL,
-                CHANGE type type ENUM('vehicle','estate')
-                    COMMENT '(DC2Type:GroupType)' DEFAULT 'vehicle' NOT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_account_group
-                ADD CONSTRAINT FK_FCA7EE881047997E
-                FOREIGN KEY (cj_affiliate_id)
-                REFERENCES cj_affiliate (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_account_group
-                ADD CONSTRAINT FK_FCA7EE88727ACA70
-                FOREIGN KEY (parent_id)
-                REFERENCES cj_account_group (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_account_group
-                ADD CONSTRAINT FK_FCA7EE88249E6EA1
-                FOREIGN KEY (dealer_id)
-                REFERENCES cj_user (id)"
-        );
-        $this->addSql(
-            "CREATE INDEX IDX_FCA7EE88727ACA70 ON cj_account_group (parent_id)"
+            "DROP INDEX cj_lead_id_idx ON cj_purchase"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_tradelines
@@ -256,29 +343,29 @@ class Version20130701224904 extends AbstractMigration
                 REFERENCES cj_user (id)"
         );
         $this->addSql(
-            "ALTER TABLE cj_operation
-                DROP INDEX cj_operation_cj_applicant_report_id_cj_applicant_report_id,
-                ADD UNIQUE INDEX UNIQ_21F5D92D2A26A0ED (cj_applicant_report_id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
+            "ALTER TABLE cj_lead_history
                 DROP
-                FOREIGN KEY cj_operation_cj_applicant_report_id_cj_applicant_report_id"
+                FOREIGN KEY cj_lead_history_editor_id_cj_user_id"
         );
         $this->addSql(
-            "DROP INDEX cj_operation_type_idx ON cj_operation"
+            "ALTER TABLE cj_lead_history
+                DROP
+                FOREIGN KEY cj_lead_history_object_id_cj_lead_id"
         );
         $this->addSql(
-            "ALTER TABLE cj_operation
-                CHANGE cj_applicant_report_id cj_applicant_report_id BIGINT NOT NULL,
-                CHANGE type type ENUM('report')
-                    COMMENT '(DC2Type:OperationType)' NOT NULL"
+            "DROP INDEX editor_id_idx ON cj_lead_history"
         );
         $this->addSql(
-            "ALTER TABLE cj_operation
-                ADD CONSTRAINT FK_21F5D92D2A26A0ED
-                FOREIGN KEY (cj_applicant_report_id)
-                REFERENCES cj_applicant_report (id)"
+            "ALTER TABLE cj_lead_history
+                CHANGE fraction fraction SMALLINT DEFAULT '0',
+                CHANGE status status ENUM('new','prequal','active','idle','ready','finished','expired','processed')
+                    COMMENT '(DC2Type:LeadStatus)' DEFAULT 'new' NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_lead_history
+                ADD CONSTRAINT FK_F12171C1232D562B
+                FOREIGN KEY (object_id)
+                REFERENCES cj_lead (id)"
         );
         $this->addSql(
             "ALTER TABLE cj_order
@@ -288,7 +375,7 @@ class Version20130701224904 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE cj_order
                 CHANGE status status ENUM('new','complete','error','cancelled')
-                    COMMENT '(DC2Type:OrderStatus)' NOT NULL"
+                    COMMENT '(DC2Type:OrderStatus)' DEFAULT 'new' NOT NULL"
         );
         $this->addSql(
             "ALTER TABLE cj_order
@@ -332,53 +419,15 @@ class Version20130701224904 extends AbstractMigration
                 cj_operation_id)"
         );
         $this->addSql(
-            "ALTER TABLE cj_lead
+            "ALTER TABLE cj_checkout_authorize_net_aim
                 DROP
-                FOREIGN KEY cj_lead_cj_account_id_cj_user_id"
+                FOREIGN KEY cj_checkout_authorize_net_aim_cj_order_id_cj_order_id"
         );
         $this->addSql(
-            "ALTER TABLE cj_lead
-                DROP
-                FOREIGN KEY cj_lead_cj_applicant_id_cj_user_id"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead
-                DROP
-                FOREIGN KEY cj_lead_cj_group_id_cj_account_group_id"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead
-                CHANGE fraction fraction SMALLINT DEFAULT '0',
-                CHANGE status status ENUM('new','prequal','active','idle','ready','finished','expired','processed')
-                    COMMENT '(DC2Type:LeadStatus)' DEFAULT 'new' NOT NULL,
-                CHANGE source source ENUM('office','webpage')
-                    COMMENT '(DC2Type:LeadSource)' DEFAULT 'office'"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead
-                ADD CONSTRAINT FK_3DCB43F71846CDE5
-                FOREIGN KEY (cj_applicant_id)
-                REFERENCES cj_user (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead
-                ADD CONSTRAINT FK_3DCB43F7ED8F6A55
-                FOREIGN KEY (cj_account_id)
-                REFERENCES cj_user (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead
-                ADD CONSTRAINT FK_3DCB43F752E95DE5
-                FOREIGN KEY (cj_group_id)
-                REFERENCES cj_account_group (id)"
-        );
-        $this->addSql(
-            "DROP INDEX cj_login_defense_type_idx ON cj_login_defense"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_login_defense
-                CHANGE attempts attempts BIGINT NOT NULL,
-                CHANGE type type VARCHAR(255) NOT NULL"
+            "ALTER TABLE cj_checkout_authorize_net_aim
+                ADD CONSTRAINT FK_93DCFF9B2122E99A
+                FOREIGN KEY (cj_order_id)
+                REFERENCES cj_order (id)"
         );
         $this->addSql(
             "ALTER TABLE cj_group_incentives
@@ -387,7 +436,6 @@ class Version20130701224904 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_group_incentives
-                CHANGE is_active is_active TINYINT(1) NOT NULL,
                 CHANGE text text LONGTEXT NOT NULL"
         );
         $this->addSql(
@@ -397,22 +445,112 @@ class Version20130701224904 extends AbstractMigration
                 REFERENCES cj_account_group (id)"
         );
         $this->addSql(
+            "ALTER TABLE cj_account_group
+                DROP
+                FOREIGN KEY cj_account_group_cj_affiliate_id_cj_affiliate_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_account_group
+                DROP
+                FOREIGN KEY cj_account_group_dealer_id_cj_user_id"
+        );
+        $this->addSql(
+            "DROP INDEX code ON cj_account_group"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_account_group
+                CHANGE fee_type fee_type ENUM('flat','lead')
+                    COMMENT '(DC2Type:GroupFeeType)' DEFAULT 'flat' NOT NULL,
+                CHANGE type type ENUM('vehicle','estate')
+                    COMMENT '(DC2Type:GroupType)' DEFAULT 'vehicle' NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_account_group
+                ADD CONSTRAINT FK_FCA7EE881047997E
+                FOREIGN KEY (cj_affiliate_id)
+                REFERENCES cj_affiliate (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_account_group
+                ADD CONSTRAINT FK_FCA7EE88727ACA70
+                FOREIGN KEY (parent_id)
+                REFERENCES cj_account_group (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_account_group
+                ADD CONSTRAINT FK_FCA7EE88249E6EA1
+                FOREIGN KEY (dealer_id)
+                REFERENCES cj_user (id)"
+        );
+        $this->addSql(
+            "CREATE INDEX IDX_FCA7EE88727ACA70 ON cj_account_group (parent_id)"
+        );
+        $this->addSql(
             "ALTER TABLE cj_applicant_pidkiq
                 DROP
                 FOREIGN KEY cj_applicant_pidkiq_cj_applicant_id_cj_user_id"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_pidkiq
-                CHANGE questions questions LONGTEXT NOT NULL,
-                CHANGE try_num try_num BIGINT NOT NULL,
-                CHANGE session_id session_id VARCHAR(255) NOT NULL,
-                CHANGE check_summ check_summ VARCHAR(255) NOT NULL"
+                CHANGE questions questions LONGTEXT DEFAULT NULL"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_pidkiq
                 ADD CONSTRAINT FK_536F59E31846CDE5
                 FOREIGN KEY (cj_applicant_id)
                 REFERENCES cj_user (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_pricing
+                DROP
+                FOREIGN KEY cj_pricing_cj_account_group_id_cj_account_group_id"
+        );
+        $this->addSql(
+            "DROP INDEX cj_account_group_id_idx ON cj_pricing"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_operation
+                DROP INDEX cj_operation_cj_applicant_report_id_cj_applicant_report_id,
+                ADD UNIQUE INDEX UNIQ_21F5D92D2A26A0ED (cj_applicant_report_id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_operation
+                DROP
+                FOREIGN KEY cj_operation_cj_applicant_report_id_cj_applicant_report_id"
+        );
+        $this->addSql(
+            "DROP INDEX cj_operation_type_idx ON cj_operation"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_operation
+                CHANGE type type ENUM('report')
+                    COMMENT '(DC2Type:OperationType)' NOT NULL"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_operation
+                ADD CONSTRAINT FK_21F5D92D2A26A0ED
+                FOREIGN KEY (cj_applicant_report_id)
+                REFERENCES cj_applicant_report (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_address
+                DROP
+                FOREIGN KEY cj_address_user_id_cj_user_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_address
+                ADD CONSTRAINT FK_C338DAAA76ED395
+                FOREIGN KEY (user_id)
+                REFERENCES cj_user (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_settings
+                CHANGE pidkiq_password pidkiq_password LONGTEXT NOT NULL,
+                CHANGE pidkiq_eai pidkiq_eai LONGTEXT NOT NULL,
+                CHANGE net_connect_password net_connect_password LONGTEXT NOT NULL,
+                CHANGE net_connect_eai net_connect_eai LONGTEXT NOT NULL,
+                CHANGE contract contract LONGTEXT NOT NULL,
+                CHANGE rights rights LONGTEXT NOT NULL"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_score
@@ -428,171 +566,6 @@ class Version20130701224904 extends AbstractMigration
                 ADD CONSTRAINT FK_655E33C31846CDE5
                 FOREIGN KEY (cj_applicant_id)
                 REFERENCES cj_user (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_incentives
-                DROP
-                FOREIGN KEY ccci_1"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_incentives
-                DROP
-                FOREIGN KEY cj_applicant_incentives_cj_applicant_id_cj_user_id"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_incentives
-                DROP
-                FOREIGN KEY cj_applicant_incentives_cj_incentive_id_cj_group_incentives_id"
-        );
-        $this->addSql(
-            "DROP INDEX cj_tradeline_id_idx ON cj_applicant_incentives"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_incentives
-                CHANGE status status VARCHAR(255) NOT NULL,
-                CHANGE is_verified is_verified TINYINT(1) NOT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_incentives
-                ADD CONSTRAINT FK_61F54ABB1846CDE5
-                FOREIGN KEY (cj_applicant_id)
-                REFERENCES cj_user (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_incentives
-                ADD CONSTRAINT FK_61F54ABB7E2A1DEB
-                FOREIGN KEY (cj_incentive_id)
-                REFERENCES cj_group_incentives (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_report
-                DROP
-                FOREIGN KEY cj_applicant_report_cj_applicant_id_cj_user_id"
-        );
-        $this->addSql(
-            "DROP INDEX cj_applicant_report_type_idx ON cj_applicant_report"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_report
-                CHANGE raw_data raw_data LONGTEXT NOT NULL,
-                CHANGE type type ENUM('d2c','prequal')
-                    COMMENT '(DC2Type:ReportType)' NOT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_report
-                ADD CONSTRAINT FK_DA7942E81846CDE5
-                FOREIGN KEY (cj_applicant_id)
-                REFERENCES cj_user (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_purchase
-                DROP
-                FOREIGN KEY cj_purchase_cj_account_id_cj_user_id"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_purchase
-                DROP
-                FOREIGN KEY cj_purchase_cj_lead_id_cj_lead_id"
-        );
-        $this->addSql(
-            "DROP INDEX cj_account_id_idx ON cj_purchase"
-        );
-        $this->addSql(
-            "DROP INDEX cj_lead_id_idx ON cj_purchase"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead_history
-                DROP
-                FOREIGN KEY cj_lead_history_editor_id_cj_user_id"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead_history
-                DROP
-                FOREIGN KEY cj_lead_history_object_id_cj_lead_id"
-        );
-        $this->addSql(
-            "DROP INDEX editor_id_idx ON cj_lead_history"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead_history
-                CHANGE fraction fraction SMALLINT DEFAULT '0',
-                CHANGE status status ENUM('new','prequal','active','idle','ready','finished','expired','processed')
-                    COMMENT '(DC2Type:LeadStatus)' DEFAULT 'new' NOT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_lead_history
-                ADD CONSTRAINT FK_F12171C1232D562B
-                FOREIGN KEY (object_id)
-                REFERENCES cj_lead (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_pricing
-                DROP
-                FOREIGN KEY cj_pricing_cj_account_group_id_cj_account_group_id"
-        );
-        $this->addSql(
-            "DROP INDEX cj_account_group_id_idx ON cj_pricing"
-        );
-        $this->addSql(
-            "ALTER TABLE atb_simulation
-                DROP
-                FOREIGN KEY atb_simulation_cj_applicant_report_id_cj_applicant_report_id"
-        );
-        $this->addSql(
-            "ALTER TABLE atb_simulation
-                CHANGE type type ENUM('score','cash','search')
-                    COMMENT '(DC2Type:AtbType)' NOT NULL,
-                CHANGE input input BIGINT NOT NULL,
-                CHANGE score_current score_current LONGTEXT NOT NULL,
-                CHANGE result result LONGTEXT NOT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE atb_simulation
-                ADD CONSTRAINT FK_BD5BF4F22A26A0ED
-                FOREIGN KEY (cj_applicant_report_id)
-                REFERENCES cj_applicant_report (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_settings
-                CHANGE pidkiq_password pidkiq_password LONGTEXT NOT NULL,
-                CHANGE pidkiq_eai pidkiq_eai LONGTEXT NOT NULL,
-                CHANGE net_connect_password net_connect_password LONGTEXT NOT NULL,
-                CHANGE net_connect_eai net_connect_eai LONGTEXT NOT NULL,
-                CHANGE contract contract LONGTEXT NOT NULL,
-                CHANGE rights rights LONGTEXT NOT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_address
-                DROP
-                FOREIGN KEY cj_address_user_id_cj_user_id"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_address
-                CHANGE country country VARCHAR(3) DEFAULT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_address
-                ADD CONSTRAINT FK_C338DAAA76ED395
-                FOREIGN KEY (user_id)
-                REFERENCES cj_user (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_checkout_authorize_net_aim
-                DROP
-                FOREIGN KEY cj_checkout_authorize_net_aim_cj_order_id_cj_order_id"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_checkout_authorize_net_aim
-                CHANGE md5_hash md5_hash VARCHAR(255) NOT NULL,
-                CHANGE card_code card_code VARCHAR(25) NOT NULL,
-                CHANGE cardholder_authentication_value cardholder_authentication_value VARCHAR(1) NOT NULL,
-                CHANGE split_tender_id split_tender_id VARCHAR(255) NOT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_checkout_authorize_net_aim
-                ADD CONSTRAINT FK_93DCFF9B2122E99A
-                FOREIGN KEY (cj_order_id)
-                REFERENCES cj_order (id)"
         );
     }
 
@@ -615,7 +588,6 @@ class Version20130701224904 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE atb_simulation
                 CHANGE type type VARCHAR(255) DEFAULT 'score' NOT NULL,
-                CHANGE input input DOUBLE PRECISION NOT NULL,
                 CHANGE score_current score_current VARCHAR(255) NOT NULL,
                 CHANGE result result LONGTEXT NOT NULL"
         );
@@ -692,10 +664,6 @@ class Version20130701224904 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_address
-                CHANGE country country VARCHAR(3) DEFAULT 'USA'"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_address
                 ADD CONSTRAINT cj_address_user_id_cj_user_id
                 FOREIGN KEY (user_id)
                 REFERENCES cj_user (id) ON DELETE CASCADE"
@@ -709,11 +677,6 @@ class Version20130701224904 extends AbstractMigration
             "ALTER TABLE cj_applicant_incentives
                 DROP
                 FOREIGN KEY FK_61F54ABB7E2A1DEB"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_applicant_incentives
-                CHANGE status status VARCHAR(2) NOT NULL,
-                CHANGE is_verified is_verified TINYINT(1) DEFAULT '0'"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_incentives
@@ -743,10 +706,7 @@ class Version20130701224904 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_pidkiq
-                CHANGE questions questions LONGTEXT DEFAULT NULL,
-                CHANGE try_num try_num BIGINT DEFAULT '0' NOT NULL,
-                CHANGE session_id session_id VARCHAR(255) DEFAULT NULL,
-                CHANGE check_summ check_summ VARCHAR(255) DEFAULT NULL"
+                CHANGE questions questions LONGTEXT DEFAULT NULL"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_pidkiq
@@ -815,13 +775,6 @@ class Version20130701224904 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_checkout_authorize_net_aim
-                CHANGE md5_hash md5_hash VARCHAR(255) DEFAULT NULL,
-                CHANGE card_code card_code VARCHAR(1) NOT NULL,
-                CHANGE cardholder_authentication_value cardholder_authentication_value VARCHAR(1) DEFAULT NULL,
-                CHANGE split_tender_id split_tender_id VARCHAR(255) DEFAULT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_checkout_authorize_net_aim
                 ADD CONSTRAINT cj_checkout_authorize_net_aim_cj_order_id_cj_order_id
                 FOREIGN KEY (cj_order_id)
                 REFERENCES cj_order (id) ON DELETE CASCADE"
@@ -869,7 +822,6 @@ class Version20130701224904 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_group_incentives
-                CHANGE is_active is_active TINYINT(1) DEFAULT '1',
                 CHANGE text text LONGTEXT DEFAULT NULL"
         );
         $this->addSql(
@@ -943,11 +895,6 @@ class Version20130701224904 extends AbstractMigration
             "CREATE INDEX editor_id_idx ON cj_lead_history (editor_id)"
         );
         $this->addSql(
-            "ALTER TABLE cj_login_defense
-                CHANGE attempts attempts BIGINT DEFAULT '1' NOT NULL,
-                CHANGE type type VARCHAR(255) DEFAULT NULL"
-        );
-        $this->addSql(
             "CREATE INDEX cj_login_defense_type_idx ON cj_login_defense (type)"
         );
         $this->addSql(
@@ -962,7 +909,6 @@ class Version20130701224904 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_operation
-                CHANGE cj_applicant_report_id cj_applicant_report_id BIGINT DEFAULT NULL,
                 CHANGE type type VARCHAR(255) NOT NULL"
         );
         $this->addSql(
@@ -1004,8 +950,7 @@ class Version20130701224904 extends AbstractMigration
                 DROP PRIMARY KEY"
         );
         $this->addSql(
-            "ALTER TABLE cj_order_operation
-                ADD id BIGINT AUTO_INCREMENT NOT NULL"
+            "ALTER TABLE  `cj_order_operation` ADD  `id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST"
         );
         $this->addSql(
             "ALTER TABLE cj_order_operation
@@ -1019,10 +964,10 @@ class Version20130701224904 extends AbstractMigration
                 FOREIGN KEY (cj_order_id)
                 REFERENCES cj_order (id) ON DELETE CASCADE"
         );
-        $this->addSql(
-            "ALTER TABLE cj_order_operation
-                ADD PRIMARY KEY (id)"
-        );
+//        $this->addSql(
+//            "ALTER TABLE cj_order_operation
+//                ADD PRIMARY KEY (id)"
+//        );
         $this->addSql(
             "ALTER TABLE cj_pricing
                 ADD CONSTRAINT cj_pricing_cj_account_group_id_cj_account_group_id
@@ -1099,14 +1044,14 @@ class Version20130701224904 extends AbstractMigration
                 REFERENCES cj_user (id) ON DELETE CASCADE"
         );
         $this->addSql(
-            "ALTER TABLE email
-                CHANGE id id BIGINT AUTO_INCREMENT NOT NULL,
-                CHANGE name name VARCHAR(255) DEFAULT NULL"
-        );
-        $this->addSql(
             "ALTER TABLE email_translation
                 DROP
                 FOREIGN KEY FK_A2A939D82C2AC5D3"
+        );
+        $this->addSql(
+            "ALTER TABLE email
+                CHANGE id id BIGINT AUTO_INCREMENT NOT NULL,
+                CHANGE name name VARCHAR(255) DEFAULT NULL"
         );
         $this->addSql(
             "DROP INDEX lookup_idx ON email_translation"

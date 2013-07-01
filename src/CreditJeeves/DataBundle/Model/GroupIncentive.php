@@ -27,7 +27,7 @@ abstract class GroupIncentive
     protected $consecutive_number;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
      */
     protected $is_active;
 

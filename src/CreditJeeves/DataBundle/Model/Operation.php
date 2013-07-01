@@ -29,7 +29,7 @@ abstract class Operation
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_applicant_report_id", type="bigint")
+     * @ORM\Column(name="cj_applicant_report_id", type="bigint", nullable=true)
      */
     protected $cjApplicantReportId;
 

@@ -28,13 +28,13 @@ abstract class Atb
     protected $report;
 
     /**
-     * @ORM\Column(type="AtbType")
+     * @ORM\Column(type="AtbType", options={"default"="score"})
      */
-    protected $type;
+    protected $type = AtbType::SCORE;
 
     /**
      *
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="float")
      */
     protected $input;
 

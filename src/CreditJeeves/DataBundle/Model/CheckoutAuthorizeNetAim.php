@@ -111,7 +111,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var string
      *
-     * @ORM\Column(name="md5_hash", type="string", length=255)
+     * @ORM\Column(name="md5_hash", type="string", length=255, nullable=true)
      */
     protected $md5_hash;
 
@@ -125,21 +125,21 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var string
      *
-     * @ORM\Column(name="card_code", type="string", length=25)
+     * @ORM\Column(name="card_code", type="string", length=1)
      */
     protected $card_code_response;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="cardholder_authentication_value", type="string", length=1)
+     * @ORM\Column(name="cardholder_authentication_value", type="string", length=1, nullable=true)
      */
     protected $cardholder_authentication_value;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="split_tender_id", type="string", length=255)
+     * @ORM\Column(name="split_tender_id", type="string", length=255, nullable=true)
      */
     protected $split_tender_id;
 

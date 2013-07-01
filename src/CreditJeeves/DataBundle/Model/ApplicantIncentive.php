@@ -32,12 +32,12 @@ abstract class ApplicantIncentive
     protected $cj_incentive_id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=2)
      */
     protected $status;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
     protected $is_verified;
 

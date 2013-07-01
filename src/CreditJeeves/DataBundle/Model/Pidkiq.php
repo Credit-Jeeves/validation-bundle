@@ -27,22 +27,22 @@ abstract class Pidkiq
     protected $user;
 
     /**
-     * @ORM\Column(type="encrypt")
+     * @ORM\Column(type="encrypt", nullable=true)
      */
     protected $questions;
 
     /**
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(type="bigint", options={"default"="0"})
      */
-    protected $try_num;
+    protected $try_num = 0;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $session_id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $check_summ;
 

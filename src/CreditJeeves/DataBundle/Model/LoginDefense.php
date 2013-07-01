@@ -31,14 +31,14 @@ abstract class LoginDefense
     /**
      * @var integer
      *
-     * @ORM\Column(name="attempts", type="bigint")
+     * @ORM\Column(name="attempts", type="bigint", options={"default"="1"})
      */
-    protected $attempts;
+    protected $attempts = 1;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=255)
+     * @ORM\Column(name="type", type="string", length=255, nullable=true)
      */
     protected $type;
 
