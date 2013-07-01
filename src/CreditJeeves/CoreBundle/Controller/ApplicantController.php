@@ -26,7 +26,7 @@ class ApplicantController extends Controller
 
     public function getTarget()
     {
-        return $this->target;
+        return $this->getLead()->getTargetScore();
     }
 
     public function getScore()
@@ -47,7 +47,6 @@ class ApplicantController extends Controller
     private function getUserDetails($user)
     {
         $this->report = $user->getReportsPrequal()->last();
-        $this->target = $this->getLead()->getTargetScore();
         $this->score = $user->getScores()->last();
     }
 }
