@@ -16,7 +16,6 @@ class CreditSummaryController extends Controller
             $aAutomotive['total_open_monthly_payment'] :
             0
         ;
-
         return $this->render(
             'ComponentBundle:CreditSummary:index.html.twig',
             array(

@@ -16,7 +16,7 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-            <form action="{{ path('applicant_email') }}" method="post" {{ form_enctype(form) }}>
+            <form action="{{ path('tenant_email') }}" method="post" {{ form_enctype(form) }}>
                 {{ form_errors(form) }}
                 <table>
                     <tr>
