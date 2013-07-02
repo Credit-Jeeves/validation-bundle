@@ -697,6 +697,20 @@
                 <target>Remove Authorization</target>
             </trans-unit>
 
+            <trans-unit id="rent.properties">
+                <source>rent.properties</source>
+                <target>Properties</target>
+            </trans-unit>
+            <trans-unit id="rent.history">
+                <source>rent.history</source>
+                <target>Payment History</target>
+            </trans-unit>
+            <trans-unit id="rent.sources">
+                <source>rent.sources</source>
+                <target>Payment Sources</target>
+            </trans-unit>
+
+
             <trans-unit id="notification.score">
                 <source>notification.score</source>
                 <target>Notifications</target>
