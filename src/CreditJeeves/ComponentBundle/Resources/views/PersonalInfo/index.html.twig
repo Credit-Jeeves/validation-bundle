@@ -3,7 +3,9 @@
         <h3>{{ 'component.personal.info' | trans }}</h3>
         <ul>
           <li>{{ sName }}</li>
+          {% if aAddress.address_text is defined %}
           <li>{{ aAddress.address_text }}</li>
+          {% endif %}
           <li>&nbsp;</li>
           <li>SSN:&nbsp;{{ sSSN }}</li>
           <li>DOB:&nbsp;{{ sDOB }}</li>
@@ -14,8 +16,10 @@
         {% if aEmployments|length > 0 %}
         <ul>
         {% for aEmployment in aEmployments %}
+            {% if aEmployment.employer_name is defined %}
             <li>{{ aEmployment.employer_name }}</li>
             <li>&nbsp;</li>
+            {% endif %}
         {% endfor %}
         </ul>
         {% endif %}

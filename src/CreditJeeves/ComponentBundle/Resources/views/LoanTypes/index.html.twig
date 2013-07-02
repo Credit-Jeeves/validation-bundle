@@ -1,3 +1,4 @@
+{% if nTradelines > 0 %}
 <div class="pod-middle pod-border shadow">
     <div class="pod-title">
         <h3>{{ 'component.loan.types' | trans }}</h3>
@@ -35,3 +36,4 @@
       chart.draw(data, options);
     });
 </script>
+{% endif %}

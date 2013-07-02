@@ -16,6 +16,7 @@ class PersonalInfoController extends Controller
         $sSSN       = $this->get('core.session.applicant')->getUser()->displaySsn();
         $sDOB       = $this->get('core.session.applicant')->getUser()->getDateOfBirth()->format("F j, Y");
         $sName      = $Report->getApplicantName();
+        $aAddresses = array();
         $aAddresses = $Report->getApplicantAddress();
         if (isset($aAddresses['address_text'])) {
             $aAddress = $this->aAddresses;
@@ -23,6 +24,9 @@ class PersonalInfoController extends Controller
         }
         $aAddress     = empty($aAddresses) ? array() : array_shift($aAddresses);
         $aEmployments = $Report->getApplicantEmployments();
+//         echo '<pre>';
+//         print_r($aEmployments);
+//         exit;
         return array(
                 'sName' => $sName,
                 'aAddresses' => $aAddresses,
