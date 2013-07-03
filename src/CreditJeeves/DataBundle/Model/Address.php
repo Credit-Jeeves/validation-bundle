@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -36,6 +37,21 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="address1", type="string", length=255)
+     * @Assert\NotBlank(
+     *     message="error.user.address.empty",
+     *     groups={
+     *         "user_address",
+     *         "buy_report"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "user_address",
+     *         "buy_report"
+     *     }
+     * )
      */
     protected $address1;
 
@@ -43,6 +59,19 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="address2", type="string", length=255, nullable=true)
+     * @Assert\NotBlank(
+     *     message="error.user.unit.empty",
+     *     groups={
+     *         "user_address"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=1,
+     *     max=31,
+     *     groups={
+     *         "user_address"
+     *     }
+     * )
      */
     protected $address2;
 
@@ -50,6 +79,12 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=255)
+     * @Assert\NotBlank(
+     *     message="error.user.city.empty",
+     *     groups={
+     *         "buy_report"
+     *     }
+     * )
      */
     protected $city;
 
@@ -57,6 +92,21 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="state", type="string", length=7, nullable=true)
+     * @Assert\NotBlank(
+     *     message="error.user.state.empty",
+     *     groups={
+     *         "user_address",
+     *         "buy_report"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "user_address",
+     *         "buy_report"
+     *     }
+     * )
      */
     protected $state;
 
@@ -64,6 +114,22 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="zip", type="string", length=15)
+     * @Assert\NotBlank(
+     *     message="error.user.zip.empty",
+     *     groups={
+     *         "user_address",
+     *         "buy_report"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=1,
+     *     max=15,
+     *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length",
+     *     groups={
+     *         "user_address",
+     *         "buy_report"
+     *     }
+     * )
      */
     protected $zip;
 

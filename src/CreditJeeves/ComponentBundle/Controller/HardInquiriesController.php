@@ -19,6 +19,7 @@ class HardInquiriesController extends Controller
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_INQUIRIES_DURING_LAST_6_MONTHS_COUNTER
         );
+        $nInquiries = $nInquiries ? $nInquiries : 0;
         $nMaxDial = self::MAX_DIAL;
         if ($nInquiries > $nMaxDial) {
             $nMaxDial = $nInquiries;

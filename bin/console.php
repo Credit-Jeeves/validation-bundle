@@ -13,6 +13,7 @@ require_once __DIR__.'/../app/AppRjKernel.php';
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputOption;
 
 $input = new ArgvInput();
 $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'cli');
@@ -20,11 +21,12 @@ $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(array('-
 $app = $input->getParameterOption(array('--app', '-a'), 'cj' ?: 'rj');
 switch ($app) {
     case 'rj':
-        $kernel = new AppCjKernel($env, $debug);
+        $kernel = new AppRjKernel($env, $debug);
         break;
     default:
         $kernel = new AppCjKernel($env, $debug);
         break;
 }
 $application = new Application($kernel);
+$application->getDefinition()->addOption(new InputOption('--app', '-a'));
 $application->run($input);

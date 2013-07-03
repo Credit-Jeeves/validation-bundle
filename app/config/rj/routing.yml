@@ -47,6 +47,10 @@ fos_user_resetting_request:
         _controller: FOSUserBundle:Resetting:request
         _method:     GET
 
+rj_data:
+    resource: "@RjDataBundle/Controller/"
+    type:     annotation
+    prefix:   /
 #fos_user_profile_show:
 
 

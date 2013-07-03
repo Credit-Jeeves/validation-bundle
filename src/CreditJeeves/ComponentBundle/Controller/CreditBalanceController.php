@@ -23,24 +23,27 @@ class CreditBalanceController extends Controller
 
     public function indexAction(Report $Report, Score $Score)
     {
+        $nTradelines = $Report->getCountApplicantTotalTradelines();
         $sDate = $Report->getCreatedAt()->format('M j, Y');
         $ArfReport = $Report->getArfReport();
-
-
         $nRevolvingDept = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_TOTAL_REVOLVING
         );
+        $nRevolvingDept = $nRevolvingDept ? $nRevolvingDept : 0;
         $nMortgageDebt = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_REAL_ESTATE
         );
+        $nMortgageDebt = $nMortgageDebt ? $nMortgageDebt : 0;
         $nInstallmentDebt = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_INSTALLMENT
         );
+        $nInstallmentDebt = $nInstallmentDebt ? $nInstallmentDebt : 0;
         $nTotal = $nRevolvingDept + $nInstallmentDebt + $nMortgageDebt;
         $nCurrentScore = $Score->getScore();
+        $nCurrentScore = $nCurrentScore ? $nCurrentScore : 0;
         $nScale = self::COMPONENT_WIDTH / self::COMPONENT_POINTS;
         $nRight = intval((900 - $nCurrentScore) * $nScale - 37);
         $nPercent = $Score->getScorePercentage();
@@ -55,7 +58,8 @@ class CreditBalanceController extends Controller
                 'nCurrentScore' => $nCurrentScore,
                 'nRight' => $nRight,
                 'nTotal' => $nTotal,
-                'nPercent' => $nPercent
+                'nPercent' => $nPercent,
+                'nTradelines' => $nTradelines,
             )
         );
     }

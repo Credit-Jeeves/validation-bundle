@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1e4a0243b04d9b6023f5a181b8d6ab7a",
+    "hash": "3a904973c9a79dc7307b915c054d68a2",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "7d44fc123acd547f9c99dde296139e207e976020"
+                "reference": "cdad4a055b47ddd7c4cc8ae3ba1a1ded7a028d14"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-06-27 10:39:47"
+            "time": "2013-07-03 08:29:05"
         },
         {
             "name": "a2lix/translation-form-bundle",
@@ -610,7 +610,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/BadaBoom.git",
-                "reference": "ee6af654030035e3709f7c612c5d3fe056569767"
+                "reference": "1a5eda3b2c6c00a0d3dbd790989844e563c80993"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -656,7 +656,7 @@
                 "error handler",
                 "exception handler"
             ],
-            "time": "2013-04-16 16:47:23"
+            "time": "2013-07-02 10:13:45"
         },
         {
             "name": "fp/badaboom-bundle",
@@ -1488,19 +1488,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSSerializerBundle.git",
-                "reference": "66d2fe197bacb82f7b476099144f03596719b24d"
+                "reference": "bc4c8ddf89c1daba6d24d696e261e088677f49af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/66d2fe197bacb82f7b476099144f03596719b24d",
-                "reference": "66d2fe197bacb82f7b476099144f03596719b24d",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/bc4c8ddf89c1daba6d24d696e261e088677f49af",
+                "reference": "bc4c8ddf89c1daba6d24d696e261e088677f49af",
                 "shasum": ""
             },
             "require": {
-                "jms/di-extra-bundle": "~1.3",
-                "jms/serializer": "~0.11",
+                "jms/di-extra-bundle": ">=1.3,<2.0",
+                "jms/serializer": ">=0.11.0,<0.13-dev",
                 "php": ">=5.3.2",
-                "symfony/framework-bundle": "~2.1"
+                "symfony/framework-bundle": ">=2.1,<3.0-dev"
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "*",
@@ -1534,7 +1534,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1547,7 +1547,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-06-10 06:27:25"
+            "time": "2013-05-29 14:42:59"
         },
         {
             "name": "knplabs/knp-menu",
@@ -2169,12 +2169,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Remixjobs/RjEmailBundle.git",
-                "reference": "848fb8fcb9225c5248f2f074e3ee8ba2a9512018"
+                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/848fb8fcb9225c5248f2f074e3ee8ba2a9512018",
-                "reference": "848fb8fcb9225c5248f2f074e3ee8ba2a9512018",
+                "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
+                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
                 "shasum": ""
             },
             "require": {
@@ -2213,7 +2213,7 @@
             "keywords": [
                 "email"
             ],
-            "time": "2013-06-21 00:28:10"
+            "time": "2013-06-13 16:37:55"
         },
         {
             "name": "sensio/distribution-bundle",
@@ -2363,12 +2363,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "ea9adac34e6b663a33f70a763035a5d9363c275e"
+                "reference": "df240bf2fcb6ebb143764c076fdf7822c380dc82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/ea9adac34e6b663a33f70a763035a5d9363c275e",
-                "reference": "ea9adac34e6b663a33f70a763035a5d9363c275e",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/df240bf2fcb6ebb143764c076fdf7822c380dc82",
+                "reference": "df240bf2fcb6ebb143764c076fdf7822c380dc82",
                 "shasum": ""
             },
             "require": {
@@ -2429,7 +2429,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-06-29 14:13:52"
+            "time": "2013-06-01 23:36:45"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -2438,12 +2438,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataBlockBundle.git",
-                "reference": "fcf09203247cc5043f6d5fbf56958478ddc42ab3"
+                "reference": "83715ff68654ed709c9006612b9ed989ba24c3c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/fcf09203247cc5043f6d5fbf56958478ddc42ab3",
-                "reference": "fcf09203247cc5043f6d5fbf56958478ddc42ab3",
+                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/83715ff68654ed709c9006612b9ed989ba24c3c1",
+                "reference": "83715ff68654ed709c9006612b9ed989ba24c3c1",
                 "shasum": ""
             },
             "require": {
@@ -2493,7 +2493,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2013-06-23 13:36:47"
+            "time": "2013-06-01 16:33:28"
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
@@ -2502,16 +2502,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataDoctrineORMAdminBundle.git",
-                "reference": "edb395a003715d51836edd6ca8a9729908ad9eec"
+                "reference": "55dc502e8a30e215177a0d177ccf37f69e724f2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/edb395a003715d51836edd6ca8a9729908ad9eec",
-                "reference": "edb395a003715d51836edd6ca8a9729908ad9eec",
+                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/55dc502e8a30e215177a0d177ccf37f69e724f2c",
+                "reference": "55dc502e8a30e215177a0d177ccf37f69e724f2c",
                 "shasum": ""
             },
             "require": {
-                "doctrine/orm": "~2.3",
+                "doctrine/orm": ">=2.3,<3.0",
                 "sonata-project/admin-bundle": ">=2.2.2",
                 "symfony/symfony": ">=2.2,<2.4"
             },
@@ -2550,7 +2550,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2013-06-24 21:39:11"
+            "time": "2013-06-01 16:39:11"
         },
         {
             "name": "sonata-project/exporter",
@@ -2661,12 +2661,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stof/StofDoctrineExtensionsBundle.git",
-                "reference": "6577f2388abeac4896aa0aef37fc1b6f2c6923e9"
+                "reference": "62b1dd67fadb6fdd72d6606cafa6260c18896b61"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/6577f2388abeac4896aa0aef37fc1b6f2c6923e9",
-                "reference": "6577f2388abeac4896aa0aef37fc1b6f2c6923e9",
+                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/62b1dd67fadb6fdd72d6606cafa6260c18896b61",
+                "reference": "62b1dd67fadb6fdd72d6606cafa6260c18896b61",
                 "shasum": ""
             },
             "require": {
@@ -2714,7 +2714,7 @@
                 "translatable",
                 "tree"
             ],
-            "time": "2013-06-25 08:05:01"
+            "time": "2013-04-07 18:16:23"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2830,21 +2830,21 @@
         },
         {
             "name": "symfony/icu",
-            "version": "v1.2.0",
+            "version": "v1.1.0",
             "target-dir": "Symfony/Component/Icu",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Icu.git",
-                "reference": "v1.2.0"
+                "reference": "v1.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Icu/zipball/v1.2.0",
-                "reference": "v1.2.0",
+                "url": "https://api.github.com/repos/symfony/Icu/zipball/v1.1.0",
+                "reference": "v1.1.0",
                 "shasum": ""
             },
             "require": {
-                "lib-icu": ">=4.4",
+                "lib-icu": ">=3.8",
                 "php": ">=5.3.3",
                 "symfony/intl": ">=2.3,<3.0"
             },
@@ -2874,7 +2874,7 @@
                 "icu",
                 "intl"
             ],
-            "time": "2013-06-03 18:32:58"
+            "time": "2013-06-03 18:32:40"
         },
         {
             "name": "symfony/monolog-bundle",
