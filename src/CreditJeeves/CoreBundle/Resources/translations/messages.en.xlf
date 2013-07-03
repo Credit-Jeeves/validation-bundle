@@ -484,6 +484,10 @@
                 <source>tradelines.history.closed</source>
                 <target>Closed Accounts</target>
             </trans-unit>
+            <trans-unit id="tradelines.history.indefinite">
+                <source>tradelines.history.indefinite</source>
+                <target>Other Accounts</target>
+            </trans-unit>
 
             <trans-unit id="tradeline.balance">
                 <source>tradeline.balance</source>
