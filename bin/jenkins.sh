@@ -15,6 +15,10 @@ rm -rf $BUILD_DIR/*
 mkdir $BUILD_DIR/coverage
 mkdir $BUILD_DIR/coverage/html
 
+if [ ! -f $DIR/vendor/autoload.php ]; then
+     php bin/composer.phar install
+fi
+
 php bin/environment.php --dev || exit 1
 
 echo "##### RUN PHPUNIT ALL TESTS #####"

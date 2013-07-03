@@ -1,10 +1,12 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\LeadSource;
 use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\MappedSuperclass
@@ -26,80 +28,80 @@ abstract class Lead
 
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $cj_applicant_id;
 
     /**
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint", nullable=true)
      */
     protected $cj_account_id;
 
     /**
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint", nullable=true)
      */
     protected $cj_group_id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint", nullable=true)
      * @Gedmo\Versioned
      */
     protected $target_score;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      * @Gedmo\Versioned
      */
     protected $target_name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      * @Gedmo\Versioned
      */
     protected $target_url;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint", nullable=true)
      * @Gedmo\Versioned
      */
     protected $state;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=true)
      * @Gedmo\Versioned
      */
     protected $trade_in;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint", nullable=true)
      * @Gedmo\Versioned
      */
     protected $down_payment;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="smallint", nullable=true, options={"default"="0"})
      * @Gedmo\Versioned
      */
-    protected $fraction;
+    protected $fraction = 0;
 
     /**
-     * @ORM\Column(type="LeadStatus")
+     * @ORM\Column(type="LeadStatus", options={"default"="new"})
      * @Gedmo\Versioned
      */
     protected $status = LeadStatus::NEWONE;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="LeadSource", options={"default"="office"}, nullable=true)
      */
-    protected $source;
+    protected $source = LeadSource::OFFICE;
 
     /**
      * @ORM\Column(type="datetime")
@@ -135,6 +137,20 @@ abstract class Lead
      */
     protected $group;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\LeadHistory",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $histories;
+
+    public function __construct()
+    {
+        $this->histories = new ArrayCollection();
+    }
 
     /**
      * Get id

@@ -13,25 +13,25 @@ abstract class Property
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="user_id", type="integer")
+     * @ORM\Column(name="user_id", type="bigint")
      */
-    private $userId;
+    protected $userId;
 
     /**
      * @var string
      *
      * @ORM\Column(name="address1", type="string", length=255)
      */
-    private $address1;
+    protected $address1;
 
 
     /**
@@ -39,28 +39,28 @@ abstract class Property
      *
      * @ORM\Column(name="city", type="string", length=255)
      */
-    private $city;
+    protected $city;
 
     /**
      * @var string
      *
      * @ORM\Column(name="state", type="string", length=7)
      */
-    private $state;
+    protected $state;
 
     /**
      * @var string
      *
      * @ORM\Column(name="zip", type="string", length=15)
      */
-    private $zip;
+    protected $zip;
 
     /**
      * @var string
      *
      * @ORM\Column(name="country", type="string", length=3)
      */
-    private $country;
+    protected $country;
 
     /**
      * @var \DateTime
@@ -68,7 +68,7 @@ abstract class Property
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
@@ -76,7 +76,7 @@ abstract class Property
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
+    protected $updatedAt;
 
 //     /**
 //      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="properties")

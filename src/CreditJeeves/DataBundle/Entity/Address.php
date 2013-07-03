@@ -12,12 +12,4 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Address extends Base
 {
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
 }

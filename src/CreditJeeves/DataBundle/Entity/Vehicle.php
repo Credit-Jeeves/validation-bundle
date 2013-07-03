@@ -11,25 +11,46 @@ class Vehicle
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $cj_applicant_id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="vehicle")
+     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
+     */
+    protected $user;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $make;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     protected $model;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    protected $state;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $trade_in;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    protected $down_payment;
 
     /**
      * @ORM\Column(type="datetime")
@@ -40,12 +61,6 @@ class Vehicle
      * @ORM\Column(type="datetime")
      */
     protected $updated_at;
-
-    /**
-     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="vehicle")
-     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
-     */
-    protected $user;
 
     /**
      * Get id

@@ -12,20 +12,26 @@ abstract class Order
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $cj_applicant_id;
 
     /**
-     * @ORM\Column(type="OrderStatus")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="orders")
+     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
      */
-    protected $status;
+    protected $user;
+
+    /**
+     * @ORM\Column(type="OrderStatus", options={"default"="new"})
+     */
+    protected $status = OrderStatus::NEWONE;
 
     /**
      * @ORM\Column(type="datetime")
@@ -74,12 +80,6 @@ abstract class Order
      * )
      */
     protected $operations;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="orders")
-     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
-     */
-    protected $user;
 
     public function __construct()
     {

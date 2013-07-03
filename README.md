@@ -52,6 +52,6 @@ Manual Installation for dev env
 ./bin/console doctrine:database:drop --force
 ./bin/console doctrine:database:create
 ./bin/console doctrine:schema:create
-./bin/console khepin:yamlfixtures:load
+./bin/console --env=dev khepin:yamlfixtures:load
 ```
 

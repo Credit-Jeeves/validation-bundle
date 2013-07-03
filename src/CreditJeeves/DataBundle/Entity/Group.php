@@ -13,13 +13,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Group extends BaseGroup
 {
     /**
-     * @todo move to Enum
+     * @todo move to GroupType Enum
      * @var string
      */
     const TYPE_VEHICLE = 'vehicle';
     
     /**
-     * @todo move to Enum
+     * @todo move to GroupType Enum
      * @var string
      */
     const TYPE_ESTATE = 'estate';

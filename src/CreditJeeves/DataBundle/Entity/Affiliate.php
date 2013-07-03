@@ -11,12 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Affiliate extends Base
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
 
     /**
      * @ORM\PrePersist

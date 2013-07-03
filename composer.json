@@ -1,7 +1,7 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "version": "2.0",
+    "version": "2.1",
     "authors": [
         {
             "name": "Ton Sharp",
@@ -72,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "1cf718ebe56f4b0a2c3c7fc7031dd800aa0cb6cd"
+                    "reference": "7d44fc123acd547f9c99dde296139e207e976020"
                 }
             }
         },
@@ -107,6 +107,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/KhepinYamlFixturesBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "https://github.com/66Ton99/migrations"
         }
     ],
     "require": {
@@ -125,7 +129,7 @@
         "CreditJeevesSf1": "dev-master",
         "symfony/symfony": "2.2.*",
         "doctrine/orm": "~2.2,>=2.2.3",
-        "doctrine/doctrine-bundle": "v1.2.0-beta1",
+        "doctrine/doctrine-bundle": "1.2.*",
         "twig/extensions": "1.0.*",
         "kriswallsmith/assetic": "1.1.x-dev",
         "symfony/assetic-bundle": "2.1.*",
@@ -152,7 +156,9 @@
         "rj/email-bundle": "dev-master",
         "sonata-project/block-bundle": "dev-master",
         "sonata-project/admin-bundle": "dev-master",
-        "sonata-project/doctrine-orm-admin-bundle": "dev-master"
+        "sonata-project/doctrine-orm-admin-bundle": "dev-master",
+        "doctrine/migrations": "dev-master",
+        "doctrine/doctrine-migrations-bundle": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",

@@ -30,13 +30,10 @@ class NetConnectCase extends BaseTestCase
     );
 
     /**
-     * Tests Pidkiq->getResponseOnUserData()
+     * Tests NetConnect->getResponseOnUserData()
      */
     protected function getResponseOnUserData($data)
     {
-        $netConnect = new NetConnect();
-        $netConnect->execute(self::getContainer());
-
         $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
@@ -46,15 +43,24 @@ class NetConnectCase extends BaseTestCase
         $aplicant->setCity($data['CurrentAddress']['City']);
         $aplicant->setState($data['CurrentAddress']['State']);
         $aplicant->setZip($data['CurrentAddress']['Zip']);
-        $tries = 5;
-        while ($tries) {
+
+        $tries = 6;
+        $e = new \PHPUnit_Framework_AssertionFailedError('NetConnect fail');
+        while ($tries--) {
             try {
-                return $netConnect->getResponseOnUserData($aplicant);
+                try {
+                    $netConnect = new NetConnect();
+                    $netConnect->execute(self::getContainer());
+                    return $netConnect->getResponseOnUserData($aplicant);
+                } catch (\ExperianException $e) {
+                    if (4000 != $e->getCode()) {
+                        throw $e;
+                    }
+                }
             } catch (\CurlException $e) {
-                $tries--;
             }
         }
-        $this->fail('NetConnect is broken');
+        throw $e;
     }
 
     /**

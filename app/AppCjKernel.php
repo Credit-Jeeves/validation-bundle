@@ -36,6 +36,7 @@ class AppCjKernel extends AppKernel
             new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
 
             // Must be last in the list
             new CreditJeeves\CoreBundle\CoreBundle(),

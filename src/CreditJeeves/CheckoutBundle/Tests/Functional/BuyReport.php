@@ -37,6 +37,7 @@ class BuyReportCase extends BaseTestCase
     {
 //    $this->setSession('webdriver');
         $this->load($this->fixtures, true);
+        $this->setDefaultSession('symfony');
         $this->login('alex@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
         $this->assertNotNull($text = $this->page->find('css', '#checkout_buy_box p'));
@@ -52,6 +53,7 @@ class BuyReportCase extends BaseTestCase
     {
 //    $this->setSession('webdriver');
         $this->load($this->fixtures, false);
+        $this->setDefaultSession('symfony');
 
         $this->login('emilio@example.com', 'pass');
 

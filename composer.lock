@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "cb81b616b9c1f03eb215ee253dabb44b",
+    "hash": "d69349d7222194b197fb4ba310022c00",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -15,7 +15,7 @@
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-06-18 17:27:21"
+            "time": "2013-06-25 13:37:09"
         },
         {
             "name": "a2lix/translation-form-bundle",
@@ -303,30 +303,30 @@
         },
         {
             "name": "doctrine/doctrine-bundle",
-            "version": "v1.2.0-beta1",
+            "version": "v1.2.0",
             "target-dir": "Doctrine/Bundle/DoctrineBundle",
             "source": {
                 "type": "git",
-                "url": "git://github.com/doctrine/DoctrineBundle.git",
-                "reference": "v1.2.0-beta1"
+                "url": "https://github.com/doctrine/DoctrineBundle.git",
+                "reference": "v1.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/v1.2.0-beta1",
-                "reference": "v1.2.0-beta1",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/v1.2.0",
+                "reference": "v1.2.0",
                 "shasum": ""
             },
             "require": {
                 "doctrine/dbal": ">=2.2,<2.5-dev",
                 "jdorn/sql-formatter": ">=1.1,<2.0",
                 "php": ">=5.3.2",
-                "symfony/doctrine-bridge": "2.2.*",
-                "symfony/framework-bundle": ">=2.2.0-beta2,<2.3-dev"
+                "symfony/doctrine-bridge": ">=2.2,<3.0",
+                "symfony/framework-bundle": ">=2.2,<3.0"
             },
             "require-dev": {
                 "doctrine/orm": ">=2.2,<2.5-dev",
-                "symfony/validator": "2.2.*",
-                "symfony/yaml": "2.2.*"
+                "symfony/validator": ">=2.2,<3.0",
+                "symfony/yaml": ">=2.2,<3.0"
             },
             "suggest": {
                 "doctrine/orm": "The Doctrine ORM integration is optional in the bundle.",
@@ -369,7 +369,61 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2013-01-12 14:41:19"
+            "time": "2013-03-25 20:13:59"
+        },
+        {
+            "name": "doctrine/doctrine-migrations-bundle",
+            "version": "dev-master",
+            "target-dir": "Doctrine/Bundle/MigrationsBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/DoctrineMigrationsBundle.git",
+                "reference": "5fc1167039950f4f9b7f846f61698f262f052fb6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/DoctrineMigrationsBundle/zipball/5fc1167039950f4f9b7f846f61698f262f052fb6",
+                "reference": "5fc1167039950f4f9b7f846f61698f262f052fb6",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/doctrine-bundle": "~1.0",
+                "doctrine/migrations": "*",
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": ">=2.1.0,<2.4-dev"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Bundle\\MigrationsBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Doctrine Project",
+                    "homepage": "http://www.doctrine-project.org"
+                }
+            ],
+            "description": "Symfony DoctrineMigrationsBundle",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "dbal",
+                "migrations",
+                "schema"
+            ],
+            "time": "2013-06-24 10:27:32"
         },
         {
             "name": "doctrine/lexer",
@@ -422,6 +476,52 @@
                 "parser"
             ],
             "time": "2013-01-12 18:59:04"
+        },
+        {
+            "name": "doctrine/migrations",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/66Ton99/migrations",
+                "reference": "2c0d514c1be3d5fd9390c23feb03bf4d57fd60ee"
+            },
+            "require": {
+                "doctrine/dbal": ">=2.0,<2.5.x-dev",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "symfony/console": "2.*",
+                "symfony/yaml": "2.*"
+            },
+            "suggest": {
+                "symfony/console": "to run the migration from the console"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\DBAL\\Migrations": "lib"
+                }
+            },
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Eberlei",
+                    "email": "kontakt@beberlei.de"
+                },
+                {
+                    "name": "Jonathan Wage",
+                    "email": "jonwage@gmail.com"
+                }
+            ],
+            "description": "Database Schema migrations using Doctrine DBAL",
+            "homepage": "http://www.doctrine-project.org",
+            "keywords": [
+                "database",
+                "migrations"
+            ],
+            "time": "2013-07-01 17:04:40"
         },
         {
             "name": "doctrine/orm",
@@ -499,7 +599,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/BadaBoom.git",
-                "reference": "ee6af654030035e3709f7c612c5d3fe056569767"
+                "reference": "1a5eda3b2c6c00a0d3dbd790989844e563c80993"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -545,7 +645,7 @@
                 "error handler",
                 "exception handler"
             ],
-            "time": "2013-04-16 16:47:23"
+            "time": "2013-07-02 10:13:45"
         },
         {
             "name": "fp/badaboom-bundle",
@@ -2549,16 +2649,16 @@
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.0.0",
+            "version": "v5.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "v5.0.0"
+                "reference": "v5.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/v5.0.0",
-                "reference": "v5.0.0",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/v5.0.1",
+                "reference": "v5.0.1",
                 "shasum": ""
             },
             "require": {
@@ -2567,7 +2667,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.0-dev"
+                    "dev-master": "5.1-dev"
                 }
             },
             "autoload": {
@@ -2594,7 +2694,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2013-04-30 17:35:30"
+            "time": "2013-06-17 13:32:32"
         },
         {
             "name": "symfony/assetic-bundle",
@@ -3086,26 +3186,26 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkBundle.git",
-                "reference": "91a2abc0a61735ab3bfab079e5eeec9fcd297b63"
+                "reference": "f5b39338b89cacd525281f90e78c9329879212e4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/91a2abc0a61735ab3bfab079e5eeec9fcd297b63",
-                "reference": "91a2abc0a61735ab3bfab079e5eeec9fcd297b63",
+                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/f5b39338b89cacd525281f90e78c9329879212e4",
+                "reference": "f5b39338b89cacd525281f90e78c9329879212e4",
                 "shasum": ""
             },
             "require": {
-                "behat/mink": "1.5.0",
-                "behat/mink-browserkit-driver": "1.1.0",
+                "behat/mink": ">=1.4",
+                "behat/mink-browserkit-driver": ">=1.1,<1.2",
                 "php": ">=5.3.3",
-                "symfony/framework-bundle": "2.2.*"
+                "symfony/framework-bundle": ">=2.2,<3.0"
             },
             "require-dev": {
-                "behat/mink-goutte-driver": "1.0.8",
-                "behat/mink-sahi-driver": "1.1.0",
-                "behat/mink-selenium-driver": "1.1.0",
-                "behat/mink-selenium2-driver": "1.1.0",
-                "behat/mink-zombie-driver": "1.1.0"
+                "behat/mink-goutte-driver": ">=1.0.8,<1.1",
+                "behat/mink-sahi-driver": ">=1.1,<1.2",
+                "behat/mink-selenium-driver": ">=1.1,<1.2",
+                "behat/mink-selenium2-driver": ">=1.1,<1.2",
+                "behat/mink-zombie-driver": ">=1.1,<1.2"
             },
             "suggest": {
                 "behat/mink-goutte-driver": "fast headless driver for any app without JS emulation",
@@ -3141,7 +3241,7 @@
                 "test",
                 "web"
             ],
-            "time": "2013-06-02 00:56:18"
+            "time": "2013-06-25 12:19:16"
         },
         {
             "name": "behat/mink-goutte-driver",
@@ -3705,7 +3805,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "creditjeevessf1": 20,
-        "doctrine/doctrine-bundle": 10,
         "kriswallsmith/assetic": 20,
         "hat/environment": 20,
         "knplabs/knp-menu-bundle": 20,
@@ -3718,6 +3817,8 @@
         "sonata-project/block-bundle": 20,
         "sonata-project/admin-bundle": 20,
         "sonata-project/doctrine-orm-admin-bundle": 20,
+        "doctrine/migrations": 20,
+        "doctrine/doctrine-migrations-bundle": 20,
         "behat/mink-bundle": 20,
         "doctrine/data-fixtures": 20,
         "doctrine/doctrine-fixtures-bundle": 15,

@@ -7,6 +7,7 @@ namespace CreditJeeves\DataBundle\Enum;
 class UserCulture extends Base
 {
     const EN = 'en';
-    const FR = 'fr';
+    const HI = 'hi';
     const TEST = 'test';
+    const ES = 'es';
 }

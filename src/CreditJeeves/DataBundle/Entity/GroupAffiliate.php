@@ -2,6 +2,7 @@
 
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -16,55 +17,55 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class GroupAffiliate
 {
     /**
-     * @var integer
+     * @var bigint
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_account_group_id", type="integer")
+     * @ORM\Column(name="cj_account_group_id", type="bigint")
      */
-    private $groupId;
+    protected $groupId;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_account_id", type="integer")
+     * @ORM\Column(name="cj_account_id", type="bigint")
      */
-    private $userId;
+    protected $userId;
 
     /**
      * @var string
      *
      * @ORM\Column(name="website_url", type="string", length=255)
      */
-    private $websiteUrl;
+    protected $websiteUrl;
 
     /**
      * @var string
      *
      * @ORM\Column(name="auth_token", type="string", length=255)
      */
-    private $authToken;
+    protected $authToken;
 
     /**
      * @var string
      *
      * @ORM\Column(name="external_key", type="string", length=255)
      */
-    private $externalKey;
+    protected $externalKey;
 
     /**
      * @var UserCulture
      *
-     * @ORM\Column(name="culture", type="UserCulture")
+     * @ORM\Column(name="culture", type="UserCulture", options={"default"="en"})
      */
-    private $culture;
+    protected $culture = UserCulture::EN;
 
     /**
      * @var \DateTime
@@ -72,7 +73,7 @@ class GroupAffiliate
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
      * @var \DateTime
@@ -80,12 +81,12 @@ class GroupAffiliate
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
      */
-    private $updatedAt;
+    protected $updatedAt;
 
     /**
      * Get id
      *
-     * @return integer
+     * @return bigint
      */
     public function getId()
     {

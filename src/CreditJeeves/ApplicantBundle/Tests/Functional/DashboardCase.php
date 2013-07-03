@@ -28,6 +28,7 @@ class DashboardCase extends BaseTestCase
     public function userDashboardScore()
     {
         $this->load($this->fixtures, true);
+        $this->setDefaultSession('symfony');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($score = $this->page->find('css', '.score-current'));
         $this->assertEquals(530, $score->getText(), 'Wrong score');
@@ -38,10 +39,11 @@ class DashboardCase extends BaseTestCase
 
     /**
      * @test
-     * @depends userDashboardScore
      */
     public function userDashboardVehicle()
     {
+        $this->load($this->fixtures, false);
+        $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));
         $this->assertEquals('Honda Civic', $target->getText(), 'Wrong target');
@@ -50,7 +52,6 @@ class DashboardCase extends BaseTestCase
 
     /**
      * @test
-     * @depends userDashboardScore
      */
     public function userFeaturedOffer()
     {
@@ -62,7 +63,6 @@ class DashboardCase extends BaseTestCase
 
     /**
      * @test
-     * @depends userDashboardScore
      */
     public function userAccountStatus()
     {
@@ -77,7 +77,6 @@ class DashboardCase extends BaseTestCase
 
     /**
      * @test
-     * @depends userDashboardScore
      */
     public function userDidYouKnow()
     {

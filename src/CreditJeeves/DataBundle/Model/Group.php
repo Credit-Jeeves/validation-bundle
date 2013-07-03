@@ -1,9 +1,12 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Enum\GroupFeeType;
+use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -12,102 +15,32 @@ abstract class Group
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="bigint", nullable=true)
      */
-    protected $type;
+    protected $cj_affiliate_id;
 
     /**
-     *
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Affiliate",
+     *     inversedBy="groups"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_affiliate_id",
+     *     referencedColumnName="id"
+     * )
      */
-    protected $name;
+    protected $affiliate;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint", nullable=true)
      */
-    protected $target_score;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $code;
-
-    /**
-     *
-     * @ORM\Column(type="string")
-     */
-    protected $website_url;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $logo_url;
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    protected $phone;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $fax;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $street_address_1;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $street_address_2;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $city;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $state;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $zip;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    protected $fee_type;
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    protected $description;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\User", mappedBy="dealer_groups")
-     */
-    protected $group_dealers;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="group")
-     */
-    protected $leads;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupIncentive", mappedBy="group")
-     */
-    protected $incentives;
+    protected $holding_id;
 
     /**
      * @ORM\ManyToOne(
@@ -122,23 +55,155 @@ abstract class Group
     protected $holding;
 
     /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    protected $parent_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     */
+    protected $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", mappedBy="parent")
+     */
+    protected $children;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    protected $dealer_id;
+
+    /**
      * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Affiliate",
-     *     inversedBy="groups"
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="dealer_to_groups"
      * )
      * @ORM\JoinColumn(
-     *     name="cj_affiliate_id",
+     *     name="dealer_id",
      *     referencedColumnName="id"
      * )
      */
-    protected $affiliate;
-    
+    protected $dealers;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    protected $target_score;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $code;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $description;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $website_url;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $logo_url;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $phone;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $fax;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $street_address_1;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $street_address_2;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $city;
+
+    /**
+     * @ORM\Column(type="string", nullable=true, length=7)
+     */
+    protected $state;
+
+    /**
+     * @ORM\Column(type="string", nullable=true, length=15)
+     */
+    protected $zip;
+
+    /**
+     * @ORM\Column(type="GroupFeeType", options={"default"="flat"})
+     */
+    protected $fee_type = GroupFeeType::FLAT;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $contract;
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    protected $contract_date;
+
+    /**
+     * @ORM\Column(type="GroupType", options={"default"="vehicle"})
+     */
+    protected $type = GroupType::VEHICLE;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    protected $created_at;
+
+    /**
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated_at;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="group")
+     */
+    protected $leads;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupIncentive", mappedBy="group")
+     */
+    protected $incentives;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\User", mappedBy="dealer_groups")
+     */
+    protected $group_dealers;
 
     public function __construct()
     {
         $this->leads = new ArrayCollection();
         $this->group_dealers = new ArrayCollection();
         $this->incentives = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**

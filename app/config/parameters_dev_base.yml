@@ -9,6 +9,7 @@ parameters:
 
     mink.browser_name: 'firefox'
     mink.base_url: 'http://%server_name%/_test.php'
+    mink.coverage_script_url: 'http://%server_name%/bundles/mink/phpunit_coverage.php'
     server: dev
 
     authorize_net:

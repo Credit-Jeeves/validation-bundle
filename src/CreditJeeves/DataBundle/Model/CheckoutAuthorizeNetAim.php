@@ -13,7 +13,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
      * @var integer
      *
      * @ORM\Id
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
@@ -21,7 +21,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_order_id", type="integer")
+     * @ORM\Column(name="cj_order_id", type="bigint")
      */
     protected $cjOrderId;
 
@@ -34,7 +34,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var integer
      *
-     * @ORM\Column(name="code", type="integer")
+     * @ORM\Column(name="code", type="bigint")
      */
     protected $response_code;
 
@@ -48,7 +48,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var string
      *
-     * @ORM\Column(name="reason_code", type="integer")
+     * @ORM\Column(name="reason_code", type="bigint")
      */
     protected $response_reason_code;
 
@@ -111,7 +111,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var string
      *
-     * @ORM\Column(name="md5_hash", type="string", length=255)
+     * @ORM\Column(name="md5_hash", type="string", length=255, nullable=true)
      */
     protected $md5_hash;
 
@@ -125,21 +125,21 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     /**
      * @var string
      *
-     * @ORM\Column(name="card_code", type="string", length=25)
+     * @ORM\Column(name="card_code", type="string", length=1)
      */
     protected $card_code_response;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="cardholder_authentication_value", type="string", length=1)
+     * @ORM\Column(name="cardholder_authentication_value", type="string", length=1, nullable=true)
      */
     protected $cardholder_authentication_value;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="split_tender_id", type="string", length=255)
+     * @ORM\Column(name="split_tender_id", type="string", length=255, nullable=true)
      */
     protected $split_tender_id;
 

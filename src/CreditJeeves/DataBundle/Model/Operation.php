@@ -13,7 +13,7 @@ abstract class Operation
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -29,7 +29,7 @@ abstract class Operation
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_applicant_report_id", type="integer")
+     * @ORM\Column(name="cj_applicant_report_id", type="bigint", nullable=true)
      */
     protected $cjApplicantReportId;
 

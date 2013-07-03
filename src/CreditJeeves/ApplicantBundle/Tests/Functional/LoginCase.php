@@ -27,6 +27,7 @@ class LoginCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function userCanLogin()
     {
+        $this->setDefaultSession('symfony');
         $this->load($this->fixtures, true);
         $this->login('emilio@example.com', 'pass');
         $this->logout();
