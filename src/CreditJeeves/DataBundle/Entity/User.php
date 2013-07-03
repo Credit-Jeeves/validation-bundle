@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
@@ -70,6 +71,29 @@ abstract class User extends BaseUser
      */
     public function postLoad()
     {
+    }
+
+    public function getRoles()
+    {
+        switch ($this->getType()) {
+            case UserType::APPLICANT:
+                return array('ROLE_USER');
+            case UserType::DEALER:
+                return array('ROLE_DEALER');
+            case UserType::ADMIN:
+                return array(
+                    'ROLE_USER',
+                    'ROLE_DEALER',
+                    'ROLE_ADMIN',
+                    'ROLE_TENANT',
+                    'ROLE_LANDLORD'
+                );
+            case UserType::TETNANT:
+                return array('ROLE_TENANT');
+            case UserType::LANDLORD:
+                return array('ROLE_LANDLORD');
+        }
+        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
 
     /**

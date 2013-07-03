@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\ApplicantBundle\Form\Type;
 
+use CreditJeeves\ApplicantBundle\Form\DataTransformer\AddressesToAddressTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -86,14 +87,6 @@ class UserNewType extends AbstractType //UserType
             )
         );
         $builder->add(
-            'street_address1',
-            'text',
-            array(
-                'label' => 'Address',
-                'error_bubbling' => true,
-            )
-        );
-        $builder->add(
             'password',
             'repeated',
             array(
@@ -111,40 +104,16 @@ class UserNewType extends AbstractType //UserType
                 )
             )
         );
+
         $builder->add(
-            'unit_no',
-            'text',
+            'addresses',
+            'collection',
             array(
-                'label' => '',
-                'error_bubbling' => true,
+                'type' => new UserAddressType(),
+                'by_reference' => true,
             )
         );
-        $builder->add(
-            'city',
-            'text',
-            array(
-                'label' => '',
-                'error_bubbling' => true,
-            )
-        );
-        $builder->add(
-            'state',
-            'choice',
-            array(
-                'label' => '',
-                'error_bubbling' => true,
-                'choice_list' =>  new StateChoiceList(),
-                'required' => true,
-            )
-        );
-        $builder->add(
-            'zip',
-            'text',
-            array(
-                'label' => '',
-                'error_bubbling' => true,
-            )
-        );
+
         $builder->add(
             'phone_type',
             'choice',

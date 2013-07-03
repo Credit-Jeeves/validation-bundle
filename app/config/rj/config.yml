@@ -17,11 +17,11 @@ parameters:
     support_phone: (866)-976-6622
 
     email_from: support@renttjeeves.com
-    email_name: Credit Jeeves
+    email_name: Rent Jeeves
 
     external_urls:
         main_site: 'www.rentjeeves.com'
-        user_voice: 'creditjeeves.uservoice.com'
+        user_voice: 'rentjeeves.uservoice.com'
 
 
 framework:

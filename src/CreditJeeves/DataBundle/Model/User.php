@@ -273,6 +273,18 @@ abstract class User extends BaseUser
     protected $holding_id;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *     inversedBy="users"
+     * )
+     * @ORM\JoinColumn(
+     *     name="holding_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $holding;
+
+    /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
     protected $is_holding_admin = false;
@@ -293,6 +305,8 @@ abstract class User extends BaseUser
     protected $updated_at;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
      *     mappedBy="user",
@@ -303,6 +317,8 @@ abstract class User extends BaseUser
     protected $reportsPrequal;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
      *     mappedBy="user",
@@ -313,6 +329,8 @@ abstract class User extends BaseUser
     protected $reportsD2c;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Score",
      *     mappedBy="user",
@@ -323,6 +341,8 @@ abstract class User extends BaseUser
     protected $scores;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Tradeline",
      *     mappedBy="user",
@@ -333,6 +353,8 @@ abstract class User extends BaseUser
     protected $tradelines;
     
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\ApplicantIncentive",
      *     mappedBy="user",
@@ -343,6 +365,8 @@ abstract class User extends BaseUser
     protected $incentives;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
      *     mappedBy="user",
@@ -353,6 +377,8 @@ abstract class User extends BaseUser
     protected $orders;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="Lead",
      *     mappedBy="user",
@@ -363,6 +389,8 @@ abstract class User extends BaseUser
     protected $user_leads;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="Lead",
      *     mappedBy="dealer",
@@ -373,6 +401,8 @@ abstract class User extends BaseUser
     protected $dealer_leads;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
      * @ORM\JoinTable(
      *      name="cj_dealer_group",
@@ -383,6 +413,8 @@ abstract class User extends BaseUser
     protected $dealer_groups;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     mappedBy="dealers",
@@ -393,6 +425,8 @@ abstract class User extends BaseUser
     protected $dealer_to_groups;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Vehicle",
      *     mappedBy="user",
@@ -403,18 +437,8 @@ abstract class User extends BaseUser
     protected $vehicle;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="users"
-     * )
-     * @ORM\JoinColumn(
-     *     name="holding_id",
-     *     referencedColumnName="id"
-     * )
-     */
-    protected $holding;
-
-    /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq",
      *      mappedBy="user"
@@ -423,9 +447,12 @@ abstract class User extends BaseUser
     protected $pidkiqs;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
-     *      mappedBy="user"
+     *      mappedBy="user",
+     *      cascade={"persist"}
      * )
      */
     protected $addresses;
@@ -445,29 +472,6 @@ abstract class User extends BaseUser
         $this->tradelines = new ArrayCollection();
         $this->addresses = new ArrayCollection();
         $this->created_at = new \DateTime();
-    }
-
-    public function getRoles()
-    {
-        switch ($this->getType()) {
-            case UserType::APPLICANT:
-                return array('ROLE_USER');
-            case UserType::DEALER:
-                return array('ROLE_DEALER');
-            case UserType::ADMIN:
-                return array(
-                    'ROLE_USER',
-                    'ROLE_DEALER',
-                    'ROLE_ADMIN',
-                    'ROLE_TENANT',
-                    'ROLE_LANDLORD'
-                );
-            case UserType::TETNANT:
-                return array('ROLE_TENANT');
-            case UserType::LANDLORD:
-                return array('ROLE_LANDLORD');
-        }
-        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
 
     /**
@@ -564,11 +568,13 @@ abstract class User extends BaseUser
     /**
      * Set street_address1
      *
+     * @deprecated will be removed in 2.2
      * @param encrypt $streetAddress1
      * @return User
      */
     public function setStreetAddress1($streetAddress1)
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->street_address1 = $streetAddress1;
 
         return $this;
@@ -577,21 +583,25 @@ abstract class User extends BaseUser
     /**
      * Get street_address1
      *
+     * @deprecated will be removed in 2.2
      * @return encrypt
      */
     public function getStreetAddress1()
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->street_address1;
     }
 
     /**
      * Set street_address2
      *
+     * @deprecated will be removed in 2.2
      * @param encrypt $streetAddress2
      * @return User
      */
     public function setStreetAddress2($streetAddress2)
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->street_address2 = $streetAddress2;
 
         return $this;
@@ -600,21 +610,25 @@ abstract class User extends BaseUser
     /**
      * Get street_address2
      *
+     * @deprecated will be removed in 2.2
      * @return encrypt
      */
     public function getStreetAddress2()
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->street_address2;
     }
 
     /**
      * Set unit_no
      *
+     * @deprecated will be removed in 2.2
      * @param string $unitNo
      * @return User
      */
     public function setUnitNo($unitNo)
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->unit_no = $unitNo;
 
         return $this;
@@ -623,21 +637,25 @@ abstract class User extends BaseUser
     /**
      * Get unit_no
      *
+     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getUnitNo()
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->unit_no;
     }
 
     /**
      * Set city
      *
+     * @deprecated will be removed in 2.2
      * @param string $city
      * @return User
      */
     public function setCity($city)
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->city = $city;
 
         return $this;
@@ -646,21 +664,25 @@ abstract class User extends BaseUser
     /**
      * Get city
      *
+     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getCity()
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->city;
     }
 
     /**
      * Set state
      *
+     * @deprecated will be removed in 2.2
      * @param string $state
      * @return User
      */
     public function setState($state)
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->state = $state;
 
         return $this;
@@ -669,21 +691,25 @@ abstract class User extends BaseUser
     /**
      * Get state
      *
+     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getState()
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->state;
     }
 
     /**
      * Set zip
      *
+     * @deprecated will be removed in 2.2
      * @param string $zip
      * @return User
      */
     public function setZip($zip)
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->zip = $zip;
 
         return $this;
@@ -692,10 +718,12 @@ abstract class User extends BaseUser
     /**
      * Get zip
      *
+     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getZip()
     {
+        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->zip;
     }
 
@@ -1409,5 +1437,52 @@ abstract class User extends BaseUser
     public function getHolding()
     {
         return $this->holding;
+    }
+
+    /**
+     * Add address
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Address $pidkiqs
+     * @return User
+     */
+    public function addAddress(\CreditJeeves\DataBundle\Entity\Address $address)
+    {
+        $this->addresses[] = $address;
+
+        return $this;
+    }
+
+    /**
+     * Remove Address
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Address $address
+     */
+    public function removeAddress(\CreditJeeves\DataBundle\Entity\Address $address)
+    {
+        $this->addresses->removeElement($address);
+    }
+
+    /**
+     * Get Addresses
+     *
+     * @param ArrayCollection $addresses
+     *
+     * @return Address
+     */
+    public function setAddresses(ArrayCollection $addresses)
+    {
+        $this->addresses = $addresses;
+
+        return $this;
+    }
+
+    /**
+     * Get Addresses
+     *
+     * @return ArrayCollection
+     */
+    public function getAddresses()
+    {
+        return $this->addresses;
     }
 }

@@ -1,18 +1,18 @@
 <div class="form-row">
 
-    {{ form_errors(form.street_address1) }}
+    {{ form_errors(form.addresses[0].address1) }}
     {% if form.middle_initial is defined %}
-        {{ form_errors(form.unit_no) }}
+        {{ form_errors(form.addresses[0].address2) }}
     {% endif %}
-    {{ form_errors(form.city) }}
-    {{ form_errors(form.state) }}
-    {{ form_errors(form.zip) }}
+    {{ form_errors(form.addresses[0].city) }}
+    {{ form_errors(form.addresses[0].state) }}
+    {{ form_errors(form.addresses[0].zip) }}
 
-    <div class="form-label">{{ form_label(form.street_address1) }}</div>
+    <div class="form-label">{{ form_label(form.addresses[0].address1) }}</div>
     <div class="form-widget">
         <div class="form-line">
         {{ form_widget(
-            form.street_address1,
+            form.addresses[0].address1,
             { 'attr':
                 {
                     'class': 'user-input user-address form-margin',
@@ -24,7 +24,7 @@
 
         {% if form.middle_initial is defined %}
             {{ form_widget(
-                form.unit_no,
+                form.addresses[0].address2,
                 { 'attr':
                     {
                         'class': 'user-input user-unit form-margin',
@@ -37,7 +37,7 @@
         </div>
         <div class="form-line">
         {{ form_widget(
-            form.city,
+            form.addresses[0].city,
             { 'attr':
                 {
                     'class': 'user-input user-city form-margin floatleft',
@@ -47,7 +47,7 @@
             })
         }}
         {{ form_widget(
-            form.state,
+            form.addresses[0].state,
             { 'attr':
                 {
                     'class': 'user-input user-state form-margin',
@@ -56,7 +56,7 @@
             })
         }}
         {{ form_widget(
-            form.zip,
+            form.addresses[0].zip,
             { 'attr':
                 {
                     'class': 'user-input user-unit form-margin',
