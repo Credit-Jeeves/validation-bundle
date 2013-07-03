@@ -19,7 +19,7 @@ class Version20130702012807 extends AbstractMigration
         );
         
         $this->addSql(
-            "CREATE TABLE cj_property (id BIGINT AUTO_INCREMENT NOT NULL,
+            "CREATE TABLE rj_property (id BIGINT AUTO_INCREMENT NOT NULL,
                 user_id BIGINT NOT NULL,
                 address1 VARCHAR(255) NOT NULL,
                 address2 VARCHAR(255) DEFAULT NULL,
@@ -33,7 +33,7 @@ class Version20130702012807 extends AbstractMigration
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
         $this->addSql(
-            "ALTER TABLE cj_property
+            "ALTER TABLE rj_property
                 ADD CONSTRAINT FK_274F987CA76ED395
                 FOREIGN KEY (user_id)
                 REFERENCES cj_user (id)"
@@ -578,7 +578,7 @@ class Version20130702012807 extends AbstractMigration
         );
         
         $this->addSql(
-            "DROP TABLE cj_property"
+            "DROP TABLE rj_property"
         );
         $this->addSql(
             "ALTER TABLE atb_simulation

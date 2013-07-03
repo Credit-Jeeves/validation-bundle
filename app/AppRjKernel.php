@@ -31,30 +31,26 @@ class AppRjKernel extends AppKernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
             new Rj\EmailBundle\RjEmailBundle(),
-//                 new Sonata\AdminBundle\SonataAdminBundle(),
-//                 new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
-//                 new Sonata\jQueryBundle\SonatajQueryBundle(),
-//                 new Sonata\BlockBundle\SonataBlockBundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
 
             new CreditJeeves\CoreBundle\CoreBundle(),
-            new CreditJeeves\DataBundle\DataBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new CreditJeeves\ExperianBundle\ExperianBundle(),
             new CreditJeeves\UserBundle\UserBundle(),
-            new CreditJeeves\AdminBundle\AdminBundle(),
-            new CreditJeeves\DealerBundle\DealerBundle(),
-            new CreditJeeves\ApplicantBundle\ApplicantBundle(),
+//             new CreditJeeves\AdminBundle\AdminBundle(),
+//             new CreditJeeves\DealerBundle\DealerBundle(),
+//             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
 
             // Must be last in the list
+            new CreditJeeves\DataBundle\DataBundle(),
+            new RentJeeves\DataBundle\RjDataBundle(),
             new RentJeeves\TenantBundle\TenantBundle(),
             new RentJeeves\LandlordBundle\LandlordBundle(),
         );
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-            $bundles[] = new Khepin\YamlFixturesBundle\KhepinYamlFixturesBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
