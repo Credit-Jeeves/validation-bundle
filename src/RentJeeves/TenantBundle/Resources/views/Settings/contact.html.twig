@@ -18,7 +18,7 @@
                 {{ flashMessage }}
             </div>
         {% endfor %}
-        <form action="{{ path('applicant_contact') }}" method="post" {{ form_enctype(form) }}>
+        <form action="{{ path('tenant_contact') }}" method="post" {{ form_enctype(form) }}>
             {{ form_label(form.phone) }}
             {{ form_widget(form.phone_type, { 'attr': {'class': 'cj-select'} }) }}
             {{ form_widget(form.phone) }}

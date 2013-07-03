@@ -17,7 +17,7 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-            <form action="{{ path('applicant_remove') }}" method="post" {{ form_enctype(form) }}>
+            <form action="{{ path('tenant_remove') }}" method="post" {{ form_enctype(form) }}>
                 <div class="background-grey">
                     <h5>{{ 'password.verify' | trans }}</h5>
                     <br>

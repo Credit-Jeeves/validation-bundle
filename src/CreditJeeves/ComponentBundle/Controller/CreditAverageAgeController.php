@@ -11,19 +11,22 @@ class CreditAverageAgeController extends Controller
         $nOldest = 0;
         $nAge = 0;
         $nTotal = 0;
+        $aTradelines = array();
         $aTradelines = $Report->getTradeLines();
         $oCurrentDate = new \DateTime('now');
-        foreach ($aTradelines as $aTradeline) {
-            $nTotal++;
-            $oOpenedDate = \DateTime::createFromFormat('my', $aTradeline['date_open']);
-            if (empty($oOpenedDate)) {
-                continue;
-            }
-            $interval = $oOpenedDate->diff($oCurrentDate);
-            $nMonthes = $interval->format('%y') * 12 + $interval->format('%m');
-            $nAge += $nMonthes;
-            if ($nMonthes > $nOldest) {
-                $nOldest = $nMonthes;
+        if (!empty($aTradelines)) {
+            foreach ($aTradelines as $aTradeline) {
+                $nTotal++;
+                $oOpenedDate = \DateTime::createFromFormat('my', $aTradeline['date_open']);
+                if (empty($oOpenedDate)) {
+                    continue;
+                }
+                $interval = $oOpenedDate->diff($oCurrentDate);
+                $nMonthes = $interval->format('%y') * 12 + $interval->format('%m');
+                $nAge += $nMonthes;
+                if ($nMonthes > $nOldest) {
+                    $nOldest = $nMonthes;
+                }
             }
         }
         if ($nTotal > 0) {

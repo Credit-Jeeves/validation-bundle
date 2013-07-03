@@ -17,14 +17,17 @@ class ScoreController extends Controller
         
         $chartData = array();
         foreach ($aScores as $score) {
+            $nScore = $score->getScore();
+            $nScore = ($nScore > 900) ? 900 : $nScore;
             $chartData[] = sprintf(
                 "[\"%s\", %d]",
                 $score->getCreatedDate()->format('M d, Y'),
-                $score->getScore()
+                $nScore
             );
         }
         $chartData = implode(',', $chartData);
         $nScore = $user->getScores()->last()->getScore();
+        $nScore = ($nScore > 900) ? 900 : $nScore;
         $nFicoScore = $user->getScores()->last()->getFicoScore();
         $sDate = $user->getScores()->last()->getCreatedDate()->format('M d, Y');
         return array(

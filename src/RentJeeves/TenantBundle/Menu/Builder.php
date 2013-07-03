@@ -8,20 +8,41 @@ class Builder extends ContainerAware
 {
     public function mainMenu(FactoryInterface $factory, array $options)
     {
-        $menu = $factory->createItem('root');
-        $menu->addChild('tabs.rent', array('route' => 'tenant_homepage'));
-        $menu->addChild('tabs.summary', array('route' => 'tenant_summary'));
-        $User = $this->container->get('core.session.tenant')->getUser();
-        $isCompleteOrder = $User->isCompleteOrderExist();
-
-        if ($isCompleteOrder) {
-            $menu->addChild('tabs.report', array('route' => 'tenant_report'));
-        }
-        $menu->addChild('tabs.settings', array('route' => 'tenant_password'));
-
+        $user = $this->container->get('core.session.tenant')->getUser();
+        $isCompleteOrder = $user->isCompleteOrderExist();
         $sRoute = $this->container->get('request')->get('_route');
+
+        $menu = $factory->createItem('root');
+        $menu->addChild(
+            'tabs.rent',
+            array(
+                'route' => 'tenant_homepage'
+            )
+        );
+        $menu->addChild(
+            'tabs.summary',
+            array(
+                'route' => 'tenant_summary'
+            )
+        );
+        if ($isCompleteOrder) {
+            $menu->addChild(
+                'tabs.report',
+                array(
+                    'route' => 'tenant_report'
+                )
+            );
+        }
+        $menu->addChild(
+            'tabs.settings',
+            array(
+                'route' => 'tenant_password'
+            )
+        );
         switch ($sRoute) {
             case 'tenant_homepage':
+            case 'tenant_payment_history':
+            case 'tenant_payment_sources':
                 $menu['tabs.rent']->setAttribute('class', 'active');
                 break;
             case 'core_report_get':
@@ -41,13 +62,24 @@ class Builder extends ContainerAware
 
     public function settingsMenu(FactoryInterface $factory, array $options)
     {
-        $menu = $factory->createItem('root');
-        $menu->addChild('settings.password', array('route' => 'tenant_password'));
-        $menu->addChild('settings.contact_information', array('route' => 'tenant_contact'));
-        $menu->addChild('settings.email', array('route' => 'tenant_email'));
-        $menu->addChild('settings.remove', array('route' => 'tenant_remove'));
-
         $sRoute = $this->container->get('request')->get('_route');
+        $menu = $factory->createItem('root');
+        $menu->addChild(
+            'settings.password',
+            array(
+                'route' => 'tenant_password'
+            )
+        );
+        $menu->addChild(
+            'settings.contact_information',
+            array(
+                'route' => 'tenant_contact'
+            )
+        );
+//        $menu->addChild('settings.email', array('route' => 'tenant_email'));
+//        $menu->addChild('settings.remove', array('route' => 'tenant_remove'));
+
+       
         switch ($sRoute) {
             case 'tenant_password':
                 $menu['settings.password']->setUri('');
@@ -55,11 +87,47 @@ class Builder extends ContainerAware
             case 'tenant_contact':
                 $menu['settings.contact_information']->setUri('');
                 break;
-            case 'tenant_email':
-                $menu['settings.email']->setUri('');
+//             case 'tenant_email':
+//                 $menu['settings.email']->setUri('');
+//                 break;
+//             case 'tenant_remove':
+//                 $menu['settings.remove']->setUri('');
+//                 break;
+        }
+        return $menu;
+    }
+
+    public function rentMenu(FactoryInterface $factory, array $options)
+    {
+        $sRoute = $this->container->get('request')->get('_route');
+        $menu = $factory->createItem('root');
+        $menu->addChild(
+            'rent.properties',
+            array(
+                'route' => 'tenant_homepage'
+            )
+        );
+        $menu->addChild(
+            'rent.history',
+            array(
+                'route' => 'tenant_payment_history'
+            )
+        );
+        $menu->addChild(
+            'rent.sources',
+            array(
+                'route' => 'tenant_payment_sources'
+            )
+        );
+        switch ($sRoute) {
+            case 'tenant_homepage':
+                $menu['rent.properties']->setUri('');
                 break;
-            case 'tenant_remove':
-                $menu['settings.remove']->setUri('');
+            case 'tenant_payment_history':
+                $menu['rent.history']->setUri('');
+                break;
+            case 'tenant_payment_sources':
+                $menu['rent.sources']->setUri('');
                 break;
         }
         return $menu;
