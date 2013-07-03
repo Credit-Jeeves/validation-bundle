@@ -21,6 +21,9 @@ class SummaryController extends Controller
         if (!$Report) {
             return new RedirectResponse($this->get('router')->generate('core_report_get'));
         }
+//         echo '<pre>';
+//         print_r($Report->getArfArray());
+        //exit;
         $Score = $this->getScore();
         return array(
             'sEmail' => $sEmail,
