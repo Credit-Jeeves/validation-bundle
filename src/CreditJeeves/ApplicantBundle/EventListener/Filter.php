@@ -65,9 +65,7 @@ class Filter implements ContainerAwareInterface
     {
         return $this->container->get('translator')->trans($text, $arr);
     }
-
-
-
+    
     /**
      * @DI\Observe("applicant.filter")
      */
