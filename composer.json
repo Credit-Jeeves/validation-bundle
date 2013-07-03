@@ -114,7 +114,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.4.12",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-mcrypt": "*",
@@ -124,6 +124,8 @@
         "ext-session": "*",
         "ext-SimpleXML": "*",
         "ext-Reflection": "*",
+        "ext-intl": "*",
+        "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
         "CreditJeevesSf1": "dev-master",
