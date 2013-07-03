@@ -28,4 +28,5 @@ assetic:
 khepin_yaml_fixtures:
     resources:
         - DataBundle
+        - RjDataBundle
     directory: Resources/fixtures
