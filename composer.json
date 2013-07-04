@@ -1,7 +1,7 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "version": "2.0",
+    "version": "2.1",
     "authors": [
         {
             "name": "Ton Sharp",
@@ -72,7 +72,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "cdad4a055b47ddd7c4cc8ae3ba1a1ded7a028d14"
+                    "reference": "198243a7d96f4c7ab11678e4aa32a005865173bc"
                 }
             }
         },
@@ -140,7 +140,6 @@
         "symfony/icu": "v1.1.0",
         "sensio/distribution-bundle": "2.3.*",
         "sensio/framework-extra-bundle": "2.3.*",
-        "sensio/generator-bundle": "2.3.*",
         "incenteev/composer-parameter-handler": "~2.0",
         "jms/security-extra-bundle": "dev-master",
         "jms/di-extra-bundle": "1.4.*",
@@ -174,6 +173,7 @@
         "behat/mink-goutte-driver": "1.0.*",
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
+        "sensio/generator-bundle": "2.3.*",
         "khepin/yaml-fixtures-bundle": "dev-master"
     },
     "scripts": {

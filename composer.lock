@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "3a904973c9a79dc7307b915c054d68a2",
+    "hash": "3ab49696e4940390cd481e651afd0bbe",
     "packages": [
         {
             "name": "CreditJeevesSf1",
@@ -11,11 +11,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "cdad4a055b47ddd7c4cc8ae3ba1a1ded7a028d14"
+                "reference": "198243a7d96f4c7ab11678e4aa32a005865173bc"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-07-03 08:29:05"
+            "time": "2013-07-04 16:51:55"
         },
         {
             "name": "a2lix/translation-form-bundle",
@@ -2309,54 +2309,6 @@
             "time": "2013-06-02 16:13:20"
         },
         {
-            "name": "sensio/generator-bundle",
-            "version": "v2.3.1",
-            "target-dir": "Sensio/Bundle/GeneratorBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sensiolabs/SensioGeneratorBundle.git",
-                "reference": "v2.3.1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioGeneratorBundle/zipball/v2.3.1",
-                "reference": "v2.3.1",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/console": ">=2.0,<3.0",
-                "symfony/framework-bundle": ">=2.2,<3.0"
-            },
-            "require-dev": {
-                "doctrine/orm": ">=2.2,<3.0,>=2.2.3",
-                "symfony/doctrine-bridge": ">=2.2,<3.0",
-                "twig/twig": ">=1.11.0,<2.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Sensio\\Bundle\\GeneratorBundle": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                }
-            ],
-            "description": "This bundle generates code for you",
-            "time": "2013-06-05 17:32:22"
-        },
-        {
             "name": "sonata-project/admin-bundle",
             "version": "dev-master",
             "target-dir": "Sonata/AdminBundle",
@@ -3841,7 +3793,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
@@ -3910,6 +3862,54 @@
             "description": "An easy-to-use JavaScript Unit Testing framework."
         },
         {
+            "name": "sensio/generator-bundle",
+            "version": "v2.3.1",
+            "target-dir": "Sensio/Bundle/GeneratorBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sensiolabs/SensioGeneratorBundle.git",
+                "reference": "v2.3.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sensiolabs/SensioGeneratorBundle/zipball/v2.3.1",
+                "reference": "v2.3.1",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": ">=2.0,<3.0",
+                "symfony/framework-bundle": ">=2.2,<3.0"
+            },
+            "require-dev": {
+                "doctrine/orm": ">=2.2,<3.0,>=2.2.3",
+                "symfony/doctrine-bridge": ">=2.2,<3.0",
+                "twig/twig": ">=1.11.0,<2.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Sensio\\Bundle\\GeneratorBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "This bundle generates code for you",
+            "time": "2013-06-05 17:32:22"
+        },
+        {
             "name": "sinon",
             "version": "1.5.0",
             "source": {
@@ -3952,7 +3952,7 @@
         "khepin/yaml-fixtures-bundle": 20
     },
     "platform": {
-        "php": ">=5.3.3",
+        "php": ">=5.4.12",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-mcrypt": "*",
@@ -3962,6 +3962,8 @@
         "ext-session": "*",
         "ext-simplexml": "*",
         "ext-reflection": "*",
+        "ext-intl": "*",
+        "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*"
     },

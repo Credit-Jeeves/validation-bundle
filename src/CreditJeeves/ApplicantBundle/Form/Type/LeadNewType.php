@@ -50,8 +50,9 @@ class LeadNewType extends AbstractType
                 'data_class' => 'CreditJeeves\DataBundle\Entity\Lead',
                 'validation_groups' => array(
                     'user_profile',
-                    'user_address'
+                    'user_address_new'
                 ),
+                'cascade_validation' => true,
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token
