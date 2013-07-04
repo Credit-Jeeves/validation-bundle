@@ -35,19 +35,19 @@ class Builder extends ContainerAware
             )
         );
         switch ($sRoute) {
-          case 'landlord_homepage':
-            $menu['tabs.dashboard']->setAttribute('class', 'active');
-            break;
-          case 'landlord_property_new':
-          case 'landlord_properties':
-            $menu['tabs.properties']->setAttribute('class', 'active');
-            break;
-          case 'landlord_tenants':
-            $menu['tabs.tenants']->setAttribute('class', 'active');
-            break;
-          default:
-            $menu['tabs.settings']->setAttribute('class', 'active');
-            break;
+            case 'landlord_homepage':
+                $menu['tabs.dashboard']->setAttribute('class', 'active');
+                break;
+            case 'landlord_property_new':
+            case 'landlord_properties':
+                $menu['tabs.properties']->setAttribute('class', 'active');
+                break;
+            case 'landlord_tenants':
+                $menu['tabs.tenants']->setAttribute('class', 'active');
+                break;
+            default:
+                $menu['tabs.settings']->setAttribute('class', 'active');
+                break;
         }
         
         return $menu;

@@ -38,18 +38,14 @@ class BlocksController extends Controller
             }
         } else {
             switch ($site) {
-              case 'rj':
-                $user = $this->get('core.session.landlord')->getUser();
-                $sEmail = $this->get('core.session.landlord')->getUser()->getEmail();
-                break;
-              default:
-                $user = $this->get('core.session.dealer')->getUser();
-                $sEmail = $this->get('core.session.dealer')->getUser()->getEmail();
-//                 $Lead = $this->get('core.session.dealer')->getLead();
-//                 if ($Lead) {
-//                   $sGroup = $Lead->getGroup()->getName();
-//                 }
-                break;
+                case 'rj':
+                    $user = $this->get('core.session.landlord')->getUser();
+                    $sEmail = $this->get('core.session.landlord')->getUser()->getEmail();
+                    break;
+                default:
+                    $user = $this->get('core.session.dealer')->getUser();
+                    $sEmail = $this->get('core.session.dealer')->getUser()->getEmail();
+                    break;
             }
         }
         return array(
