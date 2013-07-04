@@ -1,4 +1,4 @@
-{% extends "CoreBundle::base.html.twig" %}
+{% extends "CoreBundle::rj_base.html.twig" %}
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
@@ -15,7 +15,7 @@
     <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/ad-creditcards.css') }}" rel="stylesheet" type="text/css" />
-    
+    <link href="{{ asset('bundles/core/css/rj-logos.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/check.css') }}" rel="stylesheet" type="text/css" />
@@ -30,9 +30,10 @@
 {% endblock %}
 
 {% block tabs %}
-    <div class="top-nav">
-    {{ knp_menu_render('ApplicantBundle:Builder:mainMenu', { 'template': 'ApplicantBundle:Menu:applicant_tabs.html.twig' }) }}
+        <div class="top-nav">
+    {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': 'CoreBundle:Menu:user_tabs.html.twig' }) }}
     </div>
+    
 {% endblock %}
 
 {% block footer %}

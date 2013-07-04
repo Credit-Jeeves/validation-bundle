@@ -23,6 +23,7 @@ security:
 
     access_control:
         - { path: ^/_profiler/,     role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_wdt/,          role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_profiler/,     role: ROLE_LANDLORD }
         - { path: ^/_profiler/,     role: ROLE_TENANT }
         - { path: ^/test,           role: IS_AUTHENTICATED_ANONYMOUSLY }
