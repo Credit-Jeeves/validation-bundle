@@ -2,6 +2,7 @@
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
     "version": "2.1",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Ton Sharp",
