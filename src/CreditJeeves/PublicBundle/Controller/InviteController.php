@@ -2,6 +2,7 @@
 
 namespace CreditJeeves\PublicBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Address;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -36,6 +37,9 @@ class InviteController extends Controller
             $this->get('session')->getFlashBag()->add('message_body', $i18n->trans('error.user.absent.text'));
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
+        $address = new Address();
+        $address->setUser($User);
+        $User->addAddress($address);
         $date = $User->getDateOfBirth();
         $sCurrentDob = null;
         if (!empty($date)) {
@@ -64,21 +68,16 @@ class InviteController extends Controller
                         ->encodePassword($User->getPassword(), $User->getSalt())
                 );
                 $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
-                if (!empty($sCurrentDob)) {
-                    if ($sCurrentDob == $sFormDob) {
-                        $User->setInviteCode(null);
-                        $em = $this->getDoctrine()->getManager();
-                        $em->persist($User);
-                        $em->flush();
-                        return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
-                    }
-                } else {
+                if (empty($sCurrentDob) || $sCurrentDob != $sFormDob) {
                     $User->setInviteCode(null);
                     $em = $this->getDoctrine()->getManager();
+
+                    $User->getAddresses()->first()->setUser($User); // TODO it can be done more clear
                     $em->persist($User);
                     $em->flush();
                     return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
                 }
+
             }
         }
         return array(

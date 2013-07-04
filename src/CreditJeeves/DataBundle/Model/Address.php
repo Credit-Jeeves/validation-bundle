@@ -36,20 +36,20 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="address1", type="string", length=255)
+     * @ORM\Column(name="address1", type="encrypt")
      * @Assert\NotBlank(
      *     message="error.user.address.empty",
      *     groups={
-     *         "user_address",
-     *         "buy_report"
+     *         "user_address_new",
+     *         "buy_report_new"
      *     }
      * )
      * @Assert\Length(
      *     min=2,
      *     max=255,
      *     groups={
-     *         "user_address",
-     *         "buy_report"
+     *         "user_address_new",
+     *         "buy_report_new"
      *     }
      * )
      */
@@ -58,18 +58,18 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="address2", type="string", length=255, nullable=true)
+     * @ORM\Column(name="address2", type="encrypt")
      * @Assert\NotBlank(
      *     message="error.user.unit.empty",
      *     groups={
-     *         "user_address"
+     *         "user_address_new"
      *     }
      * )
      * @Assert\Length(
      *     min=1,
      *     max=31,
      *     groups={
-     *         "user_address"
+     *         "user_address_new"
      *     }
      * )
      */
@@ -82,7 +82,7 @@ abstract class Address
      * @Assert\NotBlank(
      *     message="error.user.city.empty",
      *     groups={
-     *         "buy_report"
+     *         "buy_report_new"
      *     }
      * )
      */
@@ -95,16 +95,16 @@ abstract class Address
      * @Assert\NotBlank(
      *     message="error.user.state.empty",
      *     groups={
-     *         "user_address",
-     *         "buy_report"
+     *         "user_address_new",
+     *         "buy_report_new"
      *     }
      * )
      * @Assert\Length(
      *     min=2,
      *     max=255,
      *     groups={
-     *         "user_address",
-     *         "buy_report"
+     *         "user_address_new",
+     *         "buy_report_new"
      *     }
      * )
      */
@@ -117,8 +117,8 @@ abstract class Address
      * @Assert\NotBlank(
      *     message="error.user.zip.empty",
      *     groups={
-     *         "user_address",
-     *         "buy_report"
+     *         "user_address_new",
+     *         "buy_report_new"
      *     }
      * )
      * @Assert\Length(
@@ -126,8 +126,8 @@ abstract class Address
      *     max=15,
      *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length",
      *     groups={
-     *         "user_address",
-     *         "buy_report"
+     *         "user_address_new",
+     *         "buy_report_new"
      *     }
      * )
      */

@@ -2,6 +2,8 @@
 namespace CreditJeeves\PublicBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\DataBundle\Enum\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -54,16 +56,16 @@ class NewController extends Controller
         );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
-            var_dump($request->request->get('creditjeeves_applicantbundle_leadnewtype')['user']['addresses']);
-            var_dump($form->getData()->getUser()->getAddresses());
             if ($form->isValid()) {
+                /** @var Lead $Lead */
                 $Lead = $form->getData();
                 if ($this->validateLead($Lead)) {
                     $User = $Lead->getUser();
                     $User->setCulture($request->getLocale());
                     $User->setUsername($User->getEmail());
-                    $User->setIsVerified('none');
-                    $User->setType('applicant');
+                    $User->setIsVerified(UserIsVerified::NONE);
+                    $User->setType(UserType::APPLICANT);
+                    $User->getAddresses()->first()->setUser($User); // TODO it can be done more clear
 
                     $em = $this->getDoctrine()->getManager();
                     $User->setPassword(
