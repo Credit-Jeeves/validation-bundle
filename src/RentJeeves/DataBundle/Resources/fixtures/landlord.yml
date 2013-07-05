@@ -1,10 +1,10 @@
-model: CreditJeeves\DataBundle\Entity\Tenant
+model: CreditJeeves\DataBundle\Entity\Landlord
 fixtures:
-    Tenant_1:
+    Landlord_1:
         first_name: TIMOTHY
         middle_initial: A
         last_name: APPLEGATE
-        email: tenant1@example.com
+        email: landlord1@example.com
         street_address1: KINGSTON DR
         street_address2: 
         unit_no: 2209
@@ -13,13 +13,9 @@ fixtures:
         zip: 660491614
         phone_type: 2
         phone: 7858655392
-        date_of_birth: '1937-11-10'
         ssn: 666309041
         is_active: true
-        invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
-        score_changed_notification: true
-        offer_notification: true
         culture:  en
         has_data: true
         has_report: null
@@ -27,11 +23,11 @@ fixtures:
         lastLogin: '-1 hour'
         created_at: '-50 days'
         updated_at: '-3 days'
-    Tenant_2:
+    Landlord_2:
         first_name: John
         middle_initial: WAKEFIELD
         last_name: BREEN
-        email: john@example.com
+        email: landlord2@example.com
         street_address1: PO BOX 445
         street_address2: ''
         unit_no: apt 1
@@ -54,11 +50,11 @@ fixtures:
         lastLogin: '-1 days'
         created_at: '-45 days'
         updated_at: '-2 days'
-    Tenant_3:
+    Landlord_3:
         first_name: ALEX
         middle_initial: 
         last_name: JORDAN
-        email: alex@example.com
+        email: landlord3@example.com
         street_address1: JCT RR 133 140 B
         street_address2: ''
         unit_no: ''
@@ -81,11 +77,11 @@ fixtures:
         lastLogin: '-1 days'
         created_at: '-43 days'
         updated_at: '-8 days'
-    Tenant_4:
+    Landlord_4:
         first_name: OLA
         middle_initial: MAE
         last_name: TAYLOR
-        email: empty@example.com
+        email: landlord4@example.com
         street_address1: '702 N LINCOLN AVE # 1'
         street_address2: ''
         unit_no: ''
@@ -108,11 +104,11 @@ fixtures:
         lastLogin: '-5 days'
         created_at: '-40 days'
         updated_at: '-7 days'
-    Tenant_5:
+    Landlord_5:
         first_name: BRIAN
         middle_initial: P
         last_name: KURTH
-        email: emilio@example.com
+        email: landlord5@example.com
         street_address1: 'SAINT NAZAIRE 2010'
         street_address2: ''
         unit_no: '116TH 1'

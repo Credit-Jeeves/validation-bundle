@@ -21,19 +21,32 @@ class BlocksController extends Controller
         if ($type == 'admin') {
             $isAdmin = true;
         }
-        switch ($site) {
-            case 'rj':
-                $user = $this->get('core.session.tenant')->getUser();
-                $sEmail = $this->get('core.session.tenant')->getUser()->getEmail();
-                break;
-            default:
-                $user = $this->get('core.session.applicant')->getUser();
-                $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
-                $Lead = $this->get('core.session.applicant')->getLead();
-                if ($Lead) {
-                    $sGroup = $Lead->getGroup()->getName();
-                }
-                break;
+        if (in_array($type, array('tenant', 'applicant'))) {
+            switch ($site) {
+                case 'rj':
+                    $user = $this->get('core.session.applicant')->getUser();
+                    $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
+                    break;
+                default:
+                    $user = $this->get('core.session.applicant')->getUser();
+                    $sEmail = $this->get('core.session.applicant')->getUser()->getEmail();
+                    $Lead = $this->get('core.session.applicant')->getLead();
+                    if ($Lead) {
+                        $sGroup = $Lead->getGroup()->getName();
+                    }
+                    break;
+            }
+        } else {
+            switch ($site) {
+                case 'rj':
+                    $user = $this->get('core.session.landlord')->getUser();
+                    $sEmail = $this->get('core.session.landlord')->getUser()->getEmail();
+                    break;
+                default:
+                    $user = $this->get('core.session.dealer')->getUser();
+                    $sEmail = $this->get('core.session.dealer')->getUser()->getEmail();
+                    break;
+            }
         }
         return array(
             'sEmail' => $sEmail,

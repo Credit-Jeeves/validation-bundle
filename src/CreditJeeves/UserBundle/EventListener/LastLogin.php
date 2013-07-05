@@ -47,7 +47,7 @@ class LastLogin implements EventSubscriberInterface
         $user = $event->getAuthenticationToken()->getUser();
         if ($user instanceof UserInterface) {
             $lastLogin = $user->getLastLogin();
-            if (empty($lastLogin)) {
+            if (empty($lastLogin) & 'applicant' == $user->getType()) {
                 $this->mailer->sendWelcomeEmailToApplicant($user);
             }
         }

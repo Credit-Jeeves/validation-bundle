@@ -42,13 +42,15 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $submit->click();
         $this->assertNotNull($error = $this->page->find('css', '.alert-error'));
         $this->assertNotNull($fields = $this->page->findAll('css', 'form input'));
-        $this->assertCount(12, $fields, 'wrong number of inputs');
+        $this->assertCount(13, $fields, 'wrong number of inputs');
         $this->fillForm(
             $form,
             array(
                 $fields[0]->getAttribute('id') => 'test',
                 $fields[2]->getAttribute('id') => 'test',
                 $fields[3]->getAttribute('id') => 'test@landlord.com',
+                $fields[5]->getAttribute('id') => 'pass',
+                $fields[6]->getAttribute('id') => 'pass',
             )
         );
         $submit->click();

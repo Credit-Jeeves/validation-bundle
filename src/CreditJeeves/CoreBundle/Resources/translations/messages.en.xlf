@@ -659,6 +659,14 @@
                 <source>tabs.dashboard</source>
                 <target>Dashboard</target>
             </trans-unit>
+            <trans-unit id="tabs.properties">
+                <source>tabs.properties</source>
+                <target>Properties</target>
+            </trans-unit>
+            <trans-unit id="tabs.tenants">
+                <source>tabs.tenants</source>
+                <target>Tenants</target>
+            </trans-unit>
             <trans-unit id="tabs.rent">
                 <source>tabs.rent</source>
                 <target>My Rent</target>

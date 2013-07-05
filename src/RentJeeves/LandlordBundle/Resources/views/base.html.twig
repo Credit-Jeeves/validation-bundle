@@ -1,4 +1,4 @@
-{% extends "CoreBundle::base.html.twig" %}
+{% extends "CoreBundle::rj_base.html.twig" %}
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
@@ -15,9 +15,10 @@
     <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/ad-creditcards.css') }}" rel="stylesheet" type="text/css" />
-    
+    <link href="{{ asset('bundles/core/css/rj-logos.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/google-maps.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/check.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/checkout/css/checkout.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
@@ -27,12 +28,14 @@
     <script type="text/javascript">
         google.load("visualization", "1", {packages:["corechart", "gauge"]});
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM"></script>
 {% endblock %}
 
 {% block tabs %}
-    <div class="top-nav">
-    {{ knp_menu_render('ApplicantBundle:Builder:mainMenu', { 'template': 'ApplicantBundle:Menu:applicant_tabs.html.twig' }) }}
+        <div class="top-nav">
+    {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': 'CoreBundle:Menu:user_tabs.html.twig' }) }}
     </div>
+    
 {% endblock %}
 
 {% block footer %}
