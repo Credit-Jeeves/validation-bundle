@@ -38,14 +38,6 @@ class TenantAdmin extends Admin
         return '/rj/'.self::TYPE;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function prePersist($user)
-    {
-        $user->setType(self::TYPE);
-    }
-
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
@@ -89,7 +81,49 @@ class TenantAdmin extends Admin
             ->add('middle_initial')
             ->add('last_name')
             ->add('email')
+            ->add('password', 'hidden', array('required' => false))
+            ->add('password_new', 'password', array('required' => false, 'mapped' => false))
+            ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
             ->add('culture')
             ->end();
     }
+
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function preUpdate($user)
+    {
+      $user = $this->checkPassword($user);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function prePersist($user)
+    {
+      $user->setType(self::TYPE);
+      $user = $this->checkPassword($user);
+    }
+    
+    private function checkPassword($user)
+    {
+      $isValid = false;
+      $password = $user->getPassword();
+      $request = $this->getRequest();
+      $formData = $request->request->get($this->getUniqid());
+      $password_new = $formData['password_new'];
+      $password_retype = $formData['password_retype'];
+      if (!empty($password)) {
+        $isValid = true;
+      }
+      if (!empty($password_new) && $password_new === $password_retype) {
+        $isValid = true;
+        $user->setPassword(md5($password_new));
+      }
+      if (!$isValid) {
+        $request->getSession()->getFlashBag()->add('sonata_flash_error', 'Please, enter password for this admin');
+      }
+      return $user;
+    }    
 }
