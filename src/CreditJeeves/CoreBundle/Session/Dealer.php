@@ -16,7 +16,7 @@ class Dealer extends User
      */
     public function setUser(UserEntity $User)
     {
-      $this->saveToSession(UserType::DEALER);
+        $this->saveToSession(UserType::DEALER);
     }
     
     /**
@@ -24,10 +24,10 @@ class Dealer extends User
      */
     public function getUser()
     {
-      $data = $this->getFromSession(UserType::DEALER);
-      if (isset($data['user_id'])) {
-        return $this->findUser($data['user_id']);
-      }
-      return new UserEntity();
+        $data = $this->getFromSession(UserType::DEALER);
+        if (isset($data['user_id'])) {
+            return $this->findUser($data['user_id']);
+        }
+        return new UserEntity();
     }
 }
