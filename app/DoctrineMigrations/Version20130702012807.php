@@ -111,7 +111,7 @@ class Version20130702012807 extends AbstractMigration
                 FOREIGN KEY cj_applicant_incentives_cj_incentive_id_cj_group_incentives_id"
         );
         $this->addSql(
-            "DROP INDEX cj_tradeline_id_idx ON cj_applicant_incentives"
+            "DROP INDEX cj_applicant_incentives_cj_tradeline_id_idx ON cj_applicant_incentives"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_incentives
@@ -136,10 +136,10 @@ class Version20130702012807 extends AbstractMigration
                 FOREIGN KEY cj_account_group_affiliate_cj_account_id_cj_user_id"
         );
         $this->addSql(
-            "DROP INDEX cj_account_id_idx ON cj_account_group_affiliate"
+            "DROP INDEX cj_account_group_affiliate_cj_account_id_idx ON cj_account_group_affiliate"
         );
         $this->addSql(
-            "DROP INDEX cj_account_group_id_idx ON cj_account_group_affiliate"
+            "DROP INDEX cj_account_group_affiliate_cj_account_group_id_idx ON cj_account_group_affiliate"
         );
         $this->addSql(
             "ALTER TABLE cj_account_group_affiliate
@@ -148,13 +148,13 @@ class Version20130702012807 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_vehicle
-                DROP INDEX cj_applicant_id_idx,
-                ADD UNIQUE INDEX UNIQ_1AFD06AD1846CDE5 (cj_applicant_id)"
+                DROP
+                FOREIGN KEY cj_vehicle_cj_applicant_id_cj_user_id"
         );
         $this->addSql(
             "ALTER TABLE cj_vehicle
-                DROP
-                FOREIGN KEY cj_vehicle_cj_applicant_id_cj_user_id"
+                DROP INDEX cj_vehicle_cj_applicant_id_idx/*,
+                ADD UNIQUE INDEX UNIQ_1AFD06AD1846CDE5 (cj_applicant_id)*/"
         );
         $this->addSql(
             "ALTER TABLE cj_vehicle
@@ -206,9 +206,9 @@ class Version20130702012807 extends AbstractMigration
         $this->addSql(
             "DROP INDEX email ON cj_user"
         );
-        $this->addSql(
-            "DROP INDEX cj_user_type_idx ON cj_user"
-        );
+//        $this->addSql(
+//            "DROP INDEX cj_user_type_idx ON cj_user"
+//        );
         $this->addSql(
             "ALTER TABLE cj_user
                 DROP plain_password,
@@ -238,7 +238,7 @@ class Version20130702012807 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE cj_dealer_group
                 DROP
-                FOREIGN KEY cj_dealer_group_group_id_cj_account_group_id"
+                FOREIGN KEY cj_dealer_group_group_id_cj_account_group_id_1"
         );
         $this->addSql(
             "ALTER TABLE cj_dealer_group
@@ -318,10 +318,10 @@ class Version20130702012807 extends AbstractMigration
                 FOREIGN KEY cj_purchase_cj_lead_id_cj_lead_id"
         );
         $this->addSql(
-            "DROP INDEX cj_account_id_idx ON cj_purchase"
+            "DROP INDEX cj_purchase_cj_account_id_idx ON cj_purchase"
         );
         $this->addSql(
-            "DROP INDEX cj_lead_id_idx ON cj_purchase"
+            "DROP INDEX cj_purchase_cj_lead_id_idx ON cj_purchase"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_tradelines
@@ -334,7 +334,7 @@ class Version20130702012807 extends AbstractMigration
                 FOREIGN KEY cj_applicant_tradelines_cj_group_id_cj_account_group_id"
         );
         $this->addSql(
-            "DROP INDEX cj_group_id_idx ON cj_applicant_tradelines"
+            "DROP INDEX cj_applicant_tradelines_cj_group_id_idx	 ON cj_applicant_tradelines"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_tradelines
@@ -350,7 +350,7 @@ class Version20130702012807 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE cj_lead_history
                 DROP
-                FOREIGN KEY cj_lead_history_object_id_cj_lead_id"
+                FOREIGN KEY cj_lead_history_ibfk_1"
         );
         $this->addSql(
             "DROP INDEX editor_id_idx ON cj_lead_history"
@@ -506,11 +506,11 @@ class Version20130702012807 extends AbstractMigration
                 FOREIGN KEY cj_pricing_cj_account_group_id_cj_account_group_id"
         );
         $this->addSql(
-            "DROP INDEX cj_account_group_id_idx ON cj_pricing"
+            "DROP INDEX cj_pricing_cj_account_group_id_idx ON cj_pricing"
         );
         $this->addSql(
             "ALTER TABLE cj_operation
-                DROP INDEX cj_operation_cj_applicant_report_id_cj_applicant_report_id,
+                DROP INDEX cj_operation_cj_applicant_report_id_idx,
                 ADD UNIQUE INDEX UNIQ_21F5D92D2A26A0ED (cj_applicant_report_id)"
         );
         $this->addSql(
@@ -652,10 +652,10 @@ class Version20130702012807 extends AbstractMigration
                 REFERENCES cj_user (id) ON DELETE CASCADE"
         );
         $this->addSql(
-            "CREATE INDEX cj_account_id_idx ON cj_account_group_affiliate (cj_account_id)"
+            "CREATE INDEX cj_account_group_affiliate_cj_account_id_idx ON cj_account_group_affiliate (cj_account_id)"
         );
         $this->addSql(
-            "CREATE INDEX cj_account_group_id_idx ON cj_account_group_affiliate (cj_account_group_id)"
+            "CREATE INDEX cj_account_group_affiliate_cj_account_group_id_idx ON cj_account_group_affiliate (cj_account_group_id)"
         );
         $this->addSql(
             "ALTER TABLE cj_address
@@ -697,7 +697,7 @@ class Version20130702012807 extends AbstractMigration
                 REFERENCES cj_group_incentives (id) ON DELETE CASCADE"
         );
         $this->addSql(
-            "CREATE INDEX cj_tradeline_id_idx ON cj_applicant_incentives (cj_tradeline_id)"
+            "CREATE INDEX cj_applicant_incentives_cj_tradeline_id_idx ON cj_applicant_incentives (cj_tradeline_id)"
         );
         $this->addSql(
             "ALTER TABLE cj_applicant_pidkiq
@@ -766,7 +766,7 @@ class Version20130702012807 extends AbstractMigration
                 REFERENCES cj_account_group (id) ON DELETE CASCADE"
         );
         $this->addSql(
-            "CREATE INDEX cj_group_id_idx ON cj_applicant_tradelines (cj_group_id)"
+            "CREATE INDEX cj_applicant_tradelines_cj_group_id_idx	 ON cj_applicant_tradelines (cj_group_id)"
         );
         $this->addSql(
             "ALTER TABLE cj_checkout_authorize_net_aim
@@ -887,7 +887,7 @@ class Version20130702012807 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_lead_history
-                ADD CONSTRAINT cj_lead_history_object_id_cj_lead_id
+                ADD CONSTRAINT cj_lead_history_ibfk_1
                 FOREIGN KEY (object_id)
                 REFERENCES cj_lead (id) ON UPDATE CASCADE ON DELETE CASCADE"
         );
@@ -975,7 +975,7 @@ class Version20130702012807 extends AbstractMigration
                 REFERENCES cj_account_group (id) ON DELETE CASCADE"
         );
         $this->addSql(
-            "CREATE INDEX cj_account_group_id_idx ON cj_pricing (cj_account_group_id)"
+            "CREATE INDEX cj_pricing_cj_account_group_id_idx ON cj_pricing (cj_account_group_id)"
         );
         $this->addSql(
             "ALTER TABLE cj_purchase
@@ -990,10 +990,10 @@ class Version20130702012807 extends AbstractMigration
                 REFERENCES cj_lead (id) ON DELETE CASCADE"
         );
         $this->addSql(
-            "CREATE INDEX cj_account_id_idx ON cj_purchase (cj_account_id)"
+            "CREATE INDEX cj_purchase_cj_account_id_idx ON cj_purchase (cj_account_id)"
         );
         $this->addSql(
-            "CREATE INDEX cj_lead_id_idx ON cj_purchase (cj_lead_id)"
+            "CREATE INDEX cj_purchase_cj_lead_id_idx ON cj_purchase (cj_lead_id)"
         );
         $this->addSql(
             "ALTER TABLE cj_settings
@@ -1024,13 +1024,13 @@ class Version20130702012807 extends AbstractMigration
         $this->addSql(
             "CREATE UNIQUE INDEX email ON cj_user (email)"
         );
-        $this->addSql(
-            "CREATE INDEX cj_user_type_idx ON cj_user (type)"
-        );
+//        $this->addSql(
+//            "CREATE INDEX cj_user_type_idx ON cj_user (type)"
+//        );
         $this->addSql(
             "ALTER TABLE cj_vehicle
-                DROP INDEX UNIQ_1AFD06AD1846CDE5,
-                ADD INDEX cj_applicant_id_idx (cj_applicant_id)"
+                /*DROP INDEX UNIQ_1AFD06AD1846CDE5,*/
+                ADD INDEX cj_vehicle_cj_applicant_id_idx (cj_applicant_id)"
         );
         $this->addSql(
             "ALTER TABLE cj_vehicle

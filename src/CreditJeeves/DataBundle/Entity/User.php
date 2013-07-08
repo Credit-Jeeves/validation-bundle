@@ -224,11 +224,6 @@ abstract class User extends BaseUser
             'first_name',
             'middle_initial',
             'last_name',
-            'street_address1',
-            'street_address2',
-            'city',
-            'state',
-            'zip',
             'ssn',
             'is_verified',
         );
@@ -236,6 +231,14 @@ abstract class User extends BaseUser
         foreach ($data as $key) {
             $return[$key] = $this->$key;
         }
+        /** @var Address $address */
+        $address = $this->getAddresses()->first();
+        $return['unit'] = $address->getUnit();
+        $return['number'] = $address->getNumber();
+        $return['street'] = $address->getStreet();
+        $return['city'] = $address->getCity();
+        $return['zip'] = $address->getZip();
+        $return['country'] = $address->getCountry();
         return $return;
     }
 

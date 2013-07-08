@@ -73,7 +73,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "b31017cccd72c29f605a3b7176c1fa47bb986efa"
+                    "reference": "cab8d947e2f6e07e286e5f21b7ccccdd3aaa1b49"
                 }
             }
         },
@@ -132,7 +132,7 @@
         "CreditJeevesSf1": "dev-master",
         "symfony/symfony": "2.3.*",
         "doctrine/orm": ">=2.2.3,<2.4-dev",
-        "doctrine/doctrine-bundle": "1.2.*",
+        "doctrine/doctrine-bundle": "dev-master",
         "twig/extensions": "1.0.*",
         "kriswallsmith/assetic": "1.1.*",
         "symfony/assetic-bundle": "2.3.*",
@@ -174,7 +174,7 @@
         "behat/mink-goutte-driver": "1.0.*",
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
-        "sensio/generator-bundle": "2.3.*",
+        "sensio/generator-bundle": "dev-master",
         "khepin/yaml-fixtures-bundle": "dev-master"
     },
     "scripts": {

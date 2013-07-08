@@ -36,7 +36,34 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="address1", type="encrypt")
+     * @ORM\Column(name="unit", type="encrypt", nullable=true)
+     */
+    protected $unit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="number", type="encrypt", nullable=true)
+     * @Assert\NotBlank(
+     *     message="error.user.unit.empty",
+     *     groups={
+     *         "user_address_new"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=1,
+     *     max=31,
+     *     groups={
+     *         "user_address_new"
+     *     }
+     * )
+     */
+    protected $number;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="street", type="encrypt")
      * @Assert\NotBlank(
      *     message="error.user.address.empty",
      *     groups={
@@ -53,67 +80,12 @@ abstract class Address
      *     }
      * )
      */
-    protected $address1;
+    protected $street;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="address2", type="encrypt")
-     * @Assert\NotBlank(
-     *     message="error.user.unit.empty",
-     *     groups={
-     *         "user_address_new"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=1,
-     *     max=31,
-     *     groups={
-     *         "user_address_new"
-     *     }
-     * )
-     */
-    protected $address2;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="city", type="string", length=255)
-     * @Assert\NotBlank(
-     *     message="error.user.city.empty",
-     *     groups={
-     *         "buy_report_new"
-     *     }
-     * )
-     */
-    protected $city;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="state", type="string", length=7, nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.state.empty",
-     *     groups={
-     *         "user_address_new",
-     *         "buy_report_new"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=2,
-     *     max=255,
-     *     groups={
-     *         "user_address_new",
-     *         "buy_report_new"
-     *     }
-     * )
-     */
-    protected $state;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="zip", type="string", length=15)
+     * @ORM\Column(name="zip", type="string", length=15, nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.zip.empty",
      *     groups={
@@ -136,10 +108,51 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="country", type="string", length=3, nullable=true, options={"default"="USA"})
+     * @ORM\Column(name="district", type="string", length=7, nullable=true)
+     * @Assert\NotBlank(
+     *     message="error.user.state.empty",
+     *     groups={
+     *         "user_address_new",
+     *         "buy_report_new"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "user_address_new",
+     *         "buy_report_new"
+     *     }
+     * )
      */
-    protected $country = 'USA';
+    protected $district;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="city", type="string", length=255)
+     * @Assert\NotBlank(
+     *     message="error.user.city.empty",
+     *     groups={
+     *         "buy_report_new"
+     *     }
+     * )
+     */
+    protected $city;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="area", type="string", nullable=true)
+     */
+    protected $area;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="country", type="string", length=3, options={"default"="US"})
+     */
+    protected $country = 'US';
     /**
      * @var \DateTime
      *
@@ -159,7 +172,7 @@ abstract class Address
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -175,14 +188,14 @@ abstract class Address
     public function setUserId($userId)
     {
         $this->userId = $userId;
-    
+
         return $this;
     }
 
     /**
      * Get userId
      *
-     * @return integer 
+     * @return integer
      */
     public function getUserId()
     {
@@ -190,95 +203,72 @@ abstract class Address
     }
 
     /**
-     * Set address1
+     * Set unit
      *
-     * @param string $address1
+     * @param string $unit
      * @return Address
      */
-    public function setAddress1($address1)
+    public function setUnit($unit)
     {
-        $this->address1 = $address1;
-    
+        $this->unit = $unit;
+
         return $this;
     }
 
     /**
-     * Get address1
+     * Get unit
      *
-     * @return string 
+     * @return string
      */
-    public function getAddress1()
+    public function getUnit()
     {
-        return $this->address1;
+        return $this->unit;
     }
 
     /**
-     * Set address2
+     * Set number
      *
-     * @param string $address2
+     * @param encrypt $number
      * @return Address
      */
-    public function setAddress2($address2)
+    public function setNumber($number)
     {
-        $this->address2 = $address2;
-    
+        $this->number = $number;
+
         return $this;
     }
 
     /**
-     * Get address2
+     * Get number
      *
-     * @return string 
+     * @return encrypt
      */
-    public function getAddress2()
+    public function getNumber()
     {
-        return $this->address2;
+        return $this->number;
     }
 
     /**
-     * Set city
+     * Set street
      *
-     * @param string $city
+     * @param encrypt $street
      * @return Address
      */
-    public function setCity($city)
+    public function setStreet($street)
     {
-        $this->city = $city;
-    
+        $this->street = $street;
+
         return $this;
     }
 
     /**
-     * Get city
+     * Get street
      *
-     * @return string 
+     * @return encrypt
      */
-    public function getCity()
+    public function getStreet()
     {
-        return $this->city;
-    }
-
-    /**
-     * Set state
-     *
-     * @param string $state
-     * @return Address
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-    
-        return $this;
-    }
-
-    /**
-     * Get state
-     *
-     * @return string 
-     */
-    public function getState()
-    {
-        return $this->state;
+        return $this->street;
     }
 
     /**
@@ -290,18 +280,87 @@ abstract class Address
     public function setZip($zip)
     {
         $this->zip = $zip;
-    
+
         return $this;
     }
 
     /**
      * Get zip
      *
-     * @return string 
+     * @return string
      */
     public function getZip()
     {
         return $this->zip;
+    }
+
+    /**
+     * Set district
+     *
+     * @param string $district
+     * @return Address
+     */
+    public function setDistrict($district)
+    {
+        $this->district = $district;
+
+        return $this;
+    }
+
+    /**
+     * Get district
+     *
+     * @return string
+     */
+    public function getDistrict()
+    {
+        return $this->district;
+    }
+
+    /**
+     * Set city
+     *
+     * @param string $city
+     * @return Address
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * Get city
+     *
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * Set area
+     *
+     * @param string $area
+     * @return Address
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
+
+        return $this;
+    }
+
+    /**
+     * Get area
+     *
+     * @return string
+     */
+    public function getArea()
+    {
+        return $this->area;
     }
 
     /**
@@ -313,14 +372,14 @@ abstract class Address
     public function setCountry($country)
     {
         $this->country = $country;
-    
+
         return $this;
     }
 
     /**
      * Get country
      *
-     * @return string 
+     * @return string
      */
     public function getCountry()
     {
@@ -336,14 +395,14 @@ abstract class Address
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-    
+
         return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -359,14 +418,14 @@ abstract class Address
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
-    
+
         return $this;
     }
 
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -377,7 +436,7 @@ abstract class Address
      * Set user
      *
      * @param \CreditJeeves\DataBundle\Entity\User $user
-     * @return Order
+     * @return Address
      */
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
