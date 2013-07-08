@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use RentJeeves\DataBundle\Entity\Property;
 
 class PropertyController extends Controller
 {
@@ -33,10 +34,21 @@ class PropertyController extends Controller
      */
     public function addAction()
     {
+        $property = array();
         $request = $this->getRequest();
-        $address = $request->request->all('data');
-        print_r(json_decode($address['data'], true));
-        
-        return new JsonResponse(array());
+        $data = $request->request->all('address');
+        $data = json_decode($data['data'], true);
+        $object = new Property();
+        $property = $object->parseGoogleAddress($data);
+        $object = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findBy($property);
+        if (empty($object)) {
+            $object = new Property();
+            $property += $object->parseGoogleLocation($data);
+            $object->fillPropertyData($property);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($object);
+            $em->flush();
+        }
+        return new JsonResponse($object->getId());
     }
 }
