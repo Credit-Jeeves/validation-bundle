@@ -13,4 +13,16 @@ class Dealer extends User
         $holding = $this->getHolding();
         return $holding ? $holding->getName(): '';
     }
+
+    public function setDealerGroups($dealerGroups)
+    {	
+    	if(!is_array($dealerGroups)) {
+    		$this->addDealerGroup($dealerGroups);
+    		return;
+    	}
+
+    	foreach ($dealerGroups as $dealerGroup) {
+    		$this->addDealerGroup($dealerGroup);
+    	}
+    } 
 }

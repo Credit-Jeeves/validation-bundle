@@ -30,12 +30,24 @@ abstract class Tradeline
      *     referencedColumnName="id"
      * )
      */
-    protected $user;
+    protected $user; 
 
     /**
      * @ORM\Column(type="bigint")
      */
     protected $cj_group_id;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     inversedBy="tradelines"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_group_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $group; 
 
     /**
      * @ORM\Column(type="string", length=2)
@@ -302,4 +314,27 @@ abstract class Tradeline
     {
         return $this->user;
     }
+
+    /**
+     * Set group
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @return Tradeline
+     */
+    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+    
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }    
 }

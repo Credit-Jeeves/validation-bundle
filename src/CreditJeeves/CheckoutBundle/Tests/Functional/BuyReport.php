@@ -13,30 +13,14 @@ class BuyReportCase extends BaseTestCase
 
     protected $envPath = '/_test.php/';
 
-    protected $fixtures = array(
-        '001_cj_account_group.yml',
-        '003_cj_dealer_account.yml',
-        '004_cj_applicant.yml',
-        '005_cj_lead.yml',
-        '006_cj_applicant_report.yml',
-        '007_cj_applicant_score.yml',
-        '010_cj_affiliate.yml',
-        '011_cj_settings.yml',
-        '013_cj_holding_account.yml',
-        '019_atb_simulation.yml',
-        '017_cj_order.yml',
-        '018_cj_operation.yml',
-        '020_email.yml',
-        '021_email_translations.yml',
-    );
-
     /**
      * @test
      */
     public function checkBuyReportBox()
     {
+        
 //    $this->setSession('webdriver');
-        $this->load($this->fixtures, true);
+        $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('alex@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
@@ -51,8 +35,9 @@ class BuyReportCase extends BaseTestCase
      */
     public function checkCurrentDownloadedData()
     {
+              
 //    $this->setSession('webdriver');
-        $this->load($this->fixtures, false);
+        $this->load(false);
         $this->setDefaultSession('symfony');
 
         $this->login('emilio@example.com', 'pass');
@@ -61,8 +46,10 @@ class BuyReportCase extends BaseTestCase
         $this->assertNotNull($date = $this->page->find('css', '.pod-large .datetime.floatright'));
         $oneMonthAgo = new \DateTime();
         $oneMonthAgo->modify('-1 days');
+        
+        $dateShortFormat = static::getContainer()->getParameter('date_short');
         $this->assertEquals(
-            $oneMonthAgo->format('M j, Y'),
+            $oneMonthAgo->format($dateShortFormat),
             $date->getText()
         );
 
@@ -74,7 +61,7 @@ class BuyReportCase extends BaseTestCase
         $oneMonthAgo = new \DateTime();
         $oneMonthAgo->modify('-32 days');
         $this->assertEquals(
-            $oneMonthAgo->format('M j, Y'),
+            $oneMonthAgo->format($dateShortFormat),
             $date->getText()
         );
 
@@ -87,7 +74,7 @@ class BuyReportCase extends BaseTestCase
     public function authorizeNetAim()
     {
         $this->setDefaultSession('selenium2');
-        $this->load($this->fixtures, false);
+        $this->load(false);
 
         $this->login('emilio@example.com', 'pass');
 
@@ -127,8 +114,9 @@ class BuyReportCase extends BaseTestCase
         );
 
         $this->assertNotNull($date = $this->page->find('css', '.pod-large .datetime.floatright'));
+        $dateShortFormat = static::getContainer()->getParameter('date_short');
 
-        $this->assertEquals(date('M j, Y'), $date->getText());
+        $this->assertEquals(date($dateShortFormat), $date->getText());
     }
 
     /**

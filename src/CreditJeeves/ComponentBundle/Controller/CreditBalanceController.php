@@ -23,9 +23,13 @@ class CreditBalanceController extends Controller
 
     public function indexAction(Report $Report, Score $Score)
     {
-        $nTradelines = $Report->getCountApplicantTotalTradelines();
-        $sDate = $Report->getCreatedAt()->format('M j, Y');
+		$nTradelines = $Report->getCountApplicantTotalTradelines();
+        $dateShortFormat = $this->container->getParameter('date_short');
+        $sDate = $Report->getCreatedAt()->format($dateShortFormat);
+        
         $ArfReport = $Report->getArfReport();
+
+
         $nRevolvingDept = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_BALANCE_TOTAL_REVOLVING

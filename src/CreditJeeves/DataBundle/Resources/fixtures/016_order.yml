@@ -1,0 +1,5 @@
+model: CreditJeeves\DataBundle\Entity\Order
+fixtures:
+  cjOrder_1:
+    user: cjApplicant_5
+    status: complete

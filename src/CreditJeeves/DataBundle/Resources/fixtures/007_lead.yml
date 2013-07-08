@@ -1,0 +1,394 @@
+model: CreditJeeves\DataBundle\Entity\Lead
+fixtures:
+  cjLead_1:
+    user: cjApplicant_1
+    dealer: cjDealerAccount_2
+    group: cjAccountGroup_2
+    target_score: '700'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_2:
+    user: cjApplicant_2
+    dealer: cjDealerAccount_4
+    group: cjAccountGroup_3
+    target_score: '664'
+    target_name: 'BMW X5'
+    target_url: 'https://carimg.s3.amazonaws.com/6800_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_3:
+    user: cjApplicant_3
+    dealer: cjDealerAccount_4
+    group: cjAccountGroup_3
+    target_score: '580'
+    target_name: 'BMW X5'
+    target_url: 'https://carimg.s3.amazonaws.com/6800_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_4:
+    user: cjApplicant_4
+    dealer: cjDealerAccount_4
+    group: cjAccountGroup_3
+    target_score: '600'
+    target_name: 'BMW X5'
+    target_url: 'https://carimg.s3.amazonaws.com/6800_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_5:
+    user: cjApplicant_5
+    dealer: cjDealerAccount_4
+    group: cjAccountGroup_3
+    target_score: '650'
+    target_name: 'BMW X5'
+    target_url: 'https://carimg.s3.amazonaws.com/6800_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: processed
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_6:
+    user: cjApplicant_6
+    dealer: cjDealerAccount_4
+    group: cjAccountGroup_3
+    target_score: '714'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_7:
+    user: cjApplicant_7
+    dealer: cjDealerAccount_2
+    group: cjAccountGroup_2
+    target_score: '552'
+    target_name: 'Honda CR-V'
+    target_url: 'https://carimg.s3.amazonaws.com/8477_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_8:
+    user: cjApplicant_8
+    dealer: cjDealerAccount_2
+    group: cjAccountGroup_2
+    target_score: '600'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_9:
+    user: cjApplicant_9
+    dealer: cjDealerAccount_2
+    group: cjAccountGroup_2
+    target_score: '600'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_10:
+    user: cjApplicant_10
+    dealer: cjDealerAccount_2
+    group: cjAccountGroup_2
+    target_score: '830'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_11:
+    user: cjApplicant_11
+    dealer: cjDealerAccount_2
+    group: cjAccountGroup_2
+    target_score: '550'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_12:
+    user: cjApplicant_12
+    dealer: cjDealerAccount_12
+    group: cjAccountGroup_11
+    target_score: '620'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_13:
+    user: cjApplicant_11
+    dealer: cjDealerAccount_12
+    cj_group_id: '14'
+    target_score: '700'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_14:
+    user: cjApplicant_13
+    dealer: cjDealerAccount_8
+    group: cjAccountGroup_4
+    target_score: '700'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_15:
+    user: cjApplicant_14
+    dealer: cjDealerAccount_8
+    group: cjAccountGroup_4
+    target_score: '700'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_16:
+    user: cjApplicant_15
+    dealer: cjDealerAccount_8
+    group: cjAccountGroup_4
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '700'
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_17:
+    user: cjApplicant_16
+    dealer: cjDealerAccount_8
+    group: cjAccountGroup_9
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '700'
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_18:
+    user: cjApplicant_17
+    dealer: cjDealerAccount_8
+    group: cjAccountGroup_11
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '700'
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_19:
+    user: cjApplicant_18
+    dealer: cjDealerAccount_8
+    group: cjAccountGroup_9
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '700'
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_20:
+    user: cjApplicant_19
+    dealer: cjDealerAccount_9
+    group: cjAccountGroup_4
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '700'
+    fraction: '0'
+    status: new
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_21:
+    user: cjApplicant_20
+    dealer: cjDealerAccount_9
+    group: cjAccountGroup_4
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '710'
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_22:
+    user: cjApplicant_21
+    dealer: cjDealerAccount_9
+    group: cjAccountGroup_4
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '550'
+    fraction: '0'
+    status: finished
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_23:
+    user: cjApplicant_22
+    dealer: cjDealerAccount_9
+    group: cjAccountGroup_9
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '710'
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjLead_24:
+    user: cjApplicant_23
+    dealer: cjDealerAccount_9
+    group: cjAccountGroup_11
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    target_score: '710'
+    fraction: '0'
+    status: finished
+    source: office
+    created_at: '-50'
+    updated_at: '-50'
+
+# additional leads for Emilio (cjApplicant_5)
+  cjLead_25:
+    user: cjApplicant_5
+    dealer: cjDealerAccount_2
+    group: cjAccountGroup_2
+    target_score: '510'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-50'
+    updated_at: '-50'
+  cjLead_26:
+    user: cjApplicant_5
+    dealer: cjDealerAccount_8
+    group: cjAccountGroup_9
+    target_score: '620'
+    target_name: 'Honda Civic'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '0'
+    status: active
+    source: office
+    created_at: '-50'
+    updated_at: '-50'

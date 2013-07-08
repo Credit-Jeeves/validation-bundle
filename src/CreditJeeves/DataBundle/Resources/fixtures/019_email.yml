@@ -1,0 +1,22 @@
+model: Rj\EmailBundle\Entity\EmailTemplate
+fixtures:
+  email_1:
+    name: invite.html
+  email_2:
+    name: welcome.html
+  email_3:
+    name: score.html
+  email_4:
+    name: target.html
+  email_5:
+    name: finished.html
+  email_6:
+    name: password.html
+  email_7:
+    name: example.html
+  email_8:
+    name: resetting.html
+  email_9:
+    name: check.html
+  email_10:
+    name: receipt.html

@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -38,6 +39,7 @@ abstract class Holding
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime")
+     * @Gedmo\Timestampable(on="create")
      */
     protected $createdAt;
 
@@ -45,6 +47,7 @@ abstract class Holding
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
+     * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
 

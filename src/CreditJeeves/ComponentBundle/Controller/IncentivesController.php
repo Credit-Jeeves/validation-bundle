@@ -25,7 +25,10 @@ class IncentivesController extends Controller
         // Get User's Report
         $cjUser = $this->get('core.session.applicant')->getUser();
         $Report = $cjUser->getReportsPrequal()->last();
-        $sDate = $Report->getCreatedAt()->format('M j, Y');
+        
+        $dateShortFormat = $this->container->getParameter('date_short');
+        $sDate = $Report->getCreatedAt()->format($dateShortFormat);
+
         $ArfReport = $Report->getArfReport();
         // Get direct check
         $aDirectCheck = $Report->getApplicantDirectCheck();

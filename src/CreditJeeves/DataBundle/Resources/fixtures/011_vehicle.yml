@@ -1,0 +1,56 @@
+model: CreditJeeves\DataBundle\Entity\Vehicle
+fixtures:
+  cjVehicle_1:
+    user: cjApplicant_1
+    make: Honda
+    model: Civic
+    state: '1'
+    trade_in: false
+    down_payment: null
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjVehicle_2:
+    user: cjApplicant_2
+    make: BMW
+    model: X5
+    state: '0'
+    trade_in: false
+    down_payment: null
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjVehicle_3:
+    user: cjApplicant_3
+    make: BMW
+    model: X5
+    state: '0'
+    trade_in: false
+    down_payment: null
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjVehicle_4:
+    user: cjApplicant_4
+    make: BMW
+    model: X5
+    state: '0'
+    trade_in: false
+    down_payment: null
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjVehicle_5:
+    user: cjApplicant_5
+    make: BMW
+    model: X5
+    state: '0'
+    trade_in: false
+    down_payment: null
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjVehicle_6:
+    user: cjApplicant_7
+    make: Honda
+    model: CR-V
+    state: '0'
+    trade_in: false
+    down_payment: null
+    created_at: '-5 days'
+    updated_at: '-5 days'

@@ -1,0 +1,7 @@
+parameters:
+#    credit_jeeves_dev.example.class: CreditJeeves\DevBundle\Example
+
+services:
+#    credit_jeeves_dev.example:
+#        class: %credit_jeeves_dev.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

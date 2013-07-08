@@ -8,7 +8,9 @@ class CreditSummaryController extends Controller
 {
     public function indexAction(Report $Report)
     {
-        $sDate = $Report->getCreatedAt()->format('M j, Y');
+        $dateShortFormat = $this->container->getParameter('date_short');
+        $sDate = $Report->getCreatedAt()->format($dateShortFormat);
+        
         $aCreditSummary = $Report->getCreditSummary();
         $aCreditSummary['collections'] = $Report->getCountTradelineCollections();
         $aAutomotive = $Report->getAutomotiveSummary();

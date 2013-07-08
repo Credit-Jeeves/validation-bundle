@@ -1,0 +1,38 @@
+model: CreditJeeves\DataBundle\Entity\GroupIncentive
+fixtures:
+  cjGroupIncentives_1:
+    group: cjAccountGroup_2
+    consecutive_number: 1
+    title: Car washing
+    text: We'll wash your car, he-he....
+  cjGroupIncentives_2:
+    group: cjAccountGroup_2
+    consecutive_number: 2
+    title: Accessories
+    text: 15% on BFGoodReach Tires
+  cjGroupIncentives_3:
+    group: cjAccountGroup_2
+    consecutive_number: 0
+    title: Accessories
+    text: 50% on china details
+  cjGroupIncentives_4:
+    group: cjAccountGroup_2
+    is_active: 0
+    consecutive_number: 3
+    title: Accessories
+    text: 5% Original details
+  cjGroupIncentives_5:
+    group: cjAccountGroup_1
+    consecutive_number: 0
+    title: Car washing
+    text: We'll wash your car, he-he....
+  cjGroupIncentives_6:
+    group: cjAccountGroup_1
+    consecutive_number: 1
+    title: Accessories
+    text: 10% on BFGoodReach Tires
+  cjGroupIncentives_7:
+    group: cjAccountGroup_2
+    consecutive_number: 4
+    title: Accessories
+    text: 10% on Good Year Tires

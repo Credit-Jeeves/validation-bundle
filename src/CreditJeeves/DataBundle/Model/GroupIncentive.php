@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -42,6 +43,7 @@ abstract class GroupIncentive
     protected $text;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
@@ -212,5 +214,16 @@ abstract class GroupIncentive
     public function getGroup()
     {
         return $this->group;
+    }
+
+    public function setIsActive($active)
+    { 
+        $this->is_active = $active;
+        return $this;
+    }
+
+    public function getIsActive()
+    {
+        return $this->is_active;
     }
 }

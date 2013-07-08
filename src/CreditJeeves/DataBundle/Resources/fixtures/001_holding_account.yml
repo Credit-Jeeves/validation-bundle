@@ -1,0 +1,8 @@
+model: CreditJeeves\DataBundle\Entity\Holding
+fixtures:
+  cjHolding_1:
+    name: Darryl's Holding
+  cjHolding_2:
+    name: Moss Holding
+  cjHolding_3:
+    name: Test Holding
