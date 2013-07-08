@@ -44,7 +44,7 @@ class UserAddressType extends AbstractType
             )
         );
         $builder->add(
-            'district',
+            'area',
             'choice',
             array(
                 'label' => '',

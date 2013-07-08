@@ -108,22 +108,7 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="district", type="string", length=7, nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.state.empty",
-     *     groups={
-     *         "user_address_new",
-     *         "buy_report_new"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=2,
-     *     max=255,
-     *     groups={
-     *         "user_address_new",
-     *         "buy_report_new"
-     *     }
-     * )
+     * @ORM\Column(name="district", type="string", length=255, nullable=true)
      */
     protected $district;
 
@@ -144,6 +129,21 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="area", type="string", nullable=true)
+     * @Assert\NotBlank(
+     *     message="error.user.state.empty",
+     *     groups={
+     *         "user_address_new",
+     *         "buy_report_new"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "user_address_new",
+     *         "buy_report_new"
+     *     }
+     * )
      */
     protected $area;
 

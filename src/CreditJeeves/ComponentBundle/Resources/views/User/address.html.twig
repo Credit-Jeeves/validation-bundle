@@ -5,7 +5,7 @@
         {{ form_errors(form.addresses[0].unit) }}
     {% endif %}
     {{ form_errors(form.addresses[0].city) }}
-    {{ form_errors(form.addresses[0].district) }}
+    {{ form_errors(form.addresses[0].area) }}
     {{ form_errors(form.addresses[0].zip) }}
 
     <div class="form-label">{{ form_label(form.addresses[0].street) }}</div>
@@ -47,10 +47,10 @@
             })
         }}
         {{ form_widget(
-            form.addresses[0].district,
+            form.addresses[0].area,
             { 'attr':
                 {
-                    'class': 'user-input user-district form-margin',
+                    'class': 'user-input user-state form-margin',
                     'maxlength' : 2
                 }
             })
