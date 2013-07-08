@@ -72,7 +72,7 @@ class InviteController extends Controller
                     $User->setInviteCode(null);
                     $em = $this->getDoctrine()->getManager();
 
-                    $User->getAddresses()->first()->setUser($User); // TODO it can be done more clear
+                    $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
                     $em->persist($User);
                     $em->flush();
                     return new RedirectResponse($this->get('router')->generate('applicant_homepage'));

@@ -65,7 +65,7 @@ class NewController extends Controller
                     $User->setUsername($User->getEmail());
                     $User->setIsVerified(UserIsVerified::NONE);
                     $User->setType(UserType::APPLICANT);
-                    $User->getAddresses()->first()->setUser($User); // TODO it can be done more clear
+                    $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
 
                     $em = $this->getDoctrine()->getManager();
                     $User->setPassword(

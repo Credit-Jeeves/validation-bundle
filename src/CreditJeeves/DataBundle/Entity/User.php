@@ -232,7 +232,7 @@ abstract class User extends BaseUser
             $return[$key] = $this->$key;
         }
         /** @var Address $address */
-        $address = $this->getAddresses()->first();
+        $address = $this->getDefaultAddress();
         $return['unit'] = $address->getUnit();
         $return['number'] = $address->getNumber();
         $return['street'] = $address->getStreet();
@@ -262,5 +262,38 @@ abstract class User extends BaseUser
         $User->setCredentialsExpired($this->credentialsExpired);
 
         return $User;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getDefaultAddress()
+    {
+        return $this->getAddresses()->first();
+    }
+
+    public function getStreetAddress1()
+    {
+        return $this->getDefaultAddress()->getStreet();
+    }
+
+    public function getStreetAddress2()
+    {
+        return $this->getDefaultAddress()->getUnit();
+    }
+
+    public function getState()
+    {
+        return $this->getDefaultAddress()->getArea();
+    }
+
+    public function getZip()
+    {
+        return $this->getDefaultAddress()->getZip();
+    }
+
+    public function getCity()
+    {
+        return $this->getDefaultAddress()->getCity();
     }
 }
