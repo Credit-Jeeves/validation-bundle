@@ -20,7 +20,7 @@ class UserAddressType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'address1',
+            'street',
             'text',
             array(
                 'label' => 'Address',
@@ -28,7 +28,7 @@ class UserAddressType extends AbstractType
             )
         );
         $builder->add(
-            'address2',
+            'unit',
             'text',
             array(
                 'label' => '',
@@ -44,7 +44,7 @@ class UserAddressType extends AbstractType
             )
         );
         $builder->add(
-            'state',
+            'district',
             'choice',
             array(
                 'label' => '',

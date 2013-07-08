@@ -37,13 +37,6 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="unit", type="encrypt", nullable=true)
-     */
-    protected $unit;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="number", type="encrypt", nullable=true)
      * @Assert\NotBlank(
      *     message="error.user.unit.empty",
      *     groups={
@@ -57,6 +50,13 @@ abstract class Address
      *         "user_address_new"
      *     }
      * )
+     */
+    protected $unit;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="number", type="encrypt", nullable=true)
      */
     protected $number;
 
