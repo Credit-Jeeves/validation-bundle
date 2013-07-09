@@ -103,7 +103,7 @@ fixtures:
     score_changed_notification: true
     offer_notification: true
     culture:  %locale%
-    has_data: false
+    has_data: true
     has_report: null
     is_verified: passed
     created_at: '-5 days'
@@ -130,7 +130,7 @@ fixtures:
     score_changed_notification: true
     offer_notification: true
     culture:  %locale%
-    has_data: false
+    has_data: true
     has_report: true
     is_verified: passed
     created_at: '-5 days'
@@ -540,33 +540,6 @@ fixtures:
     is_verified: passed
     created_at: '-5 days'
     updated_at: '-5 days'
-  cjApplicant_21:
-    first_name: ROGER
-    middle_initial: D
-    last_name: STANLEY
-    email: app12@example.com
-    street_address1: '100 50TH ST SW APT 125'
-    street_address2: ''
-    unit_no: ''
-    city: GRAND RAPIDS
-    state: MI
-    zip: '49548'
-    phone_type: 2
-    phone: 6165311574
-    date_of_birth: '1949-12-09'
-    ssn: '666542396'
-    is_active: true
-    invite_code: null
-    password: 1a1dc91c907325c69271ddf0c944bc72
-    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-    score_changed_notification: true
-    offer_notification: true
-    culture:  %locale%
-    has_data: true
-    has_report: null
-    is_verified: passed
-    created_at: '-5 days'
-    updated_at: '-5 days'
   cjApplicant_22:
     first_name: null
     middle_initial: null
@@ -589,35 +562,8 @@ fixtures:
     score_changed_notification: true
     offer_notification: true
     culture:  %locale%
-    has_data: false
+    has_data: true
     has_report: null
     is_verified: failed
     created_at: '-5 days'
     updated_at: '-5 days'
-  cjApplicant_23:
-    first_name: PATRICIA
-    middle_initial: A
-    last_name: ROTHWELL
-    email: app14@example.com
-    street_address1: 'LAUREL CANYON'
-    street_address2: 'CAMBY LN'
-    unit_no: '6949'
-    city: NORTH HOLLYWOOD
-    state: CA
-    zip: '916056801'
-    phone_type: 2
-    phone: 8187859255
-    date_of_birth: '1937-01-01'
-    ssn: '666309041'
-    is_active: true
-    invite_code: 'TESTCODE'
-    password: 1a1dc91c907325c69271ddf0c944bc72
-    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
-    score_changed_notification: true
-    offer_notification: true
-    culture:  %locale%
-    has_data: true
-    has_report: null
-    is_verified: passed
-    created_at: '-50 days'
-    updated_at: '-50 days'

@@ -28,7 +28,7 @@ class DashboardCase extends BaseTestCase
      */
     public function userDashboardVehicle()
     {
-        $this->load(false);
+        $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));

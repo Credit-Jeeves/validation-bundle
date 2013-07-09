@@ -358,8 +358,8 @@ fixtures:
     fraction: '0'
     status: finished
     source: office
-    created_at: '-50'
-    updated_at: '-50'
+    created_at: '-50 days'
+    updated_at: '-50 days'
 
 # additional leads for Emilio (cjApplicant_5)
   cjLead_25:
@@ -375,8 +375,8 @@ fixtures:
     fraction: '0'
     status: active
     source: office
-    created_at: '-50'
-    updated_at: '-50'
+    created_at: '-50 days'
+    updated_at: '-50 days'
   cjLead_26:
     user: cjApplicant_5
     dealer: cjDealerAccount_8
@@ -390,5 +390,5 @@ fixtures:
     fraction: '0'
     status: active
     source: office
-    created_at: '-50'
-    updated_at: '-50'
+    created_at: '-50 days'
+    updated_at: '-50 days'

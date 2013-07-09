@@ -82,6 +82,11 @@ abstract class BaseTestCase extends Base
 
         $khepin->loadFixtures();
         self::$isFixturesLoaded = true;
+        
+        $session = $this->getMink()->getSession('goutte');
+        $baseUrl = 'http://' . static::getContainer()->getParameter('server_name') . '/test.php/sfPhpunit/';
+
+        $session->visit($baseUrl . 'cc');
     }
 
     /**

@@ -91,6 +91,7 @@ class IncentivesController extends Controller
             }
             
         }
+
         // Get satisfactory tradelines
         foreach ($aReportSatisfactoryTradelines as $aTradeline) {
              // we'll work only with opened tradelines
@@ -134,7 +135,7 @@ class IncentivesController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $tradeline = new Tradeline();
-        $tradeline->setCjGroupId($Lead->getCjGroupId());
+        $tradeline->setGroup($Lead->getGroup());
         $tradeline->setUser($Lead->getUser());
         $tradeline->setTradeline(md5($aTradeline['tr_subcode'].$aTradeline['account']));
         $tradeline->setStatus($aTradeline['tr_status']);

@@ -86,7 +86,7 @@ class CheckCase extends BaseTestCase
             "jQuery('.score-current').length > 0"
         );
         $this->assertNotNull($score = $this->page->find('css', '.score-current'));
-        $this->assertEquals(590, $score->getText(), 'Wrong score');
+        $this->assertEquals(536, $score->getText(), 'Wrong score');
         $this->logout();
     }
 
