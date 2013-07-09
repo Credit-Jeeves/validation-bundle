@@ -2108,12 +2108,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Remixjobs/RjEmailBundle.git",
-                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607"
+                "reference": "f596ce16a02e1da69e335a262bddb62c81e3605f"
             },
             "dist": {
                 "type": "zip",
                 "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
-                "reference": "24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
+                "reference": "f596ce16a02e1da69e335a262bddb62c81e3605f",
                 "shasum": ""
             },
             "require": {
