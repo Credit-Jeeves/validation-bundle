@@ -20,6 +20,10 @@ if [ ! -f $DIR/vendor/autoload.php ]; then
 fi
 
 php bin/environment.php --dev || exit 1
+php bin/console doctrine:database:drop --force
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:create --app=rj
+php bin/console --env=dev --app=rj khepin:yamlfixtures:load
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
 #nice -n 5
