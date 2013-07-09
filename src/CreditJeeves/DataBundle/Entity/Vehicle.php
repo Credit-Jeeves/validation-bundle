@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Model\Vehicleline as BaseVehicle;
+use CreditJeeves\DataBundle\Model\Vehicle as BaseVehicle;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\VehicleRepository")

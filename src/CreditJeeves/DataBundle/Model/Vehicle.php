@@ -2,6 +2,8 @@
 
 namespace CreditJeeves\DataBundle\Model;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * @ORM\MappedSuperclass
  */
@@ -277,5 +279,4 @@ abstract class Vehicle
     {
         return $this->down_payment;
     }
-}
 }
