@@ -83,7 +83,7 @@ class UserNewType extends AbstractType //UserType
             array(
                 'label' => 'Date of Birth',
                 'error_bubbling' => true,
-                'format' => 'yyyyMMdd',
+                'format' => 'MMddyyyy',
                 'years' => range(date('Y') - 110, date('Y')),
                 'empty_value' => array(
                         'year' => 'Year',
