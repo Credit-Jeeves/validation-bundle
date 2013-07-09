@@ -1463,5 +1463,5 @@ abstract class User extends BaseUser
     public function getGroupAffilate()
     {
         return $this->group_affilate;
-    }    
+    }
 }

@@ -15,14 +15,14 @@ class Dealer extends User
     }
 
     public function setDealerGroups($dealerGroups)
-    {	
-    	if(!is_array($dealerGroups)) {
-    		$this->addDealerGroup($dealerGroups);
-    		return;
-    	}
+    {
+        if (!is_array($dealerGroups)) {
+            $this->addDealerGroup($dealerGroups);
+            return;
+        }
 
-    	foreach ($dealerGroups as $dealerGroup) {
-    		$this->addDealerGroup($dealerGroup);
-    	}
-    } 
+        foreach ($dealerGroups as $dealerGroup) {
+            $this->addDealerGroup($dealerGroup);
+        }
+    }
 }

@@ -40,7 +40,7 @@ abstract class User extends BaseUser
     {
         $this->enabled = 1;
         $this->updated_at = new \DateTime();
-        if(!$this->getInviteCode()) {
+        if (!$this->getInviteCode()) {
             $this->setInviteCode(strtoupper(base_convert(uniqid(), 16, 36)));
         }
     }

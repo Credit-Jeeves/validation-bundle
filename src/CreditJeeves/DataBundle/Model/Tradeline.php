@@ -30,7 +30,7 @@ abstract class Tradeline
      *     referencedColumnName="id"
      * )
      */
-    protected $user; 
+    protected $user;
 
     /**
      * @ORM\Column(type="bigint")
@@ -47,7 +47,7 @@ abstract class Tradeline
      *     referencedColumnName="id"
      * )
      */
-    protected $group; 
+    protected $group;
 
     /**
      * @ORM\Column(type="string", length=2)
@@ -336,5 +336,5 @@ abstract class Tradeline
     public function getGroup()
     {
         return $this->group;
-    }    
+    }
 }

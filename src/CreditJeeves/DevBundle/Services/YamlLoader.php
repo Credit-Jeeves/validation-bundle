@@ -16,7 +16,7 @@ use Khepin\YamlFixturesBundle\Loader\YamlLoader as KhepinYamlLoader;
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  * @Service("khepin.yaml_loader")
  */
-class YamlLoader extends KhepinYamlLoader 
+class YamlLoader extends KhepinYamlLoader
 {
     
     const LOCALE = 'locale';
@@ -33,7 +33,7 @@ class YamlLoader extends KhepinYamlLoader
         parent::__construct($kernel, $bundles, $directory);
     }
 
-	/**
+    /**
      * Loads the fixtures file by file and saves them to the database
      */
     public function loadFixtures()
@@ -60,43 +60,43 @@ class YamlLoader extends KhepinYamlLoader
 
     protected function placeholder(&$fixture_data)
     {
-    	foreach ($fixture_data['fixtures'] as $modelName => $data) {
-    		foreach ($data as $modelKey => $modelValue) {
-    			
-    			if(is_array($modelValue)) {
-    				continue;
-    			}
+        foreach ($fixture_data['fixtures'] as $modelName => $data) {
+            foreach ($data as $modelKey => $modelValue) {
+                
+                if (is_array($modelValue)) {
+                    continue;
+                }
 
-    			$match = '';
-    		 	preg_match( '/\%(.*?)\%/', $modelValue, $match);	
-    		 	if(empty($match)) {
-    		 		continue;
-    		 	}	
+                $match = '';
+                preg_match('/\%(.*?)\%/', $modelValue, $match);
+                if (empty($match)) {
+                     continue;
+                }
 
-    		 	$parameterName = (isset($match[1]))? $match[1] : false;
-    		 	if(!$parameterName) {
-    		 		continue;
-    		 	}
+                $parameterName = (isset($match[1]))? $match[1] : false;
+                if (!$parameterName) {
+                     continue;
+                }
 
-                if(preg_match('/file:/', $parameterName)) {
+                if (preg_match('/file:/', $parameterName)) {
                     $values = explode(':', $parameterName);
                     $valueParameter = $this->getFile($values[1]);
                 } else {
-        		 	$valueParameter = $this->getParameter($parameterName);
+                     $valueParameter = $this->getParameter($parameterName);
                 }
 
-    		 	if(!$valueParameter) {
-    		 		continue;
-    		 	}
+                if (!$valueParameter) {
+                     continue;
+                }
 
-    		 	$newModelValue = str_replace("%{$parameterName}%", $valueParameter, $modelValue);
-    		 	$fixture_data['fixtures'][$modelName][$modelKey]  = $newModelValue;
-    		}
-    	}
+                 $newModelValue = str_replace("%{$parameterName}%", $valueParameter, $modelValue);
+                 $fixture_data['fixtures'][$modelName][$modelKey]  = $newModelValue;
+            }
+        }
     }
 
     protected function getFile($path)
-    {   
+    {
         return file_get_contents($path);
     }
 
@@ -104,16 +104,16 @@ class YamlLoader extends KhepinYamlLoader
      * Get All Parameters from config
      */
     protected function getParameter($paramName)
-    {   
-    	$container = $this->kernel->getContainer();  
+    {
+        $container = $this->kernel->getContainer();
 
         //@TODO: Hard code, need fix it in future
-        if($paramName === self::LOCALE) {
+        if ($paramName === self::LOCALE) {
             return $container->parameters['kernel.default_locale'];
         }
 
-        if($container->hasParameter($paramName)) {
-    	   return $container->getParameter($paramName);
+        if ($container->hasParameter($paramName)) {
+            return $container->getParameter($paramName);
         }
 
         return false;

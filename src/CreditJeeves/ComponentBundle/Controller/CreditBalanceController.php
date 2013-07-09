@@ -23,7 +23,7 @@ class CreditBalanceController extends Controller
 
     public function indexAction(Report $Report, Score $Score)
     {
-		$nTradelines = $Report->getCountApplicantTotalTradelines();
+        $nTradelines = $Report->getCountApplicantTotalTradelines();
         $dateShortFormat = $this->container->getParameter('date_short');
         $sDate = $Report->getCreatedAt()->format($dateShortFormat);
         

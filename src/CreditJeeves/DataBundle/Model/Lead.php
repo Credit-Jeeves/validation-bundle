@@ -525,7 +525,7 @@ abstract class Lead
         $this->state = $state;
 
         return $this;
-    }    
+    }
 
     /**
      * Get state
@@ -548,7 +548,7 @@ abstract class Lead
         $this->trade_in = $trade_in;
 
         return $this;
-    } 
+    }
     
     /**
      * Set down_payment
@@ -571,5 +571,5 @@ abstract class Lead
     public function getDownPayment()
     {
         return $this->down_payment;
-    }    
+    }
 }

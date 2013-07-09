@@ -217,7 +217,7 @@ abstract class GroupIncentive
     }
 
     public function setIsActive($active)
-    { 
+    {
         $this->is_active = $active;
         return $this;
     }

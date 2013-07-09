@@ -696,7 +696,7 @@ abstract class Group
     public function getCjAffiliateId()
     {
         return $this->cj_affiliate_id;
-    }    
+    }
 
 
     /**
@@ -720,7 +720,7 @@ abstract class Group
     public function getContractDate()
     {
         return $this->contract_date;
-    }    
+    }
 
     /**
      * Set holding_id
@@ -743,7 +743,7 @@ abstract class Group
     public function getHoldingId()
     {
         return $this->holding_id;
-    }    
+    }
 
     /**
      * Set contract
@@ -766,7 +766,7 @@ abstract class Group
     public function getContract()
     {
         return $this->contract;
-    }    
+    }
 
     /**
      * Set created_at
@@ -812,7 +812,7 @@ abstract class Group
     public function getUpdatedAt()
     {
         return $this->updated_at;
-    }     
+    }
 
     /**
      * Add group_affilate
@@ -845,7 +845,7 @@ abstract class Group
     public function getGroupAffilate()
     {
         return $this->group_affilate;
-    }       
+    }
 
     /**
      * Remove tradelines
@@ -865,7 +865,7 @@ abstract class Group
     public function getTradelines()
     {
         return $this->tradelines;
-    }    
+    }
 
     /**
      * Set affiliate
@@ -888,5 +888,5 @@ abstract class Group
     public function getAffiliate()
     {
         return $this->affiliate;
-    }    
+    }
 }

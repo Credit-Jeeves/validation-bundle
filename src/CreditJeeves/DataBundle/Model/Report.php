@@ -50,7 +50,7 @@ abstract class Report
      *     name="cj_applicant_id",
      *     referencedColumnName="id"
      * )
-     */    
+     */
     protected $user;
 
 

@@ -317,7 +317,7 @@ class GroupAffiliate
         if (!$this->getAuthToken()) {
             $this->setAuthToken(self::generateAuthToken($this->getWebsiteUrl(), $this->getExternalKey()));
         }
-    }    
+    }
 
 
     /**

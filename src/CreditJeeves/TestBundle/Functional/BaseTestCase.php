@@ -76,7 +76,7 @@ abstract class BaseTestCase extends Base
        
         $khepin = static::getContainer()->get('khepin.yaml_loader');
 
-        if($reload) {
+        if ($reload) {
             $khepin->purgeDatabase('orm');
         }
 
