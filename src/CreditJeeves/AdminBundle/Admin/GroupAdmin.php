@@ -21,6 +21,18 @@ class GroupAdmin extends Admin
     /**
      * {@inheritdoc}
      */
+    public function createQuery($context = 'list')
+    {
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        $query->add('where', $query->expr()->in($alias.'.type', array('vehicle', 'estate', 'generic')));
+        return $query;
+    }
+    
+    
+    /**
+     * {@inheritdoc}
+     */
     public function getBaseRouteName()
     {
         return 'admin_cj_'.self::TYPE;

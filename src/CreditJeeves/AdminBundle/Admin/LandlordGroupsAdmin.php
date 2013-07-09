@@ -5,6 +5,7 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class LandlordGroupsAdmin extends Admin
 {
@@ -21,8 +22,8 @@ class LandlordGroupsAdmin extends Admin
     {
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-            $query->andWhere($alias.'.type = :type');
-            $query->setParameter('type', 'rent');
+        $query->andWhere($alias.'.type = :type');
+        $query->setParameter('type', 'rent');
         return $query;
     }
 
@@ -58,12 +59,12 @@ class LandlordGroupsAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
-                        'leads' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
-                        ),
-                        'dealers' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
-                        ),
+//                         'leads' => array(
+//                             'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
+//                         ),
+//                         'dealers' => array(
+//                             'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
+//                         ),
                     )
                 )
             );
@@ -72,7 +73,7 @@ class LandlordGroupsAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name');
+            ->add('target_score');
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
