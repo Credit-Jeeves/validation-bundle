@@ -26,9 +26,8 @@
         googletag.pubads().setTargeting("numtl", "{{ sTotal }}");
         googletag.pubads().setTargeting("inq6mo", "{{ sInquiries }}");
         googletag.pubads().setTargeting("brpt", "{{ sBankruptcy }}");
+        googletag.pubads().setTargeting("sim", "20");
         googletag.enableServices();
-
-        GA_googleAddAttr("sim", "{{ simTypeGroup | default('NA') }}");
     });
 </script>
 

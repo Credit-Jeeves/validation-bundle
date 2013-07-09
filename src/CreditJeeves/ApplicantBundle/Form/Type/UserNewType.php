@@ -79,10 +79,17 @@ class UserNewType extends AbstractType //UserType
         );
         $builder->add(
             'date_of_birth',
-            'birthday',
+            'date',
             array(
                 'label' => 'Date of Birth',
                 'error_bubbling' => true,
+                'format' => 'yyyyMMdd',
+                'years' => range(date('Y') - 110, date('Y')),
+                'empty_value' => array(
+                        'year' => 'Year',
+                        'month' => 'Month',
+                        'day' => 'Day',
+                ),
             )
         );
         $builder->add(
