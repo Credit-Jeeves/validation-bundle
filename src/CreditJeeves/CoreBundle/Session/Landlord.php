@@ -15,6 +15,7 @@ class Landlord extends User
      */
     public function setUser(UserEntity $User)
     {
+        $this->data['user_id'] = $User->getId();
         $this->saveToSession(UserType::LANDLORD);
     }
 
