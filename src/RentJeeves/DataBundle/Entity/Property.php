@@ -16,7 +16,7 @@ class Property extends Base
     public function parseGoogleAddress($data)
     {
         $property = array();
-        if (isset($data['address'])){
+        if (isset($data['address'])) {
             $address = $data['address'];
             foreach ($address as $details) {
                 if (isset($details['types'])) {
@@ -50,7 +50,7 @@ class Property extends Base
 
     public function parseGoogleLocation($data)
     {
-        if (isset($data['geometry']['location'])){
+        if (isset($data['geometry']['location'])) {
             $location = $data['geometry']['location'];
             $property['jb'] = $location['jb'];
             $property['kb'] = $location['kb'];

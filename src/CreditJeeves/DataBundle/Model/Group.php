@@ -198,12 +198,25 @@ abstract class Group
      */
     protected $group_dealers;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="\RentJeeves\DataBundle\Entity\Property", inversedBy="property_groups")
+     * @ORM\JoinTable(
+     *      name="rj_group_property",
+     *      joinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="property_id", referencedColumnName="id")}
+     * )
+     */
+    protected $group_properties;
+    
+    
+    
     public function __construct()
     {
         $this->leads = new ArrayCollection();
         $this->group_dealers = new ArrayCollection();
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->group_properties = new ArrayCollection();
     }
 
     /**
@@ -663,5 +676,37 @@ abstract class Group
     public function __toString()
     {
         return $this->getName();
+    }
+    /**
+     * Add property
+     *
+     * @param \RentJeeves\DataBundle\Entity\Property $property
+     * @return User
+     */
+    public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
+    {
+        $this->group_properties[] = $property;
+
+        return $this;
+    }
+
+    /**
+     * Remove property
+     *
+     * @param \RentJeeves\DataBundle\Entity\Property $property
+     */
+    public function removeGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
+    {
+        $this->group_properties->removeElement($property);
+    }
+
+    /**
+     * Get properties
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroupProperties()
+    {
+        return $this->group_properties;
     }
 }

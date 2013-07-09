@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\MappedSuperclass
@@ -125,11 +126,15 @@ abstract class Property
      */
     protected $updatedAt;
 
-//     /**
-//      * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="properties")
-//      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-//      */
-//     protected $user;
+    /**
+     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", mappedBy="group_properties")
+     */
+    protected $property_groups;
+
+    public function __construct()
+    {
+        $this->property_groups = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -149,8 +154,8 @@ abstract class Property
      */
     public function setCountry($country)
     {
-      $this->country = $country;
-      return $this;
+        $this->country = $country;
+        return $this;
     }
 
     /**
@@ -160,7 +165,7 @@ abstract class Property
      */
     public function getCountry()
     {
-      return $this->country;
+        return $this->country;
     }
 
     /**
@@ -171,8 +176,8 @@ abstract class Property
      */
     public function setArea($area)
     {
-      $this->area = $area;
-      return $this;
+        $this->area = $area;
+        return $this;
     }
 
     /**
@@ -182,7 +187,7 @@ abstract class Property
      */
     public function getArea()
     {
-      return $this->area;
+        return $this->area;
     }
 
     /**
@@ -193,8 +198,8 @@ abstract class Property
      */
     public function setCity($city)
     {
-      $this->city = $city;
-      return $this;
+        $this->city = $city;
+        return $this;
     }
 
     /**
@@ -204,7 +209,7 @@ abstract class Property
      */
     public function getCity()
     {
-      return $this->city;
+        return $this->city;
     }
 
     /**
@@ -215,8 +220,8 @@ abstract class Property
      */
     public function setDistrict($district)
     {
-      $this->district = $district;
-      return $this;
+        $this->district = $district;
+        return $this;
     }
 
     /**
@@ -226,7 +231,7 @@ abstract class Property
      */
     public function getDistrict()
     {
-      return $this->district;
+        return $this->district;
     }
 
     /**
@@ -303,8 +308,8 @@ abstract class Property
      */
     public function setJb($jb)
     {
-      $this->jb = $jb;
-      return $this;
+        $this->jb = $jb;
+        return $this;
     }
 
     /**
@@ -314,7 +319,7 @@ abstract class Property
      */
     public function getJb()
     {
-      return $this->jb;
+        return $this->jb;
     }
 
     /**
@@ -325,8 +330,8 @@ abstract class Property
      */
     public function setKb($kb)
     {
-      $this->kb = $kb;
-      return $this;
+        $this->kb = $kb;
+        return $this;
     }
 
     /**
@@ -336,7 +341,7 @@ abstract class Property
      */
     public function getKb()
     {
-      return $this->kb;
+        return $this->kb;
     }
 
     /**
@@ -370,7 +375,6 @@ abstract class Property
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
-    
         return $this;
     }
 
@@ -382,5 +386,38 @@ abstract class Property
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    
+    /**
+     * Add property_landlord
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group
+     * @return Property
+     */
+    public function addPropertyGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    {
+        $this->property_groups[] = $group;
+        return $this;
+    }
+
+    /**
+     * Remove property_group
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     */
+    public function removePropertyGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    {
+        $this->property_groups->removeElement($group);
+    }
+
+    /**
+     * Get property_groups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPropertyGroups()
+    {
+        return $this->property_groups;
     }
 }

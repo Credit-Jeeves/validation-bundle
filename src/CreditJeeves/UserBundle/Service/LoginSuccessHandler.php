@@ -47,7 +47,6 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     {
         $User = $token->getUser();
         $sType = $User->getType();
-
         switch ($sType) {
             case UserType::APPLICANT:
                 $this->container->get('core.session.applicant')->setUser($User);
