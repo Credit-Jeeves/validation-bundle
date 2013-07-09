@@ -33,6 +33,11 @@ class Version20130708134709 extends AbstractMigration
                 updated_at DATETIME NOT NULL,
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
+        $this->addSql(
+            "ALTER TABLE `cj_account_group`
+                CHANGE COLUMN `type`
+                `type` ENUM('vehicle','estate', 'generic', 'rent') NOT NULL DEFAULT 'vehicle'"
+        );
     }
 
     public function down(Schema $schema)
@@ -45,6 +50,11 @@ class Version20130708134709 extends AbstractMigration
         
         $this->addSql(
             "DROP TABLE rj_property"
+        );
+        $this->addSql(
+                "ALTER TABLE `cj_account_group`
+                CHANGE COLUMN `type`
+                `type` ENUM('vehicle','estate') NOT NULL DEFAULT 'vehicle'"
         );
     }
 }
