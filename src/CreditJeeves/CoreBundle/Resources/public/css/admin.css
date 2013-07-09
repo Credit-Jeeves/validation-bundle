@@ -24,3 +24,6 @@
     margin: 1px;
     width: 85px;
 }
+.sonata-ba-list-field {
+    word-break: break-all;
+}
