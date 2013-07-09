@@ -71,6 +71,12 @@ abstract class Group
     protected $children;
 
     /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Landlord", mappedBy="group")
+     */
+    protected $landlords;
+    
+
+    /**
      * @ORM\Column(type="bigint", nullable=true)
      */
     protected $dealer_id;
@@ -217,6 +223,7 @@ abstract class Group
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->group_properties = new ArrayCollection();
+        $this->landlords = new ArrayCollection();
     }
 
     /**
@@ -755,4 +762,38 @@ abstract class Group
     {
         return $this->group_properties;
     }
+
+    
+    /**
+     * Add landlord
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Landlord $landlord
+     * @return Holding
+     */
+    public function addLandlord(\CreditJeeves\DataBundle\Entity\Landlord $landlord)
+    {
+        $this->landlords[] = $landlord;
+    
+        return $this;
+    }
+    
+    /**
+     * Remove Landlord
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Landlord $landlord
+     */
+    public function removeGroup(\CreditJeeves\DataBundle\Entity\Landlord $landlord)
+    {
+        $this->landlords->removeElement($landlord);
+    }
+    
+    /**
+     * Get groups
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLandlords()
+    {
+        return $this->landlords; 
+    }   
 }
