@@ -8,4 +8,6 @@ class GroupType extends Base
 {
     const VEHICLE = 'vehicle';
     const ESTATE = 'estate';
+    const GENERIC = 'generic';
+    const RENT = 'rent';
 }

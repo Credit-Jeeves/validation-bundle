@@ -50,6 +50,7 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new RentJeeves\TenantBundle\TenantBundle(),
             new RentJeeves\LandlordBundle\LandlordBundle(),
+            new RentJeeves\DataBundle\RjDataBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
 
             

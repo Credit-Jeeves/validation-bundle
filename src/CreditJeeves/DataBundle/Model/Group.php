@@ -199,14 +199,14 @@ abstract class Group
     protected $group_dealers;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="group")
+     * @ORM\ManyToMany(targetEntity="\RentJeeves\DataBundle\Entity\Property", inversedBy="property_groups")
+     * @ORM\JoinTable(
+     *      name="rj_group_property",
+     *      joinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="property_id", referencedColumnName="id")}
+     * )
      */
-    protected $group_affilate;
-
-    /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Tradeline", mappedBy="group")
-     */
-    protected $tradelines;
+    protected $group_properties;
 
     public function __construct()
     {
@@ -214,6 +214,7 @@ abstract class Group
         $this->group_dealers = new ArrayCollection();
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->group_properties = new ArrayCollection();
     }
 
     /**
@@ -670,106 +671,9 @@ abstract class Group
         return $this->holding;
     }
 
-    public function __toString()
-    {
-        return $this->getName();
-    }
-
-    /**
-     * Set cj_affiliate_id
-     *
-     * @param integer $cjAffiliateId
-     * @return Group
-     */
-    public function setCjAffiliateId($cjAffiliateId)
-    {
-        $this->cj_affiliate_id = $cjAffiliateId;
     
-        return $this;
-    }
-
     /**
-     * Get cj_affiliate_id
-     *
-     * @return integer 
-     */
-    public function getCjAffiliateId()
-    {
-        return $this->cj_affiliate_id;
-    }
-
-
-    /**
-     * Set contract_date
-     *
-     * @param \DateTime $contractDate
-     * @return Group
-     */
-    public function setContractDate($contractDate)
-    {
-        $this->contract_date = $contractDate;
-    
-        return $this;
-    }
-
-    /**
-     * Get contract_date
-     *
-     * @return \DateTime 
-     */
-    public function getContractDate()
-    {
-        return $this->contract_date;
-    }
-
-    /**
-     * Set holding_id
-     *
-     * @param integer $holdingId
-     * @return Group
-     */
-    public function setHoldingId($holdingId)
-    {
-        $this->holding_id = $holdingId;
-    
-        return $this;
-    }
-
-    /**
-     * Get holding_id
-     *
-     * @return integer 
-     */
-    public function getHoldingId()
-    {
-        return $this->holding_id;
-    }
-
-    /**
-     * Set contract
-     *
-     * @param string $contract
-     * @return Group
-     */
-    public function setContract($contract)
-    {
-        $this->contract = $contract;
-    
-        return $this;
-    }
-
-    /**
-     * Get contract
-     *
-     * @return string 
-     */
-    public function getContract()
-    {
-        return $this->contract;
-    }
-
-    /**
-     * Set created_at
+     * Set createdAt
      *
      * @param \DateTime $createdAt
      * @return Group
@@ -777,14 +681,13 @@ abstract class Group
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-    
         return $this;
     }
 
     /**
-     * Get created_at
+     * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -792,7 +695,7 @@ abstract class Group
     }
 
     /**
-     * Set updated_at
+     * Set updatedAt
      *
      * @param \DateTime $updatedAt
      * @return Group
@@ -800,93 +703,54 @@ abstract class Group
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
-    
         return $this;
     }
 
     /**
-     * Get updated_at
+     * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
         return $this->updated_at;
     }
 
-    /**
-     * Add group_affilate
-     *
-     * @param \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
-     * @return Group
-     */
-    public function addGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
+    public function __toString()
     {
-        $this->group_affilate[] = $groupAffilate;
-    
+        return $this->getName();
+    }
+
+    /**
+     * Add property
+     *
+     * @param \RentJeeves\DataBundle\Entity\Property $property
+     * @return User
+     */
+    public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
+    {
+        $this->group_properties[] = $property;
         return $this;
     }
 
     /**
-     * Remove group_affilate
+     * Remove property
      *
-     * @param \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
+     * @param \RentJeeves\DataBundle\Entity\Property $property
      */
-    public function removeGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
+    public function removeGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
     {
-        $this->group_affilate->removeElement($groupAffilate);
+        $this->group_properties->removeElement($property);
     }
 
-    /**
-     * Get group_affilate
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getGroupAffilate()
-    {
-        return $this->group_affilate;
-    }
 
     /**
-     * Remove tradelines
+     * Get properties
      *
-     * @param \CreditJeeves\DataBundle\Entity\Tradeline $tradelines
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function removeTradeline(\CreditJeeves\DataBundle\Entity\Tradeline $tradelines)
+    public function getGroupProperties()
     {
-        $this->tradelines->removeElement($tradelines);
-    }
-
-    /**
-     * Get tradelines
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getTradelines()
-    {
-        return $this->tradelines;
-    }
-
-    /**
-     * Set affiliate
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Affiliate $affiliate
-     * @return Group
-     */
-    public function setAffiliate(\CreditJeeves\DataBundle\Entity\Affiliate $affiliate = null)
-    {
-        $this->affiliate = $affiliate;
-    
-        return $this;
-    }
-
-    /**
-     * Get affiliate
-     *
-     * @return \CreditJeeves\DataBundle\Entity\Affiliate 
-     */
-    public function getAffiliate()
-    {
-        return $this->affiliate;
+        return $this->group_properties;
     }
 }
