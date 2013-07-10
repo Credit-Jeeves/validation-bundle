@@ -112,6 +112,8 @@ abstract class AppKernel extends Kernel
 
     public function init()
     {
+        date_default_timezone_set('America/New_York');
+        
         $this->exceptionCatcher = new ExceptionCatcher;
         $this->chainNodeManager = new SafeChainNodeManager;
 
