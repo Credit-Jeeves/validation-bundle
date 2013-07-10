@@ -67,6 +67,7 @@ class LandlordAdmin extends Admin
     {
         $formMapper
             ->with('General')
+                //->add('groups', 'sonata_type_choice', array('choices' => array()))
                 ->add('first_name')
                 ->add('middle_initial', null, array('required' => false))
                 ->add('last_name')

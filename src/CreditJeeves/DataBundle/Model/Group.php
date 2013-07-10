@@ -198,12 +198,23 @@ abstract class Group
      */
     protected $group_dealers;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="\RentJeeves\DataBundle\Entity\Property", inversedBy="property_groups")
+     * @ORM\JoinTable(
+     *      name="rj_group_property",
+     *      joinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="property_id", referencedColumnName="id")}
+     * )
+     */
+    protected $group_properties;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
         $this->group_dealers = new ArrayCollection();
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->group_properties = new ArrayCollection();
     }
 
     /**
@@ -225,7 +236,6 @@ abstract class Group
     public function setType($type)
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -248,7 +258,6 @@ abstract class Group
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -271,7 +280,6 @@ abstract class Group
     public function addLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
     {
         $this->leads[] = $leads;
-
         return $this;
     }
 
@@ -305,7 +313,6 @@ abstract class Group
     public function addGroupIncentive(\CreditJeeves\DataBundle\Entity\GroupIncentive $incentive)
     {
         $this->incentives[] = $incentive;
-    
         return $this;
     }
     
@@ -338,7 +345,6 @@ abstract class Group
     public function addGroupDealer(\CreditJeeves\DataBundle\Entity\User $groupDealers)
     {
         $this->group_dealers[] = $groupDealers;
-
         return $this;
     }
 
@@ -371,7 +377,6 @@ abstract class Group
     public function setWebsiteUrl($websiteUrl)
     {
         $this->website_url = $websiteUrl;
-
         return $this;
     }
 
@@ -394,7 +399,6 @@ abstract class Group
     public function setDescription($description)
     {
         $this->description = $description;
-    
         return $this;
     }
 
@@ -417,7 +421,6 @@ abstract class Group
     public function setPhone($phone)
     {
         $this->phone = $phone;
-    
         return $this;
     }
 
@@ -440,7 +443,6 @@ abstract class Group
     public function setLogoUrl($logoUrl)
     {
         $this->logo_url = $logoUrl;
-    
         return $this;
     }
 
@@ -463,7 +465,6 @@ abstract class Group
     public function setFax($fax)
     {
         $this->fax = $fax;
-    
         return $this;
     }
 
@@ -486,7 +487,6 @@ abstract class Group
     public function setStreetAddress1($streetAddress1)
     {
         $this->street_address_1 = $streetAddress1;
-    
         return $this;
     }
 
@@ -509,7 +509,6 @@ abstract class Group
     public function setStreetAddress2($streetAddress2)
     {
         $this->street_address_2 = $streetAddress2;
-    
         return $this;
     }
 
@@ -532,7 +531,6 @@ abstract class Group
     public function setCity($city)
     {
         $this->city = $city;
-    
         return $this;
     }
 
@@ -555,7 +553,6 @@ abstract class Group
     public function setState($state)
     {
         $this->state = $state;
-    
         return $this;
     }
 
@@ -578,7 +575,6 @@ abstract class Group
     public function setZip($zip)
     {
         $this->zip = $zip;
-    
         return $this;
     }
 
@@ -612,7 +608,6 @@ abstract class Group
     public function setCode($code)
     {
         $this->code = $code;
-    
         return $this;
     }
 
@@ -635,7 +630,6 @@ abstract class Group
     public function setTargetScore($targetScore)
     {
         $this->target_score = $targetScore;
-
         return $this;
     }
 
@@ -660,8 +654,85 @@ abstract class Group
         return $this->holding;
     }
 
+    
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     * @return Group
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->created_at = $createdAt;
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     * @return Group
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updated_at = $updatedAt;
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * Add property
+     *
+     * @param \RentJeeves\DataBundle\Entity\Property $property
+     * @return User
+     */
+    public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
+    {
+        $this->group_properties[] = $property;
+        return $this;
+    }
+
+    /**
+     * Remove property
+     *
+     * @param \RentJeeves\DataBundle\Entity\Property $property
+     */
+    public function removeGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
+    {
+        $this->group_properties->removeElement($property);
+    }
+
+    /**
+     * Get properties
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroupProperties()
+    {
+        return $this->group_properties;
     }
 }

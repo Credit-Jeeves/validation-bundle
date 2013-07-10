@@ -68,11 +68,10 @@ function initialize() {
           return false;
         }
         var place = autocomplete.getPlace();
-        data = {'data': {'address': place.address_components, 'geometry': place.geometry}};
+        var data = {'address': place.address_components, 'geometry':place.geometry};
         jQuery.ajax({
           url: Routing.generate('landlord_property_add'),
           type: 'POST',
-          timeout: 85000, // 85 secs
           dataType: 'json',
           data: {'data': JSON.stringify(data, null)},
           error: function(jqXHR, errorThrown, textStatus) {

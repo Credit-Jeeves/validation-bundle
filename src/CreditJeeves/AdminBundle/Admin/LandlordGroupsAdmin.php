@@ -5,18 +5,15 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Show\ShowMapper;
 
-class GroupAdmin extends Admin
+class LandlordGroupsAdmin extends Admin
 {
     /**
      *
      * @var string
      */
     const TYPE = 'group';
-
-    protected $formOptions = array(
-            'validation_groups' => 'holding'
-    );
 
     /**
      * {@inheritdoc}
@@ -25,17 +22,22 @@ class GroupAdmin extends Admin
     {
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-        $query->add('where', $query->expr()->in($alias.'.type', array('vehicle', 'estate', 'generic')));
+        $query->andWhere($alias.'.type = :type');
+        $query->setParameter('type', 'rent');
         return $query;
     }
-    
-    
+
+
+//     protected $formOptions = array(
+//             'validation_groups' => 'holding'
+//     );
+
     /**
      * {@inheritdoc}
      */
     public function getBaseRouteName()
     {
-        return 'admin_cj_'.self::TYPE;
+        return 'admin_rj_'.self::TYPE;
     }
 
     /**
@@ -43,17 +45,13 @@ class GroupAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/cj/'.self::TYPE;
+        return '/rj/'.self::TYPE;
     }
 
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper
             ->addIdentifier('name')
-            ->add('holding')
-            ->add('type')
-            ->add('fee_type')
-            ->add('count_leads')
             ->add(
                 '_action',
                 'actions',
@@ -61,12 +59,12 @@ class GroupAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
-                        'leads' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
-                        ),
-                        'dealers' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
-                        ),
+//                         'leads' => array(
+//                             'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
+//                         ),
+//                         'dealers' => array(
+//                             'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
+//                         ),
                     )
                 )
             );
@@ -75,7 +73,7 @@ class GroupAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name');
+            ->add('target_score');
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)

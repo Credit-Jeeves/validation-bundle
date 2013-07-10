@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use RentJeeves\DataBundle\Entity\Property;
+use Doctrine\DBAL\DBALException;
 
 class PropertyController extends Controller
 {
@@ -33,10 +35,28 @@ class PropertyController extends Controller
      */
     public function addAction()
     {
+        $property = array();
         $request = $this->getRequest();
-        $address = $request->request->all('data');
-        print_r(json_decode($address['data'], true));
-        
-        return new JsonResponse(array());
+        $data = $request->request->all('address');
+        $data = json_decode($data['data'], true);
+        $object = new Property();
+        $property = $object->parseGoogleAddress($data);
+        $object = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($property);
+        $em = $this->getDoctrine()->getManager();
+        if (empty($object)) {
+            $object = new Property();
+            $property += $object->parseGoogleLocation($data);
+            $object->fillPropertyData($property);
+            $em->persist($object);
+            $em->flush();
+        }
+        $user = $this->getUser();
+        try {
+            $user->addLandlordProperty($object);
+            $em->flush();
+        } catch (DBALException $e) {
+                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
+        }
+        return new JsonResponse($object->getId());
     }
 }

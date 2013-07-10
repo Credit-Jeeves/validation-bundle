@@ -1,0 +1,24 @@
+model: CreditJeeves\DataBundle\Entity\Group
+fixtures:
+    Group_1:
+        name:           Vehicle group
+        target_score:   750
+        created_at:     '-60 days'
+        updated_at:     '-8 days'
+    Group_2:
+        name:           Estate group
+        target_score:   850
+        type:           estate
+        created_at:     '-60 days'
+        updated_at:     '-8 days'
+    Group_3:
+        name:           Generic group
+        target_score:   850
+        type:           generic
+        created_at:     '-60 days'
+        updated_at:     '-8 days'
+    Group_4:
+        name:           Rent group
+        type:           rent
+        created_at:     '-60 days'
+        updated_at:     '-8 days'
