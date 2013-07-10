@@ -3693,7 +3693,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/KhepinYamlFixturesBundle.git",
-                "reference": "50d756d3e2b41510d6747d4d9794f63745cbfa8a"
+                "reference": "245c8b8d38d8376dd257806e370bf9090b9fe2e8"
             },
             "require": {
                 "doctrine/data-fixtures": "dev-master",

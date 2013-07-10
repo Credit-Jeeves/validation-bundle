@@ -208,6 +208,11 @@ abstract class Group
      */
     protected $group_properties;
 
+    /**
+    * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="group")
+    */
+    protected $group_affilate;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -752,5 +757,74 @@ abstract class Group
     public function getGroupProperties()
     {
         return $this->group_properties;
+    }
+
+    /**
+     * Set affiliate
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Affiliate $affiliate
+     * @return Group
+     */
+    public function setAffiliate(\CreditJeeves\DataBundle\Entity\Affiliate $affiliate = null)
+    {
+        $this->affiliate = $affiliate;
+    
+        return $this;
+    }
+
+    /**
+     * Get affiliate
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Affiliate 
+     */
+    public function getAffiliate()
+    {
+        return $this->affiliate;
+    }
+
+    /**
+     * Set contract_date
+     *
+     * @param \DateTime $contractDate
+     * @return Group
+     */
+    public function setContractDate($contractDate)
+    {
+        $this->contract_date = $contractDate;
+    
+        return $this;
+    }
+
+    /**
+     * Get contract_date
+     *
+     * @return \DateTime 
+     */
+    public function getContractDate()
+    {
+        return $this->contract_date;
+    }
+
+    /**
+     * Set contract
+     *
+     * @param string $contract
+     * @return Group
+     */
+    public function setContract($contract)
+    {
+        $this->contract = $contract;
+    
+        return $this;
+    }
+
+    /**
+     * Get contract
+     *
+     * @return string 
+     */
+    public function getContract()
+    {
+        return $this->contract;
     }
 }
