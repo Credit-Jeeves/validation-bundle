@@ -70,12 +70,6 @@ abstract class Group
      */
     protected $children;
 
-//     /**
-//      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Landlord", mappedBy="group")
-//      */
-//     protected $landlords;
-    
-
     /**
      * @ORM\Column(type="bigint", nullable=true)
      */
@@ -213,9 +207,7 @@ abstract class Group
      * )
      */
     protected $group_properties;
-    
-    
-    
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -223,7 +215,6 @@ abstract class Group
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->group_properties = new ArrayCollection();
-//        $this->landlords = new ArrayCollection();
     }
 
     /**
@@ -245,7 +236,6 @@ abstract class Group
     public function setType($type)
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -268,7 +258,6 @@ abstract class Group
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -291,7 +280,6 @@ abstract class Group
     public function addLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
     {
         $this->leads[] = $leads;
-
         return $this;
     }
 
@@ -325,7 +313,6 @@ abstract class Group
     public function addGroupIncentive(\CreditJeeves\DataBundle\Entity\GroupIncentive $incentive)
     {
         $this->incentives[] = $incentive;
-    
         return $this;
     }
     
@@ -358,7 +345,6 @@ abstract class Group
     public function addGroupDealer(\CreditJeeves\DataBundle\Entity\User $groupDealers)
     {
         $this->group_dealers[] = $groupDealers;
-
         return $this;
     }
 
@@ -391,7 +377,6 @@ abstract class Group
     public function setWebsiteUrl($websiteUrl)
     {
         $this->website_url = $websiteUrl;
-
         return $this;
     }
 
@@ -414,7 +399,6 @@ abstract class Group
     public function setDescription($description)
     {
         $this->description = $description;
-    
         return $this;
     }
 
@@ -437,7 +421,6 @@ abstract class Group
     public function setPhone($phone)
     {
         $this->phone = $phone;
-    
         return $this;
     }
 
@@ -460,7 +443,6 @@ abstract class Group
     public function setLogoUrl($logoUrl)
     {
         $this->logo_url = $logoUrl;
-    
         return $this;
     }
 
@@ -483,7 +465,6 @@ abstract class Group
     public function setFax($fax)
     {
         $this->fax = $fax;
-    
         return $this;
     }
 
@@ -506,7 +487,6 @@ abstract class Group
     public function setStreetAddress1($streetAddress1)
     {
         $this->street_address_1 = $streetAddress1;
-    
         return $this;
     }
 
@@ -529,7 +509,6 @@ abstract class Group
     public function setStreetAddress2($streetAddress2)
     {
         $this->street_address_2 = $streetAddress2;
-    
         return $this;
     }
 
@@ -552,7 +531,6 @@ abstract class Group
     public function setCity($city)
     {
         $this->city = $city;
-    
         return $this;
     }
 
@@ -575,7 +553,6 @@ abstract class Group
     public function setState($state)
     {
         $this->state = $state;
-    
         return $this;
     }
 
@@ -598,7 +575,6 @@ abstract class Group
     public function setZip($zip)
     {
         $this->zip = $zip;
-    
         return $this;
     }
 
@@ -632,7 +608,6 @@ abstract class Group
     public function setCode($code)
     {
         $this->code = $code;
-    
         return $this;
     }
 
@@ -655,7 +630,6 @@ abstract class Group
     public function setTargetScore($targetScore)
     {
         $this->target_score = $targetScore;
-
         return $this;
     }
 
@@ -702,7 +676,7 @@ abstract class Group
     {
         return $this->created_at;
     }
-    
+
     /**
      * Set updatedAt
      *
@@ -739,7 +713,6 @@ abstract class Group
     public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
     {
         $this->group_properties[] = $property;
-
         return $this;
     }
 
@@ -762,38 +735,4 @@ abstract class Group
     {
         return $this->group_properties;
     }
-
-    
-//     /**
-//      * Add landlord
-//      *
-//      * @param \CreditJeeves\DataBundle\Entity\Landlord $landlord
-//      * @return Holding
-//      */
-//     public function addLandlord(\CreditJeeves\DataBundle\Entity\Landlord $landlord)
-//     {
-//         $this->landlords[] = $landlord;
-    
-//         return $this;
-//     }
-    
-//     /**
-//      * Remove Landlord
-//      *
-//      * @param \CreditJeeves\DataBundle\Entity\Landlord $landlord
-//      */
-//     public function removeLandlord(\CreditJeeves\DataBundle\Entity\Landlord $landlord)
-//     {
-//         $this->landlords->removeElement($landlord);
-//     }
-    
-//     /**
-//      * Get groups
-//      *
-//      * @return \Doctrine\Common\Collections\Collection
-//      */
-//     public function getLandlords()
-//     {
-//         return $this->landlords; 
-//     }   
 }

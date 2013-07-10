@@ -272,12 +272,6 @@ abstract class User extends BaseUser
      */
     protected $holding_id;
 
-//     /**
-//      * 
-//      * @ORM\Column(type="bigint", nullable=true)
-//      */
-//     protected $group_id;
-
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
@@ -419,19 +413,6 @@ abstract class User extends BaseUser
      * )
      */
     protected $holding;
-
-//     /**
-//      * @ORM\ManyToOne(
-//      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-//      *     inversedBy="landlords"
-//      * )
-//      * @ORM\JoinColumn(
-//      *     name="group_id",
-//      *     referencedColumnName="id"
-//      * )
-//      */
-//     protected $group;
-    
 
     /**
      * @ORM\OneToMany(
@@ -1429,16 +1410,4 @@ abstract class User extends BaseUser
     {
         return $this->holding;
     }
-
-//     public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group = null)
-//     {
-//         $this->group = $group;
-//         return $this;
-//     }
-    
-//     public function getGroup()
-//     {
-//         return $this->group;
-//     }
-    
 }
