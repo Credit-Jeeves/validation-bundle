@@ -190,6 +190,16 @@ abstract class User extends BaseUser
         }
     }
 
+    public function getActiveGroup()
+    {
+        $nGroups = $this->getHolding()->getGroups()->count();
+        if ($nGroups > 0) {
+            return $this->getHolding()->getGroups()->first();
+        } else {
+            return new Group();
+        }
+    }
+
     /**
      * @return array
      */

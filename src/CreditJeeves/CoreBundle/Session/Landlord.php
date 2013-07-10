@@ -15,7 +15,7 @@ class Landlord extends User
      */
     public function setUser(UserEntity $User)
     {
-        $this->data['user_id'] = $User->getId();
+        $this->prepareLandlord($User);
         $this->saveToSession(UserType::LANDLORD);
     }
 
@@ -29,5 +29,26 @@ class Landlord extends User
             return $this->findUser($data['user_id']);
         }
         return new UserEntity();
+    }
+
+    public function prepareLandlord(UserEntity $User)
+    {
+        $Lead = $User->getActiveGroup();
+        $this->data['user_id'] = $User->getId();
+        $this->data['group_id'] = $Lead->getId();
+    }
+    
+    /**
+     * @return integer
+     */
+    public function getGroupId()
+    {
+        $data = $this->getFromSession(UserType::LANDLORD);
+    
+        return isset($data['group_id']) ? $data['group_id'] : null;
+    }
+    public function getGroup()
+    {
+        return $this->em->getRepository('DataBundle:Group')->find($this->getGroupId());
     }
 }

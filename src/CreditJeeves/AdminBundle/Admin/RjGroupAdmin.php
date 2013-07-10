@@ -34,11 +34,17 @@ class RjGroupAdmin extends Admin
     {
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-        $query->add('where', $query->expr()->in($alias.'.type', array('rent')));
+        $query->add('where', $query->expr()->in($alias.'.type', array(GroupType::RENT)));
         return $query;
     }
-    
-        
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prePersist($object)
+    {
+        $object->setType(GroupType::RENT);
+    }
 
     /**
      * {@inheritdoc}
@@ -55,8 +61,6 @@ class RjGroupAdmin extends Admin
             ->add('holding')
             ->add('affiliate')
             ->add('type')
-            ->add('fee_type')
-            ->add('count_leads')
             ->add(
                 '_action',
                 'actions',
@@ -64,11 +68,11 @@ class RjGroupAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
-                        'leads' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
+                        'tenants' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_tenants.html.twig'
                         ),
-                        'dealers' => array(
-                            'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
+                        'landlords' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_landlords.html.twig'
                         ),
                     )
                 )
@@ -78,10 +82,18 @@ class RjGroupAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('holding', 'sonata_type_model')
-            ->add('name')
-            ->add('affiliate', 'sonata_type_model')
-            ->add('type', 'choice', array('choices' => GroupType::getTypeList()));
+            ->add(
+                'holding',
+                'sonata_type_model'
+            )
+            ->add(
+                'affiliate',
+                'sonata_type_model',
+                array(
+                    'empty_value' => 'None'
+                )
+            )
+            ->add('name');
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
