@@ -63,11 +63,6 @@ class HoldingAdmin extends Admin
     public function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->with('Holding')
-                ->add('name')
-            ->end()
-            ->with('Groups')
-                ->add('groups', 'sonata_type_model', array('expanded' => true, 'multiple' => true))
-            ->end();
+                ->add('name');
     }
 }

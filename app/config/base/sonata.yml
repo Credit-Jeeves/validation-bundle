@@ -19,9 +19,7 @@ sonata_admin:
           admin: ~
           CreditJeeves:
             items:
-              - sonata.admin.holding
-              - sonata.admin.group
-              - sonata.admin.affiliate
+              - sonata.admin.cj_group
               - sonata.admin.dealer
               - sonata.admin.applicant
           RentJeeves: ~
