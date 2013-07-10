@@ -57,6 +57,6 @@ class Group extends BaseGroup
 
     public function __toString()
     {
-        return $this->getName();
+        return $this->getName() ? $this->getName() : 'New';
     }
 }
