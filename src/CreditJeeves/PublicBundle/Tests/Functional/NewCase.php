@@ -28,12 +28,12 @@ class NewCase extends BaseTestCase
     public function userNewForm()
     {
         $this->load($this->fixtures, true);
-        $this->setDefaultSession('symfony');
+        //$this->setDefaultSession('symfony');
         $this->session->visit($this->getUrl() . 'new');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $form->pressButton('common.get.score');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
-        $this->assertCount(11, $errors, 'Wrong number of errors');
+        $this->assertCount(10, $errors, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(

@@ -116,14 +116,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="string")
-     * @Assert\NotBlank(
-     *     message="error.user.unit.empty",
-     *     groups={
-     *         "user_address"
-     *     }
-     * )
      * @Assert\Length(
-     *     min=1,
      *     max=31,
      *     groups={
      *         "user_address"
