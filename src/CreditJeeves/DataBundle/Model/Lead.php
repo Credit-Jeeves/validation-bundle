@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Enum\LeadStatus;
+use CreditJeeves\DataBundle\Enum\SourceType;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -97,9 +98,9 @@ abstract class Lead
     protected $status = LeadStatus::NEWONE;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="SourceType")
      */
-    protected $source;
+    protected $source = SourceType::OFFICE;
 
     /**
      * @ORM\Column(type="datetime")

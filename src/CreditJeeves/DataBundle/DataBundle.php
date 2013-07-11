@@ -29,6 +29,7 @@ class DataBundle extends Bundle
             Type::addType('OrderStatus', 'CreditJeeves\DataBundle\Enum\OrderStatus');
             Type::addType('OperationType', 'CreditJeeves\DataBundle\Enum\OperationType');
             Type::addType('LeadStatus', 'CreditJeeves\DataBundle\Enum\LeadStatus');
+            Type::addType('SourceType', 'CreditJeeves\DataBundle\Enum\SourceType');
 
             $this->container->get('doctrine.orm.default_entity_manager')
                 ->getConnection()
