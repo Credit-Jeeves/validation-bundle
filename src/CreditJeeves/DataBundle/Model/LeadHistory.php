@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -85,6 +86,7 @@ abstract class LeadHistory extends AbstractLogEntry
      * @var \DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
+     * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
 
