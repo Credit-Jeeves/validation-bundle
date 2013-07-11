@@ -24,6 +24,7 @@ class GroupsController extends Controller
         }
         return array(
             'aGroups' => $result,
+            'nCurrent' => $this->get('core.session.landlord')->getGroupId()
             );
     }
 }

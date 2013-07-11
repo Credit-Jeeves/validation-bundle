@@ -14,6 +14,9 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        return array('nGroups' => 2);
+        $groups = $this->getGroups();
+        return array(
+            'nGroups' => $groups->count(),
+        );
     }
 }

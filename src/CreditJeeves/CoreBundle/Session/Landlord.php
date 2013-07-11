@@ -37,16 +37,28 @@ class Landlord extends User
         $this->data['user_id'] = $User->getId();
         $this->data['group_id'] = $Lead->getId();
     }
+
+    /**
+     *
+     * @param integer $nLeadId
+     */
+    public function setGroupId($nGroupId)
+    {
+        $this->data = $this->getFromSession(UserType::LANDLORD);
+        $this->data['group_id'] = $nGroupId;
+        $this->saveToSession(UserType::LANDLORD);
+    }
     
+
     /**
      * @return integer
      */
     public function getGroupId()
     {
         $data = $this->getFromSession(UserType::LANDLORD);
-    
         return isset($data['group_id']) ? $data['group_id'] : null;
     }
+
     public function getGroup()
     {
         return $this->em->getRepository('DataBundle:Group')->find($this->getGroupId());

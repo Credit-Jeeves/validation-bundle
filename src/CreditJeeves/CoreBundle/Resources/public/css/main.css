@@ -109,7 +109,11 @@ h5 {
     font-size: 16px;
 }
 
-
+.select-entity {
+    position: absolute;
+    right: 20px;
+    top: 105px;
+}
 
 /** Main content part **/
 .body {

@@ -14,13 +14,7 @@ class PropertiesController extends Controller
      */
     public function indexAction()
     {
-        $groups = $this->getUser()->getHolding()->getGroups();
-        foreach ($groups as $group) {
-            $properties = $group->getGroupProperties();
-            foreach ($properties as $property) {
-                echo $property->getStreet().' '.$property->getNumber().'<br>';
-            }
-        }
-        return array();
+        $groups = $this->getGroups();
+        return array('nGroups' => $groups->count());
     }
 }

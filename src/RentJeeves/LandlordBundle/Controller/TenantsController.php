@@ -14,6 +14,7 @@ class TenantsController extends Controller
      */
     public function indexAction()
     {
-        return array();
+        $groups = $this->getGroups();
+        return array('nGroups' => $groups->count());
     }
 }
