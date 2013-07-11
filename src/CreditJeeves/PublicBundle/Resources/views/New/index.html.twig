@@ -38,7 +38,7 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-                <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }} novalidate>
+                <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }}>
                     {{ form_errors(form) }}
                     <fieldset>
                         {% include 'ComponentBundle:User:code.html.twig'     with { 'form' : form } %}
