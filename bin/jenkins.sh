@@ -20,9 +20,7 @@ if [ ! -f $DIR/vendor/autoload.php ]; then
 fi
 
 php bin/environment.php --dev || exit 1
-php ./bin/console doctrine:database:drop --force --env=test
-php ./bin/console doctrine:database:create --env=test
-php ./bin/console doctrine:schema:create --env=test
+sh install.sh
 echo "##### RUN PHPUNIT ALL TESTS #####"
 #nice -n 5
 php -C -q -d memory_limit=1024M $PHPUNIT_PATH \
