@@ -60,7 +60,7 @@ class NewController extends Controller
                     $User->setIsVerified('none');
                     $User->setType('applicant');
                     $User->setInviteCode($Lead->getGroup()->getCode());
-
+                    $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
                     $em = $this->getDoctrine()->getManager();
                     $User->setPassword(
                         $this->container->get('user.security.encoder.digest')
