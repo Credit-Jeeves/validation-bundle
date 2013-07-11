@@ -1,0 +1,10 @@
+        <div class="group-select">
+          <select id="holding-group">
+            {% for group in aGroups %}
+              <option value="{{ group.id }}">
+                {{ group.name }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+

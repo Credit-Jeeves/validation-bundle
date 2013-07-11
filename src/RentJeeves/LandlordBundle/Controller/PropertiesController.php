@@ -18,7 +18,7 @@ class PropertiesController extends Controller
         foreach ($groups as $group) {
             $properties = $group->getGroupProperties();
             foreach ($properties as $property) {
-                //echo $property->getStreet();
+                echo $property->getStreet().' '.$property->getNumber().'<br>';
             }
         }
         return array();

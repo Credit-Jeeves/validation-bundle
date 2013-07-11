@@ -31,6 +31,12 @@
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
 {% endblock %}
 
+{% block header %}
+    {% if nGroups > 1 %}
+        {{ render(controller('ComponentBundle:Groups:index')) }}
+    {% endif %}
+{% endblock %}
+
 {% block tabs %}
         <div class="top-nav">
     {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': 'CoreBundle:Menu:user_tabs.html.twig' }) }}
