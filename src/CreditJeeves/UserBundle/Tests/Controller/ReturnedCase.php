@@ -32,7 +32,6 @@ class ReturnedCase extends BaseTestCase
     public function userReturned()
     {
         $this->login('emilio@example.com', 'pass');
-//        echo $this->page->getContent();exit;
         $this->assertNotNull($form = $this->page->find('css', '#id_returned_form'));
         $form->pressButton('common.get.score');
         $this->assertCount(7, $this->page->findAll('css', '.error_list li'));
