@@ -244,7 +244,7 @@ abstract class User extends BaseUser
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $has_data = false;
+    protected $has_data = true;
 
     /**
      * @ORM\Column(type="UserIsVerified")
