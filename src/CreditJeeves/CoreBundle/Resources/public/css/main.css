@@ -195,6 +195,10 @@ h5 {
     margin: 0;
 }
 
+.margin-left-none {
+    margin-left: 0;
+}
+
 .border {
     border: none;
     padding: 20px;

@@ -124,6 +124,7 @@ class UserNewType extends AbstractType //UserType
             array(
                 'label' => '',
                 'error_bubbling' => true,
+                'required' => false,
             )
         );
         $builder->add(
