@@ -70,6 +70,9 @@ class AjaxController extends Controller
      */
     public function setGroup()
     {
-        
+        $request = $this->getRequest();
+        $data = $request->request->all('group_id');
+        $this->get("core.session.landlord")->setGroupId($data['group_id']);
+        return new JsonResponse($data);
     }
 }
