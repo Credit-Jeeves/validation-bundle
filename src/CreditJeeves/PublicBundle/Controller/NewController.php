@@ -51,13 +51,16 @@ class NewController extends Controller
             $form->bind($request);
             if ($form->isValid()) {
                 $Lead = $form->getData();
+
                 if ($this->validateLead($Lead)) {
+
                     $User = $Lead->getUser();
                     $User->setCulture($request->getLocale());
                     $User->setUsername($User->getEmail());
                     $User->setIsVerified('none');
                     $User->setType('applicant');
-
+                    $User->setInviteCode($Lead->getGroup()->getCode());
+                    $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
                     $em = $this->getDoctrine()->getManager();
                     $User->setPassword(
                         $this->container->get('user.security.encoder.digest')

@@ -65,4 +65,19 @@ class Property extends Base
         }
         return $this;
     }
+
+    public function getItem()
+    {
+        $item = array();
+        $item['country'] = $this->getCountry();
+        $item['area'] = $this->getArea();
+        $item['city'] = $this->getCity();
+        $item['address'] = $this->getAddress();
+        return $item;
+    }
+
+    public function getAddress()
+    {
+        return $this->getStreet().' '.$this->getNumber();
+    }
 }

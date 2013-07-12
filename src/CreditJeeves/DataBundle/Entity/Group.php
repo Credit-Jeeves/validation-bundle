@@ -13,18 +13,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 class Group extends BaseGroup
 {
     /**
-     * @todo move to GroupType Enum
-     * @var string
-     */
-    const TYPE_VEHICLE = 'vehicle';
-    
-    /**
-     * @todo move to GroupType Enum
-     * @var string
-     */
-    const TYPE_ESTATE = 'estate';
-
-    /**
      * @return array
      */
     public function getAddressArray()
@@ -69,6 +57,6 @@ class Group extends BaseGroup
 
     public function __toString()
     {
-        return $this->getName();
+        return $this->getName() ? $this->getName() : 'New';
     }
 }

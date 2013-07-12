@@ -5,8 +5,9 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use CreditJeeves\DataBundle\Enum\GroupType;
 
-class GroupAdmin extends Admin
+class CjGroupAdmin extends Admin
 {
     /**
      *
@@ -21,6 +22,14 @@ class GroupAdmin extends Admin
     /**
      * {@inheritdoc}
      */
+    public function getBaseRouteName()
+    {
+        return 'admin_cj_'.self::TYPE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function createQuery($context = 'list')
     {
         $query = parent::createQuery($context);
@@ -29,14 +38,7 @@ class GroupAdmin extends Admin
         return $query;
     }
     
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRouteName()
-    {
-        return 'admin_cj_'.self::TYPE;
-    }
+        
 
     /**
      * {@inheritdoc}
@@ -51,6 +53,7 @@ class GroupAdmin extends Admin
         $listMapper
             ->addIdentifier('name')
             ->add('holding')
+            ->add('affiliate')
             ->add('type')
             ->add('fee_type')
             ->add('count_leads')
@@ -75,7 +78,10 @@ class GroupAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('name');
+            ->add('holding', 'sonata_type_model')
+            ->add('name')
+            ->add('affiliate', 'sonata_type_model')
+            ->add('type', 'choice', array('choices' => GroupType::getTypeList()));
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)

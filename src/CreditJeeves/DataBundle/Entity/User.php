@@ -192,6 +192,16 @@ abstract class User extends BaseUser
         }
     }
 
+    public function getActiveGroup()
+    {
+        $nGroups = $this->getHolding()->getGroups()->count();
+        if ($nGroups > 0) {
+            return $this->getHolding()->getGroups()->first();
+        } else {
+            return new Group();
+        }
+    }
+
     /**
      * @return array
      */
@@ -229,13 +239,11 @@ abstract class User extends BaseUser
         $User->setCreatedAt($this->getCreatedAt()); // we'll store user's created date
         $User->setEmail($this->getEmail());
         $User->setHasData(false);
-
         // TODO recheck
         $User->setEnabled($this->enabled);
         $User->setLocked($this->locked);
         $User->setExpired($this->expired);
         $User->setCredentialsExpired($this->credentialsExpired);
-
         return $User;
     }
 }

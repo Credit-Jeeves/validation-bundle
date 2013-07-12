@@ -1,0 +1,38 @@
+<div class="pod-large pod-border shadow">
+    <div id="properties-block" class="property-list">
+        <table class="zebra-grid">
+            <tr>
+                <td colspan="4"><a href="{{ path('landlord_property_new')}}">New Property</a></td>
+            </tr>
+
+    <!-- ko if: countProperties() -->
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        <!-- ko foreach: { data: aProperties() } -->
+            <tr>
+                <td data-bind="text: country"></td>
+                <td data-bind="text: area"></td>
+                <td data-bind="text: city"></td>
+                <td data-bind="text: address"></td>
+            </tr>
+        <!-- /ko -->
+    <!-- /ko -->
+        </table>
+        <div class="clearboth"></div>
+    </div>
+    
+</div>
+
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+    var PropertiesViewModel = new Properties();
+    PropertiesViewModel.aProperties({% autoescape false %}{{ jsonProperties }}{% endautoescape %});
+    ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
+});
+//-->
+</script>

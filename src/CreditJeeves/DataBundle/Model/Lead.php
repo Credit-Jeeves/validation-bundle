@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Enum\LeadSource;
 use CreditJeeves\DataBundle\Enum\LeadStatus;
+use CreditJeeves\DataBundle\Enum\SourceType;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;

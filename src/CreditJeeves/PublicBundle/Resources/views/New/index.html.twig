@@ -39,11 +39,7 @@
                 </div>
             {% endfor %}
                 <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }}>
-                    {% if form_errors(form) | length > 0 %}
-                    <div class="flash-error">
-                        {{ form_errors(form) }}
-                    </div>
-                    {% endif %}
+                    {{ form_errors(form) }}
                     <fieldset>
                         {% include 'ComponentBundle:User:code.html.twig'     with { 'form' : form } %}
                         <div class="clearboth"></div>

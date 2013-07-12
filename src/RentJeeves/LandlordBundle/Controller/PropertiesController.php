@@ -9,11 +9,19 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class PropertiesController extends Controller
 {
     /**
-     * @Route("/properties", name="landlord_properties")
+     * @Route(
+     *     "/properties",
+     *     name="landlord_properties",
+     *     options={"expose"=true}
+     * )
      * @Template()
      */
     public function indexAction()
     {
-        return array();
+        $groups = $this->getGroups();
+        return array(
+            'nGroups' => $groups->count(),
+            'Group' => $this->getCurrentGroup(),
+        );
     }
 }

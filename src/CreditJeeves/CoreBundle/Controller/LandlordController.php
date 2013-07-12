@@ -12,4 +12,15 @@ class LandlordController extends Controller
             return $user;
         }
     }
+
+    public function getGroups()
+    {
+        $holding = $this->getUser()->getHolding();
+        return $holding->getGroups() ? $holding->getGroups() : null;
+    }
+
+    public function getCurrentGroup()
+    {
+        return $this->get('core.session.landlord')->getGroup();
+    }
 }

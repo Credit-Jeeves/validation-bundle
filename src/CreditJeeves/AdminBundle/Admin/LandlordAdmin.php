@@ -2,6 +2,7 @@
 namespace CreditJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\UserType;
+
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -44,6 +45,7 @@ class LandlordAdmin extends Admin
     {
         $listMapper
             ->add('full_name')
+            ->add('holding')
             ->add('email')
             ->add('is_active')
             ->add('is_super_admin')
@@ -65,9 +67,13 @@ class LandlordAdmin extends Admin
 
     public function configureFormFields(FormMapper $formMapper)
     {
+        
         $formMapper
             ->with('General')
-                //->add('groups', 'sonata_type_choice', array('choices' => array()))
+                ->add(
+                    'holding',
+                    'sonata_type_model'
+                )
                 ->add('first_name')
                 ->add('middle_initial', null, array('required' => false))
                 ->add('last_name')
