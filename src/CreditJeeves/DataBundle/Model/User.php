@@ -115,7 +115,7 @@ abstract class User extends BaseUser
     protected $street_address2;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\Length(
      *     max=31,
      *     groups={

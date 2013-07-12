@@ -75,4 +75,21 @@ class AjaxController extends Controller
         $this->get("core.session.landlord")->setGroupId($data['group_id']);
         return new JsonResponse($data);
     }
+
+    /**
+     * @Route(
+     *     "/property/list",
+     *     name="landlord_properties_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function getPropertiesList()
+    {
+        $data = array();
+        
+        return new JsonResponse($data);
+    }
 }

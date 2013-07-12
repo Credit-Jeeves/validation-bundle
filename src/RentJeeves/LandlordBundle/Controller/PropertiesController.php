@@ -9,7 +9,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class PropertiesController extends Controller
 {
     /**
-     * @Route("/properties", name="landlord_properties", options={"expose"=true})
+     * @Route(
+     *     "/properties",
+     *     name="landlord_properties",
+     *     options={"expose"=true}
+     * )
      * @Template()
      */
     public function indexAction()
