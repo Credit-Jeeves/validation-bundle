@@ -1,0 +1,9 @@
+model: CreditJeeves\DataBundle\Entity\GroupAffiliate
+fixtures:
+  cjAccountGroupAffiliate_1:
+    group: 	      cjAccountGroup_1
+    user:         cjDealerAccount_2
+    website_url:    "%server_name%/dealer_test.php/test/iframe/key/DXFYBYHX4H"
+    external_key:   DXFYBYHX4H
+    auth_token:		token
+    culture:        %locale%

@@ -502,4 +502,74 @@ abstract class Lead
     {
         $this->updated_at = new \DateTime();
     }
+
+
+    /**
+     * Get state
+     *
+     * @return integer
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set state
+     *
+     * @param integer $state
+     * @return Lead
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return boolean
+     */
+    public function getTradeIn()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set trade_in
+     *
+     * @param boolean $trade_in
+     * @return Lead
+     */
+    public function setTradeIn($trade_in)
+    {
+        $this->trade_in = $trade_in;
+
+        return $this;
+    }
+    
+    /**
+     * Set down_payment
+     *
+     * @param integer $downPayment
+     * @return Lead
+     */
+    public function setDownPayment($downPayment)
+    {
+        $this->down_payment = $downPayment;
+    
+        return $this;
+    }
+
+    /**
+     * Get down_payment
+     *
+     * @return integer 
+     */
+    public function getDownPayment()
+    {
+        return $this->down_payment;
+    }
 }

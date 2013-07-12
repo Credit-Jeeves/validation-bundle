@@ -1,0 +1,122 @@
+model: CreditJeeves\DataBundle\Entity\Score
+fixtures:
+  cjApplicantScore_1:
+    user: cjApplicant_1
+    score: '647'
+    created_date: '-5 days'
+  cjApplicantScore_2:
+    user: cjApplicant_1
+    score: '650'
+    created_date: '-4 days'
+  cjApplicantScore_3:
+    user: cjApplicant_1
+    score: '680'
+    created_date: '-3 days'
+  cjApplicantScore_4:
+    user: cjApplicant_1
+    score: '710'
+    created_date: '-2 days'
+  cjApplicantScore_5:
+    user: cjApplicant_2
+    score: '536'
+    created_date: '-5 days'
+  cjApplicantScore_6:
+    user: cjApplicant_3
+    score: '600'
+    created_date: '-50 days'
+  cjApplicantScore_7:
+    user: cjApplicant_3
+    score: '500'
+    created_date: '-40 days'
+  cjApplicantScore_8:
+    user: cjApplicant_3
+    score: '530'
+    created_date: '-30 days'
+  cjApplicantScore_9:
+    user: cjApplicant_3
+    score: '536'
+    created_date: '-20 days'
+  cjApplicantScore_10:
+    user: cjApplicant_5
+    score: '600'
+    created_date: '-5 days'
+  cjApplicantScore_11:
+    user: cjApplicant_5
+    score: '300'
+    created_date: '-4 days'
+  cjApplicantScore_12:
+    user: cjApplicant_5
+    score: '400'
+    created_date: '-3 days'
+  cjApplicantScore_13:
+    user: cjApplicant_5
+    score: '516'
+    created_date: '-2 days'
+  cjApplicantScore_14:
+    user: cjApplicant_5
+    score: '530'
+    created_date: '-1 days'
+  cjApplicantScore_15:
+    user: cjApplicant_23
+    score: '450'
+    created_date: '-50 days'
+  cjApplicantScore_16:
+    user: cjApplicant_23
+    score: '460'
+    created_date: '-45 days'
+  cjApplicantScore_17:
+    user: cjApplicant_23
+    score: '500'
+    created_date: '-30 days'
+  cjApplicantScore_18:
+    user: cjApplicant_23
+    score: '520'
+    created_date: '-20 days'
+  cjApplicantScore_19:
+    user: cjApplicant_23
+    score: '600'
+    created_date: '-15 days'
+  cjApplicantScore_20:
+    user: cjApplicant_23
+    score: '650'
+    created_date: '-5 days'
+  cjApplicantScore_21:
+    user: cjApplicant_22
+    score: '450'
+    created_date: '-50 days'
+  cjApplicantScore_22:
+    user: cjApplicant_22
+    score: '460'
+    created_date: '-45 days'
+  cjApplicantScore_23:
+    user: cjApplicant_22
+    score: '500'
+    created_date: '-30 days'
+  cjApplicantScore_24:
+    user: cjApplicant_22
+    score: '520'
+    created_date: '-20 days'
+  cjApplicantScore_25:
+    user: cjApplicant_22
+    score: '600'
+    created_date: '-15 days'
+  cjApplicantScore_26:
+    user: cjApplicant_22
+    score: '550'
+    created_date: '-5 days'
+  cjApplicantScore_27:
+    user: cjApplicant_22
+    score: '550'
+    created_date: '-4 days'
+  cjApplicantScore_28:
+    user: cjApplicant_22
+    score: '550'
+    created_date: '-3 days'
+  cjApplicantScore_29:
+    user: cjApplicant_22
+    score: '550'
+    created_date: '-2 days'
+  cjApplicantScore_30:
+    user: cjApplicant_22
+    score: '550'
+    created_date: '-1 days'

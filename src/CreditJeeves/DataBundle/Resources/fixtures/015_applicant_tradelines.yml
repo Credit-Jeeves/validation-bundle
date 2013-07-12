@@ -1,0 +1,13 @@
+model: CreditJeeves\DataBundle\Entity\Tradeline
+fixtures:
+  cjApplicantTradeline_1:
+    group: cjAccountGroup_2
+    user: cjApplicant_8
+    status: 56
+    tradeline: 2861af59828d52986478e107e668b275
+  cjApplicantTradeline_2:
+    group: cjAccountGroup_2
+    user: cjApplicant_8
+    status: 97
+    tradeline: a40f772bd70becb8d3b290751eac3c84
+    

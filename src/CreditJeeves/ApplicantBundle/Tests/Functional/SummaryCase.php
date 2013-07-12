@@ -8,26 +8,12 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase;
  */
 class SummaryCase extends BaseTestCase
 {
-    protected $fixtures = array(
-        '001_cj_account_group.yml',
-        '002_cj_admin_account.yml',
-        '003_cj_dealer_account.yml',
-        '004_cj_applicant.yml',
-        '005_cj_lead.yml',
-        '006_cj_applicant_report.yml',
-        '007_cj_applicant_score.yml',
-        '010_cj_affiliate.yml',
-        '013_cj_holding_account.yml',
-        '020_email.yml',
-        '021_email_translations.yml',
-    );
-
     /**
      * @test
      */
     public function userCreditBalance()
     {
-        $this->load($this->fixtures, true);
+        $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('emilio@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
@@ -44,7 +30,7 @@ class SummaryCase extends BaseTestCase
      */
     public function userCreditSummary()
     {
-        $this->load($this->fixtures, false);
+        $this->load(false);
         $this->setDefaultSession('symfony');
         $this->login('emilio@example.com', 'pass');
         $this->page->clickLink('tabs.summary');

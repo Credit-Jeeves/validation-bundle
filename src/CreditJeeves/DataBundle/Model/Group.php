@@ -208,6 +208,11 @@ abstract class Group
      */
     protected $group_properties;
 
+    /**
+    * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="group")
+    */
+    protected $group_affilate;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -236,6 +241,7 @@ abstract class Group
     public function setType($type)
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -258,6 +264,7 @@ abstract class Group
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -280,6 +287,7 @@ abstract class Group
     public function addLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
     {
         $this->leads[] = $leads;
+
         return $this;
     }
 
@@ -313,6 +321,7 @@ abstract class Group
     public function addGroupIncentive(\CreditJeeves\DataBundle\Entity\GroupIncentive $incentive)
     {
         $this->incentives[] = $incentive;
+    
         return $this;
     }
     
@@ -345,6 +354,7 @@ abstract class Group
     public function addGroupDealer(\CreditJeeves\DataBundle\Entity\User $groupDealers)
     {
         $this->group_dealers[] = $groupDealers;
+
         return $this;
     }
 
@@ -377,6 +387,7 @@ abstract class Group
     public function setWebsiteUrl($websiteUrl)
     {
         $this->website_url = $websiteUrl;
+
         return $this;
     }
 
@@ -399,6 +410,7 @@ abstract class Group
     public function setDescription($description)
     {
         $this->description = $description;
+    
         return $this;
     }
 
@@ -421,6 +433,7 @@ abstract class Group
     public function setPhone($phone)
     {
         $this->phone = $phone;
+    
         return $this;
     }
 
@@ -443,6 +456,7 @@ abstract class Group
     public function setLogoUrl($logoUrl)
     {
         $this->logo_url = $logoUrl;
+    
         return $this;
     }
 
@@ -465,6 +479,7 @@ abstract class Group
     public function setFax($fax)
     {
         $this->fax = $fax;
+    
         return $this;
     }
 
@@ -487,6 +502,7 @@ abstract class Group
     public function setStreetAddress1($streetAddress1)
     {
         $this->street_address_1 = $streetAddress1;
+    
         return $this;
     }
 
@@ -509,6 +525,7 @@ abstract class Group
     public function setStreetAddress2($streetAddress2)
     {
         $this->street_address_2 = $streetAddress2;
+    
         return $this;
     }
 
@@ -531,6 +548,7 @@ abstract class Group
     public function setCity($city)
     {
         $this->city = $city;
+    
         return $this;
     }
 
@@ -553,6 +571,7 @@ abstract class Group
     public function setState($state)
     {
         $this->state = $state;
+    
         return $this;
     }
 
@@ -575,6 +594,7 @@ abstract class Group
     public function setZip($zip)
     {
         $this->zip = $zip;
+    
         return $this;
     }
 
@@ -608,6 +628,7 @@ abstract class Group
     public function setCode($code)
     {
         $this->code = $code;
+    
         return $this;
     }
 
@@ -630,6 +651,7 @@ abstract class Group
     public function setTargetScore($targetScore)
     {
         $this->target_score = $targetScore;
+
         return $this;
     }
 
@@ -726,6 +748,7 @@ abstract class Group
         $this->group_properties->removeElement($property);
     }
 
+
     /**
      * Get properties
      *
@@ -734,5 +757,74 @@ abstract class Group
     public function getGroupProperties()
     {
         return $this->group_properties;
+    }
+
+    /**
+     * Set affiliate
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Affiliate $affiliate
+     * @return Group
+     */
+    public function setAffiliate(\CreditJeeves\DataBundle\Entity\Affiliate $affiliate = null)
+    {
+        $this->affiliate = $affiliate;
+    
+        return $this;
+    }
+
+    /**
+     * Get affiliate
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Affiliate 
+     */
+    public function getAffiliate()
+    {
+        return $this->affiliate;
+    }
+
+    /**
+     * Set contract_date
+     *
+     * @param \DateTime $contractDate
+     * @return Group
+     */
+    public function setContractDate($contractDate)
+    {
+        $this->contract_date = $contractDate;
+    
+        return $this;
+    }
+
+    /**
+     * Get contract_date
+     *
+     * @return \DateTime 
+     */
+    public function getContractDate()
+    {
+        return $this->contract_date;
+    }
+
+    /**
+     * Set contract
+     *
+     * @param string $contract
+     * @return Group
+     */
+    public function setContract($contract)
+    {
+        $this->contract = $contract;
+    
+        return $this;
+    }
+
+    /**
+     * Get contract
+     *
+     * @return string 
+     */
+    public function getContract()
+    {
+        return $this->contract;
     }
 }

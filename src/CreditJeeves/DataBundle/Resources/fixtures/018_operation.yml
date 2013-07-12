@@ -1,0 +1,6 @@
+model: CreditJeeves\DataBundle\Entity\Operation 
+fixtures:
+  cjOperationReport_1:
+    orders:
+      - cjOrder_1
+    reportD2c: cjApplicantReportD2C_5

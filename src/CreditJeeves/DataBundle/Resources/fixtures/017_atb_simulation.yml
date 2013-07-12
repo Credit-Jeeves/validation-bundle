@@ -1,0 +1,98 @@
+model: CreditJeeves\DataBundle\Entity\Atb
+fixtures:
+  atbSimulation_1:
+    report: cjApplicantReportPrequal_5
+    type: score
+    input: 122
+    sim_type: 400
+    score_current: 530
+    score_target: 620
+    transaction_signature: 'NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3 icy26YjqrpzMRSGs73qWNpUdTPAgr6au/SPzrt2WKi/M9d8XlVJbpzqRuj0u jiweXGME8cuua8o4xSq3DgI51ZfMhwgm0kCzoYUb88S3qG2imFD8ujts1Jxb 2gfJUQMHdyDJ'
+    result:
+      score_best: 652
+      score_init: 530
+      blocks:
+        0:
+          banks: 'FIRST USA BANK NA, FIRST USA BANK N A, DISCOVER FIN SVCS LLC, SEARS/CBNA, MACYS/FDSB, CITI'
+          tr_balance: 13590
+      transaction_signature: 'NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3 icy26YjqrpzMRSGs73qWNpUdTPAgr6au/SPzrt2WKi/M9d8XlVJbpzqRuj0u jiweXGME8cuua8o4xSq3DgI51ZfMhwgm0kCzoYUb88S3qG2imFD8ujts1Jxb 2gfJUQMHdyDJ'
+      cash_used: 0
+      sim_type: 400
+      message: 'Simulation successful'
+  atbSimulation_1.1:
+    report: cjApplicantReportPrequal_5
+    type: search
+    input: 1000
+    sim_type: 103
+    score_current: 530
+    score_target: 620
+    transaction_signature: 'NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3 icy26YjqrpzMRSGs73qWNpUdTPAgr6au/SPzrt2WKi/M9d8XlVJbpzqRuj0u jiweXGME8cuua8o4xSq3DgI51ZfMh3bPLt648qVg2L13kgnLdl+pFU3J3v9h YtLusEoQ4odZ'
+    result:
+      score_best: 623
+      score_init: 530
+      blocks:
+        0:
+          arf_balance: 1199
+          subscriber_phone_number: ""
+          tr_acctnum: "601944100149XXXX"
+          tr_amount1: "1314"
+          tr_amount1_qual: "L"
+          tr_amount2: "1265"
+          tr_amount2_qual: "H"
+          tr_balance: "1170"
+          tr_rev_install: "R"
+          tr_subcode: "3902439"
+          tr_subname: "MILITARY STAR"
+        1:
+          arf_balance: 702
+          subscriber_phone_number: ""
+          tr_acctnum: "5533XXXX"
+          tr_amount1: "720"
+          tr_amount1_qual: "L"
+          tr_amount2: "728"
+          tr_amount2_qual: "H"
+          tr_balance: "641"
+          tr_rev_install: "R"
+          tr_subcode: "1323180"
+          tr_subname: "SEARS/CBNA"
+        2:
+          arf_balance: 3374
+          subscriber_phone_number: "(800) 955-9900"
+          tr_acctnum: "5428071101G4XXXX"
+          tr_amount1: "3500"
+          tr_amount1_qual: "L"
+          tr_amount2: "3876"
+          tr_amount2_qual: "H"
+          tr_balance: "3115"
+          tr_rev_install: "R"
+          tr_subcode: "1216710"
+          tr_subname: "FIRST USA BANK NA"
+        3:
+          arf_balance: 3259
+          subscriber_phone_number: "(800) 955-9900"
+          tr_acctnum: "54280711XXXX"
+          tr_amount1: "3500"
+          tr_amount1_qual: "L"
+          tr_amount2: "3500"
+          tr_amount2_qual: "H"
+          tr_balance: "3115"
+          tr_rev_install: "R"
+          tr_subcode: "1260958"
+          tr_subname: "FIRST USA BANK N A"
+        4:
+          arf_balance: 3737
+          subscriber_phone_number: ""
+          tr_acctnum: "60110030XXXX"
+          tr_amount1: "3799"
+          tr_amount1_qual: "H"
+          tr_amount2: ""
+          tr_amount2_qual: " "
+          tr_balance: "3382"
+          tr_rev_install: "R"
+          tr_subcode: "3276502"
+          tr_subname: "DISCOVER FIN SVCS LLC"
+      transaction_signature: 'NGaFhYYDL+69QzaNMt1CGRQVVHn6bS9X1Pb5Mj9STP7bAYtxqzzM1131bpk3 icy26YjqrpzMRSGs73qWNpUdTPAgr6au/SPzrt2WKi/M9d8XlVJbpzqRuj0u jiweXGME8cuua8o4xSq3DgI51ZfMh3bPLt648qVg2L13kgnLdl+pFU3J3v9h YtLusEoQ4odZ'
+      cash_used: 848
+      sim_type: 103
+      message: 'Simulation successful'
+

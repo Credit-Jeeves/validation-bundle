@@ -10,7 +10,8 @@ class DBTest extends BaseTestCase
      */
     public function fixturesLoad()
     {
-        $this->getContainer()->get('khepin.yaml_loader')->purgeDatabase('orm');
-        $this->getContainer()->get('khepin.yaml_loader')->loadFixtures('settings');
+        $khepin = static::getContainer()->get('khepin.yaml_loader');
+        $khepin->purgeDatabase('orm');
+        $khepin->loadFixtures();
     }
 }

@@ -111,6 +111,10 @@
         {
             "type": "git",
             "url": "https://github.com/66Ton99/migrations"
+        },
+        {
+            "type": "git",
+            "url":"git@github.com:Remixjobs/RjEmailBundle.git"
         }
     ],
     "require": {

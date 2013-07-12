@@ -41,6 +41,19 @@ abstract class Report
      */
     protected $atbs;
 
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="report"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_applicant_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $user;
+
+
     public function __construct()
     {
         $this->atbs = new ArrayCollection();
