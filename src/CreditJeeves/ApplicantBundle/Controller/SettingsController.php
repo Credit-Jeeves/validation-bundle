@@ -137,6 +137,7 @@ class SettingsController extends Controller
                         $em->getConnection()->beginTransaction();
                         $em->remove($User);
                         $em->flush();
+                        $newUser->setLastLogin(new \DateTime());
                         $em->persist($newUser);
                         $em->flush();
                         $em->getConnection()->commit();

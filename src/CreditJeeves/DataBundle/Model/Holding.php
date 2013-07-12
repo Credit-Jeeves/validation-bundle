@@ -39,6 +39,7 @@ abstract class Holding
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
+     * @Gedmo\Timestampable(on="create")
      */
     protected $createdAt;
 
@@ -46,6 +47,7 @@ abstract class Holding
      * @var \DateTime
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
+     * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
 

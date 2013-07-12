@@ -154,7 +154,8 @@ class HomepageController extends Controller
             if (empty($isExist)) {
                 $em = $this->getDoctrine()->getManager();
                 $tradeline = new Tradeline();
-                $tradeline->setCjGroupId($Lead->getCjGroupId());
+                //$tradeline->setCjGroupId($Lead->getCjGroupId());
+                $tradeline->setGroup($Lead->getGroup());
                 $tradeline->setUser($Lead->getUser());
                 $tradeline->setTradeline($oApplicantTradeline->getTradeline());
                 $tradeline->setStatus($oApplicantTradeline->getStatus());

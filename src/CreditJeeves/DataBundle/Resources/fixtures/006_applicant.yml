@@ -1,0 +1,569 @@
+model: CreditJeeves\DataBundle\Entity\Applicant
+fixtures:
+  cjApplicant_1:
+    first_name:      Ivan
+    middle_initial:  Petrovich
+    last_name:       Gates
+    email:   alexey.karpik+app1334753295955955@gmail.com
+    street_address1: '1900 Avenue of Stars'
+    street_address2: ''
+    unit_no:         'apt 8'
+    city:            Minsk
+    state:           KY
+    zip:             '22007'
+    phone_type:      '2'
+    phone:           '(37529)  118-1804'
+    date_of_birth:   '1980-10-22'
+    ssn:             '656803283'
+    is_active:       true
+    invite_code:     null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: true
+    is_verified: none   
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_2:
+    first_name: John
+    middle_initial: WAKEFIELD
+    last_name: BREEN
+    email: john@example.com
+    street_address1: 'PO BOX 445'
+    street_address2: ''
+    unit_no: 'apt 1'
+    city: APO
+    state: AE
+    zip: '09061'
+    phone_type: '2'
+    phone: '913 76 44 215'
+    date_of_birth: '1957-02-19'
+    ssn: '666042073'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: true
+    is_verified: none
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_3:
+    first_name: ALEX
+    middle_initial: ''
+    last_name: JORDAN
+    email: alex@example.com
+    street_address1: 'JCT RR 133 140 B'
+    street_address2: ''
+    unit_no: ''
+    city: MIDDLETOWN
+    state: NJ
+    zip: '05717'
+    phone_type: '2'
+    phone: '8 6037   90319'
+    date_of_birth: '1951-01-01'
+    ssn: '666254052'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture: %locale%
+    has_data: true
+    has_report: true
+    is_verified: passed
+    created_at: '-50'
+    updated_at: '-50'
+  cjApplicant_4:
+    first_name: OLA
+    middle_initial: MAE
+    last_name: TAYLOR
+    email: empty@example.com
+    street_address1: '702 N LINCOLN AVE # 1'
+    street_address2: ''
+    unit_no: ''
+    city: URBANA
+    state: IL
+    zip: '61801'
+    phone_type: '2'
+    phone: '309-74-58-439'
+    date_of_birth: '1955-09-14'
+    ssn: '666302442'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_5:
+    first_name: BRIAN
+    middle_initial: P
+    last_name: KURTH
+    email: emilio@example.com
+    street_address1: 'SAINT NAZAIRE 2010'
+    street_address2: ''
+    unit_no: '116TH 1'
+    city: HOMESTEAD
+    state: FL
+    zip: '33039'
+    phone_type: '2'
+    phone: '7188491319'
+    date_of_birth: '1957-02-19'
+    ssn: '666810987'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: true
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_6:
+    first_name: ROBERT
+    middle_initial: SCOTT
+    last_name: BIRMINGHAM
+    email: robert@example.com
+    street_address1: 'PO BOX 1563'
+    street_address2: ''
+    unit_no: '116TH 1'
+    city: BELTSVILLE
+    state: MD
+    zip: '207041563'
+    phone_type: '2'
+    phone: '7818945369'
+    date_of_birth: '1957-02-19'
+    ssn: '666522949'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: false
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_7:
+    first_name: WILLIAM
+    middle_initial: N
+    last_name: JOHNSON
+    email: mamazza@example.com
+    street_address1: 'LANEY 2505'
+    street_address2: ''
+    unit_no: ''
+    city: DENTON
+    state: TX
+    zip: '762086621'
+    phone_type: '2'
+    phone: '7818945369'
+    date_of_birth: '1970-01-01'
+    ssn: '666235464'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_8:
+    first_name: MARION
+    middle_initial: R
+    last_name: BRIEN
+    email: marion@example.com
+    street_address1: 'LEHIGH 350'
+    street_address2: ''
+    unit_no: ''
+    city: PITTSBURGH
+    state: PA
+    zip: '152322008'
+    phone_type: '2'
+    phone: '7818945369'
+    date_of_birth: '1970-01-01'
+    ssn: '666560093'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_9:
+    first_name: HUGO
+    middle_initial: WOSBELLY
+    last_name: RODRIGUEZ
+    email: hugo@example.com
+    street_address1: 'INGLEWOOD 934 S'
+    street_address2: ''
+    unit_no: ''
+    city: INGLEWOOD
+    state: CA
+    zip: '903013646'
+    phone_type: '2'
+    phone: '7818945369'
+    date_of_birth: '1970-01-01'
+    ssn: '666640803'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_10:
+    first_name: MIGUEL
+    middle_initial: M
+    last_name: CENTENO
+    email: miguel@example.com
+    street_address1: 'PO BOX 121'
+    street_address2: ''
+    unit_no: ''
+    city: 'BOX ELDER'
+    state: MT
+    zip: '595210121'
+    phone_type: '2'
+    phone: '7818945369'
+    date_of_birth: '1970-01-01'
+    ssn: '666845724'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_11:
+    first_name: CONNIE
+    middle_initial: S
+    last_name: WEBSTER
+    email: CONNIE@example.com
+    street_address1: '331 RAMSEY HL'
+    street_address2: ''
+    unit_no: ''
+    city: 'WEST CHESTER'
+    state: PA
+    zip: '19383'
+    phone_type: '2'
+    phone: ''
+    date_of_birth: '1941-01-01'
+    ssn: '666316880'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_12:
+    first_name: LORY
+    middle_initial: M
+    last_name: STEFFANS
+    email: lory@example.com
+    street_address1: '331 RAMSEY HL'
+    street_address2: ''
+    unit_no: ''
+    city: EMPORIA
+    state: KS
+    zip: '669016102'
+    phone_type: '2'
+    phone: ''
+    date_of_birth: '1962-09-19'
+    ssn: '666089202'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_13:
+    first_name: ROBERT
+    middle_initial: SCOTT
+    last_name: BIRMINGHAM
+    email: app3@example.com
+    street_address1: 'PO BOX 1563'
+    street_address2: ''
+    unit_no: ''
+    city: BELTSVILLE
+    state: MD
+    zip: '20704'
+    phone_type: '2'
+    phone: '3028320298'
+    date_of_birth: '1962-06-05'
+    ssn: '666522949'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_14:
+    first_name: MATHEW
+    middle_initial: J
+    last_name: DOYLE
+    email: app4@example.com
+    street_address1: '10046 COLONNADE DR'
+    street_address2: ''
+    unit_no: ''
+    city: TAMPA
+    state: FL
+    zip: '33647'
+    phone_type: 
+    phone: 
+    date_of_birth: '1933-09-02'
+    ssn: '666361452'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_15:
+    first_name: ANTHONY
+    middle_initial: D
+    last_name: DELLISANTI
+    email: app5@example.com
+    street_address1: '308-1 CHESTER RIVER HTS'
+    street_address2: ''
+    unit_no: ''
+    city: MILLINGTON
+    state: MD
+    zip: '20704'
+    phone_type: '2'
+    phone: '4105367237'
+    date_of_birth: '1956-08-09'
+    ssn: '666506697'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_16:
+    first_name: LINDA
+    middle_initial: A
+    last_name: LEMOINE
+    email: app6@example.com
+    street_address1: '7635 LANKERSHIM BLVD APT 16'
+    street_address2: ''
+    unit_no: ''
+    city: NORTH HOLLYWOOD
+    state: CA
+    zip: '916056557'
+    phone_type: '2'
+    phone: '9137644215'
+    date_of_birth: '1940'
+    ssn: '666626090'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_17:
+    first_name: GARY
+    middle_initial: A
+    last_name: LINDSAY
+    email: app8@example.com
+    street_address1: 'CMR 408 BX 1502'
+    street_address2: ''
+    unit_no: ''
+    city: APO
+    state: AE
+    zip: '09182'
+    phone_type: '2'
+    phone: '3048428383'
+    date_of_birth: '1955-11-30'
+    ssn: '666042073'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_18:
+    first_name: THOMAS
+    middle_initial: DENNIS
+    last_name: LOPES
+    email: app9@example.com
+    street_address1: '270 25 H GRAND CENTRA'
+    street_address2: ''
+    unit_no: ''
+    city: FLORAL PARK
+    state: NY
+    zip: '11005'
+    phone_type: '2'
+    phone: 
+    date_of_birth: '1928'
+    ssn: '666348363'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_19:
+    first_name: ROBYN
+    middle_initial: L
+    last_name: PIPER
+    email: app10@example.com
+    street_address1: '3010 FURMAN LN APT 402'
+    street_address2: ''
+    unit_no: ''
+    city: ALEXANDRIA
+    state: VA
+    zip: '22306'
+    phone_type: '2'
+    phone: 7034910325
+    date_of_birth: '1968'
+    ssn: '666611480'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_20:
+    first_name: LAURIEANN
+    middle_initial: KATHLEEN
+    last_name: RADLEIN
+    email: app11@example.com
+    street_address1: '3507 WOODLEA AVE'
+    street_address2: ''
+    unit_no: ''
+    city: BALTIMORE
+    state: MO
+    zip: '26214'
+    phone_type: 
+    phone: 
+    date_of_birth: '1968-02-14'
+    ssn: '666135502'
+    is_active: true
+    invite_code: null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: passed
+    created_at: '-5 days'
+    updated_at: '-5 days'
+  cjApplicant_22:
+    first_name: null
+    middle_initial: null
+    last_name: null
+    email: linda@example.com
+    street_address1: null
+    street_address2: ''
+    unit_no: ''
+    city: null
+    state: null
+    zip: null
+    phone_type: null
+    phone: null
+    date_of_birth: null
+    ssn: null
+    is_active: true
+    invite_code: TESTFULL
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: null
+    is_verified: failed
+    created_at: '-5 days'
+    updated_at: '-5 days'

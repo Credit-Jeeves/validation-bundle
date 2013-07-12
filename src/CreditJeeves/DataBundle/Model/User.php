@@ -409,6 +409,16 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Report",
+     *     mappedBy="user",
+     *     cascade={"remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $report;
+
+    /**
+     * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq",
      *      mappedBy="user"
      * )
@@ -422,6 +432,11 @@ abstract class User extends BaseUser
      * )
      */
     protected $addresses;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="user")
+     */
+    protected $group_affilate;
 
     public function __construct()
     {
@@ -1402,5 +1417,44 @@ abstract class User extends BaseUser
     public function getHolding()
     {
         return $this->holding;
+    }
+
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+        return $this;
+    }
+
+    /**
+     * Add group_affilate
+     *
+     * @param \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
+     * @return User
+     */
+    public function addGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
+    {
+        $this->group_affilate[] = $groupAffilate;
+    
+        return $this;
+    }
+
+    /**
+     * Remove group_affilate
+     *
+     * @param \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
+     */
+    public function removeGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
+    {
+        $this->group_affilate->removeElement($groupAffilate);
+    }
+
+    /**
+     * Get group_affilate
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroupAffilate()
+    {
+        return $this->group_affilate;
     }
 }

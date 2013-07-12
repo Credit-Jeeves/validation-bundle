@@ -8,17 +8,6 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase;
  */
 class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
 {
-    protected $fixtures = array(
-        '001_cj_account_group.yml',
-        '002_cj_admin_account.yml',
-        '003_cj_dealer_account.yml',
-        '004_cj_applicant.yml',
-        '005_cj_lead.yml',
-        '006_cj_applicant_report.yml',
-        '007_cj_applicant_score.yml',
-        '010_cj_affiliate.yml',
-        '013_cj_holding_account.yml',
-    );
 
     protected $password = '123123';
 
@@ -27,7 +16,7 @@ class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function userChangePassword()
     {
-        $this->load($this->fixtures, true);
+        $this->load(true);
         $this->setDefaultSession('symfony');
         //$this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');

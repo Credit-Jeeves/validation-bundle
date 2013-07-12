@@ -5,12 +5,14 @@ namespace CreditJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * GroupAffiliate
  *
  * @ORM\Table(name="cj_account_group_affiliate")
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\GroupAffiliateRepository")
+ * @ORM\HasLifecycleCallbacks()
  *
  * @deprecated Not in use?
  */
@@ -82,6 +84,21 @@ class GroupAffiliate
      * @ORM\Column(name="updated_at", type="datetime")
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="group_affilate")
+     * @ORM\JoinColumn(name="cj_account_group_id", referencedColumnName="id")
+     * @Assert\Type(type="CreditJeeves\DataBundle\Entity\Group")
+     */
+    protected $group;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="group_affilate")
+     * @ORM\JoinColumn(name="cj_account_id", referencedColumnName="id")
+     * @Assert\Type(type="CreditJeeves\DataBundle\Entity\User")
+     * @Assert\Valid()
+     */
+    protected $user;
 
     /**
      * Get id
@@ -275,5 +292,77 @@ class GroupAffiliate
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+    * @param $websiteUrl
+    * @param $externalKey
+    *
+    * @return string
+    */
+    public static function generateAuthToken($websiteUrl, $externalKey)
+    {
+        return md5($websiteUrl . $externalKey);
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedValue()
+    {
+        if (!$this->getExternalKey()) {
+            $this->setExternalKey(strtoupper(base_convert(uniqid(), 16, 36)));
+        }
+ 
+        if (!$this->getAuthToken()) {
+            $this->setAuthToken(self::generateAuthToken($this->getWebsiteUrl(), $this->getExternalKey()));
+        }
+    }
+
+
+    /**
+     * Set group
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @return GroupAffiliate
+     */
+    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+    
+        return $this;
+    }
+
+    /**
+     * Get group
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Group 
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \CreditJeeves\DataBundle\Entity\User $user
+     * @return GroupAffiliate
+     */
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \CreditJeeves\DataBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

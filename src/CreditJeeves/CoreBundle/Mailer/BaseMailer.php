@@ -66,6 +66,7 @@ abstract class BaseMailer
                 $user->getCulture(),
                 $vars
             );
+
             $message = \Swift_Message::newInstance();
             $message->setSubject($htmlContent['subject']);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));

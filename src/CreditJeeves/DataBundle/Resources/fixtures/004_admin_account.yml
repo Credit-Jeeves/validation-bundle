@@ -1,0 +1,12 @@
+model: CreditJeeves\DataBundle\Entity\Admin
+fixtures:
+  cjAdminAccount_1:
+    first_name:     Administrator
+    last_name:      Super
+    email:  admin@creditjeeves.com
+    #password: P@ssW0rd
+    password:       5ca33d221fd09f16c1ecba9c1aadc3eb	
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004    
+    is_active:      true
+    is_super_admin: true
+    culture:  %locale%

@@ -1,0 +1,21 @@
+model: CreditJeeves\DataBundle\Entity\Affiliate
+fixtures:
+  cjAffiliate_1:
+    name: Test
+    phone: 777-77-77
+    fax: 777-77-33
+    street_address1: Garshina, 9
+    street_address2: 
+    city: Kharkov
+    state: Ukraine
+    zip: 61053
+
+  cjAffiliate_2:
+    name: Berry
+    phone: 777-77-77
+    fax: 777-77-33
+    street_address1: Broadway, 560, ap. 204
+    street_address2: 
+    city: NYC
+    state: NY
+    zip:

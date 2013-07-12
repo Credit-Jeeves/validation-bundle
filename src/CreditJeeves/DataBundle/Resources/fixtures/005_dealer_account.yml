@@ -1,0 +1,164 @@
+model: CreditJeeves\DataBundle\Entity\Dealer
+fixtures:
+  cjDealerAccount_2:
+    dealer_groups:
+      - cjAccountGroup_2
+    first_name:     Bill
+    last_name:      Gates
+    email:  honda-admin
+    #password: pass    
+    password: 1a1dc91c907325c69271ddf0c944bc72 
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    is_active:      true
+    is_super_admin: true
+    culture: %locale%
+  cjDealerAccount_3:
+    dealer_groups:
+      - cjAccountGroup_2
+    first_name:     Honda
+    last_name:      Dealer
+    email:  honda@example.com
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    is_active:      true
+    culture: %locale%
+  cjDealerAccount_4:
+    dealer_groups:
+      - cjAccountGroup_3
+    first_name:     Alex
+    last_name:      Emelyanov
+    email:  alex.emelyanov.ua@gmail.com
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    is_active:      true
+    is_super_admin: true
+    culture: %locale%
+  cjDealerAccount_8:
+    dealer_groups:
+      - cjAccountGroup_4
+      - cjAccountGroup_9
+      - cjAccountGroup_11
+    holding: cjHolding_1
+    first_name: Darryl
+    last_name: Eaton
+    email: darryl@cars.com
+    password: pass
+    is_active: true
+    is_super_admin: true
+    is_holding_admin: true
+    type: dealer
+    culture: %locale%
+  cjDealerAccount_9:
+    dealer_groups:
+      - cjAccountGroup_4
+      - cjAccountGroup_9
+      - cjAccountGroup_11
+    holding: cjHolding_1
+    first_name: Ton
+    last_name: Sharp
+    email: ton@cars.com
+    password: pass
+    is_active: true
+    is_super_admin: false
+    type: dealer
+    culture: %locale%
+  cjDealerAccount_10:
+    dealer_groups:
+      - cjAccountGroup_4
+    holding: cjHolding_1
+    first_name: Alex
+    last_name: Emelyanov
+    email: alex@cars.com
+    password: pass
+    is_active: true
+    is_super_admin: false
+    type: dealer
+    culture: %locale%
+    created_at: '-12'
+    updated_at: '-3'
+  cjDealerAccount_11:
+    dealer_groups:
+      - cjAccountGroup_4
+    holding: cjHolding_1
+    first_name: Zane
+    last_name: Stagg
+    email: zane@cars.com
+    password: pass
+    is_active: true
+    is_super_admin: false
+    type: dealer
+    culture: %locale%
+    created_at: 'now'
+    updated_at: 'now'
+  cjDealerAccount_12:
+    dealer_groups:
+      - cjAccountGroup_9
+      - cjAccountGroup_4
+      - cjAccountGroup_11
+    holding: cjHolding_1
+    first_name: Darryl
+    last_name: Eaton
+    email: darryl@autotrader.com
+    password: pass
+    is_active: true
+    is_super_admin: true
+    is_holding_admin: true
+    type: dealer
+    culture: %locale%
+    created_at: 'now'
+    updated_at: 'now'
+  cjDealerAccount_13:
+    dealer_groups:
+      - cjAccountGroup_5
+    holding: cjHolding_1
+    first_name: Ton
+    last_name: Sharp
+    email: 'ton@autotrader.com  '
+    password: pass
+    is_active: true
+    is_super_admin: false
+    type: dealer
+    culture: %locale%
+    created_at: 'now'
+    updated_at: 'now'
+  cjDealerAccount_14:
+    dealer_groups:
+      - cjAccountGroup_5
+    holding: cjHolding_1
+    first_name: Zane
+    last_name: Stagg
+    email: zane@autotrader.com
+    password: pass
+    is_active: true
+    is_super_admin: false
+    type: dealer
+    culture: %locale%
+    created_at: '2012-11-29 14:33:35'
+    updated_at: '2012-11-29 14:33:35'
+  cjDealerAccount_15:
+    dealer_groups:
+      - cjAccountGroup_6
+    first_name: Darryl
+    last_name: Eaton
+    email: darryl@autonation.com
+    password: pass
+    is_active: true
+    is_super_admin: true
+    type: dealer
+    culture: %locale%
+    created_at: '2012-11-29 14:36:16'
+    updated_at: '2012-11-29 14:36:40'
+  cjDealerAccount_16:
+    dealer_groups:
+      - cjAccountGroup_9
+      - cjAccountGroup_4
+    holding: cjHolding_1
+    first_name: AUDI
+    last_name: Dealer
+    email: audi@example.com
+    password: pass
+    is_active: true
+    type: dealer
+    culture: %locale%
+    created_at: '2012-11-29 14:36:16'
+    updated_at: '2012-11-29 14:36:40'

@@ -8,31 +8,17 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase;
  */
 class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
 {
-    protected $fixtures = array(
-        '001_cj_account_group.yml',
-        '002_cj_admin_account.yml',
-        '003_cj_dealer_account.yml',
-        '004_cj_applicant.yml',
-        '005_cj_lead.yml',
-        '006_cj_applicant_report.yml',
-        '007_cj_applicant_score.yml',
-        '010_cj_affiliate.yml',
-        '013_cj_holding_account.yml',
-        '020_email.yml',
-        '021_email_translations.yml',
-    );
 
     /**
      * @test
      */
     public function adminManageLandlords()
     {
-        $this->load($this->fixtures, true);
+        $this->load(true);
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_landlords'));
 
         $tableBlock->clickLink('link_list');
-
 
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(1, $landlords);

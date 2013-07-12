@@ -13,8 +13,10 @@ class PersonalInfoController extends Controller
      */
     public function indexAction(Report $Report)
     {
+        $dateFullFormat = $this->container->getParameter('date_full');
+        
         $sSSN       = $this->get('core.session.applicant')->getUser()->displaySsn();
-        $sDOB       = $this->get('core.session.applicant')->getUser()->getDateOfBirth()->format("F j, Y");
+        $sDOB       = $this->get('core.session.applicant')->getUser()->getDateOfBirth()->format($dateFullFormat);
         $sName      = $Report->getApplicantName();
         $aAddresses = array();
         $aAddresses = $Report->getApplicantAddress();

@@ -15,7 +15,10 @@ class AccountStatusController extends Controller
     public function indexAction(\CreditJeeves\DataBundle\Entity\Report $Report)
     {
         $ArfReport = $Report->getArfReport();
-        $sReportDate = $Report->getCreatedAt()->format('M j, Y');
+
+        $dateShortFormat = $this->container->getParameter('date_short');
+        $sReportDate = $Report->getCreatedAt()->format($dateShortFormat);
+
         $TotalPastDue = $ArfReport->getValue(
             ArfParser::SEGMENT_PROFILE_SUMMARY,
             ArfParser::REPORT_TOTAL_PAST_DUE
