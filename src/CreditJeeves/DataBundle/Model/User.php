@@ -416,16 +416,6 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Report",
-     *     mappedBy="user",
-     *     cascade={"remove"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $report;
-
-    /**
-     * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq",
      *      mappedBy="user"
      * )
