@@ -11,12 +11,12 @@ PHPUNIT_PATH=`which phpunit`
 #DB_PASSWORD=passw0rd
 
 rm -rf $BUILD_DIR/*
-
+rm -rf vendor/*
 mkdir $BUILD_DIR/coverage
 mkdir $BUILD_DIR/coverage/html
 
 if [ ! -f $DIR/vendor/autoload.php ]; then
-     php bin/composer.phar install
+     php bin/composer.phar install --prefer-source
 fi
 
 php bin/environment.php --dev || exit 1
