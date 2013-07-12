@@ -676,18 +676,6 @@ abstract class Group
         return $this->holding;
     }
 
-    
-    public function setAffiliate(\CreditJeeves\DataBundle\Entity\Affiliate $affiliate = null)
-    {
-        $this->affiliate = $affiliate;
-        return $this;
-    }
-    
-    public function getAffiliate()
-    {
-        return $this->affiliate;
-    }
-
     /**
      * Set createdAt
      *
