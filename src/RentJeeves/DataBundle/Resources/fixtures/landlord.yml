@@ -1,6 +1,7 @@
 model: CreditJeeves\DataBundle\Entity\Landlord
 fixtures:
     Landlord_1:
+        holding:  Holding_1
         first_name: TIMOTHY
         middle_initial: A
         last_name: APPLEGATE
