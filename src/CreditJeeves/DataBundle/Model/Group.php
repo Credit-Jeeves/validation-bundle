@@ -212,6 +212,11 @@ abstract class Group
     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="group")
     */
     protected $group_affilate;
+    
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Tradeline", mappedBy="group")
+     */
+    protected $tradelines;
 
     public function __construct()
     {
