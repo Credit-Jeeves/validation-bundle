@@ -83,6 +83,7 @@ class UserNewType extends AbstractType //UserType
             array(
                 'label' => 'Date of Birth',
                 'error_bubbling' => true,
+                'format' => 'MMMddyyyy',
             )
         );
         $builder->add(
