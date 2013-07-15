@@ -60,8 +60,8 @@ class Landlord extends User
     }
 
     public function getGroup()
-    {   
-        if($this->getGroupId()) {
+    {
+        if ($this->getGroupId()) {
             return $this->em->getRepository('DataBundle:Group')->find($this->getGroupId());
         } else {
             return null;

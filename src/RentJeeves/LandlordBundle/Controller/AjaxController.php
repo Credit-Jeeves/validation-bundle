@@ -47,7 +47,7 @@ class AjaxController extends Controller
             $object->fillPropertyData($property);
         }
 
-        if ( $this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') && $group) {
+        if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') && $group) {
             $object->addPropertyGroup($group);
         }
         $em->persist($object);

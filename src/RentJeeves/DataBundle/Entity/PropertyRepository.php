@@ -18,11 +18,10 @@ class PropertyRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('p');
         $qb->select('count(g.id)')
-            ->leftJoin('p.property_groups' ,'g')
+            ->leftJoin('p.property_groups', 'g')
             ->where('g.id IS NOT NULL')
             ->andWhere('p.id = :propertyId')
-            ->setParameter('propertyId', $propertyId)
-        ;
+            ->setParameter('propertyId', $propertyId);
 
         $count = $qb->getQuery()->getSingleScalarResult();
 
