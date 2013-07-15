@@ -5,15 +5,27 @@ use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-use Sonata\AdminBundle\Show\ShowMapper;
+use CreditJeeves\DataBundle\Enum\GroupType;
 
-class LandlordGroupsAdmin extends Admin
+class RjGroupAdmin extends Admin
 {
     /**
      *
      * @var string
      */
     const TYPE = 'group';
+
+    protected $formOptions = array(
+            'validation_groups' => 'holding'
+    );
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseRouteName()
+    {
+        return 'admin_rj_'.self::TYPE;
+    }
 
     /**
      * {@inheritdoc}
@@ -22,22 +34,16 @@ class LandlordGroupsAdmin extends Admin
     {
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-        $query->andWhere($alias.'.type = :type');
-        $query->setParameter('type', 'rent');
+        $query->add('where', $query->expr()->in($alias.'.type', array(GroupType::RENT)));
         return $query;
     }
-
-
-//     protected $formOptions = array(
-//             'validation_groups' => 'holding'
-//     );
 
     /**
      * {@inheritdoc}
      */
-    public function getBaseRouteName()
+    public function prePersist($object)
     {
-        return 'admin_rj_'.self::TYPE;
+        $object->setType(GroupType::RENT);
     }
 
     /**
@@ -52,6 +58,9 @@ class LandlordGroupsAdmin extends Admin
     {
         $listMapper
             ->addIdentifier('name')
+            ->add('holding')
+            ->add('affiliate')
+            ->add('type')
             ->add(
                 '_action',
                 'actions',
@@ -59,12 +68,12 @@ class LandlordGroupsAdmin extends Admin
                     'actions' => array(
                         'edit' => array(),
                         'delete' => array(),
-//                         'leads' => array(
-//                             'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
-//                         ),
-//                         'dealers' => array(
-//                             'template' => 'AdminBundle:CRUD:list__action_dealers.html.twig'
-//                         ),
+                        'tenants' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_tenants.html.twig'
+                        ),
+                        'landlords' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_landlords.html.twig'
+                        ),
                     )
                 )
             );
@@ -73,7 +82,18 @@ class LandlordGroupsAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add('target_score');
+            ->add(
+                'holding',
+                'sonata_type_model'
+            )
+            ->add(
+                'affiliate',
+                'sonata_type_model',
+                array(
+                    'empty_value' => 'None'
+                )
+            )
+            ->add('name');
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)

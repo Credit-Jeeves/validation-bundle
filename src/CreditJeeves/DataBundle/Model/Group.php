@@ -681,7 +681,6 @@ abstract class Group
         return $this->holding;
     }
 
-    
     /**
      * Set createdAt
      *
@@ -724,11 +723,6 @@ abstract class Group
     public function getUpdatedAt()
     {
         return $this->updated_at;
-    }
-
-    public function __toString()
-    {
-        return $this->getName();
     }
 
     /**

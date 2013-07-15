@@ -20,7 +20,7 @@ class NewCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $form->pressButton('common.get.score');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
-        $this->assertCount(11, $errors, 'Wrong number of errors');
+        $this->assertCount(10, $errors, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -41,7 +41,7 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Dec',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '02',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
             )
         );

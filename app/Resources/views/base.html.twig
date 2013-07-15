@@ -53,6 +53,9 @@
                 {% include '::userLogout.html.twig' %}
             {% endblock %}
         </div>
+        <div class="select-entity">
+            {% block select %}{% endblock %}
+        </div>
         <div class="clearboth"></div>
         <div class="header-tabs">{% block tabs %}{% endblock %}</div>
     </div>

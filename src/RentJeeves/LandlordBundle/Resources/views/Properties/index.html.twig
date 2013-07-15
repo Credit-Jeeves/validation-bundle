@@ -1,5 +1,13 @@
 {% extends "LandlordBundle::base.html.twig" %}
 
 {% block content %}
-    <a href="{{ path('landlord_property_new')}}">New Property</a>
+    <div class="column-large">
+        {{ render(controller('ComponentBundle:PropertiesList:index', {'Group': Group})) }}
+        <div class="row-20"></div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('bundles/component/js/groups.js') }}"></script>
+    <script src="{{ asset('bundles/component/js/properties.js') }}"></script>
 {% endblock %}

@@ -76,9 +76,10 @@ function initialize() {
           data: {'data': JSON.stringify(data, null)},
           error: function(jqXHR, errorThrown, textStatus) {
               //jQuery('#simulation-container').hideOverlay();
+            location.href = Routing.generate('landlord_properties');
           },
           success: function(data, textStatus, jqXHR) {
-            
+            location.href = Routing.generate('landlord_properties');
           }
       });
         

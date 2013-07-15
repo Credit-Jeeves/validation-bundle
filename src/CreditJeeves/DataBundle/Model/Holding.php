@@ -37,7 +37,7 @@ abstract class Holding
 
     /**
      * @var \DateTime
-     *
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
      * @Gedmo\Timestampable(on="create")
      */
@@ -45,7 +45,7 @@ abstract class Holding
 
     /**
      * @var \DateTime
-     *
+     * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
@@ -65,7 +65,7 @@ abstract class Holding
      * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     mappedBy="holding",
-     *     cascade={"remove"},
+     *     cascade={"remove", "persist"},
      *     orphanRemoval=true
      * )
      */

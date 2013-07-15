@@ -115,15 +115,8 @@ abstract class User extends BaseUser
     protected $street_address2;
 
     /**
-     * @ORM\Column(type="string", length=31, nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.unit.empty",
-     *     groups={
-     *         "user_address"
-     *     }
-     * )
+     * @ORM\Column(type="string", nullable=true)
      * @Assert\Length(
-     *     min=1,
      *     max=31,
      *     groups={
      *         "user_address"

@@ -34,7 +34,7 @@ class ReturnedCase extends BaseTestCase
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($form = $this->page->find('css', '#id_returned_form'));
         $form->pressButton('common.get.score');
-        $this->assertCount(7, $this->page->findAll('css', '.error_list li'));
+        $this->assertCount(6, $this->page->findAll('css', '.error_list li'));
         $this->fillForm(
             $form,
             array(
@@ -46,7 +46,7 @@ class ReturnedCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadreturnedtype_user_zip' => '33039',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_phone' => '7188491319',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_day' => '19',
-                'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_month' => 'Feb',
+                'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_month' => '02',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_year' => '1957',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn1' => '666',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn2' => '81',

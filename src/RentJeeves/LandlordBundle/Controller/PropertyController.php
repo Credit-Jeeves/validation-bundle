@@ -18,45 +18,7 @@ class PropertyController extends Controller
      */
     public function indexAction()
     {
-        return array();
-    }
-
-    /**
-     * @Route(
-     *  "/property/add",
-     *  name="landlord_property_add",
-     *  defaults={"_format"="json"},
-     *  requirements={"_format"="html|json"},
-     *  options={"expose"=true}
-     * )
-     * @Method({"POST"})
-     *
-     * @return array
-     */
-    public function addAction()
-    {
-        $property = array();
-        $request = $this->getRequest();
-        $data = $request->request->all('address');
-        $data = json_decode($data['data'], true);
-        $object = new Property();
-        $property = $object->parseGoogleAddress($data);
-        $object = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($property);
-        $em = $this->getDoctrine()->getManager();
-        if (empty($object)) {
-            $object = new Property();
-            $property += $object->parseGoogleLocation($data);
-            $object->fillPropertyData($property);
-            $em->persist($object);
-            $em->flush();
-        }
-        $user = $this->getUser();
-        try {
-            $user->addLandlordProperty($object);
-            $em->flush();
-        } catch (DBALException $e) {
-                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
-        }
-        return new JsonResponse($object->getId());
+        $groups = $this->getGroups();
+        return array('nGroups' => $groups->count());
     }
 }

@@ -17,14 +17,32 @@ class LeadHistory extends Base
      */
     public function setData($data)
     {
-        $this->setTargetScore($data['target_score']);
-        $this->setTargetName($data['target_name']);
-        $this->setTargetUrl($data['target_url']);
-        $this->setState($data['state']);
-        $this->setTradeIn($data['trade_in']);
-        $this->setDownPayment($data['down_payment']);
-        $this->setFraction($data['fraction']);
-        $this->setStatus($data['status']);
-        $this->setUpdatedAt($data['updated_at']);
+        if ( isset($data['target_score'])) {
+            $this->setTargetScore($data['target_score']);
+        }
+        if ( isset($data['target_name'])) {
+            $this->setTargetName($data['target_name']);
+        }
+        if ( isset($data['target_url'])) {
+            $this->setTargetUrl($data['target_url']);
+        }
+        if ( isset($data['state'])) {
+            $this->setState($data['state']);
+        }
+        if ( isset($data['trade_in'])) {
+            $this->setTradeIn($data['trade_in']);
+        }
+        if ( isset($data['down_payment'])) {
+            $this->setDownPayment($data['down_payment']);
+        }
+        if ( isset($data['fraction'])) {
+            $this->setFraction($data['fraction']);
+        }
+        if ( isset($data['status'])) {
+            $this->setStatus($data['status']);
+        }
+        if ( isset($data['updated_at'])) {
+            $this->setUpdatedAt($data['updated_at']);
+        }
     }
 }
