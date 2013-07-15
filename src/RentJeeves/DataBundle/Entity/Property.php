@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PropertyRepository")
  * @ORM\Table(name="rj_property")
- * @ORM\Entity()
+ *
  */
 class Property extends Base
 {

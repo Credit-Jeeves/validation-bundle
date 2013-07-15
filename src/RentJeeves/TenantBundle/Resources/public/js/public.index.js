@@ -65,7 +65,7 @@ $(document).ready(function(){
           infowindow.open(map, marker);
         }
         
-        $('#property-add').click(function(){
+        $('#property-add').click(function(){ console.info('1');
             if(ERROR == $('#property-search').attr('class')) {
                 showError('Such address doesn\'t exist!');
                 return false;
@@ -75,10 +75,20 @@ $(document).ready(function(){
               return false;
             }
             var place = autocomplete.getPlace();
-            console.info(place.address_components);
-            console.info(place.geometry);
-            var link = Routing.generate('tenant_search_check', { address: place.address_components, geometry: place.geometry });
-            location.reload = link;
+            var data = {'address': place.address_components, 'geometry':place.geometry};
+            jQuery.ajax({
+              url: Routing.generate('landlord_property_add'),
+              type: 'POST',
+              dataType: 'json',
+              data: {'data': JSON.stringify(data, null)},
+              error: function(jqXHR, errorThrown, textStatus) {
+                //location.href = Routing.generate('landlord_properties');
+              },
+              success: function(propertyId, textStatus, jqXHR) {
+                console.info(propertyId);
+                location.href = Routing.generate('tenant_search_check', {'propertyId':propertyId});
+              }
+            });
         });
 
         google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);

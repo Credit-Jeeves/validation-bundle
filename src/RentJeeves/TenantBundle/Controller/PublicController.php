@@ -18,11 +18,41 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/public/check/search/{address}/{geometry}", name="tenant_search_check", options={"expose"=true})
+     * @Route("/public/check/{propertyId}", name="tenant_search_check", options={"expose"=true})
      * @Template()
      */
-    public function checkSearchAction($address, $geometry)
+    public function checkSearchAction($propertyId)
     {
+        $em = $this->get('doctrine.orm.entity_manager');
+        $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        
+        if (!$Property) {
+            return $this->redirect($this->generateUrl("tenant_search"));
+        }
 
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
+        if ($countGroup > 0) {
+            return $this->redirect($this->generateUrl("tenant_search_result", array('propertyId'=>$propertyId)));
+        }
+
+        return $this->redirect($this->generateUrl("tenant_search_empty", array('propertyId'=>$propertyId)));
+    }
+
+    /**
+     * @Route("/public/emptySearch/{propertyId}", name="tenant_search_empty")
+     * @Template()
+     */
+    public function emptySearchAction($propertyId)
+    {
+        return array();
+    }
+
+    /**
+     * @Route("/public/searchResult/{propertyId}", name="tenant_search_result")
+     * @Template()
+     */
+    public function searchResultAction($propertyId)
+    {
+        return array();
     }
 }
