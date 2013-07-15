@@ -1,0 +1,12 @@
+.mapContainer {
+    width: 920px;
+    height: 400px;
+    padding-top: 5px;
+}
+#map-canvas {
+    width: 920px;
+    height: 390px;
+}
+#property-add {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+}

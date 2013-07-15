@@ -1,0 +1,26 @@
+{% extends "TenantBundle::base.html.twig" %}
+
+{% block tabs %}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <input id="property-search" type="text" size="65" placeholder="Enter a location" autocomplete="off">
+        <input type="button" value="Search" id="property-add">
+    </div>
+    <div class="mapContainer">
+        <div id="map-canvas"></div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@TenantBundle/Resources/public/js/public.index.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets '@TenantBundle/Resources/public/css/public.index.css'%}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
