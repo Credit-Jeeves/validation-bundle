@@ -86,7 +86,7 @@ $(document).ready(function(){
               },
               success: function(propertyId, textStatus, jqXHR) {
                 console.info(propertyId);
-                location.href = Routing.generate('tenant_search_check', {'propertyId':propertyId});
+                location.href = Routing.generate('iframe_search_check', {'propertyId':propertyId});
               }
             });
         });

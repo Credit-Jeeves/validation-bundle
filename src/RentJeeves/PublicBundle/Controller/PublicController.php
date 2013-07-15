@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\TenantBundle\Controller;
+namespace RentJeeves\PublicBundle\Controller;
 
 use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -9,16 +9,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class PublicController extends Controller
 {
     /**
-     * @Route("/public/search", name="tenant_search")
+     * @Route("/iframe", name="iframe")
      * @Template()
      */
-    public function indexAction()
+    public function iframeAction()
     {
         return array();
     }
 
     /**
-     * @Route("/public/check/{propertyId}", name="tenant_search_check", options={"expose"=true})
+     * @Route("/check/{propertyId}", name="iframe_search_check", options={"expose"=true})
      * @Template()
      */
     public function checkSearchAction($propertyId)
@@ -27,31 +27,31 @@ class PublicController extends Controller
         $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
         
         if (!$Property) {
-            return $this->redirect($this->generateUrl("tenant_search"));
+            return $this->redirect($this->generateUrl("iframe"));
         }
 
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
         if ($countGroup > 0) {
-            return $this->redirect($this->generateUrl("tenant_search_result", array('propertyId'=>$propertyId)));
+            return $this->redirect($this->generateUrl("iframe_new", array('propertyId'=>$propertyId)));
         }
 
-        return $this->redirect($this->generateUrl("tenant_search_empty", array('propertyId'=>$propertyId)));
+        return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
     }
 
     /**
-     * @Route("/public/emptySearch/{propertyId}", name="tenant_search_empty")
+     * @Route("/invite/{propertyId}", name="iframe_invite")
      * @Template()
      */
-    public function emptySearchAction($propertyId)
+    public function inviteAction($propertyId)
     {
         return array();
     }
 
     /**
-     * @Route("/public/searchResult/{propertyId}", name="tenant_search_result")
+     * @Route("/new/{propertyId}", name="iframe_new")
      * @Template()
      */
-    public function searchResultAction($propertyId)
+    public function newAction($propertyId)
     {
         return array();
     }

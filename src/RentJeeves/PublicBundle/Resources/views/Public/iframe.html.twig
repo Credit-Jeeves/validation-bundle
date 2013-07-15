@@ -11,13 +11,13 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@TenantBundle/Resources/public/js/public.index.js' %}
+    {% javascripts '@RjPublicBundle/Resources/public/js/public.index.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
 
 {% block stylesheets %}
-    {% stylesheets '@TenantBundle/Resources/public/css/public.index.css'%}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/public.index.css'%}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}

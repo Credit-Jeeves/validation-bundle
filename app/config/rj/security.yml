@@ -36,6 +36,6 @@ security:
         - { path: ^/new/,           role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/tenant/public/*,role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/public/*,       role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,      role: ROLE_LANDLORD }
         - { path: ^/,               role: ROLE_TENANT }
