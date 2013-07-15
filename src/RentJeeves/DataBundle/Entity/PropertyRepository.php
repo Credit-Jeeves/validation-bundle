@@ -5,12 +5,29 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
-    public function getPropertiesByGroup($group)
+    public function getPropetiesList($group, $page = 1, $limit = 2)
     {
-        $query = $this->createQueryBuilder('p')
-            ->where('i.cj_applicant_id = :nUserId')
-            ->setParameter('nUserId', $group->getId())
-            ->getQuery();
-        return $query->execute();
+//         $query = $this->createQueryBuilder('p');
+//         $query->innerJoin('p.property_groups', 'g');
+//         $query->setParameter('g.id', $group->getId());
+//         $query = $query->getQuery();
+//         return $query->execute();
+        
+        
+        $offset = ($page - 1) * $limit;
+        return $this->getEntityManager()
+            ->createQuery(
+                "SELECT 
+                    p
+                 FROM 
+                    RjDataBundle:Property p
+                 INNER JOIN 
+                    p.property_groups g
+                 WHERE
+                    g.id = {$group->getId()}
+                 ORDER BY 
+                    p.street ASC"
+            )
+        ->getResult();
     }
 }

@@ -6,3 +6,5 @@ fixtures:
     name: Moss Holding
   cjHolding_3:
     name: Test Holding
+  rjHolding_1:
+    name: Rent Holding

@@ -1,0 +1,9 @@
+model: CreditJeeves\DataBundle\Entity\Group
+fixtures:
+  RentGroup_1:
+    name:           Test Rent Group
+    holding:        rjHolding_1
+    type:           rent
+    created_at: '2012-11-29 14:35:44'
+    updated_at: '2012-11-29 14:35:44'
+
