@@ -1,31 +1,39 @@
-<div class="pod-large pod-border shadow">
-    <div id="properties-block" class="property-list">
-        <table class="zebra-grid">
-            <tr>
-                <td colspan="4"><a href="{{ path('landlord_property_new')}}">New Property</a></td>
-            </tr>
-
-    <!-- ko if: countProperties() -->
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        <!-- ko foreach: { data: aProperties() } -->
-            <tr>
-                <td data-bind="text: country"></td>
-                <td data-bind="text: area"></td>
-                <td data-bind="text: city"></td>
-                <td data-bind="text: address"></td>
-            </tr>
-        <!-- /ko -->
-    <!-- /ko -->
-        </table>
+    <div id="properties-block" class="properties-block">
+        <div class="">
+            <div class="units-total floatleft"><h2>All ({{ total }})</h2></div>
+            <a class="btn orange property-button-add" href="{{ path('landlord_property_new')}}">New Property</a>
+        </div>
+        <div class="clearboth"></div>
+        <div class="properties-table-block">
+            <!-- ko if: countProperties() -->
+            <table class="properties-table zebra-grid">
+                <thead>
+                <tr class="properties-th">
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Units</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- ko foreach: { data: aProperties() } -->
+                <tr>
+                    <td data-bind="text: address"></td>
+                    <td data-bind="text: city"></td>
+                    <td data-bind="text: area"></td>
+                    <td data-bind="text: country"></td>
+                    <td data-bind="text: units"></td>
+                    <td>Edit</td>
+                </tr>
+                <!-- /ko -->
+                </tbody>
+            </table>
+            <!-- /ko -->
+        </div>
         <div class="clearboth"></div>
     </div>
-    
-</div>
 
 <script type="text/javascript">
 <!--

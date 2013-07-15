@@ -1,3 +1,40 @@
 .property-list {
     padding: 15px;
 }
+
+.border {
+    border: 3px #A3CEF7 solid;
+    box-shadow: 0 0 2px 2px #A3CEF7;
+}
+
+.property-button-add {
+    float: right;
+}
+
+table {
+    border-collapse: collapse;
+    
+}
+
+table tbody,
+table tbody tr td {
+    border: 1px #c8c8c8 solid;
+}
+
+table tbody tr td {
+    padding: 10px;
+}
+
+table.properties-table th {
+    text-align: left;
+    padding: 10px;
+    border: 1px #c8c8c8 solid;
+}
+
+.properties-th {
+    background-color: #f3f3f3;
+}
+
+.properties-table-block {
+    margin-top: 15px;
+}

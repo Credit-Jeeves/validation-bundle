@@ -287,26 +287,6 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $reportsPrequal;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $reportsD2c;
-
-    /**
-     * @ORM\OneToMany(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Score",
      *     mappedBy="user",
      *     cascade={"persist", "remove", "merge"},
@@ -406,6 +386,26 @@ abstract class User extends BaseUser
      * )
      */
     protected $holding;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $reportsPrequal;
+    
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $reportsD2c;
 
     /**
      * @ORM\OneToMany(

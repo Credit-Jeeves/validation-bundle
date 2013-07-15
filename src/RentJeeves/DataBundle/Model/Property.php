@@ -63,9 +63,9 @@ abstract class Property
      * @ORM\Column(
      *     name="street",
      *     type="string",
-     *     length=255
+     *     length=255,
+     *     nullable=true
      * )
-     * @Assert\NotBlank()
      */
     protected $street;
 
