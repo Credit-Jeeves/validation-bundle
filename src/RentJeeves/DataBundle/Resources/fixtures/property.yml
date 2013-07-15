@@ -1,0 +1,11 @@
+model: RentJeeves\DataBundle\Entity\Property
+fixtures:
+    Property_1:
+        country:        US
+        area:           NY
+        city:           New York
+        district:       Manhattan
+        street:         Broadway
+        number:         770
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
