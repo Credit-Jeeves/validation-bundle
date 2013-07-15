@@ -27,7 +27,7 @@ class PropertyRepository extends EntityRepository
                     g.id = {$group->getId()}
                  ORDER BY 
                     p.street ASC"
-        )
+            )
         ->getResult();
     }
 }
