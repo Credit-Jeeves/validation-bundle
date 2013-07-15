@@ -74,7 +74,7 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_usernewtype_zip' => '91605',
                 'creditjeeves_applicantbundle_usernewtype_phone' => '8189976080',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '01', //'01',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => '01', // '01',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan', // '01',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940',
                 'creditjeeves_applicantbundle_usernewtype_tos' => true,
             )

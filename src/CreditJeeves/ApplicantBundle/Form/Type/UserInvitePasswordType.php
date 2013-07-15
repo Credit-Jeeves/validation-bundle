@@ -13,7 +13,12 @@ class UserInvitePasswordType extends AbstractType
     {
         $builder->add(
             'date_of_birth',
-            'birthday'
+            'birthday', 
+            array(
+                'label' => 'Date of Birth',
+                'format' => 'MMMddyyyy',
+                'widget' => 'choice',
+            )
         );
         $builder->add(
             'password',
