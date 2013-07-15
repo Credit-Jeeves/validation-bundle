@@ -4,7 +4,7 @@ fixtures:
         first_name: TIMOTHY
         middle_initial: A
         last_name: APPLEGATE
-        email: tenant1@example.com
+        email: tenant11@example.com
         street_address1: KINGSTON DR
         street_address2: 
         unit_no: 2209
@@ -31,7 +31,7 @@ fixtures:
         first_name: John
         middle_initial: WAKEFIELD
         last_name: BREEN
-        email: john@example.com
+        email: john1@example.com
         street_address1: PO BOX 445
         street_address2: ''
         unit_no: apt 1
@@ -58,7 +58,7 @@ fixtures:
         first_name: ALEX
         middle_initial: 
         last_name: JORDAN
-        email: alex@example.com
+        email: alex1@example.com
         street_address1: JCT RR 133 140 B
         street_address2: ''
         unit_no: ''
@@ -85,7 +85,7 @@ fixtures:
         first_name: OLA
         middle_initial: MAE
         last_name: TAYLOR
-        email: empty@example.com
+        email: empty1@example.com
         street_address1: '702 N LINCOLN AVE # 1'
         street_address2: ''
         unit_no: ''
@@ -112,7 +112,7 @@ fixtures:
         first_name: BRIAN
         middle_initial: P
         last_name: KURTH
-        email: emilio@example.com
+        email: emilio1@example.com
         street_address1: 'SAINT NAZAIRE 2010'
         street_address2: ''
         unit_no: '116TH 1'

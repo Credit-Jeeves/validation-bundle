@@ -10,3 +10,6 @@ fixtures:
     is_active:      true
     is_super_admin: true
     culture:  %locale%
+    lastLogin:      '-1 days'
+    created_at:     '-60 days'
+    updated_at:     '-8 days'    
