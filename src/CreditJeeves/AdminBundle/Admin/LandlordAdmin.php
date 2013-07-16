@@ -68,11 +68,11 @@ class LandlordAdmin extends Admin
     public function configureFormFields(FormMapper $formMapper)
     {
         $entity = $this->getSubject();
-        $groups = $entity->getHolding()->getGroups();
-        $choices = array();
-        foreach ($groups as $group) {
-            $choices[$group->getId()] = $group->getName();
-        }
+        $query = $this->getModelManager()->createQuery('DataBundle:Group', 'g');
+        $query->innerJoin('g.holding', 'h');
+        $query->where('h.id = :holding_id');
+        $query->orderBy('g.name');
+        $query->setParameter('holding_id', $entity->getHoldingId());
         $formMapper
             ->with('General')
                 ->add(
@@ -102,10 +102,13 @@ class LandlordAdmin extends Admin
                     array(
                        'required' => false,
                        'expanded' => true,
-                       'multiple' => true
+                       'multiple' => true,
+                       'query' => $query,
+                       
                     )
-                )
-            ->end();
+                 )
+            ->end()
+        ;
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
