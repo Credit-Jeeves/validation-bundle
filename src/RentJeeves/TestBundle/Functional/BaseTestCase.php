@@ -8,5 +8,26 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase as Base;
  */
 abstract class BaseTestCase extends Base
 {
+
     const APP = 'AppRj';
+
+    public function load($reload)
+    {
+        if (self::$isFixturesLoaded && !$reload) {
+            return;
+        }
+
+        $khepin = static::getContainer()->get('khepin.yaml_loader');
+
+        if ($reload) {
+            $khepin->purgeDatabase('orm');
+        }
+        $khepin->loadFixtures();
+        self::$isFixturesLoaded = true;
+
+        $session = $this->getMink()->getSession('goutte');
+        $baseUrl = 'http://' . static::getContainer()->getParameter('server_name') . '/test.php/sfPhpunit/';
+
+        $session->visit($baseUrl . 'cc');
+    }
 }

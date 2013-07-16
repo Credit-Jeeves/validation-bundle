@@ -3,7 +3,7 @@
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  */
-class AppCjTestKernel extends AppCjKernel
+class AppRjTestKernel extends AppRjKernel
 {
     const IS_TEST = true;
 }
