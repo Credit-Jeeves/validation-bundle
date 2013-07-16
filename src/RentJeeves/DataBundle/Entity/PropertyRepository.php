@@ -22,8 +22,8 @@ class PropertyRepository extends EntityRepository
         $query->innerJoin('p.property_groups', 'g');
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
-        $query->setFirstResult( $offset );
-        $query->setMaxResults( $limit );
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
         $query = $query->getQuery();
         return $query->execute();
     }

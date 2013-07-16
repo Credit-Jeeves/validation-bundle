@@ -67,7 +67,12 @@ class LandlordAdmin extends Admin
 
     public function configureFormFields(FormMapper $formMapper)
     {
-        
+        $entity = $this->getSubject();
+        $groups = $entity->getHolding()->getGroups();
+        $choices = array();
+        foreach ($groups as $group) {
+            $choices[$group->getId()] = $group->getName();
+        }
         $formMapper
             ->with('General')
                 ->add(
@@ -75,7 +80,13 @@ class LandlordAdmin extends Admin
                     'sonata_type_model'
                 )
                 ->add('first_name')
-                ->add('middle_initial', null, array('required' => false))
+                ->add(
+                    'middle_initial',
+                    null,
+                    array(
+                        'required' => false
+                    )
+                )
                 ->add('last_name')
                 ->add('email')
                 ->add('password', 'hidden', array('required' => false))
@@ -83,6 +94,17 @@ class LandlordAdmin extends Admin
                 ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
                 ->add('is_active', null, array('required' => false))
                 ->add('is_super_admin', null, array('required' => false))
+            ->end()
+            ->with('Permissions')
+                ->add(
+                    'agent_groups',
+                    'sonata_type_model',
+                    array(
+                       'required' => false,
+                       'expanded' => true,
+                       'multiple' => true
+                    )
+                )
             ->end();
     }
 

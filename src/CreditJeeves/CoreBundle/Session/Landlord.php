@@ -33,7 +33,7 @@ class Landlord extends User
 
     public function prepareLandlord(UserEntity $User)
     {
-        $Lead = $User->getActiveGroup();
+        $Lead = $this->getActiveGroup($User);
         $this->data['user_id'] = $User->getId();
         $this->data['group_id'] = $Lead->getId();
     }
@@ -62,5 +62,33 @@ class Landlord extends User
     public function getGroup()
     {
         return $this->em->getRepository('DataBundle:Group')->find($this->getGroupId());
+    }
+
+    public function getActiveGroup($User)
+    {
+        if ($isAdmin = $User->getIsSuperAdmin()) {
+            $nGroups = $User->getHolding()->getGroups()->count();
+            if ($nGroups > 0) {
+                return $User->getHolding()->getGroups()->first();
+            } else {
+                return new Group();
+            }
+        } else {
+            $nGroups = $User->getAgentGroups()->count();
+            if ($nGroups > 0) {
+                return $User->getAgentGroups()->first();
+            } else {
+                return new Group();
+            }
+        }
+    }
+
+    public function getGroups($User)
+    {
+        if ($isAdmin = $User->getIsSuperAdmin()) {
+            return $User->getHolding()->getGroups();
+        } else {
+            return $User->getAgentGroups();
+        }
     }
 }

@@ -462,5 +462,4 @@ abstract class Property
     {
         return $this->units;
     }
-    
 }

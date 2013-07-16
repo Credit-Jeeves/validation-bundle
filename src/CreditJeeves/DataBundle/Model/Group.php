@@ -21,7 +21,10 @@ abstract class Group
     protected $id;
 
     /**
-     * @ORM\Column(type="bigint", nullable=true)
+     * @ORM\Column(
+     *     type="bigint",
+     *     nullable=true
+     * )
      */
     protected $cj_affiliate_id;
 
@@ -38,7 +41,10 @@ abstract class Group
     protected $affiliate;
 
     /**
-     * @ORM\Column(type="bigint", nullable=true)
+     * @ORM\Column(
+     *     type="bigint",
+     *     nullable=true
+     * )
      */
     protected $holding_id;
 
@@ -55,23 +61,38 @@ abstract class Group
     protected $holding;
 
     /**
-     * @ORM\Column(type="bigint", nullable=true)
+     * @ORM\Column(
+     *     type="bigint",
+     *     nullable=true
+     * )
      */
     protected $parent_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     inversedBy="children"
+     * )
+     * @ORM\JoinColumn(
+     *     name="parent_id",
+     *     referencedColumnName="id"
+     * )
      */
     protected $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", mappedBy="parent")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     mappedBy="parent"
+     * )
      */
     protected $children;
 
     /**
-     * @ORM\Column(type="bigint", nullable=true)
+     * @ORM\Column(
+     *     type="bigint",
+     *     nullable=true
+     * )
      */
     protected $dealer_id;
 
@@ -153,21 +174,34 @@ abstract class Group
     protected $zip;
 
     /**
-     * @ORM\Column(type="GroupFeeType", options={"default"="flat"})
+     * @ORM\Column(
+     *     type="GroupFeeType",
+     *     options={"default"="flat"}
+     * )
      */
     protected $fee_type = GroupFeeType::FLAT;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(
+     *     type="text",
+     *     nullable=true
+     * )
      */
     protected $contract;
+
     /**
-     * @ORM\Column(type="date", nullable=true)
+     * @ORM\Column(
+     *     type="date",
+     *     nullable=true
+     * )
      */
     protected $contract_date;
 
     /**
-     * @ORM\Column(type="GroupType", options={"default"="vehicle"})
+     * @ORM\Column(
+     *     type="GroupType",
+     *     options={"default"="vehicle"}
+     * )
      */
     protected $type = GroupType::VEHICLE;
 
@@ -184,22 +218,43 @@ abstract class Group
     protected $updated_at;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Lead", mappedBy="group")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Lead",
+     *     mappedBy="group"
+     * )
      */
     protected $leads;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupIncentive", mappedBy="group")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\GroupIncentive",
+     *     mappedBy="group"
+     * )
      */
     protected $incentives;
 
     /**
-     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\User", mappedBy="dealer_groups")
+     * @ORM\ManyToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     mappedBy="dealer_groups"
+     * )
      */
     protected $group_dealers;
 
     /**
-     * @ORM\ManyToMany(targetEntity="\RentJeeves\DataBundle\Entity\Property", inversedBy="property_groups")
+     * @ORM\ManyToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Landlord",
+     *     mappedBy="agent_groups"
+     * )
+     */
+    protected $group_agents;
+    
+
+    /**
+     * @ORM\ManyToMany(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\Property",
+     *     inversedBy="property_groups"
+     * )
      * @ORM\JoinTable(
      *      name="rj_group_property",
      *      joinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")},
@@ -222,6 +277,7 @@ abstract class Group
     {
         $this->leads = new ArrayCollection();
         $this->group_dealers = new ArrayCollection();
+        $this->group_agents = new ArrayCollection();
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->group_properties = new ArrayCollection();
@@ -246,7 +302,6 @@ abstract class Group
     public function setType($type)
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -269,7 +324,6 @@ abstract class Group
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -284,26 +338,25 @@ abstract class Group
     }
 
     /**
-     * Add leads
+     * Add lead
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $leads
+     * @param \CreditJeeves\DataBundle\Entity\Lead $lead
      * @return Group
      */
-    public function addLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
+    public function addLead(\CreditJeeves\DataBundle\Entity\Lead $lead)
     {
-        $this->leads[] = $leads;
-
+        $this->leads[] = $lead;
         return $this;
     }
 
     /**
-     * Remove leads
+     * Remove lead
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $leads
+     * @param \CreditJeeves\DataBundle\Entity\Lead $lead
      */
-    public function removeLead(\CreditJeeves\DataBundle\Entity\Lead $leads)
+    public function removeLead(\CreditJeeves\DataBundle\Entity\Lead $lead)
     {
-        $this->leads->removeElement($leads);
+        $this->leads->removeElement($lead);
     }
 
     /**
@@ -316,7 +369,6 @@ abstract class Group
         return $this->leads;
     }
 
-    
     /**
      * Add incentive
      *
@@ -326,22 +378,21 @@ abstract class Group
     public function addGroupIncentive(\CreditJeeves\DataBundle\Entity\GroupIncentive $incentive)
     {
         $this->incentives[] = $incentive;
-    
         return $this;
     }
-    
+
     /**
-     * Remove leads
+     * Remove incentive
      *
-     * @param \CreditJeeves\DataBundle\Entity\Lead $leads
+     * @param \CreditJeeves\DataBundle\Entity\GroupIncentive $incentive
      */
     public function removeGroupIncentive(\CreditJeeves\DataBundle\Entity\GroupIncentive $incentive)
     {
         $this->incentives->removeElement($incentive);
     }
-    
+
     /**
-     * Get leads
+     * Get incentives
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -351,26 +402,25 @@ abstract class Group
     }
 
     /**
-     * Add group_dealers
+     * Add dealer
      *
-     * @param \CreditJeeves\DataBundle\Entity\User $groupDealers
+     * @param \CreditJeeves\DataBundle\Entity\User $dealer
      * @return Group
      */
-    public function addGroupDealer(\CreditJeeves\DataBundle\Entity\User $groupDealers)
+    public function addGroupDealer(\CreditJeeves\DataBundle\Entity\User $dealer)
     {
-        $this->group_dealers[] = $groupDealers;
-
+        $this->group_dealers[] = $dealer;
         return $this;
     }
 
     /**
-     * Remove group_dealers
+     * Remove dealer
      *
-     * @param \CreditJeeves\DataBundle\Entity\User $groupDealers
+     * @param \CreditJeeves\DataBundle\Entity\User $dealer
      */
-    public function removeGroupDealer(\CreditJeeves\DataBundle\Entity\User $groupDealers)
+    public function removeGroupDealer(\CreditJeeves\DataBundle\Entity\User $dealer)
     {
-        $this->group_dealers->removeElement($groupDealers);
+        $this->group_dealers->removeElement($dealer);
     }
 
     /**
@@ -392,7 +442,6 @@ abstract class Group
     public function setWebsiteUrl($websiteUrl)
     {
         $this->website_url = $websiteUrl;
-
         return $this;
     }
 
@@ -415,7 +464,6 @@ abstract class Group
     public function setDescription($description)
     {
         $this->description = $description;
-    
         return $this;
     }
 
@@ -438,7 +486,6 @@ abstract class Group
     public function setPhone($phone)
     {
         $this->phone = $phone;
-    
         return $this;
     }
 
@@ -461,7 +508,6 @@ abstract class Group
     public function setLogoUrl($logoUrl)
     {
         $this->logo_url = $logoUrl;
-    
         return $this;
     }
 
@@ -484,7 +530,6 @@ abstract class Group
     public function setFax($fax)
     {
         $this->fax = $fax;
-    
         return $this;
     }
 
@@ -507,7 +552,6 @@ abstract class Group
     public function setStreetAddress1($streetAddress1)
     {
         $this->street_address_1 = $streetAddress1;
-    
         return $this;
     }
 
@@ -530,7 +574,6 @@ abstract class Group
     public function setStreetAddress2($streetAddress2)
     {
         $this->street_address_2 = $streetAddress2;
-    
         return $this;
     }
 
@@ -553,7 +596,6 @@ abstract class Group
     public function setCity($city)
     {
         $this->city = $city;
-    
         return $this;
     }
 
@@ -576,7 +618,6 @@ abstract class Group
     public function setState($state)
     {
         $this->state = $state;
-    
         return $this;
     }
 
@@ -599,7 +640,6 @@ abstract class Group
     public function setZip($zip)
     {
         $this->zip = $zip;
-    
         return $this;
     }
 
@@ -633,7 +673,6 @@ abstract class Group
     public function setCode($code)
     {
         $this->code = $code;
-    
         return $this;
     }
 
@@ -656,7 +695,6 @@ abstract class Group
     public function setTargetScore($targetScore)
     {
         $this->target_score = $targetScore;
-
         return $this;
     }
 
@@ -767,7 +805,6 @@ abstract class Group
     public function setAffiliate(\CreditJeeves\DataBundle\Entity\Affiliate $affiliate = null)
     {
         $this->affiliate = $affiliate;
-    
         return $this;
     }
 
@@ -790,7 +827,6 @@ abstract class Group
     public function setContractDate($contractDate)
     {
         $this->contract_date = $contractDate;
-    
         return $this;
     }
 
@@ -813,7 +849,6 @@ abstract class Group
     public function setContract($contract)
     {
         $this->contract = $contract;
-    
         return $this;
     }
 

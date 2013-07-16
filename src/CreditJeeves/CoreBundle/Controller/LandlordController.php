@@ -15,8 +15,13 @@ class LandlordController extends Controller
 
     public function getGroups()
     {
-        $holding = $this->getUser()->getHolding();
-        return $holding->getGroups() ? $holding->getGroups() : null;
+        $user = $this->getUser();
+        if ($isAdmin = $user->getIsSuperAdmin()) {
+            $holding = $this->getUser()->getHolding();
+            return $holding->getGroups() ? $holding->getGroups() : null;
+        } else {
+            return $user->getAgentGroups() ? $user->getAgentGroups() : null;
+        }
     }
 
     public function getCurrentGroup()
