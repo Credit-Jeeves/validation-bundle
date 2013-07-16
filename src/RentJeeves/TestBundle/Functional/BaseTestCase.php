@@ -11,7 +11,7 @@ abstract class BaseTestCase extends Base
 
     const APP = 'AppRj';
 
-    public function load($reload)
+    public function load($reload = false)
     {
         if (self::$isFixturesLoaded && !$reload) {
             return;
