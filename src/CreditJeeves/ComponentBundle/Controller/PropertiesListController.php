@@ -14,7 +14,8 @@ class PropertiesListController extends Controller
     public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
     {
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
-        $properties = $repo->getPropetiesList($Group);
+        $total = $repo->countProperties($Group);
+        $properties = $repo->getPropetiesPage($Group);
         $result = array();
         foreach ($properties as $property) {
             $item = $property->getItem();
