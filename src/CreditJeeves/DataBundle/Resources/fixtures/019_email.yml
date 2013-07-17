@@ -20,3 +20,5 @@ fixtures:
     name: check.html
   email_10:
     name: receipt.html
+  email_11:
+    name: rjCheck.html

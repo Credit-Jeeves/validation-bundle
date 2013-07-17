@@ -86,4 +86,21 @@ class Mailer extends BaseMailer implements MailerInterface
             )
         );
     }
+
+    public function sendRjCheckEmail($user, $sTemplate = 'rjCheck')
+    {
+        $url = $this->container->get('router')->generate(
+            'applicant_new_check',
+            array('code' => $user->getInviteCode()),
+            true
+        );
+        
+        return $this->sendEmail(
+            $user,
+            $sTemplate,
+            array(
+               'checkUrl' => $url
+            )
+        );
+    }
 }

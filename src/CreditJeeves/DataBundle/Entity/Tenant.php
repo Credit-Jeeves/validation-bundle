@@ -13,4 +13,9 @@ class Tenant extends User
      * @var string
      */
     protected $type = UserType::TETNANT;
+
+    /**
+     * @ORM\OneToOne(targetEntity="RentJeeves\DataBundle\Entity\Invite")
+     */
+    protected $invite;
 }

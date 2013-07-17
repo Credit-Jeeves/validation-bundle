@@ -5,7 +5,7 @@ namespace RentJeeves\PublicBundle\Controller;
 use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use RentJeeves\PublicBundle\Form\InviteType;
+use RentJeeves\PublicBundle\Form\InviteTenantType;
 use CreditJeeves\DataBundle\Entity\Tenant;
 
 class PublicController extends Controller
@@ -55,24 +55,22 @@ class PublicController extends Controller
 
         $tenant = new Tenant();
         $form = $this->createForm(
-                new InviteType(),
-                $tenant
+            new InviteTenantType(),
+            $tenant
         );
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
                 $tenant = $form->getData();
-                $tenant->setPassword(
-                    $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($tenant->getPassword(), $tenant->getSalt())
-                );
+                $aForm = $request->request->get($form->getName());
+                $tenant->setPassword(md5($aForm['password']['Password']));
                 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($tenant);
                 $em->flush();
 
-                $this->get('creditjeeves.mailer')->sendCheckEmail($tenant);
+                $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
             }
         }

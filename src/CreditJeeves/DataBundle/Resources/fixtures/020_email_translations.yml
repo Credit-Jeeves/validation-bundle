@@ -139,3 +139,17 @@ fixtures:
       Remember, we're here to help,<br /><strong>The Credit Jeeves Team</strong>
       </div>
 
+# check.html email
+  translation_120:
+    translatable: email_11
+    locale: %locale%
+    property: subject
+    value: Check Email
+  translation_121:
+    translatable: email_11
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
+      {% block email %}Confirm - please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a>{% endblock %}
