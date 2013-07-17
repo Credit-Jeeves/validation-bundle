@@ -14,7 +14,7 @@ class GroupsController extends Controller
     public function indexAction()
     {
         $User = $this->get('core.session.landlord')->getUser();
-        $groups = $User->getHolding()->getGroups();
+        $groups = $this->get('core.session.landlord')->getGroups($User);
         $result = array();
         foreach ($groups as $group) {
             $aItem = array();

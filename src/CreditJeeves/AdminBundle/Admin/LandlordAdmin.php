@@ -67,7 +67,12 @@ class LandlordAdmin extends Admin
 
     public function configureFormFields(FormMapper $formMapper)
     {
-        
+        $entity = $this->getSubject();
+        $query = $this->getModelManager()->createQuery('DataBundle:Group', 'g');
+        $query->innerJoin('g.holding', 'h');
+        $query->where('h.id = :holding_id');
+        $query->orderBy('g.name');
+        $query->setParameter('holding_id', $entity->getHoldingId());
         $formMapper
             ->with('General')
                 ->add(
@@ -75,7 +80,13 @@ class LandlordAdmin extends Admin
                     'sonata_type_model'
                 )
                 ->add('first_name')
-                ->add('middle_initial', null, array('required' => false))
+                ->add(
+                    'middle_initial',
+                    null,
+                    array(
+                        'required' => false
+                    )
+                )
                 ->add('last_name')
                 ->add('email')
                 ->add('password', 'hidden', array('required' => false))
@@ -83,7 +94,21 @@ class LandlordAdmin extends Admin
                 ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
                 ->add('is_active', null, array('required' => false))
                 ->add('is_super_admin', null, array('required' => false))
-            ->end();
+            ->end()
+            ->with('Permissions')
+                ->add(
+                    'agent_groups',
+                    'sonata_type_model',
+                    array(
+                       'required' => false,
+                       'expanded' => true,
+                       'multiple' => true,
+                       'query' => $query,
+                       
+                    )
+                 )
+            ->end()
+        ;
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)

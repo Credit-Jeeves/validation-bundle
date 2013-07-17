@@ -10,7 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class Property
+abstract class Unit
 {
     /**
      * @ORM\Column(name="id", type="bigint")
@@ -26,88 +26,36 @@ abstract class Property
      *     length=3
      * )
      */
-    protected $country;
+    protected $name;
 
     /**
      * @ORM\Column(
-     *     name="area",
-     *     type="string",
-     *     length=255,
+     *     type="integer",
      *     nullable=true
      * )
      */
-    protected $area;
+    protected $rent;
 
     /**
      * @ORM\Column(
-     *     name="city",
-     *     type="string",
-     *     length=255
-     * )
-     * @Assert\NotBlank()
-     */
-    protected $city;
-
-    /**
-     * @ORM\Column(
-     *     name="district",
-     *     type="string",
-     *     length=255,
+     *     type="integer",
      *     nullable=true
      * )
      */
-    protected $district;
+    protected $beds;
 
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Property",
+     *     inversedBy="units"
+     * )
+     * @ORM\JoinColumn(
+     *     name="property_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $property;
     
-    /**
-     * @ORM\Column(
-     *     name="street",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     */
-    protected $street;
-
-    /**
-     * @ORM\Column(
-     *     name="number",
-     *     type="string",
-     *     length=255,
-     *     nullable=true
-     * )
-     * @Assert\NotBlank()
-     */
-    protected $number;
-
-    /**
-     * @ORM\Column(
-     *     name="zip",
-     *     type="string",
-     *     length=15,
-     *     nullable=true
-     * )
-     */
-    protected $zip;
-
-    /**
-     * @ORM\Column(
-     *     name="jb",
-     *     type="float",
-     *     nullable=true
-     * )
-     */
-    protected $jb;
-
-    /**
-     * @ORM\Column(
-     *     name="kb",
-     *     type="float",
-     *     nullable=true
-     * )
-     */
-    protected $kb;
-
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
@@ -127,16 +75,6 @@ abstract class Property
     protected $updatedAt;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
-     *     mappedBy="property",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $units;
-
-    /**
      * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", mappedBy="group_properties")
      */
     protected $property_groups;
@@ -144,7 +82,6 @@ abstract class Property
     public function __construct()
     {
         $this->property_groups = new ArrayCollection();
-        $this->units = new ArrayCollection();
     }
 
     /**
@@ -399,6 +336,7 @@ abstract class Property
         return $this->updatedAt;
     }
 
+    
     /**
      * Add property_landlord
      *
@@ -429,37 +367,5 @@ abstract class Property
     public function getPropertyGroups()
     {
         return $this->property_groups;
-    }
-
-    /**
-     * Add unit
-     *
-     * @param \RentJeeves\DataBundle\Entity\Unit
-     * @return Property
-     */
-    public function addUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
-    {
-        $this->units[] = $unit;
-        return $this;
-    }
-    
-    /**
-     * Remove unit
-     *
-     * @param \RentJeeves\DataBundle\Entity\Unit $unit
-     */
-    public function removeUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
-    {
-        $this->units->removeElement($unit);
-    }
-    
-    /**
-     * Get units
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getUnits()
-    {
-        return $this->units;
     }
 }
