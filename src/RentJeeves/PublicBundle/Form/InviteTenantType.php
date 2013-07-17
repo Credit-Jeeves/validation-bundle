@@ -7,17 +7,22 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
+use RentJeeves\PublicBundle\Form\InviteType;
 
 class InviteTenantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
+            'invite',
+            new InviteType()
+        );
+        $builder->add(
             'first_name',
             null,
             array(
-                'label' => 'Name*'
+                'label' => 'Name*',
+                'error_bubbling' => true,
             )
         );
         $builder->add('last_name');
@@ -25,10 +30,17 @@ class InviteTenantType extends AbstractType
             'email',
             null,
             array(
-                'label' => 'Email*'
+                'label' => 'Email*',
+                'error_bubbling' => true,
             )
         );
-        $builder->add('phone');
+        $builder->add(
+            'phone',
+            null,
+            array(
+                'error_bubbling' => true,
+            )
+        );
         $builder->add(
             'password',
             'repeated',
@@ -37,6 +49,7 @@ class InviteTenantType extends AbstractType
                 'second_name'   => 'Verify_Password',
                 'type'          => 'password',
                 'mapped'        => false,
+                'error_bubbling' => true,
                 'constraints'   => array(
                     new NotBlank(
                         array(
@@ -54,6 +67,7 @@ class InviteTenantType extends AbstractType
                 'label'         => '',
                 'data'          => false,
                 'mapped'        => false,
+                'error_bubbling' => true,
                 'constraints'    => new True(
                     array(
                         'message'   => 'error.user.tos',
@@ -82,6 +96,6 @@ class InviteTenantType extends AbstractType
 
     public function getName()
     {
-        return 'rentjeeves_publicbundle_invitetype';
+        return 'rentjeeves_publicbundle_invitetenanttype';
     }
 }

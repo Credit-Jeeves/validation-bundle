@@ -86,7 +86,7 @@ abstract class Invite
 
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Tenant", inversedBy="invite")
+     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Tenant", inversedBy="invite", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      * @Assert\NotBlank(
      *     message="error.user.tenant.empty",
@@ -96,6 +96,18 @@ abstract class Invite
      * )     
      */
     protected $tenant;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Property",
+     *     inversedBy="invite"
+     * )
+     * @ORM\JoinColumn(
+     *     name="property_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $property;
 
     /**
      * Get id
@@ -220,5 +232,51 @@ abstract class Invite
     public function getUnit()
     {
         return $this->unit;
+    }
+
+    /**
+     * Set tenant
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Tenant $tenant
+     * @return Invite
+     */
+    public function setTenant(\CreditJeeves\DataBundle\Entity\Tenant $tenant = null)
+    {
+        $this->tenant = $tenant;
+    
+        return $this;
+    }
+
+    /**
+     * Get tenant
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Tenant 
+     */
+    public function getTenant()
+    {
+        return $this->tenant;
+    }
+
+    /**
+     * Set property
+     *
+     * @param \RentJeeves\DataBundle\Entity\Property $property
+     * @return Invite
+     */
+    public function setProperty(\RentJeeves\DataBundle\Entity\Property $property = null)
+    {
+        $this->property = $property;
+    
+        return $this;
+    }
+
+    /**
+     * Get property
+     *
+     * @return \RentJeeves\DataBundle\Entity\Property 
+     */
+    public function getProperty()
+    {
+        return $this->property;
     }
 }

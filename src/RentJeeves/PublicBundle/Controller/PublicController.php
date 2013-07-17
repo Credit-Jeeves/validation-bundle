@@ -20,7 +20,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/check/{propertyId}", name="iframe_search_check", options={"expose"=true})
+     * @Route("/checkProperty/{propertyId}", name="iframe_search_check", options={"expose"=true})
      * @Template()
      */
     public function checkSearchAction($propertyId)
@@ -31,8 +31,9 @@ class PublicController extends Controller
         if (!$Property) {
             return $this->redirect($this->generateUrl("iframe"));
         }
-
+     
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
+
         if ($countGroup > 0) {
             return $this->redirect($this->generateUrl("iframe_new", array('propertyId'=>$propertyId)));
         }
@@ -41,7 +42,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/invite/{propertyId}", name="iframe_invite")
+     * @Route("/user/invite/{propertyId}", name="iframe_invite")
      * @Template()
      */
     public function inviteAction($propertyId)
@@ -58,6 +59,7 @@ class PublicController extends Controller
             new InviteTenantType(),
             $tenant
         );
+
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
@@ -73,6 +75,7 @@ class PublicController extends Controller
                 $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
             }
+            var_dump($form->getErrors());exit;
         }
 
         return array(
@@ -83,7 +86,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/new/{propertyId}", name="iframe_new")
+     * @Route("/user/new/{propertyId}", name="iframe_new")
      * @Template()
      */
     public function newAction($propertyId)

@@ -137,6 +137,16 @@ abstract class Property
     protected $units;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Invite",
+     *     mappedBy="property",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $invite;
+
+    /**
      * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", mappedBy="group_properties")
      */
     protected $property_groups;

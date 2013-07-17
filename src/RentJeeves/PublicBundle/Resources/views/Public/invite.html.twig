@@ -20,45 +20,39 @@
       </div>
     </div>
 </form>
-<form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
-    <div class="box type1" style="display:none;">
+<form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }} novalidate>
+    <div class="box type1">
       <div class="col-box clearfix">
         <div class="col">
           <h4 class="active">We didn’t find a match yet – let your landlord know!</h4>
           <div class="form-row clearfix">
-            <label>Landlord’s Name<b>*</b></label>
+            {{ form_label(form.invite.unit) }}
             <div class="fields-box">
-              <input type="text" placeholder="first" class="half-width">
-              <input type="text" placeholder="last" class="half-width">
+              {{ form_widget(form.invite.unit, { 'attr': {'class': 'half-width', 'placeholder':"e.g. 3А" } }) }}
+              {{ form_errors(form.invite.unit) }}
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Phone</label>
+            {{ form_label(form.invite.first_name) }}
             <div class="fields-box">
-              <input type="text" class="phone-width">
-              <span class="dash">-</span>
-              <input type="text" class="phone-width">
-              <span class="dash">-</span>
-              <input type="text" class="phone-width">
+              {{ form_widget(form.invite.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first" } }) }}
+              {{ form_widget(form.invite.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+              {{ form_errors(form.invite.first_name) }}
+              {{ form_errors(form.invite.last_name) }}
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Email<b>*</b></label>
+            {{ form_label(form.invite.phone) }}
             <div class="fields-box">
-              <input type="text">
+                {{ form_widget(form.invite.phone) }}
+                {{ form_errors(form.invite.phone) }}
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Property Address<b>*</b></label>
+            {{ form_label(form.invite.email) }}
             <div class="fields-box">
-              <input type="text" placeholder="Street">
-            </div>
-            <div class="fields-box">
-              <input type="text" placeholder="City" class="city-width">
-              <select class="two-chars-width">
-                <option value="1" selected="selected">CA</option>
-              </select>
-              <input type="text" placeholder="Zip Code" class="zc-width">
+                {{ form_widget(form.invite.email) }}
+                {{ form_errors(form.invite.email) }}
             </div>
           </div>
           
@@ -83,9 +77,9 @@
           <div class="form-row clearfix">
             {{ form_label(form.first_name) }}
             <div class="fields-box">
-              {{ form_widget(form.first_name, { 'attr': {'class': 'half-width'} }) }}
-              {{ form_widget(form.last_name, { 'attr': {'class': 'half-width'} }) }}
-              {{ form_errors(form.first_name, {'attr': {'class': 'error'}}) }}
+              {{ form_widget(form.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first"} }) }}
+              {{ form_widget(form.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+              {{ form_errors(form.first_name) }}
               {{ form_errors(form.last_name) }}
             </div>
           </div>
