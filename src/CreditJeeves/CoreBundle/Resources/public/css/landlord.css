@@ -38,3 +38,8 @@ table.properties-table th {
 .properties-table-block {
     margin-top: 15px;
 }
+
+/* Units block */
+.units-block {
+    display: none;
+}

@@ -75,16 +75,6 @@ abstract class Unit
     protected $updatedAt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", mappedBy="group_properties")
-     */
-    protected $property_groups;
-
-    public function __construct()
-    {
-        $this->property_groups = new ArrayCollection();
-    }
-
-    /**
      * Get id
      *
      * @return integer
@@ -95,201 +85,69 @@ abstract class Unit
     }
 
     /**
-     * Set country
+     * Set name
      *
-     * @param string $country
-     * @return Property
+     * @param string $name
+     * @return Unit
      */
-    public function setCountry($country)
+    public function setName($name)
     {
-        $this->country = $country;
+        $this->name = $name;
         return $this;
     }
 
     /**
-     * Get country
+     * Get name
      *
      * @return string
      */
-    public function getCountry()
+    public function getName()
     {
-        return $this->country;
+        return $this->name;
     }
 
     /**
-     * Set area
+     * Set rent
      *
-     * @param string $area
-     * @return Property
+     * @param double $rent
+     * @return Unit
      */
-    public function setArea($area)
+    public function setRent($rent)
     {
-        $this->area = $area;
+        $this->rent = $rent;
         return $this;
     }
 
     /**
-     * Get area
+     * Get rent
      *
-     * @return string
+     * @return double
      */
-    public function getArea()
+    public function getRent()
     {
-        return $this->area;
+        return $this->rent;
     }
 
     /**
-     * Set city
+     * Set beds
      *
-     * @param string $city
-     * @return Property
+     * @param integer $beds
+     * @return Unit
      */
-    public function setCity($city)
+    public function setBeds($beds)
     {
-        $this->city = $city;
+        $this->beds = $beds;
         return $this;
     }
 
     /**
-     * Get city
+     * Get beds
      *
-     * @return string
+     * @return integer
      */
-    public function getCity()
+    public function getBeds()
     {
-        return $this->city;
-    }
-
-    /**
-     * Set district
-     *
-     * @param string $district
-     * @return Property
-     */
-    public function setDistrict($district)
-    {
-        $this->district = $district;
-        return $this;
-    }
-
-    /**
-     * Get district
-     *
-     * @return string
-     */
-    public function getDistrict()
-    {
-        return $this->district;
-    }
-
-    /**
-     * Set street_address
-     *
-     * @param string $streetAddress
-     * @return Property
-     */
-    public function setStreet($street)
-    {
-        $this->street = $street;
-        return $this;
-    }
-
-    /**
-     * Get street_address
-     *
-     * @return string 
-     */
-    public function getStreet()
-    {
-        return $this->street;
-    }
-
-    /**
-     * Set street_number
-     *
-     * @param string $streetNumber
-     * @return Property
-     */
-    public function setNumber($number)
-    {
-        $this->number = $number;
-        return $this;
-    }
-
-    /**
-     * Get street_number
-     *
-     * @return string 
-     */
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    /**
-     * Set zip
-     *
-     * @param string $zip
-     * @return Address
-     */
-    public function setZip($zip)
-    {
-        $this->zip = $zip;
-        return $this;
-    }
-
-    /**
-     * Get zip
-     *
-     * @return string 
-     */
-    public function getZip()
-    {
-        return $this->zip;
-    }
-
-    /**
-     * Set jb
-     *
-     * @param float $jb
-     * @return Property
-     */
-    public function setJb($jb)
-    {
-        $this->jb = $jb;
-        return $this;
-    }
-
-    /**
-     * Get jb
-     *
-     * @return float
-     */
-    public function getJb()
-    {
-        return $this->jb;
-    }
-
-    /**
-     * Set kb
-     *
-     * @param float $kb
-     * @return Property
-     */
-    public function setKb($kb)
-    {
-        $this->kb = $kb;
-        return $this;
-    }
-
-    /**
-     * Get jb
-     *
-     * @return float
-     */
-    public function getKb()
-    {
-        return $this->kb;
+        return $this->beds;
     }
 
     /**
@@ -307,7 +165,7 @@ abstract class Unit
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -318,7 +176,7 @@ abstract class Unit
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return Address
+     * @return Unit
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -329,43 +187,32 @@ abstract class Unit
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
         return $this->updatedAt;
     }
 
-    
     /**
-     * Add property_landlord
+     * Set Property
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group
-     * @return Property
+     * @param Property $property
+     * @return Unit
      */
-    public function addPropertyGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    public function setProperty(Property $property = null)
     {
-        $this->property_groups[] = $group;
+        $this->property = $property;
         return $this;
     }
 
     /**
-     * Remove property_group
+     * Get Property
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @return Property
      */
-    public function removePropertyGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    public function getProperty()
     {
-        $this->property_groups->removeElement($group);
-    }
-
-    /**
-     * Get property_groups
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPropertyGroups()
-    {
-        return $this->property_groups;
+        return $this->property;
     }
 }

@@ -68,6 +68,7 @@ class Property extends Base
     public function getItem()
     {
         $item = array();
+        $item['id'] = $this->getId();
         $item['country'] = $this->getCountry();
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();

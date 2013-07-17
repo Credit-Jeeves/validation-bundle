@@ -1,0 +1,8 @@
+model: RentJeeves\DataBundle\Entity\Unit
+fixtures:
+    Unit_1:
+        property: Property_1
+        name:        1
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+        

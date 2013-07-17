@@ -92,4 +92,24 @@ class AjaxController extends Controller
         
         return new JsonResponse($data);
     }
+
+    /**
+     * @Route(
+     *     "/unit/list",
+     *     name="landlord_units_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function getUnitsList()
+    {
+        $data = array();
+        $request = $this->getRequest();
+        $data = $request->request->all('property_id');
+        
+        return new JsonResponse($data);
+    }
+    
 }

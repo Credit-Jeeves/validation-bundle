@@ -1,0 +1,89 @@
+model: RentJeeves\DataBundle\Entity\Property
+fixtures:
+    Property_1:
+        property_groups:
+            - RentGroup_1
+            - RentGroup_2
+        country:        US
+        area:           NY
+        city:           New York
+        district:       Manhattan
+        street:         Broadway
+        number:         770
+        zip:            10003
+        jb:             40.7308443
+        kb:             -73.9913642
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_2:
+        property_groups:
+            - RentGroup_1
+            - RentGroup_2
+        country:        US
+        area:           CA
+        city:           Santa Barbara
+        district:       null
+        street:         Andante Rd
+        number:         960
+        zip:            93105
+        jb:             34.44943
+        kb:             -119.709369
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_3:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           CA
+        city:           Mission Canyon
+        district:       null
+        street:         Andante Rd
+        number:         750
+        zip:            93105
+        jb:             34.44987
+        kb:             -119.7096921
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_4:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           NY
+        city:           New York
+        district:       Manhattan
+        street:         Broadway
+        number:         560
+        zip:            10012
+        jb:             40.723851
+        kb:             -73.997487
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_5:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           NY
+        city:           Jamaica
+        district:       Queens
+        street:         Broadway
+        number:         1
+        zip:            11414
+        jb:             40.6584069
+        kb:             -73.830445
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_6:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           NY
+        city:           Jamaica
+        district:       Queens
+        street:         Broadway
+        number:         1
+        zip:            11414
+        jb:             40.6584069
+        kb:             -73.830445
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+        
