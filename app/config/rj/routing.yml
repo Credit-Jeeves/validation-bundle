@@ -22,6 +22,10 @@ public:
     resource: "@PublicBundle/Controller"
     type:     annotation
 
+RjPublicBundle:
+    resource: "@RjPublicBundle/Controller/"
+    type:     annotation
+
 core:
     resource:   "@CoreBundle/Controller"
     type:       annotation

@@ -22,20 +22,23 @@ security:
             anonymous:    true
 
     access_control:
-        - { path: ^/_profiler/,     role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/_wdt/,          role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/js/*,           role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/css/*,          role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/landlord/ajax/property/add$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/_profiler/,     role: ROLE_LANDLORD }
-        - { path: ^/_profiler/,     role: ROLE_TENANT }
-        - { path: ^/test,           role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/login$,         role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/resetting,      role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/new$,           role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/new/,           role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/public/*,       role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/landlord/,      role: ROLE_LANDLORD }
-        - { path: ^/,               role: ROLE_TENANT }
+        - { path: ^/_profiler/,                     role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_wdt/,                          role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/js/*,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/css/*,                          role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/landlord/ajax/property/add$,    role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/_profiler/,                     role: ROLE_LANDLORD }
+        - { path: ^/_profiler/,                     role: ROLE_TENANT }
+        - { path: ^/test,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/resetting,                      role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/new$,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/new/,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/invite,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/message,                        role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/iframe,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/checkProperty/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/user/invite,                    role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/user/new,                       role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/landlord/,                      role: ROLE_LANDLORD }
+        - { path: ^/,                               role: ROLE_TENANT }
