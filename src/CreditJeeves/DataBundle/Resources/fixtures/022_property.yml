@@ -76,14 +76,140 @@ fixtures:
         property_groups:
             - RentGroup_1
         country:        US
-        area:           NY
-        city:           Jamaica
-        district:       Queens
-        street:         Broadway
-        number:         1
-        zip:            11414
-        jb:             40.6584069
-        kb:             -73.830445
+        area:           MA
+        city:           Boston
+        district:       null
+        street:         Washington St
+        number:         10
+        zip:            02132
+        jb:             42.2574449
+        kb:             -71.1616868
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_7:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           CA
+        city:           Palos Verdes Estates
+        district:       null
+        street:         Vía Fernandez
+        number:         null
+        zip:            90274
+        jb:             33.7880762
+        kb:             -118.3960347
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_8:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           WA
+        city:           Seattle
+        district:       null
+        street:         18th Ave
+        number:         50
+        zip:            98122
+        jb:             47.6016982
+        kb:             -122.3089461
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_9:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           MO
+        city:           Kansas City
+        district:       null
+        street:         W 48th St
+        number:         121
+        zip:            64112
+        jb:             39.038827
+        kb:             -94.588826
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_10:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           TX
+        city:           Houston
+        district:       null
+        street:         Crosstimbers St
+        number:         1201
+        zip:            77022
+        jb:             29.8287445
+        kb:             -95.3856651
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_11:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           Mt
+        city:           Billings
+        district:       null
+        street:         Overland Ave
+        number:         2026
+        zip:            59102
+        jb:             45.753246
+        kb:             -108.565361
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_12:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           AZ
+        city:           Scottsdale
+        district:       null
+        street:         N Palo Cristi Rd
+        number:         5532
+        zip:            85253
+        jb:             33.518351
+        kb:             -112.0041753
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_13:
+        property_groups:
+            - RentGroup_1
+        country:        CU
+        area:           Havana
+        city:           Havana
+        district:       null
+        street:         10 de Octubre
+        number:         null
+        zip:            null
+        jb:             23.1094238
+        kb:             -82.3658518
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_14:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           IL
+        city:           Chicago
+        district:       null
+        street:         W Madison St
+        number:         733
+        zip:            60661
+        jb:             41.8810911
+        kb:             -87.6468986
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_15:
+        property_groups:
+            - RentGroup_1
+        country:        US
+        area:           AR
+        city:           Little Rock
+        district:       null
+        street:         S Broadway St
+        number:         617
+        zip:            72201
+        jb:             34.7434652
+        kb:             -92.2759828
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
         

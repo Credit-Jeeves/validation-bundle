@@ -73,7 +73,7 @@ class Property extends Base
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
         $item['address'] = $this->getAddress();
-        $item['units'] = 0;
+        $item['units'] = $this->getUnits()->count();
         return $item;
     }
 
