@@ -19,6 +19,8 @@
     {% javascripts '@RjPublicBundle/Resources/public/js/modernizr-2.6.2.min.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
   </head>
   <body>
     <div class="wrapper">
@@ -145,6 +147,8 @@
 
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}    
+    {% endjavascripts %}
+    {% block javascripts %}
+    {% endblock %}
   </body>
 </html>

@@ -87,9 +87,15 @@ class Property extends Base
         if ($street = $this->getStreet()) {
             $address[] = $street;
         }
+
         if ($address) {
             $result[] = implode(' ', $address);
         }
+
+        if ($city = $this->getCity()) {
+            $result[] = $city;
+        }
+
         if ($area = $this->getArea()) {
             $result[] = $area;
         }

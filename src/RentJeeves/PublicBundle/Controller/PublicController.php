@@ -44,7 +44,16 @@ class PublicController extends Controller
      */
     public function inviteAction($propertyId)
     {
-        return array();
+        $em = $this->get('doctrine.orm.entity_manager');
+        $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        
+        if (!$Property) {
+            return $this->redirect($this->generateUrl("iframe"));
+        }
+
+        return array(
+            'address'   => $Property->getAddress(),
+        );
     }
 
     /**

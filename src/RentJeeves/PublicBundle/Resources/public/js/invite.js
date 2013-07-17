@@ -65,7 +65,7 @@ $(document).ready(function(){
           infowindow.open(map, marker);
         }
         
-        $('#property-add').click(function(){
+        $('#search-submit').click(function(){
             if(ERROR == $('#property-search').attr('class')) {
                 showError('Such address doesn\'t exist!');
                 return false;
@@ -81,18 +81,22 @@ $(document).ready(function(){
               type: 'POST',
               dataType: 'json',
               data: {'data': JSON.stringify(data, null)},
-              error: function(jqXHR, errorThrown, textStatus) {
-                //location.href = Routing.generate('landlord_properties');
+              error: function(jqXHR, errorThrown, textStatus) {;
               },
               success: function(propertyId, textStatus, jqXHR) {
-                console.info(propertyId);
                 location.href = Routing.generate('iframe_search_check', {'propertyId':propertyId});
               }
             });
+            
+            return false;
         });
 
         google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
     }
+
+    $('#formSearch').submit(function() {
+      return false;
+    });
 
     google.maps.event.addDomListener(window, 'load', initialize);
 

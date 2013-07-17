@@ -46,7 +46,9 @@
 	};
 	
 	$("#delete").click(function() {
-        $("#searsh-field").val("");
+        $("#property-search").val("");
+        $(this).hide();
+        return false;
     });
   
 })( jQuery );
