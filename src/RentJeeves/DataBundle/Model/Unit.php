@@ -21,9 +21,9 @@ abstract class Unit
 
     /**
      * @ORM\Column(
-     *     name="country",
+     *     name="name",
      *     type="string",
-     *     length=3
+     *     length=50
      * )
      */
     protected $name;

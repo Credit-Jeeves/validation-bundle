@@ -40,6 +40,41 @@ table.properties-table th {
 }
 
 /* Units block */
+.units-wrapper {
+    width: 550px;
+    margin: 0 auto;
+    position: absolute;
+    top: 250px;
+}
 .units-block {
-    display: none;
+   background-color: #ffffff;
+   width: 550px;
+   position: absolute;
+   left: 180px;
+   
+}
+
+.units-background {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #000000;
+    opacity: 0.3;
+}
+
+.units-item {
+    float: left;
+    width: 100px;
+    margin: 0 5px 15px;
+}
+
+.unit-input {
+    width: 70px;
+}
+
+.units-footer {
+    margin-top: 15px;
+    padding-left: 110px;
 }

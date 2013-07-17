@@ -108,8 +108,9 @@ class AjaxController extends Controller
         $data = array();
         $request = $this->getRequest();
         $data = $request->request->all('property_id');
-        
-        return new JsonResponse($data);
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
+        $units = $property->getUnitsArray();
+        return new JsonResponse($units);
     }
     
 }

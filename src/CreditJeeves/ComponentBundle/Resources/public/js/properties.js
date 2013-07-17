@@ -21,19 +21,22 @@ function Properties() {
 }
 
 function Units() {
+  var self = this;
   this.aUnits = ko.observableArray();
-  this.ajaxAction = function(sAction, nTradelineId) {
+  this.ajaxAction = function(sAction, nPropertyId) {
     $.ajax({
       url: Routing.generate('landlord_units_list'),
       type: 'POST',
       dataType: 'json',
-      data: {
-            },
+      data: {'property_id': nPropertyId},
       success: function(response) {
+        self.aUnits(response);
       }
     });
   };
-  
+  this.clearUnits = function() {
+    self.aUnits([]);
+  }
 }
 
 $(document).ready(function(){
@@ -41,8 +44,8 @@ $(document).ready(function(){
   ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
   
     $('#properties-block table tbody').delegate('.property-edit', 'click', function(){
-      var nUnitId = this.id.split('-')[1];
-      UnitsViewModel.ajaxAction('unit', nUnitId);
+      var nPropertyId = this.id.split('-')[1];
+      UnitsViewModel.ajaxAction('unit', nPropertyId);
       return false;
     });
 });

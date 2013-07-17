@@ -98,4 +98,18 @@ class Property extends Base
         }
         return implode(', ', $result);
     }
+
+    public function getUnitsArray()
+    {
+        $result = array();
+        $units = $this->getUnits();
+        foreach ($units as $unit) {
+            $item = array();
+            $item['id'] = $unit->getId();
+            $item['name'] = $unit->getName();
+            $item['number'] = count($result);
+            $result[] = $item;
+        }
+        return $result;
+    }
 }

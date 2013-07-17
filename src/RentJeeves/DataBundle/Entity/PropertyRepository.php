@@ -19,7 +19,7 @@ class PropertyRepository extends EntityRepository
         return $query->getScalarResult();
     }
 
-    public function getPropetiesPage($group, $page = 1, $limit = 50, $sort = 'number', $order = 'ASC', $searchBy = 'address', $search = '')
+    public function getPropetiesPage($group, $page = 1, $limit = 100, $sort = 'number', $order = 'ASC', $searchBy = 'address', $search = '')
     {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('p');
@@ -30,6 +30,7 @@ class PropertyRepository extends EntityRepository
             $query->andWhere('p.'.$searchBy.' = :search');
             $query->setParameter('search', $search);
         }
+        $query->orderBy('p.'.$sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
