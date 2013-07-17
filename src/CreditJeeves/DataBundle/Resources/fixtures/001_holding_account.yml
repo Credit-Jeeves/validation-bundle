@@ -6,5 +6,19 @@ fixtures:
     name: Moss Holding
   cjHolding_3:
     name: Test Holding
-  rjHolding_1:
-    name: Rent Holding
+  Holding_1:
+    name:           Rent Holding
+    createdAt:     '-60 days'
+    updatedAt:     '-8 days'
+  Holding_2:
+    name:           Estate Holding
+    createdAt:     '-60 days'
+    updatedAt:     '-8 days'
+  Holding_3:
+    name:           Generic Holding
+    createdAt:     '-60 days'
+    updatedAt:     '-8 days'
+  Holding_4:
+    name:           Vehicle Holding
+    createdAt:     '-60 days'
+    updatedAt:     '-8 days'

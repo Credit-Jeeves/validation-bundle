@@ -2,31 +2,31 @@ model: CreditJeeves\DataBundle\Entity\Group
 fixtures:
   RentGroup_1:
     name:           Test Rent Group
-    holding:        rjHolding_1
+    holding:        Holding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_2:
     name:          Sea side Rent Group
-    holding:        rjHolding_1
+    holding:        Holding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_3:
     name:           Campus Rent Group
-    holding:        rjHolding_1
+    holding:        Holding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_4:
     name:           Western Rent Group
-    holding:        rjHolding_1
+    holding:        Holding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
   RentGroup_5:
     name:           Kharkov Rent Group
-    holding:        rjHolding_1
+    holding:        Holding_1
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
