@@ -104,11 +104,9 @@ class LandlordAdmin extends Admin
                        'expanded' => true,
                        'multiple' => true,
                        'query' => $query,
-                       
                     )
-                 )
-            ->end()
-        ;
+                )
+            ->end();
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
