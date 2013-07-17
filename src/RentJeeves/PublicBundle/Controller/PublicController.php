@@ -62,11 +62,18 @@ class PublicController extends Controller
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                echo "Hi";exit;
-                $User = $form->getData();
-            } else {
-                /*var_dump($form->getErrors());
-                exit;*/
+                $tenant = $form->getData();
+                $tenant->setPassword(
+                    $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($tenant->getPassword(), $tenant->getSalt())
+                );
+                
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($tenant);
+                $em->flush();
+
+                $this->get('creditjeeves.mailer')->sendCheckEmail($tenant);
+                return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
             }
         }
 

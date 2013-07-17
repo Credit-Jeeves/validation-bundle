@@ -1,0 +1,19 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+{% block content %}
+ <form action="{{ path('user_new_send', {"tenantId": tenantId }) }}" method="post">
+  <br />
+  <br />
+  <br />
+  <p>
+    <center>
+      <button type="submit" class="button"><span>Re Send me email</span></button>
+    </center>
+  </p>
+  <br />
+  <br />
+ </form>
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
