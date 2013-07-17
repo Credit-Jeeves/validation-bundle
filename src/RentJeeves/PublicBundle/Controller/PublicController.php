@@ -5,6 +5,8 @@ namespace RentJeeves\PublicBundle\Controller;
 use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use RentJeeves\PublicBundle\Form\InviteType;
+use CreditJeeves\DataBundle\Entity\Tenant;
 
 class PublicController extends Controller
 {
@@ -51,8 +53,27 @@ class PublicController extends Controller
             return $this->redirect($this->generateUrl("iframe"));
         }
 
+        $tenant = new Tenant();
+        $form = $this->createForm(
+                new InviteType(),
+                $tenant
+        );
+        $request = $this->get('request');
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                echo "Hi";exit;
+                $User = $form->getData();
+            } else {
+                /*var_dump($form->getErrors());
+                exit;*/
+            }
+        }
+
         return array(
             'address'   => $Property->getAddress(),
+            'form'      => $form->createView(),
+            'propertyId'=> $Property->getId(),
         );
     }
 

@@ -135,6 +135,7 @@ textarea {
 
 input[type="text"],
 input[type="password"],
+input[type="email"],
 textarea,
 select {
   border:1px solid #bdbdbd;
@@ -1318,4 +1319,8 @@ footer nav .copyright li {
 .clearfix,
 .menubar ul {
   *zoom: 1;
+}
+
+form ul {
+  color: red;
 }
