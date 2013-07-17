@@ -1,7 +1,7 @@
 model: CreditJeeves\DataBundle\Entity\Landlord
 fixtures:
     Landlord_1:
-        holding:  Holding_1
+        holding:  rjHolding_1
         first_name: TIMOTHY
         middle_initial: A
         last_name: APPLEGATE
@@ -15,6 +15,7 @@ fixtures:
         phone_type: 2
         phone: 7858655392
         ssn: 666309041
+        is_super_admin: true
         is_active: true
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
         culture:  en
@@ -132,3 +133,36 @@ fixtures:
         lastLogin: '-1 days'
         created_at: '-38 days'
         updated_at: '-2 days'
+# Agents
+    Agent_1:
+        agent_groups:
+          - RentGroup_1
+        holding:  rjHolding_1
+        first_name: Agent
+        middle_initial:
+        last_name: Test
+        email: agent1@example.com
+        street_address1: ''
+        street_address2: ''
+        unit_no: ''
+        city: LAWRENCE
+        state: KS
+        zip: ''
+        phone_type: 2
+        phone: 
+        date_of_birth: ''
+        ssn: ''
+        is_active: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72
+        salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+        type: landlord
+        score_changed_notification: false
+        offer_notification: false
+        culture:  %locale%
+        has_data: false
+        has_report: null
+        is_verified: passed
+        created_at: '-50 days'
+        updated_at: '-50 days'
+        
