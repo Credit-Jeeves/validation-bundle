@@ -1,0 +1,160 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+{% block content %}
+<form action="#" name="searchRentalsForm" id="formSearch">
+    <div class="box type1">
+      <h3 class="clearfix">
+        <span>Property information</span>
+        <small><b>*</b>Required</small>
+      </h3>
+      <div class="col-box clearfix">
+        <div class="col searsh-box">
+          <label for="searsh-field">Showing rentals available near:</label>
+          <div class="clearfix">
+            <input type="text" id="property-search" name="searsh-field" value="{{ address }}">
+            <a href="#" id="delete" class="pie-el">x</a>
+            <button type="button" id="search-submit" class="pie-el">Search</button>
+          </div>
+          <div id="map-canvas"></div>
+        </div>
+      </div>
+    </div>
+</form>
+<form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
+    <div class="box type1" style="display:none;">
+      <div class="col-box clearfix">
+        <div class="col">
+          <h4 class="active">We didn’t find a match yet – let your landlord know!</h4>
+          <div class="form-row clearfix">
+            <label>Landlord’s Name<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" placeholder="first" class="half-width">
+              <input type="text" placeholder="last" class="half-width">
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>Phone</label>
+            <div class="fields-box">
+              <input type="text" class="phone-width">
+              <span class="dash">-</span>
+              <input type="text" class="phone-width">
+              <span class="dash">-</span>
+              <input type="text" class="phone-width">
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>Email<b>*</b></label>
+            <div class="fields-box">
+              <input type="text">
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>Property Address<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" placeholder="Street">
+            </div>
+            <div class="fields-box">
+              <input type="text" placeholder="City" class="city-width">
+              <select class="two-chars-width">
+                <option value="1" selected="selected">CA</option>
+              </select>
+              <input type="text" placeholder="Zip Code" class="zc-width">
+            </div>
+          </div>
+          
+          <div class="tooltip-box with-header pie-el">
+            <h4>Keep paying your rent for now – we’ll contact your landlord.</h4>
+            <p>
+              We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <div class="box type1">
+      <h3 class="clearfix">
+        <span>Account information</span>
+      </h3>
+      <div class="col-box clearfix">
+        <div class="col">
+          <h4>Set up your Rent Jeeves account.</h4>
+          {{ form_errors(form) }}
+          <div class="form-row clearfix">
+            {{ form_label(form.first_name) }}
+            <div class="fields-box">
+              {{ form_widget(form.first_name, { 'attr': {'class': 'half-width'} }) }}
+              {{ form_widget(form.last_name, { 'attr': {'class': 'half-width'} }) }}
+              {{ form_errors(form.first_name, {'attr': {'class': 'error'}}) }}
+              {{ form_errors(form.last_name) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.email) }}
+            <div class="fields-box">
+              {{ form_widget(form.email) }}
+              {{ form_errors(form.email) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.phone) }}
+            <div class="fields-box">
+                {{ form_widget(form.phone) }}
+                {{ form_errors(form.phone) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.password.Password) }}
+            <div class="fields-box">
+              {{ form_widget(form.password.Password) }}
+            </div>
+            {{ form_errors(form.password.Password) }}
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.password.Verify_Password) }}
+            <div class="fields-box">
+              {{ form_widget(form.password.Verify_Password) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="accept-terms-box pie-el">
+      <div class="form-row checkboxes clearfix">
+        <label class="checkbox">
+          {{ form_widget(form.tos) }}
+          <i> </i>
+          <span class="big">I accept the <a href="#" type="Terms of Service">Terms of Service</a></span>
+        </label>
+      </div>
+      {{ form_errors(form.tos) }}
+      <p>
+        You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentJeeves, LLC under the Fair Credit Reporting Act authorizing RentJeeves LLC to obtain information from your personal credit profile or other information from Experian. You authorize RentJeeves LLC to obtain such information solely to authenticate your identity, provie you with your score and aggregated credit information and prequalify you for loan options.
+      </p>
+    </div>
+    {{ form_rest(form) }}
+    <div class="buttons-box clearfix">
+      <div class="buttons left">
+        <button type="submit" class="button" formnovalidate><span>Continue</span></button>
+      </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart", "gauge"]});
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
+
+    {% javascripts  '@RjPublicBundle/Resources/public/js/invite.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

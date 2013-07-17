@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PropertyRepository")
  * @ORM\Table(name="rj_property")
+ *
  */
 class Property extends Base
 {
@@ -86,9 +87,15 @@ class Property extends Base
         if ($street = $this->getStreet()) {
             $address[] = $street;
         }
+
         if ($address) {
             $result[] = implode(' ', $address);
         }
+
+        if ($city = $this->getCity()) {
+            $result[] = $city;
+        }
+
         if ($area = $this->getArea()) {
             $result[] = $area;
         }

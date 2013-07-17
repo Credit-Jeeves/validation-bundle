@@ -45,15 +45,21 @@ class AjaxController extends Controller
             $object = new Property();
             $property += $object->parseGoogleLocation($data);
             $object->fillPropertyData($property);
-            $object->addPropertyGroup($group);
-            $em->persist($object);
-            $em->flush();
         }
+
+        if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') && $group) {
+            $object->addPropertyGroup($group);
+        }
+        $em->persist($object);
+        $em->flush();
+
         try {
-            $group->addGroupProperty($object);
+            if ($group) {
+                $group->addGroupProperty($object);
+            }
             $em->flush();
         } catch (DBALException $e) {
-                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
+            $this->get('fp_badaboom.exception_catcher')->handleException($e);
         }
         return new JsonResponse($object->getId());
     }

@@ -11,7 +11,7 @@ PHPUNIT_PATH=`which phpunit`
 #DB_PASSWORD=passw0rd
 
 rm -rf $BUILD_DIR/*
-rm -rf vendor/*
+#rm -rf vendor/*
 mkdir $BUILD_DIR/coverage
 mkdir $BUILD_DIR/coverage/html
 

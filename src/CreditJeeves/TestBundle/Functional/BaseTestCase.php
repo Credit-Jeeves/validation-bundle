@@ -25,7 +25,7 @@ abstract class BaseTestCase extends Base
      */
     protected $envPath = '/_test.php/';
     protected $timeout = 15000;
-    private static $isFixturesLoaded = false;
+    protected static $isFixturesLoaded = false;
 
     protected function getUrl()
     {

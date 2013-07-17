@@ -28,7 +28,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      * @Assert\Length(
@@ -39,7 +40,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      */
@@ -57,7 +59,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      * @Assert\Length(
@@ -68,7 +71,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      */
@@ -78,12 +82,14 @@ abstract class User extends BaseUser
      * @Assert\NotBlank(
      *     message="error.user.last_name.empty",
      *     groups={
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      * @Assert\Email(
      *     groups={
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      */
