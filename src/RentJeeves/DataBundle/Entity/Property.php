@@ -107,7 +107,6 @@ class Property extends Base
             $item = array();
             $item['id'] = $unit->getId();
             $item['name'] = $unit->getName();
-            $item['number'] = count($result);
             $result[] = $item;
         }
         return $result;

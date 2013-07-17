@@ -1,27 +1,31 @@
-    <div id="units-block" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: aUnits().length ? 'visible' : 'hidden' }">
+    <div id="units-block" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: show() ? 'visible' : 'hidden' }">
         <div class="units-background"></div>
         <div  class="units-block border">
             <div class="units-header">
+                <div class="floatleft units-total">
+                    <span>Total Units:</span><span data-bind="text: total"></span>
+                </div>
+                <div class="floatright units-add">
+                    <span>Add Units:</span><input type="text" class="unit-input" data-bind="value: add"><div class="btn grey" data-bind="click: addUnits">Add</div>
+                </div>
             </div>
             <div class="clearboth"></div>
             <div class="row-20"></div>
             <div class="units-edit">
                 <!-- ko foreach: { data: aUnits() } -->
                     <div class="units-item">
-                        <input type="text" class="unit-input" data-bind="value: name">
+                        <input type="text" class="unit-input floatleft" data-bind="value: name"><div class="btn grey floatleft" data-bind="attr: {id: 'delete-' + id}">x</div>
                     </div>
                 <!-- /ko -->
             </div>
             <div class="clearboth"></div>
             <div class="units-footer">
-                <div class="btn orange floatleft">Save Changes</div>
+                <div class="btn orange floatleft" data-bind="click: saveUnits">Save Changes</div>
                 <div class="btn grey floatleft" data-bind="click: clearUnits">Cancel</div>
                 <div class="btn red floatleft">Delete Property</div>
             </div>
         </div>
     </div>
-
-
 
     <div id="properties-block" class="properties-block">
         <div class="">
@@ -59,15 +63,3 @@
         </div>
         <div class="clearboth"></div>
     </div>
-
-
-
-<script type="text/javascript">
-<!--
-$(document).ready(function(){
-    var PropertiesViewModel = new Properties();
-    PropertiesViewModel.aProperties({% autoescape false %}{{ jsonProperties }}{% endautoescape %});
-    ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
-});
-//-->
-</script>

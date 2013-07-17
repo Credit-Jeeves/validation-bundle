@@ -19,8 +19,15 @@ class PropertyRepository extends EntityRepository
         return $query->getScalarResult();
     }
 
-    public function getPropetiesPage($group, $page = 1, $limit = 100, $sort = 'number', $order = 'ASC', $searchBy = 'address', $search = '')
-    {
+    public function getPropetiesPage(
+        $group,
+        $page = 1,
+        $limit = 100,
+        $sort = 'number',
+        $order = 'ASC',
+        $searchBy = 'address',
+        $search = ''
+    ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('p');
         $query->innerJoin('p.property_groups', 'g');

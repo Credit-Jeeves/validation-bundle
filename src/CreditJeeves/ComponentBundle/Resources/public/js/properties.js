@@ -1,15 +1,22 @@
 function Properties() {
   var self = this;
   this.aProperties = ko.observableArray();
-
-  this.ajaxAction = function(sAction, nTradelineId) {
+  this.total = ko.observable(0);
+  this.ajaxAction = function() {
     $.ajax({
       url: Routing.generate('landlord_properties_list'),
       type: 'POST',
       dataType: 'json',
-      data: {
-            },
+      data: {},
       success: function(response) {
+        self.aProperties([]);
+        self.aProperties(response.properties);
+        self.total(response.total);
+        $('#properties-block table tbody').delegate('.property-edit', 'click', function(){
+          var nPropertyId = this.id.split('-')[1];
+          UnitsViewModel.ajaxAction(nPropertyId);
+          return false;
+        });
       }
     });
   };
@@ -17,13 +24,18 @@ function Properties() {
   this.countProperties = ko.computed(function(){
     return parseInt(self.aProperties().length);
   });
-  
 }
 
 function Units() {
   var self = this;
-  this.aUnits = ko.observableArray();
-  this.ajaxAction = function(sAction, nPropertyId) {
+  this.aUnits = ko.observableArray([]);
+  this.total = ko.observable(1);
+  this.add = ko.observable(1);
+  this.property = ko.observable(0);
+  this.show = ko.observable(false);
+  
+  this.ajaxAction = function(nPropertyId) {
+    self.property(nPropertyId);
     $.ajax({
       url: Routing.generate('landlord_units_list'),
       type: 'POST',
@@ -31,21 +43,42 @@ function Units() {
       data: {'property_id': nPropertyId},
       success: function(response) {
         self.aUnits(response);
+        self.total(response.length);
+        self.show(true);
       }
     });
   };
   this.clearUnits = function() {
     self.aUnits([]);
-  }
+    self.total(0);
+    self.add(1);
+    self.property(0);
+    self.show(false);
+  };
+  this.addUnits = function() {
+    for(var i=0; i < self.add(); i++) {
+      self.aUnits.push({'name': '', 'id': ''});
+    }
+  };
+  this.saveUnits = function() {
+    $.ajax({
+      url: Routing.generate('landlord_units_save'),
+      type: 'POST',
+      dataType: 'json',
+      data: {'units': self.aUnits(), 'property_id': self.property()},
+      success: function(response) {
+        self.clearUnits();
+        PropertiesViewModel.ajaxAction();
+      }
+    });
+  };
 }
 
+var PropertiesViewModel = new Properties();
+var UnitsViewModel = new Units();
+
 $(document).ready(function(){
-  var UnitsViewModel = new Units();
+  ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
+  PropertiesViewModel.ajaxAction();
   ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
-  
-    $('#properties-block table tbody').delegate('.property-edit', 'click', function(){
-      var nPropertyId = this.id.split('-')[1];
-      UnitsViewModel.ajaxAction('unit', nPropertyId);
-      return false;
-    });
 });
