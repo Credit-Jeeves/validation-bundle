@@ -60,6 +60,9 @@ class LandlordAdmin extends Admin
                         'observe' => array(
                             'template' => 'AdminBundle:CRUD:list__landlord_observe.html.twig'
                         ),
+                        'groups' => array(
+                            'template' => 'AdminBundle:CRUD:list__landlord_groups.html.twig'
+                        )
                     )
                 )
             );

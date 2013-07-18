@@ -95,7 +95,11 @@ class AjaxController extends Controller
      */
     public function getPropertiesList()
     {
-        $data = array('properties' => array(), 'total' => 0);
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('properties' => array(), 'total' => 0, 'pagination' => array());
+        
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
         $total = $repo->countProperties($group);
@@ -103,14 +107,58 @@ class AjaxController extends Controller
         $data['total'] = $total;
         if ($total) {
             $items = array();
-            $properties = $repo->getPropetiesPage($group);
+            $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit']);
             foreach ($properties as $property) {
                 $item = $property->getItem($group);
                 $items[] = $item;
             }
         }
         $data['properties'] = $items;
+        $data['pagination'] = $this->propertiesPagination($total, $page['limit']);
         return new JsonResponse($data);
+    }
+
+    private function propertiesPagination($total, $limit)
+    {
+        $result = array();
+        $pages = ceil($total / $limit);
+        if ($pages < 2 ) {
+            return $result;
+        }
+        for ($i = 0; $i < $pages; $i++) {
+            $result[] = $i + 1;
+        }
+        return $result;
+    }
+
+    /**
+     * @Route(
+     *     "/property/delete",
+     *     name="landlord_property_delete",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function deleteProperty()
+    {
+        $request = $this->getRequest();
+        $data = $request->request->all('property_id');
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
+        $user = $this->getUser();
+        $holding = $user->getHolding();
+        $group = $this->getCurrentGroup();
+        $em = $this->getDoctrine()->getManager();
+        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $holding, $group);
+        foreach ($records as $entity) {
+            $em->remove($entity);
+            $em->flush();
+        }
+        $group->removeGroupProperty($property);
+        $em->persist($group);
+        $em->flush();
+        return new JsonResponse(array());
     }
 
     /**
