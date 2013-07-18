@@ -120,7 +120,7 @@ class PublicController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        $user->setInviteCode(null);
+        //$user->setInviteCode(null);
         $user->setIsActive(true);
         $em->flush();
         
