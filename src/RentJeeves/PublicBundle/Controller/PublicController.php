@@ -128,18 +128,20 @@ class PublicController extends Controller
      */
     public function checkInviteAction($code)
     {
-        $user = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' => $code));
-
-        if (empty($user)) {
+        $tenant = $this->getDoctrine()->getRepository('DataBundle:Tenant')->findOneBy(array('invite_code' => $code));
+        //var_dump($tenant);exit;
+        if (empty($tenant)) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
 
         $em = $this->getDoctrine()->getManager();
-        $user->setInviteCode(null);
-        $user->setIsActive(true);
+        //$tenant->setInviteCode(null);
+        $tenant->setIsActive(true);
         $em->flush();
         
-        //@TODO: Write code for sending invite email to landlord
+        if ($tenant->getInvite()) {
+            $this->get('creditjeeves.mailer')->sendRjLandLordInvite($tenant->getInvite());
+        }
 
         return array(
             'signinUrl' => $this->get('router')->generate('fos_user_security_login')

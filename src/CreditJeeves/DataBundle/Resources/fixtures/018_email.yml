@@ -22,3 +22,5 @@ fixtures:
     name: receipt.html
   email_11:
     name: rjCheck.html
+  email_12:
+    name: rjLandLordInvite.html

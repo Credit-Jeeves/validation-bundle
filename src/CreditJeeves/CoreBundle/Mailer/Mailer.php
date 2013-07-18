@@ -6,6 +6,8 @@ use CreditJeeves\DataBundle\Entity\User;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use \Exception;
+use \RuntimeException;
 
 /**
  * @DI\Service("creditjeeves.mailer")
@@ -102,5 +104,62 @@ class Mailer extends BaseMailer implements MailerInterface
                'checkUrl' => $url
             )
         );
+    }
+
+    public function sendRjLandLordInvite($invite, $sTemplate = 'rjLandLordInvite')
+    {
+        $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
+        $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
+        $vars = array(
+            'name'      => $invite->getFullName(),
+            'address'   => $invite->getProperty()->getAddress(),
+            'unit'      => $invite->getUnit(),
+        );
+
+        $tenant = $invite->getTenant();
+
+        if (empty($isPlain) && empty($isHtml)) {
+            $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
+        }
+
+        if (!empty($isHtml)) {
+            $htmlContent = $this->manager->renderEmail(
+                $sTemplate.'.html',
+                $tenant->getCulture(),
+                $vars
+            );
+
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($htmlContent['subject']);
+            $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
+            $message->setTo($invite->getEmail());
+            $message->addPart($htmlContent['body'], 'text/html');
+            if (!empty($isPlain)) {
+                $plainContent = $this->manager->renderEmail(
+                    $sTemplate.'.text',
+                    $tenant->getCulture(),
+                    $vars
+                );
+                $message->addPart($plainContent['body'], 'text/plain');
+            }
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+
+        if (!empty($isPlain)) {
+            $plainContent = $this->manager->renderEmail(
+                $sTemplate.'.text',
+                $tenant->getCulture(),
+                $vars
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($plainContent['subject']);
+            $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
+            $message->setTo($invite->getEmail());
+            $message->addPart($plainContent['body'], 'text/plain');
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+        return false;
     }
 }

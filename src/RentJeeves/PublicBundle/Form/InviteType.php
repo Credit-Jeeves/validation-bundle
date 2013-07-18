@@ -26,7 +26,7 @@ class InviteType extends AbstractType
             )
         );
         $builder->add(
-            'phone', 
+            'phone',
             null
         );
         $builder->add(

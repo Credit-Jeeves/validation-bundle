@@ -19,7 +19,7 @@ class SendController extends Controller
         $tenant = $em->getRepository('DataBundle:Tenant')->find($tenantId);
 
         $request = $this->get('request');
-        $active = (is_null($tenant->getInviteCode())) ? TRUE : FALSE;
+        $active = (is_null($tenant->getInviteCode())) ? true : false;
 
         if ($request->getMethod() == 'POST' && $tenant->getInviteCode()) {
             $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);

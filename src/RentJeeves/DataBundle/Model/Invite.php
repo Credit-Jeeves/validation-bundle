@@ -86,7 +86,11 @@ abstract class Invite
 
 
     /**
-     * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Tenant", inversedBy="invite", cascade={"persist", "merge"})
+     * @ORM\OneToOne(
+     *  targetEntity="CreditJeeves\DataBundle\Entity\Tenant",
+     *  inversedBy="invite",
+     *  cascade={"persist", "merge"}
+     *)
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $tenant;

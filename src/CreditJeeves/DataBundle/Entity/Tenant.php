@@ -41,5 +41,4 @@ class Tenant extends User
     {
         return $this->invite;
     }
-
 }

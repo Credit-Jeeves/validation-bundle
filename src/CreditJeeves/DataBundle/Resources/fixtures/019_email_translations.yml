@@ -153,3 +153,18 @@ fixtures:
       {% extends "CoreBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
       {% block email %}Confirm - please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a>{% endblock %}
+
+# rjLandLordInvite.html email
+  translation_122:
+    translatable: email_12
+    locale: %locale%
+    property: subject
+    value: Invite
+  translation_123:
+    translatable: email_12
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ name }}!{% endblock %}
+      {% block email %}User wants rent your building: {{ address }}, Unit: {{ unit }}{% endblock %}
