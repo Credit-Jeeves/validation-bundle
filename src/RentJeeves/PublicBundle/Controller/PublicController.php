@@ -102,6 +102,21 @@ class PublicController extends Controller
      */
     public function newAction($propertyId)
     {
+
+        $em = $this->get('doctrine.orm.entity_manager');
+        $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        
+        if (!$Property) {
+            return $this->redirect($this->generateUrl("iframe"));
+        }
+     
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
+
+        if ($countGroup <= 0) {
+            return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
+        }
+
+
         return array();
     }
 
@@ -120,7 +135,7 @@ class PublicController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
-        //$user->setInviteCode(null);
+        $user->setInviteCode(null);
         $user->setIsActive(true);
         $em->flush();
         
