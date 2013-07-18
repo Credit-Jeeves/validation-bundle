@@ -55,14 +55,13 @@ class PublicController extends Controller
 
         $tenant = new Tenant();
         $form = $this->createForm(
-                new InviteType(),
-                $tenant
+            new InviteType(),
+            $tenant
         );
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                echo "Hi";exit;
                 $User = $form->getData();
             } else {
                 /*var_dump($form->getErrors());

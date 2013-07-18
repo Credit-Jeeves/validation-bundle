@@ -264,14 +264,30 @@ abstract class Group
     protected $group_properties;
 
     /**
-    * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="group")
+    * @ORM\OneToMany(
+    *     targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate",
+    *     mappedBy="group"
+    * )
     */
     protected $group_affilate;
     
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\Tradeline", mappedBy="group")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Tradeline",
+     *     mappedBy="group"
+     * )
      */
     protected $tradelines;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
+     *     mappedBy="group",
+     *     cascade={"remove", "persist"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $units;
 
     public function __construct()
     {
@@ -281,6 +297,7 @@ abstract class Group
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
         $this->group_properties = new ArrayCollection();
+        $this->units = new ArrayCollection();
     }
 
     /**
@@ -785,7 +802,6 @@ abstract class Group
         $this->group_properties->removeElement($property);
     }
 
-
     /**
      * Get properties
      *
@@ -860,5 +876,37 @@ abstract class Group
     public function getContract()
     {
         return $this->contract;
+    }
+
+    /**
+     * Add unit
+     *
+     * @param \RentJeeves\DataBundle\Entity\Unit $unit
+     * @return Group
+     */
+    public function addUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
+    {
+        $this->units[] = $unit;
+        return $this;
+    }
+
+    /**
+     * Remove unit
+     *
+     * @param \RentJeeves\DataBundle\Entity\Unit $unit
+     */
+    public function removeUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
+    {
+        $this->units->removeElement($unit);
+    }
+
+    /**
+     * Get units
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUnits()
+    {
+        return $this->units;
     }
 }
