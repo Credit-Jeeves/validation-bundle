@@ -140,8 +140,9 @@ class PublicController extends Controller
         }
 
         return array(
-            'form' => $form->createView(),
-            'propertyId' => $propertyId,
+            'address'   => $Property->getAddress(),
+            'form'      => $form->createView(),
+            'propertyId'=> $Property->getId(),
         );
     }
 

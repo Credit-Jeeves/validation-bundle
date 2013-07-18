@@ -125,11 +125,14 @@ class AjaxController extends Controller
      */
     public function getUnitsList()
     {
-        $data = array();
+        $user = $this->getUser();
+        $holding = $user->getHolding();
+        $group = $this->getCurrentGroup();
         $request = $this->getRequest();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        $units = $property->getUnitsArray();
+        //$units = $property->getUnitsArray();
+        $units = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $holding, $group);
         return new JsonResponse($units);
     }
 
@@ -146,6 +149,9 @@ class AjaxController extends Controller
     public function saveUnitsList()
     {
         $data = array();
+        $user = $this->getUser();
+        $holding = $user->getHolding();
+        $group = $this->getCurrentGroup();
         $request = $this->getRequest();
         $data = $request->request->all('units');
         $property = $request->request->all('property');
@@ -162,6 +168,8 @@ class AjaxController extends Controller
                 $entity = new Unit();
                 $entity->setProperty($parent);
             }
+            $entity->setHolding($holding);
+            $entity->setGroup($group);
             $entity->setName($unit['name']);
             $em->persist($entity);
             $em->flush();
