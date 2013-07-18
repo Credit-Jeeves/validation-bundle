@@ -6,7 +6,8 @@
                     <span>Total Units:</span><span data-bind="text: total"></span>
                 </div>
                 <div class="floatright units-add">
-                    <span>Add Units:</span><input type="text" class="unit-input" data-bind="value: add"><div class="btn grey" data-bind="click: addUnits">Add</div>
+                    <span>Add Units:</span><input type="text" class="unit-input" data-bind="value: add">
+                    <div class="btn grey" data-bind="click: addUnits">Add</div>
                 </div>
             </div>
             <div class="clearboth"></div>
@@ -14,7 +15,8 @@
             <div class="units-edit">
                 <!-- ko foreach: { data: aUnits() } -->
                     <div class="units-item">
-                        <input type="text" class="unit-input floatleft" data-bind="value: name"><div class="btn grey floatleft" data-bind="attr: {id: 'delete-' + id}">x</div>
+                        <input type="text" class="unit-input floatleft" data-bind="value: name">
+                        <div class="btn grey floatleft unit-delete" data-bind="click: $root.removeUnit">x</div>
                     </div>
                 <!-- /ko -->
             </div>
@@ -22,16 +24,30 @@
             <div class="units-footer">
                 <div class="btn orange floatleft" data-bind="click: saveUnits">Save Changes</div>
                 <div class="btn grey floatleft" data-bind="click: clearUnits">Cancel</div>
-                <div class="btn red floatleft">Delete Property</div>
+                <div class="btn red floatleft" data-bind="click: deleteProperty">Delete Property</div>
             </div>
         </div>
     </div>
 
     <div id="properties-block" class="properties-block">
         <div class="">
-            <div class="units-total floatleft"><h2>All ({{ total }})</h2></div>
+            <div class="units-total floatleft"><h2 data-bind="text: 'All (' + $root.total() + ')'"></h2></div>
             <a class="btn orange property-button-add" href="{{ path('landlord_property_new')}}">New Property</a>
         </div>
+        <div class="clearboth"></div>
+        <!-- ko if: pages().length -->
+        <div class="row-20"></div>
+        <div class="">
+            <!-- ko foreach: pages() -->
+                <!-- ko if: $data == $root.current() -->
+                <div class="btn grey floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+                <!-- /ko -->
+                <!-- ko ifnot: $data == $root.current() -->
+                <div class="btn green floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+                <!-- /ko -->
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
         <div class="clearboth"></div>
         <div class="properties-table-block">
             <!-- ko if: countProperties() -->
@@ -54,7 +70,7 @@
                     <td data-bind="text: area"></td>
                     <td data-bind="text: country"></td>
                     <td data-bind="text: units"></td>
-                    <td><div class="btn green property-edit" data-bind="attr: { id: 'property-' + id }">Edit</div></td>
+                    <td><div class="btn green property-edit" data-bind="click: $root.editUnits">Edit</div></td>
                 </tr>
                 <!-- /ko -->
                 </tbody>

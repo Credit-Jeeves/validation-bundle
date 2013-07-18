@@ -59,4 +59,10 @@ class Group extends BaseGroup
     {
         return $this->getName() ? $this->getName() : 'New';
     }
+
+    public function getCountProperties()
+    {
+        $properties = $this->getGroupProperties();
+        return $properties ? count($properties) : 0;
+    }
 }

@@ -32,9 +32,16 @@ class RjGroupAdmin extends Admin
      */
     public function createQuery($context = 'list')
     {
+        $nHoldingId = $this->getRequest()->get('holding_id', $this->request->getSession()->get('holding_id', null));
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
         $query->add('where', $query->expr()->in($alias.'.type', array(GroupType::RENT)));
+        if (!empty($nHoldingId)) {
+            $this->request->getSession()->set('holding_id', $nHoldingId);
+            $query->andWhere($alias.'.holding_id = :holding_id');
+            $query->setParameter('holding_id', $nHoldingId);
+        }
+        
         return $query;
     }
 
@@ -60,7 +67,7 @@ class RjGroupAdmin extends Admin
             ->addIdentifier('name')
             ->add('holding')
             ->add('affiliate')
-            ->add('type')
+            ->add('count_properties')
             ->add(
                 '_action',
                 'actions',

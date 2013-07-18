@@ -66,7 +66,7 @@ class Property extends Base
         return $this;
     }
 
-    public function getItem()
+    public function getItem($group = null)
     {
         $item = array();
         $item['id'] = $this->getId();
@@ -74,8 +74,24 @@ class Property extends Base
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
         $item['address'] = $this->getAddress();
-        $item['units'] = $this->getUnits()->count();
+        if ($group) {
+            $item['units'] = $this->countUnitsByGroup($group);
+        } else {
+            $item['units'] = $this->getUnits()->count();
+        }
         return $item;
+    }
+
+    public function countUnitsByGroup($group)
+    {
+        $result = 0;
+        $units = $this->getUnits();
+        foreach ($units as $unit) {
+            if ($group == $unit->getGroup()) {
+                $result++;
+            }
+        }
+        return $result;
     }
 
     public function getAddress()

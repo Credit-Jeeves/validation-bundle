@@ -1,29 +1,40 @@
 function Properties() {
+  var limit = 10;
+  var current = 1;
   var self = this;
-  this.aProperties = ko.observableArray();
+  this.aProperties = ko.observableArray([]);
+  this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
+  this.current = ko.observable(1);
   this.ajaxAction = function() {
     $.ajax({
       url: Routing.generate('landlord_properties_list'),
       type: 'POST',
       dataType: 'json',
-      data: {},
+      data: {
+        'data': {
+          'page' : self.current(),
+          'limit' : limit
+        }
+      },
       success: function(response) {
         self.aProperties([]);
         self.aProperties(response.properties);
         self.total(response.total);
-        $('#properties-block table tbody').delegate('.property-edit', 'click', function(){
-          var nPropertyId = this.id.split('-')[1];
-          UnitsViewModel.ajaxAction(nPropertyId);
-          return false;
-        });
+        self.pages(response.pagination);
       }
     });
   };
-
+  this.editUnits = function(property){
+    UnitsViewModel.ajaxAction(property.id);
+  };
   this.countProperties = ko.computed(function(){
     return parseInt(self.aProperties().length);
   });
+  this.goToPage = function(page) {
+    self.current(page);
+    self.ajaxAction();
+  };
 }
 
 function Units() {
@@ -59,6 +70,9 @@ function Units() {
     for(var i=0; i < self.add(); i++) {
       self.aUnits.push({'name': '', 'id': ''});
     }
+    var count = parseInt(self.total());
+    count += parseInt(self.add());
+    self.total(count);
   };
   this.saveUnits = function() {
     $.ajax({
@@ -71,6 +85,27 @@ function Units() {
         PropertiesViewModel.ajaxAction();
       }
     });
+  };
+  this.removeUnit = function(unit) {
+    if (confirm('Are you sure?')) {
+      self.aUnits.remove(unit);
+    }
+  };
+  this.deleteProperty = function() {
+    if (confirm('Are you sure?')) {
+      if (confirm('Are you really sure?')) {
+        $.ajax({
+          url: Routing.generate('landlord_property_delete'),
+          type: 'POST',
+          dataType: 'json',
+          data: {'property_id': self.property()},
+          success: function(response) {
+            self.clearUnits();
+            PropertiesViewModel.ajaxAction();
+          }
+        });
+      }
+    }
   };
 }
 

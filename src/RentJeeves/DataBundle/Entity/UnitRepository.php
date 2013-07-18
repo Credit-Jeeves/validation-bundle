@@ -7,6 +7,19 @@ class UnitRepository extends EntityRepository
 {
     public function getUnitsArray($property, $holding = null, $group = null)
     {
+        $units = $this->getUnits($property, $holding, $group);
+        $result = array();
+        foreach ($units as $unit) {
+            $item = array();
+            $item['id'] = $unit->getId();
+            $item['name'] = $unit->getName();
+            $result[] = $item;
+        }
+        return $result;
+    }
+
+    public function getUnits($property, $holding = null, $group = null)
+    {
         $query = $this->createQueryBuilder('u');
         $query->where('u.property = :property');
         $query->setParameter('property', $property);
@@ -20,14 +33,6 @@ class UnitRepository extends EntityRepository
         }
         $query->orderBy('u.name');
         $query = $query->getQuery();
-        $units = $query->execute();
-        $result = array();
-        foreach ($units as $unit) {
-            $item = array();
-            $item['id'] = $unit->getId();
-            $item['name'] = $unit->getName();
-            $result[] = $item;
-        }
-        return $result;
+        return $query->execute();
     }
 }

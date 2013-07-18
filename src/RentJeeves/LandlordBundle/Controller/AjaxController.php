@@ -95,7 +95,11 @@ class AjaxController extends Controller
      */
     public function getPropertiesList()
     {
-        $data = array('properties' => array(), 'total' => 0);
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('properties' => array(), 'total' => 0, 'pagination' => array());
+        
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
         $total = $repo->countProperties($group);
@@ -103,14 +107,58 @@ class AjaxController extends Controller
         $data['total'] = $total;
         if ($total) {
             $items = array();
-            $properties = $repo->getPropetiesPage($group);
+            $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit']);
             foreach ($properties as $property) {
-                $item = $property->getItem();
+                $item = $property->getItem($group);
                 $items[] = $item;
             }
         }
         $data['properties'] = $items;
+        $data['pagination'] = $this->propertiesPagination($total, $page['limit']);
         return new JsonResponse($data);
+    }
+
+    private function propertiesPagination($total, $limit)
+    {
+        $result = array();
+        $pages = ceil($total / $limit);
+        if ($pages < 2 ) {
+            return $result;
+        }
+        for ($i = 0; $i < $pages; $i++) {
+            $result[] = $i + 1;
+        }
+        return $result;
+    }
+
+    /**
+     * @Route(
+     *     "/property/delete",
+     *     name="landlord_property_delete",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function deleteProperty()
+    {
+        $request = $this->getRequest();
+        $data = $request->request->all('property_id');
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
+        $user = $this->getUser();
+        $holding = $user->getHolding();
+        $group = $this->getCurrentGroup();
+        $em = $this->getDoctrine()->getManager();
+        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($property, $holding, $group);
+        foreach ($records as $entity) {
+            $em->remove($entity);
+            $em->flush();
+        }
+        $group->removeGroupProperty($property);
+        $em->persist($group);
+        $em->flush();
+        return new JsonResponse(array());
     }
 
     /**
@@ -131,7 +179,6 @@ class AjaxController extends Controller
         $request = $this->getRequest();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        //$units = $property->getUnitsArray();
         $units = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $holding, $group);
         return new JsonResponse($units);
     }
@@ -160,20 +207,49 @@ class AjaxController extends Controller
             return new JsonResponse($data);
         }
         $units = $data['units'];
-        $em = $this->getDoctrine()->getManager();
-        foreach ($units as $unit) {
-            if ($unit['id']) {
-                $entity = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->find($unit['id']);
+        $unitKeys = array();
+        foreach ($units as $key => $unit) {
+            if (empty($unit['id']) & !empty($unit['name'])) {
+                continue;
             } else {
+                $unitKeys[$unit['id']] = $key;
+            }
+        }
+        ksort($unitKeys);
+        $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
+        $em = $this->getDoctrine()->getManager();
+        foreach ($records as $entity) {
+            if (in_array($entity->getId(), array_keys($unitKeys))) {
+                $key = $unitKeys[$entity->getId()];
+                if (!empty($units[$key]['name'])) {
+                    if ($units[$key]['name'] != $entity->getName()) {
+                        $entity->setName($units[$key]['name']);
+                        $em->persist($entity);
+                        $em->flush();
+                    }
+                } else {
+                    $em->remove($entity);
+                    $em->flush();
+                }
+                unset($unitKeys[$key]);
+            } else {
+                $em->remove($entity);
+                $em->flush();
+            }
+            
+        }
+        foreach ($units as $unit) {
+            if (empty($unit['id']) & !empty($unit['name'])) {
                 $entity = new Unit();
                 $entity->setProperty($parent);
+                $entity->setHolding($holding);
+                $entity->setGroup($group);
+                $entity->setName($unit['name']);
+                $em->persist($entity);
+                $em->flush();
             }
-            $entity->setHolding($holding);
-            $entity->setGroup($group);
-            $entity->setName($unit['name']);
-            $em->persist($entity);
-            $em->flush();
         }
+        $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
         return new JsonResponse($data);
     }
 }
