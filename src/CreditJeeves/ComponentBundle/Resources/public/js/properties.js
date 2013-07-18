@@ -12,15 +12,12 @@ function Properties() {
         self.aProperties([]);
         self.aProperties(response.properties);
         self.total(response.total);
-        $('#properties-block table tbody').delegate('.property-edit', 'click', function(){
-          var nPropertyId = this.id.split('-')[1];
-          UnitsViewModel.ajaxAction(nPropertyId);
-          return false;
-        });
       }
     });
   };
-
+  this.editUnits = function(property){
+    UnitsViewModel.ajaxAction(property.id);
+  };
   this.countProperties = ko.computed(function(){
     return parseInt(self.aProperties().length);
   });
@@ -59,6 +56,9 @@ function Units() {
     for(var i=0; i < self.add(); i++) {
       self.aUnits.push({'name': '', 'id': ''});
     }
+    var count = parseInt(self.total());
+    count += parseInt(self.add());
+    self.total(count);
   };
   this.saveUnits = function() {
     $.ajax({
@@ -71,6 +71,9 @@ function Units() {
         PropertiesViewModel.ajaxAction();
       }
     });
+  };
+  this.removeUnit = function(unit) {
+    self.aUnits.remove(unit);
   };
 }
 
