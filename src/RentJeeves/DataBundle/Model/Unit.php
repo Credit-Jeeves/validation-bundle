@@ -55,7 +55,31 @@ abstract class Unit
      * )
      */
     protected $property;
-    
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *     inversedBy="units"
+     * )
+     * @ORM\JoinColumn(
+     *     name="holding_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $holding;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     inversedBy="units"
+     * )
+     * @ORM\JoinColumn(
+     *     name="group_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $group;
+
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
@@ -214,5 +238,49 @@ abstract class Unit
     public function getProperty()
     {
         return $this->property;
+    }
+
+    /**
+     * Set Holding
+     *
+     * @param Holding $holding
+     * @return Unit
+     */
+    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding = null)
+    {
+        $this->holding = $holding;
+        return $this;
+    }
+
+    /**
+     * Get Holding
+     *
+     * @return Holding
+     */
+    public function getHolding()
+    {
+        return $this->holding;
+    }
+
+    /**
+     * Set Group
+     *
+     * @param Group $group
+     * @return Unit
+     */
+    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group = null)
+    {
+        $this->group = $group;
+        return $this;
+    }
+
+    /**
+     * Get Group
+     *
+     * @return Group
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 }

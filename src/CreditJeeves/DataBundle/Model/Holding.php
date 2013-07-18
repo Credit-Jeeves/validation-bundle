@@ -71,11 +71,22 @@ abstract class Holding
      */
     protected $groups;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
+     *     mappedBy="holding",
+     *     cascade={"remove", "persist"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $units;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->groups = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->units = new ArrayCollection();
     }
 
     /**
@@ -97,7 +108,6 @@ abstract class Holding
     public function setName($name)
     {
         $this->name = $name;
-    
         return $this;
     }
 
@@ -120,7 +130,6 @@ abstract class Holding
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-    
         return $this;
     }
 
@@ -143,7 +152,6 @@ abstract class Holding
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
-    
         return $this;
     }
 
@@ -158,26 +166,25 @@ abstract class Holding
     }
 
     /**
-     * Add groups
+     * Add group
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group $groups
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
      * @return Holding
      */
-    public function addGroup(\CreditJeeves\DataBundle\Entity\Group $groups)
+    public function addGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
-        $this->groups[] = $groups;
-    
+        $this->groups[] = $group;
         return $this;
     }
 
     /**
-     * Remove groups
+     * Remove group
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group $groups
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
      */
-    public function removeGroup(\CreditJeeves\DataBundle\Entity\Group $groups)
+    public function removeGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
-        $this->groups->removeElement($groups);
+        $this->groups->removeElement($group);
     }
 
     /**
@@ -199,7 +206,6 @@ abstract class Holding
     public function addDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer)
     {
         $this->users[] = $dealer;
-    
         return $this;
     }
 
@@ -218,8 +224,40 @@ abstract class Holding
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getUsers()
+    public function getDealers()
     {
         return $this->users;
+    }
+
+    /**
+     * Add unit
+     *
+     * @param \RentJeeves\DataBundle\Entity\Unit $unit
+     * @return Holding
+     */
+    public function addUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
+    {
+        $this->units[] = $unit;
+        return $this;
+    }
+
+    /**
+     * Remove unit
+     *
+     * @param \RentJeeves\DataBundle\Entity\Unit $unit
+     */
+    public function removeUnit(\RentJeeves\DataBundle\Entity\Unit $unit)
+    {
+        $this->units->removeElement($unit);
+    }
+
+    /**
+     * Get units
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUnits()
+    {
+        return $this->units;
     }
 }

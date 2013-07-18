@@ -2,93 +2,128 @@ model: RentJeeves\DataBundle\Entity\Unit
 fixtures:
     Unit_1_1:
         property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      1-a
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_1_2:
         property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      1-b
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_1_3:
         property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      1-c
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_1_4:
         property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      1-d
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_1_5:
         property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      1-e
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_1_6:
         property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      1-f
         createdAt: '-60 days'
         updatedAt: '-8 days'
 
     Unit_2_1:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      5-a
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_2:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      5-b
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_3:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      5-c
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_4:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      5-d
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_5:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      5-e
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_6:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      5-f
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_7:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      7-a
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_8:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      25-b
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_9:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      45-c
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_10:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      4-d
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_11:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      11-e
         createdAt: '-60 days'
         updatedAt: '-8 days'
     Unit_2_12:
         property:  Property_2
+        holding:   rjHolding_1
+        group:     RentGroup_1
         name:      27-f
         createdAt: '-60 days'
         updatedAt: '-8 days'
-        
