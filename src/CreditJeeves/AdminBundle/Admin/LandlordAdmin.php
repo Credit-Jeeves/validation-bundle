@@ -104,7 +104,6 @@ class LandlordAdmin extends Admin
                        'expanded' => true,
                        'multiple' => true,
                        'query' => $query,
-                       
                     )
                 )
             ->end();

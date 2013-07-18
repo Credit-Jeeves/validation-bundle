@@ -21,7 +21,7 @@ class Version20130716100650 extends AbstractMigration
         $this->addSql(
             "CREATE TABLE rj_unit (id BIGINT AUTO_INCREMENT NOT NULL,
                 property_id BIGINT DEFAULT NULL,
-                country VARCHAR(3) NOT NULL,
+                name VARCHAR(50) NOT NULL,
                 rent INT DEFAULT NULL,
                 beds INT DEFAULT NULL,
                 created_at DATETIME NOT NULL,

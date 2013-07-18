@@ -410,9 +410,24 @@ abstract class Property
     }
 
     /**
+     * Add groups
+     * This is used for fixture load
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Group $groups
+     * @return Property
+     */
+    public function setPropertyGroups($group)
+    {
+        foreach ($group as $key => $value) {
+            $this->addPropertyGroup($value);
+            $value->addGroupProperty($this);
+        }
+    }
+
+    /**
      * Add property_landlord
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
      * @return Property
      */
     public function addPropertyGroup(\CreditJeeves\DataBundle\Entity\Group $group)
@@ -452,7 +467,7 @@ abstract class Property
         $this->units[] = $unit;
         return $this;
     }
-    
+
     /**
      * Remove unit
      *
@@ -462,7 +477,7 @@ abstract class Property
     {
         $this->units->removeElement($unit);
     }
-    
+
     /**
      * Get units
      *
