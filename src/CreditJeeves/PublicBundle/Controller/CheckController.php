@@ -34,6 +34,7 @@ class CheckController extends Controller
         $user->setInviteCode(null);
         $user->setIsActive(true);
         $em->flush();
+        
         return array(
             'signinUrl' => $this->get('router')->generate('fos_user_security_login')
         );

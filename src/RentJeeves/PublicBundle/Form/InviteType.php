@@ -15,7 +15,6 @@ class InviteType extends AbstractType
             null,
             array(
                 'label' => 'Landlord Name',
-                'error_bubbling' => true,
             )
         );
         $builder->add('last_name');
@@ -24,21 +23,15 @@ class InviteType extends AbstractType
             null,
             array(
                 'label' => 'Email*',
-                'error_bubbling' => true,
             )
         );
         $builder->add(
             'phone', 
-            null, 
-            array(
-                'error_bubbling' => true,
-            )
+            null
         );
         $builder->add(
             'unit',
-            null, array(
-                'error_bubbling' => true,
-            )
+            null
         );
     }
 

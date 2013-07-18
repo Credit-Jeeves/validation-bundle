@@ -1,5 +1,10 @@
 {% extends "RjPublicBundle::base.html.twig" %}
 
+
+{% block marketingHeader %}
+    {{ include('RjComponentBundle::marketingHeader.html.twig') }}
+{% endblock %}
+
 {% block content %}
 <form action="#" name="searchRentalsForm" id="formSearch">
     <div class="box type1">
@@ -25,6 +30,7 @@
       <div class="col-box clearfix">
         <div class="col">
           <h4 class="active">We didn’t find a match yet – let your landlord know!</h4>
+          {{ form_errors(form) }}
           <div class="form-row clearfix">
             {{ form_label(form.invite.unit) }}
             <div class="fields-box">
@@ -73,7 +79,6 @@
       <div class="col-box clearfix">
         <div class="col">
           <h4>Set up your Rent Jeeves account.</h4>
-          {{ form_errors(form) }}
           <div class="form-row clearfix">
             {{ form_label(form.first_name) }}
             <div class="fields-box">

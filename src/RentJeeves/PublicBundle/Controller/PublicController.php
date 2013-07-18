@@ -13,6 +13,8 @@ class PublicController extends Controller
     /**
      * @Route("/iframe", name="iframe")
      * @Template()
+     *
+     * @return array
      */
     public function iframeAction()
     {
@@ -22,6 +24,8 @@ class PublicController extends Controller
     /**
      * @Route("/checkProperty/{propertyId}", name="iframe_search_check", options={"expose"=true})
      * @Template()
+     *
+     * @return array
      */
     public function checkSearchAction($propertyId)
     {
@@ -44,13 +48,15 @@ class PublicController extends Controller
     /**
      * @Route("/user/invite/{propertyId}", name="iframe_invite")
      * @Template()
+     *
+     * @return array
      */
     public function inviteAction($propertyId)
     {
         $em = $this->get('doctrine.orm.entity_manager');
-        $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
         
-        if (!$Property) {
+        if (!$property) {
             return $this->redirect($this->generateUrl("iframe"));
         }
 
@@ -67,30 +73,61 @@ class PublicController extends Controller
                 $tenant = $form->getData();
                 $aForm = $request->request->get($form->getName());
                 $tenant->setPassword(md5($aForm['password']['Password']));
-                
+                $invite = $tenant->getInvite();
+                $invite->setTenant($tenant);
+                $invite->setProperty($property);
+
                 $em = $this->getDoctrine()->getManager();
+                $em->persist($invite);
                 $em->persist($tenant);
                 $em->flush();
 
                 $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
             }
-            var_dump($form->getErrors());exit;
         }
 
         return array(
-            'address'   => $Property->getAddress(),
+            'address'   => $property->getAddress(),
             'form'      => $form->createView(),
-            'propertyId'=> $Property->getId(),
+            'propertyId'=> $property->getId(),
         );
     }
 
     /**
      * @Route("/user/new/{propertyId}", name="iframe_new")
      * @Template()
+     *
+     * @return array
      */
     public function newAction($propertyId)
     {
         return array();
+    }
+
+    /**
+     * @Route("/user/check/{code}", name="tenant_new_check")
+     * @Template()
+     *
+     * @return array
+     */
+    public function checkInviteAction($code)
+    {
+        $user = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' => $code));
+
+        if (empty($user)) {
+            return $this->redirect($this->generateUrl('fos_user_security_login'));
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $user->setInviteCode(null);
+        $user->setIsActive(true);
+        $em->flush();
+        
+        //@TODO: Write code for sending invite email to landlord
+
+        return array(
+            'signinUrl' => $this->get('router')->generate('fos_user_security_login')
+        );
     }
 }

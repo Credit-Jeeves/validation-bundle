@@ -90,7 +90,7 @@ class Mailer extends BaseMailer implements MailerInterface
     public function sendRjCheckEmail($user, $sTemplate = 'rjCheck')
     {
         $url = $this->container->get('router')->generate(
-            'applicant_new_check',
+            'tenant_new_check',
             array('code' => $user->getInviteCode()),
             true
         );

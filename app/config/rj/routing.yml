@@ -21,10 +21,12 @@ experian:
 public:
     resource: "@PublicBundle/Controller"
     type:     annotation
+    prefix:   /
 
 RjPublicBundle:
     resource: "@RjPublicBundle/Controller/"
     type:     annotation
+    prefix:   /
 
 core:
     resource:   "@CoreBundle/Controller"

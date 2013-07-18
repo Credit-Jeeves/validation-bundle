@@ -88,12 +88,6 @@ abstract class Invite
     /**
      * @ORM\OneToOne(targetEntity="CreditJeeves\DataBundle\Entity\Tenant", inversedBy="invite", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * @Assert\NotBlank(
-     *     message="error.user.tenant.empty",
-     *     groups={
-     *         "invite",
-     *     }
-     * )     
      */
     protected $tenant;
 

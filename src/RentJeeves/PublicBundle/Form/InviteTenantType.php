@@ -22,7 +22,6 @@ class InviteTenantType extends AbstractType
             null,
             array(
                 'label' => 'Name*',
-                'error_bubbling' => true,
             )
         );
         $builder->add('last_name');
@@ -31,15 +30,11 @@ class InviteTenantType extends AbstractType
             null,
             array(
                 'label' => 'Email*',
-                'error_bubbling' => true,
             )
         );
         $builder->add(
             'phone',
-            null,
-            array(
-                'error_bubbling' => true,
-            )
+            null
         );
         $builder->add(
             'password',
@@ -49,7 +44,6 @@ class InviteTenantType extends AbstractType
                 'second_name'   => 'Verify_Password',
                 'type'          => 'password',
                 'mapped'        => false,
-                'error_bubbling' => true,
                 'constraints'   => array(
                     new NotBlank(
                         array(
@@ -67,7 +61,6 @@ class InviteTenantType extends AbstractType
                 'label'         => '',
                 'data'          => false,
                 'mapped'        => false,
-                'error_bubbling' => true,
                 'constraints'    => new True(
                     array(
                         'message'   => 'error.user.tos',
@@ -90,6 +83,7 @@ class InviteTenantType extends AbstractType
                 ),
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
+                'cascade_validation' => true,
             )
         );
     }
