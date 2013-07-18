@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
 use CreditJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\PublicBundle\Form\TenantType;
 
 class PublicController extends Controller
 {
@@ -60,20 +61,18 @@ class PublicController extends Controller
             return $this->redirect($this->generateUrl("iframe"));
         }
 
-        $tenant = new Tenant();
         $form = $this->createForm(
-            new InviteTenantType(),
-            $tenant
+            new InviteTenantType()
         );
 
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                $tenant = $form->getData();
+                $tenant = $form->getData()['tenant'];
+                $invite = $form->getData()['invite'];
                 $aForm = $request->request->get($form->getName());
-                $tenant->setPassword(md5($aForm['password']['Password']));
-                $invite = $tenant->getInvite();
+                $tenant->setPassword(md5($aForm['tenant']['password']['Password']));
                 $invite->setTenant($tenant);
                 $invite->setProperty($property);
 
@@ -86,6 +85,7 @@ class PublicController extends Controller
                 return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
             }
         }
+        $view = $form->createView();
 
         return array(
             'address'   => $property->getAddress(),
@@ -116,8 +116,33 @@ class PublicController extends Controller
             return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
         }
 
+        $tenant = new Tenant();
+        $form = $this->createForm(
+            new TenantType(),
+            $tenant
+        );
 
-        return array();
+        $request = $this->get('request');
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $tenant = $form->getData();
+                $aForm = $request->request->get($form->getName());
+                $tenant->setPassword(md5($aForm['password']['Password']));
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($tenant);
+                $em->flush();
+
+                $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
+                return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'propertyId' => $propertyId,
+        );
     }
 
     /**
@@ -129,13 +154,13 @@ class PublicController extends Controller
     public function checkInviteAction($code)
     {
         $tenant = $this->getDoctrine()->getRepository('DataBundle:Tenant')->findOneBy(array('invite_code' => $code));
-        //var_dump($tenant);exit;
+
         if (empty($tenant)) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
 
         $em = $this->getDoctrine()->getManager();
-        //$tenant->setInviteCode(null);
+        $tenant->setInviteCode(null);
         $tenant->setIsActive(true);
         $em->flush();
         

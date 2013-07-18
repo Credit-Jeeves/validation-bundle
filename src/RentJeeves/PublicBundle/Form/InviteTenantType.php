@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use RentJeeves\PublicBundle\Form\InviteType;
+use RentJeeves\PublicBundle\Form\TenantType;
 
 class InviteTenantType extends AbstractType
 {
@@ -18,56 +19,8 @@ class InviteTenantType extends AbstractType
             new InviteType()
         );
         $builder->add(
-            'first_name',
-            null,
-            array(
-                'label' => 'Name*',
-            )
-        );
-        $builder->add('last_name');
-        $builder->add(
-            'email',
-            null,
-            array(
-                'label' => 'Email*',
-            )
-        );
-        $builder->add(
-            'phone',
-            null
-        );
-        $builder->add(
-            'password',
-            'repeated',
-            array(
-                'first_name'    => 'Password',
-                'second_name'   => 'Verify_Password',
-                'type'          => 'password',
-                'mapped'        => false,
-                'constraints'   => array(
-                    new NotBlank(
-                        array(
-                            'groups'    => 'password',
-                            'message'   => 'error.user.password.empty',
-                        )
-                    ),
-                ),
-            )
-        );
-        $builder->add(
-            'tos',
-            'checkbox',
-            array(
-                'label'         => '',
-                'data'          => false,
-                'mapped'        => false,
-                'constraints'    => new True(
-                    array(
-                        'message'   => 'error.user.tos',
-                        'groups'    => 'registration_tos'
-                    )
-                ),
-            )
+            'tenant',
+            new TenantType()
         );
     }
 
@@ -75,14 +28,8 @@ class InviteTenantType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Tenant',
-                'validation_groups' => array(
-                    'registration_tos',
-                    'invite',
-                    'password'
-                ),
-                'csrf_protection' => true,
-                'csrf_field_name' => '_token',
+                'csrf_protection'    => true,
+                'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
             )
         );

@@ -1,0 +1,61 @@
+<div class="box type1">
+  <h3 class="clearfix">
+    <span>Account information</span>
+  </h3>
+   {{ form_errors(form) }}
+  <div class="col-box clearfix">
+    <div class="col">
+      <h4>Set up your Rent Jeeves account.</h4>
+      <div class="form-row clearfix">
+        {{ form_label(form.first_name) }}
+        <div class="fields-box">
+          {{ form_widget(form.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first"} }) }}
+          {{ form_widget(form.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+          {{ form_errors(form.first_name) }}
+          {{ form_errors(form.last_name) }}
+        </div>
+      </div>
+      <div class="form-row clearfix">
+        {{ form_label(form.email) }}
+        <div class="fields-box">
+          {{ form_widget(form.email) }}
+          {{ form_errors(form.email) }}
+        </div>
+      </div>
+      <div class="form-row clearfix">
+        {{ form_label(form.phone) }}
+        <div class="fields-box">
+            {{ form_widget(form.phone) }}
+            {{ form_errors(form.phone) }}
+        </div>
+      </div>
+      <div class="form-row clearfix">
+        {{ form_label(form.password.Password) }}
+        <div class="fields-box">
+          {{ form_widget(form.password.Password) }}
+        </div>
+        {{ form_errors(form.password.Password) }}
+      </div>
+      <div class="form-row clearfix">
+        {{ form_label(form.password.Verify_Password) }}
+        <div class="fields-box">
+          {{ form_widget(form.password.Verify_Password) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="accept-terms-box pie-el">
+  <div class="form-row checkboxes clearfix">
+    <label class="checkbox">
+      {{ form_widget(form.tos) }}
+      <i> </i>
+      <span class="big">I accept the <a href="#" type="Terms of Service">Terms of Service</a></span>
+    </label>
+  </div>
+  {{ form_errors(form.tos) }}
+  <p>
+    You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentJeeves, LLC under the Fair Credit Reporting Act authorizing RentJeeves LLC to obtain information from your personal credit profile or other information from Experian. You authorize RentJeeves LLC to obtain such information solely to authenticate your identity, provie you with your score and aggregated credit information and prequalify you for loan options.
+  </p>
+</div>
