@@ -65,8 +65,12 @@ $(document).ready(function(){
           infowindow.open(map, marker);
         }
         
+        $('#property-search').change(function(){
+          $(this).addClass('notfound');
+        });
+
         $('#search-submit').click(function(){
-            if(ERROR == $('#property-search').attr('class')) {
+            if (ERROR == $('#property-search').attr('class')) {
                 showError('Such address doesn\'t exist!');
                 return false;
             }
@@ -75,6 +79,10 @@ $(document).ready(function(){
               return false;
             }
             var place = autocomplete.getPlace();
+            if (typeof place == 'undefined') {
+                showError('Such address doesn\'t exist!');
+                return false;
+            }
             var data = {'address': place.address_components, 'geometry':place.geometry};
             jQuery.ajax({
               url: Routing.generate('landlord_property_add'),
