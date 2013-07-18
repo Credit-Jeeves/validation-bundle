@@ -13,15 +13,17 @@ class PropertiesListController extends Controller
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
     {
+        $result = array();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
         $total = $repo->countProperties($Group);
-        $properties = $repo->getPropetiesPage($Group);
-        $result = array();
-        foreach ($properties as $property) {
-            $item = $property->getItem();
-            $result[] = $item;
+        $total = count($total);
+        if ($total) {
+            $properties = $repo->getPropetiesPage($Group);
+            foreach ($properties as $property) {
+                $item = $property->getItem();
+                $result[] = $item;
+            }
         }
-        $total = count($result);
         $jsonProperties = json_encode($result);
         return array(
             'sGroup' => $Group->getName(),

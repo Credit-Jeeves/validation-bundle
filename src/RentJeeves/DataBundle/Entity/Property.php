@@ -69,11 +69,12 @@ class Property extends Base
     public function getItem()
     {
         $item = array();
+        $item['id'] = $this->getId();
         $item['country'] = $this->getCountry();
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
         $item['address'] = $this->getAddress();
-        $item['units'] = 0;
+        $item['units'] = $this->getUnits()->count();
         return $item;
     }
 
@@ -103,5 +104,18 @@ class Property extends Base
             $result[] = $zip;
         }
         return implode(', ', $result);
+    }
+
+    public function getUnitsArray()
+    {
+        $result = array();
+        $units = $this->getUnits();
+        foreach ($units as $unit) {
+            $item = array();
+            $item['id'] = $unit->getId();
+            $item['name'] = $unit->getName();
+            $result[] = $item;
+        }
+        return $result;
     }
 }

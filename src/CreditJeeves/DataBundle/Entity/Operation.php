@@ -12,7 +12,6 @@ use CreditJeeves\DataBundle\Model\Operation as Base;
  */
 class Operation extends Base
 {
-
     /**
      * Add orders
      *

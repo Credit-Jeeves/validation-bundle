@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 
 /**
@@ -90,12 +91,81 @@ class AjaxController extends Controller
      *     requirements={"_format"="html|json"},
      *     options={"expose"=true}
      * )
-     * @Method({"POST"})
+     * @Method({"POST", "GET"})
      */
     public function getPropertiesList()
     {
+        $data = array('properties' => array(), 'total' => 0);
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
+        $total = $repo->countProperties($group);
+        $total = count($total);
+        $data['total'] = $total;
+        if ($total) {
+            $items = array();
+            $properties = $repo->getPropetiesPage($group);
+            foreach ($properties as $property) {
+                $item = $property->getItem();
+                $items[] = $item;
+            }
+        }
+        $data['properties'] = $items;
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route(
+     *     "/unit/list",
+     *     name="landlord_units_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function getUnitsList()
+    {
         $data = array();
-        
+        $request = $this->getRequest();
+        $data = $request->request->all('property_id');
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
+        $units = $property->getUnitsArray();
+        return new JsonResponse($units);
+    }
+
+    /**
+     * @Route(
+     *     "/unit/save",
+     *     name="landlord_units_save",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function saveUnitsList()
+    {
+        $data = array();
+        $request = $this->getRequest();
+        $data = $request->request->all('units');
+        $property = $request->request->all('property');
+        $parent = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($property['property_id']);
+        if (empty($parent)) {
+            return new JsonResponse($data);
+        }
+        $units = $data['units'];
+        $em = $this->getDoctrine()->getManager();
+        foreach ($units as $unit) {
+            if ($unit['id']) {
+                $entity = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->find($unit['id']);
+            } else {
+                $entity = new Unit();
+                $entity->setProperty($parent);
+            }
+            $entity->setName($unit['name']);
+            $em->persist($entity);
+            $em->flush();
+        }
         return new JsonResponse($data);
     }
 }
