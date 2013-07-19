@@ -18,6 +18,10 @@ class SendController extends Controller
         $em = $this->getDoctrine()->getManager();
         $tenant = $em->getRepository('DataBundle:Tenant')->find($tenantId);
 
+        if (empty($tenant)) {
+            return $this->redirect($this->generateUrl("iframe"));
+        }
+
         $request = $this->get('request');
         $active = (is_null($tenant->getInviteCode())) ? true : false;
 
