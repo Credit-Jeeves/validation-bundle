@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ComponentBundle\Controller;
+namespace RentJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
