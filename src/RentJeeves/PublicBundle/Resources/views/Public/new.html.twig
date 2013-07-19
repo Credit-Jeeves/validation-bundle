@@ -15,7 +15,7 @@
     <div class="col searsh-box searshBoxBig">
       <label for="searsh-field">Verify your rental address:</label>
       <div class="clearfix">
-        <input type="text" id="searsh-field" value="960 Andante Rd., Santa Barbara, CA  93105" name="searsh-field">
+        <input type="text" id="property-search" value="{{ address }}" name="searsh-field">
         <a href="#" id="delete">x</a>
         <button type="submit" id="search-submit">Search</button>
       </div>
@@ -26,9 +26,7 @@
 <form action="{{ path('iframe_new', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
 <div class="box type1">
   <div class="col-box clearfix">
-    <div class="col select-box selectBoxBig">
-        <br />
-        <h1>It's will be map her</h1>
+    <div id="map-canvas" class="col select-box selectBoxBig">
     </div>
   </div>
 </div>
@@ -44,7 +42,19 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["corechart", "gauge"]});
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
+
+    {% javascripts  '@RjPublicBundle/Resources/public/js/new.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
+
 
 {% block stylesheets %}
 {% endblock %}
