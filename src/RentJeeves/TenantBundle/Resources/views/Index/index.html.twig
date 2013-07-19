@@ -4,6 +4,6 @@
     <div id="rent-menu">
     {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'CoreBundle:Menu:user_rent.html.twig' }) }}
     </div>
-    <style>
-
+    <div class="row-20"></div>
+    {{ render(controller('ComponentBundle:ContractsList:index')) }}
 {% endblock %}

@@ -1,0 +1,6 @@
+<div class="pod-large pod-border pod-padding shadow">
+    <h1>Current Pyments</h1>
+    {% for contract in contracts %}
+        <div>{{ contract.unit }}</div>
+    {% endfor %}
+</div>
