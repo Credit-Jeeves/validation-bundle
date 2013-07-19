@@ -122,7 +122,7 @@ class AjaxController extends Controller
     {
         $result = array();
         $pages = ceil($total / $limit);
-        if ($pages < 2 ) {
+        if ($pages < 2) {
             return $result;
         }
         for ($i = 0; $i < $pages; $i++) {
