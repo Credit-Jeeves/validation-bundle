@@ -8,9 +8,13 @@ $(document).ready(function(){
     }
 
     function initialize() {
+        var lat = $('#lat').val();
+        var lng = $('#lng').val();
+        var addressSelect =  $('#addressSelect').val();
+
         var mapOptions = {
-            center: new google.maps.LatLng(38, -90),
-            zoom: 4,
+            center: new google.maps.LatLng(lat, lng),
+            zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(
@@ -21,8 +25,12 @@ $(document).ready(function(){
         var autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo('bounds', map);
         var infowindow = new google.maps.InfoWindow();
+
+        var myLatlng = new google.maps.LatLng(lat,lng);
         var marker = new google.maps.Marker({
-                map: map
+            position: myLatlng,
+            map: map,
+            title: addressSelect
         });
 
         function validateAddress(){

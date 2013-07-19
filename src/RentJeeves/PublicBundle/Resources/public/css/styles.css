@@ -1328,6 +1328,39 @@ form ul {
   width: 900px;
 }
 .box.type1 .select-box.selectBoxBig {
-  width: 900px;
-  height: 300px;
+  width: 912px;
+  height: 310px;
+  padding-right: 0;
+}
+
+.adresess {
+  width: 200px;
+  float: left;
+}
+
+.map-adresess {
+  width: 712px;
+  float: left;
+}
+
+.adresess, .map-adresess 
+{
+  padding-top: 5px;
+  height: 310px;
+  padding-bottom: 5px;
+}
+
+.addressText {
+  color: #00aeef;
+  font-family: 'ABeeZee', sans-serif;
+  font-size: 16px;
+  width: 175px;
+}
+.addressImage, .addressText {
+  float: left;
+}
+
+.addressImage {
+  width: 20px;
+  height: 50px;
 }

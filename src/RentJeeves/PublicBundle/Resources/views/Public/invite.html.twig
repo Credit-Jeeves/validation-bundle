@@ -83,12 +83,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        google.load("visualization", "1", {packages:["corechart", "gauge"]});
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
-
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
     {% javascripts  '@RjPublicBundle/Resources/public/js/invite.js'
 
     %}

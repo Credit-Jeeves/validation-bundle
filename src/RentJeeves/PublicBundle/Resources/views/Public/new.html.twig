@@ -15,7 +15,7 @@
     <div class="col searsh-box searshBoxBig">
       <label for="searsh-field">Verify your rental address:</label>
       <div class="clearfix">
-        <input type="text" id="property-search" value="{{ address }}" name="searsh-field">
+        <input type="text" id="property-search" value="{{ property.address }}" name="searsh-field">
         <a href="#" id="delete">x</a>
         <button type="submit" id="search-submit">Search</button>
       </div>
@@ -23,10 +23,21 @@
   </div>
 </div>
 </form>
-<form action="{{ path('iframe_new', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
+<form action="{{ path('iframe_new', {"propertyId": property.id }) }}" method="post" {{ form_enctype(form) }}>
 <div class="box type1">
   <div class="col-box clearfix">
-    <div id="map-canvas" class="col select-box selectBoxBig">
+    <div class="col select-box selectBoxBig">
+      <div class="adresess">
+        <h4>Search result:</h4>
+        <div>
+          <div class="addressImage">
+          </div>
+          <div class="addressText">
+            <span>{{ property.address }}</span>
+          </div>
+        </div>
+      </div>
+      <div id="map-canvas" class="map-adresess"></div>
     </div>
   </div>
 </div>
@@ -39,15 +50,13 @@
   </div>
 </div>
 </form>
+<input type="hidden" value="{{property.jb }}" id="lat">
+<input type="hidden" value="{{property.kb }}" id="lng">
+<input type="hidden" value="{{property.address }}" id="addressSelect">
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        google.load("visualization", "1", {packages:["corechart", "gauge"]});
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
-
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
     {% javascripts  '@RjPublicBundle/Resources/public/js/new.js'
 
     %}
