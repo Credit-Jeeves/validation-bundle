@@ -1108,8 +1108,12 @@
                 <source>dyk.message.utilization</source>
                 <target>Your credit card utilization is %AVAILABLE_DEBT%%. By opening a new card and maintaining a zero balance, you could lower your overall utilization which may help your score.</target>
             </trans-unit>
-            
-            
+
+            <trans-unit id="email_rj.creditjeeves.team">
+                <source>email_rj.creditjeeves.team</source>
+                <target>The RentTrack Team</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

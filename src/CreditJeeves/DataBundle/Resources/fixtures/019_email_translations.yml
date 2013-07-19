@@ -150,7 +150,7 @@ fixtures:
     locale: %locale%
     property: body
     value: |
-      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
       {% block email %}Confirm - please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a>{% endblock %}
 
@@ -165,6 +165,41 @@ fixtures:
     locale: %locale%
     property: body
     value: |
-      {% extends "CoreBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ name }}!{% endblock %}
-      {% block email %}User wants rent your building: {{ address }}, Unit: {{ unit }}{% endblock %}
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Receive automatic rent payments through RentTrack {% endblock %}
+      {% block email %}
+        {% if nameLandlord %}
+            Hi {{ nameLandlord }}! <br />  <br />
+        {% else %}
+            Hello!  <br /> <br /> 
+        {% endif %}
+        Your tenant, {{ fullNameTenant }}, would like to use RentTrack to pay rent on your property at
+        {{ address }}. RentTrack allows {{ nameTenant }} to build credit history by
+        reporting on-time payments to credit bureaus. <br /> <br />
+
+        As a landlord, you benefit because RentTrack facilitates easy payments through secure electronic
+        check transfers and credit cords - payments are deposited faster and directly to your account. 
+        Reminders are sent automatically to your tenants before rent is due and late notices ore sent
+        to you immediately. If  you have  multiple  properties, you can see the status  of  your  payments
+        all in one place <br /> <br />
+
+        Ready to get pay? <br /> <br />
+        <a href="{{ app.request.host }}"  style="
+                        border: none;
+                        padding: 2px 7px;
+                        text-align: left;
+                        color: white;
+                        font-size: 14px;
+                        text-shadow: 1px 1px 3px #636363;
+                        filter: dropshadow(color=#636363, offx=1, offy=1);
+                        cursor: pointer;
+                        background-color: #669900;
+                        -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#00ffffff)';
+                        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
+                        zoom: 1;
+                        text-decoration: none;
+                        -moz-border-radius: 4px;
+                        -webkit-border-radius: 4px;
+                        border-radius: 4px;
+                ">Sign up</a> Still have some questions? <a href="#">Learn More</a>
+      {% endblock %}

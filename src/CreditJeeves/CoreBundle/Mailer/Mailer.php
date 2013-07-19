@@ -111,11 +111,14 @@ class Mailer extends BaseMailer implements MailerInterface
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         $vars = array(
-            'name'      => $invite->getFullName(),
-            'address'   => $invite->getProperty()->getAddress(),
-            'unit'      => $invite->getUnit(),
+            'nameLandlord'          => $invite->getFirstName(),
+            'fullNameTenant'        => $invite->getTenant()->getFullName(),
+            'nameTenant'            => $invite->getTenant()->getFirstName(),
+            'address'               => $invite->getProperty()->getAddress(),
+            'unit'                  => $invite->getUnit(),
         );
 
+        $subject = $invite->getTenant()->getFullName().' wonts to pay her rent using RentTrack';
         $tenant = $invite->getTenant();
 
         if (empty($isPlain) && empty($isHtml)) {
@@ -130,7 +133,7 @@ class Mailer extends BaseMailer implements MailerInterface
             );
 
             $message = \Swift_Message::newInstance();
-            $message->setSubject($htmlContent['subject']);
+            $message->setSubject($subject);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
             $message->setTo($invite->getEmail());
             $message->addPart($htmlContent['body'], 'text/html');
@@ -153,7 +156,7 @@ class Mailer extends BaseMailer implements MailerInterface
                 $vars
             );
             $message = \Swift_Message::newInstance();
-            $message->setSubject($plainContent['subject']);
+            $message->setSubject($subject);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
             $message->setTo($invite->getEmail());
             $message->addPart($plainContent['body'], 'text/plain');

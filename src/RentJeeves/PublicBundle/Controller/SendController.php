@@ -28,10 +28,12 @@ class SendController extends Controller
         if ($request->getMethod() == 'POST' && $tenant->getInviteCode()) {
             $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
         }
-
+        $inviteLandlord = $tenant->getInvite();
+        $landlordLetter = (empty($inviteLandlord)) ? false : true;
         return array(
-            'tenantId' => $tenantId,
-            'active'   => $active,
+            'tenantId'       => $tenantId,
+            'active'         => $active,
+            'landlordLetter' => $landlordLetter,
         );
     }
 }
