@@ -110,8 +110,6 @@ class PublicController extends Controller
             return $this->redirect($this->generateUrl("iframe"));
         }
         // Here for development
-//         $tenant = $em->getRepository('DataBundle:Tenant')->findOneByEmail('tenant11@example.com');
-//         $Property->createContract($em, $tenant);
         
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
 
@@ -132,11 +130,10 @@ class PublicController extends Controller
                 $tenant = $form->getData();
                 $aForm = $request->request->get($form->getName());
                 $tenant->setPassword(md5($aForm['password']['Password']));
-
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($tenant);
                 $em->flush();
-
+                $Property->createContract($em, $tenant);
                 $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
             }

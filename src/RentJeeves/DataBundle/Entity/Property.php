@@ -143,25 +143,33 @@ class Property extends Base
      */
     public function createContract($em, $tenant, $search = null)
     {
+        // Search for unit
         $units = $this->getUnits();
         foreach ($units as $unit) {
-            if ($search) {
-                if ($search == $unit->getName()) {
-                    
-                }
-            } else {
+            if ($search == $unit->getName()) {
                 $contract = new Contract();
                 $contract->setTenant($tenant);
                 $contract->setHolding($unit->getHolding());
                 $contract->setGroup($unit->getGroup());
                 $contract->setProperty($unit->getProperty());
                 $contract->setStatus(ContractStatus::PENDING);
-                //$contract->setSearch($search)
                 $em->persist($contract);
-                //echo $unit->getName();
+                $em->flush();
+                return true;
             }
-            $em->flush();
         }
-        //echo __METHOD__.$tenant->getFirstName();
+        // If there is no such unit we'll send contract for all potential landlords
+        $groups = $this->getPropertyGroups();
+        foreach ($groups as $group) {
+            $contract = new Contract();
+            $contract->setTenant($tenant);
+            $contract->setHolding($group->getHolding());
+            $contract->setGroup($group);
+            $contract->setProperty($this);
+            $contract->setStatus(ContractStatus::PENDING);
+            $em->persist($contract);
+        }
+        $em->flush();
+        return true;
     }
 }
