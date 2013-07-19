@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * Property
@@ -133,5 +134,33 @@ class Property extends Base
             $result[] = $item;
         }
         return $result;
+    }
+
+    /**
+     * 
+     * @param string $search
+     */
+    public function createContract($em, $tenant, $search = null)
+    {
+        $units = $this->getUnits();
+        foreach ($units as $unit) {
+            if ($search) {
+                if ($search == $unit->getName()) {
+                    
+                }
+            } else {
+                $contract = new Contract();
+                $contract->setTenant($tenant);
+                $contract->setHolding($unit->getHolding());
+                $contract->setGroup($unit->getGroup());
+                $contract->setProperty($unit->getProperty());
+                $contract->setStatus(ContractStatus::PENDING);
+                //$contract->setSearch($search)
+                $em->persist($contract);
+                //echo $unit->getName();
+            }
+            $em->flush();
+        }
+        //echo __METHOD__.$tenant->getFirstName();
     }
 }

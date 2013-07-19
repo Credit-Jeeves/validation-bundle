@@ -109,7 +109,10 @@ class PublicController extends Controller
         if (!$Property) {
             return $this->redirect($this->generateUrl("iframe"));
         }
-     
+        // Here for development
+//         $tenant = $em->getRepository('DataBundle:Tenant')->findOneByEmail('tenant11@example.com');
+//         $Property->createContract($em, $tenant);
+        
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
 
         if ($countGroup <= 0) {

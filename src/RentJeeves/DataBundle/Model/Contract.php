@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * @ORM\MappedSuperclass
@@ -81,18 +82,11 @@ abstract class Contract
 
     /**
      * @ORM\Column(
-     *     type="string"
-     * )
-     * @Assert\NotBlank(
-     *     message="unit.empty",
-     *     groups={
-     *         "tenant_contract",
-     *     }
+     *     type="string",
+     *     nullable=true
      * )
      * @Assert\Length(
-     *     min=1,
      *     max=15,
-     *     minMessage="unit.name.short",
      *     maxMessage="unit.name.long",
      *     groups={
      *         "tenant_contract",
@@ -122,7 +116,8 @@ abstract class Contract
     /**
      * @ORM\Column(
      *     name="start_at",
-     *     type="datetime"
+     *     type="datetime",
+     *     nullable=true
      * )
      */
     protected $startAt;
@@ -130,7 +125,8 @@ abstract class Contract
     /**
      * @ORM\Column(
      *     name="finish_at",
-     *     type="datetime"
+     *     type="datetime",
+     *     nullable=true
      * )
      */
     protected $finishAt;
@@ -294,6 +290,28 @@ abstract class Contract
     public function getSearch()
     {
         return $this->search;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     * @return Unit
+     */
+    public function setStatus($status = ContractStatus::PENDING)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
