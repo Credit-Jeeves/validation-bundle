@@ -55,6 +55,7 @@
                 <thead>
                 <tr class="properties-th">
                     <th>Address</th>
+                    <th>ZIP</th>
                     <th>City</th>
                     <th>State</th>
                     <th>Country</th>
@@ -66,6 +67,7 @@
                 <!-- ko foreach: { data: aProperties() } -->
                 <tr>
                     <td data-bind="text: address"></td>
+                    <td data-bind="text: zip"></td>
                     <td data-bind="text: city"></td>
                     <td data-bind="text: area"></td>
                     <td data-bind="text: country"></td>

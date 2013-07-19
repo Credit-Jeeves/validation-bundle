@@ -71,6 +71,7 @@ class Property extends Base
     {
         $item = array();
         $item['id'] = $this->getId();
+        $item['zip'] = $this->getZip();
         $item['country'] = $this->getCountry();
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
@@ -110,16 +111,16 @@ class Property extends Base
             $result[] = implode(' ', $address);
         }
 
-        if ($city = $this->getCity()) {
-            $result[] = $city;
+        if ($district = $this->getDistrict()) {
+            $result[] = $district;
         }
 
-        if ($area = $this->getArea()) {
-            $result[] = $area;
-        }
-        if ($zip = $this->getZip()) {
-            $result[] = $zip;
-        }
+//         if ($area = $this->getArea()) {
+//             $result[] = $area;
+//         }
+//         if ($zip = $this->getZip()) {
+//             $result[] = $zip;
+//         }
         return implode(', ', $result);
     }
 
