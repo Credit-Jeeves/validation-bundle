@@ -1,7 +1,46 @@
 {% extends "RjPublicBundle::base.html.twig" %}
 
+{% block marketingHeader %}
+    {{ include('RjComponentBundle::marketingHeader.html.twig') }}
+{% endblock %}
+
 {% block content %}
-    <h2>It's page with result search</h2>
+<form action="#" name="searchRentalsForm">
+<div class="box type1">
+  <h3 class="clearfix">
+    <span>Property information</span>
+    <small><b>*</b>Required</small>
+  </h3>
+  <div class="col-box clearfix">
+    <div class="col searsh-box searshBoxBig">
+      <label for="searsh-field">Verify your rental address:</label>
+      <div class="clearfix">
+        <input type="text" id="searsh-field" value="960 Andante Rd., Santa Barbara, CA  93105" name="searsh-field">
+        <a href="#" id="delete">x</a>
+        <button type="submit" id="search-submit">Search</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+<form action="{{ path('iframe_new', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
+<div class="box type1">
+  <div class="col-box clearfix">
+    <div class="col select-box selectBoxBig">
+        <br />
+        <h1>It's will be map her</h1>
+    </div>
+  </div>
+</div>
+
+{{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
+ {{ form_rest(form) }}
+<div class="buttons-box clearfix">
+  <div class="buttons left">
+    <button type="submit" class="button"><span>Continue</span></button>
+  </div>
+</div>
+</form>
 {% endblock %}
 
 {% block javascripts %}

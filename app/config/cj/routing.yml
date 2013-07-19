@@ -53,11 +53,6 @@ tenant:
     type:     annotation
     prefix:   /tenant
 
-RjPublicBundle:
-    resource: "@RjPublicBundle/Controller/"
-    type:     annotation
-    prefix:   /public
-
 fos_user_security:
     resource:   "@FOSUserBundle/Resources/config/routing/security.xml"
 

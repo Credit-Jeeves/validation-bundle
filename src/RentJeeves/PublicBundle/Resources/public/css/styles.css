@@ -1324,3 +1324,10 @@ footer nav .copyright li {
 form ul {
   color: red;
 }
+.col-box .col.searsh-box.searshBoxBig {
+  width: 900px;
+}
+.box.type1 .select-box.selectBoxBig {
+  width: 900px;
+  height: 300px;
+}
