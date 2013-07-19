@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -15,9 +16,32 @@ class Tenant extends User
     protected $type = UserType::TETNANT;
 
     /**
-     * @ORM\OneToOne(targetEntity="RentJeeves\DataBundle\Entity\Invite", mappedBy="tenant")
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Invite",
+     *     mappedBy="tenant"
+     * )
      */
     protected $invite;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *     mappedBy="tenant",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $contracts;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->contracts = new ArrayCollection();
+    }
 
     /**
      * Set invite
@@ -28,7 +52,6 @@ class Tenant extends User
     public function setInvite(\RentJeeves\DataBundle\Entity\Invite $invite = null)
     {
         $this->invite = $invite;
-    
         return $this;
     }
 
@@ -45,5 +68,37 @@ class Tenant extends User
     public function getTenant()
     {
         return $this;
+    }
+
+    /**
+     * Add Contract
+     *
+     * @param Contract $contract
+     * @return Tenant
+     */
+    public function addContract(Contract $contract)
+    {
+        $this->contracts[] = $contract;
+        return $this;
+    }
+
+    /**
+     * Remove Contract
+     *
+     * @param Contract
+     */
+    public function removeContract(Contract $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }

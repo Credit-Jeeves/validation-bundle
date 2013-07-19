@@ -81,12 +81,27 @@ abstract class Holding
      */
     protected $units;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *     mappedBy="holding",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $contracts;
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
         $this->groups = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->units = new ArrayCollection();
+        $this->contracts = new ArrayCollection();
     }
 
     /**
@@ -259,5 +274,37 @@ abstract class Holding
     public function getUnits()
     {
         return $this->units;
+    }
+
+    /**
+     * Add Contract
+     *
+     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @return Holding
+     */
+    public function addContract(\RentJeeves\DataBundle\Entity\Contract $contract)
+    {
+        $this->contracts[] = $contract;
+        return $this;
+    }
+
+    /**
+     * Remove Contract
+     *
+     * @param Contract
+     */
+    public function removeContract(\RentJeeves\DataBundle\Entity\Contract $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }
