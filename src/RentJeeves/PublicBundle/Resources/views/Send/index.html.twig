@@ -2,7 +2,14 @@
 
 {% block content %}
   {% if active %} 
-      You have successfully activated your account. Please login.
+    <div class="box type1">
+      <h3 class="clearfix">
+        <span>You have successfully activated your account. Please login.</span>
+      </h3>
+    </div>
+    <br />
+    <br />
+    <br />
   {% else %}
     <form action="{{ path('user_new_send', {"tenantId": tenantId }) }}" method="post">
         <div class="box type1">
@@ -14,8 +21,10 @@
             <div class="col-box clearfix">
               <div class="col">
                 <h4>Please check your inbox for an email from RentTrack and click on the verification link.</h4>
+                {% if landlordLetter %}
                 <h4>We have also invited your landlord to sign up. We'll let you know when they do, and when 
                   you can set up your rent payment.</h4>
+                {% endif %}
                 <h4>If you don't see an email after a few minutes, click Resend below.</h4>
               </div>
             </div>

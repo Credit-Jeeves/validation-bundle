@@ -31,11 +31,7 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
     {% block stylesheets %}{% endblock %}
     {% block google_api %}
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript">
-            google.load("visualization", "1", {packages:["corechart", "gauge"]});
-        </script>
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
+        {{ include('RjComponentBundle:Google:js.html.twig') }}
     {% endblock %}
     <!--[if gte IE 9]>
         <style type="text/css">
