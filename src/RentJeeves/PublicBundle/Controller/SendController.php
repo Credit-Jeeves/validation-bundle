@@ -18,16 +18,22 @@ class SendController extends Controller
         $em = $this->getDoctrine()->getManager();
         $tenant = $em->getRepository('DataBundle:Tenant')->find($tenantId);
 
+        if (empty($tenant)) {
+            return $this->redirect($this->generateUrl("iframe"));
+        }
+
         $request = $this->get('request');
         $active = (is_null($tenant->getInviteCode())) ? true : false;
 
         if ($request->getMethod() == 'POST' && $tenant->getInviteCode()) {
             $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
         }
-
+        $inviteLandlord = $tenant->getInvite();
+        $landlordLetter = (empty($inviteLandlord)) ? false : true;
         return array(
-            'tenantId' => $tenantId,
-            'active'   => $active,
+            'tenantId'       => $tenantId,
+            'active'         => $active,
+            'landlordLetter' => $landlordLetter,
         );
     }
 }
