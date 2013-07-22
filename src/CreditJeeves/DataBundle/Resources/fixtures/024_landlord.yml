@@ -26,6 +26,7 @@ fixtures:
         created_at: '-50 days'
         updated_at: '-3 days'
     Landlord_2:
+        holding: rjHolding_2
         first_name: John
         middle_initial: WAKEFIELD
         last_name: BREEN
@@ -41,6 +42,7 @@ fixtures:
         date_of_birth: '1957-02-19'
         ssn: 666042073
         is_active: true
+        is_super_admin: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
         score_changed_notification: true
@@ -53,6 +55,7 @@ fixtures:
         created_at: '-45 days'
         updated_at: '-2 days'
     Landlord_3:
+        holding: rjHolding_2
         first_name: ALEX
         middle_initial: 
         last_name: JORDAN
@@ -80,6 +83,7 @@ fixtures:
         created_at: '-43 days'
         updated_at: '-8 days'
     Landlord_4:
+        holding: rjHolding_3
         first_name: OLA
         middle_initial: MAE
         last_name: TAYLOR
@@ -94,6 +98,7 @@ fixtures:
         phone: '309-74-58-439'
         date_of_birth: '1955-09-14'
         ssn: '666302442'
+        is_super_admin: true
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
@@ -107,6 +112,7 @@ fixtures:
         created_at: '-40 days'
         updated_at: '-7 days'
     Landlord_5:
+        holding: rjHolding_4
         first_name: BRIAN
         middle_initial: P
         last_name: KURTH
@@ -121,6 +127,7 @@ fixtures:
         phone: '7188491319'
         date_of_birth: '1957-02-19'
         ssn: '666810987'
+        is_super_admin: true
         is_active: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
@@ -163,6 +170,7 @@ fixtures:
         has_data: false
         has_report: null
         is_verified: passed
+        lastLogin: '-1 days'
         created_at: '-50 days'
         updated_at: '-50 days'
         

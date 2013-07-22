@@ -252,4 +252,40 @@ class AjaxController extends Controller
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
         return new JsonResponse($data);
     }
+
+    
+    /**
+     * @Route(
+     *     "/tenant/list",
+     *     name="landlord_tenants_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function getTenantsList()
+    {
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('tenants' => array(), 'total' => 0, 'pagination' => array());
+    
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Tenant');
+        $total = $repo->countTenants($group);
+        $total = count($total);
+        if ($total) {
+            $items = array();
+            $tenants = $repo->getTenantsPage($group, $page['page'], $page['limit']);
+            foreach ($tenants as $tenant) {
+                $item = $tenant->getItem();
+                $items[] = $item;
+            }
+        }
+        $data['tenants'] = $items;
+        $data['total'] = count($items);
+        $data['pagination'] = $this->propertiesPagination($total, $page['limit']);
+        return new JsonResponse($data);
+    }
 }

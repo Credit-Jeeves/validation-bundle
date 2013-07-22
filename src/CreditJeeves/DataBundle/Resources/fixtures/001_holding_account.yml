@@ -17,10 +17,10 @@ fixtures:
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
     rjHolding_3:
-        name:           Generic Holding
+        name:           Test RentHolding 2
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
     rjHolding_4:
-        name:           Vehicle Holding
+        name:           Test Rent Holding 3
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
