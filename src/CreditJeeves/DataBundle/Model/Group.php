@@ -289,6 +289,20 @@ abstract class Group
      */
     protected $units;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *     mappedBy="group",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $contracts;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -298,6 +312,7 @@ abstract class Group
         $this->children = new ArrayCollection();
         $this->group_properties = new ArrayCollection();
         $this->units = new ArrayCollection();
+        $this->contracts = new ArrayCollection();
     }
 
     /**
@@ -670,6 +685,11 @@ abstract class Group
         return $this->zip;
     }
 
+    /**
+     * 
+     * @param string $type
+     * @return Group
+     */
     public function setFeeType($type)
     {
         $this->fee_type = $type;
@@ -784,7 +804,7 @@ abstract class Group
      * Add property
      *
      * @param \RentJeeves\DataBundle\Entity\Property $property
-     * @return User
+     * @return Group
      */
     public function addGroupProperty(\RentJeeves\DataBundle\Entity\Property $property)
     {
@@ -908,5 +928,37 @@ abstract class Group
     public function getUnits()
     {
         return $this->units;
+    }
+
+    /**
+     * Add Contract
+     *
+     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @return Group
+     */
+    public function addContract(\RentJeeves\DataBundle\Entity\Contract $contract)
+    {
+        $this->contracts[] = $contract;
+        return $this;
+    }
+
+    /**
+     * Remove Contract
+     *
+     * @param Contract
+     */
+    public function removeContract(\RentJeeves\DataBundle\Entity\Contract $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }

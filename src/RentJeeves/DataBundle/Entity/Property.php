@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * Property
@@ -70,6 +71,7 @@ class Property extends Base
     {
         $item = array();
         $item['id'] = $this->getId();
+        $item['zip'] = $this->getZip();
         $item['country'] = $this->getCountry();
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
@@ -109,16 +111,16 @@ class Property extends Base
             $result[] = implode(' ', $address);
         }
 
-        if ($city = $this->getCity()) {
-            $result[] = $city;
+        if ($district = $this->getDistrict()) {
+            $result[] = $district;
         }
 
-        if ($area = $this->getArea()) {
-            $result[] = $area;
-        }
-        if ($zip = $this->getZip()) {
-            $result[] = $zip;
-        }
+//         if ($area = $this->getArea()) {
+//             $result[] = $area;
+//         }
+//         if ($zip = $this->getZip()) {
+//             $result[] = $zip;
+//         }
         return implode(', ', $result);
     }
 
@@ -133,5 +135,41 @@ class Property extends Base
             $result[] = $item;
         }
         return $result;
+    }
+
+    /**
+     * 
+     * @param string $search
+     */
+    public function createContract($em, $tenant, $search = null)
+    {
+        // Search for unit
+        $units = $this->getUnits();
+        foreach ($units as $unit) {
+            if ($search == $unit->getName()) {
+                $contract = new Contract();
+                $contract->setTenant($tenant);
+                $contract->setHolding($unit->getHolding());
+                $contract->setGroup($unit->getGroup());
+                $contract->setProperty($unit->getProperty());
+                $contract->setStatus(ContractStatus::PENDING);
+                $em->persist($contract);
+                $em->flush();
+                return true;
+            }
+        }
+        // If there is no such unit we'll send contract for all potential landlords
+        $groups = $this->getPropertyGroups();
+        foreach ($groups as $group) {
+            $contract = new Contract();
+            $contract->setTenant($tenant);
+            $contract->setHolding($group->getHolding());
+            $contract->setGroup($group);
+            $contract->setProperty($this);
+            $contract->setStatus(ContractStatus::PENDING);
+            $em->persist($contract);
+        }
+        $em->flush();
+        return true;
     }
 }

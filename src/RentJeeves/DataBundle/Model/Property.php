@@ -147,14 +147,32 @@ abstract class Property
     protected $invite;
 
     /**
-     * @ORM\ManyToMany(targetEntity="CreditJeeves\DataBundle\Entity\Group", mappedBy="group_properties")
+     * @ORM\ManyToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     mappedBy="group_properties"
+     * )
      */
     protected $property_groups;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *     mappedBy="property",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $contracts;
 
     public function __construct()
     {
         $this->property_groups = new ArrayCollection();
         $this->units = new ArrayCollection();
+        $this->contracts = new ArrayCollection();
     }
 
     /**
@@ -303,7 +321,7 @@ abstract class Property
      * Set zip
      *
      * @param string $zip
-     * @return Address
+     * @return Property
      */
     public function setZip($zip)
     {
@@ -369,7 +387,7 @@ abstract class Property
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return Address
+     * @return Property
      */
     public function setCreatedAt($createdAt)
     {
@@ -391,7 +409,7 @@ abstract class Property
      * Set updatedAt
      *
      * @param \DateTime $updatedAt
-     * @return Address
+     * @return Property
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -486,5 +504,37 @@ abstract class Property
     public function getUnits()
     {
         return $this->units;
+    }
+
+    /**
+     * Add Contract
+     *
+     * @param Contract $contract
+     * @return Property
+     */
+    public function addContract(Contract $contract)
+    {
+        $this->contracts[] = $contract;
+        return $this;
+    }
+
+    /**
+     * Remove Contract
+     *
+     * @param Contract
+     */
+    public function removeContract(Contract $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }

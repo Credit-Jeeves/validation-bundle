@@ -99,6 +99,25 @@ abstract class Unit
     protected $updatedAt;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *     mappedBy="unit",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $contracts;
+    
+    public function __construct()
+    {
+        $this->contracts = new ArrayCollection();
+    }
+    
+    /**
      * Get id
      *
      * @return integer
@@ -282,5 +301,37 @@ abstract class Unit
     public function getGroup()
     {
         return $this->group;
+    }
+
+    /**
+     * Add Contract
+     *
+     * @param Contract $contract
+     * @return Unit
+     */
+    public function addContract(Contract $contract)
+    {
+        $this->contracts[] = $contract;
+        return $this;
+    }
+
+    /**
+     * Remove Contract
+     *
+     * @param Contract
+     */
+    public function removeContract(Contract $contract)
+    {
+        $this->contracts->removeElement($contract);
+    }
+    
+    /**
+     * Get contracts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getContracts()
+    {
+        return $this->contracts;
     }
 }

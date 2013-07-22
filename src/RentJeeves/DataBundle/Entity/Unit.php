@@ -12,4 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Unit extends Base
 {
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }
