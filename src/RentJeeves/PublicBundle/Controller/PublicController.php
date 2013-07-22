@@ -129,11 +129,19 @@ class PublicController extends Controller
             if ($form->isValid()) {
                 $tenant = $form->getData();
                 $aForm = $request->request->get($form->getName());
+                $unitName = $request->request->get('unit'.$Property->getId());
+                $unitNew = $request->request->get('unitNew'.$Property->getId());
+                $unitSearch = null;
+                if (!empty($unitName) && $unitName != 'new') {
+                    $unitSearch = $unitName;
+                } else if(!empty($unitNew)) {
+                    $unitSearch = $unitNew;
+                }
                 $tenant->setPassword(md5($aForm['password']['Password']));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($tenant);
                 $em->flush();
-                $Property->createContract($em, $tenant);
+                $Property->createContract($em, $tenant, $unitSearch);
                 $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
             }
