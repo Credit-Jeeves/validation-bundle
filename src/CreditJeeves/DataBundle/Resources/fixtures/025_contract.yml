@@ -31,3 +31,15 @@ fixtures:
         finishAt: '-60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
+    Contract_4:
+        tenant:   Tenant_2
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_4
+        status:   finished
+        startAt:   '-290 days'
+        finishAt: '-160 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+        
