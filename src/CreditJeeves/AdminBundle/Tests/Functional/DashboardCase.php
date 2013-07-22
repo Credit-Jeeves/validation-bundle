@@ -84,7 +84,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function adminManageAdmins()
     {
-        $this->setDefaultSession('Goutte');
+        //$this->setDefaultSession('Goutte');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
         $this->assertCount(3, $tables, 'Wrong number of blocks');
