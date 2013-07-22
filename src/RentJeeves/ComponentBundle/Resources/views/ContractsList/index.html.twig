@@ -1,6 +1,36 @@
 <div class="pod-large pod-border pod-padding shadow">
     <h1>Current Pyments</h1>
+    <table>
+    <thead>
+        <tr>
+            <th>Address</th>
+            <th>Pay To</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
     {% for contract in contracts %}
-        <div>{{ contract.unit }}</div>
+        <tr>
+            <td>
+                {{ contract.property.address }}
+                {% if contract.unit %}
+                    <span>{{ contract.unit }}</span>
+                {% else %}
+                    <span>{{ contract.search }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ contract.holding }}|{{ contract.group }}
+            </td>
+            <td>
+                {{ contract.status }}
+            </td>
+            <td>
+                <a href="#" class="btn grey">Set Up Your First Rental Payment</a>
+            </td>
+        </tr>
     {% endfor %}
+    </tbody>
+    </table>
 </div>

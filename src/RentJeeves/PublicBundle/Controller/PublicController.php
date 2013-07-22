@@ -134,7 +134,7 @@ class PublicController extends Controller
                 $unitSearch = null;
                 if (!empty($unitName) && $unitName != 'new') {
                     $unitSearch = $unitName;
-                } else if(!empty($unitNew)) {
+                } else if(!empty($unitNew) && $unitNew != 'none') {
                     $unitSearch = $unitNew;
                 }
                 $tenant->setPassword(md5($aForm['password']['Password']));
