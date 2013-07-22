@@ -76,7 +76,7 @@ class Tenant extends User
      * @param Contract $contract
      * @return Tenant
      */
-    public function addContract(Contract $contract)
+    public function addContract(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $this->contracts[] = $contract;
         return $this;
@@ -87,7 +87,7 @@ class Tenant extends User
      *
      * @param Contract
      */
-    public function removeContract(Contract $contract)
+    public function removeContract(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $this->contracts->removeElement($contract);
     }
