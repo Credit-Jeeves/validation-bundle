@@ -153,6 +153,7 @@ class Property extends Base
                 $contract->setGroup($unit->getGroup());
                 $contract->setProperty($unit->getProperty());
                 $contract->setStatus(ContractStatus::PENDING);
+                $contract->setUnit($unit);
                 $em->persist($contract);
                 $em->flush();
                 return true;
@@ -167,6 +168,7 @@ class Property extends Base
             $contract->setGroup($group);
             $contract->setProperty($this);
             $contract->setStatus(ContractStatus::PENDING);
+            $contract->setSearch($search);
             $em->persist($contract);
         }
         $em->flush();

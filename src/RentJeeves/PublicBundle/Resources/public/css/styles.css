@@ -1354,7 +1354,8 @@ form ul {
   color: #00aeef;
   font-family: 'ABeeZee', sans-serif;
   font-size: 16px;
-  width: 175px;
+  width: 195px;
+  line-height: 17px;
 }
 .addressImage, .addressText {
   float: left;
@@ -1363,4 +1364,38 @@ form ul {
 .addressImage {
   width: 20px;
   height: 50px;
+}
+
+.addUnit{
+  color: black;
+  font-size: 12px;
+  margin-top: 6px;
+  display: block;
+}
+
+.addUnit>.unitSelectContainer>select {
+  height: 18px;
+  padding: 0px 0px 0px 0px;
+  width: 55px;
+}
+
+.adresess>h4 {
+  padding: 4px 0 7px;
+}
+
+.addNewUnit {
+  color: #00aeef;
+}
+
+.unitAddNewUnitContainer {
+  display: none;
+}
+
+.unitSelectContainer {
+  width: 200px;
+}
+.unitNew {
+  width: 41px;
+  height: 15px;
+  padding: 2px;
 }
