@@ -92,6 +92,16 @@ abstract class Property
 
     /**
      * @ORM\Column(
+     *     name="google_reference",
+     *     type="string",
+     *     length=255,
+     *     nullable=true
+     * )
+     */
+    protected $google_reference;
+
+    /**
+     * @ORM\Column(
      *     name="jb",
      *     type="float",
      *     nullable=true
@@ -536,5 +546,16 @@ abstract class Property
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    public function setGoogleReference($google_reference)
+    {
+        $this->google_reference = $google_reference;
+        return $this;
+    }
+
+    public function getGoogleReference($google_reference)
+    {
+        return $this->google_reference;
     }
 }
