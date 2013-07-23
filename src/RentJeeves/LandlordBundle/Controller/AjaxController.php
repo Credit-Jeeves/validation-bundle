@@ -326,5 +326,4 @@ class AjaxController extends Controller
         $data['pagination'] = $this->datagridPagination($total, $page['limit']);
         return new JsonResponse($data);
     }
-    
 }

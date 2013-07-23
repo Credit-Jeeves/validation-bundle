@@ -21,13 +21,13 @@ class ContractRepository extends EntityRepository
     }
     
     public function getContractsPage(
-            $group,
-            $page = 1,
-            $limit = 100,
-            $sort = 'p.street',
-            $order = 'ASC',
-            $searchBy = 'p.street',
-            $search = ''
+        $group,
+        $page = 1,
+        $limit = 100,
+        $sort = 'p.street',
+        $order = 'ASC',
+        $searchBy = 'p.street',
+        $search = ''
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');
