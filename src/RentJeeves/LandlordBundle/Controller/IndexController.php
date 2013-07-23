@@ -17,6 +17,7 @@ class IndexController extends Controller
         $groups = $this->getGroups();
         return array(
             'nGroups' => $groups->count(),
+            'Group' => $this->getCurrentGroup(),
         );
     }
 }

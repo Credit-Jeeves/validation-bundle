@@ -10,11 +10,9 @@ class ContractsListController extends Controller
      * @Template()
      * @return multitype:
      */
-    public function indexAction()
+    public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
     {
-        $contracts = $this->get('core.session.applicant')->getUser()->getContracts();
         return array(
-            'contracts' => $contracts,
         );
     }
 }
