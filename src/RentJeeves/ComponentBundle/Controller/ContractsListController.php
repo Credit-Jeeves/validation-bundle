@@ -7,7 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class ContractsListController extends Controller
 {
     /**
-     * @Template()
+     * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
      * @return multitype:
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
