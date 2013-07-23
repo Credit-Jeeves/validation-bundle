@@ -56,6 +56,8 @@ class AjaxController extends Controller
 
         try {
             if ($group) {
+                $google = $this->container->get('google');
+                $google->savePlace($object);
                 $group->addGroupProperty($object);
             }
             $em->flush();

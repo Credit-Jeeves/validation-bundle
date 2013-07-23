@@ -30,10 +30,24 @@
       <div class="adresess">
         <h4>Search result:</h4>
         <div>
-          <div class="addressImage">
-          </div>
           <div class="addressText">
             <span>{{ property.address }}</span>
+            <br />
+            <div class="addUnit">
+              <span class="unitSelectContainer">
+                Select Unit:
+                <select name="unit{{ property.id }}" class="select-unit">
+                  <option value="none" class="noneField">None</option>
+                  {% for unit in  property.units %}
+                    <option value="{{ unit.name }}">{{ unit.name }}</option>
+                  {% endfor %}
+                  <option value="new"  class="addNewUnit"><a href="#">Add New</a></option>
+                </select>
+              </span>
+              <span class="unitAddNewUnitContainer">
+                Add Unit <input type="text" value="" name="unitNew{{ property.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">See All</a>
+              </span>
+            </div>
           </div>
         </div>
       </div>

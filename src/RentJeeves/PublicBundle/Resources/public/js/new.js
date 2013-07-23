@@ -116,4 +116,20 @@ $(document).ready(function(){
 
     google.maps.event.addDomListener(window, 'load', initialize);
 
+    $('.select-unit').change(function(){
+      val = $(this).val();
+      if(val == 'new') {
+        $(this).parent().hide();
+        $(this).parent().parent().find('.unitAddNewUnitContainer').show();
+      }
+    });
+
+    $('.see-all').click(function() {
+      $(this).parent().parent().find('.unitSelectContainer').show();
+      $(this).parent().hide();
+      $(this).parent().parent().find('.select-unit:selected').prop("selected", false);
+      $(this).parent().parent().find('.noneField').attr('selected', true);
+      return false;
+    });
+
 });
