@@ -9,6 +9,7 @@ class TenantRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('t');
         $query->innerJoin('t.contracts', 'c');
+        $query->groupBy('t.id');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         if (!empty($search)) {
@@ -31,6 +32,7 @@ class TenantRepository extends EntityRepository
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('t');
         $query->innerJoin('t.contracts', 'c');
+        $query->groupBy('t.id');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         if (!empty($search)) {

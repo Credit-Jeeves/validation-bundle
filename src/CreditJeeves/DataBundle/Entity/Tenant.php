@@ -105,7 +105,7 @@ class Tenant extends User
     public function getItem()
     {
         $result = array();
-        $result['contracts'] = $this->getContracts()->count();
+        $result['status'] = 'current';//$this->getContracts()->count();
         $result['name'] = $this->getFullName();
         $result['email'] = $this->getEmail();
         $result['phone'] = $this->formatPhoneOutput($this->getPhone());
