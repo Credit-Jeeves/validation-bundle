@@ -115,13 +115,10 @@ abstract class Contract
 
     /**
      * @ORM\Column(
-     *     type="integer",
-     *     options={
-     *         "default"=1
-     *     }
+     *     type="integer"
      * )
      */
-    protected $due_day;
+    protected $due_day = 1;
 
     /**
      * @ORM\Column(
