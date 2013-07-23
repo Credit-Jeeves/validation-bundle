@@ -18,11 +18,16 @@ class Contract extends Base
         $property = $this->getProperty();
         $tenant = $this->getTenant();
         $unit = $this->getUnit();
-        $result['status'] = $this->getStatus();
+        $result['status'] = strtoupper($this->getStatus());
         $result['address'] = $property->getAddress();
         $result['unit'] = $unit->getName();
         $result['tenant'] = $tenant->getFullName();
-        $result['amount'] = $this->getRent();
+        $result['amount'] = '$'.$this->getRent();
+        $result['due_day'] = $this->getDueDay().'th';
+        $result['paid_to'] = '';
+        if ($date = $this->getPaidTo()) {
+            $result['paid_to'] = $date->format('M d, Y');
+        }
         return $result;
     }
 }

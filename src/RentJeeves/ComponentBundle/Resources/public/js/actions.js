@@ -1,14 +1,14 @@
-function Tenants() {
+function Actions() {
   var limit = 10;
   var current = 1;
   var self = this;
-  this.aTenants = ko.observableArray([]);
+  this.aActions = ko.observableArray([]);
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
   this.current = ko.observable(1);
   this.ajaxAction = function() {
     $.ajax({
-      url: Routing.generate('landlord_tenants_list'),
+      url: Routing.generate('landlord_actions_list'),
       type: 'POST',
       dataType: 'json',
       data: {
@@ -18,15 +18,15 @@ function Tenants() {
         }
       },
       success: function(response) {
-        self.aTenants([]);
-        self.aTenants(response.tenants);
+        self.aActions([]);
+        self.aActions(response.actions);
         self.total(response.total);
         self.pages(response.pagination);
       }
     });
   };
-  this.countTenants = ko.computed(function(){
-    return parseInt(self.aTenants().length);
+  this.countActions = ko.computed(function(){
+    return parseInt(self.aActions().length);
   });
   this.goToPage = function(page) {
     self.current(page);
@@ -40,9 +40,9 @@ function Tenants() {
   };
 }
 
-var TenantsViewModel = new Tenants();
+var ActionsViewModel = new Actions();
 
 $(document).ready(function(){
-  ko.applyBindings(TenantsViewModel, $('#tenants-block').get(0));
-  TenantsViewModel.ajaxAction();
+  ko.applyBindings(ActionsViewModel, $('#actions-block').get(0));
+  ActionsViewModel.ajaxAction();
 });

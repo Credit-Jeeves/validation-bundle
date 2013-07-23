@@ -18,8 +18,9 @@ fixtures:
         unit:     Unit_1_2
         rent:     1500
         status:   approved
+        paid_to:  '60 days'
         startAt:   '60 days'
-        finishAt: '90 days'
+        finishAt:  '90 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
     Contract_3:
@@ -30,6 +31,7 @@ fixtures:
         unit:     Unit_1_4
         rent:     1500
         status:   finished
+        paid_to:  '-60 days'
         startAt:   '-90 days'
         finishAt: '-60 days'
         createdAt: '-50 days'
@@ -42,6 +44,7 @@ fixtures:
         unit:     Unit_1_4
         rent:     1500
         status:   finished
+        paid_to:  '-120 days'
         startAt:   '-290 days'
         finishAt: '-160 days'
         createdAt: '-50 days'
@@ -54,6 +57,7 @@ fixtures:
         unit:     Unit_1_5
         rent:     1700
         status:   approved
+        paid_to:  '-3 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -66,6 +70,7 @@ fixtures:
         unit:     Unit_1_6
         rent:     1700
         status:   approved
+        paid_to:  '-1 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -78,6 +83,7 @@ fixtures:
         unit:     Unit_1_7
         rent:     1750
         status:   approved
+        paid_to:  '20 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -90,6 +96,7 @@ fixtures:
         unit:     Unit_1_8
         rent:     1750
         status:   approved
+        paid_to:  '3 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -102,6 +109,7 @@ fixtures:
         unit:     Unit_1_9
         rent:     1750
         status:   approved
+        paid_to:  '15 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -114,6 +122,7 @@ fixtures:
         unit:     Unit_1_10
         rent:     1750
         status:   approved
+        paid_to:  '15 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -126,6 +135,7 @@ fixtures:
         unit:     Unit_1_11
         rent:     2100
         status:   approved
+        paid_to:  '30 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'

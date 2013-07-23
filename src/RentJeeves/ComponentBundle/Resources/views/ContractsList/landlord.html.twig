@@ -1,10 +1,9 @@
     <div id="contracts-block" class="contracts-block">
         <div class="">
-            <div class="units-total floatleft"><h2 data-bind="text: 'All (' + $root.total() + ')'"></h2></div>
+            <div class="units-total floatleft"><h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2></div>
         </div>
         <div class="clearboth"></div>
         <!-- ko if: pages().length -->
-        <div class="row-20"></div>
         <div class="">
             <!-- ko foreach: pages() -->
                 <!-- ko if: $data == $root.current() -->
@@ -25,7 +24,6 @@
                     <th>Status</th>
                     <th>Date Posted</th>
                     <th>Date Initiated</th>
-                    <th>Due Date</th>
                     <th>Property</th>
                     <th>Unit</th>
                     <th>Tenant</th>
@@ -38,8 +36,7 @@
                 <tr>
                     <td data-bind="text: status"></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
+                    <td data-bind="text: paid_to"></td>
                     <td data-bind="text: address"></td>
                     <td data-bind="text: unit"></td>
                     <td data-bind="text: tenant"></td>

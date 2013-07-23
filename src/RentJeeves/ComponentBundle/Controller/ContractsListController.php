@@ -15,4 +15,14 @@ class ContractsListController extends Controller
         return array(
         );
     }
+
+    /**
+     * @Template("RjComponentBundle:ContractsList:actions.html.twig")
+     * @return multitype:
+     */
+    public function requiredAction(\CreditJeeves\DataBundle\Entity\Group $Group)
+    {
+        return array(
+        );
+    }
 }
