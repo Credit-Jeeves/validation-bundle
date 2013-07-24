@@ -1,77 +1,109 @@
 {% extends "RjPublicBundle::base.html.twig" %}
 
-{% block marketingHeader %}
-    {{ include('RjComponentBundle::marketingHeader.html.twig') }}
-{% endblock %}
-
 {% block content %}
-<form action="#" name="searchRentalsForm">
-<div class="box type1">
-  <h3 class="clearfix">
-    <span>Property information</span>
-    <small><b>*</b>Required</small>
-  </h3>
-  <div class="col-box clearfix">
-    <div class="col searsh-box searshBoxBig">
-      <label for="searsh-field">Verify your rental address:</label>
-      <div class="clearfix">
-        <input type="text" id="property-search" value="{{ property.address }}" name="searsh-field">
-        <a href="#" id="delete">x</a>
-        <button type="submit" id="search-submit">Search</button>
-      </div>
-    </div>
-  </div>
-</div>
-</form>
-<form action="{{ path('iframe_new', {"propertyId": property.id }) }}" method="post" {{ form_enctype(form) }}>
-<div class="box type1">
-  <div class="col-box clearfix">
-    <div class="col select-box selectBoxBig">
-      <div class="adresess">
-        <h4>Search result:</h4>
-        <div>
-          <div class="addressText">
-            <span>{{ property.address }}</span>
-            <br />
-            <div class="addUnit">
-              <span class="unitSelectContainer">
-                Select Unit:
-                <select name="unit{{ property.id }}" class="select-unit">
-                  <option value="none" class="noneField">None</option>
-                  {% for unit in  property.units %}
-                    <option value="{{ unit.name }}">{{ unit.name }}</option>
-                  {% endfor %}
-                  <option value="new"  class="addNewUnit"><a href="#">Add New</a></option>
-                </select>
-              </span>
-              <span class="unitAddNewUnitContainer">
-                Add Unit <input type="text" value="" name="unitNew{{ property.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">See All</a>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div id="map-canvas" class="map-adresess"></div>
-    </div>
-  </div>
-</div>
 
-{{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
- {{ form_rest(form) }}
-<div class="buttons-box clearfix">
-  <div class="buttons left">
-    <button type="submit" class="button"><span>Continue</span></button>
-  </div>
-</div>
-</form>
+<section class="form-content">
+          
+            <div class="box type1">
+                  
+              <h3 class="clearfix">
+                <span>Property information</span>
+                <small><b>*</b>Required</small>
+              </h3>
+              
+              <div class="col-box clearfix">
+                <div class="col all">
+                  
+                  <h4>Add your rental property</h4>
+                  <form action="#" id="formSearch">
+                  <div class="search-box pie-el">
+                    <label for="searsh-field">Verify your rental address</label>
+                    <div class="clearfix with-button">
+                      <div class="left search-field-box">
+                        <input type="text" placeholder="{{ property.address }}" value="{{ property.address }}" name="searsh-field" id="property-search">
+                        <a href="#" id="delete" class="pie-el">x</a>
+                        <button class="button small" id="search-submit" type="submit">
+                          <span>Find Your Rental</span>
+                        </button>
+                      </div>
+                      <div class="right text-box">
+                        <p>Didn’t find what you were looking for?</p>
+                        <a href="#">Add your rental</a>
+                      </div>
+                    </div>
+                  </div>
+                  </form>
+                  <form action="{{ path('iframe_new', {"propertyId": property.id }) }}" method="post" {{ form_enctype(form) }}>
+                  <div class="search-result-box clearfix pie-el">
+                    <div class="search-result-text-box">
+                      <div id="search-result-text" class="search-result-text">
+                        <h4>{{ countPropery }} rentals in {{ property.city }}, {{ property.area }}:</h4>
+                        <ul>
+                          {% set i = 1 %}
+                          {% for prop in propertyList %}
+                          <li class="addressText" data="{{ prop.id }}">
+                            <i>{{ i }}</i>
+                            <strong>
+                              {{ prop.number }} {{ prop.street }}<br>
+                              {{ prop.city }}, {{ prop.area }} {{ prop.zip }}</strong>
+                            <div class="form-row clearfix">
+                              <label class="lab1">Add Unit</label>
+                              <label class="lab2">Select Unit</label>
+                              <div class="fields-box selectUnit">
+                                <select name="unit{{ prop.id }}" class="select-unit">
+                                  <option value="none" class="noneField">None</option>
+                                  {% for unit in  prop.units %}
+                                    <option value="{{ unit.name }}">{{ unit.name }}</option>
+                                  {% endfor %}
+                                  <option value="new"  class="addNewUnit"><a href="#">Add New</a></option>
+                                </select>
+                              </div>
+                              <div class="fields-box createNewUnit">
+                                  <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">See All</a>
+                              </div>
+                            </div>
+                            <div class="buttons-box clearfix">
+                              <div class="buttons left">
+                                <button type="submit" class="button middle thisIsMyRental" data="{{ prop.id }}"><span>This is My Rental</span></button>
+                              </div>
+                            </div>
+                            <input type="hidden" value="{{prop.jb }}" class="lat">
+                            <input type="hidden" value="{{prop.kb }}" class="lng">
+                            <input type="hidden" value="{{prop.address }}" class="addressSelect">
+                          </li>
+                          {% set i = i+1 %}
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                    <div id="search-result-map" class="search-result-map" class="pie-el"> </div>
+                    <div id="shade-top"> </div>
+                    <div id="shade-left"> </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+            
+            {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
+            {{ form_rest(form) }}
+            <div class="buttons-box clearfix">
+              <div class="buttons left">
+                <button type="submit" class="button greyButton" id="register"><span>Continue</span></button>
+              </div>
+            </div>
+            <input type="hidden" name="propertyId" value="" id="propertyId">
+           </form>
+        </section>
+
 <input type="hidden" value="{{property.jb }}" id="lat">
 <input type="hidden" value="{{property.kb }}" id="lng">
-<input type="hidden" value="{{property.address }}" id="addressSelect">
 {% endblock %}
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
     {% javascripts  '@RjPublicBundle/Resources/public/js/new.js'
+                    '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
 
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

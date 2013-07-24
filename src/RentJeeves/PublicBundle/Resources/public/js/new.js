@@ -1,5 +1,15 @@
 $(document).ready(function(){
 
+    function initScroll() {
+      $('#search-result-text').slimScroll({
+        alwaysVisible:true,
+        width:307,
+        height:295
+      });
+    }
+
+    initScroll();
+    
     var ERROR = 'notfound';
 
     function showError(message)
@@ -7,10 +17,21 @@ $(document).ready(function(){
         alert(message);
     }
 
+    function createMarker(point,html,ba,ov) {
+        var mylabel = {"url":overlay[ov], "anchor":new GLatLng(4,4), "size":new GSize(12,12)};
+        var Icon = new GIcon(G_DEFAULT_ICON, background[ba], mylabel)
+
+        var marker = new GMarker(point,Icon);
+        GEvent.addListener(marker, "click", function() {
+          marker.openInfoWindowHtml(html);
+        });
+        return marker;
+    }
+
     function initialize() {
         var lat = $('#lat').val();
         var lng = $('#lng').val();
-        var addressSelect =  $('#addressSelect').val();
+
 
         var mapOptions = {
             center: new google.maps.LatLng(lat, lng),
@@ -18,19 +39,28 @@ $(document).ready(function(){
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(
-            document.getElementById('map-canvas'),
+            document.getElementById('search-result-map'),
             mapOptions
         );
         var input = (document.getElementById('property-search'));
         var autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo('bounds', map);
         var infowindow = new google.maps.InfoWindow();
+        $.each($('.addressText'), function(index, value) {
+            var lat = $(this).find('.lat').val();
+            var lng = $(this).find('.lng').val();
+            var addressSelect = $(this).find('.addressSelect').val();
+            var myLatlng = new google.maps.LatLng(lat,lng);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: addressSelect,
+            });
 
-        var myLatlng = new google.maps.LatLng(lat,lng);
+        });
+        
         var marker = new google.maps.Marker({
-            position: myLatlng,
-            map: map,
-            title: addressSelect
+                map: map
         });
 
         function validateAddress(){
@@ -75,6 +105,11 @@ $(document).ready(function(){
         
         $('#property-search').change(function(){
           $(this).addClass('notfound');
+          if($(this).val() != '') {
+            $('#delete').show();
+          } else {
+            $('#delete').hide();
+          }
         });
 
         $('#search-submit').click(function(){
@@ -120,16 +155,46 @@ $(document).ready(function(){
       val = $(this).val();
       if(val == 'new') {
         $(this).parent().hide();
-        $(this).parent().parent().find('.unitAddNewUnitContainer').show();
+        $(this).parent().parent().find('.createNewUnit').show();
+        $(this).parent().parent().find('.lab1').show();
+        $(this).parent().parent().find('.lab2').hide();
       }
     });
 
     $('.see-all').click(function() {
-      $(this).parent().parent().find('.unitSelectContainer').show();
+      $(this).parent().parent().find('.selectUnit').show();
       $(this).parent().hide();
       $(this).parent().parent().find('.select-unit:selected').prop("selected", false);
       $(this).parent().parent().find('.noneField').attr('selected', true);
+      $(this).parent().parent().find('.lab2').show();
+      $(this).parent().parent().find('.lab1').hide();
       return false;
     });
 
+    $('#delete').click(function() {
+      $('#property-search').val(' ')
+    });
+
+    $('#register').click(function(){
+      var propertyId = $('#propertyId').val();
+      if(propertyId == '') {
+        showError('Please select your rental');
+        return false;
+      }
+    });
+
+    $('.thisIsMyRental').click(function(){
+        propertyId = $(this).attr('data');
+        $.each($('.addressText'), function(index, value) {
+            var id = $(this).attr('data');
+            if(id != propertyId) {
+              $(this).hide();
+            }
+        });
+        $('#propertyId').val(propertyId);
+        $('#register').removeClass('greyButton');
+        initScroll();
+        $(this).hide();
+        return false;
+    });
 });

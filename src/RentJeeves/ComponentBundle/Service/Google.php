@@ -71,7 +71,7 @@ class Google
         $this->place->setLocation($latitude . ',' . $longitude);
         $this->place->setLanguage(self::DEFAULT_LANGUAGE);
         $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
-        $this->place->setName($name.' '.$property->getId());
+        $this->place->setName($name);
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
 
@@ -91,10 +91,11 @@ class Google
     /**
     * Save property to google
     *
-    * @return array
+    * @return array Property
     */
-    public function searchPlaceInRadius(Property $property, $name = self::DEFAULT_NAME, $radius = 500)
+    public function searchPropertyInRadius(Property $property, $name = self::DEFAULT_NAME, $radius = 500)
     {
+        $propertyList = array();
         $latitude   = $property->getJb();
         $longitude = $property->getKb();
         $this->place->setLocation($latitude . ',' . $longitude);
@@ -102,17 +103,39 @@ class Google
         $this->place->setRadius(self::DEFAULT_RADIUS);
         $this->place->setLanguage(self::DEFAULT_LANGUAGE);
         $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
-        $this->place->setName($name.' '.$property->getId());
+        $this->place->setName($name);
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
 
         $results = $this->place->nearbySearch();
 
         if (empty($results['errors']) && isset($results['result'])) {
-            return $results['result'];
+
+            $propertyRepository = $this->em->getRepository('RjDataBundle:Property');
+
+            foreach ($results['result'] as $key => $value) {
+
+                $jb = $value['geometry']['location']['lat'];
+                $kb = $value['geometry']['location']['lng'];
+
+                $nearProperty = $propertyRepository->findOneBy(array(
+                    'jb' => $jb,
+                    'kb' => $kb,
+                ));
+
+                if (empty($nearProperty)) {
+                    continue;
+                }
+
+                if (isset($propertyList[$nearProperty->getId()])) {
+                    continue;
+                }
+
+                $propertyList[$nearProperty->getId()] =  $nearProperty;
+            }
         }
         
-        return array();
+        return $propertyList;
     }
 
     public function deletePlace(Property $property, $reference, $name = self::DEFAULT_NAME)
@@ -122,7 +145,7 @@ class Google
         $this->place->setLocation($latitude . ',' . $longitude);
         $this->place->setLanguage(self::DEFAULT_LANGUAGE);
         $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
-        $this->place->setName($name.' '.$property->getId());
+        $this->place->setName($name);
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
         $this->place->setReference($reference);
@@ -156,7 +179,7 @@ class Google
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
 
-        $results = $this->place->nearbySearch();
+        $results = $this->place->Search();
 
         if (empty($results['errors']) && isset($results['result'])) {
             return $results['result'];
