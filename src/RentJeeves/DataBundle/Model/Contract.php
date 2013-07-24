@@ -115,6 +115,21 @@ abstract class Contract
 
     /**
      * @ORM\Column(
+     *     type="integer"
+     * )
+     */
+    protected $due_day = 1;
+
+    /**
+     * @ORM\Column(
+     *     type="datetime",
+     *     nullable=true
+     * )
+     */
+    protected $paid_to;
+
+    /**
+     * @ORM\Column(
      *     name="start_at",
      *     type="datetime",
      *     nullable=true
@@ -334,6 +349,50 @@ abstract class Contract
     public function getRent()
     {
         return $this->rent;
+    }
+
+    /**
+     * Set Due day
+     *
+     * @param integer $dueDay
+     * @return Unit
+     */
+    public function setDueDay($dueDay)
+    {
+        $this->due_day = $dueDay;
+        return $this;
+    }
+
+    /**
+     * Get Due Day
+     *
+     * @return integer
+     */
+    public function getDueDay()
+    {
+        return $this->due_day;
+    }
+
+    /**
+     * Set Paid to
+     *
+     * @param \DateTime $paidTo
+     * @return Contract
+     */
+    public function setPaidTo($paidTo)
+    {
+        $this->paid_to = $paidTo;
+        return $this;
+    }
+
+    /**
+     * Get startAt
+     *
+     * @return \DateTime
+     */
+    public function getPaidTo()
+    {
+        return $this->paid_to;
     }
 
     /**

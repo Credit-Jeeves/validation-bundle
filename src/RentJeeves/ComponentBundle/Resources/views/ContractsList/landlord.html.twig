@@ -1,11 +1,9 @@
-    <div id="tenants-block" class="properties-block">
+    <div id="contracts-block" class="contracts-block">
         <div class="">
-            <div class="units-total floatleft"><h2 data-bind="text: 'All (' + $root.total() + ')'"></h2></div>
-            <a class="btn orange property-button-add" href="{{ path('landlord_tenant_new')}}">New Tenant</a>
+            <div class="units-total floatleft"><h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2></div>
         </div>
         <div class="clearboth"></div>
         <!-- ko if: pages().length -->
-        <div class="row-20"></div>
         <div class="">
             <!-- ko foreach: pages() -->
                 <!-- ko if: $data == $root.current() -->
@@ -19,24 +17,30 @@
         <!-- /ko -->
         <div class="clearboth"></div>
         <div class="properties-table-block">
-            <!-- ko if: countTenants() -->
+            <!-- ko if: countContracts() -->
             <table class="properties-table zebra-grid">
                 <thead>
                 <tr class="properties-th">
                     <th>Status</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th></th>
+                    <th>Date Posted</th>
+                    <th>Date Initiated</th>
+                    <th>Property</th>
+                    <th>Unit</th>
+                    <th>Tenant</th>
+                    <th>Amount</th>
+                    <th>Type</th>
                 </tr>
                 </thead>
                 <tbody>
-                <!-- ko foreach: { data: aTenants() } -->
+                <!-- ko foreach: { data: aContracts() } -->
                 <tr>
                     <td data-bind="text: status"></td>
-                    <td data-bind="text: name"></td>
-                    <td data-bind="text: email"></td>
-                    <td data-bind="text: phone"></td>
+                    <td></td>
+                    <td data-bind="text: paid_to"></td>
+                    <td data-bind="text: address"></td>
+                    <td data-bind="text: unit"></td>
+                    <td data-bind="text: tenant"></td>
+                    <td data-bind="text: amount"></td>
                     <td><div class="btn green property-edit">Edit</div></td>
                 </tr>
                 <!-- /ko -->

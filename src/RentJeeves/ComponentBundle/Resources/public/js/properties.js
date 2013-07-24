@@ -33,6 +33,12 @@ function Properties() {
   });
   this.goToPage = function(page) {
     self.current(page);
+    if (page == 'First') {
+      self.current(1);
+    }
+    if (page == 'Last') {
+      self.current(Math.ceil(self.total()/limit));
+    }
     self.ajaxAction();
   };
 }

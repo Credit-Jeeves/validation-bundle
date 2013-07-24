@@ -28,12 +28,12 @@ class Builder extends ContainerAware
                 'route' => 'landlord_tenants'
             )
         );
-        $menu->addChild(
-            'tabs.settings',
-            array(
-                'route' => 'landlord_settings'
-            )
-        );
+//         $menu->addChild(
+//             'tabs.settings',
+//             array(
+//                 'route' => 'landlord_settings'
+//             )
+//         );
         switch ($sRoute) {
             case 'landlord_homepage':
                 $menu['tabs.dashboard']->setAttribute('class', 'active');

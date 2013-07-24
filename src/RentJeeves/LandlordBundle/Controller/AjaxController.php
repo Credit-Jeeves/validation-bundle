@@ -116,20 +116,22 @@ class AjaxController extends Controller
             }
         }
         $data['properties'] = $items;
-        $data['pagination'] = $this->propertiesPagination($total, $page['limit']);
+        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
         return new JsonResponse($data);
     }
 
-    private function propertiesPagination($total, $limit)
+    private function datagridPagination($total, $limit)
     {
         $result = array();
         $pages = ceil($total / $limit);
         if ($pages < 2) {
             return $result;
         }
+        $result[] = 'First';
         for ($i = 0; $i < $pages; $i++) {
             $result[] = $i + 1;
         }
+        $result[] = 'Last';
         return $result;
     }
 
@@ -268,6 +270,8 @@ class AjaxController extends Controller
      */
     public function getTenantsList()
     {
+        $items = array();
+        $total = 0;
         $request = $this->getRequest();
         $page = $request->request->all('data');
         $page = $page['data'];
@@ -278,7 +282,6 @@ class AjaxController extends Controller
         $total = $repo->countTenants($group);
         $total = count($total);
         if ($total) {
-            $items = array();
             $tenants = $repo->getTenantsPage($group, $page['page'], $page['limit']);
             foreach ($tenants as $tenant) {
                 $item = $tenant->getItem();
@@ -286,8 +289,78 @@ class AjaxController extends Controller
             }
         }
         $data['tenants'] = $items;
-        $data['total'] = count($items);
-        $data['pagination'] = $this->propertiesPagination($total, $page['limit']);
+        $data['total'] = $total;
+        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route(
+     *     "/contract/list",
+     *     name="landlord_contracts_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function getContractsList()
+    {
+        $items = array();
+        $total = 0;
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+        $total = $repo->countContracts($group);
+        $total = count($total);
+        if ($total) {
+            $contracts = $repo->getContractsPage($group, $page['page'], $page['limit']);
+            foreach ($contracts as $contract) {
+                $item = $contract->getItem();
+                $items[] = $item;
+            }
+        }
+        $data['contracts'] = $items;
+        $data['total'] = $total;
+        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route(
+     *     "/action/list",
+     *     name="landlord_actions_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function getActionsList()
+    {
+        $items = array();
+        $total = 0;
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('actions' => array(), 'total' => 0, 'pagination' => array());
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+        $total = $repo->countActionsRequired($group);
+        $total = count($total);
+        if ($total) {
+            $contracts = $repo->getActionsRequiredPage($group, $page['page'], $page['limit']);
+            foreach ($contracts as $contract) {
+                $item = $contract->getItem();
+                $items[] = $item;
+            }
+        }
+        $data['actions'] = $items;
+        $data['total'] = $total;
+        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
         return new JsonResponse($data);
     }
 }

@@ -1,14 +1,14 @@
-function Tenants() {
+function Contracts() {
   var limit = 10;
   var current = 1;
   var self = this;
-  this.aTenants = ko.observableArray([]);
+  this.aContracts = ko.observableArray([]);
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
   this.current = ko.observable(1);
   this.ajaxAction = function() {
     $.ajax({
-      url: Routing.generate('landlord_tenants_list'),
+      url: Routing.generate('landlord_contracts_list'),
       type: 'POST',
       dataType: 'json',
       data: {
@@ -18,15 +18,15 @@ function Tenants() {
         }
       },
       success: function(response) {
-        self.aTenants([]);
-        self.aTenants(response.tenants);
+        self.aContracts([]);
+        self.aContracts(response.contracts);
         self.total(response.total);
         self.pages(response.pagination);
       }
     });
   };
-  this.countTenants = ko.computed(function(){
-    return parseInt(self.aTenants().length);
+  this.countContracts = ko.computed(function(){
+    return parseInt(self.aContracts().length);
   });
   this.goToPage = function(page) {
     self.current(page);
@@ -40,9 +40,9 @@ function Tenants() {
   };
 }
 
-var TenantsViewModel = new Tenants();
+var ContractsViewModel = new Contracts();
 
 $(document).ready(function(){
-  ko.applyBindings(TenantsViewModel, $('#tenants-block').get(0));
-  TenantsViewModel.ajaxAction();
+  ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
+  ContractsViewModel.ajaxAction();
 });

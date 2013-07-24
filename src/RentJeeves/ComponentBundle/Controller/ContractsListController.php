@@ -7,14 +7,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class ContractsListController extends Controller
 {
     /**
-     * @Template()
+     * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
      * @return multitype:
      */
-    public function indexAction()
+    public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
     {
-        $contracts = $this->get('core.session.applicant')->getUser()->getContracts();
         return array(
-            'contracts' => $contracts,
+        );
+    }
+
+    /**
+     * @Template("RjComponentBundle:ContractsList:actions.html.twig")
+     * @return multitype:
+     */
+    public function requiredAction(\CreditJeeves\DataBundle\Entity\Group $Group)
+    {
+        return array(
         );
     }
 }
