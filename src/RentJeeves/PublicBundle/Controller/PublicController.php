@@ -110,7 +110,7 @@ class PublicController extends Controller
         $google = $this->get('google');
         $propertyIdForm = (int)$request->request->get('propertyId');
         
-        if($propertyIdForm <= 0) {
+        if ($propertyIdForm <= 0) {
             $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
         } else {
             $Property = $em->getRepository('RjDataBundle:Property')->find($propertyIdForm);
@@ -151,7 +151,7 @@ class PublicController extends Controller
 
         $propertyList = $google->searchPropertyInRadius($Property);
         
-        if(isset($propertyList[$Property->getId()])) {
+        if (isset($propertyList[$Property->getId()])) {
             unset($propertyList[$Property->getId()]);
         }
 
@@ -162,7 +162,7 @@ class PublicController extends Controller
         if ($countGroup <= 0) {
             return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
         }
-        
+
         return array(
             'form'              => $form->createView(),
             'property'          => $Property,
