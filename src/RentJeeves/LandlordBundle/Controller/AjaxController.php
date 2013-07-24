@@ -177,14 +177,16 @@ class AjaxController extends Controller
      */
     public function getUnitsList()
     {
+        $result = array('property' => '', 'units' => array());
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
         $request = $this->getRequest();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
-        $units = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $holding, $group);
-        return new JsonResponse($units);
+        $result['property'] = $property->getAddress();
+        $result['units'] = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($property, $holding, $group);
+        return new JsonResponse($result);
     }
 
     /**

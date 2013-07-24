@@ -66,8 +66,18 @@ table.properties-table th {
 
 .units-item {
     float: left;
-    width: 140px;
-    margin: 0 5px 15px;
+    width: 135px;
+    margin: 0 20px 15px;
+    border: 1px solid #c8c8c8;
+    padding: 1px;
+}
+
+.units-item input[type="text"] {
+    height: 20px;
+}
+
+.unit-delete {
+    margin: 0;
 }
 
 .unit-input {
@@ -77,4 +87,27 @@ table.properties-table th {
 .units-footer {
     margin-top: 15px;
     padding-left: 110px;
+}
+
+.units-total {
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.units-add {
+    font-size: 16px;
+    padding: 0;
+}
+
+.unit-add-text {
+    margin: 4px 5px 0 0;
+}
+
+.unit-add-btn {
+    margin-top: 1px;
+}
+
+.units-add input[type="text"] {
+    margin-top: 1px;
+    height: 20px;
 }
