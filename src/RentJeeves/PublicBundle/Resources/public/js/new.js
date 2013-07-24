@@ -227,17 +227,38 @@ $(document).ready(function(){
     });
 
     $('.thisIsMyRental').click(function(){
-        propertyId = $(this).attr('data');
-        $.each($('.addressText'), function(index, value) {
-            var id = $(this).attr('data');
-            if(id != propertyId) {
-              $(this).hide();
-            }
-        });
-        $('#propertyId').val(propertyId);
-        $('#register').removeClass('greyButton');
-        initScroll();
-        $(this).hide();
+        if($(this).hasClass('one')) {
+          propertyId = $(this).attr('data');
+          $.each($('.addressText'), function(index, value) {
+              var id = $(this).attr('data');
+              if(id != propertyId) {
+                $(this).show();
+              } else {
+                $(this).css({backgroundColor:'#FFFFFF'});
+              }
+          });
+          
+          $('#propertyId').val('');
+          $('#register').addClass('greyButton');
+          initScroll();
+          $(this).removeClass('one');
+        } else {
+          propertyId = $(this).attr('data');
+          $.each($('.addressText'), function(index, value) {
+              var id = $(this).attr('data');
+              if(id != propertyId) {
+                $(this).hide();
+              } else {
+                $(this).css({backgroundColor:'#EEEEEE'});
+              }
+          });
+          
+          $('#propertyId').val(propertyId);
+          $('#register').removeClass('greyButton');
+          initScroll();
+          $(this).addClass('one');
+          //$(this).hide();
+        }
         return false;
     });
 });
