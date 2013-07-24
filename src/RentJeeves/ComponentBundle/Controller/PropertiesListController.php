@@ -1,0 +1,34 @@
+<?php
+namespace RentJeeves\ComponentBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
+class PropertiesListController extends Controller
+{
+    /**
+     * @Template()
+     * @param \CreditJeeves\DataBundle\Entity\Group $Group
+     * @return multitype:
+     */
+    public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
+    {
+        $result = array();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
+        $total = $repo->countProperties($Group);
+        $total = count($total);
+        if ($total) {
+            $properties = $repo->getPropetiesPage($Group);
+            foreach ($properties as $property) {
+                $item = $property->getItem();
+                $result[] = $item;
+            }
+        }
+        $jsonProperties = json_encode($result);
+        return array(
+            'sGroup' => $Group->getName(),
+            'jsonProperties' => $jsonProperties,
+            'total' => $total,
+        );
+    }
+}

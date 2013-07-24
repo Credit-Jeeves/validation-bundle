@@ -1,0 +1,311 @@
+model: CreditJeeves\DataBundle\Entity\Group
+fixtures:
+  cjAccountGroup_1:
+    name:           Credit Jeeves' Stuff
+    code:           DZC6K2OAG3
+  cjAccountGroup_2:
+    affiliate:  cjAffiliate_1
+    name:           LA Honda Dealer
+    target_score:   700
+    website_url:    www.honda.com
+    code:           'DVRWP2NFQ6'
+    phone:          805-555-1212
+    street_address_1: 124 Hitchcock Way
+    city:           Santa Barbara
+    state:          CA
+    zip:            93101
+    description: |
+      Congratulations on improving your credit score!
+      We want to help you drive away with your dream car.
+      Call us within the next 24 hours and we’ll give you $250 off!
+  cjAccountGroup_3:
+    affiliate:  cjAffiliate_2
+    name:           LA BMW Dealer
+    target_score:   900
+    fee_type:       lead
+    website_url:    http://www.bmw.com
+    code:           DZC6K2PQC6
+    contract_date:  '2013-07-03'
+  cjAccountGroup_4:
+    holding:        cjHolding_1
+    name:           'US Cars'
+    target_score:   '750'
+    code:           DZC6K2QG93
+    contract_date:  '-10 days'
+  cjAccountGroup_5:
+    name:           AutoTrader
+    target_score:   700
+    code:           DZC6LV0KUZ
+    website_url:    www.autotrader.com
+    fee_type:       flat
+    contract:       'Test Contract text'
+    contract_date:  '-10 days'
+    created_at:     '-15 days'
+    updated_at:     '-10 days'
+  cjAccountGroup_6:
+    name:           AutoNation
+    target_score:   '725'
+    code:           DZC6MG3JVJ
+    website_url:    'http://www.autonation.com/'
+    fee_type:       flat
+    contract:       'Test Contract text'
+    contract_date:  '-10 days'
+    created_at:     '-15 days'
+    updated_at:     '-10 days'
+  cjAccountGroup_7:
+    name:           BMW
+    target_score:   '705'
+    code:           DZC6PK79DK
+    fee_type: flat
+    contract:       'Test Contract text'
+    contract_date:  '-10 days'
+    created_at:     '-15 days'
+    updated_at:     '-10 days'
+  cjAccountGroup_8:
+    name: HONDA
+    target_score: '715'
+    code: DZC6PQYDR8
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:27:18'
+    updated_at: '2012-11-29 14:27:18'
+  cjAccountGroup_9:
+    holding: cjHolding_1
+    name: AUDI
+    target_score: '725'
+    code: DZC6Q9F645
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: ''
+    contract_date:  '-10 days'
+    created_at: '2012-11-29 14:27:48'
+    updated_at: '2012-11-29 14:27:48'
+  cjAccountGroup_10:
+    name: MERSEDES
+    target_score: '740'
+    code: DZC6QHG82F
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:28:01'
+    updated_at: '2012-11-29 14:28:01'
+  cjAccountGroup_11:
+    holding: cjHolding_1
+    name: RENAULT
+    target_score: '500'
+    code: DZC6T6GYPY
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:30:36'
+    updated_at: '2012-11-29 14:30:36'
+  cjAccountGroup_12:
+    name: FORD
+    target_score: '350'
+    code: DZC6TNZYSU
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:31:04'
+    updated_at: '2012-11-29 14:31:04'
+  cjAccountGroup_13:
+    name: SAAB
+    target_score: '600'
+    code: DZC6TZE0QH
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:31:22'
+    updated_at: '2012-11-29 14:31:22'
+  cjAccountGroup_14:
+    name: LOTUS
+    target_score: '700'
+    code: DZC6U6X53Y
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:31:34'
+    updated_at: '2012-11-29 14:31:34'
+  cjAccountGroup_15:
+    name: MINI
+    target_score: '710'
+    code: DZC6UD0P5V
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:31:44'
+    updated_at: '2012-11-29 14:31:44'
+  cjAccountGroup_16:
+    name: FERRARI
+    target_score: '725'
+    code: DZC6XE2Z91
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:34:39'
+    updated_at: '2012-11-29 14:34:39'
+  cjAccountGroup_17:
+    name: PONTIAC
+    target_score: '700'
+    code: DZC6XPDZNT
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:34:57'
+    updated_at: '2012-11-29 14:34:57'
+  cjAccountGroup_18:
+    name: MASERATI
+    target_score: '725'
+    code: DZC6YAXLEL
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:35:31'
+    updated_at: '2012-11-29 14:35:31'
+  cjAccountGroup_19:
+    name: DODGE
+    target_score: '725'
+    code: DZC6YIKTKR
+    description: ''
+    website_url: ''
+    logo_url: ''
+    phone: ''
+    fax: ''
+    street_address_1: ''
+    street_address_2: ''
+    city: ''
+    state: null
+    zip: ''
+    fee_type: flat
+    contract: null
+    contract_date: null
+    created_at: '2012-11-29 14:35:44'
+    updated_at: '2012-11-29 14:35:44'
+  Group_1:
+    name:           Vehicle group
+    target_score:   750
+    created_at:     '-60 days'
+    updated_at:     '-8 days'
+  Group_2:
+    name:           Estate group
+    target_score:   850
+    type:           estate
+    created_at:     '-60 days'
+    updated_at:     '-8 days'
+  Group_3:
+    name:           Generic group
+    target_score:   850
+    type:           generic
+    created_at:     '-60 days'
+    updated_at:     '-8 days'
+

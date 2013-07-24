@@ -25,7 +25,10 @@ class IncentivesController extends Controller
         // Get User's Report
         $cjUser = $this->get('core.session.applicant')->getUser();
         $Report = $cjUser->getReportsPrequal()->last();
-        $sDate = $Report->getCreatedAt()->format('M j, Y');
+        
+        $dateShortFormat = $this->container->getParameter('date_short');
+        $sDate = $Report->getCreatedAt()->format($dateShortFormat);
+
         $ArfReport = $Report->getArfReport();
         // Get direct check
         $aDirectCheck = $Report->getApplicantDirectCheck();
@@ -88,6 +91,7 @@ class IncentivesController extends Controller
             }
             
         }
+
         // Get satisfactory tradelines
         foreach ($aReportSatisfactoryTradelines as $aTradeline) {
              // we'll work only with opened tradelines
@@ -131,7 +135,7 @@ class IncentivesController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $tradeline = new Tradeline();
-        $tradeline->setCjGroupId($Lead->getCjGroupId());
+        $tradeline->setGroup($Lead->getGroup());
         $tradeline->setUser($Lead->getUser());
         $tradeline->setTradeline(md5($aTradeline['tr_subcode'].$aTradeline['account']));
         $tradeline->setStatus($aTradeline['tr_status']);

@@ -1,0 +1,42 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+{% block content %}
+  {% if active %} 
+    <div class="box type1">
+      <h3 class="clearfix">
+        <span>You have successfully activated your account. Please login.</span>
+      </h3>
+    </div>
+    <br />
+    <br />
+    <br />
+  {% else %}
+    <form action="{{ path('user_new_send', {"tenantId": tenantId }) }}" method="post">
+        <div class="box type1">
+          <h3 class="clearfix">
+              <span>Verify Your Email Address</span>
+            </h3>
+          </div>
+          <div class="box type1" style="padding-top: 0px;">
+            <div class="col-box clearfix">
+              <div class="col">
+                <h4>Please check your inbox for an email from RentTrack and click on the verification link.</h4>
+                {% if landlordLetter %}
+                <h4>We have also invited your landlord to sign up. We'll let you know when they do, and when 
+                  you can set up your rent payment.</h4>
+                {% endif %}
+                <h4>If you don't see an email after a few minutes, click Resend below.</h4>
+              </div>
+            </div>
+          </div>
+          <div class="buttons-box clearfix">
+            <div class="buttons left">
+              <button type="submit" class="button"><span>Resend Verification Email</span></button>
+          </div>
+        </div>
+    </form>
+  {% endif %}
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

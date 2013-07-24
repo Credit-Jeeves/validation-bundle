@@ -1,4 +1,5 @@
 <?php
+
 namespace CreditJeeves\PublicBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Address;
@@ -59,13 +60,18 @@ class NewController extends Controller
             if ($form->isValid()) {
                 /** @var Lead $Lead */
                 $Lead = $form->getData();
+
                 if ($this->validateLead($Lead)) {
+
                     $User = $Lead->getUser();
                     $User->setCulture($request->getLocale());
                     $User->setUsername($User->getEmail());
                     $User->setIsVerified(UserIsVerified::NONE);
                     $User->setType(UserType::APPLICANT);
                     $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
+
+                    $User->setInviteCode($Lead->getGroup()->getCode());
+                    $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
 
                     $em = $this->getDoctrine()->getManager();
                     $User->setPassword(
@@ -124,8 +130,8 @@ class NewController extends Controller
     }
 
     /**
-     * @param $User
-     * @param $query
+     * @param User $User
+     * @param \Symfony\Component\HttpFoundation\ParameterBag $query
      *
      * @return User
      */

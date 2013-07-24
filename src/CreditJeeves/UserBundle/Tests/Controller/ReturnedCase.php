@@ -5,25 +5,12 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
 class ReturnedCase extends BaseTestCase
 {
-    protected $fixtures = array(
-        '001_cj_account_group.yml',
-        '002_cj_admin_account.yml',
-        '003_cj_dealer_account.yml',
-        '004_cj_applicant.yml',
-        '005_cj_lead.yml',
-        '006_cj_applicant_report.yml',
-        '007_cj_applicant_score.yml',
-        '010_cj_affiliate.yml',
-        '013_cj_holding_account.yml',
-    );
-
-
     /**
      * @test
      */
     public function userRemoveData()
     {
-        $this->load($this->fixtures, true);
+        $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('emilio@example.com', 'pass');
         $this->page->clickLink('tabs.settings');
@@ -45,10 +32,9 @@ class ReturnedCase extends BaseTestCase
     public function userReturned()
     {
         $this->login('emilio@example.com', 'pass');
-//        echo $this->page->getContent();exit;
         $this->assertNotNull($form = $this->page->find('css', '#id_returned_form'));
         $form->pressButton('common.get.score');
-        $this->assertCount(7, $this->page->findAll('css', '.error_list li'));
+        $this->assertCount(6, $this->page->findAll('css', '.error_list li'));
         $this->fillForm(
             $form,
             array(
@@ -60,7 +46,7 @@ class ReturnedCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadreturnedtype_user_zip' => '33039',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_phone' => '7188491319',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_day' => '19',
-                'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_month' => 'Feb',
+                'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_month' => '02',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_date_of_birth_year' => '1957',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn1' => '666',
                 'creditjeeves_applicantbundle_leadreturnedtype_user_ssn_ssn2' => '81',

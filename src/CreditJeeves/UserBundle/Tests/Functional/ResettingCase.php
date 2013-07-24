@@ -5,21 +5,6 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
 class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
 {
-    protected $fixtures = array(
-        '001_cj_account_group.yml',
-        '002_cj_admin_account.yml',
-        '003_cj_dealer_account.yml',
-        '004_cj_applicant.yml',
-        '005_cj_lead.yml',
-        '006_cj_applicant_report.yml',
-        '007_cj_applicant_score.yml',
-        '010_cj_affiliate.yml',
-        '013_cj_holding_account.yml',
-        '019_atb_simulation.yml',
-        '020_email.yml',
-        '021_email_translations.yml',
-    );
-
     /**
      * @test
      */
@@ -28,7 +13,7 @@ class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->setDefaultSession('symfony');
         $this->setDefaultSession('goutte');
 //        $this->setDefaultSession('selenium2');
-        $this->load($this->fixtures, true);
+        $this->load(true);
         $this->session->visit($this->getUrl() . 'login');
 
         $this->page->clickLink('login.resetting.link');
@@ -50,7 +35,9 @@ class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function checkEmail()
     {
-        $this->setDefaultSession('goutte');
+        $this->markTestIncomplete('Depends on FOS user bundle fixes');
+        //$this->setDefaultSession('goutte');
+         $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
 
         $this->assertNotNull($links = $this->page->findAll('css', 'a'));
@@ -80,7 +67,7 @@ class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function fillPassword()
     {
-//        $this->markTestIncomplete('FINISH');
+        $this->markTestIncomplete('FINISH');
         $form = $this->page->find('css', '#fos_user_resetting_form');
         $this->assertNotNull($form);
 

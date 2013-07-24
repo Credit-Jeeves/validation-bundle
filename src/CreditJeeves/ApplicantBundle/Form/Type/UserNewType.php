@@ -1,7 +1,6 @@
 <?php
 namespace CreditJeeves\ApplicantBundle\Form\Type;
 
-use CreditJeeves\ApplicantBundle\Form\DataTransformer\AddressesToAddressTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

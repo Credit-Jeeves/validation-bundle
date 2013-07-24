@@ -18,26 +18,22 @@ class Version20130702012807 extends AbstractMigration
             "Migration can only be executed safely on 'mysql'."
         );
         
-        $this->addSql(
-            "CREATE TABLE rj_property (id BIGINT AUTO_INCREMENT NOT NULL,
-                user_id BIGINT NOT NULL,
-                address1 VARCHAR(255) NOT NULL,
-                address2 VARCHAR(255) DEFAULT NULL,
-                city VARCHAR(255) NOT NULL,
-                state VARCHAR(7) DEFAULT NULL,
-                zip VARCHAR(15) NOT NULL,
-                country VARCHAR(3) DEFAULT 'USA',
-                created_at DATETIME NOT NULL,
-                updated_at DATETIME NOT NULL,
-                INDEX IDX_274F987CA76ED395 (user_id),
-                PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
-        );
-        $this->addSql(
-            "ALTER TABLE rj_property
-                ADD CONSTRAINT FK_274F987CA76ED395
-                FOREIGN KEY (user_id)
-                REFERENCES cj_user (id)"
-        );
+//         $this->addSql(
+//             "CREATE TABLE rj_property (
+//                 id BIGINT AUTO_INCREMENT NOT NULL,
+//                 country VARCHAR(3) NOT NULL,
+//                 area VARCHAR(255) DEFAULT NULL,
+//                 city VARCHAR(255) NOT NULL,
+//                 district VARCHAR(255) DEFAULT NULL,
+//                 street_address VARCHAR(255) NOT NULL,
+//                 street_number VARCHAR(255) DEFAULT NULL,
+//                 zip VARCHAR(15) NOT NULL,
+//                 jb FLOAT DEFAULT NULL,
+//                 kb FLOAT DEFAULT NULL,
+//                 created_at DATETIME NOT NULL,
+//                 updated_at DATETIME NOT NULL,
+//                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
+//         );
         $this->addSql(
             "CREATE INDEX log_class_lookup_idx ON ext_log_entries (object_class)"
         );
@@ -577,9 +573,9 @@ class Version20130702012807 extends AbstractMigration
             "Migration can only be executed safely on 'mysql'."
         );
         
-        $this->addSql(
-            "DROP TABLE rj_property"
-        );
+//         $this->addSql(
+//             "DROP TABLE rj_property"
+//         );
         $this->addSql(
             "ALTER TABLE atb_simulation
                 DROP

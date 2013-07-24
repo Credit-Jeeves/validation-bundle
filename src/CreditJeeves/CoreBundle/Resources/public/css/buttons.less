@@ -1,0 +1,96 @@
+/* colors */
+  @color-font: #333;
+  @color-border: #ccc;
+  @color-delta: #222;
+  @grey: #e6e6e6;
+  @green: #57a957;
+  @sky: #339bb9;
+  @red: #c43c35;
+  @blue: #0064cd;
+  @orange: #ff6600;
+  
+/* Base grey button */
+.btn {
+  cursor: pointer;
+  display: inline-block;
+  padding: 5px 14px 5px;
+  line-height: normal;
+  .font;
+  .background;
+  .border;
+  .rounded-corners;
+  .shadow;
+  .transition;
+  font-family: AstoriaMedium;
+  color: white;
+}
+.btn:hover {
+  background-position: 0 -30px;
+  text-decoration: none;
+}
+/** Colored **/
+.green {
+  .background(@green);
+  .border(@green);
+}
+.sky {
+  .background(@sky);
+  .border(@sky);
+}
+.red {
+  .background(@red);
+  .border(@red);
+  color: black;
+}
+
+.blue {
+  .background(@blue);
+  .border(@blue);
+}
+
+.orange {
+  .background(@orange);
+  .border(@orange);
+}
+
+/* Modules */
+.font(@font-color: @color-font, @font-size: 13px) {
+  color: @font-color;
+  font-size: @font-size;
+  text-align: center;
+}
+.background (@color: @grey, @delta: @color-delta){
+  @color-dark: @color;
+  @color-light: @color + @color-delta;
+  background-color: @color-dark;
+  background-repeat: repeat-x;
+  background-image: -webkit-gradient(linear, @color-light, @color-light 25%, @color-dark);
+  background-image: -webkit-linear-gradient(@color-light, @color-light 25%, @color-dark);
+  background-image: -moz-linear-gradient(top, @color-light, @color-light 25%, @color-dark);
+  background-image: -ms-linear-gradient(@color-light, @color-light 25%, @color-dark);
+  background-image: -o-linear-gradient(@color-light, @color-light 25%, @color-dark);
+  background-image: linear-gradient(@color-light, @color-light 25%, @color-dark);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=@color-light, endColorstr=@color-dark, GradientType=0);
+}
+.border(@color: @color-border, @delta: @color-delta){
+  border-width: 1px;
+  border-style: solid;
+  border-color: @color !important;
+}
+.rounded-corners (@radius: 3px){
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius:@radius;
+}
+.shadow {
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.transition (@delay: 0.2s) {
+  -webkit-transition: @delay linear all;
+  -moz-transition: @delay linear all;
+  -ms-transition: @delay linear all;
+  -o-transition: @delay linear all;
+  transition: @delay linear all;
+}

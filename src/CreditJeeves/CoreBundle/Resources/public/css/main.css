@@ -109,7 +109,11 @@ h5 {
     font-size: 16px;
 }
 
-
+.select-entity {
+    position: absolute;
+    right: 20px;
+    top: 105px;
+}
 
 /** Main content part **/
 .body {
@@ -193,6 +197,10 @@ h5 {
 
 .margin-none {
     margin: 0;
+}
+
+.margin-left-none {
+    margin-left: 0;
 }
 
 .border {

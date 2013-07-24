@@ -20,7 +20,10 @@ class LeadNewType extends AbstractType
         $groupTransformer = new CodeToGroupTransformer($entityManager);
         $builder->add(
             'user',
-            new UserNewType()
+            new UserNewType(),
+            array(
+                'error_bubbling' => true,
+            )
         );
         $builder->add(
             $builder->create(

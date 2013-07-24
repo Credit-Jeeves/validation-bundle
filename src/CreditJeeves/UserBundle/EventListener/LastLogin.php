@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use FOS\UserBundle\FOSUserEvents;
 use Symfony\Component\Security\Http\SecurityEvents;
+use Doctrine\ORM\EntityManager;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -23,16 +24,23 @@ class LastLogin implements EventSubscriberInterface
 {
     private $mailer;
 
+    /*
+    * object EntityManager
+    */
+    private $em;
+
     /**
      * @DI\InjectParams({
-     *     "mailer" = @DI\Inject("creditjeeves.mailer")
+     *      "em"     = @DI\Inject("doctrine.orm.entity_manager"),
+     *      "mailer" = @DI\Inject("creditjeeves.mailer")
      * })
      *
      * {@inheritdoc}
      */
-    public function __construct($mailer = null)
+    public function __construct(EntityManager $em, $mailer = null)
     {
         $this->mailer = $mailer;
+        $this->em = $em;
     }
 
     public static function getSubscribedEvents()
@@ -44,12 +52,17 @@ class LastLogin implements EventSubscriberInterface
 
     public function onSecurityInteractiveLogin(InteractiveLoginEvent $event)
     {
+
         $user = $event->getAuthenticationToken()->getUser();
         if ($user instanceof UserInterface) {
             $lastLogin = $user->getLastLogin();
-            if (empty($lastLogin)) {
+            if (empty($lastLogin) & 'applicant' == $user->getType()) {
                 $this->mailer->sendWelcomeEmailToApplicant($user);
             }
+
+            $user->setLastLogin(new \DateTime());
+            $this->em->persist($user);
+            $this->em->flush();
         }
     }
 }

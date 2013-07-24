@@ -1,0 +1,113 @@
+.property-list {
+    padding: 15px;
+}
+
+.border {
+    border: 3px #A3CEF7 solid;
+    box-shadow: 0 0 2px 2px #A3CEF7;
+}
+
+.property-button-add {
+    float: right;
+}
+
+table {
+    border-collapse: collapse;
+    
+}
+
+table tbody,
+table tbody tr td {
+    border: 1px #c8c8c8 solid;
+}
+
+table tbody tr td {
+    padding: 10px;
+}
+
+table.properties-table th {
+    text-align: left;
+    padding: 10px;
+    border: 1px #c8c8c8 solid;
+}
+
+.properties-th {
+    background-color: #f3f3f3;
+}
+
+.properties-table-block {
+    margin-top: 15px;
+}
+
+/* Units block */
+.units-wrapper {
+    width: 550px;
+    margin: 0 auto;
+    position: absolute;
+    top: 250px;
+}
+.units-block {
+   background-color: #ffffff;
+   width: 550px;
+   position: absolute;
+   left: 180px;
+   
+}
+
+.units-background {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #000000;
+    opacity: 0.3;
+}
+
+.units-item {
+    float: left;
+    width: 145px;
+    margin: 0 15px 15px;
+    border: 1px solid #c8c8c8;
+    padding: 1px;
+}
+
+.units-item input[type="text"] {
+    height: 20px;
+}
+
+.unit-delete {
+    margin: 0;
+}
+
+.unit-input {
+    width: 80px;
+}
+
+.units-footer {
+    margin-top: 15px;
+    padding-left: 110px;
+}
+
+.units-total {
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+.units-add {
+    font-size: 16px;
+    padding: 0;
+}
+
+.unit-add-text {
+    margin: 4px 5px 0 0;
+}
+
+.unit-add-btn {
+    margin-top: 1px;
+}
+
+.units-add input[type="text"] {
+    margin-top: 1px;
+    height: 20px;
+}

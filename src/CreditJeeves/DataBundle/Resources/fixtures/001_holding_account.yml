@@ -1,0 +1,26 @@
+model: CreditJeeves\DataBundle\Entity\Holding
+fixtures:
+# CreditJeeves holdings
+    cjHolding_1:
+        name: Darryl's Holding
+    cjHolding_2:
+        name: Moss Holding
+    cjHolding_3:
+        name: Test Holding
+# RentJeeves Holdings
+    rjHolding_1:
+        name:           Rent Holding
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    rjHolding_2:
+        name:           Estate Holding
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    rjHolding_3:
+        name:           Test RentHolding 2
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    rjHolding_4:
+        name:           Test Rent Holding 3
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}{{ 'project_name'|trans }}{% endblock %}</title>
+    
+    <link href="{{ asset('bundles/core/css/main.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/linkselect.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/buttons.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/zebra.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/lightbox.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/form.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/experian/css/pidkiq-questions.css') }}" rel="stylesheet" type="text/css" />
+    <script src="{{ asset('bundles/core/js/jquery-1.9.1.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.placeholder.min.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.linkselect.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.ssn.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.overlay.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/jquery.overlay-ext.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/checkbox.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/zebra.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/lightbox.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/ReLoader.js') }}" type="text/javascript"></script>
+    <script type='text/javascript' src='http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js'></script>
+    <script src="{{ asset('bundles/core/js/knockout.mapping-latest.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/core/js/common.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+    
+    <link href="{{ asset('bundles/core/css/cj-logos.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    {% block stylesheets %}{% endblock %}
+    {% block google_api %}
+        {{ include('RjComponentBundle:Google:js.html.twig') }}
+    {% endblock %}
+    <!--[if gte IE 9]>
+        <style type="text/css">
+            .gradient {
+                filter: none;
+            }
+        </style>
+    <![endif]-->
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/core/css/main-ie-8.css') }}" />
+    <![endif]-->
+</head>
+    <div>
+        <div class="content border">{% block content %}{% endblock %}</div>
+    </div>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,21 @@
+model: CreditJeeves\DataBundle\Entity\ReportPrequal
+fixtures:
+  cjApplicantReportPrequal_1:
+    user: cjApplicant_1
+    created_at: '-5 days' 
+    raw_data: '%file:data/experian/netConnect/Response.arf%'
+
+  cjApplicantReportPrequal_2:
+    user: cjApplicant_2
+    created_at: '-5 days'
+    raw_data: '%file:data/experian/netConnect/Response2.arf%'
+
+  cjApplicantReportPrequal_3:
+    user: cjApplicant_3
+    created_at: '-5 days'
+    raw_data: '%file:data/experian/netConnect/Response2.arf%'
+
+  cjApplicantReportPrequal_5:
+    user: cjApplicant_5
+    created_at: '-1 days'
+    raw_data: '%file:data/experian/netConnect/emilio.arf%'

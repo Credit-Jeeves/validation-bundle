@@ -2,6 +2,7 @@
 namespace CreditJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\UserType;
+
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -44,6 +45,7 @@ class LandlordAdmin extends Admin
     {
         $listMapper
             ->add('full_name')
+            ->add('holding')
             ->add('email')
             ->add('is_active')
             ->add('is_super_admin')
@@ -58,6 +60,9 @@ class LandlordAdmin extends Admin
                         'observe' => array(
                             'template' => 'AdminBundle:CRUD:list__landlord_observe.html.twig'
                         ),
+                        'groups' => array(
+                            'template' => 'AdminBundle:CRUD:list__landlord_groups.html.twig'
+                        )
                     )
                 )
             );
@@ -65,10 +70,26 @@ class LandlordAdmin extends Admin
 
     public function configureFormFields(FormMapper $formMapper)
     {
+        $entity = $this->getSubject();
+        $query = $this->getModelManager()->createQuery('DataBundle:Group', 'g');
+        $query->innerJoin('g.holding', 'h');
+        $query->where('h.id = :holding_id');
+        $query->orderBy('g.name');
+        $query->setParameter('holding_id', $entity->getHoldingId());
         $formMapper
             ->with('General')
+                ->add(
+                    'holding',
+                    'sonata_type_model'
+                )
                 ->add('first_name')
-                ->add('middle_initial', null, array('required' => false))
+                ->add(
+                    'middle_initial',
+                    null,
+                    array(
+                        'required' => false
+                    )
+                )
                 ->add('last_name')
                 ->add('email')
                 ->add('password', 'hidden', array('required' => false))
@@ -76,6 +97,18 @@ class LandlordAdmin extends Admin
                 ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
                 ->add('is_active', null, array('required' => false))
                 ->add('is_super_admin', null, array('required' => false))
+            ->end()
+            ->with('Permissions')
+                ->add(
+                    'agent_groups',
+                    'sonata_type_model',
+                    array(
+                       'required' => false,
+                       'expanded' => true,
+                       'multiple' => true,
+                       'query' => $query,
+                    )
+                )
             ->end();
     }
 

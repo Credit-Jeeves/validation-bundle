@@ -1,0 +1,95 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+
+{% block marketingHeader %}
+    {{ include('RjComponentBundle::marketingHeader.html.twig') }}
+{% endblock %}
+
+{% block content %}
+<form action="#" name="searchRentalsForm" id="formSearch">
+    <div class="box type1">
+      <h3 class="clearfix">
+        <span>Property information</span>
+        <small><b>*</b>Required</small>
+      </h3>
+      <div class="col-box clearfix">
+        <div class="col searsh-box">
+          <label for="searsh-field">Showing rentals available near:</label>
+          <div class="clearfix">
+            <input type="text" id="property-search" name="searsh-field" value="{{ address }}">
+            <a href="#" id="delete" class="pie-el">x</a>
+            <button type="button" id="search-submit" class="pie-el">Search</button>
+          </div>
+          <div id="map-canvas"></div>
+        </div>
+      </div>
+    </div>
+</form>
+<form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
+    <div class="box type1">
+      <div class="col-box clearfix">
+        <div class="col">
+          <h4 class="active">We didn’t find a match yet – let your landlord know!</h4>
+          {{ form_errors(form.invite) }}
+          <div class="form-row clearfix">
+            {{ form_label(form.invite.unit) }}
+            <div class="fields-box">
+              {{ form_widget(form.invite.unit, { 'attr': {'class': 'half-width', 'placeholder':"e.g. 3А" } }) }}
+              {{ form_errors(form.invite.unit) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.invite.first_name) }}
+            <div class="fields-box">
+              {{ form_widget(form.invite.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first" } }) }}
+              {{ form_widget(form.invite.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+              {{ form_errors(form.invite.first_name) }}
+              {{ form_errors(form.invite.last_name) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.invite.phone) }}
+            <div class="fields-box">
+                {{ form_widget(form.invite.phone) }}
+                {{ form_errors(form.invite.phone) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.invite.email) }}
+            <div class="fields-box">
+                {{ form_widget(form.invite.email) }}
+                {{ form_errors(form.invite.email) }}
+            </div>
+          </div>
+          
+          <div class="tooltip-box with-header pie-el">
+            <h4>Keep paying your rent for now – we’ll contact your landlord.</h4>
+            <p>
+              We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form.tenant}) }}
+    {{ form_rest(form) }}
+    <div class="buttons-box clearfix">
+      <div class="buttons left">
+        <button type="submit" class="button"><span>Continue</span></button>
+      </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block javascripts %}
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
+    {% javascripts  '@RjPublicBundle/Resources/public/js/invite.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

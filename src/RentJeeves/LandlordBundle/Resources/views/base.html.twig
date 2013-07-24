@@ -1,4 +1,4 @@
-{% extends "CoreBundle::base.html.twig" %}
+{% extends "CoreBundle::rj_base.html.twig" %}
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
@@ -15,27 +15,39 @@
     <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/ad-creditcards.css') }}" rel="stylesheet" type="text/css" />
-    
+    <link href="{{ asset('bundles/core/css/rj-logos.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/google-maps.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/check.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/checkout/css/checkout.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/landlord.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/core/css/buttons.less') }}" rel="stylesheet/less" type="text/css" />
+    <script src="{{ asset('bundles/core/js/less.min.js') }}"></script>
 {% endblock %}
 
 {% block google_api %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-        google.load("visualization", "1", {packages:["corechart", "gauge"]});
-    </script>
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
+{% endblock %}
+
+{% block select %}
+    {% if nGroups is defined and nGroups > 1 %}
+        {{ render(controller('ComponentBundle:Groups:index')) }}
+    {% endif %}
 {% endblock %}
 
 {% block tabs %}
-    <div class="top-nav">
-    {{ knp_menu_render('ApplicantBundle:Builder:mainMenu', { 'template': 'ApplicantBundle:Menu:applicant_tabs.html.twig' }) }}
+        <div class="top-nav">
+    {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': 'CoreBundle:Menu:user_tabs.html.twig' }) }}
     </div>
+    
 {% endblock %}
 
 {% block footer %}
     {{ render(controller('ComponentBundle:Footer:index')) }}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('bundles/component/js/groups.js') }}"></script>
 {% endblock %}
 

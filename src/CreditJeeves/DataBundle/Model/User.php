@@ -8,9 +8,11 @@ use CreditJeeves\DataBundle\Enum\UserCulture;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\MappedSuperclass
+ * @UniqueEntity(fields={"email"}, groups={"invite"})
  */
 abstract class User extends BaseUser
 {
@@ -28,7 +30,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      * @Assert\Length(
@@ -39,7 +42,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      */
@@ -57,7 +61,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      * @Assert\Length(
@@ -68,7 +73,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_profile",
      *         "buy_report",
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      */
@@ -78,12 +84,14 @@ abstract class User extends BaseUser
      * @Assert\NotBlank(
      *     message="error.user.last_name.empty",
      *     groups={
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      * @Assert\Email(
      *     groups={
-     *         "user_admin"
+     *         "user_admin",
+     *         "invite",
      *     }
      * )
      */
@@ -116,14 +124,7 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\Column(type="string", length=31, nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.unit.empty",
-     *     groups={
-     *         "user_address"
-     *     }
-     * )
      * @Assert\Length(
-     *     min=1,
      *     max=31,
      *     groups={
      *         "user_address"
@@ -457,6 +458,11 @@ abstract class User extends BaseUser
      */
     protected $addresses;
 
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="user")
+     */
+    protected $group_affilate;
+
     public function __construct()
     {
         parent::__construct();
@@ -472,6 +478,29 @@ abstract class User extends BaseUser
         $this->tradelines = new ArrayCollection();
         $this->addresses = new ArrayCollection();
         $this->created_at = new \DateTime();
+    }
+
+    public function getRoles()
+    {
+        switch ($this->getType()) {
+            case UserType::APPLICANT:
+                return array('ROLE_USER');
+            case UserType::DEALER:
+                return array('ROLE_DEALER');
+            case UserType::ADMIN:
+                return array(
+                    'ROLE_USER',
+                    'ROLE_DEALER',
+                    'ROLE_ADMIN',
+                    'ROLE_TENANT',
+                    'ROLE_LANDLORD'
+                );
+            case UserType::TETNANT:
+                return array('ROLE_TENANT');
+            case UserType::LANDLORD:
+                return array('ROLE_LANDLORD');
+        }
+        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
 
     /**
@@ -568,13 +597,11 @@ abstract class User extends BaseUser
     /**
      * Set street_address1
      *
-     * @deprecated will be removed in 2.2
      * @param encrypt $streetAddress1
      * @return User
      */
     public function setStreetAddress1($streetAddress1)
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->street_address1 = $streetAddress1;
 
         return $this;
@@ -583,25 +610,21 @@ abstract class User extends BaseUser
     /**
      * Get street_address1
      *
-     * @deprecated will be removed in 2.2
      * @return encrypt
      */
     public function getStreetAddress1()
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->street_address1;
     }
 
     /**
      * Set street_address2
      *
-     * @deprecated will be removed in 2.2
      * @param encrypt $streetAddress2
      * @return User
      */
     public function setStreetAddress2($streetAddress2)
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->street_address2 = $streetAddress2;
 
         return $this;
@@ -610,25 +633,21 @@ abstract class User extends BaseUser
     /**
      * Get street_address2
      *
-     * @deprecated will be removed in 2.2
      * @return encrypt
      */
     public function getStreetAddress2()
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->street_address2;
     }
 
     /**
      * Set unit_no
      *
-     * @deprecated will be removed in 2.2
      * @param string $unitNo
      * @return User
      */
     public function setUnitNo($unitNo)
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->unit_no = $unitNo;
 
         return $this;
@@ -637,25 +656,21 @@ abstract class User extends BaseUser
     /**
      * Get unit_no
      *
-     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getUnitNo()
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->unit_no;
     }
 
     /**
      * Set city
      *
-     * @deprecated will be removed in 2.2
      * @param string $city
      * @return User
      */
     public function setCity($city)
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->city = $city;
 
         return $this;
@@ -664,25 +679,21 @@ abstract class User extends BaseUser
     /**
      * Get city
      *
-     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getCity()
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->city;
     }
 
     /**
      * Set state
      *
-     * @deprecated will be removed in 2.2
      * @param string $state
      * @return User
      */
     public function setState($state)
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->state = $state;
 
         return $this;
@@ -691,25 +702,21 @@ abstract class User extends BaseUser
     /**
      * Get state
      *
-     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getState()
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->state;
     }
 
     /**
      * Set zip
      *
-     * @deprecated will be removed in 2.2
      * @param string $zip
      * @return User
      */
     public function setZip($zip)
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         $this->zip = $zip;
 
         return $this;
@@ -718,12 +725,10 @@ abstract class User extends BaseUser
     /**
      * Get zip
      *
-     * @deprecated will be removed in 2.2
      * @return string
      */
     public function getZip()
     {
-        trigger_error('will be removed in 2.2', E_USER_DEPRECATED);
         return $this->zip;
     }
 
@@ -1484,5 +1489,44 @@ abstract class User extends BaseUser
     public function getAddresses()
     {
         return $this->addresses;
+    }
+
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+        return $this;
+    }
+
+    /**
+     * Add group_affilate
+     *
+     * @param \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
+     * @return User
+     */
+    public function addGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
+    {
+        $this->group_affilate[] = $groupAffilate;
+    
+        return $this;
+    }
+
+    /**
+     * Remove group_affilate
+     *
+     * @param \CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate
+     */
+    public function removeGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
+    {
+        $this->group_affilate->removeElement($groupAffilate);
+    }
+
+    /**
+     * Get group_affilate
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getGroupAffilate()
+    {
+        return $this->group_affilate;
     }
 }

@@ -8,27 +8,13 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase;
  */
 class InviteCase extends BaseTestCase
 {
-    protected $fixtures = array(
-        '001_cj_account_group.yml',
-        '002_cj_admin_account.yml',
-        '003_cj_dealer_account.yml',
-        '004_cj_applicant.yml',
-        '005_cj_lead.yml',
-        '006_cj_applicant_report.yml',
-        '007_cj_applicant_score.yml',
-        '010_cj_affiliate.yml',
-        '013_cj_holding_account.yml',
-        '020_email.yml',
-        '021_email_translations.yml',
-    );
-
     /**
      * @test
      */
     public function userInvite()
     {
         $this->setDefaultSession('symfony');
-        $this->load($this->fixtures, true);
+        $this->load(true);
         $this->session->visit($this->getUrl() . 'invite/TESTCODE');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->fillForm(
@@ -49,7 +35,7 @@ class InviteCase extends BaseTestCase
             array(
                 'creditjeeves_applicantbundle_newpasswordtype_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_newpasswordtype_password_Retype' => 'pass',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_day' => '1', //'01',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_day' => '01', //'01',
                 'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_month' => 'Jan', //'01',
                 'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_year' => '1937',
             )
@@ -64,7 +50,7 @@ class InviteCase extends BaseTestCase
      */
     public function userInviteFull()
     {
-        $this->load($this->fixtures, false);
+        $this->load(false);
         $this->session->visit($this->getUrl() . 'invite/TESTFULL');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->assertNotNull($submit = $form->findButton('common.i_agree'));
@@ -87,7 +73,7 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_addresses_0_state' => 'AL',
                 'creditjeeves_applicantbundle_leadnewtype_addresses_0_zip' => '34084',
                 'creditjeeves_applicantbundle_usernewtype_phone' => '8189976080',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '1', //'01',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '01', //'01',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan', // '01',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940',
                 'creditjeeves_applicantbundle_usernewtype_tos' => true,

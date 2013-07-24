@@ -73,7 +73,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "325dea10964b1773e8b907a5e15da466d99864b7"
+                    "reference": "1a2c3f23e4cea3a8b0706a13cb4f8bd4287d21ca"
                 }
             }
         },
@@ -112,6 +112,10 @@
         {
             "type": "git",
             "url": "https://github.com/66Ton99/migrations"
+        },
+        {
+            "type": "git",
+            "url":"git@github.com:Remixjobs/RjEmailBundle.git"
         }
     ],
     "require": {

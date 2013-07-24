@@ -1,6 +1,6 @@
 assetic:
     debug:          %kernel.debug%
     use_controller: false
-    bundles:        [ ]
+    bundles:        [RjPublicBundle]
     filters:
         cssrewrite: ~

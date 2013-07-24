@@ -11,23 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Holding extends BaseHolding
 {
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function preUpdate()
-    {
-        $this->updated_at = new \DateTime();
-    }
-    
     public function __toString()
     {
         return $this->getName() ?: '';

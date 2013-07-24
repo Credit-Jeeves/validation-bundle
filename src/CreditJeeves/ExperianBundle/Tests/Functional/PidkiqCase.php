@@ -95,9 +95,6 @@ class PidkiqCase extends BaseTestCase
             'EmailAddress' => '',
         )
     );
-    protected $fixture = array(
-        '011_cj_settings.yml',
-    );
 
     /**
      * Tests Pidkiq->getResponseOnUserData()

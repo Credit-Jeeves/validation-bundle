@@ -1,0 +1,205 @@
+model: Rj\EmailBundle\Entity\EmailTemplateTranslation
+fixtures:
+# invite.html email
+  translation_11:
+    translatable: email_1
+    locale: %locale%
+    property: subject
+    value: Welcome to Credit Jeeves
+  translation_12:
+    translatable: email_1
+    locale: %locale%
+    property: body
+    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Welcome to Credit Jeeves{% endblock %}'
+# welcome.html email
+  translation_21:
+    translatable: email_2
+    locale: %locale%
+    property: subject
+    value: Welcome to Credit Jeeves
+  translation_22:
+    translatable: email_2
+    locale: %locale%
+    property: body
+    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Welcome to CreditJeeves{% endblock %}{% block email %}<p>You have taken the first step towards your new car.</p><p>To see your customized action plan, sign in at <a href="http://my.creditjeeves.com/">cj</a> anytime.</p><strong>Get started today:</strong><ul>  <li>Understand<a href="http://www.creditjeeves.com/educate/understand-your-credit-score">how your credit score is determined</a></li><li>Review your <a href="http://cj/_dev.php/?">action plan</a> and decide what step you will take first.</li><li>Click on the "learn more" link next to that step to find out what to do.</li></ul><i>Trouble answering the verification questions?</i><p>It is a good idea to get a <a href="https://www.annualcreditreport.com/"> free copy of your credit report </a> to see if contains something you do not recognize. You can also contact <a href="mailto:help@creditjeeves.com">help@creditjeeves.com</a> if your account becomes locked. </p><i>We want to hear from you!</i><p>Please <a href="http://creditjeeves.uservoice.com/">send us your feedback</a> on how we can make the product better for you.</p>{% endblock %}'
+
+# score.html email
+  translation_31:
+    translatable: email_3
+    locale: %locale%
+    property: subject
+    value: Your Credit Score has Changed - Log Into Credit Jeeves
+  translation_32:
+    translatable: email_3
+    locale: %locale%
+    property: body
+    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
+
+# target.html email
+  translation_41:
+    translatable: email_4
+    locale: %locale%
+    property: subject
+    value: Your New Car Awaits - Log into Credit Jeeves
+  translation_42:
+    translatable: email_4
+    locale: %locale%
+    property: body
+    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
+
+# finished.html email
+  translation_51:
+    translatable: email_5
+    locale: %locale%
+    property: subject
+    value: One of your leads has reached the Target Score
+  translation_52:
+    translatable: email_5
+    locale: %locale%
+    property: body
+    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
+
+# password.html email
+  translation_61:
+    translatable: email_6
+    locale: %locale%
+    property: subject
+    value: One of your leads has reached the Target Score
+  translation_62:
+    translatable: email_6
+    locale: %locale%
+    property: body
+    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
+
+# example.html email
+  translation_71:
+    translatable: email_7
+    locale: %locale%
+    property: subject
+    value: Example email with all avaliable fields
+  translation_72:
+    translatable: email_7
+    locale: %locale%
+    property: body
+    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Heading 1{% endblock %}{% block h2 %}Heading 2{% endblock %}{% block h3 %}Heading 3{% endblock %}{% block h4 %}Heading 4{% endblock %}{% block email %}{% set button = {"text": "Hmm, we could add more than one button in the email body!","value": "Test","link": "#"} %}{% include "CoreBundle:Mailer:button.html.twig" with button %}<p>Lorem ipsum...</p>{% set button = {"text": "Some text above button", "value": "Click It", "link": "#"} %}{% include "CoreBundle:Mailer:button.html.twig" with button %}{% endblock %}'
+
+# resetting.html email
+  translation_81:
+    translatable: email_8
+    locale: %locale%
+    property: subject
+    value: Reset Password
+  translation_82:
+    translatable: email_8
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
+      {% block email %}To reset your password - please visit <a href="{{ confirmationUrl }}">{{ confirmationUrl }}</a>{% endblock %}
+
+# check.html email
+  translation_91:
+    translatable: email_9
+    locale: %locale%
+    property: subject
+    value: Check Email
+  translation_92:
+    translatable: email_9
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
+      {% block email %}Confirm - please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a>{% endblock %}
+
+# check.html email
+  translation_101:
+    translatable: email_10
+    locale: %locale%
+    property: subject
+    value: Receipt from Credit Jeeves
+  translation_102:
+    translatable: email_10
+    locale: %locale%
+    property: body
+    value: |
+      <div mc:edit="std_content00">
+      <h1 class="h1">Receipt from Credit Jeeves</h1>
+      Thank you for purchasing your credit report through Credit Jeeves.
+      Your payment was processed successfully and will appear on your next statement under CREDITJEEVE.
+      Here is your receipt:<br />
+      &nbsp;<br />
+      <hr />
+      Payment Date & Time:&nbsp;{{ date }}<br />
+      Payment Amount: {{ amout }}<br />
+      Reference Number: {{ number }}<br />
+      <br />
+      <hr />
+      Remember, we're here to help,<br /><strong>The Credit Jeeves Team</strong>
+      </div>
+
+# check.html email
+  translation_120:
+    translatable: email_11
+    locale: %locale%
+    property: subject
+    value: Check Email
+  translation_121:
+    translatable: email_11
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
+      {% block email %}Confirm - please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a>{% endblock %}
+
+# rjLandLordInvite.html email
+  translation_122:
+    translatable: email_12
+    locale: %locale%
+    property: subject
+    value: Invite
+  translation_123:
+    translatable: email_12
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Receive automatic rent payments through RentTrack {% endblock %}
+      {% block email %}
+        {% if nameLandlord %}
+            Hi {{ nameLandlord }}! <br />  <br />
+        {% else %}
+            Hello!  <br /> <br /> 
+        {% endif %}
+        Your tenant, {{ fullNameTenant }}, would like to use RentTrack to pay rent on your property at
+        {{ address }}. RentTrack allows {{ nameTenant }} to build credit history by
+        reporting on-time payments to credit bureaus. <br /> <br />
+
+        As a landlord, you benefit because RentTrack facilitates easy payments through secure electronic
+        check transfers and credit cords - payments are deposited faster and directly to your account. 
+        Reminders are sent automatically to your tenants before rent is due and late notices ore sent
+        to you immediately. If  you have  multiple  properties, you can see the status  of  your  payments
+        all in one place <br /> <br />
+
+        Ready to get pay? <br /> <br />
+        <a href="{{ app.request.host }}"  style="
+                        border: none;
+                        padding: 2px 7px;
+                        text-align: left;
+                        color: white;
+                        font-size: 14px;
+                        text-shadow: 1px 1px 3px #636363;
+                        filter: dropshadow(color=#636363, offx=1, offy=1);
+                        cursor: pointer;
+                        background-color: #669900;
+                        -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff,endColorstr=#00ffffff)';
+                        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00ffffff, endColorstr=#00ffffff);
+                        zoom: 1;
+                        text-decoration: none;
+                        -moz-border-radius: 4px;
+                        -webkit-border-radius: 4px;
+                        border-radius: 4px;
+                ">Sign up</a> Still have some questions? <a href="#">Learn More</a>
+      {% endblock %}

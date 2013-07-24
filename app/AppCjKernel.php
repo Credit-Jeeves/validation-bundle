@@ -50,13 +50,18 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new RentJeeves\TenantBundle\TenantBundle(),
             new RentJeeves\LandlordBundle\LandlordBundle(),
+            new RentJeeves\DataBundle\RjDataBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
+            new RentJeeves\PublicBundle\RjPublicBundle(),
+            new RentJeeves\ComponentBundle\RjComponentBundle(),
         );
+
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             $bundles[] = new Khepin\YamlFixturesBundle\KhepinYamlFixturesBundle();
+            $bundles[] = new CreditJeeves\DevBundle\CreditJeevesDevBundle();
         }
         if (in_array($this->getEnvironment(), array('test'))) {
             $bundles[] = new Behat\MinkBundle\MinkBundle();

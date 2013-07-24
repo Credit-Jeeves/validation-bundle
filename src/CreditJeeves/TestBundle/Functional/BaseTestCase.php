@@ -25,7 +25,7 @@ abstract class BaseTestCase extends Base
      */
     protected $envPath = '/_test.php/';
     protected $timeout = 15000;
-    private static $isFixturesLoaded = false;
+    protected static $isFixturesLoaded = false;
 
     protected function getUrl()
     {
@@ -65,34 +65,28 @@ abstract class BaseTestCase extends Base
     /**
      * Load fixtures
      *
-     * @param array $list
      * @param bool $reload
      * @return void
      */
-    protected function load(array $list, $reload = false)
+    protected function load($reload = false)
     {
         if (self::$isFixturesLoaded && !$reload) {
             return;
         }
-        // echo "\nfixtures\n";
-        $requestArray = array();
+       
+        $khepin = static::getContainer()->get('khepin.yaml_loader');
 
-        foreach ($list as $file) {
-            $requestArray[] = 'list%5B%5D=' . $file;
+        if ($reload) {
+            $khepin->purgeDatabase('orm');
         }
-        $session = $this->getMink()->getSession('goutte');
 
+        $khepin->loadFixtures();
+        self::$isFixturesLoaded = true;
+        
+        $session = $this->getMink()->getSession('goutte');
         $baseUrl = 'http://' . static::getContainer()->getParameter('server_name') . '/test.php/sfPhpunit/';
 
-        $loadUrl = $baseUrl . 'load?' . implode('&', $requestArray);
-        $session->visit($loadUrl);
-
-        if ('Fixtures loaded successful.' != ($response = $session->getPage()->getText())) {
-            $this->fail('Fixtures load fail by: ' . $loadUrl . ' With response: ' . $response);
-        }
         $session->visit($baseUrl . 'cc');
-
-        self::$isFixturesLoaded = true;
     }
 
     /**

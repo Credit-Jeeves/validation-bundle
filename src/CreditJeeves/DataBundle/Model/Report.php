@@ -41,6 +41,7 @@ abstract class Report
      */
     protected $atbs;
 
+
     public function __construct()
     {
         $this->atbs = new ArrayCollection();
