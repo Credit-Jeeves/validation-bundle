@@ -11,7 +11,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "b31017cccd72c29f605a3b7176c1fa47bb986efa"
+                "reference": "1a2c3f23e4cea3a8b0706a13cb4f8bd4287d21ca"
             },
             "type": "library",
             "description": "Legacy code",
