@@ -42,6 +42,48 @@ fixtures:
         name:      1-f
         createdAt: '-60 days'
         updatedAt: '-8 days'
+    Unit_1_7:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-a
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_8:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-b
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_9:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-c
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_10:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-d
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_11:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-e
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
+    Unit_1_12:
+        property:  Property_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        name:      2-f
+        createdAt: '-60 days'
+        updatedAt: '-8 days'
 
     Unit_2_1:
         property:  Property_2

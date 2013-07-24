@@ -6,10 +6,14 @@ use CreditJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-class IndexController extends Controller
+class TenantController extends Controller
 {
     /**
-     * @Route("/", name="landlord_homepage")
+     * @Route(
+     *     "/tenant/new",
+     *     name="landlord_tenant_new",
+     *     options={"expose"=true}
+     * )
      * @Template()
      */
     public function indexAction()

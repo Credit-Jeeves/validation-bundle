@@ -33,6 +33,12 @@ function Properties() {
   });
   this.goToPage = function(page) {
     self.current(page);
+    if (page == 'First') {
+      self.current(1);
+    }
+    if (page == 'Last') {
+      self.current(Math.ceil(self.total()/limit));
+    }
     self.ajaxAction();
   };
 }
@@ -44,6 +50,7 @@ function Units() {
   this.add = ko.observable(1);
   this.property = ko.observable(0);
   this.show = ko.observable(false);
+  this.name = ko.observable();
   
   this.ajaxAction = function(nPropertyId) {
     self.property(nPropertyId);
@@ -53,8 +60,9 @@ function Units() {
       dataType: 'json',
       data: {'property_id': nPropertyId},
       success: function(response) {
-        self.aUnits(response);
-        self.total(response.length);
+        self.name(response.property);
+        self.aUnits(response.units);
+        self.total(response.units.length);
         self.show(true);
       }
     });

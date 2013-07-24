@@ -1,13 +1,15 @@
     <div id="units-block" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: show() ? 'visible' : 'hidden' }">
         <div class="units-background"></div>
         <div  class="units-block border">
+            <h2 data-bind="text: name"></h2>
             <div class="units-header">
                 <div class="floatleft units-total">
                     <span>Total Units:</span><span data-bind="text: total"></span>
                 </div>
                 <div class="floatright units-add">
-                    <span>Add Units:</span><input type="text" class="unit-input" data-bind="value: add">
-                    <div class="btn grey" data-bind="click: addUnits">Add</div>
+                    <div class="btn green floatright unit-add-btn" data-bind="click: addUnits">Add</div>
+                    <div class="floatright"><input type="text" class="unit-input" data-bind="value: add"></div>
+                    <div class="floatright unit-add-text">Add Units:</div>
                 </div>
             </div>
             <div class="clearboth"></div>
@@ -15,15 +17,15 @@
             <div class="units-edit">
                 <!-- ko foreach: { data: aUnits() } -->
                     <div class="units-item">
-                        <input type="text" class="unit-input floatleft" data-bind="value: name">
-                        <div class="btn grey floatleft unit-delete" data-bind="click: $root.removeUnit">x</div>
+                        <input type="text" class="unit-input floatleft" data-bind="value: name" placeholder="Unit No">
+                        <div class="btn red floatleft unit-delete" data-bind="click: $root.removeUnit">x</div>
                     </div>
                 <!-- /ko -->
             </div>
             <div class="clearboth"></div>
             <div class="units-footer">
                 <div class="btn orange floatleft" data-bind="click: saveUnits">Save Changes</div>
-                <div class="btn grey floatleft" data-bind="click: clearUnits">Cancel</div>
+                <div class="btn sky floatleft" data-bind="click: clearUnits">Cancel</div>
                 <div class="btn red floatleft" data-bind="click: deleteProperty">Delete Property</div>
             </div>
         </div>
@@ -72,7 +74,7 @@
                     <td data-bind="text: area"></td>
                     <td data-bind="text: country"></td>
                     <td data-bind="text: units"></td>
-                    <td><div class="btn green property-edit" data-bind="click: $root.editUnits">Edit</div></td>
+                    <td><div class="btn green property-edit" data-bind="click: $root.editUnits">Manage Units</div></td>
                 </tr>
                 <!-- /ko -->
                 </tbody>

@@ -6,6 +6,7 @@ fixtures:
         group:    RentGroup_1
         property: Property_1
         unit:     Unit_1_1
+        rent:     1500
         status:   pending
         createdAt: '-50 days'
         updatedAt: '-50 days'
@@ -15,9 +16,11 @@ fixtures:
         group:    RentGroup_1
         property: Property_1
         unit:     Unit_1_2
+        rent:     1500
         status:   approved
+        paid_to:  '60 days'
         startAt:   '60 days'
-        finishAt: '90 days'
+        finishAt:  '90 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
     Contract_3:
@@ -26,8 +29,151 @@ fixtures:
         group:    RentGroup_2
         property: Property_1
         unit:     Unit_1_4
+        rent:     1500
         status:   finished
+        paid_to:  '-60 days'
         startAt:   '-90 days'
         finishAt: '-60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
+    Contract_4:
+        tenant:   Tenant_2
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_4
+        rent:     1500
+        status:   finished
+        paid_to:  '-120 days'
+        startAt:   '-290 days'
+        finishAt: '-160 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_5:
+        tenant:   Tenant_3
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_5
+        rent:     1700
+        status:   approved
+        paid_to:  '-3 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_6:
+        tenant:   Tenant_4
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_6
+        rent:     1700
+        status:   approved
+        paid_to:  '-1 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_7:
+        tenant:   Tenant_5
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_7
+        rent:     1750
+        status:   approved
+        paid_to:  '20 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_8:
+        tenant:   Tenant_6
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_8
+        rent:     1750
+        status:   approved
+        paid_to:  '3 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_9:
+        tenant:   Tenant_7
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_9
+        rent:     1750
+        status:   approved
+        paid_to:  '15 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_10:
+        tenant:   Tenant_8
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_10
+        rent:     1750
+        status:   approved
+        paid_to:  '15 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_11:
+        tenant:   Tenant_9
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_11
+        rent:     2100
+        status:   approved
+        paid_to:  '30 days'
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_12:
+        tenant:   Tenant_10
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_12
+        rent:     2100
+        status:   approved
+        startAt:   '-90 days'
+        finishAt: '60 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_13:
+        tenant:   Tenant_11
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_1
+        rent:     2100
+        status:   finished
+        startAt:   '-360 days'
+        finishAt: '-120 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_14:
+        tenant:   Tenant_12
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_2
+        rent:     1400
+        status:   finished
+        startAt:   '-360 days'
+        finishAt: '-120 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+        

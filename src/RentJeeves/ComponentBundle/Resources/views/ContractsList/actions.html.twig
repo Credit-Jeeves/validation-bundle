@@ -1,0 +1,57 @@
+    <div id="actions-block" class="contracts-block">
+        <!-- ko if: countActions() -->
+        <div class="">
+            <div class="units-total floatleft">
+                <h2 data-bind="text: 'Action Required (' + $root.total() + ')'"></h2>
+            </div>
+        </div>
+        <div class="clearboth"></div>
+        <div class="row-20"></div>
+        <div class="properties-table-block">
+            <table class="properties-table zebra-grid">
+                <thead>
+                <tr class="properties-th">
+                    <th>Status</th>
+                    <th></th>
+                    <th>Due Date</th>
+                    <th>Property</th>
+                    <th>Unit</th>
+                    <th>Tenant</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- ko foreach: { data: aActions() } -->
+                <tr>
+                    <td data-bind="text: status"></td>
+                    <td><div class="btn red property-edit">Resolve</div></td>
+                    <td data-bind="text: due_day"></td>
+                    <td data-bind="text: address"></td>
+                    <td data-bind="text: unit"></td>
+                    <td data-bind="text: tenant"></td>
+                    <td data-bind="text: amount"></td>
+                    <td><div class="btn green property-edit">Edit</div></td>
+                </tr>
+                <!-- /ko -->
+                </tbody>
+            </table>
+        </div>
+        <div class="clearboth"></div>
+        <!-- ko if: pages().length -->
+        <div class="row-20"></div>
+        <div class="floatright">
+            <!-- ko foreach: pages() -->
+                <!-- ko if: $data == $root.current() -->
+                <div class="btn grey floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+                <!-- /ko -->
+                <!-- ko ifnot: $data == $root.current() -->
+                <div class="btn green floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+                <!-- /ko -->
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+        <div class="clearboth"></div>
+        <div class="row-20"></div>
+        <!-- /ko -->
+    </div>

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\TenantRepository")
  */
 class Tenant extends User
 {
@@ -100,5 +100,16 @@ class Tenant extends User
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    public function getItem()
+    {
+        $result = array();
+        $result['status'] = 'current';//$this->getContracts()->count();
+        $result['name'] = $this->getFullName();
+        $result['email'] = $this->getEmail();
+        $result['phone'] = $this->formatPhoneOutput($this->getPhone());
+
+        return $result;
     }
 }
