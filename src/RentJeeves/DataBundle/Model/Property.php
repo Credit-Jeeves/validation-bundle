@@ -554,7 +554,7 @@ abstract class Property
         return $this;
     }
 
-    public function getGoogleReference($google_reference)
+    public function getGoogleReference()
     {
         return $this->google_reference;
     }

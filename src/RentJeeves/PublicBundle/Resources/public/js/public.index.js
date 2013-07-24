@@ -103,4 +103,7 @@ $(document).ready(function(){
 
     google.maps.event.addDomListener(window, 'load', initialize);
 
+    $('#formSearch').submit(function() {
+      return false;
+    });
 });

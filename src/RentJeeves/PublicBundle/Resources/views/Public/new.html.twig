@@ -41,11 +41,11 @@
                         <ul>
                           {% set i = 1 %}
                           {% for prop in propertyList %}
-                          <li class="addressText" data="{{ prop.id }}">
+                          <li class="addressText" data="{{ prop.id }}" number="{{ i }}">
                             <i>{{ i }}</i>
                             <strong>
-                              {{ prop.number }} {{ prop.street }}<br>
-                              {{ prop.city }}, {{ prop.area }} {{ prop.zip }}</strong>
+                              <span class="titleAddress">{{ prop.number }} {{ prop.street }}</span><br>
+                              <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span></strong>
                             <div class="form-row clearfix">
                               <label class="lab1">Add Unit</label>
                               <label class="lab2">Select Unit</label>
@@ -108,6 +108,8 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobubble/src/infobubble-compiled.js"
+    </script>
 {% endblock %}
 
 

@@ -17,17 +17,6 @@ $(document).ready(function(){
         alert(message);
     }
 
-    function createMarker(point,html,ba,ov) {
-        var mylabel = {"url":overlay[ov], "anchor":new GLatLng(4,4), "size":new GSize(12,12)};
-        var Icon = new GIcon(G_DEFAULT_ICON, background[ba], mylabel)
-
-        var marker = new GMarker(point,Icon);
-        GEvent.addListener(marker, "click", function() {
-          marker.openInfoWindowHtml(html);
-        });
-        return marker;
-    }
-
     function initialize() {
         var lat = $('#lat').val();
         var lng = $('#lng').val();
@@ -46,15 +35,69 @@ $(document).ready(function(){
         var autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo('bounds', map);
         var infowindow = new google.maps.InfoWindow();
+        var rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
+              new google.maps.Size(38,54),
+              new google.maps.Point(0,0),
+              new google.maps.Point(19, 41)
+            );
+        
+        var arrBubble = [];
         $.each($('.addressText'), function(index, value) {
             var lat = $(this).find('.lat').val();
             var lng = $(this).find('.lng').val();
             var addressSelect = $(this).find('.addressSelect').val();
+            var number = $(this).attr('number');
             var myLatlng = new google.maps.LatLng(lat,lng);
+            var rentaPoint = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_'+number+'.png',
+              new google.maps.Size(26,42),
+              new google.maps.Point(0,0),
+              new google.maps.Point(13,42)
+            );
+
+            var contentString = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h1 id="firstHeading" class="firstHeading">'+$(this).find('.titleAddress').html()+'</h1>'+
+              '<div id="bodyContent" style="width:150px;">'+$(this).find('.contentAddress').html() 
+              '<p></div>'+
+              '</div>';
+          
+            arrBubble[number] = new InfoBubble({
+              map: map,
+              content: contentString,
+              position: myLatlng,
+              shadowStyle: 1,
+              padding: 10,
+              backgroundColor: '#FFFFFF',
+              borderRadius: 4,
+              arrowSize: 20,
+              borderWidth: 3,
+              borderColor: '#A9A9A9',
+              disableAutoPan: true,
+              hideCloseButton: false,
+              arrowPosition: 40,
+              backgroundClassName: 'phoney',
+              arrowStyle: 1,
+              infoBoxClearance: new google.maps.Size(1, 1)
+            });
+
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+
             var marker = new google.maps.Marker({
                 position: myLatlng,
                 map: map,
                 title: addressSelect,
+                icon: rentaPoint,
+                shadow: rentaPiontShadow
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+              infowindow.open(map,marker);
+              //newlat = marker.getPosition().lat() + (0.00002 * Math.pow(2, (21 - map.getZoom())));
+              //arrBubble[number].setPosition(new google.maps.LatLng(newlat, marker.getPosition().lng()));
+              //arrBubble[number].open();
             });
 
         });
