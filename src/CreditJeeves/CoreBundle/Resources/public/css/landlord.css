@@ -66,8 +66,8 @@ table.properties-table th {
 
 .units-item {
     float: left;
-    width: 135px;
-    margin: 0 20px 15px;
+    width: 145px;
+    margin: 0 15px 15px;
     border: 1px solid #c8c8c8;
     padding: 1px;
 }
@@ -81,7 +81,7 @@ table.properties-table th {
 }
 
 .unit-input {
-    width: 70px;
+    width: 80px;
 }
 
 .units-footer {

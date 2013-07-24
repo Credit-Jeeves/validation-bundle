@@ -17,7 +17,7 @@
             <div class="units-edit">
                 <!-- ko foreach: { data: aUnits() } -->
                     <div class="units-item">
-                        <input type="text" class="unit-input floatleft" data-bind="value: name">
+                        <input type="text" class="unit-input floatleft" data-bind="value: name" placeholder="Unit No">
                         <div class="btn red floatleft unit-delete" data-bind="click: $root.removeUnit">x</div>
                     </div>
                 <!-- /ko -->
