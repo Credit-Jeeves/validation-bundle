@@ -11,4 +11,5 @@ class ContractStatus extends Base
     const PENDING = 'pending';
     const APPROVED = 'approved';
     const FINISHED = 'finished';
+    const PAID = 'paid';
 }

@@ -111,3 +111,55 @@ table.properties-table th {
     margin-top: 1px;
     height: 20px;
 }
+
+.actions-status {
+    width: 105px;
+    margin-top: 3px;
+    font-weight: bold;
+}
+
+.action-alert {
+    background: url("/bundles/core/images/alert.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 22px;
+    width: 22px;
+}
+
+.action-resolve {
+    margin-top: 3px;
+    color: #1985EA;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.contract-pending {
+    background-image: linear-gradient(left , rgb(255,255,0) 0%, rgb(255,255,255) 65%);
+    background-image: -o-linear-gradient(left , rgb(255,255,0) 0%, rgb(255,255,255) 65%);
+    background-image: -moz-linear-gradient(left , rgb(255,255,0) 0%, rgb(255,255,255) 65%);
+    background-image: -webkit-linear-gradient(left , rgb(255,255,0) 0%, rgb(255,255,255) 65%);
+    background-image: -ms-linear-gradient(left , rgb(255,255,0) 0%, rgb(255,255,255) 65%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        color-stop(0, rgb(255,255,0)),
+        color-stop(0.65, rgb(255,255,255))
+    );
+}
+
+.contract-late {
+    background-image: linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
+    background-image: -o-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
+    background-image: -moz-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
+    background-image: -webkit-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
+    background-image: -ms-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left top,
+        right top,
+        color-stop(0, rgb(255,0,0)),
+        color-stop(0.65, rgb(255,255,255))
+    );
+}

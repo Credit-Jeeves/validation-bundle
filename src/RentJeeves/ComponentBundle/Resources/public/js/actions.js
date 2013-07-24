@@ -38,6 +38,10 @@ function Actions() {
     }
     self.ajaxAction();
   };
+  this.Resolve = function() {
+    console.log('****');
+    return false;
+  };
 }
 
 var ActionsViewModel = new Actions();
