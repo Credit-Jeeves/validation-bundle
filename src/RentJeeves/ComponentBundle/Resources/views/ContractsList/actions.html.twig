@@ -12,7 +12,6 @@
                 <thead>
                 <tr class="properties-th">
                     <th>Status</th>
-                    <th></th>
                     <th>Due Date</th>
                     <th>Property</th>
                     <th>Unit</th>
@@ -24,14 +23,17 @@
                 <tbody>
                 <!-- ko foreach: { data: aActions() } -->
                 <tr>
-                    <td data-bind="text: status"></td>
-                    <td><div class="btn red property-edit">Resolve</div></td>
+                    <td data-bind="attr: {'class': style}">
+                        <div class="actions-status floatleft" data-bind="text: status"></div>
+                        <div class="action-alert floatleft"></div>
+                        <div class="action-resolve floatleft" data-bind="click: $root.Resolve">RESOLVE</div>
+                    </td>
                     <td data-bind="text: due_day"></td>
                     <td data-bind="text: address"></td>
                     <td data-bind="text: unit"></td>
                     <td data-bind="text: tenant"></td>
                     <td data-bind="text: amount"></td>
-                    <td><div class="btn green property-edit">Edit</div></td>
+                    <td></td>
                 </tr>
                 <!-- /ko -->
                 </tbody>

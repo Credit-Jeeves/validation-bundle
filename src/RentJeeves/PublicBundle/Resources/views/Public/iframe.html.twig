@@ -1,13 +1,33 @@
 {% extends "RjPublicBundle::base_iframe.html.twig" %}
 
 {% block content %}
-    <div>
-        <input id="property-search" type="text" size="63" placeholder="Enter a location" autocomplete="off">
-        <input type="button" value="Search" id="property-add">
-    </div>
-    <div class="mapContainer">
-        <div id="map-canvas"></div>
-    </div>
+<div class="form-box">
+        <div class="mainform-box">
+            <div class="mainform">
+              <h1>Pay Rent. Build Credit.</h1>
+              <h4>Get your Free Credit Score and Free Electronic Payments</h4>
+              <form action="#" id="formSearch">
+                <div class="clearfix">
+                  <div class="field-box">
+                    <input id="property-search" type="text" placeholder="Your Rental Address">
+                    <span class="icon-find">&nbsp;</span>
+                  </div>
+                  <button type="submit"  id="property-add" class="button">
+                    <span>Find My Rental</span>
+                  </button>
+                </div>
+              </form>
+              <div class="property-rent-box">
+                <div class="property-rent">
+                  <i> </i>
+                  <p>Have a property to rent?</p>
+                  <a href="#">Find out how Rent Jeeves can help you.</a>
+                </div>
+              </div>
+            </div>
+        </div>
+</div>
+<div id="map-canvas" style="display:none;"></div>
 {% endblock %}
 
 {% block javascripts %}

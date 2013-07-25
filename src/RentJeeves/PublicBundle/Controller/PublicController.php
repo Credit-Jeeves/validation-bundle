@@ -40,6 +40,9 @@ class PublicController extends Controller
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
 
         if ($countGroup > 0) {
+            $google = $this->container->get('google');
+            $google->savePlace($Property);
+            
             return $this->redirect($this->generateUrl("iframe_new", array('propertyId'=>$propertyId)));
         }
 
@@ -102,19 +105,19 @@ class PublicController extends Controller
      */
     public function newAction($propertyId)
     {
-
+        $request = $this->get('request');
         $em = $this->get('doctrine.orm.entity_manager');
-        $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        $google = $this->get('google');
+        $propertyIdForm = (int)$request->request->get('propertyId');
         
+        if ($propertyIdForm <= 0) {
+            $Property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        } else {
+            $Property = $em->getRepository('RjDataBundle:Property')->find($propertyIdForm);
+        }
+
         if (!$Property) {
             return $this->redirect($this->generateUrl("iframe"));
-        }
-        // Here for development
-        
-        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
-
-        if ($countGroup <= 0) {
-            return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
         }
 
         $tenant = new Tenant();
@@ -123,7 +126,6 @@ class PublicController extends Controller
             $tenant
         );
 
-        $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
@@ -147,9 +149,25 @@ class PublicController extends Controller
             }
         }
 
+        $propertyList = $google->searchPropertyInRadius($Property);
+        
+        if (isset($propertyList[$Property->getId()])) {
+            unset($propertyList[$Property->getId()]);
+        }
+
+        $propertyList[0] = $Property;
+        arsort($propertyList);
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
+
+        if ($countGroup <= 0) {
+            return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
+        }
+
         return array(
-            'form'      => $form->createView(),
-            'property'  => $Property,
+            'form'              => $form->createView(),
+            'property'          => $Property,
+            'propertyList'      => $propertyList,
+            'countPropery'      => count($propertyList),
         );
     }
 

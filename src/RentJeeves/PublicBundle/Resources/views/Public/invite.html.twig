@@ -1,32 +1,33 @@
 {% extends "RjPublicBundle::base.html.twig" %}
 
 
-{% block marketingHeader %}
-    {{ include('RjComponentBundle::marketingHeader.html.twig') }}
-{% endblock %}
-
 {% block content %}
-<form action="#" name="searchRentalsForm" id="formSearch">
-    <div class="box type1">
-      <h3 class="clearfix">
-        <span>Property information</span>
-        <small><b>*</b>Required</small>
-      </h3>
-      <div class="col-box clearfix">
-        <div class="col searsh-box">
-          <label for="searsh-field">Showing rentals available near:</label>
+<section class="form-content">
+  <div class="box type1">
+    <h3 class="clearfix">
+      <span>Property information</span>
+      <small><b>*</b>Required</small>
+    </h3>
+              
+    <div class="col-box clearfix">
+      <div class="col">
+      <h4>Add your rental property</h4>
+      <form action="#" name="searchRentalsForm" id="formSearch">
+        <div class="search-box pie-el">
+          <label for="searsh-field">Verify your rental address</label>
           <div class="clearfix">
             <input type="text" id="property-search" name="searsh-field" value="{{ address }}">
             <a href="#" id="delete" class="pie-el">x</a>
-            <button type="button" id="search-submit" class="pie-el">Search</button>
+            <button type="submit" id="search-submit" class="pie-el">Search</button>
           </div>
           <div id="map-canvas"></div>
         </div>
       </div>
     </div>
+  </div>
 </form>
 <form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
-    <div class="box type1">
+    <div class="box type1 pd1">
       <div class="col-box clearfix">
         <div class="col">
           <h4 class="active">We didn’t find a match yet – let your landlord know!</h4>
@@ -80,6 +81,7 @@
       </div>
     </div>
 </form>
+</section>
 {% endblock %}
 
 {% block javascripts %}
