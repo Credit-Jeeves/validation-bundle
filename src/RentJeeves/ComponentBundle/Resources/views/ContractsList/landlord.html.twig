@@ -1,6 +1,18 @@
+    <div id="contract-details" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: show() ? 'visible' : 'hidden' }">
+        <div class="units-background"></div>
+        <div  class="units-block border" data-bind="style: { top: marginTop }">
+            Here would be contract details
+            <div class="units-footer">
+                <div class="btn orange floatleft" data-bind="click: saveContract">Save</div>
+                <div class="btn sky floatleft" data-bind="click: clearDetails">Cancel</div>
+            </div>
+        
+        </div>
+    </div>
+
     <div id="contracts-block" class="contracts-block">
         <div class="">
-            <div class="units-total floatleft"><h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2></div>
+            <div class="units-total floatleft"><h2 data-bind="text: 'Rent Total (' + $root.total() + ')'"></h2></div>
         </div>
         <div class="clearboth"></div>
         <!-- ko if: pages().length -->
@@ -22,13 +34,15 @@
                 <thead>
                 <tr class="properties-th">
                     <th>Status</th>
-                    <th>Date Posted</th>
-                    <th>Date Initiated</th>
-                    <th>Property</th>
-                    <th>Unit</th>
                     <th>Tenant</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Property</th>
                     <th>Amount</th>
+                    <th>Due Day</th>
+                    <th>Paid To</th>
                     <th>Type</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -37,13 +51,15 @@
                     <td data-bind="attr: {'class': style}">
                         <div data-bind="text: status"></div>
                     </td>
-                    <td></td>
-                    <td data-bind="text: paid_to"></td>
-                    <td data-bind="text: address"></td>
-                    <td data-bind="text: unit"></td>
                     <td data-bind="text: tenant"></td>
+                    <td data-bind="text: email"></td>
+                    <td data-bind="text: phone"></td>
+                    <td data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
                     <td data-bind="text: amount"></td>
-                    <td><div class="btn green property-edit">Edit</div></td>
+                    <td data-bind="text: due_day"></td>
+                    <td data-bind="text: paid_to"></td>
+                    <td></td>
+                    <td><div class="btn green property-edit" data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">Edit</div></td>
                 </tr>
                 <!-- /ko -->
                 </tbody>
