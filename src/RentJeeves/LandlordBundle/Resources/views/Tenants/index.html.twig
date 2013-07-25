@@ -1,10 +1,10 @@
 {% extends "LandlordBundle::base.html.twig" %}
 
 {% block content %}
-        {{ render(controller('RjComponentBundle:TenantsList:index', {'Group': Group})) }}
+        {{ render(controller('RjComponentBundle:ContractsList:index', {'Group': Group})) }}
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('bundles/component/js/groups.js') }}"></script>
-    <script src="{{ asset('bundles/rjcomponent/js/tenants.js') }}"></script>
+    <script src="{{ asset('bundles/rjcomponent/js/contracts.js') }}"></script>
 {% endblock %}

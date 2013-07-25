@@ -1,3 +1,22 @@
+function ContractDetails() {
+  var self = this;
+  this.contract = ko.observable();
+  this.show = ko.observable(false);
+  this.marginTop = ko.observable(0);
+  this.details = function(data) {
+    console.log(data.top);
+    self.marginTop(data.top + 'px');
+    self.contract(data);
+    self.show(true);
+  };
+  this.clearDetails = function(){
+    self.show(false);
+  };
+  this.saveContract = function(){
+    
+  };
+}
+
 function Contracts() {
   var limit = 10;
   var current = 1;
@@ -38,11 +57,18 @@ function Contracts() {
     }
     self.ajaxAction();
   };
+  this.editContract = function(data) {
+    var position = $('#edit-' + data.id).position();
+    data.top = position.top - 300;
+    DetailsViewModel.details(data);
+  };
 }
 
 var ContractsViewModel = new Contracts();
+var DetailsViewModel = new ContractDetails();
 
 $(document).ready(function(){
   ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
+  ko.applyBindings(DetailsViewModel, $('#contract-details').get(0));
   ContractsViewModel.ajaxAction();
 });

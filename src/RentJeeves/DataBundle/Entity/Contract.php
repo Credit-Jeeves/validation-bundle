@@ -20,6 +20,7 @@ class Contract extends Base
         $tenant = $this->getTenant();
         $unit = $this->getUnit();
         $status = $this->getStatusArray();
+        $result['id'] = $this->getId();
         $result['status'] = $status['status'];
         $result['style'] = $status['class'];
         $result['address'] = $property->getAddress();
