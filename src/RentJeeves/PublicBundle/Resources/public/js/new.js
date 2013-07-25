@@ -67,17 +67,18 @@ $(document).ready(function(){
             });
 
             deleteOverlays();
+            var link = Routing.generate('iframe_search_check', {'propertyId': data.property.id });
             $('.notFound').show();
             $('.notFound').find('.titleAddress').html(data.property.number+' '+data.property.street);
             $('.notFound').find('.contentAddress').html(data.property.city+', '+data.property.area+' '+data.property.zip);
-            $('.notFound').find('.inviteLandlord').attr('data', data.property.id)
+            $('.notFound').find('.inviteLandlord').attr('href', link);
             var contentString = getHtmlPopap(
               $('.notFound').find('.titleAddress').html(),
               $('.notFound').find('.contentAddress').html()
             );
-
-            contentString += '<hr /><button type="submit" class="button small inviteLandlord" data="'+data.property.id+'">';
-            contentString += '<span>Invite Your Landlord</span></button>';
+            
+            contentString += '<hr /><a href="'+link+'" class="button small inviteLandlord" >';
+            contentString += '<span>Invite Your Landlord</span></a>';
 
             var infowindow = new google.maps.InfoWindow({
               content: contentString
@@ -292,9 +293,5 @@ $(document).ready(function(){
           //$(this).hide();
         }
         return false;
-    });
-
-    $('.inviteLandlord').click(function(){
-        return location.href = Routing.generate('iframe_search_check', {'propertyId': $(this).attr('data') });
     });
 });
