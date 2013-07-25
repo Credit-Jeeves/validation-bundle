@@ -1,5 +1,15 @@
 $(document).ready(function(){
 
+    function initScroll() {
+      $('#search-result-text').slimScroll({
+        alwaysVisible:true,
+        width:307,
+        height:295
+      });
+    }
+
+    initScroll();
+    
     var ERROR = 'notfound';
 
     function showError(message)
@@ -10,7 +20,7 @@ $(document).ready(function(){
     function initialize() {
         var lat = $('#lat').val();
         var lng = $('#lng').val();
-        var addressSelect =  $('#addressSelect').val();
+
 
         var mapOptions = {
             center: new google.maps.LatLng(lat, lng),
@@ -18,19 +28,82 @@ $(document).ready(function(){
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         var map = new google.maps.Map(
-            document.getElementById('map-canvas'),
+            document.getElementById('search-result-map'),
             mapOptions
         );
         var input = (document.getElementById('property-search'));
         var autocomplete = new google.maps.places.Autocomplete(input);
         autocomplete.bindTo('bounds', map);
         var infowindow = new google.maps.InfoWindow();
+        var rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
+              new google.maps.Size(38,54),
+              new google.maps.Point(0,0),
+              new google.maps.Point(19, 41)
+            );
+        
+        var arrBubble = [];
+        $.each($('.addressText'), function(index, value) {
+            var lat = $(this).find('.lat').val();
+            var lng = $(this).find('.lng').val();
+            var addressSelect = $(this).find('.addressSelect').val();
+            var number = $(this).attr('number');
+            var myLatlng = new google.maps.LatLng(lat,lng);
+            var rentaPoint = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_'+number+'.png',
+              new google.maps.Size(26,42),
+              new google.maps.Point(0,0),
+              new google.maps.Point(13,42)
+            );
 
-        var myLatlng = new google.maps.LatLng(lat,lng);
+            var contentString = '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h1 id="firstHeading" class="firstHeading">'+$(this).find('.titleAddress').html()+'</h1>'+
+              '<div id="bodyContent" style="width:150px;">'+$(this).find('.contentAddress').html() 
+              '<p></div>'+
+              '</div>';
+          
+            arrBubble[number] = new InfoBubble({
+              map: map,
+              content: contentString,
+              position: myLatlng,
+              shadowStyle: 1,
+              padding: 10,
+              backgroundColor: '#FFFFFF',
+              borderRadius: 4,
+              arrowSize: 20,
+              borderWidth: 3,
+              borderColor: '#A9A9A9',
+              disableAutoPan: true,
+              hideCloseButton: false,
+              arrowPosition: 40,
+              backgroundClassName: 'phoney',
+              arrowStyle: 1,
+              infoBoxClearance: new google.maps.Size(1, 1)
+            });
+
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: addressSelect,
+                icon: rentaPoint,
+                shadow: rentaPiontShadow
+            });
+
+            google.maps.event.addListener(marker, 'click', function() {
+              infowindow.open(map,marker);
+              //newlat = marker.getPosition().lat() + (0.00002 * Math.pow(2, (21 - map.getZoom())));
+              //arrBubble[number].setPosition(new google.maps.LatLng(newlat, marker.getPosition().lng()));
+              //arrBubble[number].open();
+            });
+
+        });
+        
         var marker = new google.maps.Marker({
-            position: myLatlng,
-            map: map,
-            title: addressSelect
+                map: map
         });
 
         function validateAddress(){
@@ -75,6 +148,11 @@ $(document).ready(function(){
         
         $('#property-search').change(function(){
           $(this).addClass('notfound');
+          if($(this).val() != '') {
+            $('#delete').show();
+          } else {
+            $('#delete').hide();
+          }
         });
 
         $('#search-submit').click(function(){
@@ -120,16 +198,67 @@ $(document).ready(function(){
       val = $(this).val();
       if(val == 'new') {
         $(this).parent().hide();
-        $(this).parent().parent().find('.unitAddNewUnitContainer').show();
+        $(this).parent().parent().find('.createNewUnit').show();
+        $(this).parent().parent().find('.lab1').show();
+        $(this).parent().parent().find('.lab2').hide();
       }
     });
 
     $('.see-all').click(function() {
-      $(this).parent().parent().find('.unitSelectContainer').show();
+      $(this).parent().parent().find('.selectUnit').show();
       $(this).parent().hide();
       $(this).parent().parent().find('.select-unit:selected').prop("selected", false);
       $(this).parent().parent().find('.noneField').attr('selected', true);
+      $(this).parent().parent().find('.lab2').show();
+      $(this).parent().parent().find('.lab1').hide();
       return false;
     });
 
+    $('#delete').click(function() {
+      $('#property-search').val(' ')
+    });
+
+    $('#register').click(function(){
+      var propertyId = $('#propertyId').val();
+      if(propertyId == '') {
+        showError('Please select your rental');
+        return false;
+      }
+    });
+
+    $('.thisIsMyRental').click(function(){
+        if($(this).hasClass('one')) {
+          propertyId = $(this).attr('data');
+          $.each($('.addressText'), function(index, value) {
+              var id = $(this).attr('data');
+              if(id != propertyId) {
+                $(this).show();
+              } else {
+                $(this).css({backgroundColor:'#FFFFFF'});
+              }
+          });
+          
+          $('#propertyId').val('');
+          $('#register').addClass('greyButton');
+          initScroll();
+          $(this).removeClass('one');
+        } else {
+          propertyId = $(this).attr('data');
+          $.each($('.addressText'), function(index, value) {
+              var id = $(this).attr('data');
+              if(id != propertyId) {
+                $(this).hide();
+              } else {
+                $(this).css({backgroundColor:'#EEEEEE'});
+              }
+          });
+          
+          $('#propertyId').val(propertyId);
+          $('#register').removeClass('greyButton');
+          initScroll();
+          $(this).addClass('one');
+          //$(this).hide();
+        }
+        return false;
+    });
 });

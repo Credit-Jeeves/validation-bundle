@@ -25,4 +25,15 @@ class ContractsListController extends Controller
         return array(
         );
     }
+
+    /**
+     * @Template("RjComponentBundle:ContractsList:index.html.twig")
+     * @return multitype:
+     */
+    public function tenantAction()
+    {
+        return array(
+            'contracts' => $this->getUser()->getContracts(),
+        );
+    }
 }

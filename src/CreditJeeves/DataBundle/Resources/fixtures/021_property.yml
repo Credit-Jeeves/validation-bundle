@@ -212,4 +212,48 @@ fixtures:
         kb:             -92.2759828
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
-        
+    Property_16:
+        property_groups:
+            - RentGroup_1
+            - RentGroup_2
+        country:        US
+        area:           NY
+        city:           New York
+        district:       Manhattan
+        street:         Broadway
+        number:         776
+        zip:            10003
+        jb:             40.7312396
+        kb:             -73.9918488
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_17:
+        property_groups:
+            - RentGroup_1
+            - RentGroup_2
+        country:        US
+        area:           NY
+        city:           New York
+        district:       Manhattan
+        street:         Broadway
+        number:         745
+        zip:            10003
+        jb:             40.7302448
+        kb:             -73.9927101
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
+    Property_18:
+        property_groups:
+            - RentGroup_1
+            - RentGroup_2
+        country:        US
+        area:           NY
+        city:           New York
+        district:       Manhattan
+        street:         Broadway
+        number:         785
+        zip:            10003
+        jb:             40.7316721
+        kb:             -73.9917422
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'

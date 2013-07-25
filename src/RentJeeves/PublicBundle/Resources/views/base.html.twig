@@ -10,7 +10,9 @@
       <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
     <!--[if lt IE 9]>
-    {% stylesheets '@RjPublicBundle/Resources/public/css/checked.css'%}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/checked.css'
+                   '@RjPublicBundle/Resources/public/css/ie8.css' 
+    %}
       <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
     <![endif]-->
@@ -23,13 +25,13 @@
     <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
   </head>
   <body>
-    <div class="wrapper">
+   <div class="wrapper all">
       <header>
         <div class="clearfix">
           <a href="#" title="RentJeeves" class="logo">RentJeeves</a>
           <ul>
             <li class="faq">
-              Questions? 866-976-6622
+              Questions? <strong>866-976-6622</strong>
               <a href="#" title="FAQs">FAQs</a>
             </li>
             <li class="login">
@@ -38,58 +40,86 @@
           </ul>
         </div>
       </header>
-      
-      <div class="content">
-        {% block marketingHeader %}
-        {% endblock %}
-        <section class="form-content">
-            {% block content %}
-            {% endblock %}
-        </section>
-      </div>
-      
-      <footer class="clearfix">
-        <div class="text-box">
-          <h3>RentJeeves, at your service.</h3>
-          <p>RentJeeves provides unique credit benefits and helps tenants and landlords the reduce friction with the current rent payment processes.</p>
-          <a href="#" title="Norton Secured" class="banner-ns">Norton Secured</a>
+      <section class="pay-box">
+        <div class="pay-content">
+          <h1>Pay your rent on time. Build your credit.</h1>
+          <div class="pay-credit clearfix">
+            <div class="col pay">
+              <i class="pie-el"> </i>
+              <div>
+                <h3>GET SOMETHING OUT OF IT!</h3>
+                <h4>Maintain good credit habits, with a little help from Rent Jeeves.</h4>
+                <p>
+                  Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product to potential tenants. More marketing text selling the product to  tenants.
+                </p>
+              </div>
+            </div>
+            <div class="col credit">              
+              <i class="pie-el"> </i>
+              <div>
+                <h3>SOOOO...</h3>
+                <h4>How much is this gonna cost?</h4>
+                <p>
+                  Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product.
+                </p>
+              </div>
+            </div>
+            <div class="separator">|</div>
+          </div>
         </div>
-        <nav>
-          <ul class="navigation clearfix">
-            <li>
-              <dl>
-                <dt>Learn About RentJeeves</dt>
-                <dd><a href="#" title="About Us">About Us</a></dd>
-                <dd><a href="#" title="Contact Us">Contact Us</a></dd>
-                <dd><a href="#" title="Management Team">Management Team</a></dd>
-                <dd><a href="#" title="Offers">Offers</a></dd>
-              </dl>
-            </li>
-            <li>
-              <dl>
-                <dt>How It Works</dt>
-                <dd><a href="#" title="The Process">The Process</a></dd>
-                <dd><a href="#" title="Renters">Renters</a></dd>
-                <dd><a href="#" title="Landlords">Landlords</a></dd>
-                <dd><a href="#" title="FAQs">FAQs</a></dd>
-              </dl>
-            </li>
-            <li>
-              <dl>
-                <dt>Learn About Credit</dt>
-                <dd><a href="#" title="How Credit Affects You">How Credit Affects You</a></dd>
-                <dd><a href="#" title="Your Credit Score">Your Credit Score</a></dd>
-                <dd><a href="#" title="Your Credit Rights">Your Credit Rights</a></dd>
-                <dd><a href="#" title="Advice">Advice</a></dd>
-              </dl>
-            </li>
-          </ul>
-          <ul class="copyright clearfix">
-            <li>&copy; 2013 RentJeeves, LLC.All rights reserved.</li>
-            <li><a href="#" title="Terms of Service">Terms of Service</a></li>
-            <li><a href="#" title="Privacy Policy">Privacy Policy</a></li>
-          </ul>
-        </nav>
+      </section>
+      <div class="content">
+          <div class="pricing-benefit-statement clearfix">
+                    <a href="#" title="Pricing Options">Pricing Options</a>
+                    <strong>Pricing benefit statement here!</strong>
+          </div>
+          {% block content %}
+          {% endblock %}
+      </div>
+      <footer>
+        <div class="clearfix">
+          <div class="text-box">
+            <h3>RentJeeves, at your service.</h3>
+            <p>RentJeeves provides unique credit benefits and helps tenants and landlords the reduce friction with the current rent payment processes.</p>
+            <a href="#" title="Norton Secured" class="banner-ns">Norton Secured</a>
+          </div>
+          <nav>
+            <ul class="navigation clearfix">
+              <li>
+                <dl>
+                  <dt>Learn About RentJeeves</dt>
+                  <dd><a href="#" title="About Us">About Us</a></dd>
+                  <dd><a href="#" title="Contact Us">Contact Us</a></dd>
+                  <dd><a href="#" title="Management Team">Management Team</a></dd>
+                  <dd><a href="#" title="Offers">Offers</a></dd>
+                </dl>
+              </li>
+              <li>
+                <dl>
+                  <dt>How It Works</dt>
+                  <dd><a href="#" title="The Process">The Process</a></dd>
+                  <dd><a href="#" title="Renters">Renters</a></dd>
+                  <dd><a href="#" title="Landlords">Landlords</a></dd>
+                  <dd><a href="#" title="FAQs">FAQs</a></dd>
+                </dl>
+              </li>
+              <li>
+                <dl>
+                  <dt>Learn About Credit</dt>
+                  <dd><a href="#" title="How Credit Affects You">How Credit Affects You</a></dd>
+                  <dd><a href="#" title="Your Credit Score">Your Credit Score</a></dd>
+                  <dd><a href="#" title="Your Credit Rights">Your Credit Rights</a></dd>
+                  <dd><a href="#" title="Advice">Advice</a></dd>
+                </dl>
+              </li>
+            </ul>
+            <ul class="copyright clearfix">
+              <li>&copy; 2013 RentJeeves, LLC.All rights reserved.</li>
+              <li><a href="#" title="Terms of Service">Terms of Service</a></li>
+              <li><a href="#" title="Privacy Policy">Privacy Policy</a></li>
+            </ul>
+          </nav>
+        </div>
       </footer>
     </div>
     {% javascripts  '@RjPublicBundle/Resources/public/js/jquery-1.10.2.min.js'
