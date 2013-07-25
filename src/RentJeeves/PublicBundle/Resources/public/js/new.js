@@ -98,7 +98,7 @@ $(document).ready(function(){
                 shadow: rentaPiontShadow
             });
 
-            markersArray.push(marker);
+            markersArray['notfound'] = marker;
 
             google.maps.event.addListener(marker, 'click', function() {
               infowindow.open(map,marker);
@@ -164,10 +164,10 @@ $(document).ready(function(){
                 shadow: rentaPiontShadow
             });
 
-            markersArray.push(marker);
+            markersArray[number] = marker;
 
             google.maps.event.addListener(marker, 'click', function() {
-              infowindow.open(map,marker);
+              infowindow.open(map,markersArray[number]);
             });
 
         });
@@ -215,6 +215,21 @@ $(document).ready(function(){
             }
 
             search(place, map);
+            return false;
+        });
+
+        $('.moveToLocation').click(function(){
+            number =  $(this).attr('rel');
+            var contentString = getHtmlPopap(
+              $(this).parent().find('.titleAddress').html(),
+              $(this).parent().find('.contentAddress').html()
+            );
+
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+   
+            infowindow.open(map, markersArray[number]);
             return false;
         });
 

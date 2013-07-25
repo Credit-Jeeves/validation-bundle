@@ -42,8 +42,11 @@
                           <li class="notFound">
                             <i>1</i>
                             <strong>
+                            <a href="#" class="moveToLocation" rel="notfound">
                               <span class="titleAddress"></span><br>
-                              <span class="contentAddress"></span></strong>
+                              <span class="contentAddress"></span>
+                            </a>
+                            </strong>
                             <div class="buttons-box clearfix">
                               <div class="buttons left">
                                 <a href="#" class="button middle inviteLandlord">
@@ -59,8 +62,11 @@
                           <li class="addressText" data="{{ prop.id }}" number="{{ i }}">
                             <i>{{ i }}</i>
                             <strong>
+                            <a href="#" class="moveToLocation" rel="{{ i }}">
                               <span class="titleAddress">{{ prop.number }} {{ prop.street }}</span><br>
-                              <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span></strong>
+                              <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
+                            </a>
+                            </strong>
                             <div class="form-row clearfix">
                               <label class="lab1">Add Unit</label>
                               <label class="lab2">Select Unit</label>
