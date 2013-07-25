@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class ContractRepository extends EntityRepository
 {
@@ -11,7 +12,10 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
+        $query->andWhere('c.paid_to > :date OR c.paid_to IS NULL OR c.status = :status');
         $query->setParameter('group', $group);
+        $query->setParameter('date', new \Datetime());
+        $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
             //             $query->andWhere('p.'.$searchBy.' = :search');
             //             $query->setParameter('search', $search);
@@ -24,7 +28,7 @@ class ContractRepository extends EntityRepository
         $group,
         $page = 1,
         $limit = 100,
-        $sort = 'p.street',
+        $sort = 'c.status',
         $order = 'ASC',
         $searchBy = 'p.street',
         $search = ''
@@ -34,7 +38,10 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
+        $query->andWhere('c.paid_to > :date OR c.paid_to IS NULL  OR c.status = :status');
         $query->setParameter('group', $group);
+        $query->setParameter('date', new \Datetime());
+        $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
             //             $query->andWhere('p.'.$searchBy.' = :search');
             //             $query->setParameter('search', $search);
@@ -53,8 +60,10 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
         $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.status <> :status');
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
+        $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
             //             $query->andWhere('p.'.$searchBy.' = :search');
             //             $query->setParameter('search', $search);
@@ -78,8 +87,10 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
         $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.status <> :status');
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
+        $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
             //             $query->andWhere('p.'.$searchBy.' = :search');
             //             $query->setParameter('search', $search);
