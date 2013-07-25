@@ -24,6 +24,7 @@ class Contract extends Base
         $result['status'] = $status['status'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
+        $result['property_id'] = $property->getId();
         $result['tenant'] = ucfirst(strtolower($tenant->getFullName()));
         $result['email'] = $tenant->getEmail();
         $result['phone'] = $tenant->getFomattedPhone();

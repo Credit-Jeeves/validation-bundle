@@ -1,14 +1,52 @@
-    <div id="contract-details" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: show() ? 'visible' : 'hidden' }">
+<div id="contract-actions">
+    <!-- Action Edit -->
+    <div id="contract-edit" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: edit() ? 'visible' : 'hidden' }">
         <div class="units-background"></div>
         <div  class="units-block border" data-bind="style: { top: marginTop }">
-            Here would be contract details
+            <div data-bind="with: contract">
+                <table>
+                    <tbody>
+                        <div data-bind="text: $root.status"></div>
+                    
+                    </tbody>
+                </table>
+            </div>
+            <div class="clearboth"></div>
             <div class="units-footer">
                 <div class="btn orange floatleft" data-bind="click: saveContract">Save</div>
                 <div class="btn sky floatleft" data-bind="click: clearDetails">Cancel</div>
             </div>
-        
         </div>
     </div>
+    <!-- Action Review -->
+    <div id="contract-review" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: review() ? 'visible' : 'hidden' }">
+        <div class="units-background"></div>
+        <div  class="units-block border" data-bind="style: { top: marginTop }">
+            <div data-bind="with: contract">
+                <div data-bind="text: status"></div>
+            </div>
+            <div class="clearboth"></div>
+            <div class="units-footer">
+                <div class="btn orange floatleft" data-bind="click: saveContract">Save</div>
+                <div class="btn sky floatleft" data-bind="click: clearDetails">Cancel</div>
+            </div>
+        </div>
+    </div>
+    <!-- Action Approve -->
+    <div id="contract-review" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: approve() ? 'visible' : 'hidden' }">
+        <div class="units-background"></div>
+        <div  class="units-block border" data-bind="style: { top: marginTop }">
+            <div>
+            </div>
+            <div class="clearboth"></div>
+            <div class="units-footer">
+                <div class="btn orange floatleft" data-bind="click: saveContract">Save</div>
+                <div class="btn sky floatleft" data-bind="click: clearDetails">Cancel</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
     <div id="contracts-block" class="contracts-block">
         <div class="">
@@ -59,7 +97,19 @@
                     <td data-bind="text: due_day"></td>
                     <td data-bind="text: paid_to"></td>
                     <td></td>
-                    <td><div class="btn green property-edit" data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">Edit</div></td>
+                    <td align="center">
+                        <!-- ko if: 'CURRENT' == status -->
+                        <div class="btn green property-edit" data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">Edit</div>
+                        <!-- /ko -->
+                        <!-- ko if: 'PENDING' == status -->
+                        <div class="btn green property-edit" data-bind="click: $root.approveContract, attr:{'id': 'edit-' + id}">Approve</div>
+                        <!-- /ko -->
+                        <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status -->
+                        <div class="btn green property-edit" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">Review</div>
+                        <!-- /ko -->
+                        
+                        
+                    </td>
                 </tr>
                 <!-- /ko -->
                 </tbody>

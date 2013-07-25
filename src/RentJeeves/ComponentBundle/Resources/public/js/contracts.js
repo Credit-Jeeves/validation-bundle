@@ -1,16 +1,30 @@
 function ContractDetails() {
   var self = this;
   this.contract = ko.observable();
-  this.show = ko.observable(false);
+  this.approve = ko.observable(false);
+  this.review = ko.observable(false);
+  this.edit = ko.observable(false);
   this.marginTop = ko.observable(0);
-  this.details = function(data) {
-    console.log(data.top);
+  this.editContract = function(data) {
     self.marginTop(data.top + 'px');
     self.contract(data);
-    self.show(true);
+    self.edit(true);
   };
+  this.approveContract = function(data) {
+    self.marginTop(data.top + 'px');
+    self.contract(data);
+    self.approve(true);
+  };
+  this.reviewContract = function(data) {
+    self.marginTop(data.top + 'px');
+    self.contract(data);
+    self.review(true);
+  };
+
   this.clearDetails = function(){
-    self.show(false);
+    self.edit(false);
+    self.review(false);
+    self.approve(false);
   };
   this.saveContract = function(){
     
@@ -60,11 +74,21 @@ function Contracts() {
   this.editContract = function(data) {
     var position = $('#edit-' + data.id).position();
     data.top = position.top - 300;
-    DetailsViewModel.details(data);
+    DetailsViewModel.editContract(data);
+  };
+  this.approveContract = function(data) {
+    var position = $('#edit-' + data.id).position();
+    data.top = position.top - 300;
+    DetailsViewModel.approveContract(data);
+  };
+  this.reviewContract = function(data) {
+    var position = $('#edit-' + data.id).position();
+    data.top = position.top - 300;
+    DetailsViewModel.reviewContract(data);
   };
   this.filterAddress = function(data) {
     console.log(data.id);
-  }
+  };
 }
 
 var ContractsViewModel = new Contracts();
@@ -72,6 +96,6 @@ var DetailsViewModel = new ContractDetails();
 
 $(document).ready(function(){
   ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
-  ko.applyBindings(DetailsViewModel, $('#contract-details').get(0));
+  ko.applyBindings(DetailsViewModel, $('#contract-actions').get(0));
   ContractsViewModel.ajaxAction();
 });
