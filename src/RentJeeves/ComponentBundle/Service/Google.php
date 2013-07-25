@@ -97,8 +97,11 @@ class Google
     *
     * @return array Property
     */
-    public function searchPropertyInRadius(Property $property, $name = self::DEFAULT_NAME, $radius = self::DEFAULT_RADIUS)
-    {
+    public function searchPropertyInRadius (
+        Property $property,
+        $name = self::DEFAULT_NAME,
+        $radius = self::DEFAULT_RADIUS
+    ) {
         $propertyList = array();
         $latitude   = $property->getJb();
         $longitude = $property->getKb();

@@ -155,7 +155,7 @@ class PublicController extends Controller
             unset($propertyList[$Property->getId()]);
         }
 
-        $propertyList = array_merge(array($Property),$propertyList);
+        $propertyList = array_merge(array($Property), $propertyList);
 
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
 
