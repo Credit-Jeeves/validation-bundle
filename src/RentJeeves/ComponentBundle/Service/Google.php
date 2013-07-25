@@ -141,7 +141,7 @@ class Google
                 }
 
                 if ($i >= self::DEFAULT_LIMIT) {
-                    continue;
+                    break;
                 }
 
                 $propertyList[$nearProperty->getId()] =  $nearProperty;
