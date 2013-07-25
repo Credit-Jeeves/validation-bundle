@@ -1,0 +1,30 @@
+.home header > div.clearfix,
+.all header {
+  filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#99ffffff', endColorstr='#99ffffff',GradientType=0);
+}
+
+.main-nav li a {
+  filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#99ffffff', endColorstr='#99ffffff',GradientType=0);
+}
+
+.main-nav li a:hover,
+.main-nav li.active a {
+  filter:none;
+}
+
+.main-nav li li,
+.main-nav li li a {
+  filter:none;
+}
+
+.col .search-box .list-search-result a {  
+  filter: dropshadow(color=#ffffff, offx=0, offy=1);
+}
+
+.col .search-box .list-search-result a:hover {  
+  filter: dropshadow(color=#45839a, offx=0, offy=1);
+}
+
+.search-result-text li i {  
+  filter: dropshadow(color=#b0481b, offx=0, offy=1);
+}

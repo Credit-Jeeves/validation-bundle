@@ -1,22 +1,19 @@
 {% extends "RjPublicBundle::base.html.twig" %}
 
 {% block content %}
+  <div class="form-content">
+    <br />
+    <br />
   {% if active %} 
-    <div class="box type1">
-      <h3 class="clearfix">
+      <h3 class="title">
         <span>You have successfully activated your account. Please login.</span>
       </h3>
-    </div>
     <br />
     <br />
     <br />
   {% else %}
     <form action="{{ path('user_new_send', {"tenantId": tenantId }) }}" method="post">
-        <div class="box type1">
-          <h3 class="clearfix">
-              <span>Verify Your Email Address</span>
-            </h3>
-          </div>
+          <h3 class="title">Verification Email</h4>
           <div class="box type1" style="padding-top: 0px;">
             <div class="col-box clearfix">
               <div class="col">
@@ -32,10 +29,11 @@
           <div class="buttons-box clearfix">
             <div class="buttons left">
               <button type="submit" class="button"><span>Resend Verification Email</span></button>
+            </div>
           </div>
-        </div>
     </form>
   {% endif %}
+  </div>
 {% endblock %}
 
 {% block stylesheets %}
