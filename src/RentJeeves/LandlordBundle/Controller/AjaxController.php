@@ -64,7 +64,25 @@ class AjaxController extends Controller
         } catch (DBALException $e) {
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
         }
-        return new JsonResponse($object->getId());
+
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($object->getId());
+
+        $data = array(
+            'hasLandlord'   => ($countGroup > 0) ? true : false,
+            'property'      => array(
+                    'id'        => $object->getId(),
+                    'city'      => $object->getCity(),
+                    'number'    => ($object->getNumber()) ? $object->getNumber() : '',
+                    'street'    => $object->getStreet(),
+                    'area'      => $object->getArea(),
+                    'zip'       => ($object->getZip()) ? $object->getZip() : '',
+                    'jb'        => $object->getJb(),
+                    'kb'        => $object->getKb(),
+                    'address'   => $object->getAddress(),
+            ),
+        );
+
+        return new JsonResponse($data);
     }
 
     /**

@@ -91,7 +91,7 @@ class PublicController extends Controller
         $view = $form->createView();
 
         return array(
-            'address'   => $property->getAddress(),
+            'address'   => $property->getFullAddress(),
             'form'      => $form->createView(),
             'propertyId'=> $property->getId(),
         );

@@ -92,8 +92,8 @@ $(document).ready(function(){
               error: function(jqXHR, errorThrown, textStatus) {
                 //location.href = Routing.generate('landlord_properties');
               },
-              success: function(propertyId, textStatus, jqXHR) {
-                location.href = Routing.generate('iframe_search_check', {'propertyId':propertyId});
+              success: function(data, textStatus, jqXHR) {
+                location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
               }
             });
         });

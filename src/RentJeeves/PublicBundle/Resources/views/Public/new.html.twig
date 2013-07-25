@@ -20,7 +20,7 @@
                     <label for="searsh-field">Verify your rental address</label>
                     <div class="clearfix with-button">
                       <div class="left search-field-box">
-                        <input type="text" placeholder="{{ property.address }}" value="{{ property.address }}" name="searsh-field" id="property-search">
+                        <input type="text" placeholder="{{ property.address }}" value="{{ property.fullAddress }}" name="searsh-field" id="property-search">
                         <a href="#" id="delete" class="pie-el">x</a>
                         <button class="button small" id="search-submit" type="submit">
                           <span>Find Your Rental</span>
@@ -39,6 +39,21 @@
                       <div id="search-result-text" class="search-result-text">
                         <h4>{{ countPropery }} rentals in {{ property.city }}, {{ property.area }}:</h4>
                         <ul>
+                          <li class="notFound">
+                            <i>1</i>
+                            <strong>
+                              <span class="titleAddress"></span><br>
+                              <span class="contentAddress"></span></strong>
+                            <div class="buttons-box clearfix">
+                              <div class="buttons left">
+                                <button type="submit" class="button middle inviteLandlord" data="">
+                                  <span>Invite Your Landlord</span></button>
+                              </div>
+                            </div>
+                            <input type="hidden" value="" class="lat">
+                            <input type="hidden" value="" class="lng">
+                            <input type="hidden" value="" class="addressSelect">
+                          </li>
                           {% set i = 1 %}
                           {% for prop in propertyList %}
                           <li class="addressText" data="{{ prop.id }}" number="{{ i }}">
@@ -108,8 +123,6 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobubble/src/infobubble-compiled.js"
-    </script>
 {% endblock %}
 
 

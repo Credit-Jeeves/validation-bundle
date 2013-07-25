@@ -23,7 +23,7 @@ class Google
 
     const DEFAULT_ACCURANCY = 50;
 
-    const DEFAULT_RADIUS = 50000;
+    const DEFAULT_RADIUS = 1000;
 
     /**
      * @var GooglePlaces 
@@ -95,21 +95,21 @@ class Google
     *
     * @return array Property
     */
-    public function searchPropertyInRadius(Property $property, $name = self::DEFAULT_NAME, $radius = 500)
+    public function searchPropertyInRadius(Property $property, $name = self::DEFAULT_NAME, $radius = self::DEFAULT_RADIUS)
     {
         $propertyList = array();
         $latitude   = $property->getJb();
         $longitude = $property->getKb();
         $this->place->setLocation($latitude . ',' . $longitude);
 
-        $this->place->setRadius(self::DEFAULT_RADIUS);
+        $this->place->setRadius($radius);
         $this->place->setLanguage(self::DEFAULT_LANGUAGE);
         $this->place->setAccuracy(self::DEFAULT_ACCURANCY);
         $this->place->setName($name);
         $this->place->setTypes(self::DEFAULT_TYPES);
         $this->place->setSensor('false');
 
-        $results = $this->place->search();
+        $results = $this->place->nearbySearch();
 
         if (empty($results['errors']) && isset($results['result'])) {
 
