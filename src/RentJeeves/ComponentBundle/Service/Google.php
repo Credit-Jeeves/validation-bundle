@@ -25,6 +25,8 @@ class Google
 
     const DEFAULT_RADIUS = 1000;
 
+    const DEFAULT_LIMIT = 19;
+
     /**
      * @var GooglePlaces 
      */
@@ -114,7 +116,7 @@ class Google
         if (empty($results['errors']) && isset($results['result'])) {
 
             $propertyRepository = $this->em->getRepository('RjDataBundle:Property');
-
+            $i = 0;
             foreach ($results['result'] as $key => $value) {
 
                 $jb = $value['geometry']['location']['lat'];
@@ -135,7 +137,12 @@ class Google
                     continue;
                 }
 
+                if ($i >= self::DEFAULT_LIMIT) {
+                    continue;
+                }
+
                 $propertyList[$nearProperty->getId()] =  $nearProperty;
+                $i++;
             }
         }
         
