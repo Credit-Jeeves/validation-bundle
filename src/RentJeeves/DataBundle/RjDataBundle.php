@@ -23,7 +23,10 @@ class RjDataBundle extends Bundle
                 'ContractStatus',
                 'RentJeeves\DataBundle\Enum\ContractStatus'
             );
-    
+            Type::addType(
+                'PaymentStatus',
+                'RentJeeves\DataBundle\Enum\PaymentStatus'
+            );
             $this->container->get('doctrine.orm.default_entity_manager')
                 ->getConnection()
                 ->getDatabasePlatform()

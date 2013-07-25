@@ -37,10 +37,26 @@ class Tenant extends User
      */
     protected $contracts;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
+     *     mappedBy="tenant",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $payments;
+    
+
     public function __construct()
     {
         parent::__construct();
         $this->contracts = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
 
     /**
@@ -102,6 +118,38 @@ class Tenant extends User
         return $this->contracts;
     }
 
+    /**
+     * Add payment
+     *
+     * @param \RentJeeves\DataBundle\Entity\Payment $payment
+     * @return Tenant
+     */
+    public function addPayment(\RentJeeves\DataBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+        return $this;
+    }
+
+    /**
+     * Remove paymnet
+     *
+     * @param \RentJeeves\DataBundle\Entity\Payment $payment
+     */
+    public function removePayment(\RentJeeves\DataBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
     public function getItem()
     {
         $result = array();
@@ -111,5 +159,10 @@ class Tenant extends User
         $result['phone'] = $this->formatPhoneOutput($this->getPhone());
 
         return $result;
+    }
+
+    public function getFomattedPhone()
+    {
+        return $this->formatPhoneOutput($this->getPhone());
     }
 }

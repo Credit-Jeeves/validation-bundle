@@ -166,6 +166,20 @@ abstract class Contract
     protected $updatedAt;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
+     *     mappedBy="contract",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     */
+    protected $payments;
+
+    /**
      * Get id
      *
      * @return integer
@@ -481,5 +495,37 @@ abstract class Contract
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \RentJeeves\DataBundle\Entity\Payment $payment
+     * @return Contract
+     */
+    public function addPayment(\RentJeeves\DataBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+        return $this;
+    }
+
+    /**
+     * Remove paymnet
+     *
+     * @param \RentJeeves\DataBundle\Entity\Payment $payment
+     */
+    public function removePayment(\RentJeeves\DataBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }

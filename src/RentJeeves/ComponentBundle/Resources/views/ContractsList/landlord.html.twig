@@ -34,13 +34,15 @@
                 <thead>
                 <tr class="properties-th">
                     <th>Status</th>
-                    <th>Date Posted</th>
-                    <th>Date Initiated</th>
-                    <th>Property</th>
-                    <th>Unit</th>
                     <th>Tenant</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Property</th>
                     <th>Amount</th>
+                    <th>Due Day</th>
+                    <th>Paid To</th>
                     <th>Type</th>
+                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,12 +51,14 @@
                     <td data-bind="attr: {'class': style}">
                         <div data-bind="text: status"></div>
                     </td>
-                    <td></td>
-                    <td data-bind="text: paid_to"></td>
-                    <td data-bind="text: address"></td>
-                    <td data-bind="text: unit"></td>
                     <td data-bind="text: tenant"></td>
+                    <td data-bind="text: email"></td>
+                    <td data-bind="text: phone"></td>
+                    <td data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
                     <td data-bind="text: amount"></td>
+                    <td data-bind="text: due_day"></td>
+                    <td data-bind="text: paid_to"></td>
+                    <td></td>
                     <td><div class="btn green property-edit" data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">Edit</div></td>
                 </tr>
                 <!-- /ko -->

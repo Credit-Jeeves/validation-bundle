@@ -62,6 +62,9 @@ function Contracts() {
     data.top = position.top - 300;
     DetailsViewModel.details(data);
   };
+  this.filterAddress = function(data) {
+    console.log(data.id);
+  }
 }
 
 var ContractsViewModel = new Contracts();
