@@ -1,10 +1,63 @@
-<div class="content">
-    <div class='footer-info floatleft'>
-        <strong>{{ 'rj.footer.title' | trans }}</strong>
-        <div class='copyright'>&copy;{{ 'rj.footer.copyright' | trans | replace({'%nYear%': 2013}) }}
+<footer>
+        <div class="clearfix">
+          <div class="text-box">
+            <h3>{{ 'rj.footer.title' | trans }}</h3>
+            <p>{{ 'rj.footer.comment' | trans }}</p>
+            <a href="#" title="Norton Secured" class="banner-ns">Norton Secured</a>
+          </div>
+          <nav>
+            <ul class="navigation clearfix">
+              <li>
+                <dl>
+                  <dt>{{ 'rj.footer.title.learn' | trans }}</dt>
+                  <dd><a href="#" title="{{ 'rj.footer.about_us' | trans }}">{{ 'rj.footer.about_us' | trans }}</a></dd>
+                  <dd><a href="#" title="{{ 'rj.footer.contact_us' | trans }}">{{ 'rj.footer.contact_us' | trans }}</a></dd>
+                  <dd><a href="#" title="{{ 'rj.footer.managment' | trans }}">{{ 'rj.footer.managment' | trans }}</a></dd>
+                  <dd><a href="#" title="{{ 'rj.footer.offers' | trans }}">{{ 'rj.footer.offers' | trans }}</a></dd>
+                </dl>
+              </li>
+              <li>
+                <dl>
+                  <dt>{{ 'rj.footer.title.work' | trans }}</dt>
+                  <dd><a href="#" title="{{ 'rj.footer.process' | trans }}">{{ 'rj.footer.process' | trans }}</a></dd>
+                  <dd><a href="#" title="{{ 'rj.footer.renters' | trans }}">{{ 'rj.footer.renters' | trans }}</a></dd>
+                  <dd><a href="#" title="{{ 'rj.footer.landlord' | trans }}">{{ 'rj.footer.landlord' | trans }}</a></dd>
+                  <dd><a href="#" title="{{ 'rj.footer.faq' | trans }}">{{ 'rj.footer.faq' | trans }}</a></dd>
+                </dl>
+              </li>
+              <li>
+                <dl>
+                  <dt>
+                    {{ 'rj.footer.learn.credit' | trans }}
+                  </dt>
+                  <dd>
+                    <a href="#" title="{{ 'rj.footer.credit.affects' | trans }}">
+                    {{ 'rj.footer.credit.affects' | trans }}
+                    </a>
+                  </dd>
+                  <dd>
+                    <a href="#" title="{{ 'rj.footer.score' | trans }}">
+                      {{ 'rj.footer.score' | trans }}
+                    </a>
+                  </dd>
+                  <dd>
+                    <a href="#" title="{{ 'rj.footer.right' | trans }}">
+                    {{ 'rj.footer.right' | trans }}
+                    </a>
+                  </dd>
+                  <dd>
+                    <a href="#" title="{{ 'rj.footer.advice' | trans }}">
+                      {{ 'rj.footer.advice' | trans }}
+                    </a>
+                  </dd>
+                </dl>
+              </li>
+            </ul>
+            <ul class="copyright clearfix">
+              <li>&copy;{{ 'rj.footer.copyright' | trans | replace({'%nYear%': 2013}) }}</li>
+              <li><a href="#" title="{{ 'rj.footer.terms' | trans }}">{{ 'rj.footer.terms' | trans }}</a></li>
+              <li><a href="#" title="{{ 'rj.footer.policy' | trans }}">{{ 'rj.footer.policy' | trans }}</a></li>
+            </ul>
+          </nav>
         </div>
-    </div>
-    <div class='clearboth'></div>
-</div>
-<div class='clearboth'></div>
-
+</footer>

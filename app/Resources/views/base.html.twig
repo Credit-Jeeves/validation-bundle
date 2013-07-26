@@ -28,6 +28,8 @@
     <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
     {% if application == 'rj' %}
         <link href="{{ asset('bundles/core/css/rj-logos.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('bundles/rjpublic/css/styles.css') }}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('bundles/core/css/rj-fix-style.css') }}" rel="stylesheet" type="text/css" />
     {% else %}
         <link href="{{ asset('bundles/core/css/cj-logos.css') }}" rel="stylesheet" type="text/css" />
     {% endif %}
@@ -70,10 +72,12 @@
     </div>
     <div class="footer">
         {% block footer %}{% endblock %}
-        <div class="experian-logo">
-            <span class="experian-data">Data provided by</span><br>
-            <img alt="" src="{{ asset('bundles/core/images/logo/experian_sm.png') }}" />
-        </div>
+        {% if application == 'cj' %}
+            <div class="experian-logo">
+                <span class="experian-data">Data provided by</span><br>
+                <img alt="" src="{{ asset('bundles/core/images/logo/experian_sm.png') }}" />
+            </div>
+        {% endif %}
     </div>
     {% block javascripts %}{% endblock %}
 </body>
