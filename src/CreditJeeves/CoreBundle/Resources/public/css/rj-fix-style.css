@@ -6,3 +6,7 @@
 .footer h3 {
     color: #666;
 }
+input[type="text"], input[type="password"] {
+    height: 24px;
+    width: auto;
+}
