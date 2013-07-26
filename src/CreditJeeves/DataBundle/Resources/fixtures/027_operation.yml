@@ -1,0 +1,7 @@
+model: CreditJeeves\DataBundle\Entity\Operation 
+fixtures:
+  rjOperationReport_1:
+    orders:
+      - rjOrder_1
+    contract: Contract_1
+    type: rent

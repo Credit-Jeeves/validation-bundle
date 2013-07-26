@@ -18,6 +18,43 @@ use Doctrine\DBAL\DBALException;
  */
 class AjaxController extends Controller
 {
+    /* Property */
+
+    /**
+     * @Route(
+     *     "/property/list",
+     *     name="landlord_properties_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function getPropertiesList()
+    {
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('properties' => array(), 'total' => 0, 'pagination' => array());
+    
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
+        $total = $repo->countProperties($group);
+        $total = count($total);
+        $data['total'] = $total;
+        if ($total) {
+            $items = array();
+            $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit']);
+            foreach ($properties as $property) {
+                $item = $property->getItem($group);
+                $items[] = $item;
+            }
+        }
+        $data['properties'] = $items;
+        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+        return new JsonResponse($data);
+    }
+
     /**
      * @Route(
      *  "/property/add",
@@ -30,7 +67,7 @@ class AjaxController extends Controller
      *
      * @return array
      */
-    public function addAction()
+    public function addProperty()
     {
         $property = array();
         $request = $this->getRequest();
@@ -64,75 +101,25 @@ class AjaxController extends Controller
         } catch (DBALException $e) {
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
         }
-        return new JsonResponse($object->getId());
-    }
 
-    /**
-     * @Route(
-     *     "/group/set",
-     *     name="landlord_group_set",
-     *     defaults={"_format"="json"},
-     *     requirements={"_format"="html|json"},
-     *     options={"expose"=true}
-     * )
-     * @Method({"POST"})
-     */
-    public function setGroup()
-    {
-        $request = $this->getRequest();
-        $data = $request->request->all('group_id');
-        $this->get("core.session.landlord")->setGroupId($data['group_id']);
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($object->getId());
+
+        $data = array(
+            'hasLandlord'   => ($countGroup > 0) ? true : false,
+            'property'      => array(
+                    'id'        => $object->getId(),
+                    'city'      => $object->getCity(),
+                    'number'    => ($object->getNumber()) ? $object->getNumber() : '',
+                    'street'    => $object->getStreet(),
+                    'area'      => $object->getArea(),
+                    'zip'       => ($object->getZip()) ? $object->getZip() : '',
+                    'jb'        => $object->getJb(),
+                    'kb'        => $object->getKb(),
+                    'address'   => $object->getAddress(),
+            ),
+        );
+
         return new JsonResponse($data);
-    }
-
-    /**
-     * @Route(
-     *     "/property/list",
-     *     name="landlord_properties_list",
-     *     defaults={"_format"="json"},
-     *     requirements={"_format"="html|json"},
-     *     options={"expose"=true}
-     * )
-     * @Method({"POST", "GET"})
-     */
-    public function getPropertiesList()
-    {
-        $request = $this->getRequest();
-        $page = $request->request->all('data');
-        $page = $page['data'];
-        $data = array('properties' => array(), 'total' => 0, 'pagination' => array());
-        
-        $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
-        $total = $repo->countProperties($group);
-        $total = count($total);
-        $data['total'] = $total;
-        if ($total) {
-            $items = array();
-            $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit']);
-            foreach ($properties as $property) {
-                $item = $property->getItem($group);
-                $items[] = $item;
-            }
-        }
-        $data['properties'] = $items;
-        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
-        return new JsonResponse($data);
-    }
-
-    private function datagridPagination($total, $limit)
-    {
-        $result = array();
-        $pages = ceil($total / $limit);
-        if ($pages < 2) {
-            return $result;
-        }
-        $result[] = 'First';
-        for ($i = 0; $i < $pages; $i++) {
-            $result[] = $i + 1;
-        }
-        $result[] = 'Last';
-        return $result;
     }
 
     /**
@@ -164,6 +151,9 @@ class AjaxController extends Controller
         $em->flush();
         return new JsonResponse(array());
     }
+    
+
+    /* Unit */
 
     /**
      * @Route(
@@ -265,7 +255,8 @@ class AjaxController extends Controller
         return new JsonResponse($data);
     }
 
-    
+    /* Tenant */
+
     /**
      * @Route(
      *     "/tenant/list",
@@ -301,6 +292,8 @@ class AjaxController extends Controller
         $data['pagination'] = $this->datagridPagination($total, $page['limit']);
         return new JsonResponse($data);
     }
+
+    /* Contract */
 
     /**
      * @Route(
@@ -370,5 +363,87 @@ class AjaxController extends Controller
         $data['total'] = $total;
         $data['pagination'] = $this->datagridPagination($total, $page['limit']);
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route(
+     *     "/contract/save",
+     *     name="landlord_contract_save",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function saveContract()
+    {
+        $request = $this->getRequest();
+        $contract = $request->request->all('contract');
+        $details = $contract['contract'];
+        $action = 'edit';
+        if (isset($details['action'])) {
+            $action = $details['action'];
+        }
+        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($details['id']);
+        $tenant = $contract->getTenant();
+        $tenant->setFirstName($details['first_name']);
+        $tenant->setLastName($details['last_name']);
+        $tenant->setEmail($details['email']);
+        $tenant->setPhone($details['phone']);
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($details['property_id']);
+        $unit = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
+        if (in_array($details['status'], array('approved'))) {
+            $contract->setStatus($details['status']);
+        }
+        $contract->setRent($details['amount']);
+        $contract->setDueDay($details['due_day']);
+        $contract->setStartAt(new \Datetime($details['start']));
+        $contract->setFinishAt(new \Datetime($details['finish']));
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setUnit($unit);
+        $em = $this->getDoctrine()->getManager();
+        if ($action == 'remove') {
+            $em->remove($contract);
+        } else {
+            $em->persist($contract);
+        }
+        $em->flush();
+        return new JsonResponse(array());
+    }
+
+    /* Service methods */
+
+    /**
+     * @Route(
+     *     "/group/set",
+     *     name="landlord_group_set",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function setGroup()
+    {
+        $request = $this->getRequest();
+        $data = $request->request->all('group_id');
+        $this->get("core.session.landlord")->setGroupId($data['group_id']);
+        return new JsonResponse($data);
+    }
+
+    private function datagridPagination($total, $limit)
+    {
+        $result = array();
+        $pages = ceil($total / $limit);
+        if ($pages < 2) {
+            return $result;
+        }
+        $result[] = 'First';
+        for ($i = 0; $i < $pages; $i++) {
+            $result[] = $i + 1;
+        }
+        $result[] = 'Last';
+        return $result;
     }
 }

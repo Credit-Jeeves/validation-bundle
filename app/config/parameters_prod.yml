@@ -12,7 +12,9 @@ parameters:
 
     server: live
     server_name: my.creditjeeves.com
-
+    application_rj: rj
+    application_cj: cj
+    google_maps_key: AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24
     authorize_net:
         login_id: '29fDg7sU24G'
         transaction_key: '474v43G35wJ6Gm2d'

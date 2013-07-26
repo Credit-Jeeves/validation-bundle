@@ -12,6 +12,8 @@ parameters:
     mink.coverage_script_url: 'http://%server_name%/bundles/mink/phpunit_coverage.php'
     server: dev
     google_maps_key: 'AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24'
+    application_rj: rj
+    application_cj: cj
     authorize_net:
         login_id: '7hNc5K44'
         transaction_key: '5588K4QpHFhhqL5A'

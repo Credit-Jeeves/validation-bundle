@@ -1,0 +1,78 @@
+.listOfPayments {
+    border: 1px solid #A9A9A9;
+    moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    display: block;
+    margin-top: 15px;
+}
+.listOfPayments>thead {
+    background-color: #eee;
+    width: 100%;
+    color: #666;
+    padding: 10px;
+    border-bottom: 1px solid #C8C8C8;
+    font-size: 16px;
+    font-family: 'ABeeZee', sans-serif;
+    text-shadow: 2px 2px 2px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=2, offy=2);
+}
+.listOfPayments>thead>tr>th{
+    text-align: left;
+}
+
+.listOfPayments>thead>tr {
+    height:33px;
+    font-weight: normal;
+}
+.listOfPayments>tbody {
+    width: 100%;
+}
+.listOfPayments .address {
+    width: 300px;
+    padding-left: 10px;
+}
+.listOfPayments .payTo {
+    width: 200px;
+    padding-left: 10px;
+}
+.listOfPayments .status {
+    width: 70px;
+    padding-left: 10px;
+}
+.listOfPayments .action {
+    width: 370px;
+}
+.listOfPayments td {
+    color: #000;
+    font-weight: bold;
+}
+.infoBlock {
+    background-color: #EEEEEE;
+    display: block;
+    padding: 10px;
+    moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+}
+.infoBlock>.text {
+    width: 325px;
+    float: left;
+    padding-right: 30px;
+}
+.infoBlock>.text>h3{
+    color: #73AF27;
+}
+.infoBlock>.img {
+    float: left;
+}
+.pod-large {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.infoBlock>.text>p{
+    line-height: 20px;
+    font-size: 15px;
+    font-family: 'ABeeZee', sans-serif;
+    color: #717171;
+}

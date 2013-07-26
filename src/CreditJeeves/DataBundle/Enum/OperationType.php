@@ -7,4 +7,5 @@ namespace CreditJeeves\DataBundle\Enum;
 class OperationType extends Base
 {
     const REPORT = 'report';
+    const RENT = 'rent';
 }

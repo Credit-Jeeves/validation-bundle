@@ -1,3 +1,9 @@
-<div class="alert-body">
-    ******
-</div>
+{% if alertMessages is defined %}
+    <div class="alert-body">
+        <span class="titleAlert">{{ 'rj.alert.title' | trans }}: </span>
+        {% for key, message in alertMessages %}
+            {{ key }}) {{ message }}
+        {% endfor %}
+    </div>
+{% endif %}
+

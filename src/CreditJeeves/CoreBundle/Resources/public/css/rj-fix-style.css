@@ -1,0 +1,18 @@
+.footer {
+    padding: 0px;
+    text-align: left;
+    color: black;
+}
+.footer h3 {
+    color: #666;
+}
+input[type="text"], input[type="password"] {
+    height: 24px;
+    width: auto;
+}
+table {
+    width: auto;
+}
+.business-logins {
+    line-height: 24px;
+}

@@ -91,7 +91,7 @@ class PublicController extends Controller
         $view = $form->createView();
 
         return array(
-            'address'   => $property->getAddress(),
+            'address'   => $property->getFullAddress(),
             'form'      => $form->createView(),
             'propertyId'=> $property->getId(),
         );
@@ -155,8 +155,8 @@ class PublicController extends Controller
             unset($propertyList[$Property->getId()]);
         }
 
-        $propertyList[0] = $Property;
-        arsort($propertyList);
+        $propertyList = array_merge(array($Property), $propertyList);
+
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
 
         if ($countGroup <= 0) {
