@@ -10,3 +10,9 @@ input[type="text"], input[type="password"] {
     height: 24px;
     width: auto;
 }
+table {
+    width: auto;
+}
+.business-logins {
+    line-height: 24px;
+}

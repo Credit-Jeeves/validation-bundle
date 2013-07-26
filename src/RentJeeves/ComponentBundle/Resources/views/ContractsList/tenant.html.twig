@@ -13,7 +13,7 @@
     {% for contract in contracts %}
         <tr>
             <td>
-                {{ contract.property.address }}
+                {{ contract.property.fullAddress }}
                 {% if contract.unit %}
                     <span>{{ contract.unit }}</span>
                 {% else %}
