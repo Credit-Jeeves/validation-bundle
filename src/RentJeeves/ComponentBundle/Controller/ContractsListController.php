@@ -27,7 +27,7 @@ class ContractsListController extends Controller
     }
 
     /**
-     * @Template("RjComponentBundle:ContractsList:index.html.twig")
+     * @Template("RjComponentBundle:ContractsList:tenant.html.twig")
      * @return multitype:
      */
     public function tenantAction()

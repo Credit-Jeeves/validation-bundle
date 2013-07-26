@@ -16,4 +16,12 @@ class IndexController extends Controller
     {
         return array();
     }
+
+    /**
+     * @Template()
+     */
+    public function infoAction()
+    {
+        return array();
+    }
 }
