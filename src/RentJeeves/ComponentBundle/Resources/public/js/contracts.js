@@ -4,30 +4,102 @@ function ContractDetails() {
   this.approve = ko.observable(false);
   this.review = ko.observable(false);
   this.edit = ko.observable(false);
+  this.invite = ko.observable(false);
   this.marginTop = ko.observable(0);
+  this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
   this.editContract = function(data) {
-    self.marginTop(data.top + 'px');
-    self.contract(data);
+    self.clearDetails();
+    self.approve(false);
+    if (data.top != undefined) {
+      self.marginTop(data.top);
+      self.contract(data);
+    }
     self.edit(true);
+    window.jQuery.curCSS = window.jQuery.css;
+    $('#contract-edit-start').DatePicker({
+      format:'m/d/Y',
+      date: $('#contract-edit-start').val(),
+      current: $('#contract-edit-start').val(),
+      starts: 1,
+      position: 'r',
+      onBeforeShow: function(){
+        $('#contract-edit-start').DatePickerSetDate($('#contract-edit-start').val(), true);
+      },
+      onChange: function(formated, dates){
+        $('#contract-edit-start').val(formated);
+        $('#contract-edit-start').DatePickerHide();
+        var contract = self.contract();
+        contract.start = formated;
+        self.contract(contract);
+      }
+    });  
+    $('#contract-edit-finish').DatePicker({
+      format:'m/d/Y',
+      date: $('#contract-edit-finish').val(),
+      current: $('#contract-edit-finish').val(),
+      starts: 1,
+      position: 'r',
+      onBeforeShow: function(){
+        $('#contract-edit-finish').DatePickerSetDate($('#contract-edit-finish').val(), true);
+      },
+      onChange: function(formated, dates){
+        $('#contract-edit-finish').val(formated);
+        $('#contract-edit-finish').DatePickerHide();
+        var contract = self.contract();
+        contract.finish = formated;
+        self.contract(contract);
+      }
+    });  
+    
   };
   this.approveContract = function(data) {
-    self.marginTop(data.top + 'px');
-    self.contract(data);
+    self.clearDetails();
+    self.approve(false);
+    if (data.top != undefined) {
+      self.marginTop(data.top);
+      self.contract(data);
+    }
     self.approve(true);
   };
   this.reviewContract = function(data) {
-    self.marginTop(data.top + 'px');
-    self.contract(data);
+    self.clearDetails();
+    self.approve(false);
+    if (data.top != undefined) {
+      self.marginTop(data.top);
+      self.contract(data);
+    }
     self.review(true);
   };
-
+  this.approveSave = function() {
+    var data = self.contract();
+    data.status = 'approved';
+    self.contract(data);
+    self.saveContract();
+  };
+  this.removeTenant = function() {
+    var data = self.contract();
+    data.action = 'remove';
+    self.contract(data);
+    self.saveContract();
+  };
   this.clearDetails = function(){
     self.edit(false);
     self.review(false);
     self.approve(false);
   };
   this.saveContract = function(){
-    
+    $.ajax({
+      url: Routing.generate('landlord_contract_save'),
+      type: 'POST',
+      dataType: 'json',
+      data: {
+        'contract': self.contract()
+      },
+      success: function(response) {
+        self.clearDetails();
+        ContractsViewModel.ajaxAction();
+      }
+    });
   };
 }
 
@@ -85,6 +157,9 @@ function Contracts() {
     var position = $('#edit-' + data.id).position();
     data.top = position.top - 300;
     DetailsViewModel.reviewContract(data);
+  };
+  this.addTenant = function() {
+    
   };
   this.filterAddress = function(data) {
     console.log(data.id);

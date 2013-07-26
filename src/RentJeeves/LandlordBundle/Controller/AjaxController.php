@@ -347,6 +347,53 @@ class AjaxController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @Route(
+     *     "/contract/save",
+     *     name="landlord_contract_save",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function saveContract()
+    {
+        $request = $this->getRequest();
+        $contract = $request->request->all('contract');
+        $details = $contract['contract'];
+        $action = 'edit';
+        if (isset($details['action'])) {
+            $action = $details['action'];
+        }
+        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($details['id']);
+        $tenant = $contract->getTenant();
+        $tenant->setFirstName($details['first_name']);
+        $tenant->setLastName($details['last_name']);
+        $tenant->setEmail($details['email']);
+        $tenant->setPhone($details['phone']);
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($details['property_id']);
+        $unit = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
+        if (in_array($details['status'], array('approved'))) {
+            $contract->setStatus($details['status']);
+        }
+        $contract->setRent($details['amount']);
+        $contract->setDueDay($details['due_day']);
+        $contract->setStartAt(new \Datetime($details['start']));
+        $contract->setFinishAt(new \Datetime($details['finish']));
+        $contract->setTenant($tenant);
+        $contract->setProperty($property);
+        $contract->setUnit($unit);
+        $em = $this->getDoctrine()->getManager();
+        if ($action == 'remove') {
+            $em->remove($contract);
+        } else {
+            $em->persist($contract);
+        }
+        $em->flush();
+        return new JsonResponse(array());
+    }
+
     /* Service methods */
 
     /**

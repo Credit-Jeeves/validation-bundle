@@ -21,6 +21,13 @@ table tbody tr td {
     border: 1px #c8c8c8 solid;
 }
 
+table.contract-details,
+table.contract-details tbody,
+table.contract-details tbody tr td {
+    border: none;
+    padding: 5px;
+}
+
 table tbody tr td {
     padding: 10px;
 }
@@ -162,4 +169,16 @@ table.properties-table th {
         color-stop(0, rgb(255,0,0)),
         color-stop(0.65, rgb(255,255,255))
     );
+}
+
+.contract-remove {
+    color: red;
+    cursor: pointer;
+}
+
+.contract-hint {
+    background-color: #ffff00;
+    padding: 10px;
+    border: 2px solid #ffff33;
+    margin: 10px 0;
 }
