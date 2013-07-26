@@ -1113,7 +1113,14 @@
                 <source>email_rj.creditjeeves.team</source>
                 <target>The RentTrack Team</target>
             </trans-unit>
-
+            <trans-unit id="rj.footer.title">
+                <source>rj.footer.title</source>
+                <target>RentTrack, at your service.</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.copyright">
+                <source>rj.footer.copyright</source>
+                <target>%nYear% RentTrack LLC. All rights reserved.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
