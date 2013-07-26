@@ -1,4 +1,10 @@
 .alert-body {
-    color: red;
-    display: none;
+    color: white;
+    background-color: #F9A020;
+    background-image: linear-gradient(#FAAE24, #F67A16);
+    padding: 12px;
+    font-size: 15px;
+}
+.alert-body>.titleAlert {
+    font-weight: bold;
 }

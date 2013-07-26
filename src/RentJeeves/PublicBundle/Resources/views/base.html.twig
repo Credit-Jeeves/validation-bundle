@@ -76,51 +76,9 @@
           {% block content %}
           {% endblock %}
       </div>
-      <footer>
-        <div class="clearfix">
-          <div class="text-box">
-            <h3>RentJeeves, at your service.</h3>
-            <p>RentJeeves provides unique credit benefits and helps tenants and landlords the reduce friction with the current rent payment processes.</p>
-            <a href="#" title="Norton Secured" class="banner-ns">Norton Secured</a>
-          </div>
-          <nav>
-            <ul class="navigation clearfix">
-              <li>
-                <dl>
-                  <dt>Learn About RentJeeves</dt>
-                  <dd><a href="#" title="About Us">About Us</a></dd>
-                  <dd><a href="#" title="Contact Us">Contact Us</a></dd>
-                  <dd><a href="#" title="Management Team">Management Team</a></dd>
-                  <dd><a href="#" title="Offers">Offers</a></dd>
-                </dl>
-              </li>
-              <li>
-                <dl>
-                  <dt>How It Works</dt>
-                  <dd><a href="#" title="The Process">The Process</a></dd>
-                  <dd><a href="#" title="Renters">Renters</a></dd>
-                  <dd><a href="#" title="Landlords">Landlords</a></dd>
-                  <dd><a href="#" title="FAQs">FAQs</a></dd>
-                </dl>
-              </li>
-              <li>
-                <dl>
-                  <dt>Learn About Credit</dt>
-                  <dd><a href="#" title="How Credit Affects You">How Credit Affects You</a></dd>
-                  <dd><a href="#" title="Your Credit Score">Your Credit Score</a></dd>
-                  <dd><a href="#" title="Your Credit Rights">Your Credit Rights</a></dd>
-                  <dd><a href="#" title="Advice">Advice</a></dd>
-                </dl>
-              </li>
-            </ul>
-            <ul class="copyright clearfix">
-              <li>&copy; 2013 RentJeeves, LLC.All rights reserved.</li>
-              <li><a href="#" title="Terms of Service">Terms of Service</a></li>
-              <li><a href="#" title="Privacy Policy">Privacy Policy</a></li>
-            </ul>
-          </nav>
-        </div>
-      </footer>
+      {% block footer %}
+        {{ render(controller('RjComponentBundle:Footer:index')) }}
+      {% endblock %}
     </div>
     {% javascripts  '@RjPublicBundle/Resources/public/js/jquery-1.10.2.min.js'
                     '@RjPublicBundle/Resources/public/js/jquery-ui.js'

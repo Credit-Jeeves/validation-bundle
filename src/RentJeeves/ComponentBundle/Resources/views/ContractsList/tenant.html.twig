@@ -1,0 +1,39 @@
+<div class="pod-large pod-border pod-padding shadow">
+    <h1>Current Pyments</h1>
+    <table class="listOfPayments">
+        <thead>
+            <tr>
+                <th class="address">Address</th>
+                <th class="payTo">Pay To</th>
+                <th class="status">Status</th>
+                <th class="action"></th>
+            </tr>
+        </thead>
+    <tbody>
+    {% for contract in contracts %}
+        <tr>
+            <td>
+                {{ contract.property.fullAddress }}
+                {% if contract.unit %}
+                    <span>{{ contract.unit }}</span>
+                {% else %}
+                    <span>{{ contract.search }}</span>
+                {% endif %}
+            </td>
+            <td>
+                {{ contract.holding }}<br />
+                {{ contract.group }}
+            </td>
+            <td>
+                {{ contract.status }}
+            </td>
+            <td>
+                <button class="button {% if contract.status == 'pending' %} greyButton {% endif %}">
+                    <span>Set Up Your First Rental Payment</span>
+                </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>

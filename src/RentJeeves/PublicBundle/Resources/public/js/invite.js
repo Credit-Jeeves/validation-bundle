@@ -92,7 +92,7 @@ $(document).ready(function(){
               error: function(jqXHR, errorThrown, textStatus) {;
               },
               success: function(propertyId, textStatus, jqXHR) {
-                location.href = Routing.generate('iframe_search_check', {'propertyId':propertyId});
+                location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
               }
             });
             

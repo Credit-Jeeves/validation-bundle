@@ -5,11 +5,11 @@ imports:
     - { resource: ../base/fos.yml }
     - { resource: ../base/doctrine.yml }
     - { resource: ../base/jms.yml }
-    - { resource: ../base/twig.yml }
     - { resource: ../base/swiftmailer.yml }
     - { resource: ../base/assetic.yml }
     - { resource: ../base/email.yml }
     - { resource: ../base/framework.yml }
+    - { resource: ../rj/twig.yml }
 
 parameters:
     server_name: '%server_name_rj%'
