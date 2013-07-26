@@ -14,6 +14,11 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
+        $twig = $this->container->get('twig');
+        $twig->addGlobal('alertMessages', array(
+            '1' => $this->get('translator')->trans('rj.task.firstRent'),
+        ));
+
         return array();
     }
 

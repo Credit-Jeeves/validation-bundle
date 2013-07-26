@@ -1165,7 +1165,6 @@
                 <source>rj.footer.faq</source>
                 <target>FAQ</target>
             </trans-unit>
-
             <trans-unit id="rj.footer.learn.credit">
                 <source>rj.footer.learn.credit</source>
                 <target>Learn About Credit</target>
@@ -1186,7 +1185,6 @@
                 <source>rj.footer.advice</source>
                 <target>Advice</target>
             </trans-unit>
-
             <trans-unit id="rj.footer.terms">
                 <source>rj.footer.terms</source>
                 <target>Terms of Service</target>
@@ -1194,6 +1192,14 @@
             <trans-unit id="rj.footer.policy">
                 <source>rj.footer.policy</source>
                 <target>Privacy Policy</target>
+            </trans-unit>
+            <trans-unit id="rj.alert.title">
+                <source>rj.alert.title</source>
+                <target>You have some incomplete tasks</target>
+            </trans-unit>
+            <trans-unit id="rj.task.firstRent">
+                <source>rj.task.firstRent</source>
+                <target>Set up your first rent payment</target>
             </trans-unit>
         </body>
     </file>
