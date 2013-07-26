@@ -166,6 +166,16 @@ abstract class Contract
     protected $updatedAt;
 
     /**
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
+     *     mappedBy="contract",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $operation;
+
+    /**
      * Get id
      *
      * @return integer
