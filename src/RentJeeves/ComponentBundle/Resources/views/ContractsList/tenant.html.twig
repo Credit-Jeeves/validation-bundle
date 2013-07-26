@@ -21,13 +21,14 @@
                 {% endif %}
             </td>
             <td>
-                {{ contract.holding }}|{{ contract.group }}
+                {{ contract.holding }}<br />
+                {{ contract.group }}
             </td>
             <td>
                 {{ contract.status }}
             </td>
             <td>
-                <button class="button greyButton">
+                <button class="button {% if contract.status == 'pending' %} greyButton {% endif %}">
                     <span>Set Up Your First Rental Payment</span>
                 </button>
             </td>

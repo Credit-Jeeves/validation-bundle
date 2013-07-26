@@ -72,6 +72,8 @@ $(document).ready(function(){
             $('.notFound').find('.titleAddress').html(data.property.number+' '+data.property.street);
             $('.notFound').find('.contentAddress').html(data.property.city+', '+data.property.area+' '+data.property.zip);
             $('.notFound').find('.inviteLandlord').attr('href', link);
+            $('.notFound').parent().parent().find('.titleNotFound').show();
+            $('.notFound').parent().parent().find('.titleSearch').hide();
             var contentString = getHtmlPopap(
               $('.notFound').find('.titleAddress').html(),
               $('.notFound').find('.contentAddress').html()
