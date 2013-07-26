@@ -263,10 +263,12 @@ abstract class User extends BaseUser
         $User->setMiddleInitial($this->getMiddleInitial());
         $User->setLastName($this->getLastName());
         $User->copyPassword($this->getPassword());
+        $User->setCulture($this->getCulture());
         $User->setCreatedAt($this->getCreatedAt()); // we'll store user's created date
         $User->setEmail($this->getEmail());
         $User->setHasData(false);
         // TODO recheck
+        $User->setIsActive(true);
         $User->setEnabled($this->enabled);
         $User->setLocked($this->locked);
         $User->setExpired($this->expired);

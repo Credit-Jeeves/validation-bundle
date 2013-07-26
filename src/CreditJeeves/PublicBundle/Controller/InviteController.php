@@ -3,6 +3,7 @@
 namespace CreditJeeves\PublicBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -11,9 +12,7 @@ use CreditJeeves\ApplicantBundle\Form\Type\UserNewType;
 use CreditJeeves\ApplicantBundle\Form\Type\UserInvitePasswordType;
 
 /**
- * 
  * @Route("/invite")
- *
  */
 class InviteController extends Controller
 {
@@ -30,6 +29,7 @@ class InviteController extends Controller
     {
         $isFullForm = true;
         $request = $this->get('request');
+        /** @var User $User */
         $User = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' =>  $code));
         if (empty($User)) {
             $i18n = $this->get('translator');
@@ -37,9 +37,8 @@ class InviteController extends Controller
             $this->get('session')->getFlashBag()->add('message_body', $i18n->trans('error.user.absent.text'));
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
-        $address = new Address();
-        $address->setUser($User);
-        $User->addAddress($address);
+
+
         $date = $User->getDateOfBirth();
         $sCurrentDob = null;
         if (!empty($date)) {
@@ -54,6 +53,10 @@ class InviteController extends Controller
                 $User
             );
         } else {
+            $address = new Address();
+            $address->setUser($User);
+            $User->addAddress($address);
+            $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
             $form = $this->createForm(
                 new UserNewType(),
                 $User
@@ -71,8 +74,6 @@ class InviteController extends Controller
                 if (empty($sCurrentDob) || $sCurrentDob != $sFormDob) {
                     $User->setInviteCode(null);
                     $em = $this->getDoctrine()->getManager();
-
-                    $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
                     $em->persist($User);
                     $em->flush();
                     return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
@@ -85,6 +86,6 @@ class InviteController extends Controller
             'form' => $form->createView(),
             'isFullForm' => $isFullForm,
             'sName' => $User->getFirstName(),
-            );
+        );
     }
 }

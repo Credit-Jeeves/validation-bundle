@@ -57,14 +57,13 @@ class UserType extends AbstractType
             array(
                 'error_bubbling' => true,
                 'label' => 'Date of Birth',
-                'error_bubbling' => true,
                 'format' => 'MMddyyyy',
                 'years' => range(date('Y') - 110, date('Y')),
-                'empty_value' => array(
-                    'year' => 'Year',
-                    'month' => 'Month',
-                    'day' => 'Day',
-                ),
+//                'empty_value' => array( // TODO fix validation problem (error message processing)
+//                    'year' => 'Year',
+//                    'month' => 'Month',
+//                    'day' => 'Day',
+//                ),
             )
         );
 
@@ -81,7 +80,7 @@ class UserType extends AbstractType
                     new NotBlank(
                         array(
                             'groups' => array('user_address_new'),
-                            'message' => 'error.user.password.empty',
+                            'message' => 'error.user.address.empty',
                         )
                     ),
                 )
@@ -120,9 +119,8 @@ class UserType extends AbstractType
                 'mapped' => false,
                 'constraints' => new True(
                     array(
-                            'message' => 'error.user.tos',
-                            'groups' => 'registration_tos'
-                            
+                        'message' => 'error.user.tos',
+                        'groups' => 'registration_tos'
                     )
                 ),
             )
@@ -136,9 +134,9 @@ class UserType extends AbstractType
                 'cascade_validation' => true,
                 'data_class' => 'CreditJeeves\DataBundle\Entity\User',
                 'validation_groups' => array(
-                        'registration_tos',
-                        'user_profile',
-                        'user_address_new',
+                    'registration_tos',
+                    'user_profile',
+                    'user_address_new',
                 ),
             )
         );

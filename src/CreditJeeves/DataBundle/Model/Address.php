@@ -37,12 +37,6 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="unit", type="encrypt", nullable=true)
-     * @Assert\NotBlank(
-     *     message="error.user.unit.empty",
-     *     groups={
-     *         "user_address_new"
-     *     }
-     * )
      * @Assert\Length(
      *     min=1,
      *     max=31,

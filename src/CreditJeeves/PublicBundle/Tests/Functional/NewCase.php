@@ -41,7 +41,7 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_addresses_0_zip' => '34084',
                 'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3029349291',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
-                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => 'Feb',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '02',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
             )
         );

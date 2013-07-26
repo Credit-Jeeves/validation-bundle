@@ -49,9 +49,21 @@ Manual Installation for dev env
 -------------------------------
 
 ```
-./bin/console doctrine:database:drop --force
-./bin/console doctrine:database:create
-./bin/console doctrine:schema:create
-./bin/console --env=dev khepin:yamlfixtures:load
+php bin/console.php doctrine:database:drop --force
+php bin/console.php doctrine:database:create
+php bin/console.php doctrine:schema:create --app=rj
+php bin/console.php khepin:yamlfixtures:load --env=dev
+
+
+php bin/console.php doctrine:database:drop --force --env=test
+php bin/console.php doctrine:database:create --env=test
+php bin/console.php doctrine:schema:create --app=rj --env=test
+php bin/console.php khepin:yamlfixtures:load --env=test
 ```
 
+Manual migration for prod env
+-------------------------------
+
+```
+php bin/console.php doctrine:migrations:migrate
+```

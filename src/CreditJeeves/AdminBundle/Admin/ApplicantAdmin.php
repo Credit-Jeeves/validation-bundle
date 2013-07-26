@@ -58,9 +58,9 @@ class ApplicantAdmin extends Admin
             ->add('middle_initial')
             ->add('last_name')
             ->add('email')
-            ->add('state')
-            ->add('zip')
-            ->add('city')
+//            ->add('state')
+//            ->add('zip')
+//            ->add('city')
             ->add('phone')
             ->add('current_score')
             ->add(

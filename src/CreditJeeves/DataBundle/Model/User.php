@@ -200,7 +200,15 @@ abstract class User extends BaseUser
      * @Assert\Date(
      *     message="error.user.date",
      *     groups={
-     *         "user_profile"
+     *         "user_profile",
+     *         "invite_short"
+     *     }
+     * )
+     * @Assert\NotBlank(
+     *     message="error.user.date.empty",
+     *     groups={
+     *         "user_profile",
+     *         "invite_short"
      *     }
      * )
      */
@@ -453,7 +461,7 @@ abstract class User extends BaseUser
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
      *      mappedBy="user",
-     *      cascade={"persist"}
+     *      cascade={"persist", "remove", "merge"}
      * )
      */
     protected $addresses;

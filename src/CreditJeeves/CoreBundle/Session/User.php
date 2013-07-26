@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\CoreBundle\Session;
 
+use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -28,7 +29,7 @@ abstract class User
 
     public function isAdmin()
     {
-        return $this->session->has(self::USER_ADMIN);
+        return $this->session->has(UserType::ADMIN);
     }
 
     protected function findUser($nUserId)

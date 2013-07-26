@@ -33,5 +33,5 @@ switch ($app) {
         break;
 }
 $application = new Application($kernel);
-$application->getDefinition()->addOption(new InputOption('--app', '-a'));
+$application->getDefinition()->addOption(new InputOption('--app', '-a', InputOption::VALUE_REQUIRED, 'Application'));
 $application->run($input);

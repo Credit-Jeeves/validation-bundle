@@ -30,6 +30,8 @@ class NewController extends Controller
         $request = $this->get('request');
         $query = $request->query;
         $Lead = new Lead();
+
+        /** @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
         $Group = new Group();
         if ($code) {

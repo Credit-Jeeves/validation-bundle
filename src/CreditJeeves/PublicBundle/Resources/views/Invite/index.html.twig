@@ -24,9 +24,9 @@
     <div class="column-middle floatright">
         <div class="pod-middle pod-border pod-padding shadow">
             {% if not isFullForm %}
-            <h1>{{ 'user.welcome.name' | trans | replace({'%sName%': sName}) }}</h1>
+                <h1>{{ 'user.welcome.name' | trans | replace({'%sName%': sName}) }}</h1>
             {% else %}
-            <h1>{{ 'user.welcome' | trans }}</h1>
+                <h1>{{ 'user.welcome' | trans }}</h1>
             {% endif %}
             <div class="row-20"></div>
             <h3 class="green">{{ 'user.invite.title' | trans }}</h3>
@@ -39,37 +39,33 @@
             {% endif %}
             <div class="row-20"></div>
                 <form action="{{ path('applicant_invite', { 'code': code }) }}" method="post" {{ form_enctype(form) }}>
-                    {% if form_errors(form) | length > 0 %}
-                    <div class="flash-error">
-                        {{ form_errors(form) }}
-                    </div>
-                    {% endif %}
+                    {{ form_errors(form) }}
                     <fieldset>
-                    {% if isFullForm %}
-                        {% include 'ComponentBundle:User:name.html.twig'     with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        {% include 'ComponentBundle:User:email.html.twig'    with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        <div class="row-20"></div>
-                        {% include 'ComponentBundle:User:ssn.html.twig'      with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        {% include 'ComponentBundle:User:address.html.twig'  with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        {% include 'ComponentBundle:User:phone.html.twig'    with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        <div class="row-20"></div>
-                    {% else %}
-                        {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        <div class="row-20"></div>
-                        {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
-                        <div class="clearboth"></div>
-                        <div class="row-20"></div>
-                    {% endif %}
+                        {% if isFullForm %}
+                            {% include 'ComponentBundle:User:name.html.twig'     with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            {% include 'ComponentBundle:User:email.html.twig'    with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            <div class="row-20"></div>
+                            {% include 'ComponentBundle:User:ssn.html.twig'      with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            {% include 'ComponentBundle:User:address.html.twig'  with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            {% include 'ComponentBundle:User:phone.html.twig'    with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            <div class="row-20"></div>
+                        {% else %}
+                            {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            <div class="row-20"></div>
+                            {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
+                            <div class="clearboth"></div>
+                            <div class="row-20"></div>
+                        {% endif %}
                         {% include 'ComponentBundle:User:tos.html.twig'      with { 'form' : form } %}
                         <div class="clearboth"></div>
                         {{ form_rest(form) }}
