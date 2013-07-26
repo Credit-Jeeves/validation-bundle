@@ -61,6 +61,13 @@ php bin/console.php doctrine:schema:create --app=rj --env=test
 php bin/console.php khepin:yamlfixtures:load --env=test
 ```
 
+or
+
+```
+php bin/environment.php --profile=data/environment/dev/builder/db.ini
+```
+
+
 Manual migration for prod env
 -------------------------------
 
