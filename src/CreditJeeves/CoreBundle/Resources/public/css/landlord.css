@@ -176,6 +176,18 @@ table.properties-table th {
     cursor: pointer;
 }
 
+.contract-input {
+    width: 150px;
+}
+
+.contract-first {
+    width: 100px;
+}
+
+.contract-last {
+    width: 150px;
+}
+
 .contract-hint {
     background-color: #ffff00;
     padding: 10px;

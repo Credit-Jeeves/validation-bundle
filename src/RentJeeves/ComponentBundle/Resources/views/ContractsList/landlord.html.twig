@@ -14,8 +14,8 @@
                         <tr>
                             <td width="25%">Name:</td>
                             <td>
-                                <input type="text" data-bind="value: first_name">
-                                <input type="text" data-bind="value: last_name">
+                                <input class="contract-first" type="text" data-bind="value: first_name">
+                                <input class="contract-last" type="text" data-bind="value: last_name">
                             </td>
                         </tr>
                         <tr>
@@ -42,21 +42,21 @@
                         <tr>
                             <td width="25%">Amount:</td>
                             <td>
-                                <input type="text"  data-bind="value: amount">
+                                <input class="contract-input" type="text"  data-bind="value: amount">
                             </td>
                             <td width="25%">Due:</td>
                             <td>
-                                <input type="text" data-bind="value: due_day">
+                                <input class="contract-input" type="text" data-bind="value: due_day">
                             </td>
                         </tr>
                         <tr>
                             <td>Start:</td>
                             <td>
-                                <input id="contract-edit-start" type="text"  data-bind="value: start">
+                                <input class="contract-input" id="contract-edit-start" type="text"  data-bind="value: start">
                             </td>
                             <td width="25%">End:</td>
                             <td>
-                                <input id="contract-edit-finish" type="text"  data-bind="value: finish">
+                                <input id="contract-edit-finish" class="contract-input" type="text"  data-bind="value: finish">
                             </td>
                         </tr>
                     </tbody>

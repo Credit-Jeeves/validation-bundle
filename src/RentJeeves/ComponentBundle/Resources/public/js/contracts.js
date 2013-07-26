@@ -28,9 +28,6 @@ function ContractDetails() {
       onChange: function(formated, dates){
         $('#contract-edit-start').val(formated);
         $('#contract-edit-start').DatePickerHide();
-        var contract = self.contract();
-        contract.start = formated;
-        self.contract(contract);
       }
     });  
     $('#contract-edit-finish').DatePicker({
@@ -45,12 +42,8 @@ function ContractDetails() {
       onChange: function(formated, dates){
         $('#contract-edit-finish').val(formated);
         $('#contract-edit-finish').DatePickerHide();
-        var contract = self.contract();
-        contract.finish = formated;
-        self.contract(contract);
       }
-    });  
-    
+    });
   };
   this.approveContract = function(data) {
     self.clearDetails();
@@ -88,6 +81,10 @@ function ContractDetails() {
     self.approve(false);
   };
   this.saveContract = function(){
+    var contract = self.contract();
+    contract.finish = $('#contract-edit-finish').val() || contract.finish;
+    contract.start = $('#contract-edit-start').val() || contract.start;
+    self.contract(contract);
     $.ajax({
       url: Routing.generate('landlord_contract_save'),
       type: 'POST',
@@ -173,4 +170,9 @@ $(document).ready(function(){
   ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
   ko.applyBindings(DetailsViewModel, $('#contract-actions').get(0));
   ContractsViewModel.ajaxAction();
+  
+  
+  
+  
+  
 });
