@@ -20,14 +20,13 @@ class Contract extends Base
         $tenant = $this->getTenant();
         $unit = $this->getUnit();
         $status = $this->getStatusArray();
+        $result['id'] = $this->getId();
         $result['status'] = $status['status'];
         $result['style'] = $status['class'];
-        $result['address'] = $property->getAddress();
-        $result['unit'] = 'Not selected';
-        if ($unit) {
-            $result['unit'] = $unit->getName();
-        }
-        $result['tenant'] = $tenant->getFullName();
+        $result['address'] = $this->getRentAddress($property, $unit);
+        $result['tenant'] = ucfirst(strtolower($tenant->getFullName()));
+        $result['email'] = $tenant->getEmail();
+        $result['phone'] = $tenant->getFomattedPhone();
         $result['amount'] = 'undefined';
         if ($rent = $this->getRent()) {
             $result['amount'] = '$'.$this->getRent();
@@ -60,12 +59,22 @@ class Contract extends Base
                 $result['class'] = 'contract-late';
                 return $result;
             }
-            $result['status'] = 'PAID';
+            $result['status'] = 'CURRENT';
             $result['class'] = '';
             return $result;
         }
         $result['status'] = strtoupper($this->getStatus());
         $result['class'] = '';
         return $result;
+    }
+
+    public function getRentAddress($property, $unit)
+    {
+        $result = array();
+        $result[] = $property->getAddress();
+        if ($unit) {
+            $result[] = $unit->getName();
+        }
+        return implode(', #', $result);
     }
 }

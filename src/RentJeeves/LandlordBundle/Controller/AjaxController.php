@@ -389,4 +389,28 @@ class AjaxController extends Controller
         $data['pagination'] = $this->datagridPagination($total, $page['limit']);
         return new JsonResponse($data);
     }
+
+    /**
+     * @Route(
+     *     "/contract/filter",
+     *     name="landlord_actions_filter",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function getActionsFilter()
+    {
+        $items = array();
+        $total = 0;
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('actions' => array(), 'total' => 0, 'pagination' => array());
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+        
+        return new JsonResponse($data);
+    }
 }

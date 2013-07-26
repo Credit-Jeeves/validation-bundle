@@ -112,4 +112,9 @@ class Tenant extends User
 
         return $result;
     }
+
+    public function getFomattedPhone()
+    {
+        return $this->formatPhoneOutput($this->getPhone());
+    }
 }
