@@ -2,6 +2,9 @@
 
 namespace CreditJeeves\PublicBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\DataBundle\Enum\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,6 +13,7 @@ use CreditJeeves\ApplicantBundle\Form\Type\LeadNewType;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Group;
+use Symfony\Component\HttpFoundation\Request;
 
 class NewController extends Controller
 {
@@ -22,9 +26,12 @@ class NewController extends Controller
      */
     public function indexAction($code = null)
     {
+        /** @var Request $request */
         $request = $this->get('request');
         $query = $request->query;
         $Lead = new Lead();
+
+        /** @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
         $Group = new Group();
         if ($code) {
@@ -37,6 +44,9 @@ class NewController extends Controller
             }
             // User details
             $User = $this->bindUserDetails($User, $query);
+            $address = new Address();
+            $address->setUser($User);
+            $User->addAddress($address);
             $Lead->setGroup($Group);
         }
         $Lead->setUser($User);
@@ -50,6 +60,7 @@ class NewController extends Controller
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
+                /** @var Lead $Lead */
                 $Lead = $form->getData();
 
                 if ($this->validateLead($Lead)) {
@@ -57,10 +68,13 @@ class NewController extends Controller
                     $User = $Lead->getUser();
                     $User->setCulture($request->getLocale());
                     $User->setUsername($User->getEmail());
-                    $User->setIsVerified('none');
-                    $User->setType('applicant');
+                    $User->setIsVerified(UserIsVerified::NONE);
+                    $User->setType(UserType::APPLICANT);
+                    $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
+
                     $User->setInviteCode($Lead->getGroup()->getCode());
                     $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
+
                     $em = $this->getDoctrine()->getManager();
                     $User->setPassword(
                         $this->container->get('user.security.encoder.digest')
@@ -117,6 +131,12 @@ class NewController extends Controller
         return $isExist ? false : true;
     }
 
+    /**
+     * @param User $User
+     * @param \Symfony\Component\HttpFoundation\ParameterBag $query
+     *
+     * @return User
+     */
     private function bindUserDetails($User, $query)
     {
         if ($query->has('fn')) {

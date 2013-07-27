@@ -46,4 +46,6 @@ stof_doctrine_extensions:
             loggable: true
     class:
         loggable: CreditJeeves\CoreBundle\EventListener\Loggable
+    uploadable:
+        validate_writable_directory: false
 

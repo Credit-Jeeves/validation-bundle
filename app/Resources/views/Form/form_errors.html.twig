@@ -9,3 +9,10 @@
         {% endif %}
     {% endspaceless %}
 {% endblock form_errors %}
+
+{% block form_enctype %}
+    {% spaceless %}
+        {% if multipart %}enctype="multipart/form-data"{% endif %}
+        {% if 'test' == app.environment %} novalidate{% endif %}
+    {% endspaceless %}
+{% endblock form_enctype %}

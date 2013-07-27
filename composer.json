@@ -2,6 +2,7 @@
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
     "version": "2.1",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Ton Sharp",
@@ -72,7 +73,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "7d44fc123acd547f9c99dde296139e207e976020"
+                    "reference": "c1a22d9e4b87bf4a084108bf1dc3610b18c2d740"
                 }
             }
         },
@@ -118,7 +119,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.4.12",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-mcrypt": "*",
@@ -128,21 +129,25 @@
         "ext-session": "*",
         "ext-SimpleXML": "*",
         "ext-Reflection": "*",
+        "ext-intl": "*",
+        "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
         "CreditJeevesSf1": "dev-master",
-        "symfony/symfony": "2.2.*",
-        "doctrine/orm": "~2.2,>=2.2.3",
-        "doctrine/doctrine-bundle": "1.2.*",
+        "symfony/symfony": "2.3.*",
+        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "doctrine/doctrine-bundle": "dev-master",
         "twig/extensions": "1.0.*",
-        "kriswallsmith/assetic": "1.1.x-dev",
-        "symfony/assetic-bundle": "2.1.*",
-        "symfony/swiftmailer-bundle": "2.2.*",
-        "symfony/monolog-bundle": "2.2.*",
-        "sensio/distribution-bundle": "2.2.*",
-        "sensio/framework-extra-bundle": "2.2.*",
-        "jms/security-extra-bundle": "1.4.*",
-        "jms/di-extra-bundle": "1.3.*",
+        "kriswallsmith/assetic": "1.1.*",
+        "symfony/assetic-bundle": "2.3.*",
+        "symfony/swiftmailer-bundle": "2.3.*",
+        "symfony/monolog-bundle": "2.3.*",
+        "symfony/icu": "v1.1.0",
+        "sensio/distribution-bundle": "2.3.*",
+        "sensio/framework-extra-bundle": "2.3.*",
+        "incenteev/composer-parameter-handler": "~2.0",
+        "jms/security-extra-bundle": "dev-master",
+        "jms/di-extra-bundle": "1.4.*",
         "friendsofsymfony/user-bundle": "v1.3.2",
         "friendsofsymfony/jsrouting-bundle": "~1.1",
         "payum/payum": "0.4.*",
@@ -161,7 +166,8 @@
         "sonata-project/admin-bundle": "dev-master",
         "sonata-project/doctrine-orm-admin-bundle": "dev-master",
         "doctrine/migrations": "dev-master",
-        "doctrine/doctrine-migrations-bundle": "dev-master"
+        "doctrine/doctrine-migrations-bundle": "dev-master",
+        "guzzle/http": "v3.5.0"
     },
     "require-dev": {
         "qunit": "v1",
@@ -173,7 +179,7 @@
         "behat/mink-goutte-driver": "1.0.*",
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
-        "sensio/generator-bundle": "2.2.*",
+        "sensio/generator-bundle": "dev-master",
         "khepin/yaml-fixtures-bundle": "dev-master"
     },
     "scripts": {

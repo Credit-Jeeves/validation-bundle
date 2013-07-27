@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Model\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\ORM\Mapping as ORM;
@@ -72,6 +73,29 @@ abstract class User extends BaseUser
      */
     public function postLoad()
     {
+    }
+
+    public function getRoles()
+    {
+        switch ($this->getType()) {
+            case UserType::APPLICANT:
+                return array('ROLE_USER');
+            case UserType::DEALER:
+                return array('ROLE_DEALER');
+            case UserType::ADMIN:
+                return array(
+                    'ROLE_USER',
+                    'ROLE_DEALER',
+                    'ROLE_ADMIN',
+                    'ROLE_TENANT',
+                    'ROLE_LANDLORD'
+                );
+            case UserType::TETNANT:
+                return array('ROLE_TENANT');
+            case UserType::LANDLORD:
+                return array('ROLE_LANDLORD');
+        }
+        throw new \RuntimeException(sprintf("Wrong type '%s'", $this->getType()));
     }
 
     /**
@@ -212,11 +236,6 @@ abstract class User extends BaseUser
             'first_name',
             'middle_initial',
             'last_name',
-            'street_address1',
-            'street_address2',
-            'city',
-            'state',
-            'zip',
             'ssn',
             'is_verified',
         );
@@ -224,6 +243,14 @@ abstract class User extends BaseUser
         foreach ($data as $key) {
             $return[$key] = $this->$key;
         }
+        /** @var Address $address */
+        $address = $this->getDefaultAddress();
+        $return['unit'] = $address->getUnit();
+        $return['number'] = $address->getNumber();
+        $return['street'] = $address->getStreet();
+        $return['city'] = $address->getCity();
+        $return['zip'] = $address->getZip();
+        $return['country'] = $address->getCountry();
         return $return;
     }
 
@@ -236,14 +263,49 @@ abstract class User extends BaseUser
         $User->setMiddleInitial($this->getMiddleInitial());
         $User->setLastName($this->getLastName());
         $User->copyPassword($this->getPassword());
+        $User->setCulture($this->getCulture());
         $User->setCreatedAt($this->getCreatedAt()); // we'll store user's created date
         $User->setEmail($this->getEmail());
         $User->setHasData(false);
         // TODO recheck
+        $User->setIsActive(true);
         $User->setEnabled($this->enabled);
         $User->setLocked($this->locked);
         $User->setExpired($this->expired);
         $User->setCredentialsExpired($this->credentialsExpired);
         return $User;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getDefaultAddress()
+    {
+        return $this->getAddresses()->first();
+    }
+
+    public function getStreetAddress1()
+    {
+        return $this->getDefaultAddress()->getStreet();
+    }
+
+    public function getStreetAddress2()
+    {
+        return $this->getDefaultAddress()->getUnit();
+    }
+
+    public function getState()
+    {
+        return $this->getDefaultAddress()->getArea();
+    }
+
+    public function getZip()
+    {
+        return $this->getDefaultAddress()->getZip();
+    }
+
+    public function getCity()
+    {
+        return $this->getDefaultAddress()->getCity();
     }
 }

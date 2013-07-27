@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\UserBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Address;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -21,6 +22,9 @@ class ReturnedController extends Controller
         $request = $this->get('request');
         /** @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
+        $address = new Address();
+        $address->setUser($User);
+        $User->addAddress($address);
         $Lead = new Lead();
         
         $Lead->setUser($User);

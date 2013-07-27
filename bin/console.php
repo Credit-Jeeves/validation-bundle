@@ -18,6 +18,11 @@ use Symfony\Component\Console\Input\InputOption;
 $input = new ArgvInput();
 $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'cli');
 $debug = getenv('SYMFONY_DEBUG') !== '0' && !$input->hasParameterOption(array('--no-debug', '')) && $env !== 'prod';
+
+if ($debug) {
+    \Symfony\Component\Debug\Debug::enable();
+}
+
 $app = $input->getParameterOption(array('--app', '-a'), 'cj' ?: 'rj');
 switch ($app) {
     case 'rj':
@@ -28,5 +33,5 @@ switch ($app) {
         break;
 }
 $application = new Application($kernel);
-$application->getDefinition()->addOption(new InputOption('--app', '-a'));
+$application->getDefinition()->addOption(new InputOption('--app', '-a', InputOption::VALUE_REQUIRED, 'Application'));
 $application->run($input);

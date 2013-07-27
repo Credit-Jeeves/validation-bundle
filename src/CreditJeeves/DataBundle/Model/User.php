@@ -123,7 +123,7 @@ abstract class User extends BaseUser
     protected $street_address2;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", length=31, nullable=true)
      * @Assert\Length(
      *     max=31,
      *     groups={
@@ -200,7 +200,15 @@ abstract class User extends BaseUser
      * @Assert\Date(
      *     message="error.user.date",
      *     groups={
-     *         "user_profile"
+     *         "user_profile",
+     *         "invite_short"
+     *     }
+     * )
+     * @Assert\NotBlank(
+     *     message="error.user.date.empty",
+     *     groups={
+     *         "user_profile",
+     *         "invite_short"
      *     }
      * )
      */
@@ -274,6 +282,18 @@ abstract class User extends BaseUser
     protected $holding_id;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
+     *     inversedBy="users"
+     * )
+     * @ORM\JoinColumn(
+     *     name="holding_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $holding;
+
+    /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="0"})
      */
     protected $is_holding_admin = false;
@@ -294,108 +314,8 @@ abstract class User extends BaseUser
     protected $updated_at;
 
     /**
-     * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Score",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $scores;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Tradeline",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $tradelines;
-    
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\ApplicantIncentive",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $incentives;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $orders;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Lead",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $user_leads;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="Lead",
-     *     mappedBy="dealer",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $dealer_leads;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
-     * @ORM\JoinTable(
-     *      name="cj_dealer_group",
-     *      joinColumns={@ORM\JoinColumn(name="dealer_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
-     * )
-     */
-    protected $dealer_groups;
-
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     mappedBy="dealers",
-     *     cascade={"remove"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $dealer_to_groups;
-
-    /**
-     * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\Vehicle",
-     *     mappedBy="user",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $vehicle;
-
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="users"
-     * )
-     * @ORM\JoinColumn(
-     *     name="holding_id",
-     *     referencedColumnName="id"
-     * )
-     */
-    protected $holding;
-
-    /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportPrequal",
      *     mappedBy="user",
@@ -404,8 +324,10 @@ abstract class User extends BaseUser
      * )
      */
     protected $reportsPrequal;
-    
+
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\ReportD2c",
      *     mappedBy="user",
@@ -416,6 +338,116 @@ abstract class User extends BaseUser
     protected $reportsD2c;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Score",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $scores;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Tradeline",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $tradelines;
+    
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\ApplicantIncentive",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $incentives;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $orders;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Lead",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $user_leads;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="Lead",
+     *     mappedBy="dealer",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $dealer_leads;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
+     * @ORM\JoinTable(
+     *      name="cj_dealer_group",
+     *      joinColumns={@ORM\JoinColumn(name="dealer_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+     * )
+     */
+    protected $dealer_groups;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     mappedBy="dealers",
+     *     cascade={"remove"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $dealer_to_groups;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Vehicle",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $vehicle;
+
+    /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq",
      *      mappedBy="user"
@@ -424,9 +456,12 @@ abstract class User extends BaseUser
     protected $pidkiqs;
 
     /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
-     *      mappedBy="user"
+     *      mappedBy="user",
+     *      cascade={"persist", "remove", "merge"}
      * )
      */
     protected $addresses;
@@ -1415,6 +1450,53 @@ abstract class User extends BaseUser
     public function getHolding()
     {
         return $this->holding;
+    }
+
+    /**
+     * Add address
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Address $pidkiqs
+     * @return User
+     */
+    public function addAddress(\CreditJeeves\DataBundle\Entity\Address $address)
+    {
+        $this->addresses[] = $address;
+
+        return $this;
+    }
+
+    /**
+     * Remove Address
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Address $address
+     */
+    public function removeAddress(\CreditJeeves\DataBundle\Entity\Address $address)
+    {
+        $this->addresses->removeElement($address);
+    }
+
+    /**
+     * Get Addresses
+     *
+     * @param ArrayCollection $addresses
+     *
+     * @return Address
+     */
+    public function setAddresses(ArrayCollection $addresses)
+    {
+        $this->addresses = $addresses;
+
+        return $this;
+    }
+
+    /**
+     * Get Addresses
+     *
+     * @return ArrayCollection
+     */
+    public function getAddresses()
+    {
+        return $this->addresses;
     }
 
     public function setSalt($salt)

@@ -58,21 +58,17 @@ class LeadReturnedType extends AbstractType
     {
         $resolver->setDefaults(
             array(
+                'cascade_validation' => true,
                 'data_class' => 'CreditJeeves\DataBundle\Entity\Lead',
                 'validation_groups' => array(
                         'registration_tos',
                         'user_profile',
-                        'user_address',
+                        'user_address_new',
                 ),
                 'csrf_protection' => true,
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token
-                'intention' => 'username',
-                'validation_groups' => array(
-                    'registration_tos',
-                    'user_profile',
-                    'user_address',
-                ),
+                'intention' => 'username'
             )
         );
 

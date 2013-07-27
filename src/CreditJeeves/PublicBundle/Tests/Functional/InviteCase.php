@@ -17,17 +17,10 @@ class InviteCase extends BaseTestCase
         $this->load(true);
         $this->session->visit($this->getUrl() . 'invite/TESTCODE');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->fillForm(
-            $form,
-            array(
-                'creditjeeves_applicantbundle_newpasswordtype_password_Password' => 'pass',
-                'creditjeeves_applicantbundle_newpasswordtype_password_Retype' => 'pass',
-                'creditjeeves_applicantbundle_newpasswordtype_tos' => true,
-            )
-        );
         $form->pressButton('common.i_agree');
 
-        // FIXME check error message
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
+        $this->assertCount(2, $errors, 'Wrong number of errors');
 
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
         $this->fillForm(
@@ -36,8 +29,9 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_newpasswordtype_password_Password' => 'pass',
                 'creditjeeves_applicantbundle_newpasswordtype_password_Retype' => 'pass',
                 'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_day' => '01', //'01',
-                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_month' => 'Jan', //'01',
+                'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_month' => '01', //'01',
                 'creditjeeves_applicantbundle_newpasswordtype_date_of_birth_year' => '1937',
+                'creditjeeves_applicantbundle_newpasswordtype_tos' => true,
             )
         );
         $form->pressButton('common.i_agree');
@@ -53,7 +47,11 @@ class InviteCase extends BaseTestCase
         $this->load(false);
         $this->session->visit($this->getUrl() . 'invite/TESTFULL');
         $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
-        $this->assertNotNull($submit = $form->findButton('common.i_agree'));
+        $form->pressButton('common.i_agree');
+
+        $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
+        $this->assertCount(8, $errors, 'Wrong number of errors');
+
         $this->fillForm(
             $form,
             array(
@@ -67,19 +65,20 @@ class InviteCase extends BaseTestCase
                 'creditjeeves_applicantbundle_usernewtype_ssn_ssn1' => '666',
                 'creditjeeves_applicantbundle_usernewtype_ssn_ssn2' => '36',
                 'creditjeeves_applicantbundle_usernewtype_ssn_ssn3' => '6977',
-                'creditjeeves_applicantbundle_usernewtype_street_address1' => '7635 LANKERSHIM BLVD',
-                'creditjeeves_applicantbundle_usernewtype_unit_no' => 'APT 16',
-                'creditjeeves_applicantbundle_usernewtype_city' => 'NORTH HOLLYWOOD',
-                'creditjeeves_applicantbundle_usernewtype_state' => 'CA',
-                'creditjeeves_applicantbundle_usernewtype_zip' => '91605',
+                'creditjeeves_applicantbundle_usernewtype_addresses_0_street' => 'USS SIERRA AD-18',
+                'creditjeeves_applicantbundle_usernewtype_addresses_0_unit' => 'S-1',
+                'creditjeeves_applicantbundle_usernewtype_addresses_0_city' => 'FPO',
+                'creditjeeves_applicantbundle_usernewtype_addresses_0_area' => 'AL',
+                'creditjeeves_applicantbundle_usernewtype_addresses_0_zip' => '34084',
                 'creditjeeves_applicantbundle_usernewtype_phone' => '8189976080',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_day' => '01', //'01',
-                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => 'Jan', // '01',
+                'creditjeeves_applicantbundle_usernewtype_date_of_birth_month' => '01', // '01',
                 'creditjeeves_applicantbundle_usernewtype_date_of_birth_year' => '1940',
                 'creditjeeves_applicantbundle_usernewtype_tos' => true,
             )
         );
-        $submit->click();
+
+        $form->pressButton('common.i_agree');
         $this->login('linda@example.com', 'pass');
         $this->logout();
     }

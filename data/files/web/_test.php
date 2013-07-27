@@ -10,6 +10,8 @@ require_once __DIR__.'/../app/AppKernel.php';
 require_once __DIR__.'/../app/AppCjKernel.php';
 require_once __DIR__.'/../app/AppCjTestKernel.php';
 
+\Symfony\Component\Debug\Debug::enable();
+
 $kernel = new AppCjTestKernel('test', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();

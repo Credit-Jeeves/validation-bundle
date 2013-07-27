@@ -45,9 +45,9 @@ class TenantAdmin extends Admin
             ->add('middle_initial')
             ->add('last_name')
             ->add('email')
-            ->add('state')
-            ->add('zip')
-            ->add('city')
+//            ->add('state')
+//            ->add('zip')
+//            ->add('city')
             ->add('phone')
             ->add('is_active')
             ->add(
@@ -69,8 +69,9 @@ class TenantAdmin extends Admin
     {
         $datagridMapper
             ->add('is_active')
-            ->add('state')
-            ->add('city');
+//            ->add('state')
+//            ->add('city')
+        ;
     }
 
     public function configureFormFields(FormMapper $formMapper)

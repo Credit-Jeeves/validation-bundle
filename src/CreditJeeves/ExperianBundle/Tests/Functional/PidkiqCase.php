@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
@@ -108,11 +109,14 @@ class PidkiqCase extends BaseTestCase
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
         $aplicant->setSsn($data['SSN']);
-        $aplicant->setStreetAddress1($data['CurrentAddress']['Street']);
-        $aplicant->setCity($data['CurrentAddress']['City']);
-        $aplicant->setState($data['CurrentAddress']['State']);
-        $aplicant->setZip($data['CurrentAddress']['Zip']);
         $aplicant->setPhone($data['Phone']['Number']);
+        $address = new Address();
+        $address->setStreet($data['CurrentAddress']['Street']);
+        $address->setCity($data['CurrentAddress']['City']);
+        $address->setArea($data['CurrentAddress']['State']);
+        $address->setZip($data['CurrentAddress']['Zip']);
+        $address->setUser($aplicant);
+        $aplicant->addAddress($address);
 
         return $pidkiq->getResponseOnUserData($aplicant);
     }

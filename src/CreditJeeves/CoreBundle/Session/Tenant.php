@@ -26,7 +26,9 @@ class Tenant extends User
     {
         $data = $this->getFromSession(UserType::APPLICANT);
         if (isset($data['user_id'])) {
-            return $this->findUser($data['user_id']);
+            if ($user = $this->findUser($data['user_id'])) {
+                return $user;
+            }
         }
         return new UserEntity();
     }
