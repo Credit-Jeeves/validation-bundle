@@ -52,13 +52,13 @@ Manual Installation for dev env
 php bin/console.php doctrine:database:drop --force
 php bin/console.php doctrine:database:create
 php bin/console.php doctrine:schema:create --app=rj
-php bin/console.php khepin:yamlfixtures:load --env=dev
+php bin/console.php khepin:yamlfixtures:load --app=rj --env=dev
 
 
 php bin/console.php doctrine:database:drop --force --env=test
 php bin/console.php doctrine:database:create --env=test
 php bin/console.php doctrine:schema:create --app=rj --env=test
-php bin/console.php khepin:yamlfixtures:load --env=test
+php bin/console.php khepin:yamlfixtures:load --app=rj --env=test
 ```
 
 or
