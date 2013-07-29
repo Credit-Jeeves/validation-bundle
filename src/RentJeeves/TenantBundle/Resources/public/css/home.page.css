@@ -83,6 +83,14 @@
 .button.small, button.small {
   width: auto !important;
 }
+
 .listOfPaymentsActive .address {
     width: 170px !important;
+}
+
+.addPropertyContainer {
+    display: block;
+    position: absolute;
+    margin-left: 835px;
+    margin-top: -20px;
 }
