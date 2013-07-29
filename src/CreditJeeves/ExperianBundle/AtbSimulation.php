@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
-use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\DataBundle\Entity\AtbRepository;
 use CreditJeeves\DataBundle\Enum\AtbType;
 use CreditJeeves\DataBundle\Entity\Atb as Entity;

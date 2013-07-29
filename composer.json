@@ -79,6 +79,10 @@
         },
         {
             "type": "git",
+            "url": "git@github.com:Credit-Jeeves/ArfBundle.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:66Ton99/environment.git"
         },
         {
@@ -134,6 +138,7 @@
         "lib-curl": "*",
         "lib-openssl": "*",
         "CreditJeevesSf1": "dev-master",
+        "CreditJeeves/ArfBundle": "dev-master",
         "symfony/symfony": "2.3.*",
         "doctrine/orm": ">=2.2.3,<2.4-dev",
         "doctrine/doctrine-bundle": "dev-master",

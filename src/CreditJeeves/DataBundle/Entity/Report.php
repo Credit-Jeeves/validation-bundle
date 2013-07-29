@@ -4,15 +4,15 @@ namespace CreditJeeves\DataBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 use CreditJeeves\DataBundle\Model\Report as BaseReport;
-use CreditJeeves\CoreBundle\Arf\ArfParser;
-use CreditJeeves\CoreBundle\Arf\ArfReport;
-use CreditJeeves\CoreBundle\Arf\ArfSummary;
-use CreditJeeves\CoreBundle\Arf\ArfTradelines;
-use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
-use CreditJeeves\CoreBundle\Arf\ArfInquiries;
-use CreditJeeves\CoreBundle\Arf\ArfPublicRecords;
-use CreditJeeves\CoreBundle\Arf\ArfAutomotiveDetails;
-use CreditJeeves\CoreBundle\Arf\ArfMessages;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
+use CreditJeeves\ArfBundle\Map\ArfReport;
+use CreditJeeves\ArfBundle\Map\ArfSummary;
+use CreditJeeves\ArfBundle\Map\ArfTradelines;
+use CreditJeeves\ArfBundle\Map\ArfDirectCheck;
+use CreditJeeves\ArfBundle\Map\ArfInquiries;
+use CreditJeeves\ArfBundle\Map\ArfPublicRecords;
+use CreditJeeves\ArfBundle\AutomotiveDetails;
+use CreditJeeves\ArfBundle\Map\ArfMessages;
 
 /**
  * @ORM\Entity
@@ -53,7 +53,7 @@ class Report extends BaseReport
     }
 
     /**
-     * @return \CreditJeeves\CoreBundle\Arf\ArfParser
+     * @return \CreditJeeves\ArfBundle\Parser\ArfParser
      */
     public function getArfParser()
     {
@@ -65,7 +65,7 @@ class Report extends BaseReport
     }
 
     /**
-     * @return \CreditJeeves\CoreBundle\Arf\ArfReport
+     * @return \CreditJeeves\ArfBundle\Map\ArfReport
      */
     public function getArfReport()
     {
@@ -257,7 +257,7 @@ class Report extends BaseReport
      */
     public function getApplicantAutomotiveDetails()
     {
-        $arfAutomotiveDetails = new ArfAutomotiveDetails($this->getArfArray());
+        $arfAutomotiveDetails = new AutomotiveDetails($this->getArfArray());
         return $arfAutomotiveDetails->getAutomotiveDetails();
     }
 

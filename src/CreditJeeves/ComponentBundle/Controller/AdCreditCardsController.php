@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Score;
-use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\ExperianBundle\AtbSimulation;
 
 class AdCreditCardsController extends Controller

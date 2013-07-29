@@ -1,7 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
-use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\Atb;
 

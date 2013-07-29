@@ -1,8 +1,8 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Converter;
 
-use CreditJeeves\CoreBundle\Arf\ArfParser;
-use CreditJeeves\CoreBundle\Arf\ArfReport;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
+use CreditJeeves\ArfBundle\Map\ArfReport;
 use CreditJeeves\DataBundle\Enum\AtbType;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\DataBundle\Entity\Atb as AtbEntity;
@@ -26,12 +26,12 @@ class Atb
     protected $translator;
 
     /**
-     * @var ArfParser
+     * @var \CreditJeeves\ArfBundle\Parser\ArfParser
      */
     protected $arfParser;
 
     /**
-     * @var ArfReport
+     * @var \CreditJeeves\ArfBundle\Map\ArfReport
      */
     protected $arfReport;
 

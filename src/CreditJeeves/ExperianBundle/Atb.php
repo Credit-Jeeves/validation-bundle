@@ -9,9 +9,9 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\ExperianBundle\Exception\Atb as AtbException;
-use CreditJeeves\CoreBundle\Arf\ArfParser;
-use CreditJeeves\CoreBundle\Arf\ArfReport;
-use CreditJeeves\CoreBundle\Arf\ArfDirectCheck;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
+use CreditJeeves\ArfBundle\Map\ArfReport;
+use CreditJeeves\ArfBundle\Map\ArfDirectCheck;
 
 /**
  * ATB
@@ -38,7 +38,7 @@ class Atb
     private $directCheck = null;
 
     /**
-     * @var ArfReport
+     * @var \CreditJeeves\ArfBundle\Map\ArfReport
      */
     private $arfReport;
 
@@ -103,7 +103,7 @@ class Atb
     }
 
     /**
-     * @return ArfDirectCheck
+     * @return \CreditJeeves\ArfBundle\Map\ArfDirectCheck
      */
     protected function getArfReport()
     {
