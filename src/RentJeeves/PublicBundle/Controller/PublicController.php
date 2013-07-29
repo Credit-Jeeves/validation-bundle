@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
 use CreditJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Alert;
 use RentJeeves\PublicBundle\Form\TenantType;
 
 class PublicController extends Controller
@@ -188,8 +189,16 @@ class PublicController extends Controller
         $em = $this->getDoctrine()->getManager();
         $tenant->setInviteCode(null);
         $tenant->setIsActive(true);
+
+        $alert = new Alert();
+        $alert->setMessage('rj.task.firstRent');
+        $alert->setUser($tenant);
+
+        $em->persist($alert);
+        $em->persist($tenant);
         $em->flush();
         
+
         if ($tenant->getInvite()) {
             $this->get('creditjeeves.mailer')->sendRjLandLordInvite($tenant->getInvite());
         }

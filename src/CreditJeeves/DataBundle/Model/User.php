@@ -1545,4 +1545,38 @@ abstract class User extends BaseUser
     {
         return $this->group_affilate;
     }
+
+    /**
+     * Add alert
+     *
+     * @param \RentJeeves\DataBundle\Entity\Alert $alert
+     * @return User
+     */
+    public function addAlert(\RentJeeves\DataBundle\Entity\Alert $alert)
+    {
+        $this->alert[] = $alert;
+    
+        return $this;
+    }
+
+    /**
+     * Remove alert
+     *
+     * @param \RentJeeves\DataBundle\Entity\Alert $alert
+     */
+    public function removeAlert(\RentJeeves\DataBundle\Entity\Alert $alert)
+    {
+        $this->alert->removeElement($alert);
+    }
+
+    /**
+     * Get alert
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAlert()
+    {
+        return $this->alert;
+    }
+
 }

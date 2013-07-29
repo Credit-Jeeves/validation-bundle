@@ -70,4 +70,27 @@ abstract class Alert
     {
         return $this->message;
     }
+
+    /**
+     * Set user
+     *
+     * @param \CreditJeeves\DataBundle\Entity\User $user
+     * @return Alert
+     */
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+    
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \CreditJeeves\DataBundle\Entity\User 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }
