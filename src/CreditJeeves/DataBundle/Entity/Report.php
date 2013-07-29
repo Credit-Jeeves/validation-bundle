@@ -11,7 +11,7 @@ use CreditJeeves\ArfBundle\Map\ArfTradelines;
 use CreditJeeves\ArfBundle\Map\ArfDirectCheck;
 use CreditJeeves\ArfBundle\Map\ArfInquiries;
 use CreditJeeves\ArfBundle\Map\ArfPublicRecords;
-use CreditJeeves\ArfBundle\AutomotiveDetails;
+use CreditJeeves\ArfBundle\Map\ArfAutomotiveDetails;
 use CreditJeeves\ArfBundle\Map\ArfMessages;
 
 /**
@@ -257,7 +257,7 @@ class Report extends BaseReport
      */
     public function getApplicantAutomotiveDetails()
     {
-        $arfAutomotiveDetails = new AutomotiveDetails($this->getArfArray());
+        $arfAutomotiveDetails = new ArfAutomotiveDetails($this->getArfArray());
         return $arfAutomotiveDetails->getAutomotiveDetails();
     }
 
