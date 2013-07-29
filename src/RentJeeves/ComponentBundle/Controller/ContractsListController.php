@@ -27,32 +27,21 @@ class ContractsListController extends Controller
     }
 
     /**
-     * @Template("RjComponentBundle:ContractsList:tenant.html.twig")
+     * @Template()
+     * @return multitype:
+     */
+    public function tenantNewAction($status)
+    {
+        return array(
+            'contracts' => $this->getUser()->getContracts(),
+            'status'    => $status,
+        );
+    }
+    /**
+     * @Template()
      * @return multitype:
      */
     public function tenantAction()
-    {
-        return array(
-            'contracts' => $this->getUser()->getContracts(),
-        );
-    }
-
-    /**
-     * @Template()
-     * @return multitype:
-     */
-    public function tenantApprovedAction()
-    {
-        return array(
-            'contracts' => $this->getUser()->getContracts(),
-        );
-    }
-
-    /**
-     * @Template()
-     * @return multitype:
-     */
-    public function tenantActiveAction()
     {
         return array(
             'contracts' => $this->getUser()->getContracts(),
