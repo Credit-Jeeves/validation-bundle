@@ -31,6 +31,11 @@ class Version20130729102255 extends AbstractMigration
                 FOREIGN KEY (user_id)
                 REFERENCES cj_user (id)"
         );
+
+        $this->addSql("ALTER TABLE  `rj_contract` CHANGE  `status`  
+                      `status` ENUM('pending','approved','finished','paid','active')
+                      CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL 
+                      DEFAULT 'pending' COMMENT '(DC2Type:ContractStatus)'");
     }
 
     public function down(Schema $schema)
@@ -44,5 +49,11 @@ class Version20130729102255 extends AbstractMigration
         $this->addSql(
             "DROP TABLE rj_alert"
         );
+
+
+        $this->addSql("ALTER TABLE  `rj_contract` CHANGE  `status`  
+                      `status` ENUM('pending', 'approved', 'finished', 'paid')
+                      CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL 
+                      DEFAULT 'pending' COMMENT '(DC2Type:ContractStatus)'");
     }
 }
