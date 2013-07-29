@@ -277,7 +277,7 @@ $(document).ready(function(){
     });
 
     $('.thisIsMyRental').click(function(){
-        if($(this).hasClass('one')) {
+        if($(this).hasClass('match')) {
           propertyId = $(this).attr('data');
           $.each($('.addressText'), function(index, value) {
               var id = $(this).attr('data');
@@ -291,7 +291,7 @@ $(document).ready(function(){
           $('#propertyId').val('');
           $('#register').addClass('greyButton');
           initScroll();
-          $(this).removeClass('one');
+          $(this).removeClass('match');
         } else {
           propertyId = $(this).attr('data');
           $.each($('.addressText'), function(index, value) {
@@ -306,7 +306,7 @@ $(document).ready(function(){
           $('#propertyId').val(propertyId);
           $('#register').removeClass('greyButton');
           initScroll();
-          $(this).addClass('one');
+          $(this).addClass('match');
           //$(this).hide();
         }
         return false;
