@@ -21,14 +21,15 @@ class UserType extends AbstractType
             'first_name',
             'text',
             array(
-                'label' => 'Name',
                 'error_bubbling' => true,
+                'label' => 'Name',
             )
         );
         $builder->add(
             'middle_initial',
             'text',
             array(
+                'error_bubbling' => true,
                 'label' => '',
                 'required' => false,
                 'max_length' => 5
@@ -38,6 +39,7 @@ class UserType extends AbstractType
             'last_name',
             'text',
             array(
+                'error_bubbling' => true,
                 'label' => ''
             )
         );
@@ -45,77 +47,51 @@ class UserType extends AbstractType
             'ssn',
             new SsnType(),
             array(
-                'label' => 'SSN',
                 'error_bubbling' => true,
-                
-                'constraints' => array(
-                    new NotBlank(
-                        array(
-                            'groups' => 'user_profile',
-                            'message' => 'error.user.ssn.empty'
-                        )
-                    )
-                )
+                'label' => 'SSN',
             )
         );
         $builder->add(
             'date_of_birth',
             'date',
             array(
-                'label' => 'Date of Birth',
                 'error_bubbling' => true,
+                'label' => 'Date of Birth',
                 'format' => 'MMddyyyy',
                 'years' => range(date('Y') - 110, date('Y')),
-                'empty_value' => array(
-                        'year' => 'Year',
-                        'month' => 'Month',
-                        'day' => 'Day',
-                ),
+//                'empty_value' => array( // TODO fix validation problem (error message processing)
+//                    'year' => 'Year',
+//                    'month' => 'Month',
+//                    'day' => 'Day',
+//                ),
             )
         );
+
         $builder->add(
-            'street_address1',
-            'text',
+            'addresses',
+            'collection',
             array(
-                'label' => 'Address',
-                    'error_bubbling' => true,
+                'type' => new UserAddressType(),
+                'by_reference' => true,
+                'allow_add' => true,
+                'error_bubbling' => true,
+                'empty_data' => true,
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => array('user_address_new'),
+                            'message' => 'error.user.address.empty',
+                        )
+                    ),
+                )
             )
         );
-        $builder->add(
-            'unit_no',
-            'text',
-            array(
-                'label' => '',
-            )
-        );
-        $builder->add(
-            'city',
-            'text',
-            array(
-                'label' => ''
-            )
-        );
-        $builder->add(
-            'state',
-            'choice',
-            array(
-                'label' => '',
-                'choice_list' => new StateChoiceList(),
-                'required' => true,
-            )
-        );
-        $builder->add(
-            'zip',
-            'text',
-            array(
-                'label' => '',
-                    'error_bubbling' => true,
-            )
-        );
+
         $builder->add(
             'phone_type',
             'choice',
             array(
+                'error_bubbling' => true,
                 'label' => '',
                 'choices' => array(
                     '1' => 'Mobile',
@@ -128,6 +104,7 @@ class UserType extends AbstractType
             'phone',
             'text',
             array(
+                'error_bubbling' => true,
                 'label' => 'Phone',
                 'required' => false,
             )
@@ -136,14 +113,14 @@ class UserType extends AbstractType
             'tos',
             'checkbox',
             array(
+                'error_bubbling' => true,
                 'label' => '',
                 'data' => false,
                 'mapped' => false,
                 'constraints' => new True(
                     array(
-                            'message' => 'error.user.tos',
-                            'groups' => 'registration_tos'
-                            
+                        'message' => 'error.user.tos',
+                        'groups' => 'registration_tos'
                     )
                 ),
             )
@@ -154,11 +131,12 @@ class UserType extends AbstractType
     {
         $resolver->setDefaults(
             array(
+                'cascade_validation' => true,
                 'data_class' => 'CreditJeeves\DataBundle\Entity\User',
                 'validation_groups' => array(
-                        'registration_tos',
-                        'user_profile',
-                        'user_address',
+                    'registration_tos',
+                    'user_profile',
+                    'user_address_new',
                 ),
             )
         );

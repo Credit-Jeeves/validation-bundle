@@ -20,7 +20,7 @@ if [ ! -f $DIR/vendor/autoload.php ]; then
 fi
 
 php bin/environment.php --dev || exit 1
-sh install.sh
+
 echo "##### RUN PHPUNIT ALL TESTS #####"
 #nice -n 5
 php -C -q -d memory_limit=1024M $PHPUNIT_PATH \

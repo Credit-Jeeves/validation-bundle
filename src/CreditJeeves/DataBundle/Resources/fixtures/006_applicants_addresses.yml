@@ -1,0 +1,185 @@
+model: CreditJeeves\DataBundle\Entity\Address
+fixtures:
+  Address_1:
+    user: cjApplicant_1
+    street: '1900 Avenue of Stars'
+    unit: 'apt 8'
+    city: 'Minsk'
+    area: 'KY'
+    zip: '22007'
+
+  Address_2:
+    user: cjApplicant_2
+    street: 'PO BOX 445'
+    unit: 'apt 1'
+    city: APO
+    area: AE
+    zip: '09061'
+
+  Address_3:
+    user: cjApplicant_3
+    street: 'JCT RR 133 140 B'
+    unit: ''
+    city: MIDDLETOWN
+    area: NJ
+    zip: '05717'
+
+  Address_4:
+    user: cjApplicant_4
+    street: '702 N LINCOLN AVE # 1'
+    unit: ''
+    city: URBANA
+    area: IL
+    zip: '61801'
+
+  Address_5:
+    user: cjApplicant_5
+    street: 'SAINT NAZAIRE 2010'
+    unit: '116TH 1'
+    city: HOMESTEAD
+    area: FL
+    zip: '33039'
+
+  Address_6:
+    user: cjApplicant_6
+    street: 'PO BOX 1563'
+    unit: '116TH 1'
+    city: BELTSVILLE
+    area: MD
+    zip: '207041563'
+
+  Address_7:
+    user: cjApplicant_7
+    street: 'LANEY 2505'
+    unit: ''
+    city: DENTON
+    area: TX
+    zip: '762086621'
+
+  Address_8:
+    user: cjApplicant_8
+    street: 'LEHIGH 350'
+    unit: ''
+    city: PITTSBURGH
+    area: PA
+    zip: '152322008'
+
+  Address_9:
+    user: cjApplicant_9
+    street: 'INGLEWOOD 934 S'
+    unit: ''
+    city: INGLEWOOD
+    area: CA
+    zip: '903013646'
+
+  Address_10:
+    user: cjApplicant_10
+    street: 'PO BOX 121'
+    unit: ''
+    city: 'BOX ELDER'
+    area: MT
+    zip: '595210121'
+
+  Address_11:
+    user: cjApplicant_11
+    street: '331 RAMSEY HL'
+    unit: ''
+    city: 'WEST CHESTER'
+    area: PA
+    zip: '19383'
+
+  Address_12:
+    user: cjApplicant_12
+    street: '331 RAMSEY HL'
+    unit: ''
+    city: EMPORIA
+    area: KS
+    zip: '669016102'
+
+  Address_13:
+    user: cjApplicant_13
+    street: 'PO BOX 1563'
+    unit: ''
+    city: BELTSVILLE
+    area: MD
+    zip: '20704'
+
+  Address_14:
+    user: cjApplicant_14
+    street: '10046 COLONNADE DR'
+    unit: ''
+    city: TAMPA
+    area: FL
+    zip: '33647'
+
+  Address_15:
+    user: cjApplicant_15
+    street: '308-1 CHESTER RIVER HTS'
+    unit: ''
+    city: MILLINGTON
+    area: MD
+    zip: '20704'
+
+  Address_16:
+    user: cjApplicant_16
+    street: '7635 LANKERSHIM BLVD APT 16'
+    unit: ''
+    city: NORTH HOLLYWOOD
+    area: CA
+    zip: '916056557'
+
+  Address_17:
+    user: cjApplicant_17
+    street: 'CMR 408 BX 1502'
+    unit: ''
+    city: APO
+    area: AE
+    zip: '09182'
+
+  Address_18:
+    user: cjApplicant_18
+    street: '270 25 H GRAND CENTRA'
+    unit: ''
+    city: FLORAL PARK
+    area: NY
+    zip: '11005'
+
+  Address_19:
+    user: cjApplicant_19
+    street: '3010 FURMAN LN APT 402'
+    unit: ''
+    city: ALEXANDRIA
+    area: VA
+    zip: '22306'
+
+  Address_20:
+    user: cjApplicant_20
+    street: '3507 WOODLEA AVE'
+    unit: ''
+    city: BALTIMORE
+    area: MO
+    zip: '26214'
+
+  Address_22:
+    user: cjApplicant_22
+    street: '100 50TH ST SW APT 125'
+    unit: ''
+    city: GRAND RAPIDS
+    area: MI
+    zip: '49548'
+
+  Address_23:
+    user: cjApplicant_23
+    street: 'LAUREL CANYON'
+    unit: '6949'
+    city: NORTH HOLLYWOOD
+    area: CA
+    zip: '916056801'
+
+  Address_24:
+    user: cjApplicant_24
+    street: 'KINGSTON DR'
+    unit: '2209'
+    city: LAWRENCE
+    area: KS
+    zip: '660491614'

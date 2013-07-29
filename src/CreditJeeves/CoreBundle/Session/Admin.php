@@ -29,7 +29,9 @@ class Admin extends User
     {
         $data = $this->getFromSession(UserType::ADMIN);
         if (isset($data['user_id'])) {
-            return $this->findUser($data['user_id']);
+            if ($user = $this->findUser($data['user_id'])) {
+                return $user;
+            }
         }
         return new UserEntity();
     }

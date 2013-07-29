@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\ExperianBundle\NetConnect;
@@ -39,10 +40,13 @@ class NetConnectCase extends BaseTestCase
         $aplicant->setLastName($data['Name']['Surname']);
         $aplicant->setMiddleInitial($data['Name']['Middle']);
         $aplicant->setSsn($data['SSN']);
-        $aplicant->setStreetAddress1($data['CurrentAddress']['Street']);
-        $aplicant->setCity($data['CurrentAddress']['City']);
-        $aplicant->setState($data['CurrentAddress']['State']);
-        $aplicant->setZip($data['CurrentAddress']['Zip']);
+        $address = new Address();
+        $address->setStreet($data['CurrentAddress']['Street']);
+        $address->setCity($data['CurrentAddress']['City']);
+        $address->setArea($data['CurrentAddress']['State']);
+        $address->setZip($data['CurrentAddress']['Zip']);
+        $address->setUser($aplicant);
+        $aplicant->addAddress($address);
 
         $tries = 6;
         $e = new \PHPUnit_Framework_AssertionFailedError('NetConnect fail');

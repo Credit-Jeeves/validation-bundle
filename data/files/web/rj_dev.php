@@ -6,6 +6,8 @@ $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
 require_once __DIR__.'/../app/AppRjKernel.php';
 
+\Symfony\Component\Debug\Debug::enable();
+
 $kernel = new AppRjKernel('dev', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();

@@ -22,42 +22,42 @@ abstract class Operation
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="OperationType")
+     * @ORM\Column(
+     *     name="type",
+     *     type="OperationType"
+     * )
      */
     protected $type = OperationType::REPORT;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="cj_applicant_report_id", type="bigint", nullable=true)
+     * @ORM\Column(
+     *     name="cj_applicant_report_id",
+     *     type="bigint", nullable=true
+     * )
      */
     protected $cjApplicantReportId;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_at", type="datetime")
+     * @ORM\Column(
+     *     name="created_at",
+     *     type="datetime"
+     * )
      */
     protected $createdAt;
 
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Order", mappedBy="operations")
+     * @ORM\ManyToMany(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
+     *     mappedBy="operations"
+     * )
      */
     protected $orders;
-
-//    /**
-//     * @var ArrayCollection
-//     *
-//     * @ORM\OneToMany(
-//     *     targetEntity="OrderOperation",
-//     *     mappedBy="operation",
-//     *     cascade={"persist", "remove", "merge"},
-//     *     orphanRemoval=true
-//     * )
-//     */
-//    protected $orderOperations;
 
     /**
      * @var \CreditJeeves\DataBundle\Entity\ReportD2c
@@ -67,9 +67,26 @@ abstract class Operation
      *     inversedBy="operation"
      * )
      *
-     * @ORM\JoinColumn(name="cj_applicant_report_id", referencedColumnName="id")
+     * @ORM\JoinColumn(
+     *     name="cj_applicant_report_id",
+     *     referencedColumnName="id"
+     * )
      */
     protected $reportD2c;
+
+    /**
+     * @var \RentJeeves\DataBundle\Entity\Contract
+     * 
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *     inversedBy="operation"
+     * )
+     * @ORM\JoinColumn(
+     *     name="contract_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $contract;
 
     public function __construct()
     {
@@ -211,5 +228,27 @@ abstract class Operation
     public function getOrders()
     {
         return $this->orders;
+    }
+
+    /**
+     * Set Contract
+     *
+     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * @return Operation
+     */
+    public function setContract(\RentJeeves\DataBundle\Entity\Contract $contract = null)
+    {
+        $this->contract = $contract;
+        return $this;
+    }
+
+    /**
+     * Get Contract
+     *
+     * @return \RentJeeves\DataBundle\Entity\Contract
+     */
+    public function getContract()
+    {
+        return $this->contract;
     }
 }

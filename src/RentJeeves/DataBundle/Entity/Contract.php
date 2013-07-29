@@ -24,7 +24,14 @@ class Contract extends Base
         $result['status'] = $status['status'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
+        $result['property_id'] = $property->getId();
+        $result['unit_id'] = null;
+        if ($unit) {
+            $result['unit_id'] = $unit->getId();
+        }
         $result['tenant'] = ucfirst(strtolower($tenant->getFullName()));
+        $result['first_name'] = $tenant->getFirstName();
+        $result['last_name'] = $tenant->getLastName();
         $result['email'] = $tenant->getEmail();
         $result['phone'] = $tenant->getFomattedPhone();
         $result['amount'] = 'undefined';
@@ -35,6 +42,14 @@ class Contract extends Base
         $result['paid_to'] = '';
         if ($date = $this->getPaidTo()) {
             $result['paid_to'] = $date->format('M d, Y');
+        }
+        $result['start'] = '';
+        if ($start = $this->getStartAt()) {
+            $result['start'] = $start->format('m/d/Y');
+        }
+        $result['finish'] = '';
+        if ($finish = $this->getFinishAt()) {
+            $result['finish'] = $finish->format('m/d/Y');
         }
         return $result;
     }
