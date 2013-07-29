@@ -432,6 +432,14 @@ abstract class User extends BaseUser
     protected $addresses;
 
     /**
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\Alert",
+     *      mappedBy="user"
+     * )
+     */
+    protected $alert;
+
+    /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="user")
      */
     protected $group_affilate;
