@@ -36,4 +36,26 @@ class ContractsListController extends Controller
             'contracts' => $this->getUser()->getContracts(),
         );
     }
+
+    /**
+     * @Template()
+     * @return multitype:
+     */
+    public function tenantApprovedAction()
+    {
+        return array(
+            'contracts' => $this->getUser()->getContracts(),
+        );
+    }
+
+    /**
+     * @Template()
+     * @return multitype:
+     */
+    public function tenantActiveAction()
+    {
+        return array(
+            'contracts' => $this->getUser()->getContracts(),
+        );
+    }
 }

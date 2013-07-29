@@ -101,4 +101,20 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->execute();
     }
+
+    public function getCountByStatus($tenant, $status = NULL)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('count(c.id)');
+        $query->leftJoin('c.tenant', 't');
+        $query->where('t.id = :tenant');
+        if(!is_null($status)) {
+            $query->andWhere('c.status =:status');
+            $query->setParameter('status', $status);
+        }
+        $query->setParameter('tenant', $tenant->getId());
+
+        $query = $query->getQuery();
+        return $query->getSingleScalarResult();
+    }
 }

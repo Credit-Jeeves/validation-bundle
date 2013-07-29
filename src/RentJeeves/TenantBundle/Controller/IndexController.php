@@ -15,7 +15,21 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
-        return array();
+        $tenant = $this->getUser();
+        $em = $this->get('doctrine')->getManager();
+        $allContracts = $em->getRepository('RjDataBundle:Contract')->getCountByStatus($tenant, $status = NULL);
+        $pendingContracts = $em->getRepository('RjDataBundle:Contract')->getCountByStatus($tenant, ContractStatus::PENDING);
+        $activeContracts = $em->getRepository('RjDataBundle:Contract')->getCountByStatus($tenant, ContractStatus::ACTIVE);
+        
+        if($allContracts === $pendingContracts) {
+            $status = 'new';
+        } else if ($activeContracts > 0) {
+            $status = 'active';
+        } else {
+            $status = 'approved';
+        }
+
+        return array('status' => $status);
     }
 
     /**
@@ -23,13 +37,15 @@ class IndexController extends Controller
      */
     public function infoAction()
     {
-        $user = $this->getUser();
+        $tenant = $this->getUser();
         $em = $this->get('doctrine')->getManager();
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(array(
-            'tenant' => $user->getId(),
-            'status' => ContractStatus::ACTIVE,
-        ));
-        $status = (!empty($contract)) ? true : false;
+        $activeContracts = $em->getRepository('RjDataBundle:Contract')->getCountByStatus($tenant, ContractStatus::ACTIVE);
+        
+        if ($activeContracts > 0) {
+            $status = true;
+        } else {
+            $status = false;
+        }
 
         return array('status' => $status);
     }

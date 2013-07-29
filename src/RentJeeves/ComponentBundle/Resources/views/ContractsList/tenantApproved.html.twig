@@ -5,8 +5,8 @@
             <tr>
                 <th class="address">Address</th>
                 <th class="payTo">Pay To</th>
-                <th class="status">Status</th>
-                <th class="action"></th>
+                <th class="status">Amount</th>
+                <th class="action" colspan="2">Next Due Date</th>
             </tr>
         </thead>
     <tbody>
@@ -25,11 +25,14 @@
                 {{ contract.group }}
             </td>
             <td>
-                {{ contract.status }}
+                {{ contract.rent }}
+            </td>
+            <td>
+                {{ contract.dueDay }}th
             </td>
             <td>
                 <center>
-                    <button class="button small greyButton">
+                    <button class="button small">
                         <span>Set Up Your First Rental Payment</span>
                     </button>
                 </center>

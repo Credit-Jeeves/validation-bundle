@@ -12,7 +12,7 @@
     color: #666;
     padding: 10px;
     border-bottom: 1px solid #C8C8C8;
-    font-size: 16px;
+    font-size: 14px;
     font-family: 'ABeeZee', sans-serif;
     text-shadow: 2px 2px 2px #ffffff;
     filter: dropshadow(color=#ffffff, offx=2, offy=2);
@@ -33,7 +33,7 @@
     padding-left: 10px;
 }
 .listOfPayments .payTo {
-    width: 200px;
+    width: 150px;
     padding-left: 10px;
 }
 .listOfPayments .status {
@@ -41,7 +41,7 @@
     padding-left: 10px;
 }
 .listOfPayments .action {
-    width: 370px;
+    width: 400px;
 }
 .listOfPayments td {
     color: #000;
@@ -79,4 +79,10 @@
     font-size: 15px;
     font-family: 'ABeeZee', sans-serif;
     color: #717171;
+}
+.button.small, button.small {
+  width: auto !important;
+}
+.listOfPaymentsActive .address {
+    width: 170px !important;
 }
