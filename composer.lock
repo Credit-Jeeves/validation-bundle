@@ -3,50 +3,8 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5013987be01bb204882b9050bd2ac28a",
+    "hash": "40333f959c62bcc4b702fc616475226c",
     "packages": [
-        {
-            "name": "CreditJeeves/ArfBundle",
-            "version": "dev-master",
-            "target-dir": "CreditJeeves/ArfBundle",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "82ac27f174da72839448b5a004fc098fee800044"
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "symfony-bundle",
-            "autoload": {
-                "psr-0": {
-                    "CreditJeeves\\ArfBundle": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ton Sharp",
-                    "email": "66ton99@gmail.com"
-                }
-            ],
-            "description": "CreditJeeves ARF Bundle",
-            "time": "2013-07-29 18:20:05"
-        },
-        {
-            "name": "CreditJeevesSf1",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "c1a22d9e4b87bf4a084108bf1dc3610b18c2d740"
-            },
-            "type": "library",
-            "description": "Legacy code",
-            "time": "2013-07-24 11:51:25"
-        },
         {
             "name": "a2lix/translation-form-bundle",
             "version": "dev-master",
@@ -138,6 +96,48 @@
                 "payment"
             ],
             "time": "2013-02-11 21:09:06"
+        },
+        {
+            "name": "credit-jeeves/arf-bundle",
+            "version": "dev-master",
+            "target-dir": "CreditJeeves/ArfBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
+                "reference": "f42eb6de4cd82309c44f4f419d9f36d43d160f3c"
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "CreditJeeves\\ArfBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ton Sharp",
+                    "email": "66ton99@gmail.com"
+                }
+            ],
+            "description": "CreditJeeves ARF Bundle",
+            "time": "2013-07-30 16:52:14"
+        },
+        {
+            "name": "credit-jeeves/credit-jeeves",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
+                "reference": "c1a22d9e4b87bf4a084108bf1dc3610b18c2d740"
+            },
+            "type": "library",
+            "description": "Legacy code",
+            "time": "2013-07-24 11:51:25"
         },
         {
             "name": "doctrine/annotations",
@@ -2545,12 +2545,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "2.2.3"
+                "reference": "78878870d21653e2710500f01320ab2c52127811"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/2.2.3",
-                "reference": "2.2.3",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/78878870d21653e2710500f01320ab2c52127811",
+                "reference": "78878870d21653e2710500f01320ab2c52127811",
                 "shasum": ""
             },
             "require": {
@@ -2611,7 +2611,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-07-29 14:31:37"
+            "time": "2013-07-29 19:51:32"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -4065,8 +4065,8 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
-        "creditjeevessf1": 20,
-        "creditjeeves/arfbundle": 20,
+        "credit-jeeves/credit-jeeves": 20,
+        "credit-jeeves/arf-bundle": 20,
         "doctrine/doctrine-bundle": 20,
         "jms/security-extra-bundle": 20,
         "hat/environment": 20,

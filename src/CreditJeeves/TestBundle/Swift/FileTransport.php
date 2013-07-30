@@ -126,7 +126,7 @@ class FileTransport implements Swift_Transport
             $body = str_replace("\r\n.", "\r\n..", $body);
         }
 
-        $dir = realpath(__DIR__ . '/../../../..') . '/vendor/CreditJeevesSf1/cache/mail';
+        $dir = realpath(__DIR__ . '/../../../..') . '/vendor/credit-jeeves/credit-jeeves/cache/mail';
 
         if (!is_dir($dir)) {
             $path = '';
