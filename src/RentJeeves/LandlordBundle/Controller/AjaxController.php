@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
+use CreditJeeves\DataBundle\Enum\UserType;
 
 /**
  * 
@@ -85,14 +86,17 @@ class AjaxController extends Controller
             $object->fillPropertyData($property);
         }
 
-        if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY') && $group) {
+        if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
+            && $group
+            && $this->getUser()->getType() == UserType::LANDLORD
+        ) {
             $object->addPropertyGroup($group);
         }
         $em->persist($object);
         $em->flush();
 
         try {
-            if ($group) {
+            if ($group && $this->getUser()->getType() == UserType::LANDLORD) {
                 $google = $this->container->get('google');
                 $google->savePlace($object);
                 $group->addGroupProperty($object);
