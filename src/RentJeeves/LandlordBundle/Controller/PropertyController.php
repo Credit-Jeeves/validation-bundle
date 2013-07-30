@@ -20,8 +20,8 @@ class PropertyController extends Controller
     {
         $groups = $this->getGroups();
         return array('nGroups' => $groups->count());
-    }
-*/
+    }*/
+
     /**
      * @Route("/property/new", name="landlord_property_new")
      * @Template()

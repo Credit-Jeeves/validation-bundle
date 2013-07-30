@@ -78,3 +78,25 @@
 #delete, #search-result-map {
     display: none;
 }
+
+#errorForm{
+    color: red;
+    margin-top: 29px;
+    display: block;
+    position: absolute;
+}
+.loader {
+    display: none;
+    margin-left: 50px;
+}
+
+.nameUnits {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.unitsListNames {
+    display: block;
+    width: 315px;
+    margin-left: 92px;
+}

@@ -20,13 +20,16 @@
                     <div class="left search-field-box">
                         <input type="text" placeholder="Your rental address" value="" name="searsh-field" id="property-search" autocomplete="off">
                         <a href="#" id="delete" class="pie-el">x</a>
+                        <div id="errorForm">
+
+                        </div>
                     </div>
                     <div id="search-result-map"></div>
                 </div>
             </div>
             <div class="units-box">
                 <div>
-                    <label>Numder of Units:</label>
+                    <label>Number of Units:</label>
                     <input type="text" value="" id="numberOfUnit">
                     <div class="addUnit">
                         <button type="submit" class="button small greyButton" id="addUnit">
@@ -35,12 +38,16 @@
                     </div>
                 </div>
                 <div class="unitsList">
+                    <label class="nameUnits">Name of Units:</label>
+                    <div class="unitsListNames">
+                    </div>
                 </div>
             </div>
             <div class="clear">
             </div>
             <button type="submit" class="button greyButton" id="addProperty">
                 <span>Add Property</span>
+                <img src="/bundles/rjpublic/images/ajax-loader.gif" class="loader">
             </button>
             <div class="clear">
             </div>
