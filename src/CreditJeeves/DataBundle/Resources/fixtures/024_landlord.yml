@@ -173,4 +173,33 @@ fixtures:
         lastLogin: '-1 days'
         created_at: '-50 days'
         updated_at: '-50 days'
-        
+# landlord
+    Landlord_6:
+        holding: rjHolding_2
+        first_name: John
+        middle_initial: WAKEFIELD
+        last_name: BREEN
+        email: landlord6@example.com
+        street_address1: PO BOX 445
+        street_address2: ''
+        unit_no: apt 1
+        city: APO
+        state: AE
+        zip: 09061
+        phone_type: 2
+        phone: 913 76 44 215
+        date_of_birth: '1957-02-19'
+        ssn: 666042073
+        is_active: true
+        is_super_admin: true
+        invite_code: null
+        password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
+        score_changed_notification: true
+        offer_notification: true
+        culture:  en
+        has_data: true
+        has_report: true
+        is_verified: none
+        lastLogin: '-1 days'
+        created_at: '-45 days'
+        updated_at: '-2 days'

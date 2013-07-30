@@ -16,9 +16,19 @@ class PropertyController extends Controller
      * @Route("/property/new", name="landlord_property_new")
      * @Template()
      */
-    public function indexAction()
+/*    public function indexAction()
     {
         $groups = $this->getGroups();
         return array('nGroups' => $groups->count());
+    }
+*/
+    /**
+     * @Route("/property/new", name="landlord_property_new")
+     * @Template()
+     */
+    public function newAction()
+    {
+
+        return array();
     }
 }

@@ -1,0 +1,68 @@
+{% extends "LandlordBundle::base.html.twig" %}
+
+{% block content %}
+<h1>Add Your First Property</h1>
+<br />
+<div class="pod-large pod-border pod-padding shadow">
+    <div class="col all">
+        <div class="titlePropety titlePropetyFirst">
+            <label>Property information</label>
+        </div>
+        <div class="titlePropety">
+            <label>Add Units</label>
+        </div>
+        <div class="clear">
+        </div>
+        <form action="#" id="formSearch">
+            <div class="search-box pie-el">
+                <label for="searsh-field">Find your rental address</label>
+                <div class="clearfix with-button">
+                    <div class="left search-field-box">
+                        <input type="text" placeholder="Your rental address" value="" name="searsh-field" id="property-search" autocomplete="off">
+                        <a href="#" id="delete" class="pie-el">x</a>
+                    </div>
+                    <div id="search-result-map"></div>
+                </div>
+            </div>
+            <div class="units-box">
+                <div>
+                    <label>Numder of Units:</label>
+                    <input type="text" value="" id="numberOfUnit">
+                    <div class="addUnit">
+                        <button type="submit" class="button small greyButton" id="addUnit">
+                            <span>Add</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="unitsList">
+                </div>
+            </div>
+            <div class="clear">
+            </div>
+            <button type="submit" class="button greyButton" id="addProperty">
+                <span>Add Property</span>
+            </button>
+            <div class="clear">
+            </div>
+        </form>
+    </div>
+</div>
+<br />
+<br />
+<br />
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@ComponentBundle/Resources/public/js/groups.js'
+                   '@LandlordBundle/Resources/public/js/propertyNew.js'
+     %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/newProperty.css'%}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
