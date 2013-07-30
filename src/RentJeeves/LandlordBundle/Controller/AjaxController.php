@@ -85,16 +85,17 @@ class AjaxController extends Controller
             $object = new Property();
             $property += $object->parseGoogleLocation($data);
             $object->fillPropertyData($property);
-            if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
-                && $group
-                && $this->getUser()->getType() == UserType::LANDLORD
-            ) {
-                $object->addPropertyGroup($group);
-                $group->addGroupProperty($object);
-            }
             $itsNewProperty = true;
         }
 
+        if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
+                && $group
+                && $this->getUser()->getType() == UserType::LANDLORD
+        ) {
+            //@TODO need check, maybe this group alredy exist on this property
+            $object->addPropertyGroup($group);
+            $group->addGroupProperty($object);
+        }
         $em->persist($object);
         $em->persist($group);
         $em->flush();
