@@ -12,7 +12,7 @@
     color: #666;
     padding: 10px;
     border-bottom: 1px solid #C8C8C8;
-    font-size: 16px;
+    font-size: 14px;
     font-family: 'ABeeZee', sans-serif;
     text-shadow: 2px 2px 2px #ffffff;
     filter: dropshadow(color=#ffffff, offx=2, offy=2);
@@ -33,7 +33,7 @@
     padding-left: 10px;
 }
 .listOfPayments .payTo {
-    width: 200px;
+    width: 150px;
     padding-left: 10px;
 }
 .listOfPayments .status {
@@ -41,7 +41,7 @@
     padding-left: 10px;
 }
 .listOfPayments .action {
-    width: 370px;
+    width: 400px;
 }
 .listOfPayments td {
     color: #000;
@@ -56,7 +56,7 @@
     border-radius: 5px;
 }
 .infoBlock>.text {
-    width: 325px;
+    width: 345px;
     float: left;
     padding-right: 30px;
 }
@@ -64,7 +64,11 @@
     color: #73AF27;
 }
 .infoBlock>.img {
-    float: left;
+    float: left;   
+}
+.infoBlock>.img>img{
+    padding-top: 8px;
+    width: 550px; 
 }
 .pod-large {
     padding-top: 20px;
@@ -75,4 +79,18 @@
     font-size: 15px;
     font-family: 'ABeeZee', sans-serif;
     color: #717171;
+}
+.button.small, button.small {
+  width: auto !important;
+}
+
+.listOfPaymentsActive .address {
+    width: 170px !important;
+}
+
+.addPropertyContainer {
+    display: block;
+    position: absolute;
+    margin-left: 835px;
+    margin-top: -20px;
 }

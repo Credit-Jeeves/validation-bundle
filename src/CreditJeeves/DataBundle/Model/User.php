@@ -467,6 +467,14 @@ abstract class User extends BaseUser
     protected $addresses;
 
     /**
+     * @ORM\OneToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\Alert",
+     *      mappedBy="user"
+     * )
+     */
+    protected $alert;
+
+    /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="user")
      */
     protected $group_affilate;
@@ -1536,5 +1544,38 @@ abstract class User extends BaseUser
     public function getGroupAffilate()
     {
         return $this->group_affilate;
+    }
+
+    /**
+     * Add alert
+     *
+     * @param \RentJeeves\DataBundle\Entity\Alert $alert
+     * @return User
+     */
+    public function addAlert(\RentJeeves\DataBundle\Entity\Alert $alert)
+    {
+        $this->alert[] = $alert;
+    
+        return $this;
+    }
+
+    /**
+     * Remove alert
+     *
+     * @param \RentJeeves\DataBundle\Entity\Alert $alert
+     */
+    public function removeAlert(\RentJeeves\DataBundle\Entity\Alert $alert)
+    {
+        $this->alert->removeElement($alert);
+    }
+
+    /**
+     * Get alert
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAlert()
+    {
+        return $this->alert;
     }
 }
