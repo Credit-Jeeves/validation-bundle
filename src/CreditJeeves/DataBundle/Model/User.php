@@ -1578,5 +1578,4 @@ abstract class User extends BaseUser
     {
         return $this->alert;
     }
-
 }
