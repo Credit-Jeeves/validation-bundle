@@ -12,8 +12,8 @@ class PropertyRepository extends EntityRepository
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
         if (!empty($search)) {
-            $query->andWhere('p.'.$searchBy.' = :search');
-            $query->setParameter('search', $search);
+            $query->andWhere('p.'.$searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
@@ -34,8 +34,8 @@ class PropertyRepository extends EntityRepository
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
         if (!empty($search)) {
-            $query->andWhere('p.'.$searchBy.' = :search');
-            $query->setParameter('search', $search);
+            $query->andWhere('p.'.$searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
 
         if ($isSortAsc) {
