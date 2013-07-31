@@ -216,3 +216,41 @@ table.properties-table th {
 .sortUpOnly {
     margin-left: 1px;
 }
+.containerSearch {
+    float: right;
+}
+.filterBy, .searchBy {
+    float: left;
+}
+.filterBy>label {
+    float: left;
+    margin-top: 10px;
+    font-size: 18px;
+    margin-right: 10px;
+}
+.searchBy>input {
+    float: left;
+}
+
+.containerSearch {
+    float: right;
+    position: absolute;
+    margin-left: 364px;
+}
+
+#searchFilterSelect_link {
+    width: 150px;
+}
+
+#delete {
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin: 5px 0 0 -23px;
+    overflow: hidden;
+    text-indent: -999px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #bdbdbd url(/bundles/rjpublic/images/sprite-icons.png) 0 -50px no-repeat;
+}

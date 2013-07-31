@@ -7,8 +7,11 @@ function Properties() {
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
   this.current = ko.observable(1);
-  self.sortColumn = ko.observable("");
-  self.isSortAsc = ko.observable(true);
+  this.sortColumn = ko.observable("number");
+  this.isSortAsc = ko.observable(true);
+  this.searchText = ko.observable("");
+  this.searchCollum = ko.observable("");
+
   this.sortFunction = function(data, event) {
      field = event.target.id;
      if(field.length == 0) {
@@ -28,7 +31,7 @@ function Properties() {
         $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
      }
      self.current(1);
-     this.ajaxAction();
+     self.ajaxAction();
   };
   this.ajaxAction = function() {
     self.processProperty(true);
@@ -41,7 +44,9 @@ function Properties() {
           'page' : self.current(),
           'limit' : limit,
           'sortColumn': self.sortColumn(),
-          'isSortAsc': self.isSortAsc()
+          'isSortAsc': self.isSortAsc(),
+          'searchCollum': self.searchCollum(),
+          'searchText': self.searchText(),
         }
       },
       success: function(response) {
@@ -154,11 +159,49 @@ function Units() {
   };
 }
 
+function Search() {
+  this.searchText = ko.observable("");
+  this.searchCollum = ko.observable("");
+  this.property = ko.observable("");
+  this.isSearch =  ko.observable(false);
+  var self = this;
+
+  this.searchFunction = function() {
+    console.info('hello from search');
+    var searchCollum = $('#searchFilterSelect').linkselect('val');
+    if(typeof searchCollum != 'string') {
+       searchCollum = '';
+    }
+    if(self.searchText().length <= 0) {
+      return;
+    }
+
+    self.property().searchText(self.searchText());
+    self.property().searchCollum(searchCollum);
+    self.property().current(1);
+    self.property().ajaxAction();
+    self.isSearch(true);
+  }
+
+  this.clearSearch = function() {
+    self.property().searchText('');
+    self.property().searchCollum('');
+    self.property().current(1);
+    self.property().ajaxAction();
+    self.isSearch(false);
+  }
+}
+
 var PropertiesViewModel = new Properties();
 var UnitsViewModel = new Units();
+var search = new Search();
+search.property(PropertiesViewModel);
 
 $(document).ready(function(){
   ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
   PropertiesViewModel.ajaxAction();
   ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
+  ko.applyBindings(search, $('#searchContent').get(0));
+  $('#searchFilterSelect').linkselect("destroy");
+  $('#searchFilterSelect').linkselect();
 });

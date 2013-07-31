@@ -5,7 +5,7 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
-    public function countProperties($group, $searchBy = 'address', $search = '')
+    public function countProperties($group, $searchBy = 'street', $search = '')
     {
         $query = $this->createQueryBuilder('p');
         $query->innerJoin('p.property_groups', 'g');
@@ -25,7 +25,7 @@ class PropertyRepository extends EntityRepository
         $limit = 100,
         $sort = 'number',
         $isSortAsc = true,
-        $searchBy = 'address',
+        $searchBy = 'street',
         $search = ''
     ) {
         $offset = ($page - 1) * $limit;
