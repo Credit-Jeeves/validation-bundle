@@ -38,7 +38,7 @@ class PropertyRepository extends EntityRepository
             $query->setParameter('search', $search);
         }
 
-        if($isSortAsc) {
+        if ($isSortAsc) {
             $order = 'ASC';
         } else {
             $order = 'DESC';
