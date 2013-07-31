@@ -71,6 +71,7 @@ class AjaxController extends Controller
     public function addProperty()
     {
         $property = array();
+        $itsNewProperty = false;
         $request = $this->getRequest();
         $data = $request->request->all('address');
         $data = json_decode($data['data'], true);
@@ -84,27 +85,26 @@ class AjaxController extends Controller
             $object = new Property();
             $property += $object->parseGoogleLocation($data);
             $object->fillPropertyData($property);
+            $itsNewProperty = true;
         }
 
         if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
-            && $group
-            && $this->getUser()->getType() == UserType::LANDLORD
+                && $group
+                && $this->getUser()->getType() == UserType::LANDLORD
         ) {
+            //@TODO need check, maybe this group alredy exist on this property
             $object->addPropertyGroup($group);
+            $group->addGroupProperty($object);
         }
         $em->persist($object);
+        $em->persist($group);
         $em->flush();
 
-        try {
-            if ($group && $this->getUser()->getType() == UserType::LANDLORD) {
-                $google = $this->container->get('google');
-                $google->savePlace($object);
-                $group->addGroupProperty($object);
-            }
-            $em->flush();
-        } catch (DBALException $e) {
-            $this->get('fp_badaboom.exception_catcher')->handleException($e);
+        if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
+            $google = $this->container->get('google');
+            $google->savePlace($object);
         }
+
 
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($object->getId());
 

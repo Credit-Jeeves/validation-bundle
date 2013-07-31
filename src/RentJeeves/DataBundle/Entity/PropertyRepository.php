@@ -57,4 +57,24 @@ class PropertyRepository extends EntityRepository
 
         return $count;
     }
+
+    public function landlordHasProperty($landlord)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('count(c.id)');
+        $query->leftJoin('c.property_groups', 'g');
+        $query->leftJoin('g.holding', 'h');
+        $query->leftJoin('h.users', 'u');
+        $query->where('u.id = :landlord');
+        $query->setParameter('landlord', $landlord->getId());
+
+        $query = $query->getQuery();
+        $count = $query->getSingleScalarResult();
+        
+        if ($count > 0) {
+            return true;
+        }
+
+        return false;
+    }
 }
