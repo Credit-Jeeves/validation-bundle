@@ -194,3 +194,25 @@ table.properties-table th {
     border: 2px solid #ffff33;
     margin: 10px 0;
 }
+.sort {
+    width: 12px;
+    margin-top: -7px;
+}
+.processLoading {
+    position: absolute;
+    margin-top: 85px;
+    margin-left: 400px;
+}
+.sortField {
+    cursor: pointer;
+}
+.sortDown {
+    margin-top: 2px;
+}
+
+.sortUp {
+    margin-left: -16px;
+}
+.sortUpOnly {
+    margin-left: 1px;
+}

@@ -24,7 +24,7 @@ class PropertyRepository extends EntityRepository
         $page = 1,
         $limit = 100,
         $sort = 'number',
-        $order = 'ASC',
+        $isSortAsc = true,
         $searchBy = 'address',
         $search = ''
     ) {
@@ -36,6 +36,12 @@ class PropertyRepository extends EntityRepository
         if (!empty($search)) {
             $query->andWhere('p.'.$searchBy.' = :search');
             $query->setParameter('search', $search);
+        }
+
+        if($isSortAsc) {
+            $order = 'ASC';
+        } else {
+            $order = 'DESC';
         }
         $query->orderBy('p.'.$sort, $order);
         $query->setFirstResult($offset);

@@ -45,7 +45,14 @@ class AjaxController extends Controller
         $data['total'] = $total;
         if ($total) {
             $items = array();
-            $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit']);
+
+            if(!empty($page['sortColumn'])) {
+                $isSortAsc = ($page['isSortAsc'] === 'true');
+                $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit'], $page['sortColumn'], $isSortAsc);
+            } else {
+                $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit']);
+            }
+            
             foreach ($properties as $property) {
                 $item = $property->getItem($group);
                 $items[] = $item;

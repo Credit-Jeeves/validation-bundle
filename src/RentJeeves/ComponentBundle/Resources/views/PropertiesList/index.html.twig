@@ -52,20 +52,37 @@
         <!-- /ko -->
         <div class="clearboth"></div>
         <div class="properties-table-block">
+            <img src="/bundles/core/images/img_loading.gif" class="processLoading" data-bind="style: { visibility: processProperty() ? 'visible' : 'hidden' }">
             <!-- ko if: countProperties() -->
             <table class="properties-table zebra-grid">
                 <thead>
-                <tr class="properties-th">
+                <tr data-bind="click: sortFunction" class="properties-th">
                     <th>Address</th>
-                    <th>ZIP</th>
-                    <th>City</th>
-                    <th>State</th>
-                    <th>Country</th>
+                    <th id='zip' class="sortField">
+                        ZIP
+                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
+                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
+                    </th>
+                    <th id='city' class="sortField">
+                        City
+                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
+                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
+                    </th>
+                    <th id='area' class="sortField">
+                        State
+                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
+                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
+                    </th>
+                    <th id='country' class="sortField">
+                        Country
+                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
+                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
+                    </th>
                     <th>Units</th>
                     <th></th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody data-bind="style: { visibility: processProperty() ? 'hidden' : 'visible'  }">
                 <!-- ko foreach: { data: aProperties() } -->
                 <tr>
                     <td data-bind="text: address"></td>

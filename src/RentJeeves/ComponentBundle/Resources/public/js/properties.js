@@ -2,11 +2,36 @@ function Properties() {
   var limit = 10;
   var current = 1;
   var self = this;
+  this.processProperty = ko.observable(false);
   this.aProperties = ko.observableArray([]);
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
   this.current = ko.observable(1);
+  self.sortColumn = ko.observable("");
+  self.isSortAsc = ko.observable(true);
+  this.sortFunction = function(data, event) {
+     field = event.target.id;
+     if(field.length == 0) {
+        return;
+     }
+     $('.sort').each(function() {
+      $(this).show();
+      $('#'+self.sortColumn()).find('.sortUp').removeClass('sortUpOnly');
+     });
+     self.sortColumn(field);
+     if(self.isSortAsc() == true) {
+        self.isSortAsc(false);
+        $('#'+self.sortColumn()).find('.sortUp').hide();
+     } else {
+        self.isSortAsc(true);
+        $('#'+self.sortColumn()).find('.sortDown').hide();
+        $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
+     }
+     self.current(1);
+     this.ajaxAction();
+  };
   this.ajaxAction = function() {
+    self.processProperty(true);
     $.ajax({
       url: Routing.generate('landlord_properties_list'),
       type: 'POST',
@@ -14,7 +39,9 @@ function Properties() {
       data: {
         'data': {
           'page' : self.current(),
-          'limit' : limit
+          'limit' : limit,
+          'sortColumn': self.sortColumn(),
+          'isSortAsc': self.isSortAsc()
         }
       },
       success: function(response) {
@@ -22,6 +49,16 @@ function Properties() {
         self.aProperties(response.properties);
         self.total(response.total);
         self.pages(response.pagination);
+        self.processProperty(false);
+        if(self.sortColumn().length == 0) {
+          return;
+        }
+        if(self.isSortAsc() == true) {
+          $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
+          $('#'+self.sortColumn()).find('.sortDown').hide();
+        } else {
+          $('#'+self.sortColumn()).find('.sortUp').hide();
+        }
       }
     });
   };
