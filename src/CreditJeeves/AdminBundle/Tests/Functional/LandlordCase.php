@@ -21,7 +21,7 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $tableBlock->clickLink('link_list');
 
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.edit_link'));
-        $this->assertCount(6, $landlords);
+        $this->assertCount(7, $landlords);
         $this->page->clickLink('link_action_create');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($submit = $form->findButton('btn_create_and_edit_again'));
@@ -42,7 +42,7 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $submit->click();
         $this->page->clickLink('Landlord List');
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.delete_link'));
-        $this->assertCount(7, $landlords);
+        $this->assertCount(8, $landlords);
         $landlords[1]->click();
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($delete = $form->findButton('btn_delete'));
@@ -50,7 +50,7 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($message = $this->page->find('css', '.alert-success'));
         $this->assertEquals('flash_delete_success', $message->getText());
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.edit_link'));
-        $this->assertCount(6, $landlords);
+        $this->assertCount(7, $landlords);
         $this->logout();
     }
 }
