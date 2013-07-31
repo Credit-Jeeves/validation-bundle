@@ -1,10 +1,12 @@
 <?php
 namespace CreditJeeves\DataBundle\Enum;
 
+use CreditJeeves\CoreBundle\Enum;
+
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  */
-class LeadStatus extends Base
+class LeadStatus extends Enum
 {
     const NEWONE = 'new';
     const PREQUAL = 'prequal';

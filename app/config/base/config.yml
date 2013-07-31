@@ -6,8 +6,6 @@ parameters:
         - darryl@creditjeeves.com
 
     experian.logging: false
-    experian.atb:
-        wsdl_url: '%data.dir%/wsdl/ATBWebService.wsdl'
-        location: 'http://stg.creditjeeves.com:8080/'
-        logging: %experian.logging%
-        logs_dir: '%kernel.logs_dir%'
+
+simulation:
+    atb: ~

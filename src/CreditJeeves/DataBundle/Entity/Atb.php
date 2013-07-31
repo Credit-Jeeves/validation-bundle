@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use CreditJeeves\DataBundle\Model\Atb as BaseAtb;
+use CreditJeeves\SimulationBundle\Entity\Atb as BaseAtb;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\AtbRepository")
@@ -11,6 +11,63 @@ use CreditJeeves\DataBundle\Model\Atb as BaseAtb;
  */
 class Atb extends BaseAtb
 {
+    /**
+     * @ORM\Column(type="bigint")
+     */
+    protected $cj_applicant_report_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", inversedBy="atbs")
+     * @ORM\JoinColumn(name="cj_applicant_report_id", referencedColumnName="id")
+     */
+    protected $report;
+
+    /**
+     * Set cj_applicant_id
+     *
+     * @param integer $cjApplicantId
+     * @return Atb
+     */
+    public function setReportId($reportId)
+    {
+        $this->cj_applicant_id = $reportId;
+
+        return $this;
+    }
+
+    /**
+     * Get cj_applicant_id
+     *
+     * @return integer
+     */
+    public function getReportId()
+    {
+        return $this->cj_applicant_id;
+    }
+
+    /**
+     * Set report
+     *
+     * @param \CreditJeeves\DataBundle\Entity\ReportPrequal $report
+     * @return Atb
+     */
+    public function setReport(\CreditJeeves\DataBundle\Entity\ReportPrequal $report = null)
+    {
+        $this->report = $report;
+
+        return $this;
+    }
+
+    /**
+     * Get report
+     *
+     * @return \CreditJeeves\DataBundle\Entity\ReportPrequal
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
     /**
      * @ORM\PreRemove
      */
@@ -61,15 +118,5 @@ class Atb extends BaseAtb
      */
     public function methodPostLoad()
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setResult(array $result)
-    {
-        $this->setSimType($result['sim_type']);
-        $this->setTransactionSignature($result['transaction_signature']);
-        parent::setResult($result);
     }
 }

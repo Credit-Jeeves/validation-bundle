@@ -79,7 +79,15 @@
         },
         {
             "type": "git",
+            "url": "git@github.com:Credit-Jeeves/CoreBundle.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:Credit-Jeeves/ArfBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/SimulationBundle.git"
         },
         {
             "type": "git",
@@ -138,7 +146,9 @@
         "lib-curl": "*",
         "lib-openssl": "*",
         "credit-jeeves/credit-jeeves": "dev-master",
+        "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",
+        "credit-jeeves/simulation-bundle": "dev-master",
         "symfony/symfony": "2.3.*",
         "doctrine/orm": ">=2.2.3,<2.4-dev",
         "doctrine/doctrine-bundle": "dev-master",

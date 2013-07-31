@@ -18,25 +18,25 @@ class DataBundle extends Bundle
     {
         if (!static::$isLoaded) { // TODO find better way
             static::$isLoaded = true;
-            Type::addType('encrypt', 'CreditJeeves\DataBundle\Type\Encrypt');
-            Type::addType('encryptobject', 'CreditJeeves\DataBundle\Type\EncryptObject');
 
             Type::addType('ReportType', 'CreditJeeves\DataBundle\Enum\ReportType');
             Type::addType('UserIsVerified', 'CreditJeeves\DataBundle\Enum\UserIsVerified');
             Type::addType('UserType', 'CreditJeeves\DataBundle\Enum\UserType');
             Type::addType('UserCulture', 'CreditJeeves\DataBundle\Enum\UserCulture');
-            Type::addType('AtbType', 'CreditJeeves\DataBundle\Enum\AtbType');
             Type::addType('OrderStatus', 'CreditJeeves\DataBundle\Enum\OrderStatus');
             Type::addType('OperationType', 'CreditJeeves\DataBundle\Enum\OperationType');
             Type::addType('LeadStatus', 'CreditJeeves\DataBundle\Enum\LeadStatus');
             Type::addType('GroupType', 'CreditJeeves\DataBundle\Enum\GroupType');
             Type::addType('GroupFeeType', 'CreditJeeves\DataBundle\Enum\GroupFeeType');
             Type::addType('LeadSource', 'CreditJeeves\DataBundle\Enum\LeadSource');
-
-            $this->container->get('doctrine.orm.default_entity_manager')
-                ->getConnection()
-                ->getDatabasePlatform()
-                ->registerDoctrineTypeMapping('enum', 'string');
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return 'CreditJeevesCoreBundle';
     }
 }

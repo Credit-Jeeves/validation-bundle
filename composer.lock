@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "40333f959c62bcc4b702fc616475226c",
+    "hash": "5731f9a58f3c1cf3a70d2c78a089565a",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -128,6 +128,37 @@
             "time": "2013-07-30 16:52:14"
         },
         {
+            "name": "credit-jeeves/core-bundle",
+            "version": "dev-master",
+            "target-dir": "CreditJeeves/CoreBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
+                "reference": "0af7d59617c6709199706557f0ce02b290707b41"
+            },
+            "require": {
+                "ext-mcrypt": "*",
+                "php": ">=5.3.3"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "CreditJeeves\\CoreBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ton Sharp",
+                    "email": "66ton99@gmail.com"
+                }
+            ],
+            "description": "CreditJeeves Core Bundle",
+            "time": "2013-07-31 17:13:11"
+        },
+        {
             "name": "credit-jeeves/credit-jeeves",
             "version": "dev-master",
             "source": {
@@ -138,6 +169,45 @@
             "type": "library",
             "description": "Legacy code",
             "time": "2013-07-24 11:51:25"
+        },
+        {
+            "name": "credit-jeeves/simulation-bundle",
+            "version": "dev-master",
+            "target-dir": "CreditJeeves/SimulationBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Credit-Jeeves/SimulationBundle.git",
+                "reference": "f01806daf9235b225343334cba155f0708fa996f"
+            },
+            "require": {
+                "credit-jeeves/arf-bundle": "dev-master",
+                "credit-jeeves/core-bundle": "dev-master",
+                "doctrine/orm": ">=2.2.3,<2.4-dev",
+                "ext-curl": "*",
+                "fp/badaboom": "dev-ton as dev-not-approved",
+                "fp/badaboom-bundle": "dev-ton",
+                "jms/di-extra-bundle": "1.4.*",
+                "jms/serializer-bundle": "dev-master",
+                "php": ">=5.3.3",
+                "symfony/symfony": "2.3.*"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "CreditJeeves\\SimulationBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ton Sharp",
+                    "email": "66ton99@gmail.com"
+                }
+            ],
+            "description": "CreditJeeves Simulation Bundle",
+            "time": "2013-07-31 16:56:02"
         },
         {
             "name": "doctrine/annotations",
@@ -2545,12 +2615,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "78878870d21653e2710500f01320ab2c52127811"
+                "reference": "7bf161d71ee2297b8a79ced547e8985b54fbedab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/78878870d21653e2710500f01320ab2c52127811",
-                "reference": "78878870d21653e2710500f01320ab2c52127811",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/7bf161d71ee2297b8a79ced547e8985b54fbedab",
+                "reference": "7bf161d71ee2297b8a79ced547e8985b54fbedab",
                 "shasum": ""
             },
             "require": {
@@ -2611,7 +2681,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-07-29 19:51:32"
+            "time": "2013-07-31 09:32:04"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -4066,7 +4136,9 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "credit-jeeves/credit-jeeves": 20,
+        "credit-jeeves/core-bundle": 20,
         "credit-jeeves/arf-bundle": 20,
+        "credit-jeeves/simulation-bundle": 20,
         "doctrine/doctrine-bundle": 20,
         "jms/security-extra-bundle": 20,
         "hat/environment": 20,

@@ -3,13 +3,13 @@ namespace CreditJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\AtbRepository;
 use CreditJeeves\DataBundle\Entity\Lead;
-use CreditJeeves\DataBundle\Enum\AtbType;
+use CreditJeeves\SimulationBundle\Enum\AtbType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\ArfBundle\Parser\ArfParser;
-use CreditJeeves\ExperianBundle\AtbSimulation;
+use CreditJeeves\SimulationBundle\AtbSimulation;
 
 class AdCreditCardsController extends Controller
 {
