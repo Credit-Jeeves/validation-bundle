@@ -40,12 +40,22 @@ class AjaxController extends Controller
     
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
-        $total = $repo->countProperties($group);
+        $total = $repo->countProperties($group, $page['searchCollum'], $page['searchText']);
         $total = count($total);
         $data['total'] = $total;
+        $items = array();
         if ($total) {
-            $items = array();
-            $properties = $repo->getPropetiesPage($group, $page['page'], $page['limit']);
+            $isSortAsc = ($page['isSortAsc'] === 'true');
+            $properties = $repo->getPropetiesPage(
+                $group,
+                $page['page'],
+                $page['limit'],
+                $page['sortColumn'],
+                $isSortAsc,
+                $page['searchCollum'],
+                $page['searchText']
+            );
+            
             foreach ($properties as $property) {
                 $item = $property->getItem($group);
                 $items[] = $item;

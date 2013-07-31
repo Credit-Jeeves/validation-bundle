@@ -2,11 +2,39 @@ function Properties() {
   var limit = 10;
   var current = 1;
   var self = this;
+  this.processProperty = ko.observable(false);
   this.aProperties = ko.observableArray([]);
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
   this.current = ko.observable(1);
+  this.sortColumn = ko.observable("number");
+  this.isSortAsc = ko.observable(true);
+  this.searchText = ko.observable("");
+  this.searchCollum = ko.observable("");
+
+  this.sortFunction = function(data, event) {
+     field = event.target.id;
+     if(field.length == 0) {
+        return;
+     }
+     $('.sort').each(function() {
+      $(this).show();
+      $('#'+self.sortColumn()).find('.sortUp').removeClass('sortUpOnly');
+     });
+     self.sortColumn(field);
+     if(self.isSortAsc() == true) {
+        self.isSortAsc(false);
+        $('#'+self.sortColumn()).find('.sortUp').hide();
+     } else {
+        self.isSortAsc(true);
+        $('#'+self.sortColumn()).find('.sortDown').hide();
+        $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
+     }
+     self.current(1);
+     self.ajaxAction();
+  };
   this.ajaxAction = function() {
+    self.processProperty(true);
     $.ajax({
       url: Routing.generate('landlord_properties_list'),
       type: 'POST',
@@ -14,7 +42,11 @@ function Properties() {
       data: {
         'data': {
           'page' : self.current(),
-          'limit' : limit
+          'limit' : limit,
+          'sortColumn': self.sortColumn(),
+          'isSortAsc': self.isSortAsc(),
+          'searchCollum': self.searchCollum(),
+          'searchText': self.searchText(),
         }
       },
       success: function(response) {
@@ -22,6 +54,16 @@ function Properties() {
         self.aProperties(response.properties);
         self.total(response.total);
         self.pages(response.pagination);
+        self.processProperty(false);
+        if(self.sortColumn().length == 0) {
+          return;
+        }
+        if(self.isSortAsc() == true) {
+          $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
+          $('#'+self.sortColumn()).find('.sortDown').hide();
+        } else {
+          $('#'+self.sortColumn()).find('.sortUp').hide();
+        }
       }
     });
   };
@@ -117,11 +159,49 @@ function Units() {
   };
 }
 
+function Search() {
+  this.searchText = ko.observable("");
+  this.searchCollum = ko.observable("");
+  this.property = ko.observable("");
+  this.isSearch =  ko.observable(false);
+  var self = this;
+
+  this.searchFunction = function() {
+    console.info('hello from search');
+    var searchCollum = $('#searchFilterSelect').linkselect('val');
+    if(typeof searchCollum != 'string') {
+       searchCollum = '';
+    }
+    if(self.searchText().length <= 0) {
+      return;
+    }
+
+    self.property().searchText(self.searchText());
+    self.property().searchCollum(searchCollum);
+    self.property().current(1);
+    self.property().ajaxAction();
+    self.isSearch(true);
+  }
+
+  this.clearSearch = function() {
+    self.property().searchText('');
+    self.property().searchCollum('');
+    self.property().current(1);
+    self.property().ajaxAction();
+    self.isSearch(false);
+  }
+}
+
 var PropertiesViewModel = new Properties();
 var UnitsViewModel = new Units();
+var search = new Search();
+search.property(PropertiesViewModel);
 
 $(document).ready(function(){
   ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
   PropertiesViewModel.ajaxAction();
   ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
+  ko.applyBindings(search, $('#searchContent').get(0));
+  $('#searchFilterSelect').linkselect("destroy");
+  $('#searchFilterSelect').linkselect();
 });
