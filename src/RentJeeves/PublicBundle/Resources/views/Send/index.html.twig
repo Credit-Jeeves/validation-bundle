@@ -6,29 +6,28 @@
     <br />
   {% if active %} 
       <h3 class="title">
-        <span>You have successfully activated your account. Please login.</span>
+        <span>{{ 'success.active'|trans }}</span>
       </h3>
     <br />
     <br />
     <br />
   {% else %}
     <form action="{{ path('user_new_send', {"tenantId": tenantId }) }}" method="post">
-          <h3 class="title">Verification Email</h4>
+          <h3 class="title">{{ 'verify.email'|trans }}</h4>
           <div class="box type1" style="padding-top: 0px;">
             <div class="col-box clearfix">
               <div class="col">
-                <h4>Please check your inbox for an email from RentTrack and click on the verification link.</h4>
+                <h4>{{ 'verify.email.text1'|trans }}</h4>
                 {% if landlordLetter %}
-                <h4>We have also invited your landlord to sign up. We'll let you know when they do, and when 
-                  you can set up your rent payment.</h4>
+                <h4>{{ 'verify.email.text2'|trans }}</h4>
                 {% endif %}
-                <h4>If you don't see an email after a few minutes, click Resend below.</h4>
+                <h4>{{ 'verify.email.text3'|trans }}</h4>
               </div>
             </div>
           </div>
           <div class="buttons-box clearfix">
             <div class="buttons left">
-              <button type="submit" class="button"><span>Resend Verification Email</span></button>
+              <button type="submit" class="button"><span>{{ 'verify.email.resend'|trans }}</span></button>
             </div>
           </div>
     </form>

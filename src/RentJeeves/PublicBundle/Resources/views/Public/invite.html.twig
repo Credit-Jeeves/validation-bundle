@@ -5,20 +5,20 @@
 <section class="form-content">
   <div class="box type1">
     <h3 class="clearfix">
-      <span>Property information</span>
-      <small><b>*</b>Required</small>
+      <span>{{ 'property.info'|trans }}</span>
+      <small><b>*</b>{{ 'required'|trans }}</small>
     </h3>
               
     <div class="col-box clearfix">
       <div class="col">
-      <h4>Add your rental property</h4>
+      <h4>{{ 'property.add'|trans }}</h4>
       <form action="#" name="searchRentalsForm" id="formSearch">
         <div class="search-box pie-el">
-          <label for="searsh-field">Verify your rental address</label>
+          <label for="searsh-field">{{ 'verify.rental'|trans }}</label>
           <div class="clearfix">
             <input type="text" id="property-search" name="searsh-field" value="{{ address }}">
             <a href="#" id="delete" class="pie-el">x</a>
-            <button type="submit" id="search-submit" class="pie-el">Search</button>
+            <button type="submit" id="search-submit" class="pie-el">{{ 'search'|trans }}</button>
           </div>
           <div id="map-canvas"></div>
         </div>
@@ -30,7 +30,7 @@
     <div class="box type1 pd1">
       <div class="col-box clearfix">
         <div class="col">
-          <h4 class="active">We didn’t find a match yet – let your landlord know!</h4>
+          <h4 class="active">{{'didnotfind'|trans}}</h4>
           {{ form_errors(form.invite) }}
           <div class="form-row clearfix">
             {{ form_label(form.invite.unit) }}
@@ -64,9 +64,9 @@
           </div>
           
           <div class="tooltip-box with-header pie-el">
-            <h4>Keep paying your rent for now – we’ll contact your landlord.</h4>
+            <h4>{{'keep.paying'|trans}}</h4>
             <p>
-              We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
+                {{ 'keep.paying.text'|trans }}
             </p>
           </div>
         </div>
@@ -77,7 +77,7 @@
     {{ form_rest(form) }}
     <div class="buttons-box clearfix">
       <div class="buttons left">
-        <button type="submit" class="button"><span>Continue</span></button>
+        <button type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>
       </div>
     </div>
 </form>

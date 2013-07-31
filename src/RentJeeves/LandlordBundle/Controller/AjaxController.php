@@ -105,9 +105,9 @@ class AjaxController extends Controller
             //@TODO need check, maybe this group alredy exist on this property
             $object->addPropertyGroup($group);
             $group->addGroupProperty($object);
+            $em->persist($group);
         }
         $em->persist($object);
-        $em->persist($group);
         $em->flush();
 
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
