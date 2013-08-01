@@ -3,7 +3,8 @@ use Symfony\Component\ClassLoader\ApcClassLoader;
 use Symfony\Component\HttpFoundation\Request;
 
 // start collect coverage from functional tests
-require_once  __DIR__ . '/../vendor/behat/mink-bundle/Behat/MinkBundle/Coverage/prepend.php';
+//require_once  __DIR__ . '/../vendor/behat/mink-bundle/Behat/MinkBundle/Coverage/prepend.php';
+if (function_exists('xdebug_disable')) { xdebug_disable(); }
 
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
@@ -20,4 +21,4 @@ $response->send();
 $kernel->terminate($request, $response);
 
 
-require 'PHPUnit/Extensions/SeleniumCommon/append.php';
+//require 'PHPUnit/Extensions/SeleniumCommon/append.php';
