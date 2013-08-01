@@ -26,7 +26,7 @@
     </div>
   </div>
 </form>
-<form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }}>
+<form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }} id="inviteForm">
     <div class="box type1 pd1">
       <div class="col-box clearfix">
         <div class="col">
@@ -77,7 +77,7 @@
     {{ form_rest(form) }}
     <div class="buttons-box clearfix">
       <div class="buttons left">
-        <button type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>
+        <button type="submit" class="button" id="submitForm"><span>{{ 'continue'|trans }}</span></button>
       </div>
     </div>
 </form>

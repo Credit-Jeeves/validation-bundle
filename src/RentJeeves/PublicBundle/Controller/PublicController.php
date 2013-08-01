@@ -79,7 +79,7 @@ class PublicController extends Controller
                 $tenant->setPassword(md5($aForm['tenant']['password']['Password']));
                 $invite->setTenant($tenant);
                 $invite->setProperty($property);
-
+                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($invite);
                 $em->persist($tenant);
@@ -141,6 +141,7 @@ class PublicController extends Controller
                     $unitSearch = $unitNew;
                 }
                 $tenant->setPassword(md5($aForm['password']['Password']));
+                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($tenant);
                 $em->flush();
