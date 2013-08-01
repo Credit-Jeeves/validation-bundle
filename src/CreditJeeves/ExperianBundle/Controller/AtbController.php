@@ -31,6 +31,7 @@ class AtbController extends Controller
         ignore_user_abort();
         set_time_limit(90);
 
+
         /* @var $report Report */
         $report = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
 
