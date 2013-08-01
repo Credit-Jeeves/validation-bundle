@@ -9,7 +9,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 class IframeCase extends BaseTestCase
 {
     protected function fillGoogleAddress($fillAddress)
-    {   
+    {
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
@@ -23,9 +23,9 @@ class IframeCase extends BaseTestCase
         $this->session->wait(3000);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
 
-        $this->session->executeScript("
-            $('.pac-item').show();
-        ");
+        $this->session->executeScript(
+            "$('.pac-item').show();"
+        );
         $item->click();
         $propertySearch->click();
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
@@ -49,34 +49,81 @@ class IframeCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_invitetenanttype_invite_unit'       => 'e3',
-                'rentjeeves_publicbundle_invitetenanttype_invite_first_name' => 'Alex',
-                'rentjeeves_publicbundle_invitetenanttype_invite_last_name' => 'Sharamko',
-                'rentjeeves_publicbundle_invitetenanttype_invite_email' => 'sharamko11@yandex.ru',
-                'rentjeeves_publicbundle_invitetenanttype_tenant_first_name' => "Alex",
-                'rentjeeves_publicbundle_invitetenanttype_tenant_last_name' => "Sharamko",
-                'rentjeeves_publicbundle_invitetenanttype_tenant_email'     => "sharamko12@yandex.ru",
-                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Password'     => 'pass',
-                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Verify_Password' => 'pass',
-                'rentjeeves_publicbundle_invitetenanttype_tenant_tos' => true,
+                'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => 'e3',
+                'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Alex',
+                'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Sharamko',
+                'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'newtenant@yandex.ru',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_first_name'                => "Alex",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_last_name'                 => "Sharamko",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_email'                     => "newtenant12@yandex.ru",
+                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_tos'                       => true,
             )
-        ); 
+        );
 
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
-        $this->assertCount(3, $fields, 'wrong number of inputs');
+        $this->assertCount(3, $fields, 'wrong number of text h4');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#email-body a'));
+        $link->click();
+        $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
+        $loginButton->click();
+        $this->login('sharamko12@yandex.ru', 'pass');
+        $this->assertNotNull($this->page->find('css', '.titleAlert'));
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(2, $email, 'Wrong number of emails');
     }
 
     /**
      * @test
      */
-/*    public function iframeFound()
+    public function iframeFound()
     {
+        $this->load(true);
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
-    }*/
+        $thisIsMyRental->click();
+        $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_tenanttype_first_name'                => "Alex",
+                'rentjeeves_publicbundle_tenanttype_last_name'                 => "Sharamko",
+                'rentjeeves_publicbundle_tenanttype_email'                     => "newtenant13@yandex.ru",
+                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+            )
+        );
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+        $submit->click();
+        $fields = $this->page->findAll('css', '#inviteText>h4');
+        $this->assertCount(2, $fields, 'wrong number of text h4');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#email-body a'));
+        $link->click();
+        $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
+        $loginButton->click();
+        $this->login('sharamko13@yandex.ru', 'pass');
+        $this->assertNotNull($this->page->find('css', '.titleAlert'));
+        $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
+        $this->assertCount(2, $contracts, 'wrong number of contracts');
+    }
 }

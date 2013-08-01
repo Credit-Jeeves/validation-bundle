@@ -265,14 +265,16 @@
                 <source>invite.landlord</source>
                 <target>Invite Your Landlord</target>
             </trans-unit>
-
             <trans-unit id="notfoundrentalmessage">
                 <source>notfoundrentalmessage</source>
                 <target><![CDATA[Aww shucks - your rental isn't <br />
                           part of the RentTrack family yet.]]>
                 </target>
-            </trans-unit> 
-            
+            </trans-unit>
+            <trans-unit id="iframe.placeholdersearch">
+                <source>iframe.placeholdersearch</source>
+                <target>Your Rental Address</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

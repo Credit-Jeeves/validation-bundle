@@ -33,93 +33,91 @@
                     </div>
                   </div>
                   </form>
-                  <form action="{{ path('iframe_new', {"propertyId": property.id }) }}" method="post" {{ form_enctype(form) }}>
-                  <div class="search-result-box clearfix pie-el">
-                    <div class="search-result-text-box">
-                      <div id="search-result-text" class="search-result-text">
-                        <h4 class="titleSearch">{{ countPropery }} rentals in {{ property.city }}, {{ property.area }}:</h4>
-                        <h4 class="titleNotFound">
-                          {{ 'notfoundrentalmessage'|trans }}
-                        </h4>
-                        <ul>
-                          <li class="notFound">
-                            <i>1</i>
-                            <strong>
-                            <a href="#" class="moveToLocation" rel="notfound">
-                              <span class="titleAddress"></span><br>
-                              <span class="contentAddress"></span>
-                            </a>
-                            </strong>
-                            <div class="buttons-box clearfix">
-                              <div class="buttons left">
-                                <a href="#" class="button middle inviteLandlord">
-                                  <span>{{ 'invite.landlord'|trans }}</span></a>
+                  <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}" method="post" {{ form_enctype(form) }}>
+                    <div class="search-result-box clearfix pie-el">
+                      <div class="search-result-text-box">
+                        <div id="search-result-text" class="search-result-text">
+                          <h4 class="titleSearch">{{ countPropery }} rentals in {{ property.city }}, {{ property.area }}:</h4>
+                          <h4 class="titleNotFound">
+                            {{ 'notfoundrentalmessage'|trans }}
+                          </h4>
+                          <ul>
+                            <li class="notFound">
+                              <i>1</i>
+                              <strong>
+                              <a href="#" class="moveToLocation" rel="notfound">
+                                <span class="titleAddress"></span><br>
+                                <span class="contentAddress"></span>
+                              </a>
+                              </strong>
+                              <div class="buttons-box clearfix">
+                                <div class="buttons left">
+                                  <a href="#" class="button middle inviteLandlord">
+                                    <span>{{ 'invite.landlord'|trans }}</span></a>
+                                </div>
                               </div>
-                            </div>
-                            <input type="hidden" value="" class="lat">
-                            <input type="hidden" value="" class="lng">
-                            <input type="hidden" value="" class="addressSelect">
-                          </li>
-                          {% set i = 1 %}
-                          {% for prop in propertyList %}
-                          <li class="addressText" data="{{ prop.id }}" number="{{ i }}">
-                            <i>{{ i }}</i>
-                            <strong>
-                            <a href="#" class="moveToLocation" rel="{{ i }}">
-                              <span class="titleAddress">{{ prop.number }} {{ prop.street }}</span><br>
-                              <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
-                            </a>
-                            </strong>
-                            <div class="form-row clearfix">
-                              <label class="lab1">{{ 'add.unit'|trans }}</label>
-                              <label class="lab2">{{ 'select.unit'|trans }}</label>
-                              <div class="fields-box selectUnit">
-                                <select name="unit{{ prop.id }}" class="select-unit">
-                                  <option value="none" class="noneField">{{ 'none'|trans}}</option>
-                                  {% for unit in  prop.units %}
-                                    <option value="{{ unit.name }}">{{ unit.name }}</option>
-                                  {% endfor %}
-                                  <option value="new"  class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
-                                </select>
+                              <input type="hidden" value="" class="lat">
+                              <input type="hidden" value="" class="lng">
+                              <input type="hidden" value="" class="addressSelect">
+                            </li>
+                            {% set i = 1 %}
+                            {% for prop in propertyList %}
+                            <li class="addressText" data="{{ prop.id }}" number="{{ i }}">
+                              <i>{{ i }}</i>
+                              <strong>
+                              <a href="#" class="moveToLocation" rel="{{ i }}">
+                                <span class="titleAddress">{{ prop.number }} {{ prop.street }}</span><br>
+                                <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
+                              </a>
+                              </strong>
+                              <div class="form-row clearfix">
+                                <label class="lab1">{{ 'add.unit'|trans }}</label>
+                                <label class="lab2">{{ 'select.unit'|trans }}</label>
+                                <div class="fields-box selectUnit">
+                                  <select name="unit{{ prop.id }}" class="select-unit">
+                                    <option value="none" class="noneField">{{ 'none'|trans}}</option>
+                                    {% for unit in  prop.units %}
+                                      <option value="{{ unit.name }}">{{ unit.name }}</option>
+                                    {% endfor %}
+                                    <option value="new"  class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
+                                  </select>
+                                </div>
+                                <div class="fields-box createNewUnit">
+                                    <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">{{ 'see.all'|trans }}</a>
+                                </div>
                               </div>
-                              <div class="fields-box createNewUnit">
-                                  <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">{{ 'see.all'|trans }}</a>
+                              <div class="buttons-box clearfix">
+                                <div class="buttons left">
+                                  <button type="submit" class="button middle thisIsMyRental" data="{{ prop.id }}">
+                                    <span>{{ 'this.is.my.rental'|trans }}</span>
+                                  </button>
+                                </div>
                               </div>
-                            </div>
-                            <div class="buttons-box clearfix">
-                              <div class="buttons left">
-                                <button type="submit" class="button middle thisIsMyRental" data="{{ prop.id }}">
-                                  <span>{{ 'this.is.my.rental'|trans }}</span>
-                                </button>
-                              </div>
-                            </div>
-                            <input type="hidden" value="{{prop.jb }}" class="lat">
-                            <input type="hidden" value="{{prop.kb }}" class="lng">
-                            <input type="hidden" value="{{prop.address }}" class="addressSelect">
-                          </li>
-                          {% set i = i+1 %}
-                          {% endfor %}
-                        </ul>
+                              <input type="hidden" value="{{prop.jb }}" class="lat">
+                              <input type="hidden" value="{{prop.kb }}" class="lng">
+                              <input type="hidden" value="{{prop.address }}" class="addressSelect">
+                            </li>
+                            {% set i = i+1 %}
+                            {% endfor %}
+                          </ul>
+                        </div>
+                      </div>
+                      <div id="search-result-map" class="search-result-map" class="pie-el"> </div>
+                      <div id="shade-top"> </div>
+                      <div id="shade-left"> </div>
+                    </div>
+                    {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
+                    {{ form_rest(form) }}
+                    <div class="buttons-box clearfix">
+                      <div class="buttons left">
+                        <button type="submit" class="button greyButton" id="register"><span>{{ 'continue'|trans }}</span></button>
                       </div>
                     </div>
-                    <div id="search-result-map" class="search-result-map" class="pie-el"> </div>
-                    <div id="shade-top"> </div>
-                    <div id="shade-left"> </div>
-                  </div>
-                  
+                    <input type="hidden" name="propertyId" value="" id="propertyId">
+                   </form>
                 </div>
               </div>
             </div>
-            
-            {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
-            {{ form_rest(form) }}
-            <div class="buttons-box clearfix">
-              <div class="buttons left">
-                <button type="submit" class="button greyButton" id="register"><span>{{ 'continue'|trans }}</span></button>
-              </div>
-            </div>
-            <input type="hidden" name="propertyId" value="" id="propertyId">
-           </form>
         </section>
 
 <input type="hidden" value="{{property.jb }}" id="lat">
@@ -138,4 +136,8 @@
 
 
 {% block stylesheets %}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/new.css'
+    %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}
