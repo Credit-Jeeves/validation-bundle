@@ -38,10 +38,9 @@ class IframeCase extends BaseTestCase
      */
     public function iframeNotFound()
     {
-        $this->load(true);
         $this->setDefaultSession('selenium2');
+        $this->load(true);
         $this->session->visit($this->getUrl() . 'iframe');
-
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
@@ -76,7 +75,7 @@ class IframeCase extends BaseTestCase
         $link->click();
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
-        $this->login('sharamko12@yandex.ru', 'pass');
+        $this->login('newtenant12@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
@@ -88,7 +87,7 @@ class IframeCase extends BaseTestCase
      */
     public function iframeFound()
     {
-        $this->load(true);
+        $this->clearEmail();
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->session->visit($this->getUrl() . 'iframe');
@@ -121,9 +120,49 @@ class IframeCase extends BaseTestCase
         $link->click();
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
-        $this->login('sharamko13@yandex.ru', 'pass');
+        $this->login('newtenant13@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
         $this->assertCount(2, $contracts, 'wrong number of contracts');
+    }
+
+    /**
+     * @test
+     */
+    function checkNotFoundNew()
+    {
+        $this->session->visit($this->getUrl() . 'iframe');
+        $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
+        $this->fillGoogleAddress($fillAddress);
+
+        $fillAddress = '710 Broadway, Manhattan, New York City, NY 10003 ';
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
+        $this->session->executeScript(
+            "$('#property-search').val(' ');"
+        );
+        $propertySearch->click();
+        $this->fillForm(
+            $form,
+            array(
+                'property-search' => $fillAddress,
+            )
+        );
+        $propertySearch->click();
+        $this->session->wait(2000);
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+
+        $this->session->executeScript(
+            "$('.pac-item').show();"
+        );
+        $item->click();
+        $propertySearch->click();
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit > span'));
+        $searchSubmit->click();
+        $this->session->wait(2000);
+        $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
+        $inviteLandlord->click();
+        $this->session->wait(2000);
+        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
     }
 }
