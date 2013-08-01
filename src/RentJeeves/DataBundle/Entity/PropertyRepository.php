@@ -5,15 +5,15 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
-    public function countProperties($group, $searchBy = 'address', $search = '')
+    public function countProperties($group, $searchBy = 'street', $search = '')
     {
         $query = $this->createQueryBuilder('p');
         $query->innerJoin('p.property_groups', 'g');
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
         if (!empty($search)) {
-            $query->andWhere('p.'.$searchBy.' = :search');
-            $query->setParameter('search', $search);
+            $query->andWhere('p.'.$searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
@@ -24,8 +24,8 @@ class PropertyRepository extends EntityRepository
         $page = 1,
         $limit = 100,
         $sort = 'number',
-        $order = 'ASC',
-        $searchBy = 'address',
+        $isSortAsc = true,
+        $searchBy = 'street',
         $search = ''
     ) {
         $offset = ($page - 1) * $limit;
@@ -34,8 +34,14 @@ class PropertyRepository extends EntityRepository
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
         if (!empty($search)) {
-            $query->andWhere('p.'.$searchBy.' = :search');
-            $query->setParameter('search', $search);
+            $query->andWhere('p.'.$searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
+        }
+
+        if ($isSortAsc) {
+            $order = 'ASC';
+        } else {
+            $order = 'DESC';
         }
         $query->orderBy('p.'.$sort, $order);
         $query->setFirstResult($offset);
@@ -56,5 +62,25 @@ class PropertyRepository extends EntityRepository
         $count = $qb->getQuery()->getSingleScalarResult();
 
         return $count;
+    }
+
+    public function landlordHasProperty($landlord)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('count(c.id)');
+        $query->leftJoin('c.property_groups', 'g');
+        $query->leftJoin('g.holding', 'h');
+        $query->leftJoin('h.users', 'u');
+        $query->where('u.id = :landlord');
+        $query->setParameter('landlord', $landlord->getId());
+
+        $query = $query->getQuery();
+        $count = $query->getSingleScalarResult();
+        
+        if ($count > 0) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -2,10 +2,16 @@
 
 {% block content %}
     <div id="rent-menu">
-    {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'CoreBundle:Menu:user_rent.html.twig' }) }}
+    {{ knp_menu_render('TenantBundle:Builder:rentMenu', {'template': 'CoreBundle:Menu:user_rent.html.twig'}) }}
     </div>
     <div class="row-20"></div>
-    {{ render(controller('RjComponentBundle:ContractsList:tenant')) }}
+    {% if status == 'new' %}
+        {{ render(controller('RjComponentBundle:ContractsList:tenantNew', {'status':status })) }}
+    {% elseif status == 'approved' %}
+        {{ render(controller('RjComponentBundle:ContractsList:tenantNew', {'status':status })) }}
+    {% elseif status == 'active'%}
+        {{ render(controller('RjComponentBundle:ContractsList:tenant')) }}
+    {% endif %}
     <br />
     <br />
     {{ render(controller('TenantBundle:Index:info')) }}

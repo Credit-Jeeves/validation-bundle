@@ -12,4 +12,5 @@ class ContractStatus extends \CreditJeeves\CoreBundle\Enum
     const APPROVED = 'approved';
     const FINISHED = 'finished';
     const PAID = 'paid';
+    const ACTIVE = 'active';
 }
