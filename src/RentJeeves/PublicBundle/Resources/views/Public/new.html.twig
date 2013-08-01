@@ -7,28 +7,28 @@
             <div class="box type1">
                   
               <h3 class="clearfix">
-                <span>Property information</span>
-                <small><b>*</b>Required</small>
+                <span>{{ 'property.info'|trans }}</span>
+                <small><b>*</b>{{ 'required'|trans }}</small>
               </h3>
               
               <div class="col-box clearfix">
                 <div class="col all">
                   
-                  <h4>Add your rental property</h4>
+                  <h4>{{ 'property.add'|trans }}</h4>
                   <form action="#" id="formSearch">
                   <div class="search-box pie-el">
-                    <label for="searsh-field">Verify your rental address</label>
+                    <label for="searsh-field">{{ 'verify.rental'|trans }}</label>
                     <div class="clearfix with-button">
                       <div class="left search-field-box">
                         <input type="text" placeholder="{{ property.address }}" value="{{ property.fullAddress }}" name="searsh-field" id="property-search">
                         <a href="#" id="delete" class="pie-el">x</a>
                         <button class="button small" id="search-submit">
-                          <span>Find Your Rental</span>
+                          <span>{{ 'find.your.rental'|trans }}</span>
                         </button>
                       </div>
                       <div class="right text-box">
-                        <p>Didn’t find what you were looking for?</p>
-                        <a href="#">Add your rental</a>
+                        <p>{{ 'dontfindrental'|trans }}</p>
+                        <a href="#">{{ 'Add your rental'|trans }}</a>
                       </div>
                     </div>
                   </div>
@@ -39,8 +39,7 @@
                       <div id="search-result-text" class="search-result-text">
                         <h4 class="titleSearch">{{ countPropery }} rentals in {{ property.city }}, {{ property.area }}:</h4>
                         <h4 class="titleNotFound">
-                          Aww shucks - your rental isn't <br />
-                          part of the RentTrack family yet.
+                          {{ 'notfoundrentalmessage'|trans }}
                         </h4>
                         <ul>
                           <li class="notFound">
@@ -54,7 +53,7 @@
                             <div class="buttons-box clearfix">
                               <div class="buttons left">
                                 <a href="#" class="button middle inviteLandlord">
-                                  <span>Invite Your Landlord</span></a>
+                                  <span>{{ 'invite.landlord'|trans }}</span></a>
                               </div>
                             </div>
                             <input type="hidden" value="" class="lat">
@@ -72,24 +71,26 @@
                             </a>
                             </strong>
                             <div class="form-row clearfix">
-                              <label class="lab1">Add Unit</label>
-                              <label class="lab2">Select Unit</label>
+                              <label class="lab1">{{ 'add.unit'|trans }}</label>
+                              <label class="lab2">{{ 'select.unit'|trans }}</label>
                               <div class="fields-box selectUnit">
                                 <select name="unit{{ prop.id }}" class="select-unit">
-                                  <option value="none" class="noneField">None</option>
+                                  <option value="none" class="noneField">{{ 'none'|trans}}</option>
                                   {% for unit in  prop.units %}
                                     <option value="{{ unit.name }}">{{ unit.name }}</option>
                                   {% endfor %}
-                                  <option value="new"  class="addNewUnit"><a href="#">Add New</a></option>
+                                  <option value="new"  class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
                                 </select>
                               </div>
                               <div class="fields-box createNewUnit">
-                                  <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">See All</a>
+                                  <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">{{ 'see.all'|trans }}</a>
                               </div>
                             </div>
                             <div class="buttons-box clearfix">
                               <div class="buttons left">
-                                <button type="submit" class="button middle thisIsMyRental" data="{{ prop.id }}"><span>This is My Rental</span></button>
+                                <button type="submit" class="button middle thisIsMyRental" data="{{ prop.id }}">
+                                  <span>{{ 'this.is.my.rental'|trans }}</span>
+                                </button>
                               </div>
                             </div>
                             <input type="hidden" value="{{prop.jb }}" class="lat">
@@ -114,7 +115,7 @@
             {{ form_rest(form) }}
             <div class="buttons-box clearfix">
               <div class="buttons left">
-                <button type="submit" class="button greyButton" id="register"><span>Continue</span></button>
+                <button type="submit" class="button greyButton" id="register"><span>{{ 'continue'|trans }}</span></button>
               </div>
             </div>
             <input type="hidden" name="propertyId" value="" id="propertyId">

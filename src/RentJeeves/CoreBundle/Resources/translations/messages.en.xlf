@@ -225,6 +225,54 @@
                 <source>verify.email.resend</source>
                 <target>Resend Verification Email</target>
             </trans-unit>
+            <trans-unit id="find.your.rental">
+                <source>find.your.rental</source>
+                <target>Find Your Rental</target>
+            </trans-unit>
+            <trans-unit id="dontfindrental">
+                <source>dontfindrental</source>
+                <target>Didn’t find what you were looking for?</target>
+            </trans-unit>
+            <trans-unit id="property.add.small">
+                <source>property.add.small</source>
+                <target>Add your rental</target>
+            </trans-unit>
+            <trans-unit id="see.all">
+                <source>see.all</source>
+                <target>See All</target>
+            </trans-unit>
+            <trans-unit id="this.is.my.rental">
+                <source>this.is.my.rental</source>
+                <target>This is My Rental</target>
+            </trans-unit>
+            <trans-unit id="add.new">
+                <source>add.new</source>
+                <target>Add New</target>
+            </trans-unit>
+            <trans-unit id="none">
+                <source>none</source>
+                <target>None</target>
+            </trans-unit>
+            <trans-unit id="select.unit">
+                <source>select.unit</source>
+                <target>Select Unit</target>
+            </trans-unit>
+            <trans-unit id="add.unit">
+                <source>add.unit</source>
+                <target>Add Unit</target>
+            </trans-unit>
+            <trans-unit id="invite.landlord">
+                <source>invite.landlord</source>
+                <target>Invite Your Landlord</target>
+            </trans-unit>
+
+            <trans-unit id="notfoundrentalmessage">
+                <source>notfoundrentalmessage</source>
+                <target><![CDATA[Aww shucks - your rental isn't <br />
+                          part of the RentTrack family yet.]]>
+                </target>
+            </trans-unit> 
+            
         </body>
     </file>
 </xliff>
