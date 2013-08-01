@@ -134,7 +134,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "0af7d59617c6709199706557f0ce02b290707b41"
+                "reference": "88c32bfbcf636a43fb1a9d14ae1850eaddca4230"
             },
             "require": {
                 "ext-mcrypt": "*",
@@ -156,7 +156,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-07-31 17:13:11"
+            "time": "2013-08-01 13:42:04"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -267,7 +267,7 @@
                 {
                     "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1542,7 +1542,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1697,7 +1697,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2615,12 +2615,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "7bf161d71ee2297b8a79ced547e8985b54fbedab"
+                "reference": "f877e60b8e2221e0e897c8f84175a53f61fc47dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/7bf161d71ee2297b8a79ced547e8985b54fbedab",
-                "reference": "7bf161d71ee2297b8a79ced547e8985b54fbedab",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/f877e60b8e2221e0e897c8f84175a53f61fc47dc",
+                "reference": "f877e60b8e2221e0e897c8f84175a53f61fc47dc",
                 "shasum": ""
             },
             "require": {
@@ -2681,7 +2681,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-07-31 09:32:04"
+            "time": "2013-08-01 08:38:24"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -4004,7 +4004,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "Fork Maintainer"
+                    "role": "developer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",

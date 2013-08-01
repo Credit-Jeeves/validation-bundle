@@ -31,12 +31,4 @@ class DataBundle extends Bundle
             Type::addType('LeadSource', 'CreditJeeves\DataBundle\Enum\LeadSource');
         }
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return 'CreditJeevesCoreBundle';
-    }
 }
