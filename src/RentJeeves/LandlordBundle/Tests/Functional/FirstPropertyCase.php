@@ -21,12 +21,8 @@ class FirtstPropertyCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait(3000);
+        $this->session->wait(3000, null);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
-
-        $this->session->executeScript(
-            "$('.pac-item').show();"
-        );
         $item->click();
     }
 
@@ -49,7 +45,7 @@ class FirtstPropertyCase extends BaseTestCase
             )
         );
 
-        $this->assertNotNull($addUnit= $this->page->find('css', '#addUnit'));
+        $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit'));
         $addUnit->click();
         $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-name'));
         
@@ -59,9 +55,9 @@ class FirtstPropertyCase extends BaseTestCase
         $unitNames[3]->setValue('1D');
         $unitNames[4]->setValue('1T');
         
-        $this->assertNotNull($addUnit= $this->page->find('css', '#addProperty'));
+        $this->assertNotNull($addUnit = $this->page->find('css', '#addProperty'));
         $addUnit->click();
-        $this->session->wait(8000);
+        $this->session->wait(8000, null);
         $this->assertNotNull($tr = $this->page->find('css', '.properties-table>tbody>tr'));
     }
 }

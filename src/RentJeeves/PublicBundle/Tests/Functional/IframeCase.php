@@ -20,17 +20,13 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait(3000);
+        $this->session->wait(3000, null);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
-
-        $this->session->executeScript(
-            "$('.pac-item').show();"
-        );
         $item->click();
         $propertySearch->click();
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
         $submit->click();
-        $this->session->wait(3000);
+        $this->session->wait(3000, null);
     }
 
     /**
@@ -129,7 +125,7 @@ class IframeCase extends BaseTestCase
     /**
      * @test
      */
-    function checkNotFoundNew()
+    public function checkNotFoundNew()
     {
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
@@ -149,20 +145,16 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait(2000);
+        $this->session->wait(2000, null);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
-
-        $this->session->executeScript(
-            "$('.pac-item').show();"
-        );
         $item->click();
         $propertySearch->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit > span'));
         $searchSubmit->click();
-        $this->session->wait(2000);
+        $this->session->wait(2000, null);
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
-        $this->session->wait(2000);
+        $this->session->wait(2000, null);
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
     }
 }
