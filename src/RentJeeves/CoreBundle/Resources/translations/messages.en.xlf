@@ -335,6 +335,10 @@
                 <source>country</source>
                 <target>Country</target>
             </trans-unit>
+            <trans-unit id="select.one">
+                <source>select.one</source>
+                <target>Select one</target>
+            </trans-unit> 
         </body>
     </file>
 </xliff>
