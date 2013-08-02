@@ -195,8 +195,7 @@ table.properties-table th {
     margin: 10px 0;
 }
 .sort {
-    width: 12px;
-    margin-top: -7px;
+    margin-top: -9px;
 }
 .processLoading {
     position: absolute;
@@ -211,7 +210,7 @@ table.properties-table th {
 }
 
 .sortUp {
-    margin-left: -16px;
+    margin-left: -14px;
 }
 .sortUpOnly {
     margin-left: 1px;
