@@ -1,46 +1,74 @@
     <div id="units-block" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: show() ? 'visible' : 'hidden' }">
         <div class="units-background"></div>
         <div  class="units-block border">
-            <h2 data-bind="text: name"></h2>
-            <div class="units-header">
-                <div class="floatleft units-total">
-                    <span>Total Units:</span><span data-bind="text: total"></span>
+            <div class="titleEditProperty">
+                <h1>{{ 'property.edit.info'|trans }}</h1>
+            </div>
+            <br />
+            <div class="address">
+                <h4>{{ 'property.info'|trans }}</h4>
+                <div class="addressName">
+                    {{ 'address'|trans }}:
                 </div>
-                <div class="floatright units-add">
-                    <div class="btn green floatright unit-add-btn" data-bind="click: addUnits">Add</div>
-                    <div class="floatright"><input type="text" class="unit-input" data-bind="value: add"></div>
-                    <div class="floatright unit-add-text">Add Units:</div>
+                <div class="addressName addressNameText">
+                    <p data-bind="text: name"></p>
+                </div>
+            </div>
+            <br />
+            <div class="units-header">
+                <h4>{{ 'unit.info'|trans }}</h4>
+                <div class="floatleft units-total marginLeftSmall paddingTopSmall">
+                    <span class="textNumber">{{'unit.numberof'|trans}}:</span>
+                    <span class="numberOfUnit"data-bind="text: total"></span>
+                </div>
+                <div class="clearboth floatleft units-add marginLeftSmall paddingTopSmall">
+                    <div class="button small grey floatright unit-add-btn" >
+                        <span data-bind="click: addUnits">{{ 'add'|trans }}</span>
+                    </div>
+                    <div class="floatright">
+                        <input type="text" class="unit-input" data-bind="value: add">
+                    </div>
+                    <div class="floatright unit-add-text">{{ 'unit.add'|trans }}:</div>
                 </div>
             </div>
             <div class="clearboth"></div>
-            <div class="row-20"></div>
             <div class="units-edit">
+                <div class="floatleft textUnitEdit">
+                    {{ 'nameofunit'|trans }}:
+                </div>
+                <div class="floatleft itemsUnitContainer">
                 <!-- ko foreach: { data: aUnits() } -->
                     <div class="units-item">
-                        <input type="text" class="unit-input floatleft" data-bind="value: name" placeholder="Unit No">
-                        <div class="btn red floatleft unit-delete" data-bind="click: $root.removeUnit">x</div>
+                        <input type="text" class="unit-input floatleft" data-bind="value: name" placeholder="Unit">
+                        <div class="floatleft unit-delete" data-bind="click: $root.removeUnit">
+                        </div>
                     </div>
                 <!-- /ko -->
+                </div>
             </div>
             <div class="clearboth"></div>
-            <div class="units-footer">
-                <div class="btn orange floatleft" data-bind="click: saveUnits">Save Changes</div>
-                <div class="btn sky floatleft" data-bind="click: clearUnits">Cancel</div>
-                <div class="btn red floatleft" data-bind="click: deleteProperty">Delete Property</div>
+            <div class="footerPopup">
+                <div class="units-footer">
+                    <div class="floatleft button small" ><span data-bind="click: saveUnits">{{ 'savechanges'|trans }}</span></div>
+                    <div class="floatleft button small grey"><span  data-bind="click: clearUnits">{{ 'cancel'|trans}}</span></div>
+                    <div class="floatleft removeButton" data-bind="click: deleteProperty">
+                        {{ 'delete.property'|trans }}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="searchContent" class="containerSearch">
         <div class="filterBy">
-            <label>Search By</label>
+            <label>{{ 'search.by'|trans }}</label>
             <select id="searchFilterSelect" class="linkselect">
-                    <option value="street">-Select One-</option>
-                    <option value="street">Address</option>
-                    <option value="city">City</option>
-                    <option value="zip">Zip</option>
-                    <option value="area">State</option>
-                    <option value="country">Country</option>
+                    <option value="street">-{{ 'select.one'|trans }}-</option>
+                    <option value="street">{{ 'address'|trans }}</option>
+                    <option value="city">{{ 'city'|trans }}</option>
+                    <option value="zip">{{ 'zip'|trans }}</option>
+                    <option value="area">{{ 'state'|trans }}</option>
+                    <option value="country">{{ 'country'|trans }}</option>
             </select>
         </div>
         <div class="searchBy">

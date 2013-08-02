@@ -275,6 +275,66 @@
                 <source>iframe.placeholdersearch</source>
                 <target>Your Rental Address</target>
             </trans-unit>
+            <trans-unit id="property.edit.info">
+                <source>property.edit.info</source>
+                <target>Edit Property Information</target>
+            </trans-unit>
+            <trans-unit id="address">
+                <source>address</source>
+                <target>Address</target>
+            </trans-unit>
+            <trans-unit id="unit.info">
+                <source>unit.info</source>
+                <target>Unit information</target>
+            </trans-unit>
+            <trans-unit id="unit.numberof">
+                <source>unit.numberof</source>
+                <target>Number Of Units</target>
+            </trans-unit>
+            <trans-unit id="unit.add">
+                <source>unit.add</source>
+                <target>Add Units</target>
+            </trans-unit>
+            <trans-unit id="add">
+                <source>add</source>
+                <target>Add</target>
+            </trans-unit>
+            <trans-unit id="nameofunit">
+                <source>nameofunit</source>
+                <target>Name Of Units</target>
+            </trans-unit>
+            <trans-unit id="savechanges">
+                <source>savechanges</source>
+                <target>Save Changes</target>
+            </trans-unit>
+            <trans-unit id="cancel">
+                <source>cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="delete.property">
+                <source>delete.property</source>
+                <target>Delete Property</target>
+            </trans-unit>
+            <trans-unit id="search.by">
+                <source>search.by</source>
+                <target>Search By</target>
+            </trans-unit>
+            <trans-unit id="city">
+                <source>city</source>
+                <target>City</target>
+            </trans-unit>
+            <trans-unit id="zip">
+                <source>zip</source>
+                <target>Zip</target>
+            </trans-unit>
+            <trans-unit id="state">
+                <source>state</source>
+                <target>State</target>
+            </trans-unit>
+            <trans-unit id="country">
+                <source>country</source>
+                <target>Country</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
