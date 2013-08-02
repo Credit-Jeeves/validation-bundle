@@ -34,7 +34,7 @@
     <div id="searchContent" class="containerSearch">
         <div class="filterBy">
             <label>Search By</label>
-            <select id="searchFilterSelect" title="Select a category" class="linkselect">
+            <select id="searchFilterSelect" class="linkselect">
                     <option value="street">-Select One-</option>
                     <option value="street">Address</option>
                     <option value="city">City</option>
@@ -46,14 +46,20 @@
         <div class="searchBy">
             <input type="text" data-bind="value: searchText" id="search">
             <a href="#" id="delete" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" class="pie-el" style="display: inline;">x</a>
-            <a class="btn" href="#" id="searchButton" data-bind="click: searchFunction">Search</a>
+            <a href="#" id="searchButton" data-bind="click: searchFunction">
+                <img src="/bundles/rjpublic/images/icon-search-white-bg.png">
+            </a>
         </div>
     </div>
 
     <div id="properties-block" class="properties-block">
         <div class="">
             <div class="units-total floatleft"><h2 data-bind="text: 'All (' + $root.total() + ')'"></h2></div>
-            <a class="btn orange property-button-add" href="{{ path('landlord_property_new')}}">New Property</a>
+            <a class="button small property-button-add" href="{{ path('landlord_property_new')}}">
+                <span>
+                    New Property
+                </span>
+            </a>
         </div>
         <div class="clearboth"></div>
         <!-- ko if: pages().length -->
@@ -61,10 +67,10 @@
         <div class="">
             <!-- ko foreach: pages() -->
                 <!-- ko if: $data == $root.current() -->
-                <div class="btn grey floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+                <div class="button small grey floatleft" ><span data-bind="click: $root.goToPage, text: $data"></span></div>
                 <!-- /ko -->
                 <!-- ko ifnot: $data == $root.current() -->
-                <div class="btn green floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+                <div class="button small floatleft" ><span data-bind="click: $root.goToPage, text: $data"></span></div>
                 <!-- /ko -->
             <!-- /ko -->
         </div>
@@ -73,7 +79,7 @@
         <div class="properties-table-block">
             <img src="/bundles/core/images/img_loading.gif" class="processLoading" data-bind="style: { visibility: processProperty() ? 'visible' : 'hidden' }">
             <!-- ko if: countProperties() -->
-            <table class="properties-table zebra-grid">
+            <table class="properties-table zebra-grid" cellspacing="0">
                 <thead>
                 <tr data-bind="click: sortFunction" class="properties-th">
                     <th>Address</th>
@@ -110,7 +116,11 @@
                     <td data-bind="text: area"></td>
                     <td data-bind="text: country"></td>
                     <td data-bind="text: units"></td>
-                    <td><div class="btn green property-edit" data-bind="click: $root.editUnits">Manage Units</div></td>
+                    <td>
+                        <div class="property-edit" data-bind="click: $root.editUnits">
+                            <img src="/bundles/rjpublic/images/icon-edit-white-bg.png">
+                        </div>
+                    </td>
                 </tr>
                 <!-- /ko -->
                 </tbody>
