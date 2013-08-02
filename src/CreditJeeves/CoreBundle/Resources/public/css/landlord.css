@@ -3,8 +3,8 @@
 }
 
 .border {
-    border: 3px #A3CEF7 solid;
-    box-shadow: 0 0 2px 2px #A3CEF7;
+    border: 3px #BFBFBF solid;
+    box-shadow: 0 0 2px 2px #BFBFBF;
 }
 
 .property-button-add {
@@ -230,12 +230,12 @@ table.properties-table th {
 
 .containerSearch {
     position: absolute;
-    margin-left: 420px;
+    margin-left: 453px;
     margin-top: 3px;
 }
 
 #searchFilterSelect_link {
-    width: 150px;
+    width: 119px;
     height: 23px;
     font-size: 13px;
 }
@@ -372,13 +372,13 @@ table.properties-table th {
     padding-left: 110px;
     background-color: #E1E1E1;
     width: 440px;
-    height: 35px;
+    height: 26px;
     padding: 10px;
     text-align: center;
     margin-left: -20px;
     position: absolute;
     border-radius: 0px 0px 20px 20px;
-    margin-top: -35px;
+    margin-top: -26px;
     padding-left: 140px;
 }
 
@@ -395,4 +395,56 @@ table.properties-table th {
     height: 19px;
     padding-top: 6px;
     cursor: pointer;
+}
+#search-result-map {
+    display: none;
+}
+#property-search {
+    padding-left: 23px !important;
+    height: 16px !important;
+    width: 485px !important;
+    float: left;
+}
+#delete {
+    float: right;
+    width: 16px;
+    height: 16px;
+    margin: 5px 5px 0 -20px;
+    overflow: hidden;
+    text-indent: -999px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #bdbdbd url(/bundles/rjpublic/images/sprite-icons.png) 0 -50px no-repeat;
+    z-index: 1;
+    display: none;
+}
+
+.search-box {
+    background-color: #EEEEEE;
+    height: 55px;
+    padding-left: 10px;
+    border: 1px solid grey;
+    border-radius: 8px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    width: 526px;
+}
+.search-box>label {
+    font-size: 12px;
+}
+#searchForm{
+    margin-top: 15px;
+}
+#formSearch>.units-header {
+    margin-top: 12px;
+}
+
+#formSearch>.footerPopup {
+    padding-top: 33px;
+}
+.units-footer-add-property {
+    padding-left: 195px;
+    width: 385px;
 }

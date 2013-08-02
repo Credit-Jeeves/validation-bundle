@@ -338,7 +338,19 @@
             <trans-unit id="select.one">
                 <source>select.one</source>
                 <target>Select one</target>
-            </trans-unit> 
+            </trans-unit>
+            <trans-unit id="add.property">
+                <source>add.property</source>
+                <target>Add Property</target>
+            </trans-unit>
+            <trans-unit id="find.your.rentaladdress">
+                <source>find.your.rentaladdress</source>
+                <target>Find your rental address</target>
+            </trans-unit>
+            <trans-unit id="your.rental">
+                <source>your.rental</source>
+                <target>Your rental address</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

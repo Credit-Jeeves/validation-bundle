@@ -1,3 +1,13 @@
+function markAsNotValid()
+{
+  $('#saveProperty').addClass('grey');
+}
+
+function clearError()
+{
+  $('#saveProperty').removeClass('grey');
+}
+
 function Properties() {
   var limit = 10;
   var current = 1;
@@ -192,16 +202,191 @@ function Search() {
   }
 }
 
+function addProperties()
+{
+  this.property = ko.observable("");
+  this.show = ko.observable(false);
+  this.aUnits = ko.observableArray([]);
+  this.total = ko.observable(1);
+  this.add = ko.observable(1);
+  this.autocomplete = ko.observable("");
+
+  var self = this;
+  this.clearUnits = function() {
+    self.aUnits([]);
+    self.total(0);
+    self.add(1);
+    self.show(false);
+  };
+
+  this.addUnits = function() {
+    for(var i=0; i < self.add(); i++) {
+      self.aUnits.push({'name': '', 'id': ''});
+    }
+    var count = parseInt(self.total());
+    count += parseInt(self.add());
+    self.total(count);
+  };
+
+  this.saveUnits = function(propertyId) {
+    $.ajax({
+      url: Routing.generate('landlord_units_save'),
+      type: 'POST',
+      dataType: 'json',
+      data: {'units': self.aUnits(), 'property_id': propertyId },
+      success: function(response) {
+        self.clearUnits();
+        self.property().ajaxAction();
+        $('#property-search').val(' ');
+        markAsNotValid();
+      }
+    });
+  };
+
+  this.saveProperty = function() {
+    if($('#saveProperty').hasClass("grey")) {
+      return;
+    }
+
+    var place = self.autocomplete().getPlace();
+    var data = {'address': place.address_components, 'geometry':place.geometry};
+
+    self.show(false);
+    self.property().processProperty(true);
+
+    jQuery.ajax({
+        url: Routing.generate('landlord_property_add'),
+        type: 'POST',
+        dataType: 'json',
+        data: {'data': JSON.stringify(data, null)},
+        error: function(jqXHR, errorThrown, textStatus) {;
+        },
+        success: function(data, textStatus, jqXHR) {
+            var propertyId = data.property.id
+            if(propertyId) {
+                return self.saveUnits(propertyId);
+            }
+
+            alert('Something wrong, we can\'t save property');
+        }
+    });
+  };
+
+  this.removeUnit = function(unit) {
+    if (confirm('Are you sure?')) {
+      self.aUnits.remove(unit);
+    }
+  };
+}
+
 var PropertiesViewModel = new Properties();
 var UnitsViewModel = new Units();
 var search = new Search();
+var addProperties = new addProperties();
+
 search.property(PropertiesViewModel);
+addProperties.property(PropertiesViewModel)
 
 $(document).ready(function(){
-  ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
-  PropertiesViewModel.ajaxAction();
-  ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
-  ko.applyBindings(search, $('#searchContent').get(0));
-  $('#searchFilterSelect').linkselect("destroy");
-  $('#searchFilterSelect').linkselect();
+
+    var ERROR = 'notfound';
+
+
+
+    $('#delete').click(function(){
+        $('#property-search').val(' ');
+        markAsNotValid();
+        $(this).hide();
+        return false;
+    });
+
+    $('#property-search').change(function(){
+      $(this).addClass('notfound');
+      markAsNotValid();
+      if($(this).val() != '') {
+        $('#delete').show();
+      } else {
+        $('#delete').hide();
+      }
+    });
+
+    function initialize() {
+        var lat = 0.0;
+        var lng = 0.0;
+
+        var mapOptions = {
+            center: new google.maps.LatLng(lat, lng),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(
+            document.getElementById('search-result-map'),
+            mapOptions
+        );
+        var input = (document.getElementById('property-search'));
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({
+                map: map
+        });
+
+        function validateAddress()
+        {
+            clearError();
+            if($('#property-search').val() != '') {
+                $('#delete').show();
+            } else {
+                $('#delete').hide();
+            }
+            infowindow.close();
+            marker.setVisible(false);
+            input.className = '';
+            
+            markAsNotValid();
+
+            var place = autocomplete.getPlace();
+            //Inform the user that the place was not found and return.
+            if (!place.geometry) {
+                input.className = ERROR;
+            }
+
+            if (ERROR == $('#property-search').attr('class')) {
+                return showError('Such address doesn\'t exist!');
+            }
+
+            if ('' == $('#property-search').val()) {
+                return showError('Property Address empty');
+            }
+
+            if (typeof place.geometry == 'undefined') {
+                return showError('Such address doesn\'t exist!');
+            }
+
+            clearError();
+        }
+        
+
+        google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
+        addProperties.autocomplete(autocomplete);
+    }
+
+
+
+    ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
+    PropertiesViewModel.ajaxAction();
+    ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
+    ko.applyBindings(search, $('#searchContent').get(0));
+    ko.applyBindings(addProperties, $('#add-property').get(0));
+    $('#searchFilterSelect').linkselect("destroy");
+    $('#searchFilterSelect').linkselect();
+
+    $('.property-button-add').click(function(){
+      addProperties.show(true);
+      return false;
+    });
+    
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
 });

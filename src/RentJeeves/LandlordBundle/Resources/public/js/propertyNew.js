@@ -99,7 +99,6 @@ $(document).ready(function(){
         }
         
         $('#property-search').change(function(){
-          console.info('he');
           $(this).addClass('notfound');
           markAsNotValid();
           if($(this).val() != '') {

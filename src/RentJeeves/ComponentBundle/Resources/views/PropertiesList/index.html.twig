@@ -59,6 +59,69 @@
         </div>
     </div>
 
+    <div id="add-property" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: show() ? 'visible' : 'hidden' }">
+        <div class="units-background"></div>
+        <div  class="units-block border">
+            <div class="titleEditProperty">
+                <h1>{{ 'add.property'|trans }}</h1>
+            </div>
+            <div id="searchForm">
+                <form action="#" id="formSearch">
+                    <div class="search-box pie-el">
+                        <label for="searsh-field">{{ 'find.your.rental'|trans }}</label>
+                        <div class="clearfix with-button">
+                            <div class="left search-field-box">
+                                <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search" autocomplete="off">
+                                <a href="#" id="delete" class="pie-el">x</a>
+                                <div id="errorForm">
+                                </div>
+                            </div>
+                            <div id="search-result-map"></div>
+                        </div>
+                    </div>
+                    <div class="units-header">
+                        <h4>{{ 'unit.info'|trans }}</h4>
+                        <div class="floatleft units-total marginLeftSmall paddingTopSmall">
+                            <span class="textNumber">{{'unit.numberof'|trans}}:</span>
+                            <span class="numberOfUnit"data-bind="text: total"></span>
+                        </div>
+                        <div class="clearboth floatleft units-add marginLeftSmall paddingTopSmall">
+                            <div class="button small grey floatright unit-add-btn" >
+                                <span data-bind="click: addUnits">{{ 'add'|trans }}</span>
+                            </div>
+                            <div class="floatright">
+                                <input type="text" class="unit-input" data-bind="value: add">
+                            </div>
+                            <div class="floatright unit-add-text">{{ 'unit.add'|trans }}:</div>
+                        </div>
+                    </div>
+                    <div class="clearboth"></div>
+                    <div class="units-edit">
+                        <div class="floatleft textUnitEdit">
+                            {{ 'nameofunit'|trans }}:
+                        </div>
+                        <div class="floatleft itemsUnitContainer">
+                        <!-- ko foreach: { data: aUnits() } -->
+                            <div class="units-item">
+                                <input type="text" class="unit-input floatleft" data-bind="value: name" placeholder="Unit">
+                                <div class="floatleft unit-delete" data-bind="click: $root.removeUnit">
+                                </div>
+                            </div>
+                        <!-- /ko -->
+                        </div>
+                    </div>
+                    <div class="clearboth"></div>
+                    <div class="footerPopup">
+                        <div class="units-footer units-footer-add-property">
+                            <div class="floatleft button small grey" id="saveProperty"><span data-bind="click: saveProperty">{{ 'add.property'|trans }}</span></div>
+                            <div class="floatleft button small grey"><span  data-bind="click: clearUnits">{{ 'cancel'|trans}}</span></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="searchContent" class="containerSearch">
         <div class="filterBy">
             <label>{{ 'search.by'|trans }}</label>
@@ -83,7 +146,7 @@
     <div id="properties-block" class="properties-block">
         <div class="">
             <div class="units-total floatleft"><h2 data-bind="text: 'All (' + $root.total() + ')'"></h2></div>
-            <a class="button small property-button-add" href="{{ path('landlord_property_new')}}">
+            <a class="button small property-button-add" href="#">
                 <span>
                     New Property
                 </span>
