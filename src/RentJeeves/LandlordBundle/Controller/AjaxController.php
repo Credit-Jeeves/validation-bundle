@@ -85,51 +85,51 @@ class AjaxController extends Controller
         $request = $this->getRequest();
         $data = $request->request->all('address');
         $data = json_decode($data['data'], true);
-        $object = new Property();
-        $property = $object->parseGoogleAddress($data);
-        $object = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($property);
+        $property = new Property();
+        $property = $property->parseGoogleAddress($data);
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($property);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
-        if (empty($object)) {
-            $object = new Property();
-            $property += $object->parseGoogleLocation($data);
-            $object->fillPropertyData($property);
+        if (empty($property)) {
+            $property = new Property();
+            $property += $property->parseGoogleLocation($data);
+            $property->fillPropertyData($property);
             $itsNewProperty = true;
         }
 
         if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
                 && $group
                 && $this->getUser()->getType() == UserType::LANDLORD
+                && !$group->getGroupProperty()->contains($property)
         ) {
-            //@TODO need check, maybe this group alredy exist on this property
-            $object->addPropertyGroup($group);
-            $group->addGroupProperty($object);
+            $property->addPropertyGroup($group);
+            $group->addGroupProperty($property);
             $em->persist($group);
         }
-        $em->persist($object);
+        $em->persist($property);
         $em->flush();
 
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $google = $this->container->get('google');
-            $google->savePlace($object);
+            $google->savePlace($property);
         }
 
 
-        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($object->getId());
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
 
         $data = array(
             'hasLandlord'   => ($countGroup > 0) ? true : false,
             'property'      => array(
-                    'id'        => $object->getId(),
-                    'city'      => $object->getCity(),
-                    'number'    => ($object->getNumber()) ? $object->getNumber() : '',
-                    'street'    => $object->getStreet(),
-                    'area'      => $object->getArea(),
-                    'zip'       => ($object->getZip()) ? $object->getZip() : '',
-                    'jb'        => $object->getJb(),
-                    'kb'        => $object->getKb(),
-                    'address'   => $object->getAddress(),
+                    'id'        => $property->getId(),
+                    'city'      => $property->getCity(),
+                    'number'    => ($property->getNumber()) ? $property->getNumber() : '',
+                    'street'    => $property->getStreet(),
+                    'area'      => $property->getArea(),
+                    'zip'       => ($property->getZip()) ? $property->getZip() : '',
+                    'jb'        => $property->getJb(),
+                    'kb'        => $property->getKb(),
+                    'address'   => $property->getAddress(),
             ),
         );
 
