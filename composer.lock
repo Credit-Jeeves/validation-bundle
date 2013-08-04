@@ -177,7 +177,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/SimulationBundle.git",
-                "reference": "f01806daf9235b225343334cba155f0708fa996f"
+                "reference": "646d8d4f13b4ebf597b8d2ec8277f04d17bb9a6c"
             },
             "require": {
                 "credit-jeeves/arf-bundle": "dev-master",
@@ -207,7 +207,7 @@
                 }
             ],
             "description": "CreditJeeves Simulation Bundle",
-            "time": "2013-07-31 16:56:02"
+            "time": "2013-08-04 22:23:33"
         },
         {
             "name": "doctrine/annotations",
@@ -2468,19 +2468,13 @@
             "target-dir": "Rj/EmailBundle",
             "source": {
                 "type": "git",
-                "url": "https://github.com/Remixjobs/RjEmailBundle.git",
-                "reference": "f596ce16a02e1da69e335a262bddb62c81e3605f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Remixjobs/RjEmailBundle/zipball/24e54ccb3cdb4ab84138e5f8aed72587b8f58607",
-                "reference": "f596ce16a02e1da69e335a262bddb62c81e3605f",
-                "shasum": ""
+                "url": "git@github.com:Remixjobs/RjEmailBundle.git",
+                "reference": "a6cdeeb38c63c5598e84dc22492e957be79f4cae"
             },
             "require": {
-                "a2lix/translation-form-bundle": "dev-master",
+                "a2lix/translation-form-bundle": "*",
                 "php": ">=5.3.2",
-                "stof/doctrine-extensions-bundle": "dev-master",
+                "stof/doctrine-extensions-bundle": "*",
                 "swiftmailer/swiftmailer": "*",
                 "symfony/framework-bundle": "2.*",
                 "twig/twig": "1.*"
@@ -2494,18 +2488,17 @@
                     "Rj\\EmailBundle": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "authors": [
                 {
-                    "name": "Arnaud Le Blanc",
-                    "email": "arnaud.lb@gmail.com"
-                },
-                {
                     "name": "Jeremy Marc",
                     "email": "jeremy.marc@me.com"
+                },
+                {
+                    "name": "Arnaud Le Blanc",
+                    "email": "arnaud.lb@gmail.com"
                 }
             ],
             "description": "Symfony2 EmailBundle.",
@@ -2513,7 +2506,7 @@
             "keywords": [
                 "email"
             ],
-            "time": "2013-07-05 19:44:13"
+            "time": "2013-08-02 19:44:47"
         },
         {
             "name": "sensio/distribution-bundle",
@@ -2615,12 +2608,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "f877e60b8e2221e0e897c8f84175a53f61fc47dc"
+                "reference": "89d7f04a1d41af3b677cb54a11081a8fb346d98e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/f877e60b8e2221e0e897c8f84175a53f61fc47dc",
-                "reference": "f877e60b8e2221e0e897c8f84175a53f61fc47dc",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/89d7f04a1d41af3b677cb54a11081a8fb346d98e",
+                "reference": "89d7f04a1d41af3b677cb54a11081a8fb346d98e",
                 "shasum": ""
             },
             "require": {
@@ -2681,7 +2674,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-08-01 08:38:24"
+            "time": "2013-08-02 17:41:53"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -3398,16 +3391,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.13.1",
+            "version": "v1.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "v1.13.1"
+                "reference": "v1.13.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.13.1",
-                "reference": "v1.13.1",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.13.2",
+                "reference": "v1.13.2",
                 "shasum": ""
             },
             "require": {
@@ -3426,7 +3419,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD-3"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
@@ -3443,7 +3436,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-06-06 06:06:01"
+            "time": "2013-08-03 15:35:31"
         }
     ],
     "packages-dev": [
