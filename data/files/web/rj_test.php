@@ -4,7 +4,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 // start collect coverage from functional tests
 //require_once  __DIR__ . '/../vendor/behat/mink-bundle/Behat/MinkBundle/Coverage/prepend.php';
-if (function_exists('xdebug_disable')) { xdebug_disable(); }
+if (function_exists('xdebug_disable')) {
+    xdebug_disable();
+}
 
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
