@@ -6,7 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Tradeline;
-use CreditJeeves\CoreBundle\Arf\ArfTradelines;
+use CreditJeeves\ArfBundle\Map\ArfTradelines;
 
 class IncentivesController extends Controller
 {

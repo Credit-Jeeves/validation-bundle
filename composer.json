@@ -66,7 +66,7 @@
         {
             "type": "package",
             "package": {
-                "name": "CreditJeevesSf1",
+                "name": "credit-jeeves/credit-jeeves",
                 "type": "library",
                 "description": "Legacy code",
                 "version": "dev-master",
@@ -76,6 +76,18 @@
                     "reference": "c1a22d9e4b87bf4a084108bf1dc3610b18c2d740"
                 }
             }
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/CoreBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/ArfBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:Credit-Jeeves/SimulationBundle.git"
         },
         {
             "type": "git",
@@ -133,7 +145,10 @@
         "lib-icu": ">=3.8",
         "lib-curl": "*",
         "lib-openssl": "*",
-        "CreditJeevesSf1": "dev-master",
+        "credit-jeeves/credit-jeeves": "dev-master",
+        "credit-jeeves/core-bundle": "dev-master",
+        "credit-jeeves/arf-bundle": "dev-master",
+        "credit-jeeves/simulation-bundle": "dev-master",
         "symfony/symfony": "2.3.*",
         "doctrine/orm": ">=2.2.3,<2.4-dev",
         "doctrine/doctrine-bundle": "dev-master",

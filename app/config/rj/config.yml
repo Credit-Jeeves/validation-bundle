@@ -9,7 +9,7 @@ imports:
     - { resource: ../base/assetic.yml }
     - { resource: ../base/email.yml }
     - { resource: ../base/framework.yml }
-    - { resource: ../rj/twig.yml }
+    - { resource: ../base/twig.yml }
 
 parameters:
     server_name: '%server_name_rj%'
@@ -27,3 +27,7 @@ parameters:
 framework:
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
+
+twig:
+    globals:
+        application: rj

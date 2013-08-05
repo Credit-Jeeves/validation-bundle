@@ -2,7 +2,7 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\DataBundle\Entity\Report;
 
 class LoanTypesController extends Controller

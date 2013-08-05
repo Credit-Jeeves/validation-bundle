@@ -17,7 +17,7 @@ class XssAttackCase extends BaseTestCase
     {
         $this->setDefaultSession('goutte');
         require_once __DIR__ . '/../../../CoreBundle/sfConfig.php';
-        require_once __DIR__ . '/../../../../../vendor/CreditJeevesSf1/lib/curl/Curl.class.php';
+        require_once __DIR__ . '/../../../../../vendor/credit-jeeves/credit-jeeves/lib/curl/Curl.class.php';
         $curl = new \Curl('');
         $url = $this->getUrl() . '>"><script>alert(123)</script><"/_test.php/_test.php/';
         $curl->setUrl($url);

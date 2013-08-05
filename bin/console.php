@@ -5,7 +5,9 @@
 //umask(0000);
 
 set_time_limit(0);
-
+if (function_exists('xdebug_disable')) {
+    xdebug_disable();
+}
 require_once __DIR__.'/../app/bootstrap.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
 require_once __DIR__.'/../app/AppCjKernel.php';

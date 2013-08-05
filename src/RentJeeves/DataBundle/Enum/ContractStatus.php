@@ -1,12 +1,12 @@
 <?php
 namespace RentJeeves\DataBundle\Enum;
 
-use CreditJeeves\DataBundle\Enum\Base;
+use CreditJeeves\CoreBundle\Enum;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
-class ContractStatus extends Base
+class ContractStatus extends \CreditJeeves\CoreBundle\Enum
 {
     const PENDING = 'pending';
     const APPROVED = 'approved';

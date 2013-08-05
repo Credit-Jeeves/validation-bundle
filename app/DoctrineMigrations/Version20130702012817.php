@@ -17,7 +17,7 @@ class Version20130702012817 extends AbstractMigration
             "Migration can only be executed safely on 'mysql'."
         );
 
-        require_once __DIR__ . '/../../vendor/CreditJeevesSf1/lib/utility/cjEncryptionUtility.class.php';
+        require_once __DIR__ . '/../../vendor/credit-jeeves/credit-jeeves/lib/utility/cjEncryptionUtility.class.php';
 
         $this->addSql('TRUNCATE TABLE  `cj_address`');
 

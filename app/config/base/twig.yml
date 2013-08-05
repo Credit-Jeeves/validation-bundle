@@ -3,4 +3,4 @@ twig:
     strict_variables: %kernel.debug%
     globals:
         google_maps_key: %google_maps_key%
-        application: cj
+        env: %kernel.environment%

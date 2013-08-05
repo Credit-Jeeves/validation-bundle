@@ -1,13 +1,14 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\SimulationBundle\Model\BaseReport;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\MappedSuperclass
  */
-abstract class Report
+abstract class Report extends BaseReport
 {
     /**
      * @ORM\Id
@@ -77,28 +78,6 @@ abstract class Report
     public function getCjApplicantId()
     {
         return $this->cj_applicant_id;
-    }
-
-    /**
-     * Set raw_data
-     *
-     * @param string $rawData
-     * @return Report
-     */
-    public function setRawData($rawData)
-    {
-        $this->raw_data = $rawData;
-        return $this;
-    }
-
-    /**
-     * Get raw_data
-     *
-     * @return string
-     */
-    public function getRawData()
-    {
-        return $this->raw_data;
     }
 
     /**
