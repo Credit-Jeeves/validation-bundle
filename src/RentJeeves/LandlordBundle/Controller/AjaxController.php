@@ -86,7 +86,7 @@ class AjaxController extends Controller
         $data = $request->request->all('address');
         $addGroup = $request->request->all('addGroup');
         $data = json_decode($data['data'], true);
-        $addGroup = (empty($data['addGroup']) 
+        $addGroup = (empty($data['addGroup'])
                      || (isset($addGroup['addGroup']) && $addGroup['addGroup'] == 1)
                     )?  true : false;
         $property = new Property();
@@ -228,7 +228,7 @@ class AjaxController extends Controller
         if (empty($parent)) {
             return new JsonResponse($data);
         }
-        $units = $data['units'];
+        $units = (isset($data['units']))? $data['units'] : array();
         $unitKeys = array();
         foreach ($units as $key => $unit) {
             if (empty($unit['id']) & !empty($unit['name'])) {

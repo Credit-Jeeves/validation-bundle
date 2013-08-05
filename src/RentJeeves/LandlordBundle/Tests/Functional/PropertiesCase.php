@@ -118,4 +118,34 @@ class PropertiesCase extends BaseTestCase
         $this->assertCount(9, $tr, 'wrong number of collum');
 
     }
+
+    /**
+     * @test
+     */
+    public function manageUnits()
+    {
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.properties');
+        $this->session->wait(3000, null);
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
+        $propertyEdit->click();
+        $this->session->wait(2000, null);
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '#units-block .unit-input'));
+        $propertyEdit->setValue(5);
+        $this->assertNotNull($propertyAdd = $this->page->find('css', '#units-block .unit-add-btn>span'));
+        $propertyAdd->click();
+        $this->assertNotNull($unitNames = $this->page->findAll('css', '#units-block .itemsUnitContainer input'));
+        
+        $unitNames[0]->setValue('1A');
+        $unitNames[1]->setValue('1B');
+        $unitNames[2]->setValue('1C');
+        $unitNames[3]->setValue('1D');
+        $unitNames[4]->setValue('1T');
+
+        $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
+        $saveManageUnits->click();
+        $this->session->wait(5000, null);
+        $this->assertNotNull($td = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
+        $this->assertEquals('5', $td[5]->getText(), 'wrong number of unit');
+    }
 }
