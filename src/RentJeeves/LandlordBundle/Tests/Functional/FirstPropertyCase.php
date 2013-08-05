@@ -11,15 +11,9 @@ class FirtstPropertyCase extends BaseTestCase
 
     protected function fillGoogleAddress($fillAddress)
     {
-        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
-        $this->fillForm(
-            $form,
-            array(
-                'property-search' => $fillAddress,
-            )
-        );
+        $propertySearch->setValue($fillAddress);
         $propertySearch->click();
         $this->session->wait(3000, null);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
@@ -37,14 +31,8 @@ class FirtstPropertyCase extends BaseTestCase
         $this->page->clickLink('tabs.properties');
         $address = "30 Rockefeller Plaza, New York City, NY 10112";
         $this->fillGoogleAddress('30 Rockefeller Plaza, New York City, NY 10112');
-        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
-        $this->fillForm(
-            $form,
-            array(
-                'numberOfUnit' => 5,
-            )
-        );
-
+        $this->assertNotNull($numberOfUnit = $this->page->find('css', '#numberOfUnit'));
+        $numberOfUnit->setValue(5);
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit'));
         $addUnit->click();
         $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-name'));
@@ -57,7 +45,7 @@ class FirtstPropertyCase extends BaseTestCase
         
         $this->assertNotNull($addUnit = $this->page->find('css', '#addProperty'));
         $addUnit->click();
-        $this->session->wait(8000, null);
+        $this->session->wait(13000, null);
         $this->assertNotNull($tr = $this->page->find('css', '.properties-table>tbody>tr'));
     }
 }

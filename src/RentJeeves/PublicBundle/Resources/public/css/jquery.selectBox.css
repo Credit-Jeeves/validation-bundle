@@ -1,0 +1,211 @@
+/* Dropdown control */
+
+.selectBox-dropdown {
+    /*min-width: 150px;
+    line-height: 1.5;*/  
+    position:relative;
+    display:inline-block;
+    border:1px solid #bdbdbd;
+    background:#fff;
+    height:16px;
+    line-height:16px;
+    padding:4px 9px 3px 9px;
+    margin:0!important;
+    color:#000;
+    text-decoration:none;
+    text-align:left;
+    outline:none;
+    vertical-align:middle;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    border-radius:2px;
+    -webkit-box-shadow: inset 0px 0px 5px 0px #fff;
+    -moz-box-shadow: inset 0px 0px 5px 0px #fff;
+    box-shadow: inset 0px 0px 5px 0px #fff;
+    background: #fff;
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YzZjNmMyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjQ1JSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZmZmZmYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top, #f3f3f3 0%, #ffffff 45%, #ffffff 100%);
+    background: -webkit-linear-gradient(top, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    background: -o-linear-gradient(top, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    background: -ms-linear-gradient(top, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    background: linear-gradient(to bottom, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    -pie-background: linear-gradient(to bottom, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    cursor:default;
+}
+
+.selectBox-dropdown:focus,
+.selectBox-dropdown:focus .selectBox-arrow {
+    border-color: #bdbdbd;
+}
+
+.selectBox-dropdown.selectBox-menuShowing {
+    -moz-border-radius-bottomleft: 0;
+    -moz-border-radius-bottomright: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.selectBox-dropdown .selectBox-label {
+    padding: 0;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.selectBox-dropdown .selectBox-arrow {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    bottom: 1px;
+    width: 18px;
+    -webkit-border-radius:2px;
+    -moz-border-radius:2px;
+    border-radius:2px;
+    background: #d1c8c8;
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2QxYzhjOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNiOGFmYWYiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top, #d1c8c8 0%, #b8afaf 100%);
+    background: -webkit-linear-gradient(top, #d1c8c8 0%,#b8afaf 100%);
+    background: -o-linear-gradient(top, #d1c8c8 0%,#b8afaf 100%);
+    background: -ms-linear-gradient(top, #d1c8c8 0%,#b8afaf 100%);
+    background: linear-gradient(to bottom, #d1c8c8 0%,#b8afaf 100%);
+    -pie-background: linear-gradient(to bottom, #d1c8c8 0%,#b8afaf 100%);
+}
+
+.selectBox-dropdown .selectBox-arrow:before {
+    position: absolute;
+    top: 9px;
+    left: 4px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: rgba(255, 255, 255, 1) rgba(255, 255, 255, 0) rgba(255, 255, 255, 0) rgba(255, 255, 255, 0);
+    content:" ";
+}
+
+.selectBox-dropdown .selectBox-arrow:after {
+    position: absolute;
+    top: 8px;
+    left: 4px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5px 5px 0 5px;
+    border-color: #000000 transparent transparent transparent;
+    content:" ";
+}
+
+/* Dropdown menu */
+.selectBox-dropdown-menu {
+    position: absolute;
+    z-index: 99999;
+    /*max-height: 200px;*/
+    min-height: 1em;
+    border: solid 1px #bdbdbd; /* should be the same border width as .selectBox-dropdown */
+    background: #eee;
+    -webkit-box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.25);
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Inline control */
+.selectBox-inline {
+    min-width: 150px;
+    outline: none;
+    border: solid 1px #bdbdbd;
+    background: #FFF;
+    display: inline-block;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    overflow: auto;
+}
+
+.selectBox-inline:focus {
+    border-color: #bdbdbd;
+}
+
+/* Options */
+.selectBox-options,
+.selectBox-options LI,
+.selectBox-options LI A {
+    list-style: none;
+    display: block;
+    cursor: default;
+    padding: 0;
+    margin: 0;
+}
+
+.selectBox-options LI A {
+    line-height: 15px;
+    padding: 4px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    background: 6px center no-repeat;
+    color:#000;
+    font:12px/15px "PT Sans Caption",sans-serif;
+    text-shadow: 0px 1px 0px #ffffff;
+}
+
+.selectBox-options LI.selectBox-link A,
+.selectBox-options LI.selectBox-link:hover A {
+    color:#00aeef;
+    font-size:11px;
+    text-shadow: 0px 1px 0px #fff;
+    border-top:1px solid #bdbdbd;
+    background: none;
+}
+
+.selectBox-options LI.selectBox-link:hover A {
+    text-decoration: underline;
+}
+
+.selectBox-options LI.selectBox-hover A,
+.selectBox-options LI A:hover,
+.selectBox-options LI.selectBox-selected A {
+    background-color: #7ed7f8;
+    text-shadow: 0px 1px 0px #4888a0;
+    font-weight:bold;
+    color:#fff;
+    text-decoration:none;
+}
+
+.selectBox-options LI A.selectBox-link:hover {
+  
+}
+
+.selectBox-options LI.selectBox-disabled A {
+    color: #888;
+    background-color: transparent;
+}
+
+.selectBox-options .selectBox-optgroup {
+    color: #666;
+    background: #EEE;
+    font-weight: bold;
+    line-height: 1.5;
+    padding: 0 .3em;
+    white-space: nowrap;
+}
+
+/* Disabled state */
+.selectBox.selectBox-disabled {
+    color: #888 !important;
+}
+
+.selectBox-dropdown.selectBox-disabled .selectBox-arrow {
+    opacity: .5;
+    filter: alpha(opacity=50);
+    border-color: #666;
+}
+
+.selectBox-inline.selectBox-disabled {
+    color: #888 !important;
+}
+
+.selectBox-inline.selectBox-disabled .selectBox-options A {
+    background-color: transparent !important;
+}

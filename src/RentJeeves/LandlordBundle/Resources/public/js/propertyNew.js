@@ -12,8 +12,10 @@ $(document).ready(function(){
 
     function markAsNotValid()
     {
-        $('#addUnit').addClass('greyButton');
-        $('#addProperty').addClass('greyButton');
+        $('#addUnit').addClass('grey');
+        $('#addUnit').addClass('disabled');
+        $('#addProperty').addClass('grey');
+        $('#addProperty').addClass('disabled');
     }
 
     var ERROR = 'notfound';
@@ -94,8 +96,10 @@ $(document).ready(function(){
                 return showError('Such address doesn\'t exist!');
             }
 
-            $('#addUnit').removeClass('greyButton');
-            $('#addProperty').removeClass('greyButton');
+            $('#addUnit').removeClass('grey');
+            $('#addUnit').removeClass('disabled');
+            $('#addProperty').removeClass('grey');
+            $('#addProperty').removeClass('disabled');
         }
         
         $('#property-search').change(function(){

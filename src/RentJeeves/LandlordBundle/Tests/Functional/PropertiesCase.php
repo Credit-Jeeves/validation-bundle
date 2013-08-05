@@ -8,7 +8,6 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class PropertiesCase extends BaseTestCase
 {
-
     /**
      * @test
      */
@@ -20,7 +19,7 @@ class PropertiesCase extends BaseTestCase
         $this->page->clickLink('tabs.properties');
         $this->session->wait(3000, null);
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
+        $this->assertEquals('Vía Fernandez', $firstTd->getText(), 'Wrong notice');
         $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
         $zipCollum->click();
         $this->session->wait(3000, null);
@@ -67,6 +66,7 @@ class PropertiesCase extends BaseTestCase
      */
     public function addProperty()
     {
+        $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait(3000, null);
         $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
@@ -80,25 +80,19 @@ class PropertiesCase extends BaseTestCase
 
         $propertyButtonAdd->click();
         $this->session->wait(1000, null);
-        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
         $fillAddress = 'New York Homestay, West 42nd Street, Manhattan, New York City, NY';
-        $this->fillForm(
-            $form,
-            array(
-                'property-search'   => $fillAddress,
-                'numberOfUnit'      => 5,
-            )
-        );
+        $propertySearch->setValue($fillAddress);
         $propertySearch->click();
         $this->session->wait(3000, null);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
-
-        $this->assertNotNull($addUnit = $this->page->find('css', '#unit-add-btn>span'));
+        $this->assertNotNull($numberOfUnit = $this->page->find('css', '#numberOfUnit'));
+        $numberOfUnit->setValue(5);
+        $this->assertNotNull($addUnit = $this->page->find('css', '#addUnitToNewProperty>span'));
         $addUnit->click();
-        $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-name'));
+        $this->assertNotNull($unitNames = $this->page->findAll('css', '#add-property-popup .unit-name'));
         
         $unitNames[0]->setValue('1A');
         $unitNames[1]->setValue('1B');
@@ -126,15 +120,15 @@ class PropertiesCase extends BaseTestCase
     {
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
         $propertyEdit->click();
-        $this->session->wait(2000, null);
-        $this->assertNotNull($propertyEdit = $this->page->find('css', '#units-block .unit-input'));
+        $this->session->wait(4000, null);
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
         $propertyEdit->setValue(5);
-        $this->assertNotNull($propertyAdd = $this->page->find('css', '#units-block .unit-add-btn>span'));
+        $this->assertNotNull($propertyAdd = $this->page->find('css', '#addEditUnit'));
         $propertyAdd->click();
-        $this->assertNotNull($unitNames = $this->page->findAll('css', '#units-block .itemsUnitContainer input'));
+        $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-input-edit'));
         
         $unitNames[0]->setValue('1A');
         $unitNames[1]->setValue('1B');

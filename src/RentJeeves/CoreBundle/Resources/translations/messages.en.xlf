@@ -311,9 +311,9 @@
                 <source>cancel</source>
                 <target>Cancel</target>
             </trans-unit>
-            <trans-unit id="delete.property">
-                <source>delete.property</source>
-                <target>Delete Property</target>
+            <trans-unit id="delete">
+                <source>delete</source>
+                <target>Delete</target>
             </trans-unit>
             <trans-unit id="search.by">
                 <source>search.by</source>
@@ -350,6 +350,18 @@
             <trans-unit id="your.rental">
                 <source>your.rental</source>
                 <target>Your rental address</target>
+            </trans-unit>
+            <trans-unit id="add.yourfirst.property">
+                <source>add.yourfirst.property</source>
+                <target>Add Your First Property</target>
+            </trans-unit>
+            <trans-unit id="property">
+                <source>property</source>
+                <target>Property</target>
+            </trans-unit>
+            <trans-unit id="all">
+                <source>all</source>
+                <target>All</target>
             </trans-unit>
         </body>
     </file>

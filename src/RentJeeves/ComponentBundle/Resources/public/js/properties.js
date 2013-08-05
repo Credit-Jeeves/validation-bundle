@@ -1,18 +1,20 @@
 function markAsNotValid()
 {
   $('#saveProperty').addClass('grey');
+  $('#addUnitToNewProperty').addClass('grey');
 }
 
 function clearError()
 {
   $('#saveProperty').removeClass('grey');
+  $('#addUnitToNewProperty').removeClass('grey');
 }
 
 function Properties() {
   var limit = 10;
   var current = 1;
   var self = this;
-  this.processProperty = ko.observable(false);
+  this.processProperty = ko.observable(true);
   this.aProperties = ko.observableArray([]);
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
@@ -24,22 +26,21 @@ function Properties() {
 
   this.sortFunction = function(data, event) {
      field = event.target.id;
+
      if(field.length == 0) {
         return;
      }
-     $('.sort').each(function() {
-      $(this).show();
-      $('#'+self.sortColumn()).find('.sortUp').removeClass('sortUpOnly');
-     });
      self.sortColumn(field);
-     if(self.isSortAsc() == true) {
-        self.isSortAsc(false);
-        $('#'+self.sortColumn()).find('.sortUp').hide();
+     $('.sort-dn').attr('class', 'sort');
+     $('.sort-up').attr('class', 'sort');
+     if(self.isSortAsc() === false) {
+      self.isSortAsc(true);
+      $('#'.field).attr('class', 'sort-dn');
      } else {
-        self.isSortAsc(true);
-        $('#'+self.sortColumn()).find('.sortDown').hide();
-        $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
+      self.isSortAsc(false);
+      $('#'.field).attr('class', 'sort-up');
      }
+     
      self.current(1);
      self.ajaxAction();
   };
@@ -65,14 +66,14 @@ function Properties() {
         self.total(response.total);
         self.pages(response.pagination);
         self.processProperty(false);
+        $('#all').html(self.total());
         if(self.sortColumn().length == 0) {
           return;
         }
-        if(self.isSortAsc() == true) {
-          $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
-          $('#'+self.sortColumn()).find('.sortDown').hide();
+        if(self.isSortAsc()) {
+          $('#'+self.sortColumn()).attr('class', 'sort-dn');
         } else {
-          $('#'+self.sortColumn()).find('.sortUp').hide();
+          $('#'+self.sortColumn()).attr('class', 'sort-up');
         }
       }
     });
@@ -93,6 +94,7 @@ function Properties() {
     }
     self.ajaxAction();
   };
+
 }
 
 function Units() {
@@ -103,8 +105,9 @@ function Units() {
   this.property = ko.observable(0);
   this.show = ko.observable(false);
   this.name = ko.observable();
-  
+
   this.ajaxAction = function(nPropertyId) {
+    $('#edit-property-popup').dialog('open');
     self.property(nPropertyId);
     $.ajax({
       url: Routing.generate('landlord_units_list'),
@@ -135,6 +138,7 @@ function Units() {
     self.total(count);
   };
   this.saveUnits = function() {
+    $('#edit-property-popup').dialog('close');
     $.ajax({
       url: Routing.generate('landlord_units_save'),
       type: 'POST',
@@ -151,21 +155,22 @@ function Units() {
       self.aUnits.remove(unit);
     }
   };
+  this.deletePropertyConfirm = function()
+  {
+
+  }
+
   this.deleteProperty = function() {
-    if (confirm('Are you sure?')) {
-      if (confirm('Are you really sure?')) {
-        $.ajax({
-          url: Routing.generate('landlord_property_delete'),
-          type: 'POST',
-          dataType: 'json',
-          data: {'property_id': self.property()},
-          success: function(response) {
-            self.clearUnits();
-            PropertiesViewModel.ajaxAction();
-          }
-        });
+    $.ajax({
+      url: Routing.generate('landlord_property_delete'),
+      type: 'POST',
+      dataType: 'json',
+      data: {'property_id': self.property()},
+      success: function(response) {
+        self.clearUnits();
+        PropertiesViewModel.ajaxAction();
       }
-    }
+    });
   };
 }
 
@@ -177,8 +182,8 @@ function Search() {
   var self = this;
 
   this.searchFunction = function() {
-    console.info('hello from search');
     var searchCollum = $('#searchFilterSelect').linkselect('val');
+
     if(typeof searchCollum != 'string') {
        searchCollum = '';
     }
@@ -205,27 +210,20 @@ function Search() {
 function addProperties()
 {
   this.property = ko.observable("");
-  this.show = ko.observable(false);
   this.aUnits = ko.observableArray([]);
-  this.total = ko.observable(1);
   this.add = ko.observable(1);
   this.autocomplete = ko.observable("");
 
   var self = this;
   this.clearUnits = function() {
     self.aUnits([]);
-    self.total(0);
     self.add(1);
-    self.show(false);
   };
 
   this.addUnits = function() {
     for(var i=0; i < self.add(); i++) {
       self.aUnits.push({'name': '', 'id': ''});
     }
-    var count = parseInt(self.total());
-    count += parseInt(self.add());
-    self.total(count);
   };
 
   this.saveUnits = function(propertyId) {
@@ -251,8 +249,8 @@ function addProperties()
     var place = self.autocomplete().getPlace();
     var data = {'address': place.address_components, 'geometry':place.geometry};
 
-    self.show(false);
     self.property().processProperty(true);
+    $('#add-property-popup').dialog('close');
 
     jQuery.ajax({
         url: Routing.generate('landlord_property_add'),
@@ -290,11 +288,20 @@ addProperties.property(PropertiesViewModel)
 $(document).ready(function(){
 
     var ERROR = 'notfound';
-
-
-
+    $('#add-property-popup').dialog({ 
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width:'520px'
+    });
+    $('#edit-property-popup').dialog({ 
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width:'520px'
+    });
     $('#delete').click(function(){
-        $('#property-search').val(' ');
+        $('#searsh-field').val(' ');
         markAsNotValid();
         $(this).hide();
         return false;
@@ -375,14 +382,15 @@ $(document).ready(function(){
 
     ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
     PropertiesViewModel.ajaxAction();
-    ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
     ko.applyBindings(search, $('#searchContent').get(0));
-    ko.applyBindings(addProperties, $('#add-property').get(0));
+    ko.applyBindings(UnitsViewModel, $('#edit-property-popup').get(0));
+   
+    ko.applyBindings(addProperties, $('#add-property-popup').get(0));
     $('#searchFilterSelect').linkselect("destroy");
     $('#searchFilterSelect').linkselect();
 
     $('.property-button-add').click(function(){
-      addProperties.show(true);
+      $('#add-property-popup').dialog('open');
       return false;
     });
     

@@ -1,61 +1,53 @@
 {% extends "LandlordBundle::base.html.twig" %}
 
 {% block content %}
-<h1>Add Your First Property</h1>
-<br />
-<div class="pod-large pod-border pod-padding shadow">
-    <div class="col all">
-        <div class="titlePropety titlePropetyFirst">
-            <label>Property information</label>
-        </div>
-        <div class="titlePropety">
-            <label>Add Units</label>
-        </div>
-        <div class="clear">
-        </div>
-        <form action="#" id="formSearch">
-            <div class="search-box pie-el">
-                <label for="searsh-field">{{ 'find.your.rentaladdress'|trans }}</label>
-                <div class="clearfix with-button">
-                    <div class="left search-field-box">
-                        <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search" autocomplete="off">
-                        <a href="#" id="delete" class="pie-el">x</a>
-                        <div id="errorForm">
-                        </div>
-                    </div>
-                    <div id="search-result-map"></div>
-                </div>
-            </div>
-            <div class="units-box">
-                <div>
-                    <label>{{ 'unit.numberof'|trans }}:</label>
-                    <input type="text" value="" name="numberOfUnit" id="numberOfUnit">
-                    <div class="addUnit">
-                        <button type="submit" class="button small greyButton" id="addUnit">
-                            <span>{{ 'add'|trans }}</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="unitsList">
-                    <label class="nameUnits">{{ 'nameofunit'|trans }}:</label>
-                    <div class="unitsListNames">
-                    </div>
-                </div>
-            </div>
-            <div class="clear">
-            </div>
-            <button type="submit" class="button greyButton" id="addProperty">
-                <span>{{ 'add.property'|trans }}</span>
-                <img src="/bundles/rjpublic/images/ajax-loader.gif" class="loader">
-            </button>
-            <div class="clear">
-            </div>
-        </form>
+<div class="landrord-box">
+    <div class="title-box clearfix">
+      <h2>{{ 'add.yourfirst.property'|trans }}</h2>
     </div>
-</div>
-<br />
-<br />
-<br />
+    <div class="content-box properties-box">
+      <small class="required"><b>*</b>{{ 'required'|trans }}</small>
+      
+      <div class="col-box clearfix">
+        <div class="col left">
+          <h4>{{ 'property.info'|trans }}</h4>
+          <div class="search-box pie-el">
+            <label for="searsh-field">{{ 'find.your.rentaladdress'|trans }}</label>
+            <div class="clearfix">
+              <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search">
+              <a class="pie-el" id="delete" href="#">x</a>
+              <button class="pie-el" id="search-submit" type="submit">{{ 'search'|trans }}</button>
+            </div>
+            <div id="search-result-map"></div>
+          </div>
+        </div>
+        <div class="col right">
+          <h4>{{ 'unit.add'|trans }}</h4>
+          <div class="form-row clearfix">
+            <label>{{ 'unit.numberof'|trans }}<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" class="zc-width" name="numberOfUnit" id="numberOfUnit">
+              <button style="margin-top: -5px;" class="button small grey disabled" id="addUnit" type="button">
+                <span>{{ 'add'|trans }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="form-row clearfix full show">
+            <label>{{ 'nameofunit'|trans }}<b>*</b></label>
+            <div class="fields-box unitsListNames" style="width:320px;">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-button-box">
+      <button class="button xmiddle grey disabled" id="addProperty"><span>{{ 'add.property'|trans }}</span></button>
+      <img src="/bundles/rjpublic/images/ajax-loader.gif" class="loader">
+    </div>
+  </div>
+
+
 {% endblock %}
 
 {% block javascripts %}
@@ -64,11 +56,4 @@
      %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets '@LandlordBundle/Resources/public/css/newProperty.css'%}
-      <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
 {% endblock %}

@@ -196,7 +196,7 @@ table.properties-table th {
 }
 .processLoading {
     position: absolute;
-    margin-top: 85px;
+    margin-top: 55px;
     margin-left: 400px;
 }
 .sortField {
@@ -365,7 +365,7 @@ table.properties-table th {
     border-radius: 4px;
     position: absolute;
     margin-left: 36px;
-    margin-top: 4px;
+    margin-top: 15px;
     cursor: pointer;
 }
 .units-footer{
@@ -399,12 +399,7 @@ table.properties-table th {
 #search-result-map {
     display: none;
 }
-#property-search {
-    padding-left: 23px !important;
-    height: 16px !important;
-    width: 485px !important;
-    float: left;
-}
+
 #delete {
     float: right;
     width: 16px;
@@ -420,31 +415,37 @@ table.properties-table th {
     display: none;
 }
 
-.search-box {
-    background-color: #EEEEEE;
-    height: 55px;
-    padding-left: 10px;
-    border: 1px solid grey;
-    border-radius: 8px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-right: 5px;
-    width: 526px;
+.loader {
+    display: none;
 }
-.search-box>label {
-    font-size: 12px;
+#delete {
+    display: none;
 }
-#searchForm{
-    margin-top: 15px;
+.fiter-box button  {
+    margin-left: 0px;
 }
-#formSearch>.units-header {
-    margin-top: 12px;
+.buttonFix {
+    padding-left: 5px !important;
+    margin-top: -5px !important;
+    margin-right: 0px !important;
 }
 
-#formSearch>.footerPopup {
-    padding-top: 33px;
+.units-item .unit-input {
+    width: 36px !important;
+    margin-left: 6px !important;
 }
-.units-footer-add-property {
-    padding-left: 195px;
-    width: 385px;
+
+.units-item .unit-input-edit {
+    width: 27px !important;
+}
+
+.units-item .unit-delete {
+     margin-left: 42px;
+}
+
+.form-row {
+    width: 380px;
+}
+.properties-table-block {
+    display: none;
 }
