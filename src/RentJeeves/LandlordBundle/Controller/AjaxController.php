@@ -85,8 +85,8 @@ class AjaxController extends Controller
         $request = $this->getRequest();
         $data = $request->request->all('address');
         $addGroup = $request->request->all('addGroup');
-        $addGroup = ($addGroup == 1 || empty($addGroup))?  true : false;
         $data = json_decode($data['data'], true);
+        $addGroup = (empty($data['addGroup']) || (isset($addGroup['addGroup']) && $addGroup['addGroup'] == 1))?  true : false;
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertyDataAddress);
@@ -105,7 +105,7 @@ class AjaxController extends Controller
                 && $group
                 && $this->getUser()->getType() == UserType::LANDLORD
                 && $addGroup
-                && !$group->getGroupProperty()->contains($property)
+                && !$group->getGroupProperties()->contains($property)
         ) {
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
