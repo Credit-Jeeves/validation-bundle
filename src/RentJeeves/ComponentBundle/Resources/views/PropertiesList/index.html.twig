@@ -86,11 +86,11 @@
                             <span class="numberOfUnit"data-bind="text: total"></span>
                         </div>
                         <div class="clearboth floatleft units-add marginLeftSmall paddingTopSmall">
-                            <div class="button small grey floatright unit-add-btn" >
+                            <div id="unit-add-btn" class="button small grey floatright unit-add-btn" >
                                 <span data-bind="click: addUnits">{{ 'add'|trans }}</span>
                             </div>
                             <div class="floatright">
-                                <input type="text" class="unit-input" data-bind="value: add">
+                                <input type="text" class="unit-input" id="numberOfUnit" data-bind="value: add">
                             </div>
                             <div class="floatright unit-add-text">{{ 'unit.add'|trans }}:</div>
                         </div>
@@ -103,7 +103,7 @@
                         <div class="floatleft itemsUnitContainer">
                         <!-- ko foreach: { data: aUnits() } -->
                             <div class="units-item">
-                                <input type="text" class="unit-input floatleft" data-bind="value: name" placeholder="Unit">
+                                <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
                                 <div class="floatleft unit-delete" data-bind="click: $root.removeUnit">
                                 </div>
                             </div>
@@ -155,13 +155,13 @@
         <div class="clearboth"></div>
         <!-- ko if: pages().length -->
         <div class="row-20"></div>
-        <div class="">
+        <div class="pages">
             <!-- ko foreach: pages() -->
                 <!-- ko if: $data == $root.current() -->
-                <div class="button small grey floatleft" ><span data-bind="click: $root.goToPage, text: $data"></span></div>
+                <div class="button small grey floatleft" ><span class="page" data-bind="click: $root.goToPage, text: $data"></span></div>
                 <!-- /ko -->
                 <!-- ko ifnot: $data == $root.current() -->
-                <div class="button small floatleft" ><span data-bind="click: $root.goToPage, text: $data"></span></div>
+                <div class="button small floatleft"><span class="page" data-bind="click: $root.goToPage, text: $data"></span></div>
                 <!-- /ko -->
             <!-- /ko -->
         </div>

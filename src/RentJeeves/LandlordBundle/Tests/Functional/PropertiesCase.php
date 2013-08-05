@@ -20,7 +20,7 @@ class PropertiesCase extends BaseTestCase
         $this->page->clickLink('tabs.properties');
         $this->session->wait(3000, null);
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('Vía Fernandez', $firstTd->getText(), 'Wrong notice');
+        $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
         $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
         $zipCollum->click();
         $this->session->wait(3000, null);
@@ -60,5 +60,62 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($firstTr = $this->page->find('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
+    }
+
+    /**
+     * @test
+     */
+    public function addProperty()
+    {
+        $this->page->clickLink('tabs.properties');
+        $this->session->wait(3000, null);
+        $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
+
+        $this->assertNotNull($pages = $this->page->findAll('css', '.page'));
+        $this->assertCount(4, $pages, 'wrong number of collum');
+        $pages[3]->click();
+        $this->session->wait(3000, null);
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(8, $tr, 'wrong number of collum');
+
+        $propertyButtonAdd->click();
+        $this->session->wait(1000, null);
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
+        $propertySearch->click();
+        $fillAddress = 'New York Homestay, West 42nd Street, Manhattan, New York City, NY';
+        $this->fillForm(
+            $form,
+            array(
+                'property-search'   => $fillAddress,
+                'numberOfUnit'      => 5,
+            )
+        );
+        $propertySearch->click();
+        $this->session->wait(3000, null);
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $item->click();
+
+        $this->assertNotNull($addUnit = $this->page->find('css', '#unit-add-btn>span'));
+        $addUnit->click();
+        $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-name'));
+        
+        $unitNames[0]->setValue('1A');
+        $unitNames[1]->setValue('1B');
+        $unitNames[2]->setValue('1C');
+        $unitNames[3]->setValue('1D');
+        $unitNames[4]->setValue('1T');
+
+        $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty>span'));
+        $saveProperty->click();
+        $this->session->wait(6000, null);
+
+        $this->assertNotNull($pages = $this->page->findAll('css', '.page'));
+        $this->assertCount(4, $pages, 'wrong number of collum');
+        $pages[3]->click();
+        $this->session->wait(3000, null);
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(9, $tr, 'wrong number of collum');
+
     }
 }
