@@ -84,23 +84,27 @@ class AjaxController extends Controller
         $itsNewProperty = false;
         $request = $this->getRequest();
         $data = $request->request->all('address');
+        $addGroup = $request->request->all('addGroup');
+        $addGroup = ($addGroup == 1 || empty($addGroup))?  true : false;
         $data = json_decode($data['data'], true);
         $property = new Property();
-        $property = $property->parseGoogleAddress($data);
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($property);
+        $propertyDataAddress = $property->parseGoogleAddress($data);
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertyDataAddress);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
         if (empty($property)) {
             $property = new Property();
-            $property += $property->parseGoogleLocation($data);
-            $property->fillPropertyData($property);
+            $propertyDataLocation = $property->parseGoogleLocation($data);
+            $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
+            $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
         }
 
         if ($this->container->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')
                 && $group
                 && $this->getUser()->getType() == UserType::LANDLORD
+                && $addGroup
                 && !$group->getGroupProperty()->contains($property)
         ) {
             $property->addPropertyGroup($group);
