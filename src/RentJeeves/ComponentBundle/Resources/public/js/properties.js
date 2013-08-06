@@ -23,7 +23,7 @@ function Properties() {
   this.isSortAsc = ko.observable(true);
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("");
-
+  this.last = ko.observable('Last');
   this.sortFunction = function(data, event) {
      field = event.target.id;
 

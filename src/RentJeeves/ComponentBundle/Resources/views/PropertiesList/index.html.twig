@@ -62,11 +62,12 @@
                 <!-- ko foreach: pages() -->
                   <!-- ko if: $data == $root.current() -->
                   <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
-                  <li>|</li>
                   <!-- /ko -->
                   <!-- ko ifnot: $data == $root.current() -->
                   <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
-                  <li>|</li>
+                  <!-- /ko -->
+                  <!-- ko ifnot: $data == $root.last() -->
+                    <li>|</li>
                   <!-- /ko -->
                 <!-- /ko -->
               </ul>
