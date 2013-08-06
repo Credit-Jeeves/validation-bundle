@@ -26,7 +26,7 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
         $submit->click();
-        $this->session->wait(8000, null);
+        $this->session->wait(3000, null);
     }
 
     /**
