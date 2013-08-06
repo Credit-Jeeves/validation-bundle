@@ -141,9 +141,9 @@ class PropertiesCase extends BaseTestCase
         $this->assertEquals('5', $td[5]->getText(), 'wrong number of unit');
     }
 
-        /**
-     * @test
-     */
+    /**
+    * @test
+    */
     public function removeProperty()
     {
         $this->load(true);
