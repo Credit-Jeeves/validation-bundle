@@ -108,10 +108,11 @@ function Units() {
   this.property = ko.observable(0);
   this.show = ko.observable(false);
   this.name = ko.observable();
-
+  this.process = ko.observable(true);
   this.ajaxAction = function(nPropertyId) {
     $('#edit-property-popup').dialog('open');
     self.property(nPropertyId);
+    self.process(true);
     $.ajax({
       url: Routing.generate('landlord_units_list'),
       type: 'POST',
@@ -122,6 +123,7 @@ function Units() {
         self.aUnits(response.units);
         self.total(response.units.length);
         self.show(true);
+        self.process(false);
       }
     });
   };

@@ -22,8 +22,8 @@
     </div>
   </div>
   <div class="content-box" id="properties-block">
-    <img src="/bundles/core/images/img_loading.gif" class="processLoading" data-bind="style: { visibility: processProperty() ? 'visible' : 'hidden' }">
-    <div class="properties-table-block table-wrap" data-bind="style: { visibility: processProperty() ? 'hidden' : 'visible' }">
+    <img src="/bundles/core/images/img_loading.gif" class="processLoading" data-bind="style: { display: processProperty() ? 'block' : 'none' }">
+    <div class="properties-table-block table-wrap" data-bind="style: { display: processProperty() ? 'none' : 'block' }">
       <div class="table-margin">
         <table class="properties-table zebra-grid">
           <thead>
@@ -133,7 +133,7 @@
 
 <div id="edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
       <h1>{{ 'property.edit.info'|trans }}</h1>
-      <div class="clearfix col-box">
+      <div class="clearfix col-box"  data-bind="style: { display: process() ? 'none' : 'block' }">
         
         <div class="col">
           <h4 class="clearfix">
@@ -148,7 +148,7 @@
           </div>
         </div>
         
-        <div class="col" style="padding-top: 45px;">
+        <div class="col" style="padding-top: 45px;" >
           <h4>{{ 'unit.info'|trans }}</h4>
           <div class="form-row clearfix">
             <label>{{ 'unit.add'|trans }}<b>*</b></label>
@@ -172,7 +172,15 @@
             </div>
           </div>
         </div>
-        
+      </div>
+      <div data-bind="style: { display: process() ? 'block' : 'none' }">
+          <br />
+          <br />
+          <center>
+            <img src="/bundles/core/images/img_loading.gif" title="Loading" />
+          </center>
+          <br />
+          <br />
       </div>
       <div class="footer-button-box">
         <button class="button buttonFix"><span data-bind="click: saveUnits" id="saveManageUnits">{{ 'savechanges'|trans }}</span></button>
