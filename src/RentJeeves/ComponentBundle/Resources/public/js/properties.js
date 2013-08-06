@@ -63,6 +63,9 @@ function Properties() {
       success: function(response) {
         self.aProperties([]);
         self.aProperties(response.properties);
+        if (self.aProperties().length <= 0) {
+          return location.href = Routing.generate('landlord_property_new');
+        }
         self.total(response.total);
         self.pages(response.pagination);
         self.processProperty(false);
@@ -290,8 +293,6 @@ function removeProperty()
     self.aUnits(UnitsViewModel.aUnits());
     self.name(UnitsViewModel.name());
     self.countUnit(UnitsViewModel.aUnits().length);
-    console.info(self);
-    console.info(UnitsViewModel);
   }
 
   this.deleteProperty = function()

@@ -13,7 +13,7 @@ use Doctrine\DBAL\DBALException;
 class PropertyController extends Controller
 {
     /**
-     * @Route("/property/new", name="landlord_property_new")
+     * @Route("/property/new", name="landlord_property_new", options={"expose"=true})
      * @Template()
      */
     public function newAction()

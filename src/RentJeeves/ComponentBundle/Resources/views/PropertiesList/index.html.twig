@@ -59,7 +59,6 @@
     <div data-bind="style: { visibility: processProperty() ? 'hidden' : 'visible' }" class="landrord-box without-top clearfix">
           <nav class="pagination-box">
               <ul>
-                  <li>|</li>
                 <!-- ko foreach: pages() -->
                   <!-- ko if: $data == $root.current() -->
                   <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
