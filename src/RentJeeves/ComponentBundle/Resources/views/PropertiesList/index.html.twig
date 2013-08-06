@@ -57,18 +57,21 @@
     </div>
     <br />
     <div data-bind="style: { visibility: processProperty() ? 'hidden' : 'visible' }" class="landrord-box without-top clearfix">
-        <nav class="pagination-box">
-          <ul>
-            <!-- ko foreach: pages() -->
-                <!-- ko if: $data == $root.current() -->
-                <li><span data-bind="click: $root.goToPage, text: $data" class="page"></span></li>
+          <nav class="pagination-box">
+              <ul>
+                  <li>|</li>
+                <!-- ko foreach: pages() -->
+                  <!-- ko if: $data == $root.current() -->
+                  <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
+                  <li>|</li>
+                  <!-- /ko -->
+                  <!-- ko ifnot: $data == $root.current() -->
+                  <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
+                  <li>|</li>
+                  <!-- /ko -->
                 <!-- /ko -->
-                <!-- ko ifnot: $data == $root.current() -->
-                <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="page"></a></li>
-                <!-- /ko -->
-            <!-- /ko -->
-          </ul>
-        </nav>
+              </ul>
+          </nav>
     </div>
   </div>
 </div>

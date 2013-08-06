@@ -18,8 +18,6 @@ class PropertiesCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait(3000, null);
-        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('Vía Fernandez', $firstTd->getText(), 'Wrong notice');
         $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
         $zipCollum->click();
         $this->session->wait(3000, null);
@@ -71,7 +69,7 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait(3000, null);
         $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
 
-        $this->assertNotNull($pages = $this->page->findAll('css', '.page'));
+        $this->assertNotNull($pages = $this->page->findAll('css', '.pagePagination'));
         $this->assertCount(4, $pages, 'wrong number of collum');
         $pages[3]->click();
         $this->session->wait(3000, null);
@@ -102,9 +100,9 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty>span'));
         $saveProperty->click();
-        $this->session->wait(6000, null);
+        $this->session->wait(8000, null);
 
-        $this->assertNotNull($pages = $this->page->findAll('css', '.page'));
+        $this->assertNotNull($pages = $this->page->findAll('css', '.pagePagination'));
         $this->assertCount(4, $pages, 'wrong number of collum');
         $pages[3]->click();
         $this->session->wait(3000, null);
@@ -120,7 +118,7 @@ class PropertiesCase extends BaseTestCase
     {
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait(5000, null);
+        $this->session->wait(6000, null);
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
         $propertyEdit->click();
         $this->session->wait(4000, null);
