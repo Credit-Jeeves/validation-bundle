@@ -20,13 +20,13 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait(8000, null);
+        $this->session->wait(4000, false);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $propertySearch->click();
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
         $submit->click();
-        $this->session->wait(3000, null);
+        $this->session->wait(4000, false);
     }
 
     /**
@@ -37,6 +37,7 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait(4000, null);
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
@@ -145,16 +146,16 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait(8000, null);
+        $this->session->wait(4000, false);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $propertySearch->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit > span'));
         $searchSubmit->click();
-        $this->session->wait(8000, null);
+        $this->session->wait(4000, false);
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
-        $this->session->wait(8000, null);
+        $this->session->wait(4000, false);
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
     }
 }
