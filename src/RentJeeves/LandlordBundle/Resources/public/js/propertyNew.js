@@ -21,7 +21,7 @@ $(document).ready(function(){
     var ERROR = 'notfound';
 
     $('#addUnit').click(function(){
-        if($(this).hasClass('greyButton')) {
+        if($(this).hasClass('grey')) {
             return false;
         }
 
@@ -167,7 +167,7 @@ $(document).ready(function(){
         }
 
         $('#addProperty').click(function(){
-            if($(this).hasClass('greyButton')) {
+            if($(this).hasClass('grey')) {
                 return false;
             }
             $('.loader').parent().find('span').hide();
