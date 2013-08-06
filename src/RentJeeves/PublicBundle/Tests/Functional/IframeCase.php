@@ -20,7 +20,7 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait(4000, false);
+        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $propertySearch->click();
@@ -146,7 +146,7 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait(4000, false);
+        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $propertySearch->click();
