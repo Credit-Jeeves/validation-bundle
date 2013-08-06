@@ -45,7 +45,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($searchFilterSelectLink = $this->page->find('css', '#searchFilterSelect_link'));
         
         $searchFilterSelectLink->click();
-        $this->assertNotNull($searchFilterSelectLinkValue = $this->page->find('css', '#searchFilterSelect_li_2'));
+        $this->assertNotNull($searchFilterSelectLinkValue = $this->page->find('css', '#searchFilterSelect_li_1'));
         $searchFilterSelectLinkValue->click();
         $search->setValue('Havana');
 
@@ -55,7 +55,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($firstTr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $firstTr, 'wrong number of collum');
 
-        $this->assertNotNull($firstTr = $this->page->find('css', '.properties-table>tbody>tr>td'));
+        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
     }
 

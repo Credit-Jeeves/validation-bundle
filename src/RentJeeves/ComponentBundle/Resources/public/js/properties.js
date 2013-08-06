@@ -63,7 +63,7 @@ function Properties() {
       success: function(response) {
         self.aProperties([]);
         self.aProperties(response.properties);
-        if (self.aProperties().length <= 0) {
+        if (self.aProperties().length <= 0 && self.searchText().length > 0) {
           return location.href = Routing.generate('landlord_property_new');
         }
         self.total(response.total);
@@ -97,7 +97,6 @@ function Properties() {
     }
     self.ajaxAction();
   };
-
 }
 
 function Units() {
