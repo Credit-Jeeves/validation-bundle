@@ -17,15 +17,15 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
         $zipCollum->click();
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('50 18th Ave', $firstTd->getText(), 'Wrong notice');
         $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
         $zipCollum->click();
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('10 de Octubre', $firstTd->getText(), 'Wrong notice');
         $this->logout();
@@ -38,7 +38,7 @@ class PropertiesCase extends BaseTestCase
     {
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
 
         $this->assertNotNull($search = $this->page->find('css', '#search'));
@@ -51,7 +51,7 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($searchButton = $this->page->find('css', '#searchButton'));
         $searchButton->click();
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($firstTr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $firstTr, 'wrong number of collum');
 
@@ -66,24 +66,24 @@ class PropertiesCase extends BaseTestCase
     {
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
 
         $this->assertNotNull($pages = $this->page->findAll('css', '.pagePagination'));
         $this->assertCount(4, $pages, 'wrong number of collum');
         $pages[3]->click();
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(8, $tr, 'wrong number of collum');
 
         $propertyButtonAdd->click();
-        $this->session->wait(1000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
         $fillAddress = 'New York Homestay, West 42nd Street, Manhattan, New York City, NY';
         $propertySearch->setValue($fillAddress);
         $propertySearch->click();
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $this->assertNotNull($numberOfUnit = $this->page->find('css', '#numberOfUnit'));
@@ -100,12 +100,12 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty>span'));
         $saveProperty->click();
-        $this->session->wait(8000, null);
+        $this->session->wait($this->timeout, null);
 
         $this->assertNotNull($pages = $this->page->findAll('css', '.pagePagination'));
         $this->assertCount(4, $pages, 'wrong number of collum');
         $pages[3]->click();
-        $this->session->wait(3000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(9, $tr, 'wrong number of collum');
 
@@ -121,7 +121,7 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait(6000, null);
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
         $propertyEdit->click();
-        $this->session->wait(4000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
         $propertyEdit->setValue(5);
         $this->assertNotNull($propertyAdd = $this->page->find('css', '#addEditUnit'));
@@ -136,7 +136,7 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
         $saveManageUnits->click();
-        $this->session->wait(5000, null);
+        $this->session->wait($this->timeout, null);
         $this->assertNotNull($td = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('5', $td[5]->getText(), 'wrong number of unit');
     }
@@ -154,13 +154,13 @@ class PropertiesCase extends BaseTestCase
         $this->assertEquals('18', $all->getText(), 'wrong number of property');
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
         $propertyEdit->click();
-        $this->session->wait(4000, null);
+        $this->session->wait(5000, null);
         $this->assertNotNull($removePropertyConfirm = $this->page->find('css', '.removePropertyConfirm'));
         $removePropertyConfirm->click();
         $this->session->wait(1000, null);
         $this->assertNotNull($removeProperyLast = $this->page->find('css', '.removeProperyLast'));
         $removeProperyLast->click();
-        $this->session->wait(6000, null);
+        $this->session->wait($this->timeout, null);
         $this->assertEquals('17', $all->getText(), 'wrong number of property');
     }
 }

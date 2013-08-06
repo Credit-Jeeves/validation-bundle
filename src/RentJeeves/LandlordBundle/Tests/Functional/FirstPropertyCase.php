@@ -15,7 +15,7 @@ class FirtstPropertyCase extends BaseTestCase
         $propertySearch->click();
         $propertySearch->setValue($fillAddress);
         $propertySearch->click();
-        $this->session->wait(3000, null);
+        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
     }
