@@ -424,8 +424,14 @@ table.properties-table th {
 .fiter-box button  {
     margin-left: 0px;
 }
-.buttonFix {
+.buttonFixSearch {
     padding-left: 5px !important;
+    margin-top: -5px !important;
+    margin-right: 0px !important;
+}
+
+.buttonFixPopupAddUnit {
+    padding-left: 0px !important;
     margin-top: -5px !important;
     margin-right: 0px !important;
 }
@@ -448,4 +454,18 @@ table.properties-table th {
 }
 .properties-table-block {
     display: none;
+}
+
+.buttonFix {
+    border: none;
+    margin-left: 0px !important;
+    padding-left: 0px !important;
+}
+
+#inputEditAddUnit {
+    width: 20px;
+}
+
+#numberOfUnit {
+    width: 20px !important;
 }

@@ -157,7 +157,8 @@ function Units() {
   };
   this.deletePropertyConfirm = function()
   {
-
+    $('#edit-property-popup').dialog('close');
+    removeProperty.show();
   }
 
   this.deleteProperty = function() {
@@ -277,11 +278,40 @@ function addProperties()
   };
 }
 
+function removeProperty()
+{
+  var self = this;
+  this.aUnits = ko.observableArray([]);
+  this.name = ko.observable('gg');
+  this.countUnit = ko.observable('333');
+  this.show = function(){
+    self.aUnits([]);
+    $('#remove-property-popup').dialog('open');
+    self.aUnits(UnitsViewModel.aUnits());
+    self.name(UnitsViewModel.name());
+    self.countUnit(UnitsViewModel.aUnits().length);
+    console.info(self);
+    console.info(UnitsViewModel);
+  }
+
+  this.deleteProperty = function()
+  {
+    $('#remove-property-popup').dialog('close');
+    UnitsViewModel.deleteProperty();
+  }
+
+  this.cancel = function()
+  {
+    $('#remove-property-popup').dialog('close');
+    $('#edit-property-popup').dialog('open');
+  }
+}
+
 var PropertiesViewModel = new Properties();
 var UnitsViewModel = new Units();
 var search = new Search();
 var addProperties = new addProperties();
-
+var removeProperty = new removeProperty();
 search.property(PropertiesViewModel);
 addProperties.property(PropertiesViewModel)
 
@@ -289,6 +319,12 @@ $(document).ready(function(){
 
     var ERROR = 'notfound';
     $('#add-property-popup').dialog({ 
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width:'520px'
+    });
+    $('#remove-property-popup').dialog({ 
         autoOpen: false,
         resizable: false,
         modal: true,
@@ -384,8 +420,8 @@ $(document).ready(function(){
     PropertiesViewModel.ajaxAction();
     ko.applyBindings(search, $('#searchContent').get(0));
     ko.applyBindings(UnitsViewModel, $('#edit-property-popup').get(0));
-   
     ko.applyBindings(addProperties, $('#add-property-popup').get(0));
+    ko.applyBindings(removeProperty, $('#remove-property-popup').get(0));
     $('#searchFilterSelect').linkselect("destroy");
     $('#searchFilterSelect').linkselect();
 

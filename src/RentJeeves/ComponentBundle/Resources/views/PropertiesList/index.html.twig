@@ -18,7 +18,7 @@
         <ul class="list-search-result pie-el">
         </ul>
       </div>
-      <button class="button small buttonFix property-button-add"><span>{{ 'add.property'|trans }}</span></button>
+      <button class="button small buttonFixSearch property-button-add"><span>{{ 'add.property'|trans }}</span></button>
     </div>
   </div>
   <div class="content-box" id="properties-block">
@@ -47,7 +47,7 @@
               <td data-bind="text: country"></td>
               <td data-bind="text: units"></td>
               <td class="type-box" >
-                <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits">&nbsp;</a>
+                <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits"></a>
               </td>
             </tr>
             <!-- /ko -->
@@ -101,7 +101,7 @@
         <label>{{'unit.numberof'|trans}}<b>*</b></label>
         <div class="fields-box">
           <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
-          <button class="button small grey buttonFix " id="addUnitToNewProperty" type="button">
+          <button class="button small grey buttonFixPopupAddUnit" id="addUnitToNewProperty" type="button">
             <span data-bind="click: addUnits">{{ 'add'|trans }}</span>
           </button>
         </div>
@@ -122,10 +122,10 @@
     
   </div>
   <div class="footer-button-box">
-    <button class="button grey" id="saveProperty" >
+    <button class="button grey buttonFix" id="saveProperty" >
       <span data-bind="click: saveProperty">{{ 'add.property'|trans }}</span>
     </button>
-    <button class="button grey" onclick="$('#add-property-popup').dialog( 'close' ); return false;">
+    <button class="button grey buttonFix" onclick="$('#add-property-popup').dialog( 'close' ); return false;">
       <span>{{ 'cancel'|trans}}</span>
     </button>
   </div>
@@ -154,7 +154,7 @@
             <label>{{ 'unit.add'|trans }}<b>*</b></label>
             <div class="fields-box">
               <input type="text" class="zc-width" id="inputEditAddUnit" data-bind="value: add" value="1">
-              <button class="button small buttonFix" type="button">
+              <button class="button small buttonFixPopupAddUnit" type="button">
                 <span id="addEditUnit"data-bind="click: addUnits">{{ 'add'|trans }}</span>
               </button>
             </div>
@@ -175,11 +175,44 @@
         
       </div>
       <div class="footer-button-box">
-        <button class="button"><span data-bind="click: saveUnits" id="saveManageUnits">{{ 'savechanges'|trans }}</span></button>
-        <button class="button grey" onclick="$('#edit-property-popup').dialog( 'close' ); return false;">
+        <button class="button buttonFix"><span data-bind="click: saveUnits" id="saveManageUnits">{{ 'savechanges'|trans }}</span></button>
+        <button class="button grey buttonFix" onclick="$('#edit-property-popup').dialog( 'close' ); return false;">
           <span  data-bind="click: clearUnits">{{ 'cancel'|trans}}</span>
         </button>
-        <a href="#" class="link"  data-bind="click: deleteProperty">
+        <a href="#" class="link"  data-bind="click: deletePropertyConfirm">
           {{ 'delete'|trans }}<br>{{'property'|trans}}</a>
+      </div>
+</div>
+
+
+<div id="remove-property-popup" class="pricing-popup dashboard-popup properties-popup">
+      <h1>{{ 'remove.property'|trans }}</h1>
+      <div class="clearfix col-box">
+        <div class="atansion-box pie-el">
+          {{ 'remove.property.description'|trans }} 
+        </div>
+        <div class="col">
+          <h4>{{ 'property.info'|trans }}</h4>
+          <div class="form-row clearfix">
+            <label>{{ 'address'|trans }}</label>
+            <div class="fields-box">
+              <span class="value" data-bind="text: name"></span>
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label><span data-bind="text: countUnit"></span> {{'units'|trans}}</label>
+            <div class="fields-box clearfix">
+               <!-- ko foreach: { data: aUnits() } -->
+              <span class="value"  data-bind="text: name"></span>
+              <!-- /ko -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-button-box">
+        <button class="button dark buttonFix"><span data-bind="click: deleteProperty">{{ 'yep.remove.property'|trans }}</span></button>
+        <button class="button grey buttonFix" >
+          <span data-bind="click: cancel">{{ 'no.remove.property'|trans }}</span>
+        </button>
       </div>
 </div>

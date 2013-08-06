@@ -363,6 +363,28 @@
                 <source>all</source>
                 <target>All</target>
             </trans-unit>
+            <trans-unit id="remove.property">
+                <source>remove.property</source>
+                <target>Remove Property Information</target>
+            </trans-unit>
+            <trans-unit id="remove.property.description">
+                <source>remove.property.description</source>
+                <target>Are you sure you want to remove this property? Any payments 
+                    scheduled for this property will be cancelled.
+                </target>
+            </trans-unit>
+            <trans-unit id="units">
+                <source>units</source>
+                <target>Units</target>
+            </trans-unit>
+            <trans-unit id="yep.remove.property">
+                <source>yep.remove.property</source>
+                <target>Yes, Remove Property</target>
+            </trans-unit>
+            <trans-unit id="no.remove.property">
+                <source>no.remove.property</source>
+                <target>No, Cancel</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
