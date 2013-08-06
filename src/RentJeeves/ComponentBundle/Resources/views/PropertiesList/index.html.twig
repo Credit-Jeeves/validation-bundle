@@ -179,7 +179,7 @@
         <button class="button grey buttonFix" onclick="$('#edit-property-popup').dialog( 'close' ); return false;">
           <span  data-bind="click: clearUnits">{{ 'cancel'|trans}}</span>
         </button>
-        <a href="#" class="link"  data-bind="click: deletePropertyConfirm">
+        <a href="#" class="link removePropertyConfirm"  data-bind="click: deletePropertyConfirm">
           {{ 'delete'|trans }}<br>{{'property'|trans}}</a>
       </div>
 </div>
@@ -210,7 +210,7 @@
         </div>
       </div>
       <div class="footer-button-box">
-        <button class="button dark buttonFix"><span data-bind="click: deleteProperty">{{ 'yep.remove.property'|trans }}</span></button>
+        <button class="button dark buttonFix"><span data-bind="click: deleteProperty" class="removeProperyLast">{{ 'yep.remove.property'|trans }}</span></button>
         <button class="button grey buttonFix" >
           <span data-bind="click: cancel">{{ 'no.remove.property'|trans }}</span>
         </button>

@@ -140,4 +140,27 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($td = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('5', $td[5]->getText(), 'wrong number of unit');
     }
+
+        /**
+     * @test
+     */
+    public function removeProperty()
+    {
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.properties');
+        $this->session->wait(6000, null);
+        $this->assertNotNull($all = $this->page->find('css', '#all'));
+        $this->assertEquals('18', $all->getText(), 'wrong number of property');
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
+        $propertyEdit->click();
+        $this->session->wait(4000, null);
+        $this->assertNotNull($removePropertyConfirm = $this->page->find('css', '.removePropertyConfirm'));
+        $removePropertyConfirm->click();
+        $this->session->wait(1000, null);
+        $this->assertNotNull($removeProperyLast = $this->page->find('css', '.removeProperyLast'));
+        $removeProperyLast->click();
+        $this->session->wait(6000, null);
+        $this->assertEquals('17', $all->getText(), 'wrong number of property');
+    }
 }
