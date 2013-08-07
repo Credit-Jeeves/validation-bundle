@@ -8,6 +8,8 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class IframeCase extends BaseTestCase
 {
+    protected $timeout = 25000;
+
     protected function fillGoogleAddress($fillAddress)
     {
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
