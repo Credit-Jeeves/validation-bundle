@@ -52,7 +52,7 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($searchButton = $this->page->find('css', '#searchButton'));
         $searchButton->click();
-        $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($firstTr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $firstTr, 'wrong number of collum');
@@ -105,11 +105,13 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty>span'));
         $saveProperty->click();
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
 
         $this->assertNotNull($pages = $this->page->findAll('css', '.pagePagination'));
         $this->assertCount(4, $pages, 'wrong number of collum');
         $pages[3]->click();
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(9, $tr, 'wrong number of collum');
@@ -123,7 +125,7 @@ class PropertiesCase extends BaseTestCase
     {
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
         $propertyEdit->click();
@@ -142,7 +144,7 @@ class PropertiesCase extends BaseTestCase
 
         $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
         $saveManageUnits->click();
-        $this->session->wait(5000, "$('#edit-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('5', $td[5]->getText(), 'wrong number of unit');
@@ -157,7 +159,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($all = $this->page->find('css', '#all'));
         $this->assertEquals('18', $all->getText(), 'wrong number of property');
@@ -168,7 +170,7 @@ class PropertiesCase extends BaseTestCase
         $removePropertyConfirm->click();
         $this->assertNotNull($removeProperyLast = $this->page->find('css', '.removeProperyLast'));
         $removeProperyLast->click();
-        $this->session->wait(5000, "$('#remove-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertEquals('17', $all->getText(), 'wrong number of property');
         $this->logout();
