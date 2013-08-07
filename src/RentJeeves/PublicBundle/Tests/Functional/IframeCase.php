@@ -20,7 +20,8 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible');");
+        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $propertySearch->click();
@@ -61,6 +62,7 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(3, $fields, 'wrong number of text h4');
+        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -83,6 +85,7 @@ class IframeCase extends BaseTestCase
      */
     public function iframeFound()
     {
+        $this->setDefaultSession('selenium2');
         $this->clearEmail();
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
@@ -107,6 +110,7 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(2, $fields, 'wrong number of text h4');
+        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -128,6 +132,7 @@ class IframeCase extends BaseTestCase
      */
     public function checkNotFoundNew()
     {
+        $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->fillGoogleAddress($fillAddress);
@@ -147,7 +152,7 @@ class IframeCase extends BaseTestCase
         );
         $propertySearch->click();
         $this->session->wait($this->timeout, "$('.pac-item').length > 0");
-        $this->session->evaluateScript("$('.pac-item').parent().show();");
+        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $propertySearch->click();

@@ -8,8 +8,6 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class PropertiesCase extends BaseTestCase
 {
-    protected $timeout = 25000;
-
     /**
      * @test
      */
@@ -19,6 +17,7 @@ class PropertiesCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
+        $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($zipCollum = $this->page->find('css', '#zip'));
         $zipCollum->click();
