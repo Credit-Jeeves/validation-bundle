@@ -8,8 +8,6 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class IframeCase extends BaseTestCase
 {
-    protected $timeout = 25000;
-
     protected function fillGoogleAddress($fillAddress)
     {
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
@@ -22,8 +20,7 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
-        $this->session->evaluateScript("$('.pac-item').parent().show();");
+        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible');");
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
         $propertySearch->click();
