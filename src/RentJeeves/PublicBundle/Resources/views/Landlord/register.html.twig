@@ -1,0 +1,23 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+{% block content %}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
+    {% javascripts  '@RjPublicBundle/Resources/public/js/landlord/register.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+{% block stylesheets %}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/landlord/register.css'
+    %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

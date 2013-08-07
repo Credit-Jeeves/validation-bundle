@@ -39,6 +39,7 @@ class IframeCase extends BaseTestCase
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype_invite_unit').length > 0");
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
         $this->assertNotNull($form = $this->page->find('css', '#inviteForm'));
@@ -91,6 +92,7 @@ class IframeCase extends BaseTestCase
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_tenanttype_first_name').length > 0");
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
         $thisIsMyRental->click();
@@ -161,6 +163,8 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.inviteLandlord').is(':visible')");
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
+        
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout,
                              "$('#rentjeeves_publicbundle_invitetenanttype_invite_first_name').length > 0"
                             );
