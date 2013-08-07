@@ -39,8 +39,10 @@ class AppCjKernel extends AppKernel
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
 
             // Must be last in the list
+            new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
+            new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new CreditJeeves\ExperianBundle\ExperianBundle(),

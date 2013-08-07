@@ -11,7 +11,7 @@ imports:
     - { resource: ../base/payum.yml }
     - { resource: ../base/sonata.yml }
     - { resource: ../base/framework.yml }
-    - { resource: ../cj/twig.yml }
+    - { resource: ../base/twig.yml }
 
 parameters:
     server_name: '%server_name_cj%'
@@ -28,3 +28,7 @@ parameters:
 framework:
     router:
         resource: "%kernel.root_dir%/config/cj/routing.yml"
+
+twig:
+    globals:
+        application: cj

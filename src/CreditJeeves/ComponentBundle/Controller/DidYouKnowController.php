@@ -3,7 +3,7 @@ namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\DataBundle\Entity\Report;
-use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class DidYouKnowController extends Controller

@@ -1,12 +1,12 @@
 <?php
 namespace CreditJeeves\DataBundle\EventListener;
 
-use CreditJeeves\CoreBundle\Arf\ArfParser;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\Tradeline;
 use CreditJeeves\DataBundle\Entity\ApplicantIncentive;
-use CreditJeeves\CoreBundle\Arf\ArfTradelines;
+use CreditJeeves\ArfBundle\Map\ArfTradelines;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;

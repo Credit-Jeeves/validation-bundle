@@ -34,8 +34,10 @@ class AppRjKernel extends AppKernel
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
 
+            new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
+            new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new CreditJeeves\ExperianBundle\ExperianBundle(),
             new CreditJeeves\UserBundle\UserBundle(),

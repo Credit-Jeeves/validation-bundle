@@ -2,8 +2,8 @@
 namespace CreditJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use CreditJeeves\CoreBundle\Arf\ArfParser;
-use CreditJeeves\CoreBundle\Arf\ArfReport;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
+use CreditJeeves\ArfBundle\Map\ArfReport;
 use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\Score;
 

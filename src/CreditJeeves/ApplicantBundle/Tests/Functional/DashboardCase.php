@@ -26,47 +26,26 @@ class DashboardCase extends BaseTestCase
     /**
      * @test
      */
-    public function userDashboardVehicle()
+    public function userDashboardElements()
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('emilio@example.com', 'pass');
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));
         $this->assertEquals('Honda Civic', $target->getText(), 'Wrong target');
-        $this->logout();
-    }
 
-    /**
-     * @test
-     */
-    public function userFeaturedOffer()
-    {
-        $this->login('emilio@example.com', 'pass');
+        // userFeaturedOffer
         $this->assertNotNull($offer = $this->page->find('css', '.barclaycard-intro h1'));
         $this->assertEquals('Featured Offer', $offer->getText(), 'Wrong offer');
-        $this->logout();
-    }
 
-    /**
-     * @test
-     */
-    public function userAccountStatus()
-    {
-        $this->login('emilio@example.com', 'pass');
+        // userAccountStatus
         $this->assertNotNull($this->page->find('css', '#account-status'));
         $this->assertNotNull($header = $this->page->find('css', '#account-status h3'));
         $this->assertEquals('component.account_status.header', $header->getText(), 'Wrong header');
         $this->assertNotNull($accounts = $this->page->findAll('css', '#account-status .zebra-grid ul li'));
         $this->assertCount(9, $accounts, 'Wrong number of accounts');
-        $this->logout();
-    }
 
-    /**
-     * @test
-     */
-    public function userDidYouKnow()
-    {
-        $this->login('emilio@example.com', 'pass');
+        // userDidYouKnow
         $this->assertNotNull($this->page->find('css', '#did-you-know'));
         $this->assertNotNull($title = $this->page->find('css', '#did-you-know h3'));
         $this->assertEquals('component.didyouknow.title', $title->getText(), 'Wrong title');
@@ -74,29 +53,8 @@ class DashboardCase extends BaseTestCase
 //         $this->assertEquals('dyk.subheading.default', $header->getText(), 'Wrong header');
 //         $this->assertNotNull($text = $this->page->find('css', '#did-you-know .spaced-text'));
 //         $this->assertEquals('component.didyouknow.text', $text->getText(), 'Wrong text');
-        $this->logout();
-    }
 
-    /**
-     * @test
-     * @depends userDashboardScore
-     */
-    public function userChangeLead()
-    {
-        $this->setDefaultSession('selenium2');
-        $this->login('emilio@example.com', 'pass');
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('#simulation-container .overlay').length > 0"
-        );
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('#simulation-container .overlay').length == 0"
-        );
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('#simulation-container .scroller ul').children().length > 0"
-        );
+        // userChangeLead
         $this->assertNotNull($select = $this->page->find('css', '#lead-select-button'));
         $select->click();
         $this->session->wait(
@@ -121,7 +79,7 @@ class DashboardCase extends BaseTestCase
         );
         $this->session->wait(
             $this->timeout + 10000,
-            "jQuery('#simulation-container .scroller ul').children().length > 0"
+            "jQuery('.target-name span').length > 0"
         );
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));
         $this->assertEquals('BMW X5', $target->getText(), 'Wrong target');
@@ -153,12 +111,11 @@ class DashboardCase extends BaseTestCase
         $this->assertNotNull($score = $this->page->find('css', '.score-target'));
         $this->assertEquals(510, $score->getText(), 'Wrong score');
         $this->logout();
-        $this->setDefaultSession('goutte');
     }
 
     /**
      * @test
-     * @depends userDashboardScore
+     * @depends userDashboardElements
      */
     public function userIncentives()
     {
@@ -206,7 +163,7 @@ class DashboardCase extends BaseTestCase
     /**
      * Good, and our customer would visit the first page
      *
-     * @depends userDashboardScore
+     * @depends userDashboardElements
      * @test
      */
     public function getReportPrequalAndAutoSimulation()

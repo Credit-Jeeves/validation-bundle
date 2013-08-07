@@ -3,7 +3,7 @@
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
 
-require_once(dirname(__FILE__).'/../vendor/CreditJeevesSf1/config/ProjectConfiguration.class.php');
+require_once(dirname(__FILE__).'/../vendor/credit-jeeves/credit-jeeves/config/ProjectConfiguration.class.php');
 $configuration = ProjectConfiguration::getApplicationConfiguration(
     isset($application) ? $application : 'applicant',
     isset($environment) ? $environment : 'test_cli',
