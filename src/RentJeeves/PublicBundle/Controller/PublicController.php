@@ -9,6 +9,7 @@ use RentJeeves\PublicBundle\Form\InviteTenantType;
 use CreditJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Alert;
 use RentJeeves\PublicBundle\Form\TenantType;
+use CreditJeeves\DataBundle\Enum\UserType;
 
 class PublicController extends Controller
 {
@@ -86,7 +87,7 @@ class PublicController extends Controller
                 $em->flush();
 
                 $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
-                return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
+                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
             }
         }
         $view = $form->createView();
@@ -147,7 +148,7 @@ class PublicController extends Controller
                 $em->flush();
                 $Property->createContract($em, $tenant, $unitSearch);
                 $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
-                return $this->redirect($this->generateUrl('user_new_send', array('tenantId' =>$tenant->getId())));
+                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
             }
         }
 
@@ -181,27 +182,31 @@ class PublicController extends Controller
      */
     public function checkInviteAction($code)
     {
-        $tenant = $this->getDoctrine()->getRepository('DataBundle:Tenant')->findOneBy(array('invite_code' => $code));
+        $user = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' => $code));
 
-        if (empty($tenant)) {
+        if (empty($user)) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
 
         $em = $this->getDoctrine()->getManager();
-        $tenant->setInviteCode(null);
-        $tenant->setIsActive(true);
-
+        $user->setInviteCode(null);
+        $user->setIsActive(true);
+        $em->persist($user);
+        if ($user->getType() == UserType::LANDLORD) {
+            $em->flush();
+            return array(
+                'signinUrl' => $this->get('router')->generate('fos_user_security_login')
+            );
+        }
         $alert = new Alert();
         $alert->setMessage('rj.task.firstRent');
-        $alert->setUser($tenant);
-
+        $alert->setUser($user);
         $em->persist($alert);
-        $em->persist($tenant);
         $em->flush();
         
 
-        if ($tenant->getInvite()) {
-            $this->get('creditjeeves.mailer')->sendRjLandLordInvite($tenant->getInvite());
+        if ($user->getInvite()) {
+            $this->get('creditjeeves.mailer')->sendRjLandLordInvite($user->getInvite());
         }
 
         return array(

@@ -1,0 +1,13 @@
+#delete {
+    display: none;
+}
+form li, #errorForm {
+    color: red;
+}
+#search-result-map {
+    display: none;
+}
+.loader {
+    display: none;
+    text-align: center;
+}

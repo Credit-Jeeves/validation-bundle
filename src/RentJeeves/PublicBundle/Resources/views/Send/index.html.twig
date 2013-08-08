@@ -12,7 +12,7 @@
     <br />
     <br />
   {% else %}
-    <form action="{{ path('user_new_send', {"tenantId": tenantId }) }}" method="post">
+    <form action="{{ path('user_new_send', {"userId": userId }) }}" method="post">
           <h3 class="title">{{ 'verify.email'|trans }}</h4>
           <div class="box type1" style="padding-top: 0px;">
             <div class="col-box clearfix">
