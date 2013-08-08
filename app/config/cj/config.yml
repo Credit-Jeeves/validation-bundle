@@ -2,13 +2,13 @@ imports:
     - { resource: ../base/config.yml }
     - { resource: ../parameters.yml } # would be generated from parameters_SERVER.yml depends on SERVER
     - { resource: security.yml } #different for each application
+    - { resource: payum.yml }
     - { resource: ../base/fos.yml }
     - { resource: ../base/doctrine.yml }
     - { resource: ../base/jms.yml }
     - { resource: ../base/swiftmailer.yml }
     - { resource: ../base/assetic.yml }
     - { resource: ../base/email.yml }
-    - { resource: ../base/payum.yml }
     - { resource: ../base/sonata.yml }
     - { resource: ../base/framework.yml }
     - { resource: ../base/twig.yml }

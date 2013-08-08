@@ -19,7 +19,7 @@ web_profiler:
     intercept_redirects: false
 
 swiftmailer:
-    transport: swiftmailer.transport.file_transport
+    transport: file
 
 doctrine:
     dbal:

@@ -103,10 +103,6 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:66Ton99/PaypalProCheckoutNvp.git"
-        },
-        {
-            "type": "git",
             "url": "git@github.com:66Ton99/BadaBoom.git"
         },
         {
@@ -149,13 +145,13 @@
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",
         "credit-jeeves/simulation-bundle": "dev-master",
-        "symfony/symfony": "2.3.*",
         "doctrine/orm": ">=2.2.3,<2.4-dev",
         "doctrine/doctrine-bundle": "dev-master",
         "twig/extensions": "1.0.*",
         "kriswallsmith/assetic": "1.1.*",
+        "symfony/symfony": "2.3.*",
         "symfony/assetic-bundle": "2.3.*",
-        "symfony/swiftmailer-bundle": "2.3.*",
+        "symfony/swiftmailer-bundle": "v2.3.2",
         "symfony/monolog-bundle": "2.3.*",
         "symfony/icu": "v1.1.0",
         "sensio/distribution-bundle": "2.3.*",
@@ -165,9 +161,9 @@
         "jms/di-extra-bundle": "1.4.*",
         "friendsofsymfony/user-bundle": "v1.3.2",
         "friendsofsymfony/jsrouting-bundle": "~1.1",
-        "payum/payum": "0.4.*",
-        "payum/payum-bundle": "0.4.*",
-        "payum/authorize-net-aim": "0.4.*",
+        "payum/payum": "dev-master as 0.5.x-dev",
+        "payum/payum-bundle": "dev-master",
+        "payum/authorize-net-aim": "0.5.*",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",
         "fp/badaboom": "dev-ton as dev-not-approved",
@@ -215,9 +211,6 @@
     "extra": {
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
-        "symfony-assets-install": "symlink",
-        "branch-alias": {
-            "dev-master": "2.2-dev"
-        }
+        "symfony-assets-install": "symlink"
     }
 }
