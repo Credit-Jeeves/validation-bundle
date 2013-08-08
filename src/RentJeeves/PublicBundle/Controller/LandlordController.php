@@ -64,14 +64,12 @@ class LandlordController extends Controller
                     }
                 }
 
-                
                 $em->persist($address);
                 $em->persist($holding);
                 $em->persist($group);
                 $em->persist($landlord);
                 $em->flush();
-                var_dump($group->getId());
-                var_dump($landlord->getId());
+
                 $this->get('creditjeeves.mailer')->sendRjCheckEmail($landlord);
                 return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$landlord->getId())));
             }
