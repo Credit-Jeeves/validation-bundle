@@ -39,7 +39,7 @@ class PropertiesCase extends BaseTestCase
     {
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
-        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
 
         $this->assertNotNull($search = $this->page->find('css', '#search'));

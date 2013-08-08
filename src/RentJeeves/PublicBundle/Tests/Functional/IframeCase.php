@@ -165,9 +165,10 @@ class IframeCase extends BaseTestCase
         $inviteLandlord->click();
         
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout,
-                             "$('#rentjeeves_publicbundle_invitetenanttype_invite_first_name').length > 0"
-                            );
+        $this->session->wait(
+            $this->timeout,
+            "$('#rentjeeves_publicbundle_invitetenanttype_invite_first_name').length > 0"
+        );
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
     }
 }
