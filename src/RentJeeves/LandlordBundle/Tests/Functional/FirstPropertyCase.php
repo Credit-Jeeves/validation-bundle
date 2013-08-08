@@ -48,6 +48,7 @@ class FirtstPropertyCase extends BaseTestCase
         $this->assertNotNull($addUnit = $this->page->find('css', '#addProperty'));
         $addUnit->click();
         $this->session->wait($this->timeout, '$(".properties-table-block").length > 0');
+        $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->find('css', '.properties-table>tbody>tr'));
     }
