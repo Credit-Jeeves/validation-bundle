@@ -41,39 +41,43 @@
         </div>
       </header>
 
-      <section class="pay-box">
-        <div class="pay-content">
-          <h1>Pay your rent on time. Build your credit.</h1>
-          <div class="pay-credit clearfix">
-            <div class="col pay">
-              <i class="pie-el"> </i>
-              <div>
-                <h3>GET SOMETHING OUT OF IT!</h3>
-                <h4>Maintain good credit habits, with a little help from Rent Jeeves.</h4>
-                <p>
-                  Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product to potential tenants. More marketing text selling the product to  tenants.
-                </p>
+      {% block payBox %}
+        <section class="pay-box">
+          <div class="pay-content">
+            <h1>Pay your rent on time. Build your credit.</h1>
+            <div class="pay-credit clearfix">
+              <div class="col pay">
+                <i class="pie-el"> </i>
+                <div>
+                  <h3>GET SOMETHING OUT OF IT!</h3>
+                  <h4>Maintain good credit habits, with a little help from Rent Jeeves.</h4>
+                  <p>
+                    Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product to potential tenants. More marketing text selling the product to  tenants.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div class="col credit">              
-              <i class="pie-el"> </i>
-              <div>
-                <h3>SOOOO...</h3>
-                <h4>How much is this gonna cost?</h4>
-                <p>
-                  Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product.
-                </p>
+              <div class="col credit">              
+                <i class="pie-el"> </i>
+                <div>
+                  <h3>SOOOO...</h3>
+                  <h4>How much is this gonna cost?</h4>
+                  <p>
+                    Rent Jeeves lets you more marketing text selling the product to potential tenants. Rent Jeeves lets you more marketing text selling the product.
+                  </p>
+                </div>
               </div>
+              <div class="separator">|</div>
             </div>
-            <div class="separator">|</div>
           </div>
-        </div>
-      </section>
+        </section>
+      {% endblock %}
       <div class="content">
+          {% block pricingBenefitStatement %}
           <div class="pricing-benefit-statement clearfix">
                     <a href="#" title="Pricing Options">Pricing Options</a>
                     <strong>Pricing benefit statement here!</strong>
           </div>
+          {% endblock %}
           {% block content %}
           {% endblock %}
       </div>
