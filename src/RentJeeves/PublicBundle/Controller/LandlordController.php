@@ -54,6 +54,9 @@ class LandlordController extends Controller
                     $group->addGroupProperty($property);
                     if (!empty($units)) {
                         foreach ($units as $name) {
+                            if(empty($name)) {
+                                continue;
+                            }
                             $unit = new Unit();
                             $unit->setProperty($property);
                             $unit->setHolding($holding);

@@ -112,9 +112,8 @@
             </trans-unit>
             <trans-unit id="email.verifed.text1">
                 <source>email.verifed.text1</source>
-                <target>
-                        Thanks for verifying your email. A small step to make sure %br%
-                        we keep everything secure here at RentTrack.
+                <target><![CDATA[Thanks for verifying your email. A small step to make sure <br />
+                        we keep everything secure here at RentTrack.]]>
                 </target>
             </trans-unit>
             <trans-unit id="email.verifed.title">
@@ -380,6 +379,41 @@
             <trans-unit id="no.remove.property">
                 <source>no.remove.property</source>
                 <target>No, Cancel</target>
+            </trans-unit>
+            <trans-unit id="setup.your.rent">
+                <source>setup.your.rent</source>
+                <target>Set up your Rent Jeeves account.</target>
+            </trans-unit>
+            <trans-unit id="name">
+                <source>name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="landlord.register.text1">
+                <source>landlord.register.text1</source>
+                <target><![CDATA[
+                        <p>This information is used to help tenants find you in the RentTrack system.</p>
+                        <p> 
+                          You will be able to add additional properties and invite tenants to pay you directly through RentTrack after you have created your account.
+                        </p>]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="landlord.register.text2">
+                <source>landlord.register.text2</source>
+                <target>*A monthly fee of $9.95 will be debited from your payments (for up to 10 units per month). Additional units are $1 per month for ACH [?] fees. You will not be charged for fees associated with credit card payments – convenience fees are charged to the tenant.
+                </target>
+            </trans-unit>
+            <trans-unit id="landlord.register.terms">
+                <source>landlord.register.terms</source>
+                <target><![CDATA[I accept the <a href="%link%" type="Terms of Service">Terms of Service</a> and RentTrack fees*]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="landlord.register.text3">
+                <source>landlord.register.text3</source>
+                <target>We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.</target>
+            </trans-unit>
+            <trans-unit id="landlord.register.text4">
+                <source>landlord.register.text4</source>
+                <target>Tell us a bit about the property you’re renting.</target>
             </trans-unit>
         </body>
     </file>
