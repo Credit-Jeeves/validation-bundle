@@ -30,6 +30,7 @@ class FirtstPropertyCase extends BaseTestCase
         $this->load(true);
         $this->login('landlord6@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
+        $this->session->wait($this->timeout, "$('#property-search').length > 0");
         $address = "30 Rockefeller Plaza, New York City, NY 10112";
         $this->fillGoogleAddress('30 Rockefeller Plaza, New York City, NY 10112');
         $this->assertNotNull($numberOfUnit = $this->page->find('css', '#numberOfUnit'));
