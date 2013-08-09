@@ -5,6 +5,13 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('bundles/component/js/groups.js') }}"></script>
-    <script src="{{ asset('bundles/rjcomponent/js/properties.js') }}"></script>
+    {% javascripts '@ComponentBundle/Resources/public/js/groups.js'
+                   '@RjComponentBundle/Resources/public/js/properties.js'
+                   '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+                   
+     %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
+
+

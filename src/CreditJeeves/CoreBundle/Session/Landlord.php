@@ -4,6 +4,7 @@ namespace CreditJeeves\CoreBundle\Session;
 use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Service;
 use CreditJeeves\DataBundle\Entity\Landlord as UserEntity;
+use CreditJeeves\DataBundle\Entity\Group;
 
 /**
  * @Service("core.session.landlord")

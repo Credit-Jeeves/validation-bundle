@@ -10,12 +10,12 @@ if (function_exists('xdebug_disable')) {
 
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 require_once __DIR__.'/../app/AppKernel.php';
-require_once __DIR__.'/../app/AppCjKernel.php';
-require_once __DIR__.'/../app/AppCjTestKernel.php';
+require_once __DIR__.'/../app/AppRjKernel.php';
+require_once __DIR__.'/../app/AppRjTestKernel.php';
 
 \Symfony\Component\Debug\Debug::enable();
 
-$kernel = new AppCjTestKernel('test', true);
+$kernel = new AppRjTestKernel('test', true);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);

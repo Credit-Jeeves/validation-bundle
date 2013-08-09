@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\PublicBundle\Tests\Controller;
+namespace RentJeeves\CoreBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

@@ -4,34 +4,40 @@ namespace RentJeeves\PublicBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Enum\UserType;
 
 class SendController extends Controller
 {
     /**
-     * @Route("/new/send/{tenantId}", name="user_new_send")
+     * @Route("/new/send/{userId}", name="user_new_send")
      * @Template()
      *
      * @return array
      */
-    public function indexAction($tenantId)
+    public function indexAction($userId)
     {
         $em = $this->getDoctrine()->getManager();
-        $tenant = $em->getRepository('DataBundle:Tenant')->find($tenantId);
+        $user = $em->getRepository('DataBundle:User')->find($userId);
+        $landlordLetter = false;
 
-        if (empty($tenant)) {
+        if (empty($user)) {
             return $this->redirect($this->generateUrl("iframe"));
         }
 
         $request = $this->get('request');
-        $active = (is_null($tenant->getInviteCode())) ? true : false;
+        $active = (is_null($user->getInviteCode())) ? true : false;
 
-        if ($request->getMethod() == 'POST' && $tenant->getInviteCode()) {
-            $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
+        if ($request->getMethod() == 'POST' && $user->getInviteCode()) {
+            $this->get('creditjeeves.mailer')->sendRjCheckEmail($user);
         }
-        $inviteLandlord = $tenant->getInvite();
-        $landlordLetter = (empty($inviteLandlord)) ? false : true;
+
+        if ($user->getType() != UserType::LANDLORD) {
+            $inviteLandlord = $user->getInvite();
+            $landlordLetter = (empty($inviteLandlord)) ? false : true;
+        }
+        
         return array(
-            'tenantId'       => $tenantId,
+            'userId'         => $userId,
             'active'         => $active,
             'landlordLetter' => $landlordLetter,
         );

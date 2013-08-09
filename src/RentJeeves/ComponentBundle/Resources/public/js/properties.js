@@ -1,8 +1,20 @@
+function markAsNotValid()
+{
+  $('#saveProperty').addClass('grey');
+  $('#addUnitToNewProperty').addClass('grey');
+}
+
+function clearError()
+{
+  $('#saveProperty').removeClass('grey');
+  $('#addUnitToNewProperty').removeClass('grey');
+}
+
 function Properties() {
   var limit = 10;
   var current = 1;
   var self = this;
-  this.processProperty = ko.observable(false);
+  this.processProperty = ko.observable(true);
   this.aProperties = ko.observableArray([]);
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
@@ -11,25 +23,24 @@ function Properties() {
   this.isSortAsc = ko.observable(true);
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("");
-
+  this.last = ko.observable('Last');
   this.sortFunction = function(data, event) {
      field = event.target.id;
+
      if(field.length == 0) {
         return;
      }
-     $('.sort').each(function() {
-      $(this).show();
-      $('#'+self.sortColumn()).find('.sortUp').removeClass('sortUpOnly');
-     });
      self.sortColumn(field);
-     if(self.isSortAsc() == true) {
-        self.isSortAsc(false);
-        $('#'+self.sortColumn()).find('.sortUp').hide();
+     $('.sort-dn').attr('class', 'sort');
+     $('.sort-up').attr('class', 'sort');
+     if(self.isSortAsc() === false) {
+      self.isSortAsc(true);
+      $('#'.field).attr('class', 'sort-dn');
      } else {
-        self.isSortAsc(true);
-        $('#'+self.sortColumn()).find('.sortDown').hide();
-        $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
+      self.isSortAsc(false);
+      $('#'.field).attr('class', 'sort-up');
      }
+     
      self.current(1);
      self.ajaxAction();
   };
@@ -52,17 +63,20 @@ function Properties() {
       success: function(response) {
         self.aProperties([]);
         self.aProperties(response.properties);
+        if (self.aProperties().length <= 0 && self.searchText().length > 0) {
+          return location.href = Routing.generate('landlord_property_new');
+        }
         self.total(response.total);
         self.pages(response.pagination);
         self.processProperty(false);
+        $('#all').html(self.total());
         if(self.sortColumn().length == 0) {
           return;
         }
-        if(self.isSortAsc() == true) {
-          $('#'+self.sortColumn()).find('.sortUp').addClass('sortUpOnly');
-          $('#'+self.sortColumn()).find('.sortDown').hide();
+        if(self.isSortAsc()) {
+          $('#'+self.sortColumn()).attr('class', 'sort-dn');
         } else {
-          $('#'+self.sortColumn()).find('.sortUp').hide();
+          $('#'+self.sortColumn()).attr('class', 'sort-up');
         }
       }
     });
@@ -93,9 +107,11 @@ function Units() {
   this.property = ko.observable(0);
   this.show = ko.observable(false);
   this.name = ko.observable();
-  
+  this.process = ko.observable(true);
   this.ajaxAction = function(nPropertyId) {
+    $('#edit-property-popup').dialog('open');
     self.property(nPropertyId);
+    self.process(true);
     $.ajax({
       url: Routing.generate('landlord_units_list'),
       type: 'POST',
@@ -106,6 +122,7 @@ function Units() {
         self.aUnits(response.units);
         self.total(response.units.length);
         self.show(true);
+        self.process(false);
       }
     });
   };
@@ -125,6 +142,7 @@ function Units() {
     self.total(count);
   };
   this.saveUnits = function() {
+    $('#edit-property-popup').dialog('close');
     $.ajax({
       url: Routing.generate('landlord_units_save'),
       type: 'POST',
@@ -141,21 +159,23 @@ function Units() {
       self.aUnits.remove(unit);
     }
   };
+  this.deletePropertyConfirm = function()
+  {
+    $('#edit-property-popup').dialog('close');
+    removeProperty.show();
+  }
+
   this.deleteProperty = function() {
-    if (confirm('Are you sure?')) {
-      if (confirm('Are you really sure?')) {
-        $.ajax({
-          url: Routing.generate('landlord_property_delete'),
-          type: 'POST',
-          dataType: 'json',
-          data: {'property_id': self.property()},
-          success: function(response) {
-            self.clearUnits();
-            PropertiesViewModel.ajaxAction();
-          }
-        });
+    $.ajax({
+      url: Routing.generate('landlord_property_delete'),
+      type: 'POST',
+      dataType: 'json',
+      data: {'property_id': self.property()},
+      success: function(response) {
+        self.clearUnits();
+        PropertiesViewModel.ajaxAction();
       }
-    }
+    });
   };
 }
 
@@ -167,8 +187,8 @@ function Search() {
   var self = this;
 
   this.searchFunction = function() {
-    console.info('hello from search');
     var searchCollum = $('#searchFilterSelect').linkselect('val');
+
     if(typeof searchCollum != 'string') {
        searchCollum = '';
     }
@@ -192,16 +212,227 @@ function Search() {
   }
 }
 
+function addProperties()
+{
+  this.property = ko.observable("");
+  this.aUnits = ko.observableArray([]);
+  this.add = ko.observable(1);
+  this.autocomplete = ko.observable("");
+
+  var self = this;
+  this.clearUnits = function() {
+    self.aUnits([]);
+    self.add(1);
+  };
+
+  this.addUnits = function() {
+    for(var i=0; i < self.add(); i++) {
+      self.aUnits.push({'name': '', 'id': ''});
+    }
+  };
+
+  this.saveUnits = function(propertyId) {
+    $.ajax({
+      url: Routing.generate('landlord_units_save'),
+      type: 'POST',
+      dataType: 'json',
+      data: {'units': self.aUnits(), 'property_id': propertyId },
+      success: function(response) {
+        self.clearUnits();
+        self.property().ajaxAction();
+        $('#property-search').val(' ');
+        markAsNotValid();
+      }
+    });
+  };
+
+  this.saveProperty = function() {
+    if($('#saveProperty').hasClass("grey")) {
+      return;
+    }
+
+    var place = self.autocomplete().getPlace();
+    var data = {'address': place.address_components, 'geometry':place.geometry};
+
+    self.property().processProperty(true);
+    $('#add-property-popup').dialog('close');
+
+    jQuery.ajax({
+        url: Routing.generate('landlord_property_add'),
+        type: 'POST',
+        dataType: 'json',
+        data: {'data': JSON.stringify(data, null)},
+        error: function(jqXHR, errorThrown, textStatus) {;
+        },
+        success: function(data, textStatus, jqXHR) {
+            var propertyId = data.property.id
+            if(propertyId) {
+                return self.saveUnits(propertyId);
+            }
+
+            alert('Something wrong, we can\'t save property');
+        }
+    });
+  };
+
+  this.removeUnit = function(unit) {
+    if (confirm('Are you sure?')) {
+      self.aUnits.remove(unit);
+    }
+  };
+}
+
+function removeProperty()
+{
+  var self = this;
+  this.aUnits = ko.observableArray([]);
+  this.name = ko.observable('gg');
+  this.countUnit = ko.observable('333');
+  this.show = function(){
+    self.aUnits([]);
+    $('#remove-property-popup').dialog('open');
+    self.aUnits(UnitsViewModel.aUnits());
+    self.name(UnitsViewModel.name());
+    self.countUnit(UnitsViewModel.aUnits().length);
+  }
+
+  this.deleteProperty = function()
+  {
+    $('#remove-property-popup').dialog('close');
+    UnitsViewModel.deleteProperty();
+  }
+
+  this.cancel = function()
+  {
+    $('#remove-property-popup').dialog('close');
+    $('#edit-property-popup').dialog('open');
+  }
+}
+
 var PropertiesViewModel = new Properties();
 var UnitsViewModel = new Units();
 var search = new Search();
+var addProperties = new addProperties();
+var removeProperty = new removeProperty();
 search.property(PropertiesViewModel);
+addProperties.property(PropertiesViewModel)
 
 $(document).ready(function(){
-  ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
-  PropertiesViewModel.ajaxAction();
-  ko.applyBindings(UnitsViewModel, $('#units-block').get(0));
-  ko.applyBindings(search, $('#searchContent').get(0));
-  $('#searchFilterSelect').linkselect("destroy");
-  $('#searchFilterSelect').linkselect();
+
+    var ERROR = 'notfound';
+    $('#add-property-popup').dialog({ 
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width:'520px'
+    });
+    $('#remove-property-popup').dialog({ 
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width:'520px'
+    });
+    $('#edit-property-popup').dialog({ 
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width:'520px'
+    });
+    $('#delete').click(function(){
+        $('#searsh-field').val(' ');
+        markAsNotValid();
+        $(this).hide();
+        return false;
+    });
+
+    $('#property-search').change(function(){
+      $(this).addClass('notfound');
+      markAsNotValid();
+      if($(this).val() != '') {
+        $('#delete').show();
+      } else {
+        $('#delete').hide();
+      }
+    });
+
+    function initialize() {
+        var lat = 0.0;
+        var lng = 0.0;
+
+        var mapOptions = {
+            center: new google.maps.LatLng(lat, lng),
+            zoom: 15,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(
+            document.getElementById('search-result-map'),
+            mapOptions
+        );
+        var input = (document.getElementById('property-search'));
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({
+                map: map
+        });
+
+        function validateAddress()
+        {
+            clearError();
+            if($('#property-search').val() != '') {
+                $('#delete').show();
+            } else {
+                $('#delete').hide();
+            }
+            infowindow.close();
+            marker.setVisible(false);
+            input.className = '';
+            
+            markAsNotValid();
+
+            var place = autocomplete.getPlace();
+            //Inform the user that the place was not found and return.
+            if (!place.geometry) {
+                input.className = ERROR;
+            }
+
+            if (ERROR == $('#property-search').attr('class')) {
+                return showError('Such address doesn\'t exist!');
+            }
+
+            if ('' == $('#property-search').val()) {
+                return showError('Property Address empty');
+            }
+
+            if (typeof place.geometry == 'undefined') {
+                return showError('Such address doesn\'t exist!');
+            }
+
+            clearError();
+        }
+        
+
+        google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
+        addProperties.autocomplete(autocomplete);
+    }
+
+
+
+    ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
+    PropertiesViewModel.ajaxAction();
+    ko.applyBindings(search, $('#searchContent').get(0));
+    ko.applyBindings(UnitsViewModel, $('#edit-property-popup').get(0));
+    ko.applyBindings(addProperties, $('#add-property-popup').get(0));
+    ko.applyBindings(removeProperty, $('#remove-property-popup').get(0));
+    $('#searchFilterSelect').linkselect("destroy");
+    $('#searchFilterSelect').linkselect();
+
+    $('.property-button-add').click(function(){
+      $('#add-property-popup').dialog('open');
+      return false;
+    });
+    
+
+    google.maps.event.addDomListener(window, 'load', initialize);
+
 });

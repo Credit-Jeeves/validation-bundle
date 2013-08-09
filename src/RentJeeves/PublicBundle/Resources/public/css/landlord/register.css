@@ -1,0 +1,19 @@
+#delete {
+    display: none;
+}
+form li, #errorForm {
+    color: red;
+}
+#search-result-map {
+    display: none;
+}
+.loader {
+    display: none;
+    text-align: center;
+}
+.wrapper .pay-box {
+    background:#000 url(/bundles/rjpublic/images/bg-internal2.jpg) 50% -55px no-repeat;
+}
+.wrapper .pay-content {
+    height: 312px;
+}

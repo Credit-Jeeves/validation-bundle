@@ -11,6 +11,8 @@ abstract class BaseTestCase extends Base
 
     const APP = 'AppRj';
 
+    protected $envPath = '/rj_test.php/';
+
     public function load($reload = false)
     {
         if (self::$isFixturesLoaded && !$reload) {
