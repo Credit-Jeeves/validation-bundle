@@ -22,10 +22,12 @@ class Operation extends Base
     {
         if (is_object($orders)) {
             $this->addOrder($orders);
+            $orders->addOperation($this);
         }
 
         foreach ($orders as $order) {
             $this->addOrder($order);
+            $order->addOperation($this);
         }
 
         return $this;
