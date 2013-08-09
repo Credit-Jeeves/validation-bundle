@@ -12,14 +12,16 @@ $(document).ready(function(){
 
     function markAsNotValid()
     {
-        $('#addUnit').addClass('greyButton');
-        $('#addProperty').addClass('greyButton');
+        $('#addUnit').addClass('grey');
+        $('#addUnit').addClass('disabled');
+        $('#addProperty').addClass('grey');
+        $('#addProperty').addClass('disabled');
     }
 
     var ERROR = 'notfound';
 
     $('#addUnit').click(function(){
-        if($(this).hasClass('greyButton')) {
+        if($(this).hasClass('grey')) {
             return false;
         }
 
@@ -94,12 +96,13 @@ $(document).ready(function(){
                 return showError('Such address doesn\'t exist!');
             }
 
-            $('#addUnit').removeClass('greyButton');
-            $('#addProperty').removeClass('greyButton');
+            $('#addUnit').removeClass('grey');
+            $('#addUnit').removeClass('disabled');
+            $('#addProperty').removeClass('grey');
+            $('#addProperty').removeClass('disabled');
         }
         
         $('#property-search').change(function(){
-          console.info('he');
           $(this).addClass('notfound');
           markAsNotValid();
           if($(this).val() != '') {
@@ -164,7 +167,7 @@ $(document).ready(function(){
         }
 
         $('#addProperty').click(function(){
-            if($(this).hasClass('greyButton')) {
+            if($(this).hasClass('grey')) {
                 return false;
             }
             $('.loader').parent().find('span').hide();

@@ -3,12 +3,14 @@
 }
 
 .border {
-    border: 3px #A3CEF7 solid;
-    box-shadow: 0 0 2px 2px #A3CEF7;
+    border: 3px #BFBFBF solid;
+    box-shadow: 0 0 2px 2px #BFBFBF;
 }
 
 .property-button-add {
     float: right;
+    margin-top: -4px;
+    margin-right: -12px;
 }
 
 table {
@@ -58,7 +60,7 @@ table.properties-table th {
    width: 550px;
    position: absolute;
    left: 180px;
-   
+   z-index: 1;
 }
 
 .units-background {
@@ -73,9 +75,8 @@ table.properties-table th {
 
 .units-item {
     float: left;
-    width: 145px;
-    margin: 0 15px 15px;
-    border: 1px solid #c8c8c8;
+    width: 50px;
+    margin: 0 5px 0px;
     padding: 1px;
 }
 
@@ -114,10 +115,6 @@ table.properties-table th {
     margin-top: 1px;
 }
 
-.units-add input[type="text"] {
-    margin-top: 1px;
-    height: 20px;
-}
 
 .actions-status {
     width: 105px;
@@ -195,12 +192,11 @@ table.properties-table th {
     margin: 10px 0;
 }
 .sort {
-    width: 12px;
-    margin-top: -7px;
+    margin-top: -9px;
 }
 .processLoading {
     position: absolute;
-    margin-top: 85px;
+    margin-top: 55px;
     margin-left: 400px;
 }
 .sortField {
@@ -211,7 +207,7 @@ table.properties-table th {
 }
 
 .sortUp {
-    margin-left: -16px;
+    margin-left: -14px;
 }
 .sortUpOnly {
     margin-left: 1px;
@@ -224,8 +220,8 @@ table.properties-table th {
 }
 .filterBy>label {
     float: left;
-    margin-top: 10px;
-    font-size: 18px;
+    margin-top: 7px;
+    font-size: 16px;
     margin-right: 10px;
 }
 .searchBy>input {
@@ -233,13 +229,15 @@ table.properties-table th {
 }
 
 .containerSearch {
-    float: right;
     position: absolute;
-    margin-left: 364px;
+    margin-left: 453px;
+    margin-top: 3px;
 }
 
 #searchFilterSelect_link {
-    width: 150px;
+    width: 119px;
+    height: 23px;
+    font-size: 13px;
 }
 
 #delete {
@@ -253,4 +251,221 @@ table.properties-table th {
     -moz-border-radius: 3px;
     border-radius: 3px;
     background: #bdbdbd url(/bundles/rjpublic/images/sprite-icons.png) 0 -50px no-repeat;
+}
+#search {
+    height: 16px;
+}
+
+.filterBy .linkselect-link-icon {
+    background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
+    height: 22px;
+    width: 19px;
+    margin-top: 1px;
+}
+.button.small, button.small {
+    width: auto;
+    padding-left: 0px;
+}
+.blue>span{
+    background: #16B3ED;
+    background: -moz-linear-gradient(top, #16B3ED 0%, #9ECBF7 100%);
+    background: -webkit-linear-gradient(top, #16B3ED 0%,#9ECBF7 100%);
+    background: -o-linear-gradient(top, #16B3ED 0%,#9ECBF7 100%);
+    background: -ms-linear-gradient(top, #16B3ED 0%,#9ECBF7 100%);
+    background: linear-gradient(to bottom, #16B3ED 0%,#9ECBF7 100%);
+    -pie-background: linear-gradient(to bottom, #16B3ED 0%,#9ECBF7 100%);
+}
+.property-edit {
+    cursor: pointer;
+    text-align: center;
+}
+
+.address {
+    padding-top: 20px;
+    color: #676767;
+}
+
+.address>h4, .units-header>h4{
+    color: #676767;
+    font-weight: normal;
+}
+
+.addressName {
+    float: left;
+    margin-top: 20px;
+    margin-left: 10px;
+    font-size: 14px;
+}
+.addressNameText {
+    margin-left: 30px;
+}
+.units-header {
+    clear: both;
+    margin-top: 45px;
+}
+
+.textNumber {
+    width: 74px;
+    display: block;
+    height: 39px;
+    float: left;
+}
+
+.units-add, .textNumber {
+    font-size: 14px;
+    line-height: 20px;
+}
+.numberOfUnit {
+    float: left;
+    margin-left: 20px;
+    margin-top: 9px;
+    font-weight: bold;
+}
+.marginLeftSmall {
+    margin-left: 10px;
+}
+.paddingTopSmall {
+    padding-top: 10px;
+}
+.paddingTopVerySmall {
+    padding-top: 10px;
+}
+.unit-add-btn {
+    margin-left: 5px;
+}
+.unit-input {
+    width: 34px !important;
+    height: 16px !important;
+    margin-left: 20px !important;
+}
+.unit-add-btn {
+    margin-top: 0px;
+    cursor: pointer;
+}
+
+.itemsUnitContainer {
+    width: 440px;
+    min-height: 50px;
+}
+.textUnitEdit {
+    font-size: 14px;
+    margin-left: 10px;
+    display: block;
+    width: 64px;
+    line-height: 18px;
+}
+
+.unit-input {
+    margin-left: 0px !important;
+}
+.unit-delete {
+    background: #bdbdbd url(/bundles/rjpublic/images/sprite-icons.png) 0 -50px no-repeat;
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    position: absolute;
+    margin-left: 36px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+.units-footer{
+    padding-left: 110px;
+    background-color: #E1E1E1;
+    width: 440px;
+    height: 26px;
+    padding: 10px;
+    text-align: center;
+    margin-left: -20px;
+    position: absolute;
+    border-radius: 0px 0px 20px 20px;
+    margin-top: -26px;
+    padding-left: 140px;
+}
+
+.footerPopup{
+    height: 0px;
+    padding-top: 75px;
+}
+
+.removeButton {
+    border-left: 1px solid grey;
+    color: red;
+    padding-left: 7px;
+    font-size: 13px;
+    height: 19px;
+    padding-top: 6px;
+    cursor: pointer;
+}
+#search-result-map {
+    display: none;
+}
+
+#delete {
+    float: right;
+    width: 16px;
+    height: 16px;
+    margin: 5px 5px 0 -20px;
+    overflow: hidden;
+    text-indent: -999px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #bdbdbd url(/bundles/rjpublic/images/sprite-icons.png) 0 -50px no-repeat;
+    z-index: 1;
+    display: none;
+}
+
+.loader {
+    display: none;
+}
+#delete {
+    display: none;
+}
+.fiter-box button  {
+    margin-left: 0px;
+}
+.buttonFixSearch {
+    padding-left: 5px !important;
+    margin-top: -5px !important;
+    margin-right: 0px !important;
+}
+
+.buttonFixPopupAddUnit {
+    padding-left: 0px !important;
+    margin-top: -5px !important;
+    margin-right: 0px !important;
+}
+
+.units-item .unit-input {
+    width: 36px !important;
+    margin-left: 6px !important;
+}
+
+.units-item .unit-input-edit {
+    width: 27px !important;
+}
+
+.units-item .unit-delete {
+     margin-left: 42px;
+}
+
+.form-row {
+    width: 380px;
+}
+.properties-table-block {
+    display: none;
+}
+
+.buttonFix {
+    border: none;
+    margin-left: 0px !important;
+    padding-left: 0px !important;
+}
+
+#inputEditAddUnit {
+    width: 20px;
+}
+
+#numberOfUnit {
+    width: 20px !important;
 }

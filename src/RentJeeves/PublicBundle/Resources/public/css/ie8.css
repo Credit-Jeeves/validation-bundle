@@ -28,3 +28,7 @@
 .search-result-text li i {  
   filter: dropshadow(color=#b0481b, offx=0, offy=1);
 }
+
+.pie-el {
+  position:relative;
+}

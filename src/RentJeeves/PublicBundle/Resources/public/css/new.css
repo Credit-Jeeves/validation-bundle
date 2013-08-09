@@ -1,0 +1,11 @@
+#checkboxterms  {
+    margin-left: 0px !important;
+}
+#checkboxterms a {
+    display: inline;
+    float: none;
+    clear: both;
+    position: absolute;
+    margin-top: -18px;
+    margin-left: 86px;
+}

@@ -53,8 +53,8 @@ class Property extends Base
     {
         if (isset($data['geometry']['location'])) {
             $location = $data['geometry']['location'];
-            $property['jb'] = $location['jb'];
-            $property['kb'] = $location['kb'];
+            $property['jb'] = $location['lb'];
+            $property['kb'] = $location['mb'];
         }
         return $property;
     }

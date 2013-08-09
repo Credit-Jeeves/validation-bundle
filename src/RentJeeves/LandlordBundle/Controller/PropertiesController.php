@@ -26,10 +26,9 @@ class PropertiesController extends Controller
         }
 
         $groups = $this->getGroups();
-
         return array(
-            'nGroups' => $groups->count(),
-            'Group' => $this->getCurrentGroup(),
+            'nGroups'   => $groups->count(),
+            'Group'     => $this->get('core.session.landlord')->getGroup(),
         );
     }
 }

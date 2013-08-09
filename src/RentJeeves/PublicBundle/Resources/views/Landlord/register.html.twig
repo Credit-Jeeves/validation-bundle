@@ -1,0 +1,223 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+{% block content %}
+<section class="form-content">
+    <!-- novalidate -->
+<form action="{{ path('landlord_register') }}" method="post" {{ form_enctype(form) }} id="landlordRegister" >
+    <div class="box type1">
+      <h3 class="clearfix">
+        <span>Account information</span>
+        <small><b>*</b>Required</small>
+      </h3>
+      <div class="col-box clearfix">
+        <div class="col">
+          <h4>Set up your Rent Jeeves account.</h4>
+          <div class="form-row clearfix">
+            <label>Name<b>*</b></label>
+            <div class="fields-box">
+              {{ form_widget(form.landlord.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first"} }) }}
+              {{ form_widget(form.landlord.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+              {{ form_errors(form.landlord.first_name) }}
+              {{ form_errors(form.landlord.last_name) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>Address<b>*</b></label>
+            <div class="fields-box">
+              {{ form_widget(form.address.street, { 'attr': {'class': 'street-width', 'placeholder':"Street"} }) }}
+              {{ form_widget(form.address.unit, { 'attr': {'class': 'zc-width', 'placeholder':"Unit"} }) }}
+              {{ form_errors(form.address.street) }}
+              {{ form_errors(form.address.unit) }}
+            </div>
+            <div class="fields-box">
+              {{ form_widget(form.address.city, { 'attr': {'class': 'city-width', 'placeholder':"City"} }) }}
+              {{ form_widget(form.address.area, { 'attr': {'class': 'two-chars-width custom-select'} }) }}
+              {{ form_widget(form.address.zip, { 'attr': {'class': 'zc-width', 'placeholder':"Zip Code"} }) }}
+              {{ form_errors(form.address.city) }}
+              {{ form_errors(form.address.area) }}
+              {{ form_errors(form.address.zip) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.landlord.phone) }}
+            <div class="fields-box">
+                {{ form_widget(form.landlord.phone, { 'attr': {'placeholder':"phone"} }) }}
+                {{ form_errors(form.landlord.phone) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.landlord.email) }}
+            <div class="fields-box">
+              {{ form_widget(form.landlord.email, { 'attr': {'placeholder':"example@mail.com"} }) }}
+              {{ form_errors(form.landlord.email) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.landlord.password.Password) }}
+            <div class="fields-box">
+              {{ form_widget(form.landlord.password.Password) }}
+              {{ form_errors(form.landlord.password.Password) }}
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            {{ form_label(form.landlord.password.Verify_Password) }}
+            <div class="fields-box">
+              {{ form_widget(form.landlord.password.Verify_Password) }}
+            </div>
+          </div>
+          
+          <div class="tooltip-box with-header pie-el">
+            <p>
+              We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box type1">
+
+      <h3 class="clearfix">
+        <span>Property information</span>
+      </h3>
+      
+      <div class="col-box clearfix">
+        <div class="col">
+          
+          <h4>Tell us a bit about the property you’re renting.</h4>
+          
+          <div class="search-box pie-el">
+            <label for="searsh-field">Find your rental address</label>
+            <div class="clearfix">
+              <input type="text" value="{{ propertyName }}" id="property-search" name="searsh-field" placeholder="Your rental address">
+              <a href="#" id="delete" class="pie-el">x</a>
+              <button type="submit" id="search-submit" class="pie-el">Search</button>
+            </div>
+            <div id="errorForm"> </div>
+            <div id="search-result-map"></div>
+          </div>
+          <div class="form-row clearfix">
+            <label>Number of Units<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" placeholder="" id="numberOfUnit" class="zc-width">
+              <button type="button" id="addUnit" class="button small grey">
+                <span>Add</span>
+              </button>
+            </div>
+          </div>
+          <div class="form-row clearfix full show">
+            <label>Name of Units<b>*</b></label>
+            <div id="unit-fields-list" class="fields-box unitsListNames">
+                {% for unitField in form.units %}
+                    {{ form_errors(unitField) }}
+                    {{ form_widget(unitField) }}
+                {% endfor %}
+            </div>
+          </div>
+          <input type="hidden" value="{{ form.units | length }}" id="unitCount">
+          <div class="tooltip-box with-header pie-el">
+            <p>This information is used to help tenants find you in the RentTrack system.</p>
+            <p> 
+              You will be able to add additional properties and invite tenants to pay you directly through RentTrack after you have created your account.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accept-terms-box pie-el">
+      <div class="form-row checkboxes clearfix">
+        <label class="checkbox">
+          {{ form_widget(form.landlord.tos) }}
+          <i> </i>
+          <span class="big">I accept the <a href="#" type="Terms of Service">Terms of Service</a> and RentTrack fees*</span>
+        </label>
+      </div>
+      {{ form_errors(form.landlord.tos) }}
+      <p>
+        *A monthly fee of $9.95 will be debited from your payments (for up to 10 units per month). Additional units are $1 per month for ACH [?] fees. You will not be charged for fees associated with credit card payments – convenience fees are charged to the tenant.
+      </p>
+    </div>
+    {{ form_widget(form.property, { 'attr': {'class': 'propertyId'}}) }}
+    <div class="buttons-box clearfix">
+      <div class="buttons left">
+        <button id="submitForm" type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>
+        <img src="/bundles/rjpublic/images/ajax-loader.gif" class="loader">
+      </div>
+    </div>
+    <div style="display:none;">
+        {{ form_rest(form) }}
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
+    {% javascripts  '@RjPublicBundle/Resources/public/js/landlord/register.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+{% block stylesheets %}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/landlord/register.css'
+    %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+
+{% block payBox %}
+<section class="pay-box">
+    <div class="pay-content">
+      <h1>Why do landlords use RentTrack?</h1>
+      <div class="pay-credit clearfix">
+        <div class="col one-third quickly">
+          <i class="pie-el"> </i>
+          <div>
+            <h3>GET PAID<br>QUICKLY</h3>
+            <h4>Tired of chasing down rent?</h4>
+            <p>
+              RentTrack lets you know the moment your tenants have paid. Funds typically are in your account within 24-48 hours, without you having to go to the bank.
+            </p>
+          </div>
+        </div>
+        <div class="col one-third gain">              
+          <i class="pie-el"> </i>
+          <div>
+            <h3>GAIN RELIABLE<br>TENANTS</h3>
+            <h4>Looking for responsible tenants?</h4>
+            <p>
+              Through RentTrack, your tenants have an incentive to pay on time. If they opt-in, we report tenant payment history to the credit bureau Experian.
+            </p>
+          </div>
+        </div>
+        <div class="col one-third collect">              
+          <i class="pie-el"> </i>
+          <div>
+            <h3>COLLECT PAYMENTS<br>EFFORTLESSLY</h3>
+            <h4>Overwhelmed with units?</h4>
+            <p>
+              RentTrack works for landlords with 1–1000’s of properties. You can manage thousands of payments without the hassle of paper checks, insufficient funds or lost mail.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="quote-box">
+        <q>
+          <span>RentTrack reduced the time I spent chasing down my tenants - it’s invaluable!</span>
+        </q>
+        <p>- Rick S., Los Angeles, CA -</p>
+      </div>
+    </div>
+</section>
+{% endblock %}
+{% block pricingBenefitStatement %}
+ <div class="pricing-benefit-statement clearfix">
+    <a href="#" title="Pricing Options">Pricing Options</a>
+    <strong>Try it and get your first rent payment for FREE!</strong>
+  </div>
+{% endblock %}

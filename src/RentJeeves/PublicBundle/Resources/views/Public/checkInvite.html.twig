@@ -4,20 +4,20 @@
 <div class="form-content">
   <br />
   <br />
-  <h3 class="title">Email Verified</h3>
+  <h3 class="title">{{ 'email.verifed.title'|trans }}</h3>
   <div class="box type1" style="padding-top: 0px;">
     <div class="col-box clearfix">
       <div class="col">
-        <h4>Thanks for verifying your email. A small step to make sure<br />
-          we keep everything secure here at RentTrack.
+        <h4>
+          {{ 'email.verifed.text1'|trans({'%br%': '<br />'}|raw )}}
         </h4>
-        <h4>You may now login.</h4>
+        <h4>{{ 'email.verifed.login'|trans }}</h4>
       </div>
     </div>
   </div>
   <div class="buttons-box clearfix">
     <div class="buttons left">
-      <a href="{{ signinUrl }}" class="button"><span>Login</span></a>
+      <a href="{{ signinUrl }}" id="loginButton" class="button"><span>{{ 'login'|trans }}</span></a>
     </div>
   </div>
 </div>

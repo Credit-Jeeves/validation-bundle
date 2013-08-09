@@ -47,7 +47,7 @@ $(document).ready(function(){
     function search(place, map) 
     {
 
-        var data = {'address': place.address_components, 'geometry':place.geometry};
+        var data = {'address': place.address_components, 'geometry':place.geometry, 'addGroup': 0};
 
         jQuery.ajax({
           url: Routing.generate('landlord_property_add'),

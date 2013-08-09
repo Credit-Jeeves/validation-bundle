@@ -1,121 +1,225 @@
-    <div id="units-block" class="units-wrapper" style="visibility: hidden;" data-bind="style: { visibility: show() ? 'visible' : 'hidden' }">
-        <div class="units-background"></div>
-        <div  class="units-block border">
-            <h2 data-bind="text: name"></h2>
-            <div class="units-header">
-                <div class="floatleft units-total">
-                    <span>Total Units:</span><span data-bind="text: total"></span>
-                </div>
-                <div class="floatright units-add">
-                    <div class="btn green floatright unit-add-btn" data-bind="click: addUnits">Add</div>
-                    <div class="floatright"><input type="text" class="unit-input" data-bind="value: add"></div>
-                    <div class="floatright unit-add-text">Add Units:</div>
+<div class="landrord-box">
+  <div class="title-box clearfix">
+    <h2>{{ 'all'|trans }} (<span id="all"></span>)</h2>
+    <div id="searchContent" class="fiter-box filterBy">
+      <label>{{ 'search.by'|trans }}</label>
+      <select id="searchFilterSelect" class="linkselect">
+              <option value="street">{{ 'address'|trans }}</option>
+              <option value="city">{{ 'city'|trans }}</option>
+              <option value="zip">{{ 'zip'|trans }}</option>
+              <option value="area">{{ 'state'|trans }}</option>
+              <option value="country">{{ 'country'|trans }}</option>
+      </select>
+      <div class="finder-box">
+        <input type="text" id="search" name="searsh-field" data-bind="value: searchText" value="">
+        <a style="display:block;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }"id="delete" class="pie-el">x</a>
+        <button type="submit" id="searchButton" data-bind="click: searchFunction" class="pie-el">{{ 'search'|trans }}</button>
+        <ul class="list-search-result pie-el">
+        </ul>
+      </div>
+      <button class="button small buttonFixSearch property-button-add"><span>{{ 'add.property'|trans }}</span></button>
+    </div>
+  </div>
+  <div class="content-box" id="properties-block">
+    <img src="/bundles/core/images/img_loading.gif" id="processLoading" class="processLoading" data-bind="style: { display: processProperty() ? 'block' : 'none' }">
+    <div class="properties-table-block table-wrap" data-bind="style: { display: processProperty() ? 'none' : 'block' }">
+      <div class="table-margin">
+        <table class="properties-table zebra-grid">
+          <thead>
+            <tr class="properties-th" >
+              <th class="pie-el" ><span>Address<i> </i></span></th>
+              <th class="pie-el" ><span id='zip' class="sort" data-bind="click: sortFunction">ZIP<i> </i></span></th>
+              <th class="pie-el" ><span id='city' class="sort" data-bind="click: sortFunction">City<i> </i></span></th>
+              <th class="pie-el" ><span id='area' class="sort" data-bind="click: sortFunction">State<i> </i></span></th>
+              <th class="pie-el" ><span id='country' class="sort" data-bind="click: sortFunction">Country<i> </i></span></th>
+              <th class="pie-el"><span>Units</span></th>
+              <th class="pie-el">&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- ko foreach: { data: aProperties() } -->
+            <tr>
+              <td data-bind="text: address"></td>
+              <td data-bind="text: zip"></td>
+              <td data-bind="text: city"></td>
+              <td data-bind="text: area"></td>
+              <td data-bind="text: country"></td>
+              <td data-bind="text: units"></td>
+              <td class="type-box" >
+                <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits"></a>
+              </td>
+            </tr>
+            <!-- /ko -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br />
+    <div data-bind="style: { visibility: processProperty() ? 'hidden' : 'visible' }" class="landrord-box without-top clearfix">
+          <nav class="pagination-box">
+              <ul>
+                <!-- ko foreach: pages() -->
+                  <!-- ko if: $data == $root.current() -->
+                  <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
+                  <!-- /ko -->
+                  <!-- ko ifnot: $data == $root.current() -->
+                  <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
+                  <!-- /ko -->
+                  <!-- ko ifnot: $data == $root.last() -->
+                    <li>|</li>
+                  <!-- /ko -->
+                <!-- /ko -->
+              </ul>
+          </nav>
+    </div>
+  </div>
+</div>
+
+<div id="add-property-popup" class="pricing-popup dashboard-popup properties-popup">
+  <h1>{{ 'add.property'|trans }}</h1>
+  <div class="clearfix col-box">
+    <div class="col">
+      <h4 class="clearfix">
+        <span>{{ 'property.info'|trans }}</span>
+        <small><b>*</b>{{ 'required'|trans }}</small>
+      </h4>
+      <div class="search-box pie-el">
+        <label for="searsh-field">{{ 'find.your.rental'|trans }}</label>
+        <div class="clearfix">
+          <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search" autocomplete="off">
+          <a class="pie-el" id="delete" href="#">x</a>
+          <button class="pie-el" id="search-submit" type="submit">{{ 'search'|trans }}</button>
+          <div id="search-result-map"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col">
+      <h4>{{ 'unit.info'|trans }}</h4>
+      <div class="form-row clearfix">
+        <label>{{'unit.numberof'|trans}}<b>*</b></label>
+        <div class="fields-box">
+          <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
+          <button class="button small grey buttonFixPopupAddUnit" id="addUnitToNewProperty" type="button">
+            <span data-bind="click: addUnits">{{ 'add'|trans }}</span>
+          </button>
+        </div>
+      </div>
+      <div class="form-row clearfix full show">
+        <label>{{ 'nameofunit'|trans }}<b>*</b></label>
+        <div class="fields-box" style="width:375px;margin-left: -12px;">
+          <!-- ko foreach: { data: aUnits() } -->
+            <div class="units-item">
+                <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
+                <div class="floatleft unit-delete" data-bind="click: $root.removeUnit">
                 </div>
             </div>
-            <div class="clearboth"></div>
-            <div class="row-20"></div>
-            <div class="units-edit">
+          <!-- /ko -->
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="footer-button-box">
+    <button class="button grey buttonFix" id="saveProperty" >
+      <span data-bind="click: saveProperty">{{ 'add.property'|trans }}</span>
+    </button>
+    <button class="button grey buttonFix" onclick="$('#add-property-popup').dialog( 'close' ); return false;">
+      <span>{{ 'cancel'|trans}}</span>
+    </button>
+  </div>
+</div>
+
+<div id="edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
+      <h1>{{ 'property.edit.info'|trans }}</h1>
+      <div id="blockPopupEditProperty" class="clearfix col-box"  data-bind="style: { display: process() ? 'none' : 'block' }">
+        
+        <div class="col">
+          <h4 class="clearfix">
+            <span>{{ 'property.info'|trans }}</span>
+            <small><b>*</b>{{ 'required'|trans }}</small>
+          </h4>
+          <div class="form-row clearfix">
+            <label>{{ 'address'|trans }}<b>*</b></label>
+            <div class="fields-box">
+              <span data-bind="text: name" class="value"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col" style="padding-top: 45px;" >
+          <h4>{{ 'unit.info'|trans }}</h4>
+          <div class="form-row clearfix">
+            <label>{{ 'unit.add'|trans }}<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" class="zc-width" id="inputEditAddUnit" data-bind="value: add" value="1">
+              <button class="button small buttonFixPopupAddUnit" type="button">
+                <span id="addEditUnit"data-bind="click: addUnits">{{ 'add'|trans }}</span>
+              </button>
+            </div>
+          </div>
+          <div class="form-row clearfix full edit">
+            <label>{{ 'nameofunit'|trans }}:<b>*</b></label>
+            <div class="fields-box clearfix" style="margin-left: -2px;">
                 <!-- ko foreach: { data: aUnits() } -->
-                    <div class="units-item">
-                        <input type="text" class="unit-input floatleft" data-bind="value: name" placeholder="Unit No">
-                        <div class="btn red floatleft unit-delete" data-bind="click: $root.removeUnit">x</div>
+                <div class="units-item">
+                    <input type="text" class="unit-input unit-input-edit floatleft" data-bind="value: name" placeholder="Unit">
+                    <div class="floatleft unit-delete" data-bind="click: $root.removeUnit">
                     </div>
+                </div>
                 <!-- /ko -->
             </div>
-            <div class="clearboth"></div>
-            <div class="units-footer">
-                <div class="btn orange floatleft" data-bind="click: saveUnits">Save Changes</div>
-                <div class="btn sky floatleft" data-bind="click: clearUnits">Cancel</div>
-                <div class="btn red floatleft" data-bind="click: deleteProperty">Delete Property</div>
+          </div>
+        </div>
+      </div>
+      <div data-bind="style: { display: process() ? 'block' : 'none' }">
+          <br />
+          <br />
+          <center>
+            <img src="/bundles/core/images/img_loading.gif" title="Loading" />
+          </center>
+          <br />
+          <br />
+      </div>
+      <div class="footer-button-box">
+        <button class="button buttonFix"><span data-bind="click: saveUnits" id="saveManageUnits">{{ 'savechanges'|trans }}</span></button>
+        <button class="button grey buttonFix" onclick="$('#edit-property-popup').dialog( 'close' ); return false;">
+          <span  data-bind="click: clearUnits">{{ 'cancel'|trans}}</span>
+        </button>
+        <a href="#" class="link removePropertyConfirm"  data-bind="click: deletePropertyConfirm">
+          {{ 'delete'|trans }}<br>{{'property'|trans}}</a>
+      </div>
+</div>
+
+
+<div id="remove-property-popup" class="pricing-popup dashboard-popup properties-popup">
+      <h1>{{ 'remove.property'|trans }}</h1>
+      <div class="clearfix col-box">
+        <div class="atansion-box pie-el">
+          {{ 'remove.property.description'|trans }} 
+        </div>
+        <div class="col">
+          <h4>{{ 'property.info'|trans }}</h4>
+          <div class="form-row clearfix">
+            <label>{{ 'address'|trans }}</label>
+            <div class="fields-box">
+              <span class="value" data-bind="text: name"></span>
             </div>
+          </div>
+          <div class="form-row clearfix">
+            <label><span data-bind="text: countUnit"></span> {{'units'|trans}}</label>
+            <div class="fields-box clearfix">
+               <!-- ko foreach: { data: aUnits() } -->
+              <span class="value"  data-bind="text: name"></span>
+              <!-- /ko -->
+            </div>
+          </div>
         </div>
-    </div>
-
-    <div id="searchContent" class="containerSearch">
-        <div class="filterBy">
-            <label>Search By</label>
-            <select id="searchFilterSelect" title="Select a category" class="linkselect">
-                    <option value="street">-Select One-</option>
-                    <option value="street">Address</option>
-                    <option value="city">City</option>
-                    <option value="zip">Zip</option>
-                    <option value="area">State</option>
-                    <option value="country">Country</option>
-            </select>
-        </div>
-        <div class="searchBy">
-            <input type="text" data-bind="value: searchText" id="search">
-            <a href="#" id="delete" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" class="pie-el" style="display: inline;">x</a>
-            <a class="btn" href="#" data-bind="click: searchFunction">Search</a>
-        </div>
-    </div>
-
-    <div id="properties-block" class="properties-block">
-        <div class="">
-            <div class="units-total floatleft"><h2 data-bind="text: 'All (' + $root.total() + ')'"></h2></div>
-            <a class="btn orange property-button-add" href="{{ path('landlord_property_new')}}">New Property</a>
-        </div>
-        <div class="clearboth"></div>
-        <!-- ko if: pages().length -->
-        <div class="row-20"></div>
-        <div class="">
-            <!-- ko foreach: pages() -->
-                <!-- ko if: $data == $root.current() -->
-                <div class="btn grey floatleft" data-bind="click: $root.goToPage, text: $data"></div>
-                <!-- /ko -->
-                <!-- ko ifnot: $data == $root.current() -->
-                <div class="btn green floatleft" data-bind="click: $root.goToPage, text: $data"></div>
-                <!-- /ko -->
-            <!-- /ko -->
-        </div>
-        <!-- /ko -->
-        <div class="clearboth"></div>
-        <div class="properties-table-block">
-            <img src="/bundles/core/images/img_loading.gif" class="processLoading" data-bind="style: { visibility: processProperty() ? 'visible' : 'hidden' }">
-            <!-- ko if: countProperties() -->
-            <table class="properties-table zebra-grid">
-                <thead>
-                <tr data-bind="click: sortFunction" class="properties-th">
-                    <th>Address</th>
-                    <th id='zip' class="sortField">
-                        ZIP
-                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
-                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
-                    </th>
-                    <th id='city' class="sortField">
-                        City
-                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
-                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
-                    </th>
-                    <th id='area' class="sortField">
-                        State
-                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
-                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
-                    </th>
-                    <th id='country' class="sortField">
-                        Country
-                        <img src="/bundles/rjpublic/images/sort_down.png" class="sortDown sort">
-                        <img src="/bundles/rjpublic/images/sort_up.png" class="sortUp sort">
-                    </th>
-                    <th>Units</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody data-bind="style: { visibility: processProperty() ? 'hidden' : 'visible'  }">
-                <!-- ko foreach: { data: aProperties() } -->
-                <tr>
-                    <td data-bind="text: address"></td>
-                    <td data-bind="text: zip"></td>
-                    <td data-bind="text: city"></td>
-                    <td data-bind="text: area"></td>
-                    <td data-bind="text: country"></td>
-                    <td data-bind="text: units"></td>
-                    <td><div class="btn green property-edit" data-bind="click: $root.editUnits">Manage Units</div></td>
-                </tr>
-                <!-- /ko -->
-                </tbody>
-            </table>
-            <!-- /ko -->
-        </div>
-        <div class="clearboth"></div>
-    </div>
+      </div>
+      <div class="footer-button-box">
+        <button class="button dark buttonFix"><span data-bind="click: deleteProperty" class="removeProperyLast">{{ 'yep.remove.property'|trans }}</span></button>
+        <button class="button grey buttonFix" >
+          <span data-bind="click: cancel">{{ 'no.remove.property'|trans }}</span>
+        </button>
+      </div>
+</div>

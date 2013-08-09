@@ -1,0 +1,386 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="email_rj.creditjeeves.team">
+                <source>email_rj.creditjeeves.team</source>
+                <target>The RentTrack Team</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.title">
+                <source>rj.footer.title</source>
+                <target>RentTrack, at your service.</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.copyright">
+                <source>rj.footer.copyright</source>
+                <target>%nYear% RentJeeves, LLC.All rights reserved.</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.comment">
+                <source>rj.footer.comment</source>
+                <target>RentTrack provides unique credit benefits and helps tenants and landlords the reduce friction with the current rent payment processes.</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.title.learn">
+                <source>rj.footer.title.learn</source>
+                <target>Learn About RentRrack</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.about_us">
+                <source>rj.footer.about_us</source>
+                <target>About Us</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.contact_us">
+                <source>rj.footer.contact_us</source>
+                <target>Contact Us</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.managment">
+                <source>rj.footer.managment</source>
+                <target>Management Team</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.offers">
+                <source>rj.footer.offers</source>
+                <target>Offers</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.title.work">
+                <source>rj.footer.title.work</source>
+                <target>How It Works</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.process">
+                <source>rj.footer.process</source>
+                <target>The Process</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.renters">
+                <source>rj.footer.renters</source>
+                <target>Renters</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.landlord">
+                <source>rj.footer.landlord</source>
+                <target>Landlords</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.faq">
+                <source>rj.footer.faq</source>
+                <target>FAQ</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.learn.credit">
+                <source>rj.footer.learn.credit</source>
+                <target>Learn About Credit</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.credit.affects">
+                <source>rj.footer.credit.affects</source>
+                <target>How Credit Affects You</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.score">
+                <source>rj.footer.score</source>
+                <target>Your Credit Score</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.right">
+                <source>rj.footer.right</source>
+                <target>Your Credit Rights</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.advice">
+                <source>rj.footer.advice</source>
+                <target>Advice</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.terms">
+                <source>rj.footer.terms</source>
+                <target>Terms of Service</target>
+            </trans-unit>
+            <trans-unit id="rj.footer.policy">
+                <source>rj.footer.policy</source>
+                <target>Privacy Policy</target>
+            </trans-unit>
+            <trans-unit id="rj.alert.title">
+                <source>rj.alert.title</source>
+                <target>You have some incomplete tasks</target>
+            </trans-unit>
+            <trans-unit id="rj.task.firstRent">
+                <source>rj.task.firstRent</source>
+                <target>Set up your first rent payment</target>
+            </trans-unit>
+            <trans-unit id="account.information">
+                <source>account.information</source>
+                <target>Account Information</target>
+            </trans-unit>
+            <trans-unit id="terms.service">
+                <source>terms.service</source>
+                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentJeeves, LLC under the Fair Credit Reporting Act authorizing RentJeeves LLC to obtain information from your personal credit profile or other information from Experian. You authorize RentJeeves LLC to obtain such information solely to authenticate your identity, provie you with your score and aggregated credit information and prequalify you for loan options.</target>
+            </trans-unit>
+            <trans-unit id="terms.service.pre-link">
+                <source>terms.service.pre-link</source>
+                <target>I accept the </target>
+            </trans-unit>
+            <trans-unit id="terms.service.link">
+                <source>terms.service.link.text</source>
+                <target>Terms of Service</target>
+            </trans-unit>
+            <trans-unit id="email.verifed.text1">
+                <source>email.verifed.text1</source>
+                <target>
+                        Thanks for verifying your email. A small step to make sure %br%
+                        we keep everything secure here at RentTrack.
+                </target>
+            </trans-unit>
+            <trans-unit id="email.verifed.title">
+                <source>email.verifed.title</source>
+                <target>
+                        Email Verified
+                </target>
+            </trans-unit>
+            <trans-unit id="email.verifed.login">
+                <source>email.verifed.login</source>
+                <target>
+                        You may now login.
+                </target>
+            </trans-unit>
+            <trans-unit id="login">
+                <source>login</source>
+                <target>
+                        Login
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.title">
+                <source>iframe.title</source>
+                <target>
+                        Pay Rent. Build Credit.
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.description">
+                <source>iframe.description</source>
+                <target>
+                       Get your Free Credit Score and Free Electronic Payments
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.find">
+                <source>iframe.find</source>
+                <target>
+                       Find My Rental
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.haveProperty">
+                <source>iframe.haveProperty</source>
+                <target>
+                       Have a property to rent?
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.findOut">
+                <source>iframe.findOut</source>
+                <target>Find out how Rent Jeeves can help you.</target>
+            </trans-unit>
+            <trans-unit id="property.info">
+                <source>property.info</source>
+                <target>Property information</target>
+            </trans-unit>
+            <trans-unit id="required">
+                <source>required</source>
+                <target>Required</target>
+            </trans-unit>
+            <trans-unit id="property.add">
+                <source>property.add</source>
+                <target>Add your rental property</target>
+            </trans-unit>
+            <trans-unit id="verify.rental">
+                <source>verify.rental</source>
+                <target>Verify your rental address</target>
+            </trans-unit>
+            <trans-unit id="search">
+                <source>search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="didnotfind">
+                <source>didnotfind</source>
+                <target>We didn’t find a match yet – let your landlord know!</target>
+            </trans-unit>
+            <trans-unit id="keep.paying">
+                <source>keep.paying</source>
+                <target>Keep paying your rent for now – we’ll contact your landlord.</target>
+            </trans-unit>
+            <trans-unit id="keep.paying.text">
+                <source>keep.paying.text</source>
+                <target>We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
+                </target>
+            </trans-unit>
+            <trans-unit id="continue">
+                <source>continue</source>
+                <target>Continue</target>
+            </trans-unit>
+            <trans-unit id="success.active">
+                <source>success.active</source>
+                <target>You have successfully activated your account. Please login.</target>
+            </trans-unit>
+            <trans-unit id="verify.email">
+                <source>verify.email</source>
+                <target>Verification Email.</target>
+            </trans-unit>
+            <trans-unit id="verify.email.text1">
+                <source>verify.email.text1</source>
+                <target>Please check your inbox for an email from RentTrack and click on the verification link.</target>
+            </trans-unit>
+            <trans-unit id="verify.email.text2">
+                <source>verify.email.text2</source>
+                <target>We have also invited your landlord to sign up. We'll let you know when they do, and when 
+                  you can set up your rent payment.</target>
+            </trans-unit>
+            <trans-unit id="verify.email.text3">
+                <source>verify.email.text3</source>
+                <target>If you don't see an email after a few minutes, click Resend below.</target>
+            </trans-unit>
+            <trans-unit id="verify.email.resend">
+                <source>verify.email.resend</source>
+                <target>Resend Verification Email</target>
+            </trans-unit>
+            <trans-unit id="find.your.rental">
+                <source>find.your.rental</source>
+                <target>Find Your Rental</target>
+            </trans-unit>
+            <trans-unit id="dontfindrental">
+                <source>dontfindrental</source>
+                <target>Didn’t find what you were looking for?</target>
+            </trans-unit>
+            <trans-unit id="property.add.small">
+                <source>property.add.small</source>
+                <target>Add your rental</target>
+            </trans-unit>
+            <trans-unit id="see.all">
+                <source>see.all</source>
+                <target>See All</target>
+            </trans-unit>
+            <trans-unit id="this.is.my.rental">
+                <source>this.is.my.rental</source>
+                <target>This is My Rental</target>
+            </trans-unit>
+            <trans-unit id="add.new">
+                <source>add.new</source>
+                <target>Add New</target>
+            </trans-unit>
+            <trans-unit id="none">
+                <source>none</source>
+                <target>None</target>
+            </trans-unit>
+            <trans-unit id="select.unit">
+                <source>select.unit</source>
+                <target>Select Unit</target>
+            </trans-unit>
+            <trans-unit id="add.unit">
+                <source>add.unit</source>
+                <target>Add Unit</target>
+            </trans-unit>
+            <trans-unit id="invite.landlord">
+                <source>invite.landlord</source>
+                <target>Invite Your Landlord</target>
+            </trans-unit>
+            <trans-unit id="notfoundrentalmessage">
+                <source>notfoundrentalmessage</source>
+                <target><![CDATA[Aww shucks - your rental isn't <br />
+                          part of the RentTrack family yet.]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.placeholdersearch">
+                <source>iframe.placeholdersearch</source>
+                <target>Your Rental Address</target>
+            </trans-unit>
+            <trans-unit id="property.edit.info">
+                <source>property.edit.info</source>
+                <target>Edit Property Information</target>
+            </trans-unit>
+            <trans-unit id="address">
+                <source>address</source>
+                <target>Address</target>
+            </trans-unit>
+            <trans-unit id="unit.info">
+                <source>unit.info</source>
+                <target>Unit information</target>
+            </trans-unit>
+            <trans-unit id="unit.numberof">
+                <source>unit.numberof</source>
+                <target>Number Of Units</target>
+            </trans-unit>
+            <trans-unit id="unit.add">
+                <source>unit.add</source>
+                <target>Add Units</target>
+            </trans-unit>
+            <trans-unit id="add">
+                <source>add</source>
+                <target>Add</target>
+            </trans-unit>
+            <trans-unit id="nameofunit">
+                <source>nameofunit</source>
+                <target>Name Of Units</target>
+            </trans-unit>
+            <trans-unit id="savechanges">
+                <source>savechanges</source>
+                <target>Save Changes</target>
+            </trans-unit>
+            <trans-unit id="cancel">
+                <source>cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="delete">
+                <source>delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="search.by">
+                <source>search.by</source>
+                <target>Search By</target>
+            </trans-unit>
+            <trans-unit id="city">
+                <source>city</source>
+                <target>City</target>
+            </trans-unit>
+            <trans-unit id="zip">
+                <source>zip</source>
+                <target>Zip</target>
+            </trans-unit>
+            <trans-unit id="state">
+                <source>state</source>
+                <target>State</target>
+            </trans-unit>
+            <trans-unit id="country">
+                <source>country</source>
+                <target>Country</target>
+            </trans-unit>
+            <trans-unit id="add.property">
+                <source>add.property</source>
+                <target>Add Property</target>
+            </trans-unit>
+            <trans-unit id="find.your.rentaladdress">
+                <source>find.your.rentaladdress</source>
+                <target>Find your rental address</target>
+            </trans-unit>
+            <trans-unit id="your.rental">
+                <source>your.rental</source>
+                <target>Your rental address</target>
+            </trans-unit>
+            <trans-unit id="add.yourfirst.property">
+                <source>add.yourfirst.property</source>
+                <target>Add Your First Property</target>
+            </trans-unit>
+            <trans-unit id="property">
+                <source>property</source>
+                <target>Property</target>
+            </trans-unit>
+            <trans-unit id="all">
+                <source>all</source>
+                <target>All</target>
+            </trans-unit>
+            <trans-unit id="remove.property">
+                <source>remove.property</source>
+                <target>Remove Property Information</target>
+            </trans-unit>
+            <trans-unit id="remove.property.description">
+                <source>remove.property.description</source>
+                <target>Are you sure you want to remove this property? Any payments 
+                    scheduled for this property will be cancelled.
+                </target>
+            </trans-unit>
+            <trans-unit id="units">
+                <source>units</source>
+                <target>Units</target>
+            </trans-unit>
+            <trans-unit id="yep.remove.property">
+                <source>yep.remove.property</source>
+                <target>Yes, Remove Property</target>
+            </trans-unit>
+            <trans-unit id="no.remove.property">
+                <source>no.remove.property</source>
+                <target>No, Cancel</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

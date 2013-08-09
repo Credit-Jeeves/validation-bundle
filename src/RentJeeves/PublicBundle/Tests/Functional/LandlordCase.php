@@ -1,0 +1,87 @@
+<?php
+namespace RentJeeves\LandlordBundle\Tests\Functional;
+
+use RentJeeves\TestBundle\Functional\BaseTestCase;
+
+/**
+ * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
+ */
+class LandlordCase extends BaseTestCase
+{
+    protected function fillGoogleAddress($fillAddress)
+    {
+        $this->assertNotNull($form = $this->page->find('css', '#landlordRegister'));
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
+        $propertySearch->click();
+        $this->fillForm(
+            $form,
+            array(
+                'property-search' => $fillAddress,
+            )
+        );
+        $propertySearch->click();
+        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $item->click();
+    }
+
+    /**
+     * @test
+     */
+    public function landlordRegisterTest()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->session->visit($this->getUrl() . 'landlord/register/');
+        $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
+        $this->fillGoogleAddress($fillAddress);
+        $this->assertNotNull($form = $this->page->find('css', '#landlordRegister'));
+        $this->fillForm(
+            $form,
+            array(
+                'LandlordAddressType_address_unit'                       => 'e3',
+                'LandlordAddressType_landlord_first_name'                => 'Alex',
+                'LandlordAddressType_landlord_last_name'                 => 'Sharamko',
+                'LandlordAddressType_landlord_email'                     => "newlandlord12@yandex.ru",
+                'LandlordAddressType_landlord_password_Password'         => 'pass',
+                'LandlordAddressType_landlord_password_Verify_Password'  => 'pass',
+                'LandlordAddressType_landlord_tos'                       => true,
+                'LandlordAddressType_address_street'                     => 'My Street',
+                'LandlordAddressType_address_city'                       => 'Test',
+                'LandlordAddressType_address_zip'                        =>'1231',
+                'numberOfUnit'                                           => 3
+            )
+        );
+        $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit>span'));
+        $addUnit->click();
+        $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-name'));
+        $unitNames[0]->setValue('1A');
+        $unitNames[1]->setValue('1B');
+        $unitNames[2]->setValue('1C');
+
+        $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
+        $submit->click();
+
+        $fields = $this->page->findAll('css', '#inviteText>h4');
+        $this->assertCount(2, $fields, 'wrong number of text h4');
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#email-body a'));
+        $link->click();
+        $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
+        $loginButton->click();
+        $this->setDefaultSession('selenium2');
+        $this->login('newlandlord12@yandex.ru', 'pass');
+        $this->page->clickLink('tabs.properties');
+
+        $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
+        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+        $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
+    }
+}
