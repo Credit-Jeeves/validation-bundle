@@ -8,6 +8,15 @@ $(document).ready(function(){
       });
     }
 
+    function checkDeleteButton()
+    {
+      if($('#property-search').val() != '') {
+        $('#delete').show();
+      } else {
+        $('#delete').hide();
+      }
+    }
+
     initScroll();
     
     var ERROR = 'notfound';
@@ -46,7 +55,6 @@ $(document).ready(function(){
 
     function search(place, map) 
     {
-
         var data = {'address': place.address_components, 'geometry':place.geometry, 'addGroup': 0};
 
         jQuery.ajax({
@@ -57,62 +65,7 @@ $(document).ready(function(){
           error: function(jqXHR, errorThrown, textStatus) {;
           },
           success: function(data, textStatus, jqXHR) {
-            if(data.hasLandlord) {
-              return location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id });
-            } 
-            
-            $('.search-result-text').find('h4').hide();
-            $.each($('.addressText'), function(index, value) {
-              $(this).hide();
-            });
-
-            deleteOverlays();
-            var link = Routing.generate('iframe_search_check', {'propertyId': data.property.id });
-            $('.notFound').show();
-            $('.notFound').find('.titleAddress').html(data.property.number+' '+data.property.street);
-            $('.notFound').find('.contentAddress').html(data.property.city+', '+data.property.area+' '+data.property.zip);
-            $('.notFound').find('.inviteLandlord').attr('href', link);
-            $('.notFound').parent().parent().find('.titleNotFound').show();
-            $('.notFound').parent().parent().find('.titleSearch').hide();
-            var contentString = getHtmlPopap(
-              $('.notFound').find('.titleAddress').html(),
-              $('.notFound').find('.contentAddress').html()
-            );
-            
-            contentString += '<hr /><a href="'+link+'" class="button small inviteLandlord" >';
-            contentString += '<span>Invite Your Landlord</span></a>';
-
-            var infowindow = new google.maps.InfoWindow({
-              content: contentString
-            });
-
-            var rentaPoint = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_1.png',
-              new google.maps.Size(26,42),
-              new google.maps.Point(0,0),
-              new google.maps.Point(13,42)
-            );
-
-            var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(data.property.jb,data.property.kb),
-                map: map,
-                title: data.property.address,
-                icon: rentaPoint,
-                shadow: rentaPiontShadow
-            });
-
-            markersArray['notfound'] = marker;
-
-            google.maps.event.addListener(marker, 'click', function() {
-              infowindow.open(map,marker);
-            });
-
-            //If the place has a geometry, then present it on a map.
-            if (place.geometry.viewport) {
-                map.fitBounds(place.geometry.viewport);
-            } else {
-                map.setCenter(place.geometry.location);
-                map.setZoom(15);  // Why 17? Because it looks good.
-            }
+              return location.href = Routing.generate('property_add_id', {'propertyId':data.property.id });
           }
         });
     }
@@ -192,11 +145,7 @@ $(document).ready(function(){
         
         $('#property-search').change(function(){
           $(this).addClass('notfound');
-          if($(this).val() != '') {
-            $('#delete').show();
-          } else {
-            $('#delete').hide();
-          }
+          checkDeleteButton();
         });
 
         $('#search-submit>span').click(function(){
@@ -243,14 +192,17 @@ $(document).ready(function(){
     });
 
     google.maps.event.addDomListener(window, 'load', initialize);
-
-    $('.select-unit').change(function(){
-      val = $(this).val();
-      if(val == 'new') {
-        $(this).parent().hide();
-        $(this).parent().parent().find('.createNewUnit').show();
-        $(this).parent().parent().find('.lab1').show();
-        $(this).parent().parent().find('.lab2').hide();
+    $('.select-unit').linkselect('destroy');
+    $('.select-unit').linkselect({
+      change: function(li, val, text){
+        var id = $(li).attr('id');
+        var ids = id.split('_');
+        if(val == 'new') {
+          $('#'+ids[0]).parent().hide();
+          $('#'+ids[0]).parent().parent().find('.createNewUnit').show();
+          $('#'+ids[0]).parent().parent().find('.lab1').show();
+          $('#'+ids[0]).parent().parent().find('.lab2').hide();
+        }
       }
     });
 
@@ -312,4 +264,6 @@ $(document).ready(function(){
         }
         return false;
     });
+
+    checkDeleteButton();
 });

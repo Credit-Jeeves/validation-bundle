@@ -1,0 +1,92 @@
+.form-content {
+    padding-top: 10px;
+}
+#addNewRental {
+    display: none;
+}
+.form-content {
+    width: 900px;
+}
+.col-box .col.all {
+    width: 900px;
+}
+.col.all .search-box {
+    width: 865px;
+}
+.search-box>label {
+    width: auto;
+}
+#property-search {
+    height: 17px;
+}
+#search-submit {
+    padding-left: 0px;
+}
+.form-content .box.type1 {
+    display: block;
+    padding-top: 10px;
+}
+.form-content {
+    padding-top: 0px;
+}
+.search-result-box {
+    width: 889px;
+}
+.buttons-box {
+    margin-left: -50px !important;
+}
+#search-result-map {
+    width: 582px;
+}
+.col.all .search-box .with-button input {
+    width: 690px;
+}
+#delete {
+    display: none;
+}
+.linkselect-link-icon {
+    background: url("/bundles/rjpublic/images/select.png") no-repeat scroll left top transparent;
+    height: 22px;
+    margin-top: 1px;
+    width: 19px;
+}
+.linkselect-link{
+    height: 23px !important;
+    text-align: left;
+    width: 60px;
+    font-size: 13px !important;
+    width: 42px !important;
+    margin-left: 22px !important;
+}
+.thisIsMyRental{
+    margin-left: 35px;
+    padding-top: 5px;
+}
+a.linkselect-link .linkselect-link-text {
+    padding: 3px 5px 0;
+}
+.lab2, .lab1 {
+    font-size: 14px;
+    font-weight: normal;
+}
+.selectUnit {
+    margin-left: -2px !important;
+}
+.titleSearch {
+    font-weight: normal !important;
+}
+.unitNew {
+    height: 14px !important;
+    width: 37px !important;
+    margin-top: 5px !important;
+}
+.buttonsMapSelectProperty {
+    width: 300px;
+    text-align: center;
+}
+.firstHeading {
+    font-size: 16px;
+}
+.inviteLandlord {
+    margin-left: 32px;
+}

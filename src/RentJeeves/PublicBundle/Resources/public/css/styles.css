@@ -3292,3 +3292,6 @@ footer nav .copyright li {
 .form-content .box.type1 .search-result-text .titleNotFound {
   display: none;
 }
+.error_list {
+  color: red;
+}

@@ -1,9 +1,6 @@
-{% extends "RjPublicBundle::base.html.twig" %}
-
-{% form_theme form ':Form:form_errors.html.twig' %}
+{% extends "TenantBundle::base.html.twig" %}
 
 {% block content %}
-
 <section class="form-content">
     <div class="box type1">
       <h3 class="clearfix">
@@ -13,37 +10,41 @@
       <div class="col-box clearfix">
         <div class="col all">
           <h4>{{ 'property.add'|trans }}</h4>
-          {{ include(
-            'RjComponentBundle:Google:formSearch.html.twig',
-            { 'property': property }
-          ) }}
-          <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
-           method="post" {{ form_enctype(form) }}>
+            {{ include(
+                'RjComponentBundle:Google:formSearch.html.twig',
+                        { 'property': property }
+            ) }}
+            <form action="{{ path('property_add_id', {'propertyId':propertyId }) }}" method="post" id="tenantAddProperty">
             {{ include(
              'RjComponentBundle:Google:searchResultBox.html.twig',
              { 'property': property, 'countPropery':countPropery, 'propertyList': propertyList }
              ) }}
-            {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form}) }}
-            {{ form_rest(form) }}
             <div class="buttons-box clearfix">
               <div class="buttons left">
                 <button type="submit" class="button greyButton" id="register"><span>{{ 'continue'|trans }}</span></button>
               </div>
             </div>
             <input type="hidden" name="propertyId" value="" id="propertyId">
-           </form>
+            </form>
         </div>
-      </div>
+       </div>
     </div>
 </section>
-
-<input type="hidden" value="{{property.jb }}" id="lat">
-<input type="hidden" value="{{property.kb }}" id="lng">
+{% if property %}
+    <input type="hidden" value="{{property.jb }}" id="lat">
+    <input type="hidden" value="{{property.kb }}" id="lng">
+{% else %}
+    <input type="hidden" value="40.728333343333" id="lat">
+    <input type="hidden" value="-73.994166676667" id="lng">
+{% endif %}
 {% endblock %}
 
+
 {% block javascripts %}
+    {{ parent() }}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@RjPublicBundle/Resources/public/js/new.js'
+    {% javascripts  '@TenantBundle/Resources/public/js/add.property.js'
+                    '@RjPublicBundle/Resources/public/js/jquery-ui.js'
                     '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
 
     %}
@@ -53,7 +54,8 @@
 
 
 {% block stylesheets %}
-    {% stylesheets '@RjPublicBundle/Resources/public/css/new.css'
+    {{ parent() }}
+    {% stylesheets '@TenantBundle/Resources/public/css/add.property.css'
     %}
       <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
