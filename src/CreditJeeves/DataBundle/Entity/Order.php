@@ -18,4 +18,17 @@ class Order extends BaseOrder
     {
         $this->updated_at = new \DateTime();
     }
+
+    public function setOperations($operation)
+    {
+        if (is_object($orders)) {
+            $this->addOperation($operation);
+        }
+
+        foreach ($orders as $order) {
+            $this->addOperation($operation);
+        }
+
+        return $this;
+    }
 }
