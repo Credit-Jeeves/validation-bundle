@@ -56,6 +56,7 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
             new RentJeeves\PublicBundle\RjPublicBundle(),
             new RentJeeves\ComponentBundle\RjComponentBundle(),
+            new RentJeeves\CoreBundle\RjCoreBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
