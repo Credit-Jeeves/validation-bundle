@@ -58,13 +58,13 @@
               <div class="buttons-box clearfix">
                 <div class="buttons left buttonsMapSelectProperty">
                   {% if prop.hasLandlord %}
-                    <button type="submit" class="button middle thisIsMyRental" data="{{ prop.id }}">
+                    <button type="submit" class="button middle thisIsMyRental greyTenant" data="{{ prop.id }}">
                       <span>{{ 'this.is.my.rental'|trans }}</span>
                     </button>
                   {% else %}
                         <br />
                         <a href="{{ path("tenant_invite_landlord", {'propertyId': prop.id } )}}" class="button middle inviteLandlord" >
-                        <span>Invite Your Landlord</span></a>
+                        <span>{{ 'invite.landlord'|trans }}</span></a>
                  {% endif %}
                 </div>
               </div>

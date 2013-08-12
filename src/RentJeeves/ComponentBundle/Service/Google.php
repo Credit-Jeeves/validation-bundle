@@ -140,6 +140,10 @@ class Google
                     continue;
                 }
 
+                if (!$nearProperty->hasLandlord()) {
+                    continue;
+                }
+
                 if ($i >= self::DEFAULT_LIMIT) {
                     break;
                 }

@@ -152,7 +152,7 @@ $(document).ready(function(){
             var place = autocomplete.getPlace();
             $('#propertyId').val('');
             $('#register').addClass('greyButton');
-
+            $('#register').addClass('disabled');
             if (ERROR == $('#property-search').attr('class')) {
                 return showError('Such address doesn\'t exist!');
             }
@@ -231,6 +231,7 @@ $(document).ready(function(){
 
     $('.thisIsMyRental').click(function(){
         if($(this).hasClass('match')) {
+          $(this).addClass('greyTenant');
           propertyId = $(this).attr('data');
           $.each($('.addressText'), function(index, value) {
               var id = $(this).attr('data');
@@ -243,9 +244,11 @@ $(document).ready(function(){
           
           $('#propertyId').val('');
           $('#register').addClass('greyButton');
+          $('#register').addClass('disabled');
           initScroll();
           $(this).removeClass('match');
         } else {
+          $(this).removeClass('greyTenant');
           propertyId = $(this).attr('data');
           $.each($('.addressText'), function(index, value) {
               var id = $(this).attr('data');
@@ -258,6 +261,7 @@ $(document).ready(function(){
           
           $('#propertyId').val(propertyId);
           $('#register').removeClass('greyButton');
+          $('#register').removeClass('disabled');
           initScroll();
           $(this).addClass('match');
           //$(this).hide();

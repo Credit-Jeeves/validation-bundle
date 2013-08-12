@@ -1,6 +1,12 @@
 <form action="#" id="formSearch">
     <div class="search-box pie-el">
-      <label for="searsh-field">{{ 'verify.rental'|trans }}</label>
+      <label for="searsh-field">
+        {% if verifyMessage is defined %}
+          {{ verifyMessage|trans }}
+        {% else %}
+          {{ 'verify.rental'|trans }}
+        {% endif %}
+      </label>
       <div class="clearfix with-button">
         <div class="left search-field-box">
           {% if property %}

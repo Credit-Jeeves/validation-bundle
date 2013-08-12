@@ -29,13 +29,17 @@ class PropertyController extends Controller
         $google = $this->get('google');
         $property = null;
         $propertyList = array();
+        $propertyListHaveLandlord = array();
+        $propertyListInvite = array();
 
         if (is_null($propertyId)) {
             return array(
-                'property'          => $property,
-                'propertyList'      => $propertyList,
-                'countPropery'      => count($propertyList),
-                'propertyId'        => $propertyId
+                'property'                      => $property,
+                'propertyListHaveLandlord'      => $propertyListHaveLandlord,
+                'countProperyHaveLandlord'      => count($propertyListHaveLandlord),
+                'propertyListInvite'            => $propertyListInvite,
+                'countProperyInvite'            => count($propertyListInvite),
+                'propertyId'                    => $propertyId
             );
         }
 
@@ -52,11 +56,21 @@ class PropertyController extends Controller
 
         $propertyList = array_merge(array($property), $propertyList);
 
+        foreach ($propertyList as $key => $propertyValue) {
+            if ($propertyValue->hasLandlord()) {
+                $propertyListHaveLandlord[$key] = $propertyValue;
+            } else {
+                $propertyListInvite[$key] = $propertyValue;
+            }
+        }
+
         return array(
-            'property'          => $property,
-            'propertyList'      => $propertyList,
-            'countPropery'      => count($propertyList),
-            'propertyId'        => $propertyId
+            'property'                      => $property,
+            'propertyListHaveLandlord'      => $propertyListHaveLandlord,
+            'countProperyHaveLandlord'      => count($propertyListHaveLandlord),
+            'propertyListInvite'            => $propertyListInvite,
+            'countProperyInvite'            => count($propertyListInvite),
+            'propertyId'                    => $propertyId
         );
     }
 
