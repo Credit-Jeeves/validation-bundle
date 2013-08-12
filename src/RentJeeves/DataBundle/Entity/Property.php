@@ -115,12 +115,6 @@ class Property extends Base
             $result[] = $district;
         }
 
-//         if ($area = $this->getArea()) {
-//             $result[] = $area;
-//         }
-//         if ($zip = $this->getZip()) {
-//             $result[] = $zip;
-//         }
         return implode(', ', $result);
     }
 
@@ -205,5 +199,10 @@ class Property extends Base
 
 
         return implode(', ', $result).' '.$this->getZip();
+    }
+
+    public function hasLandlord()
+    {
+        return ($this->getPropertyGroups()->count() > 0)? true : false;
     }
 }

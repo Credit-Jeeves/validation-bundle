@@ -8,6 +8,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class FirtstPropertyCase extends BaseTestCase
 {
+    protected $timeout = 20000;
 
     protected function fillGoogleAddress($fillAddress)
     {

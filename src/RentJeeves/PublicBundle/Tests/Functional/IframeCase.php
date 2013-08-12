@@ -8,6 +8,8 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class IframeCase extends BaseTestCase
 {
+    protected $timeout = 20000;
+
     protected function fillGoogleAddress($fillAddress)
     {
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
@@ -42,6 +44,34 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype_invite_unit').length > 0");
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+
+        //Check search on the not found
+        $fillAddress = 'Manhattan, New York City, NY 10118';
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
+        $this->session->executeScript(
+            "$('#property-search').val(' ');"
+        );
+        $propertySearch->click();
+        $this->fillForm(
+            $form,
+            array(
+                'property-search' => $fillAddress,
+            )
+        );
+        $propertySearch->click();
+        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $item->click();
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $url = $this->session->getCurrentUrl();
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "document.URL != '{$url}'");
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
+        //end check search on the not found
+
         $this->assertNotNull($form = $this->page->find('css', '#inviteForm'));
         $this->fillForm(
             $form,
@@ -58,7 +88,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_invitetenanttype_tenant_tos'                       => true,
             )
         );
-
+        
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');

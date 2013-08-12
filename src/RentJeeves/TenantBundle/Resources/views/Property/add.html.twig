@@ -1,0 +1,69 @@
+{% extends "TenantBundle::base.html.twig" %}
+
+{% block content %}
+<section class="form-content">
+    <div class="box type1">
+      <h3 class="clearfix">
+        <span>{{ 'property.add'|trans }}</span>
+      </h3>
+      <div class="col-box clearfix">
+        <div class="col all">
+            {{ include(
+                'RjComponentBundle:Google:formSearch.html.twig',
+                        { 'property': property, 'verifyMessage': 'find.your.rentaladdress' }
+            ) }}
+            <form action="{{ path('property_add_id', {'propertyId':propertyId }) }}" method="post" id="tenantAddProperty">
+            {{ include(
+             'RjComponentBundle:Google:searchResultBoxTenant.html.twig',
+             { 
+               'property': property,
+               'countProperyHaveLandlord':countProperyHaveLandlord,
+               'propertyListHaveLandlord': propertyListHaveLandlord,
+               'countProperyInvite': countProperyInvite,
+               'propertyListInvite': propertyListInvite,
+             }
+             ) }}
+            <div class="buttons-box clearfix">
+              <div class="buttons left">
+                <button type="submit" class="button disabled greyButton" id="register"><span>{{ 'add.property'|trans }}</span></button>
+                <a href="{{ path('tenant_homepage') }}" class="button greyButton left" id="cancel">
+                  <span>{{ 'cancel'|trans }}</span>
+                </a>
+              </div>
+            </div>
+            <input type="hidden" name="propertyId" value="" id="propertyId">
+            </form>
+        </div>
+       </div>
+    </div>
+</section>
+{% if property %}
+    <input type="hidden" value="{{property.jb }}" id="lat">
+    <input type="hidden" value="{{property.kb }}" id="lng">
+{% else %}
+    <input type="hidden" value="40.728333343333" id="lat">
+    <input type="hidden" value="-73.994166676667" id="lng">
+{% endif %}
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
+    {% javascripts  '@TenantBundle/Resources/public/js/add.property.js'
+                    '@RjPublicBundle/Resources/public/js/jquery-ui.js'
+                    '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@TenantBundle/Resources/public/css/add.property.css'
+    %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

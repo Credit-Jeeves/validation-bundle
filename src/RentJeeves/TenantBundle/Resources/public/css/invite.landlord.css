@@ -1,0 +1,45 @@
+.left .button {
+    margin-right: 0px;
+}
+input {
+    height: 16px !important;
+}
+.col .search-box label {
+    width: 200px;
+    font-size: 12px;
+}
+.form-content .box.type1 {
+    padding-top: 5px;
+}
+.form-content {
+    width: 900px;
+}
+.box.type1 .form-row label {
+    font-size: 12px;
+}
+.tooltip-box, .tooltip-box>h4, .tooltip-box>p {
+    color: #693 !important;
+}
+.tooltip-box.with-header {
+    margin-top: -95px;
+}
+.type1>h3 {
+    display: none !important;
+}
+.col>h4{
+    padding: 0 0 6px 20px;
+    color: #eb6024;
+    font-size: 21px !important;
+    line-height: 26px;
+}
+.col>.active {
+    font-size: 14px!important;
+}
+#rentjeeves_publicbundle_invitetype_phone {
+    width: 135px;
+}
+#search-result-map {
+    width: 100px;
+    height: 100px;
+    display: none;
+}

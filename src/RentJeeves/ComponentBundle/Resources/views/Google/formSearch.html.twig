@@ -1,0 +1,31 @@
+<form action="#" id="formSearch">
+    <div class="search-box pie-el">
+      <label for="searsh-field">
+        {% if verifyMessage is defined %}
+          {{ verifyMessage|trans }}
+        {% else %}
+          {{ 'verify.rental'|trans }}
+        {% endif %}
+      </label>
+      <div class="clearfix with-button">
+        <div class="left search-field-box">
+          {% if property %}
+            <input type="text" placeholder="{{ property.address }}" 
+            value="{{ property.fullAddress }}" 
+            name="searsh-field" id="property-search">
+          {% else %}
+            <input type="text" placeholder="" value="" 
+            name="searsh-field" id="property-search">
+          {% endif %}
+          <a href="#" id="delete" class="pie-el">x</a>
+          <button class="button small" id="search-submit">
+            <span>{{ 'find.your.rental'|trans }}</span>
+          </button>
+        </div>
+        <div id="addNewRental" class="right text-box">
+          <p>{{ 'dontfindrental'|trans }}</p>
+          <a href="#">{{ 'Add your rental'|trans }}</a>
+        </div>
+      </div>
+    </div>
+</form>

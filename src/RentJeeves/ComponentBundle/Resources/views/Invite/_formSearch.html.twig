@@ -1,0 +1,22 @@
+<div class="box type1">
+  <h3 class="clearfix">
+    <span>{{ 'property.info'|trans }}</span>
+    <small><b>*</b>{{ 'required'|trans }}</small>
+  </h3>
+  <div class="col-box clearfix">
+    <div class="col">
+    <h4>{{ 'property.add'|trans }}</h4>
+    <form action="#" name="searchRentalsForm" id="formSearch">
+      <div class="search-box pie-el">
+        <label for="searsh-field">{{ 'verify.rental'|trans }}</label>
+        <div class="clearfix">
+          <input type="text" id="property-search" name="searsh-field" value="{{ address }}">
+          <a href="#" id="delete" class="pie-el">x</a>
+          <button type="submit" id="search-submit" class="pie-el">{{ 'search'|trans }}</button>
+        </div>
+        <div id="map-canvas"></div>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>

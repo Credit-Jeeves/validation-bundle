@@ -68,7 +68,7 @@
 }
 .infoBlock>.img>img{
     padding-top: 8px;
-    width: 550px; 
+    width: 460px; 
 }
 .pod-large {
     padding-top: 20px;
@@ -91,6 +91,6 @@
 .addPropertyContainer {
     display: block;
     position: absolute;
-    margin-left: 835px;
+    margin-left: 743px;
     margin-top: -20px;
 }
