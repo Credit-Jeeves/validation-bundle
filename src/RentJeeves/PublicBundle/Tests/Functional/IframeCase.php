@@ -8,6 +8,8 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class IframeCase extends BaseTestCase
 {
+    protected $timeout = 20000;
+
     protected function fillGoogleAddress($fillAddress)
     {
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
@@ -40,7 +42,7 @@ class IframeCase extends BaseTestCase
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout+5000, "$('#rentjeeves_publicbundle_invitetenanttype_invite_unit').length > 0");
+        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype_invite_unit').length > 0");
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
 
         //Check search on the not found
