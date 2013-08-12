@@ -91,7 +91,7 @@ $(document).ready(function(){
               data: {'data': JSON.stringify(data, null)},
               error: function(jqXHR, errorThrown, textStatus) {;
               },
-              success: function(propertyId, textStatus, jqXHR) {
+              success: function(data, textStatus, jqXHR) {
                 location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
               }
             });
