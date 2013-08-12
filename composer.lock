@@ -107,7 +107,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "f42eb6de4cd82309c44f4f419d9f36d43d160f3c"
+                "reference": "e6e6e6fce1162b7805fc56df8c49bd3f9ed21674"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -128,7 +128,7 @@
                 }
             ],
             "description": "CreditJeeves ARF Bundle",
-            "time": "2013-07-30 16:52:14"
+            "time": "2013-08-12 15:28:45"
         },
         {
             "name": "credit-jeeves/core-bundle",
