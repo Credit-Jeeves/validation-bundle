@@ -3295,3 +3295,6 @@ footer nav .copyright li {
 .error_list {
   color: red;
 }
+#addNewRental {
+  display: none;
+}
