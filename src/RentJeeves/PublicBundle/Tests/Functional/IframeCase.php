@@ -39,12 +39,19 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->session->visit($this->getUrl() . 'iframe');
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $this->assertNotNull($submit = $form->findButton('iframe.find'));
+        $submit->click();
+        $this->acceptAlert();
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype_invite_unit').length > 0");
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
-
+        $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
+        $submit->click();
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(6, $errorList, 'Wrong number of errors');
         //Check search on the not found
         $fillAddress = 'Manhattan, New York City, NY 10118';
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
@@ -123,9 +130,15 @@ class IframeCase extends BaseTestCase
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_tenanttype_first_name').length > 0");
+        $this->session->wait($this->timeout, "$('.thisIsMyRental').length > 0");
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+        $submit->click();
+        $this->acceptAlert();
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
         $thisIsMyRental->click();
+        $submit->click();
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(5, $errorList, 'Wrong number of errors');
         $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
         $this->fillForm(
             $form,
@@ -138,6 +151,8 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_tenanttype_tos'                       => true,
             )
         );
+        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $thisIsMyRental->click();
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
