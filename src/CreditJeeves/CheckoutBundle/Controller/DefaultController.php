@@ -34,7 +34,7 @@ class DefaultController extends Controller
     protected $form;
 
     /**
-     * @return \Payum\Bundle\PayumBundle\Context\ContextRegistry
+     * @return \Payum\Bundle\PayumBundle\Registry\ContainerAwareRegistry
      */
     protected function getPayum()
     {
@@ -107,9 +107,9 @@ class DefaultController extends Controller
 
     protected function process(CheckoutAuthorizeNetAim $authorize)
     {
-        $context = $this->getPayum()->getContext('simple_purchase_authorize_net');
+        $payment = $this->getPayum()->getPayment('simple_purchase_authorize_net');
         $captureRequest = new CaptureRequest($authorize);
-        $context->getPayment()->execute($captureRequest);
+        $payment->execute($captureRequest);
         $authorize = $captureRequest->getModel();
         $this->get('doctrine.orm.default_entity_manager')->persist($authorize);
         $this->get('doctrine.orm.default_entity_manager')->flush(); // TODO remove and check

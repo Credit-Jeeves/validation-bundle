@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "787d01db3f29850eec23f1f748fc114d",
+    "hash": "31d5eebc441601382a36909b547f1948",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -12,18 +12,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/a2lix/TranslationFormBundle.git",
-                "reference": "342452a56f466cf64de6690224be89e2092faf63"
+                "reference": "8dfc3ce8e87bb2e2436aceda7f8cb59fe82a27c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/342452a56f466cf64de6690224be89e2092faf63",
-                "reference": "342452a56f466cf64de6690224be89e2092faf63",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/8dfc3ce8e87bb2e2436aceda7f8cb59fe82a27c3",
+                "reference": "8dfc3ce8e87bb2e2436aceda7f8cb59fe82a27c3",
                 "shasum": ""
             },
             "require": {
                 "symfony/symfony": "2.3.*"
             },
             "suggest": {
+                "a2lix/i18n-doctrine-bundle": "For A2lix strategy",
                 "knplabs/doctrine-behaviors": "For Knp strategy",
                 "stof/doctrine-extensions-bundle": "For Gedmo strategy"
             },
@@ -58,11 +59,13 @@
                 "doctrine2",
                 "form",
                 "gedmo",
+                "i18n",
+                "internationalization",
                 "knplabs",
                 "translatable",
                 "translation"
             ],
-            "time": "2013-07-24 22:08:49"
+            "time": "2013-08-09 22:29:40"
         },
         {
             "name": "ajbdev/authorizenet-php-api",
@@ -419,12 +422,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/DoctrineBundle.git",
-                "reference": "249d83119ff8c671376bedd118416760184fc214"
+                "reference": "b19261fdbc4d8a4697b5373a64f9da5766bbb4db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/249d83119ff8c671376bedd118416760184fc214",
-                "reference": "249d83119ff8c671376bedd118416760184fc214",
+                "url": "https://api.github.com/repos/doctrine/DoctrineBundle/zipball/b19261fdbc4d8a4697b5373a64f9da5766bbb4db",
+                "reference": "b19261fdbc4d8a4697b5373a64f9da5766bbb4db",
                 "shasum": ""
             },
             "require": {
@@ -480,7 +483,7 @@
                 "orm",
                 "persistence"
             ],
-            "time": "2013-08-05 08:20:25"
+            "time": "2013-08-09 10:00:34"
         },
         {
             "name": "doctrine/doctrine-migrations-bundle",
@@ -2651,12 +2654,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "5e61b380ee8936b69a43f73481de07166f3f767e"
+                "reference": "add977ac7ec56094a11f0e084c5df1b5d959f710"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/5e61b380ee8936b69a43f73481de07166f3f767e",
-                "reference": "5e61b380ee8936b69a43f73481de07166f3f767e",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/add977ac7ec56094a11f0e084c5df1b5d959f710",
+                "reference": "add977ac7ec56094a11f0e084c5df1b5d959f710",
                 "shasum": ""
             },
             "require": {
@@ -2718,7 +2721,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-08-08 07:35:01"
+            "time": "2013-08-12 07:31:33"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -2791,12 +2794,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataDoctrineORMAdminBundle.git",
-                "reference": "2.2.3"
+                "reference": "db213672ced36a9d31acaab0c2e7b37deeb51319"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/2.2.3",
-                "reference": "2.2.3",
+                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/db213672ced36a9d31acaab0c2e7b37deeb51319",
+                "reference": "db213672ced36a9d31acaab0c2e7b37deeb51319",
                 "shasum": ""
             },
             "require": {
@@ -2839,7 +2842,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2013-08-05 09:50:19"
+            "time": "2013-08-09 16:40:31"
         },
         {
             "name": "sonata-project/exporter",

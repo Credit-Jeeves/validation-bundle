@@ -18,8 +18,6 @@ class BuyReportCase extends BaseTestCase
      */
     public function checkBuyReportBox()
     {
-        
-//    $this->setSession('webdriver');
         $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('alex@example.com', 'pass');
@@ -31,12 +29,10 @@ class BuyReportCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function checkCurrentDownloadedData()
     {
-              
-//    $this->setSession('webdriver');
         $this->load(false);
         $this->setDefaultSession('symfony');
 
@@ -70,6 +66,7 @@ class BuyReportCase extends BaseTestCase
 
     /**
      * @test
+     * @depends checkCurrentDownloadedData
      */
     public function authorizeNetAim()
     {
@@ -77,6 +74,8 @@ class BuyReportCase extends BaseTestCase
         $this->load(false);
 
         $this->login('emilio@example.com', 'pass');
+
+        $this->clearEmail();
 
         $this->page->clickLink('tabs.summary');
         $this->page->clickLink('buy-link');

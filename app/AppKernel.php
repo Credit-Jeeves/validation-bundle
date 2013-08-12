@@ -108,6 +108,10 @@ abstract class AppKernel extends Kernel
         $parameters['web.dir'] = $parameters['project.root'] . '/web';
         $parameters['data.dir'] = $parameters['project.root'] . '/data';
         $parameters['web.upload.dir'] = $parameters['web.dir'] . '/uploads';
+        $parameters['experian_pidkiq_userpwd'] = sfConfig::get('global_experian_pidkiq_userpwd');
+        $parameters['experian_pidkiq_eai'] = sfConfig::get('global_experian_pidkiq_eai');
+        $parameters['experian_net_connect_userpwd'] = sfConfig::get('global_experian_net_connect_userpwd');
+        $parameters['experian_net_connect_eai'] = sfConfig::get('global_experian_net_connect_eai');
         return $parameters;
     }
 
@@ -136,7 +140,12 @@ abstract class AppKernel extends Kernel
 
         // prod env
         if ('dev' != $this->getEnvironment()) {
-            $recipients = array('forma@66ton99.org.ua, systems@creditjeeves.com, alex.emelyanov.ua@gmail.com');
+            $recipients = array(
+                'forma@66ton99.org.ua' .
+                ', systems@creditjeeves.com' .
+                ', alex.emelyanov.ua@gmail.com' .
+                ', alexandr.sharamko@gmail.com'
+            );
 
             $filter = new ExceptionClassFilter();
             $filter->allow('Exception');
