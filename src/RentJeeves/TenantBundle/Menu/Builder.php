@@ -42,6 +42,9 @@ class Builder extends ContainerAware
         switch ($sRoute) {
             case 'tenant_homepage':
             case 'tenant_payment_history':
+            case 'property_add':
+            case 'property_add_id':
+            case 'tenant_invite_landlord':
             case 'tenant_payment_sources':
                 $menu['tabs.rent']->setAttribute('class', 'active');
                 break;
