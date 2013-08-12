@@ -5,6 +5,8 @@ namespace RentJeeves\TenantBundle\Controller;
 use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use RentJeeves\PublicBundle\Form\InviteType;
+use RentJeeves\DataBundle\Entity\Invite;
 
 /**
  * @Route("/property")
@@ -103,8 +105,37 @@ class PropertyController extends Controller
      */
     public function inviteLandlordAction($propertyId)
     {
+        $em = $this->getDoctrine()->getManager();
+        $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        if (!$property) {
+            throw $this->createNotFoundException('The property does not exist.');
+        }
+
+        $invite = new Invite();
+        $invite->setProperty($property);
+        $invite->setTenant($this->getUser());
+        $form = $this->createForm(
+            new InviteType(),
+            $invite
+        );
+
+        $request = $this->get('request');
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $em->persist($invite);
+                $em->flush();
+
+                $this->get('creditjeeves.mailer')->sendRjLandLordInvite($invite);
+
+                return $this->redirect($this->generateUrl('tenant_homepage'), 301);
+            }
+        }
+
         return array(
-            'propertyId'          => $propertyId,
+            'property'          => $property,
+            'form'              => $form->createView(),
+            'address'           => $property->getFullAddress(),
         );
     }
 }

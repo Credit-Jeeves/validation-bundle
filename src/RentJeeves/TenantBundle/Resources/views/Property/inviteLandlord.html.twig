@@ -1,6 +1,43 @@
 {% extends "TenantBundle::base.html.twig" %}
 
+{% form_theme form ':Form:form_errors.html.twig' %}
+
 {% block content %}
- <br />
- <h2><center>Hello its will be invite landlord form</center></h2>
+<section class="form-content">
+{{ include('RjComponentBundle:Invite:_formSearch.html.twig') }}
+<form action="{{ path('tenant_invite_landlord', {"propertyId": property.id }) }}" method="post" {{ form_enctype(form) }} id="inviteForm">
+    {{ include('RjComponentBundle:Invite:_form.html.twig', {"form": form }) }}
+    {{ form_rest(form) }}
+    <div class="buttons-box clearfix">
+      <div class="buttons left">
+        <button type="submit" class="button" id="register"><span>{{ 'add.property'|trans }}</span></button>
+        <a href="{{ path('property_add') }}" class="button greyButton left" id="cancel">
+          <span>{{ 'cancel'|trans }}</span>
+        </a>
+      </div>
+    </div>
+</form>
+</section>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ include('RjComponentBundle:Google:js.html.twig') }}
+    {% javascripts  '@TenantBundle/Resources/public/js/invite.landlord.js'
+                    '@RjPublicBundle/Resources/public/js/jquery-ui.js'
+                    '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@TenantBundle/Resources/public/css/invite.landlord.css'
+    %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}

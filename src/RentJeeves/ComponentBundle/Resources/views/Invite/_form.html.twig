@@ -1,0 +1,45 @@
+<div class="box type1 pd1">
+  <div class="col-box clearfix">
+    <div class="col">
+      <h4 class="active">{{'didnotfind'|trans}}</h4>
+      {{ form_errors(form) }}
+      <div class="form-row clearfix">
+        {{ form_label(form.unit) }}
+        <div class="fields-box">
+          {{ form_widget(form.unit, { 'attr': {'class': 'half-width', 'placeholder':"e.g. 3А" } }) }}
+          {{ form_errors(form.unit) }}
+        </div>
+      </div>
+      <div class="form-row clearfix">
+        {{ form_label(form.first_name) }}
+        <div class="fields-box">
+          {{ form_widget(form.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first" } }) }}
+          {{ form_widget(form.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+          {{ form_errors(form.first_name) }}
+          {{ form_errors(form.last_name) }}
+        </div>
+      </div>
+      <div class="form-row clearfix">
+        {{ form_label(form.phone) }}
+        <div class="fields-box">
+            {{ form_widget(form.phone) }}
+            {{ form_errors(form.phone) }}
+        </div>
+      </div>
+      <div class="form-row clearfix">
+        {{ form_label(form.email) }}
+        <div class="fields-box">
+            {{ form_widget(form.email) }}
+            {{ form_errors(form.email) }}
+        </div>
+      </div>
+      
+      <div class="tooltip-box with-header pie-el">
+        <h4>{{'keep.paying'|trans}}</h4>
+        <p>
+            {{ 'keep.paying.text'|trans }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
