@@ -415,6 +415,16 @@
                 <source>landlord.register.text4</source>
                 <target>Tell us a bit about the property you’re renting.</target>
             </trans-unit>
+            <trans-unit id="tenant.found.match">
+                <source>tenant.found.match</source>
+                <target>Good news! We found are match.</target>
+            </trans-unit>
+            <trans-unit id="result.search">
+                <source>result.search</source>
+                <target>
+                    %count% rentals in %city%, %area%:
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
