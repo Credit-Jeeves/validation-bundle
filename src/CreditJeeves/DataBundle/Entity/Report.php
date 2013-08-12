@@ -14,5 +14,4 @@ use CreditJeeves\DataBundle\Model\Report as BaseReport;
  */
 class Report extends BaseReport
 {
-
 }
