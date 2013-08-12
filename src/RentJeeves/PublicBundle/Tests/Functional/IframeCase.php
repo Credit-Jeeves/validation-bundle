@@ -8,7 +8,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class IframeCase extends BaseTestCase
 {
-    protected $timeout = 20000;
+    protected $timeout = 25000;
 
     protected function fillGoogleAddress($fillAddress)
     {
