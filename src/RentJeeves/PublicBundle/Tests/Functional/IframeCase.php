@@ -178,11 +178,11 @@ class IframeCase extends BaseTestCase
      */
     public function checkNotFoundNew()
     {
-        $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->fillGoogleAddress($fillAddress);
-        $this->session->wait($this->timeout, "$('#formSearch').length > 0");
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#formNewUser').length > 0");
         $fillAddress = '710 Broadway, Manhattan, New York City, NY 10003 ';
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
@@ -190,19 +190,13 @@ class IframeCase extends BaseTestCase
             "$('#property-search').val(' ');"
         );
         $propertySearch->click();
-        $this->fillForm(
-            $form,
-            array(
-                'property-search' => $fillAddress,
-            )
-        );
+        $propertySearch->setValue($fillAddress);
         $propertySearch->click();
         $this->session->wait($this->timeout, "$('.pac-item').length > 0");
         $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
         $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
         $item->click();
-        $propertySearch->click();
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit > span'));
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit>span'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('.inviteLandlord').is(':visible')");
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));

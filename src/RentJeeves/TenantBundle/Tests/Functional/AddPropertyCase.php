@@ -104,6 +104,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.inviteLandlord').length > 0");
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
+        $this->session->wait($this->timeout, "$('#inviteForm').length > 0");
         $this->assertNotNull($inviteForm = $this->page->find('css', '#inviteForm'));
         $this->fillForm(
             $inviteForm,
