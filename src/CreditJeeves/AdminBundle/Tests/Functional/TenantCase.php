@@ -50,4 +50,21 @@ class TenantCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertCount(21, $tenants);
         $this->logout();
     }
+
+    /**
+     * @test
+     */
+    public function observeTenant()
+    {
+        $this->load(false);
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_tenants'));
+        $tableBlock->clickLink('link_list');
+        $this->assertNotNull($tenants = $this->page->findAll('css', 'a.observe_link'));
+        $this->assertCount(21, $tenants);
+        $tenants[0]->click();
+        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('Back to Admin');
+        $this->logout();
+    }
 }

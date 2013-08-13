@@ -4,7 +4,7 @@ form fieldset {
     padding: 0;
 }
 
-.form-row {
+.base-form-row {
     width: 545px;
     float: left;
     padding: 0 20px;

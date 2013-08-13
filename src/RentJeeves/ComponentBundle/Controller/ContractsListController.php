@@ -32,19 +32,22 @@ class ContractsListController extends Controller
      */
     public function tenantNewAction($status)
     {
+        $user = $this->get('core.session.tenant')->getUser();
         return array(
-            'contracts' => $this->getUser()->getContracts(),
+            'contracts' => $user->getContracts(),
             'status'    => $status,
         );
     }
+
     /**
      * @Template()
      * @return multitype:
      */
     public function tenantAction()
     {
+        $user = $this->get('core.session.tenant')->getUser();
         return array(
-            'contracts' => $this->getUser()->getContracts(),
+            'contracts' => $user->getContracts(),
         );
     }
 }
