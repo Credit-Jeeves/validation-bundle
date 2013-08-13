@@ -1,0 +1,36 @@
+.fiter-box .linkselect-link-icon {
+    background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
+    width: 19px;
+    height: 23px;
+}
+.fiter-box .linkselect-link {
+    width: 125px;
+    font-size: 14px;
+    height: 21px;
+    padding-top: 1px;
+    padding-left: 0px;
+    padding-bottom: 1px;
+}
+.fiter-box label {
+    margin-right: 10px;
+}
+.fiter-box .button {
+    margin-top: -5px !important;
+}
+.processLoading {
+    position: relative;
+    text-align: center;
+    padding: 20px;
+    margin-top: 0px;
+}
+#delete {
+    display: none;
+}
+.footer-button-box .button {
+    padding-left: 0px;
+    margin-left: 0px;
+}
+.addressDiv {
+    padding-top: 15px;
+    padding-left: 10px;
+}

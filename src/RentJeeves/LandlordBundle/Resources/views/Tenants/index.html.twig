@@ -5,6 +5,18 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('bundles/component/js/groups.js') }}"></script>
-    <script src="{{ asset('bundles/rjcomponent/js/contracts.js') }}"></script>
+    {% javascripts  '@ComponentBundle/Resources/public/js/groups.js'
+                    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+                    '@RjComponentBundle/Resources/public/js/contracts.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/tenants.css'%}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}

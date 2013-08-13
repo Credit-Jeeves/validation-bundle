@@ -7,51 +7,57 @@ function ContractDetails() {
   this.invite = ko.observable(false);
   this.marginTop = ko.observable(0);
   this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
-  this.editContract = function(data) {
+
+  this.cancelEdit = function(data)
+  {
+    $('#tenant-edit-property-popup').dialog('close');
     self.clearDetails();
-    self.approve(false);
-    if (data.top != undefined) {
-      self.marginTop(data.top);
-      self.contract(data);
-    }
+    self.approveContract(self.contract());
+  }
+
+  this.editContract = function(data) {
+    $('#tenant-approve-property-popup').dialog('close');
+    $('#tenant-edit-property-popup').dialog('open');
+    self.clearDetails();
     self.edit(true);
     window.jQuery.curCSS = window.jQuery.css;
-    $('#contract-edit-start').DatePicker({
+    $('#contractEditStart').datepicker({
+      showOn: "button",
+      buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
       format:'m/d/Y',
-      date: $('#contract-edit-start').val(),
-      current: $('#contract-edit-start').val(),
+      date: $('#contractEditStart').val(),
+      current: $('#contractEditStart').val(),
       starts: 1,
       position: 'r',
       onBeforeShow: function(){
-        $('#contract-edit-start').DatePickerSetDate($('#contract-edit-start').val(), true);
+        $('#contractEditStart').DatePickerSetDate($('#contract-edit-start').val(), true);
       },
       onChange: function(formated, dates){
-        $('#contract-edit-start').val(formated);
-        $('#contract-edit-start').DatePickerHide();
+        $('#contractEditStart').val(formated);
+        $('#contractEditStart').DatePickerHide();
       }
-    });  
-    $('#contract-edit-finish').DatePicker({
+    });
+    $('#contractEditFinish').datepicker({
+      showOn: "button",
+      buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       format:'m/d/Y',
-      date: $('#contract-edit-finish').val(),
-      current: $('#contract-edit-finish').val(),
+      date: $('#contractEditFinish').val(),
+      current: $('#contractEditFinish').val(),
       starts: 1,
       position: 'r',
       onBeforeShow: function(){
-        $('#contract-edit-finish').DatePickerSetDate($('#contract-edit-finish').val(), true);
+        $('#contractEditFinish').DatePickerSetDate($('#contract-edit-finish').val(), true);
       },
       onChange: function(formated, dates){
-        $('#contract-edit-finish').val(formated);
-        $('#contract-edit-finish').DatePickerHide();
+        $('#contractEditFinish').val(formated);
+        $('#contractEditFinish').DatePickerHide();
       }
     });
   };
   this.approveContract = function(data) {
+    $('#tenant-approve-property-popup').dialog('open');
     self.clearDetails();
-    self.approve(false);
-    if (data.top != undefined) {
-      self.marginTop(data.top);
-      self.contract(data);
-    }
+    self.contract(data);
     self.approve(true);
   };
   this.reviewContract = function(data) {
@@ -64,6 +70,7 @@ function ContractDetails() {
     self.review(true);
   };
   this.approveSave = function() {
+    $('#tenant-approve-property-popup').dialog('close');
     var data = self.contract();
     data.status = 'approved';
     self.contract(data);
@@ -81,6 +88,7 @@ function ContractDetails() {
     self.approve(false);
   };
   this.saveContract = function(){
+    $('#tenant-edit-property-popup').dialog('close');
     var contract = self.contract();
     contract.finish = $('#contract-edit-finish').val() || contract.finish;
     contract.start = $('#contract-edit-start').val() || contract.start;
@@ -109,6 +117,7 @@ function Contracts() {
   this.total = ko.observable(0);
   this.current = ko.observable(1);
   this.ajaxAction = function() {
+    self.aContracts([]);
     $.ajax({
       url: Routing.generate('landlord_contracts_list'),
       type: 'POST',
@@ -170,5 +179,18 @@ var DetailsViewModel = new ContractDetails();
 $(document).ready(function(){
   ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
   ko.applyBindings(DetailsViewModel, $('#contract-actions').get(0));
+  $('#tenant-approve-property-popup').dialog({ 
+      autoOpen: false,
+      resizable: false,
+      modal: true,
+      width:'520px'
+  });
+  $('#tenant-edit-property-popup').dialog({
+      autoOpen: false,
+      resizable: false,
+      modal: true,
+      width:'520px'
+  });
   ContractsViewModel.ajaxAction();
+
 });
