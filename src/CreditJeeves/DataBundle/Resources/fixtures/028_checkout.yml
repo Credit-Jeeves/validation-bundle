@@ -1,0 +1,33 @@
+model: RentJeeves\DataBundle\Entity\Checkout
+fixtures:
+  rjCheckout_1:
+    order:  rjOrder_1
+    amount: 1500
+    status: processed
+    createdAt: '-50 days'
+  rjCheckout_2:
+    order:  rjOrder_2
+    amount: 1500
+    status: processed
+    createdAt: '-40 days'
+  rjCheckout_3:
+    order:  rjOrder_3
+    amount: 1500
+    status: processed
+    createdAt: '-30 days'
+  rjCheckout_4:
+    order:  rjOrder_4
+    amount: 1500
+    status: processed
+    createdAt: '-20 days'
+  rjCheckout_5:
+    order:  rjOrder_5
+    amount: 1500
+    status: processed
+    createdAt: '-10 days'
+  rjCheckout_6:
+    order:  rjOrder_6
+    amount: 1500
+    status: pending
+    createdAt: '-2 days'
+    

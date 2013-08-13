@@ -2,6 +2,7 @@
 
 {% block content %}
         {{ render(controller('RjComponentBundle:ContractsList:required', {'Group': Group})) }}
+        {{ render(controller('RjComponentBundle:PaymentsList:index', {'group': Group})) }}
 {% endblock %}
 
 {% block javascripts %}

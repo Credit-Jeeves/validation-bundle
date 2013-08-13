@@ -57,17 +57,15 @@ abstract class Order
      */
     protected $authorize;
 
-//    /**
-//     * @var ArrayCollection
-//     *
-//     * @ORM\OneToMany(
-//     *     targetEntity="OrderOperation",
-//     *     mappedBy="order",
-//     *     cascade={"persist", "remove", "merge"},
-//     *     orphanRemoval=true
-//     * )
-//     */
-//    protected $orderOperations;
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\Checkout",
+     *     mappedBy="order",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $checkout;
 
     /**
      * @var ArrayCollection
@@ -83,7 +81,6 @@ abstract class Order
 
     public function __construct()
     {
-//        $this->orderOperations = new ArrayCollection();
         $this->operations = new ArrayCollection();
         $this->created_at = new \DateTime();
     }

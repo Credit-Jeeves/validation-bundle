@@ -432,6 +432,33 @@ class AjaxController extends Controller
         return new JsonResponse(array());
     }
 
+    /* Payments */
+
+    public function getPaymentsList()
+    {
+        $items = array();
+        $total = 0;
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('payments' => array(), 'total' => 0, 'pagination' => array());
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Checkout');
+        $total = $repo->countPaymnets($group);
+        $total = count($total);
+        if ($total) {
+            $payments = $repo->getPaymentsPage($group, $page['page'], $page['limit']);
+            foreach ($payments as $payment) {
+                $item = $payment->getItem();
+                $items[] = $item;
+            }
+        }
+        $data['payments'] = $items;
+        $data['total'] = $total;
+        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+        return new JsonResponse($data);
+    }
+
     /* Service methods */
 
     /**
