@@ -120,6 +120,7 @@ function Contracts() {
         }
       },
       success: function(response) {
+        console.log('success');
         self.aContracts([]);
         self.aContracts(response.contracts);
         self.total(response.total);
@@ -170,9 +171,4 @@ $(document).ready(function(){
   ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
   ko.applyBindings(DetailsViewModel, $('#contract-actions').get(0));
   ContractsViewModel.ajaxAction();
-  
-  
-  
-  
-  
 });

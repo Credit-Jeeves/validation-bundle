@@ -53,4 +53,22 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertCount(7, $landlords);
         $this->logout();
     }
+
+    /**
+     * @test
+     */
+    public function observeLandlord()
+    {
+        $this->load(false);
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->assertNotNull($tableBlock = $this->page->find('css', '#id_block_landlords'));
+        $tableBlock->clickLink('link_list');
+        $this->assertNotNull($landlords = $this->page->findAll('css', 'a.observe_link'));
+        $this->assertCount(7, $landlords);
+        $landlords[0]->click();
+        $this->page->clickLink('tabs.tenants');
+        $this->page->clickLink('tabs.properties');
+        $this->page->clickLink('Back to Admin');
+        $this->logout();
+    }
 }
