@@ -8,6 +8,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class PropertiesCase extends BaseTestCase
 {
+    protected $timeout = 20000;
     /**
      * @test
      */

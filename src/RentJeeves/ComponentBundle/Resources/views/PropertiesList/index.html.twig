@@ -132,8 +132,8 @@
     
   </div>
   <div class="footer-button-box">
-    <button class="button grey buttonFix" id="saveProperty" >
-      <span data-bind="click: saveProperty">{{ 'add.property'|trans }}</span>
+    <button class="button grey buttonFix" id="saveProperty" data-bind="click: saveProperty">
+      <span>{{ 'add.property'|trans }}</span>
     </button>
     <button class="button grey buttonFix" onclick="$('#add-property-popup').dialog( 'close' ); return false;">
       <span>{{ 'cancel'|trans}}</span>
