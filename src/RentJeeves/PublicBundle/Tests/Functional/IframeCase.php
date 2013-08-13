@@ -12,6 +12,7 @@ class IframeCase extends BaseTestCase
 
     protected function fillGoogleAddress($fillAddress)
     {
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
