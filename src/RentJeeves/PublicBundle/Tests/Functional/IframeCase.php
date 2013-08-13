@@ -182,8 +182,7 @@ class IframeCase extends BaseTestCase
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->fillGoogleAddress($fillAddress);
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype_invite_unit').length > 0");
+        $this->session->wait($this->timeout, "$('#formSearch').length > 0");
         $fillAddress = '710 Broadway, Manhattan, New York City, NY 10003 ';
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
