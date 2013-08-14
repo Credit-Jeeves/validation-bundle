@@ -51,3 +51,8 @@
     word-wrap: break-word !important;
     word-break: break-all !important;
 }
+.notHaveData {
+    height: 50px;
+    padding-top: 50px;
+    text-align: center;
+}

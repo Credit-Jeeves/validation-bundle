@@ -233,6 +233,7 @@
           <option value="phone">{{ 'phone'|trans }}</option>
           <option value="street">{{ 'street'|trans }}</option>
           <option value="rent">{{ 'amount'|trans }}</option>
+          <option value="tenant">{{ 'tenant'|trans }}</option>
         </select>
         <div class="finder-box">
           <input type="text" id="searsh-field" name="searsh-field" data-bind="value: searchText" value="">
@@ -264,7 +265,7 @@
                     <span class="sort" id="email" data-bind="click: sortFunction">{{'email'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="phone" data-bind="click: sortFunction">{{'phone'|trans}}<i> </i></span>
+                    <span>{{'phone'|trans}}</span>
                 </th>
                 <th class="pie-el">
                     <span class="sort" id="street" data-bind="click: sortFunction">{{'property'|trans}}<i> </i></span>
@@ -315,8 +316,11 @@
             </tbody>
           </table>
         <!-- /ko -->
-        <!-- ko ifnot: countContracts()  -->
+        <!-- ko if: processLoading()  -->
             <img src="/bundles/core/images/img_loading.gif" id="processLoading" class="processLoading" >
+        <!-- /ko -->
+        <!-- ko if: notHaveResult()  -->
+            <h3 class="notHaveData">Not have data.</h3>
         <!-- /ko -->
         </div>
       </div>

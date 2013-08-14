@@ -128,7 +128,9 @@ function Contracts() {
   this.isSortAsc = ko.observable(true);
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("");
-  this.isSearch =  ko.observable(false);
+  this.isSearch = ko.observable(false);
+  this.notHaveResult = ko.observable(false);
+  this.processLoading = ko.observable(true);
 
   this.search = function() {
     var searchCollum = $('#searchFilter').linkselect('val');
@@ -180,6 +182,7 @@ function Contracts() {
 
   this.ajaxAction = function() {
     self.aContracts([]);
+    self.processLoading(true);
     $.ajax({
       url: Routing.generate('landlord_contracts_list'),
       type: 'POST',
@@ -195,10 +198,16 @@ function Contracts() {
         }
       },
       success: function(response) {
+        self.processLoading(false);
         self.aContracts([]);
         self.aContracts(response.contracts);
         self.total(response.total);
         self.pages(response.pagination);
+        if(self.countContracts() <= 0) {
+           self.notHaveResult(true);
+        } else {
+           self.notHaveResult(false);
+        }
         if(self.sortColumn().length == 0) {
           return;
         }
