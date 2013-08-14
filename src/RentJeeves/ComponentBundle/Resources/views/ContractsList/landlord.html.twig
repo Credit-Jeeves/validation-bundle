@@ -1,37 +1,36 @@
 <div id="contract-actions">
     <!-- Action Edit -->
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <h1>Edit Tenant Information</h1>
+      <h1>{{ 'edit.tenant.info'|trans }}</h1>
       <div class="clearfix col-box" data-bind="with: contract">
         <div class="information-box pie-el">
-          Are you sure you want to remove this property? Any payments 
-          scheduled for this property will be cancelled. 
+          {{ 'are.you.sure.you.want.remove.property'|trans }}
         </div>
         <div class="col">
           <h4 class="clearfix">
-            <span>Tenant Information</span>
-            <small><b>*</b>Required</small>
+            <span>{{ 'tenant.info'|trans }}</span>
+            <small><b>*</b>{{ 'required'|trans }}</small>
           </h4>
           <div class="form-row clearfix">
-            <label>Name<b>*</b></label>
+            <label>{{'name'|trans}}<b>*</b></label>
             <div class="fields-box">
               <span data-bind="text: first_name"></span>
               <span data-bind="text: last_name"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Property<b>*</b></label>
+            <label>{{ 'property'|trans }}<b>*</b></label>
             <div class="fields-box addressDiv"  data-bind="text: address">
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Phone</label>
+            <label>{{ 'phone'|trans }}</label>
             <div class="fields-box">
                 <span data-bind="text: phone"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Email<b>*</b></label>
+            <label>{{ 'email'|trans }}<b>*</b></label>
             <div class="fields-box">
                <span data-bind="text: email"></span>
             </div>
@@ -39,34 +38,34 @@
         </div>
         <div class="col">
           <h4 class="clearfix">
-            <span>Requested Payment</span>
+            <span>{{ 'request.payments'|trans }}</span>
             <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
           </h4>
           <div class="form-row clearfix">
-            <label>Property<b>*</b></label>
+            <label>{{ 'property'|trans }}<b>*</b></label>
             <div class="fields-box addressDiv"  data-bind="text: address">
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Amount<b>*</b></label>
+            <label>{{ 'amount'|trans }}<b>*</b></label>
             <div class="fields-box">
               <input type="text" data-bind="value: amount" value="" class="half-of-right">
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Start<b>*</b></label>
+            <label>{{ 'start'|trans }}<b>*</b></label>
             <div class="fields-box">
               <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
-              <label class="fixed">End</label>
+              <label class="fixed">{{ 'end'|trans }}</label>
               <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
             </div>
           </div>
         </div>
       </div>
       <div class="footer-button-box">
-        <button class="button" data-bind="click: saveContract"><span>Save Changes</span></button>
-        <button class="button grey"  data-bind="click: cancelEdit"><span>Cancel</span></button>
-        <a href="#" class="link" data-bind="click: removeTenant">Remove<br>Tenant</a>
+        <button class="button" data-bind="click: saveContract"><span>{{'savechanges'|trans}}</span></button>
+        <button class="button grey"  data-bind="click: cancelEdit"><span>{{'cancel'|trans}}</span></button>
+        <a href="#" class="link" data-bind="click: removeTenant">{{'remove.tenant'|trans|raw}}</a>
       </div>
     </div>
 

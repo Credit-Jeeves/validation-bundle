@@ -425,6 +425,54 @@
                     %count% rentals in %city%, %area%:
                 </target>
             </trans-unit>
+            <trans-unit id="edit.tenant.info">
+                <source>edit.tenant.info</source>
+                <target>
+                    Edit Tenant Information
+                </target>
+            </trans-unit>
+            <trans-unit id="are.you.sure.you.want.remove.property">
+                <source>are.you.sure.you.want.remove.property</source>
+                <target>
+                    Are you sure you want to remove this property? Any payments 
+          scheduled for this property will be cancelled. 
+                </target>
+            </trans-unit>
+            <trans-unit id="tenant.info">
+                <source>tenant.info</source>
+                <target>
+                   Tenant Information
+                </target>
+            </trans-unit>
+            <trans-unit id="request.payments">
+                <source>request.payments</source>
+                <target>
+                   Requested Payment
+                </target>
+            </trans-unit>
+            <trans-unit id="amount">
+                <source>amount</source>
+                <target>
+                   Amount
+                </target>
+            </trans-unit>
+            <trans-unit id="start">
+                <source>start</source>
+                <target>
+                   Start
+                </target>
+            </trans-unit>
+            <trans-unit id="end">
+                <source>end</source>
+                <target>
+                   End
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.tenant">
+                <source>remove.tenant</source>
+                <target><![CDATA[Remove<br>Tenant]]>
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
