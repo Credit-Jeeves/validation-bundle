@@ -37,7 +37,7 @@ class Order extends BaseOrder
     {
         $result = array();
         $contract = $this->getOperations()->last()->getContract();
-        $result['amount'] = $this->getHeartlands()->last()->getAmount();
+        $result['amount'] = $this->getAmount();
         $result['tenant'] = $contract->getTenant()->getFullName();
         $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
         $result['start'] = $this->getHeartlands()->first()->getCreatedAt()->format('m/d/Y');

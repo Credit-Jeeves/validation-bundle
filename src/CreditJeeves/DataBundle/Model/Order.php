@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,34 +13,79 @@ abstract class Order
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="bigint")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(
+     *     type="bigint"
+     * )
+     * @ORM\GeneratedValue(
+     *     strategy="AUTO"
+     * )
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="bigint")
+     * @ORM\Column(
+     *     type="bigint"
+     * )
      */
     protected $cj_applicant_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="orders")
-     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="orders"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_applicant_id",
+     *     referencedColumnName="id"
+     * )
      */
     protected $user;
 
     /**
-     * @ORM\Column(type="OrderStatus", options={"default"="new"})
+     * @ORM\Column(
+     *     type="OrderStatus",
+     *     options={
+     *         "default"="new"
+     *     }
+     * )
      */
     protected $status = OrderStatus::NEWONE;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(
+     *     type="OrderType",
+     *     nullable=true
+     * )
+     */
+    protected $type = OrderType::HL_CARD;
+
+    /**
+     * @ORM\Column(
+     *     type="integer",
+     *     nullable=true
+     * )
+     */
+    protected $amount;
+
+    /**
+     * @ORM\Column(
+     *     type="integer",
+     *     nullable=true
+     * )
+     */
+    protected $days_late = 0;
+
+    /**
+     * @ORM\Column(
+     *     type="datetime"
+     * )
      */
     protected $created_at;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(
+     *     type="datetime"
+     * )
      */
     protected $updated_at;
 
@@ -142,6 +188,76 @@ abstract class Order
         return $this->status;
     }
 
+    /**
+     * Set type
+     *
+     * @param OrderType $type
+     * @return Order
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    
+        return $this;
+    }
+    
+    /**
+     * Get type
+     *
+     * @return OrderType
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set amount
+     *
+     * @param double $amount
+     * @return Order
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+    
+        return $this;
+    }
+    
+    /**
+     * Get amount
+     *
+     * @return double
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * Set days_late
+     *
+     * @param double $days
+     * @return Order
+     */
+    public function setDaysLate($days)
+    {
+        $this->days_late = $days;
+    
+        return $this;
+    }
+    
+    /**
+     * Get days_late
+     *
+     * @return double
+     */
+    public function getDaysLate()
+    {
+        return $this->days_late;
+    }
+    
+    
     /**
      * Set created_date
      *

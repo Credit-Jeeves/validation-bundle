@@ -1,37 +1,37 @@
 model: CreditJeeves\DataBundle\Entity\Operation 
 fixtures:
-  rjOperationReport_1:
+  rjOperation_1:
     orders:
       - rjOrder_1
     contract: Contract_1
     type: rent
-  rjOperationReport_2:
+  rjOperation_2:
     orders:
       - rjOrder_2
     contract: Contract_1
     type: rent
-  rjOperationReport_3:
+  rjOperation_3:
     orders:
       - rjOrder_3
     contract: Contract_1
     type: rent
-  rjOperationReport_4:
+  rjOperation_4:
     orders:
       - rjOrder_4
     contract: Contract_1
     type: rent
-  rjOperationReport_5:
+  rjOperation_5:
     orders:
       - rjOrder_5
     contract: Contract_1
     type: rent
-  rjOperationReport_6:
+  rjOperation_6:
     orders:
       - rjOrder_6
     contract: Contract_1
     type: rent
 # finished contract
-  rjOperationReport_7:
+  rjOperation_7:
     orders:
       - rjOrder_3_1
       - rjOrder_3_2_1
@@ -46,4 +46,15 @@ fixtures:
       - rjOrder_3_10
     contract: Contract_3
     type: rent
-    
+# Another finished contract
+  rjOperation_8:
+    orders:
+      - rjOrder_4_1
+      - rjOrder_4_2
+      - rjOrder_4_3
+      - rjOrder_4_4
+      - rjOrder_4_5
+      - rjOrder_4_6
+      - rjOrder_4_7
+    contract: Contract_4
+    type: rent
