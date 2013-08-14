@@ -273,13 +273,13 @@
                     <span class="sort" id="rent" data-bind="click: sortFunction">{{'amount'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="due_day" data-bind="click: sortFunction">{{'due_date'|trans}}<i> </i></span>
+                    <span class="sort" style="width: 50px;" id="due_day" data-bind="click: sortFunction">{{'due_date'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
                     <span class="sort" id="paid_to" data-bind="click: sortFunction">{{'paid_to'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el"><span>{{'type'|trans}}<i> </i></span></th>
-                <th class="pie-el">&nbsp;</th>
+                <th class="pie-el"  style="width: 35px;"><span>{{'type'|trans}}<i> </i></span></th>
+                <th class="pie-el" style="width: 20px;">&nbsp;</th>
               </tr>
             </thead>
             <tbody>
@@ -288,9 +288,9 @@
                 <td data-bind="attr: {'class': 'actions-status '+style}">
                     <div data-bind="text: status"></div>
                 </td>
-                <td class="tenant-box" data-bind="text: tenant"></td>
+                <td data-bind="text: tenant"></td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>
-                <td class="nowrap-box" data-bind="text: phone"></td>
+                <td data-bind="text: phone"></td>
                 <td class="property-box ellipsis-box" 
                 data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
                 <td data-bind="text: amount"></td>

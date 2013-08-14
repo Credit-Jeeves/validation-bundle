@@ -43,3 +43,11 @@
 .pie-el>span {
     font-size: 11px !important;
 }
+.properties-table {
+    width : 920px !important;
+    table-layout: fixed !important;
+}
+.properties-table>tbody>tr>td, .tenant-box {
+    word-wrap: break-word !important;
+    word-break: break-all !important;
+}

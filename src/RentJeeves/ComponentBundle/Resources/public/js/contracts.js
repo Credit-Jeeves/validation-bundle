@@ -132,7 +132,6 @@ function Contracts() {
 
   this.search = function() {
     var searchCollum = $('#searchFilter').linkselect('val');
-
     if(typeof searchCollum != 'string') {
        searchCollum = '';
     }
@@ -146,7 +145,7 @@ function Contracts() {
     self.searchText(self.searchText());
     self.searchCollum(searchCollum);
     self.current(1);
-    self().ajaxAction();
+    self.ajaxAction();
   }
 
   this.clearSearch = function() {
