@@ -30,7 +30,7 @@ abstract class Heartland
      *
      * @ORM\ManyToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
-     *     inversedBy="checkout"
+     *     inversedBy="heartlands"
      * )
      *
      * @ORM\JoinColumn(

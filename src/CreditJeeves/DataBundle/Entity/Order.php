@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Order as BaseOrder;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -37,12 +38,17 @@ class Order extends BaseOrder
         $result = array();
         $contract = $this->getOperations()->last()->getContract();
         $result['amount'] = $this->getHeartlands()->last()->getAmount();
-        $result['status'] = $this->getStatus();
         $result['tenant'] = $contract->getTenant()->getFullName();
         $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
         $result['start'] = $this->getHeartlands()->first()->getCreatedAt()->format('m/d/Y');
-        $result['finish'] = $this->getHeartlands()->last()->getCreatedAt()->format('m/d/Y');
+        $result['status'] = 'PENDING';
+        $result['finish'] = '--';
         $result['style'] = 'contract-pending';
+        if (OrderStatus::COMPLETE == $this->getStatus()) {
+            $result['finish'] = $this->getHeartlands()->last()->getCreatedAt()->format('m/d/Y');
+            $result['style'] = '';
+            $result['status'] = 'PAID';
+        }
         return $result;
     }
 }
