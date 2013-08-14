@@ -5,7 +5,6 @@ function ContractDetails() {
   this.review = ko.observable(false);
   this.edit = ko.observable(false);
   this.invite = ko.observable(false);
-  this.marginTop = ko.observable(0);
   this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
 
   this.cancelEdit = function(data)
@@ -61,12 +60,10 @@ function ContractDetails() {
     self.approve(true);
   };
   this.reviewContract = function(data) {
+    $('#tenant-review-property-popup').dialog('open');
     self.clearDetails();
     self.approve(false);
-    if (data.top != undefined) {
-      self.marginTop(data.top);
-      self.contract(data);
-    }
+    self.contract(data);
     self.review(true);
   };
   this.approveSave = function() {
@@ -129,7 +126,6 @@ function Contracts() {
         }
       },
       success: function(response) {
-        console.log('success');
         self.aContracts([]);
         self.aContracts(response.contracts);
         self.total(response.total);
@@ -157,12 +153,10 @@ function Contracts() {
   };
   this.approveContract = function(data) {
     var position = $('#edit-' + data.id).position();
-    data.top = position.top - 300;
     DetailsViewModel.approveContract(data);
   };
   this.reviewContract = function(data) {
     var position = $('#edit-' + data.id).position();
-    data.top = position.top - 300;
     DetailsViewModel.reviewContract(data);
   };
   this.addTenant = function() {
@@ -191,6 +185,14 @@ $(document).ready(function(){
       modal: true,
       width:'520px'
   });
+
+  $('#tenant-review-property-popup').dialog({
+      autoOpen: false,
+      resizable: false,
+      modal: true,
+      width:'520px'
+  });
+  
   ContractsViewModel.ajaxAction();
 
 });
