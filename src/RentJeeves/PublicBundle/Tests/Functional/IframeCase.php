@@ -179,6 +179,7 @@ class IframeCase extends BaseTestCase
      */
     public function checkNotFoundNew()
     {
+        $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->fillGoogleAddress($fillAddress);

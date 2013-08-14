@@ -12,7 +12,6 @@ class AddPropertyCase extends BaseTestCase
 
     protected function fillGoogleAddress($fillAddress)
     {
-        $this->session->wait($this->timeout, "$('#formSearch').length > 0");
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
@@ -43,7 +42,7 @@ class AddPropertyCase extends BaseTestCase
         $addProperty->click();
         $this->fillGoogleAddress('770 Broadway, Manhattan, New York, NY 10003');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
-        $propertySearch->click();
+        $this->page->pressButton('find.your.rental');
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
         $this->assertCount(4, $searchResult, 'Search result');
