@@ -330,15 +330,21 @@ class AjaxController extends Controller
         $items = array();
         $total = 0;
         $request = $this->getRequest();
-        $page = $request->request->all('data');
-        $page = $page['data'];
+        $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
         $total = $repo->countContracts($group);
         $total = count($total);
+        $order  = ($dataRequest['isSortAsc'] === 'true')? "ASC" : "DESC";
         if ($total) {
-            $contracts = $repo->getContractsPage($group, $page['page'], $page['limit']);
+            $contracts = $repo->getContractsPage(
+                $group,
+                $dataRequest['page'],
+                $dataRequest['limit'],
+                $dataRequest['sortColumn'],
+                $order
+            );
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
                 $items[] = $item;
@@ -346,7 +352,7 @@ class AjaxController extends Controller
         }
         $data['contracts'] = $items;
         $data['total'] = $total;
-        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+        $data['pagination'] = $this->datagridPagination($total, $dataRequest['limit']);
         return new JsonResponse($data);
     }
 

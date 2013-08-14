@@ -6,12 +6,11 @@ function ContractDetails() {
   this.edit = ko.observable(false);
   this.invite = ko.observable(false);
   this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
-
   this.cancelEdit = function(data)
   {
     $('#tenant-edit-property-popup').dialog('close');
-    self.clearDetails();
     self.approveContract(self.contract());
+    self.clearDetails();
   }
 
   this.editContract = function(data) {
@@ -113,6 +112,33 @@ function Contracts() {
   this.pages = ko.observableArray([]);
   this.total = ko.observable(0);
   this.current = ko.observable(1);
+  this.sort = ko.observable('ASC');
+  this.sortColumn = ko.observable("status");
+  this.isSortAsc = ko.observable(true);
+  this.searchText = ko.observable("");
+  this.searchCollum = ko.observable("");
+
+  this.sortFunction = function(data, event) {
+     field = event.target.id;
+
+     if(field.length == 0) {
+        return;
+     }
+     self.sortColumn(field);
+     $('.sort-dn').attr('class', 'sort');
+     $('.sort-up').attr('class', 'sort');
+     if(self.isSortAsc() === false) {
+      self.isSortAsc(true);
+      $('#'.field).attr('class', 'sort-dn');
+     } else {
+      self.isSortAsc(false);
+      $('#'.field).attr('class', 'sort-up');
+     }
+     
+     self.current(1);
+     self.ajaxAction();
+  };
+
   this.ajaxAction = function() {
     self.aContracts([]);
     $.ajax({
@@ -122,7 +148,11 @@ function Contracts() {
       data: {
         'data': {
           'page' : self.current(),
-          'limit' : limit
+          'limit' : limit,
+          'sortColumn': self.sortColumn(),
+          'isSortAsc': self.isSortAsc(),
+          'searchCollum': self.searchCollum(),
+          'searchText': self.searchText()
         }
       },
       success: function(response) {
@@ -130,12 +160,22 @@ function Contracts() {
         self.aContracts(response.contracts);
         self.total(response.total);
         self.pages(response.pagination);
+        if(self.sortColumn().length == 0) {
+          return;
+        }
+        if(self.isSortAsc()) {
+          $('#'+self.sortColumn()).attr('class', 'sort-dn');
+        } else {
+          $('#'+self.sortColumn()).attr('class', 'sort-up');
+        }
       }
     });
   };
+
   this.countContracts = ko.computed(function(){
     return parseInt(self.aContracts().length);
   });
+
   this.goToPage = function(page) {
     self.current(page);
     if (page == 'First') {
@@ -192,7 +232,8 @@ $(document).ready(function(){
       modal: true,
       width:'520px'
   });
-  
-  ContractsViewModel.ajaxAction();
 
+  ContractsViewModel.ajaxAction();
+  $('#searchFilter').linkselect("destroy");
+  $('#searchFilter').linkselect();
 });

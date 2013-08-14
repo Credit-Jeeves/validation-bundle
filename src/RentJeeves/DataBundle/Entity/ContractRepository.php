@@ -6,7 +6,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class ContractRepository extends EntityRepository
 {
-    public function countContracts($group, $searchBy = 'address', $search = '')
+    public function countContracts($group, $searchBy = '', $search = '')
     {
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
@@ -17,8 +17,8 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+            $query->andWhere('p.'.$searchBy.' = :search');
+            $query->setParameter('search', $search);
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
@@ -30,7 +30,7 @@ class ContractRepository extends EntityRepository
         $limit = 100,
         $sort = 'c.status',
         $order = 'ASC',
-        $searchBy = 'p.street',
+        $searchBy = '',
         $search = ''
     ) {
         $offset = ($page - 1) * $limit;
@@ -45,6 +45,21 @@ class ContractRepository extends EntityRepository
         if (!empty($search)) {
             //             $query->andWhere('p.'.$searchBy.' = :search');
             //             $query->setParameter('search', $search);
+        }
+        switch ($sort) {
+            case 'phone':
+            case 'email':
+                $sort = 't.'.$sort;
+                break;
+            case 'tenant':
+                $sort = 't.first_name';
+                break;
+            case 'street':
+                $sort = 'p.street';
+                break;
+            default:
+                $sort = 'c.'.$sort;
+                break;
         }
         $query->orderBy($sort, $order);
         $query->setFirstResult($offset);

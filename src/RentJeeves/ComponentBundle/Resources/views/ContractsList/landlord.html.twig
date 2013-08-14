@@ -228,11 +228,18 @@
       <h2 data-bind="text: 'All (' + $root.total() + ')'"></h2>
       <div class="fiter-box">
         <label>Filter by</label>
-        <select class="select custom-select blue-arrow selectBox" style="display: none;">
-          <option selected="selected" value="0">- Select One -</option>
+        <select id="searchFilter" class="select custom-select blue-arrow selectBox" style="display: none;">
+          <option selected="selected" value="status">Status</option>
+          <option selected="selected" value="tenant">Tenant</option>
+          <option selected="selected" value="email">Email</option>
+          <option selected="selected" value="phone">Phone</option>
+          <option selected="selected" value="street">Street</option>
+          <option selected="selected" value="rent">Amount</option>
+          <option selected="selected" value="due_day">Due Date</option>
+          <option selected="selected" value="paid_to">Paid To</option>
         </select>
         <div class="finder-box">
-          <input type="text" id="searsh-field" name="searsh-field" value="">
+          <input type="text" id="searsh-field" name="searsh-field" data-bind="value: searchText" value="">
           <a href="#" id="delete" class="pie-el">x</a>
           <button type="submit" id="search-submit" class="pie-el">Search</button>
         </div>
@@ -246,14 +253,30 @@
           <table class="properties-table zebra-grid">
             <thead>
               <tr class="properties-th">
-                <th class="pie-el"><span>Status<i> </i></span></th>
-                <th class="pie-el"><span>Tenant<i> </i></span></th>
-                <th class="pie-el"><span>Email<i> </i></span></th>
-                <th class="pie-el"><span>Phone<i> </i></span></th>
-                <th class="pie-el"><span>Property<i> </i></span></th>
-                <th class="pie-el"><span>Amount</span></th>
-                <th class="pie-el"><span>Due Date<i> </i></span></th>
-                <th class="pie-el"><span>Paid To<i> </i></span></th>
+                <th class="pie-el">
+                    <span class="sort" id="status" data-bind="click: sortFunction">Status<i> </i></span>
+                </th>
+                <th class="pie-el">
+                    <span class="sort" id="tenant" data-bind="click: sortFunction">Tenant<i> </i></span>
+                </th>
+                <th class="pie-el">
+                    <span class="sort" id="email" data-bind="click: sortFunction">Email<i> </i></span>
+                </th>
+                <th class="pie-el">
+                    <span class="sort" id="phone" data-bind="click: sortFunction">Phone<i> </i></span>
+                </th>
+                <th class="pie-el">
+                    <span class="sort" id="street" data-bind="click: sortFunction">Property<i> </i></span>
+                </th>
+                <th class="pie-el">
+                    <span class="sort" id="rent" data-bind="click: sortFunction">Amount<i> </i></span>
+                </th>
+                <th class="pie-el">
+                    <span class="sort" id="due_day" data-bind="click: sortFunction">Due Date<i> </i></span>
+                </th>
+                <th class="pie-el">
+                    <span class="sort" id="paid_to" data-bind="click: sortFunction">Paid To<i> </i></span>
+                </th>
                 <th class="pie-el"><span>Type<i> </i></span></th>
                 <th class="pie-el">&nbsp;</th>
               </tr>
