@@ -79,6 +79,7 @@ class AddPropertyCase extends BaseTestCase
         $this->assertCount(5, $searchResult, 'Search result');
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
+        $this->session->wait($this->timeout, "$('#register').length > 0");
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $this->page->pressButton('add.property');
         $this->assertNotNull($this->page->find('css', '.error_list'));

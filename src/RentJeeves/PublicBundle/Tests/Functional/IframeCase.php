@@ -184,6 +184,7 @@ class IframeCase extends BaseTestCase
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->fillGoogleAddress($fillAddress);
+        $this->session->wait($this->timeout, "window.location.pathname != '/rj_test.php/iframe'");
         $this->session->wait($this->timeout, "$('#formNewUser').length > 0");
         $fillAddress = '710 Broadway, Manhattan, New York City, NY 10003 ';
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
