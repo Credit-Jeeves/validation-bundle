@@ -24,7 +24,7 @@
     margin-top: 0px;
 }
 #delete {
-    display: none;
+   display: block;
 }
 .footer-button-box .button {
     padding-left: 0px;

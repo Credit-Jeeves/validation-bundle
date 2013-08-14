@@ -230,18 +230,16 @@
         <label>Filter by</label>
         <select id="searchFilter" class="select custom-select blue-arrow selectBox" style="display: none;">
           <option selected="selected" value="status">Status</option>
-          <option selected="selected" value="tenant">Tenant</option>
-          <option selected="selected" value="email">Email</option>
-          <option selected="selected" value="phone">Phone</option>
-          <option selected="selected" value="street">Street</option>
-          <option selected="selected" value="rent">Amount</option>
-          <option selected="selected" value="due_day">Due Date</option>
-          <option selected="selected" value="paid_to">Paid To</option>
+          <option value="email">Email</option>
+          <option value="phone">Phone</option>
+          <option value="street">Street</option>
+          <option value="rent">Amount</option>
         </select>
         <div class="finder-box">
           <input type="text" id="searsh-field" name="searsh-field" data-bind="value: searchText" value="">
-          <a href="#" id="delete" class="pie-el">x</a>
-          <button type="submit" id="search-submit" class="pie-el">Search</button>
+          <a href="#" id="delete" class="pie-el"
+          data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }">x</a>
+          <button type="submit" id="search-submit" class="pie-el" data-bind="click: search">Search</button>
         </div>
         <button class="button small" data-bind="click: $root.addTenant"><span>Add Tenant</span></button>
       </div>

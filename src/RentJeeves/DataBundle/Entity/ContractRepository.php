@@ -17,13 +17,33 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
-            $query->andWhere('p.'.$searchBy.' = :search');
+            $this->applyCollum($searchBy);
+            $query->andWhere($searchBy.' = :search');
             $query->setParameter('search', $search);
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
     }
     
+    private function applyCollum(&$field)
+    {
+        switch ($field) {
+            case 'phone':
+            case 'email':
+                $field= 't.'.$field;
+                break;
+            case 'tenant':
+                $field = 't.first_name';
+                break;
+            case 'street':
+                $field = 'p.street';
+                break;
+            default:
+                $field = 'c.'.$field;
+                break;
+        }
+    }
+
     public function getContractsPage(
         $group,
         $page = 1,
@@ -42,25 +62,12 @@ class ContractRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
-        if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+        if (!empty($search) && !empty($searchBy)) {
+            $this->applyCollum($searchBy);
+            $query->andWhere($searchBy.' = :search');
+            $query->setParameter('search', $search);
         }
-        switch ($sort) {
-            case 'phone':
-            case 'email':
-                $sort = 't.'.$sort;
-                break;
-            case 'tenant':
-                $sort = 't.first_name';
-                break;
-            case 'street':
-                $sort = 'p.street';
-                break;
-            default:
-                $sort = 'c.'.$sort;
-                break;
-        }
+        $this->applyCollum($sort);
         $query->orderBy($sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);

@@ -334,7 +334,7 @@ class AjaxController extends Controller
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countContracts($group);
+        $total = $repo->countContracts($group, $dataRequest['searchCollum'], $dataRequest['searchText']);
         $total = count($total);
         $order  = ($dataRequest['isSortAsc'] === 'true')? "ASC" : "DESC";
         if ($total) {
@@ -343,7 +343,9 @@ class AjaxController extends Controller
                 $dataRequest['page'],
                 $dataRequest['limit'],
                 $dataRequest['sortColumn'],
-                $order
+                $order,
+                $dataRequest['searchCollum'],
+                $dataRequest['searchText']
             );
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();

@@ -117,6 +117,35 @@ function Contracts() {
   this.isSortAsc = ko.observable(true);
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("");
+  this.isSearch =  ko.observable(false);
+
+  this.search = function() {
+    var searchCollum = $('#searchFilter').linkselect('val');
+
+    if(typeof searchCollum != 'string') {
+       searchCollum = '';
+    }
+    if(self.searchText().length <= 0) {
+      $('#search').css('border-color', 'red');
+      return;
+    } else {
+      $('#search').css('border-color', '#bdbdbd');
+    }
+    self.isSearch(true);
+    self.searchText(self.searchText());
+    self.searchCollum(searchCollum);
+    self.current(1);
+    self.ajaxAction();
+  }
+
+  this.clearSearch = function() {
+    self.searchText('');
+    self.searchCollum('');
+    self.current(1);
+    self.ajaxAction();
+    self.isSearch(false);
+  }
+
 
   this.sortFunction = function(data, event) {
      field = event.target.id;
