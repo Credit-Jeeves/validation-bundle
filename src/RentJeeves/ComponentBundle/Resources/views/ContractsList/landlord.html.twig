@@ -71,37 +71,37 @@
 
     <!-- Action Approve -->
     <div id="tenant-approve-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <h1>Approve Tenant Information</h1>
+      <h1>{{ 'approve.tenant.info'|trans }}</h1>
       <div class="clearfix col-box"  data-bind="with: contract">
         
         <div class="information-box pie-el">
-          This pending tenant is awaiting your approval.
+          {{'pending.tenant.info'|trans}}
         </div>
         
         <div class="col">
           <h4 class="clearfix">
-            <span>Tenant Information</span>
+            <span>{{ 'tenant.info'|trans }}</span>
           </h4>
           <div class="form-row clearfix">
-            <label>Name</label>
+            <label>{{'name'|trans }}</label>
             <div class="fields-box">
               <span class="value" data-bind="text: tenant"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Property</label>
+            <label>{{ 'property'|trans }}</label>
             <div class="fields-box">
               <span class="value" data-bind="text: address"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Phone</label>
+            <label>{{ 'phone'|trans }}</label>
             <div class="fields-box">
               <span class="value"  data-bind="text: phone"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Email</label>
+            <label>{{ 'email'|trans }}</label>
             <div class="fields-box">
               <span class="value" data-bind="text: email"></span>
             </div>
@@ -110,28 +110,28 @@
         
         <div class="col">
           <h4 class="clearfix">
-            <span>Requested Payment</span>
+            <span>{{ 'request.payments'|trans }}</span>
             <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
           </h4>
           <div class="form-row clearfix">
-            <label>Property</label>
+            <label>{{ 'property'|trans }}</label>
             <div class="fields-box">
-              <span class="value left">Monthly</span>
-              <label class="fixed">Due</label>
+              <span class="value left">{{ 'monthly'|trans }}</span>
+              <label class="fixed">{{ 'Due'|trans }}</label>
               <span class="value left" data-bind="text: due_day"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Amount</label>
+            <label>{{ 'amount'|trans }}</label>
             <div class="fields-box">
               <span class="value left" data-bind="text: amount"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Start</label>
+            <label>{{ 'start'|trans }}</label>
             <div class="fields-box">
               <span class="value left" id="contract-edit-start" data-bind="text: start"></span>
-              <label class="fixed">End</label>
+              <label class="fixed">{{ 'end'|trans }}</label>
               <span class="value left" id="contract-edit-finish" data-bind="text: finish"></span>
             </div>
           </div>
@@ -139,11 +139,11 @@
         
       </div>
       <div class="footer-button-box">
-        <button class="button" data-bind="click: approveSave"><span>Approve Tenant</span></button>
-        <button class="button" data-bind="click: editContract"><span>Edit Info</span></button>
+        <button class="button" data-bind="click: approveSave"><span>{{ 'approve.tenant'|trans }}</span></button>
+        <button class="button" data-bind="click: editContract"><span>{{ 'edit.Info'|trans }}</span></button>
         <div class="with-seperator-box">
           <button class="button grey" onclick="$('#tenant-approve-property-popup').dialog( 'close' ); return false;">
-            <span>Cancel</span>
+            <span>{{ 'cancel'|trans }}</span>
           </button>
         </div>
       </div>
@@ -151,33 +151,33 @@
 
     <!-- Action Review -->
     <div id="tenant-review-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <h1>Information</h1>
+      <h1>{{ 'Information'|trans }}</h1>
       <div class="clearfix col-box"  data-bind="with: contract">
 
         <div class="col">
           <h4 class="clearfix">
-            <span>Tenant Information</span>
+            <span>{{ 'tenant.info'|trans }}</span>
           </h4>
           <div class="form-row clearfix">
-            <label>Name</label>
+            <label>{{ 'name'|trans }}</label>
             <div class="fields-box">
               <span class="value" data-bind="text: tenant"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Property</label>
+            <label>{{ 'property'|trans }}</label>
             <div class="fields-box">
               <span class="value" data-bind="text: address"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Phone</label>
+            <label>{{ 'phone'|trans }}</label>
             <div class="fields-box">
               <span class="value"  data-bind="text: phone"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Email</label>
+            <label>{{ 'email'|trans }}</label>
             <div class="fields-box">
               <span class="value" data-bind="text: email"></span>
             </div>
@@ -186,28 +186,28 @@
         
         <div class="col">
           <h4 class="clearfix">
-            <span>Requested Payment</span>
+            <span>{{ 'request.payments'|trans }}</span>
             <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
           </h4>
           <div class="form-row clearfix">
-            <label>Property</label>
+            <label>{{ 'property'|trans }}</label>
             <div class="fields-box">
-              <span class="value left">Monthly</span>
-              <label class="fixed">Due</label>
+              <span class="value left">{{ 'monthly'|trans }} </span>
+              <label class="fixed">{{ 'Due'|trans }}</label>
               <span class="value left" data-bind="text: due_day"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Amount</label>
+            <label>{{ 'amount'|trans }}</label>
             <div class="fields-box">
               <span class="value left" data-bind="text: amount"></span>
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>Start</label>
+            <label>{{ 'start'|trans }}</label>
             <div class="fields-box">
               <span class="value left" id="contract-edit-start" data-bind="text: start"></span>
-              <label class="fixed">End</label>
+              <label class="fixed">{{ 'end'|trans }}</label>
               <span class="value left" id="contract-edit-finish" data-bind="text: finish"></span>
             </div>
           </div>
@@ -215,7 +215,7 @@
       </div>
       <div class="footer-button-box">
           <button class="button grey" onclick="$('#tenant-review-property-popup').dialog( 'close' ); return false;">
-            <span>Cancel</span>
+            <span>{{ 'cancel'|trans }}</span>
           </button>
       </div>
     </div>
@@ -226,21 +226,25 @@
     <div class="title-box clearfix">
       <h2 data-bind="text: 'All (' + $root.total() + ')'"></h2>
       <div class="fiter-box">
-        <label>Filter by</label>
+        <label>{{'filter.by'|trans}}</label>
         <select id="searchFilter" class="select custom-select blue-arrow selectBox" style="display: none;">
-          <option selected="selected" value="status">Status</option>
-          <option value="email">Email</option>
-          <option value="phone">Phone</option>
-          <option value="street">Street</option>
-          <option value="rent">Amount</option>
+          <option selected="selected" value="status">{{'filter.status'|trans}}</option>
+          <option value="email">{{ 'email'|trans }}</option>
+          <option value="phone">{{ 'phone'|trans }}</option>
+          <option value="street">{{ 'street'|trans }}</option>
+          <option value="rent">{{ 'amount'|trans }}</option>
         </select>
         <div class="finder-box">
           <input type="text" id="searsh-field" name="searsh-field" data-bind="value: searchText" value="">
           <a href="#" id="delete" class="pie-el"
           data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }">x</a>
-          <button type="submit" id="search-submit" class="pie-el" data-bind="click: search">Search</button>
+          <button type="submit" id="search-submit" class="pie-el" data-bind="click: search">
+             {{ 'search'|trans }}
+          </button>
         </div>
-        <button class="button small" data-bind="click: $root.addTenant"><span>Add Tenant</span></button>
+        <button class="button small" data-bind="click: $root.addTenant">
+            <span>{{ 'add.tenant'|trans }}</span>
+        </button>
       </div>
     </div>
     <div class="content-box">
@@ -251,30 +255,30 @@
             <thead>
               <tr class="properties-th">
                 <th class="pie-el">
-                    <span class="sort" id="status" data-bind="click: sortFunction">Status<i> </i></span>
+                    <span class="sort" id="status" data-bind="click: sortFunction">{{'filter.status'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="tenant" data-bind="click: sortFunction">Tenant<i> </i></span>
+                    <span class="sort" id="tenant" data-bind="click: sortFunction">{{'tenant'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="email" data-bind="click: sortFunction">Email<i> </i></span>
+                    <span class="sort" id="email" data-bind="click: sortFunction">{{'email'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="phone" data-bind="click: sortFunction">Phone<i> </i></span>
+                    <span class="sort" id="phone" data-bind="click: sortFunction">{{'phone'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="street" data-bind="click: sortFunction">Property<i> </i></span>
+                    <span class="sort" id="street" data-bind="click: sortFunction">{{'property'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="rent" data-bind="click: sortFunction">Amount<i> </i></span>
+                    <span class="sort" id="rent" data-bind="click: sortFunction">{{'amount'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="due_day" data-bind="click: sortFunction">Due Date<i> </i></span>
+                    <span class="sort" id="due_day" data-bind="click: sortFunction">{{'due_date'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" id="paid_to" data-bind="click: sortFunction">Paid To<i> </i></span>
+                    <span class="sort" id="paid_to" data-bind="click: sortFunction">{{'paid_to'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el"><span>Type<i> </i></span></th>
+                <th class="pie-el"><span>{{'type'|trans}}<i> </i></span></th>
                 <th class="pie-el">&nbsp;</th>
               </tr>
             </thead>
@@ -295,15 +299,15 @@
                 <td></td>
                 <td class="type-box">
                     <!-- ko if: 'CURRENT' == status -->
-                    <a title="Edit" class="type-ico pie-el edit" href="#"
+                    <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                     <!-- ko if: 'PENDING' == status -->
-                    <a title="Approve" class="type-ico pie-el approve" href="#" 
+                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve" href="#" 
                     data-bind="click: $root.approveContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                     <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status -->
-                    <a title="Review" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
+                    <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                 </td>
             </tr>
@@ -332,7 +336,7 @@
           <div class="cell">
             <ul class="vert">
               <li>
-                <span class="clarification alert"><i> </i>Alert</span>
+                <span class="clarification alert"><i> </i>{{'alert'|trans}}</span>
               </li>
               <li>
                 <span class="clarification pending"><i> </i>Pending</span>
@@ -342,16 +346,18 @@
           <div class="cell">
             <ul class="hor">
               <li>
-                <span class="clarification e-check"><i> </i>E-Check</span>
-                <span class="clarification credit-card"><i> </i>Credit Card</span>
-                <span class="clarification recurring"><i> </i>Recurring</span>
-                <span class="clarification csm-icon"><i> </i>Credit Service Member<br><small><em>(ACH fee waived)</em></small></span>
+                <span class="clarification e-check"><i> </i>{{'E-Check'|trans}}</span>
+                <span class="clarification credit-card"><i> </i>{{'credit.card'|trans}}</span>
+                <span class="clarification recurring"><i> </i>{{ 'recurring'|trans }}</span>
+                <span class="clarification csm-icon"><i> </i>
+                    {{'credit.service.member'|trans }}<br><small><em>({{'ach.fee'|trans}})</em></small>
+                </span>
               </li>
               <li>
-                <span class="clarification review"><i> </i>Review</span>
-                <span class="clarification edit"><i> </i>Edit</span>                        
-                <span class="clarification approve"><i> </i>Approve</span>
-                <span class="clarification alert"><i> </i>Alert</span>
+                <span class="clarification review"><i> </i>{{'review'|trans}}</span>
+                <span class="clarification edit"><i> </i>{{'Edit'|trans}}</span>                        
+                <span class="clarification approve"><i> </i>{{'approve'|trans}}</span>
+                <span class="clarification alert"><i> </i>{{'alert'|trans}}</span>
               </li>
             </ul>
           </div>
