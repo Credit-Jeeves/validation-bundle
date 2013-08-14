@@ -22,19 +22,20 @@ fixtures:
         finishAt:  '90 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
+# Finished contract #
     Contract_3:
         tenant:   Tenant_1
         holding:  rjHolding_1
-        group:    RentGroup_2
+        group:    RentGroup_1
         property: Property_1
         unit:     Unit_1_4
         rent:     1500
         status:   finished
         paid_to:  '-60 days'
-        startAt:   '-90 days'
+        startAt:   '-365 days'
         finishAt: '-60 days'
-        createdAt: '-50 days'
-        updatedAt: '-50 days'
+        createdAt: '-400 days'
+        updatedAt: '-60 days'
     Contract_4:
         tenant:   Tenant_2
         holding:  rjHolding_1

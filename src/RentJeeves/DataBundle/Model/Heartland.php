@@ -11,7 +11,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class Checkout
+abstract class Heartland
 {
     /**
      * @ORM\Column(
@@ -42,13 +42,13 @@ abstract class Checkout
 
     /**
      * @ORM\Column(
-     *     type="CheckoutStatus",
+     *     type="HeartlandStatus",
      *     options={
      *         "default"="pending"
      *     }
      * )
      */
-    protected $status;
+    protected $status = 'pending';
 
     /**
      * @ORM\Column(

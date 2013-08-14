@@ -18,7 +18,7 @@ function Payments() {
         }
       },
       success: function(response) {
-        self.aPaymnets([]);
+        self.aPayments([]);
         self.aPayments(response.payments);
         self.total(response.total);
         self.pages(response.pagination);

@@ -1,0 +1,123 @@
+model: RentJeeves\DataBundle\Entity\Heartland
+fixtures:
+  rjCheckout_1_1:
+    order:  rjOrder_1
+    amount: 1500
+    createdAt: '-50 days'
+  rjCheckout_1_2:
+    order:  rjOrder_1
+    amount: 1500
+    createdAt: '-50 days'
+  rjCheckout_2_1:
+    order:  rjOrder_2
+    amount: 1500
+    createdAt: '-40 days'
+  rjCheckout_2_1:
+    order:  rjOrder_2
+    amount: 1500
+    createdAt: '-40 days'
+  rjCheckout_3_1:
+    order:  rjOrder_3
+    amount: 1500
+    createdAt: '-30 days'
+  rjCheckout_4_1:
+    order:  rjOrder_4
+    amount: 1500
+    createdAt: '-20 days'
+  rjCheckout_5_1:
+    order:  rjOrder_5
+    amount: 1500
+    createdAt: '-10 days'
+  rjCheckout_6_1:
+    order:  rjOrder_6
+    amount: 1500
+    createdAt: '-2 days'
+# finished contract
+  rjCheckout_7_1_1:
+    order:  rjOrder_3_1
+    amount: 1500
+    createdAt: '-370 days'
+  rjCheckout_7_1_2:
+    order:  rjOrder_3_1
+    amount: 1500
+    createdAt: '-369 days'
+  rjCheckout_7_2_1:
+    order:  rjOrder_3_2_1
+    amount: 1500
+    createdAt: '-339 days'
+  rjCheckout_7_2_2:
+    order:  rjOrder_3_2_1
+    amount: 1500
+    createdAt: '-339 days'
+  rjCheckout_7_2_3:
+    order:  rjOrder_3_2_2
+    amount: 1500
+    createdAt: '-339 days'
+  rjCheckout_7_2_4:
+    order:  rjOrder_3_2_1
+    amount: 1500
+    createdAt: '-335 days'
+  rjCheckout_7_3_1:
+    order:  rjOrder_3_3
+    amount: 1500
+    createdAt: '-309 days'
+  rjCheckout_7_3_2:
+    order:  rjOrder_3_3
+    amount: 1500
+    createdAt: '-309 days'
+  rjCheckout_7_4_1:
+    order:  rjOrder_3_4
+    amount: 1500
+    createdAt: '-279 days'
+  rjCheckout_7_4_2:
+    order:  rjOrder_3_4
+    amount: 1500
+    createdAt: '-279 days'
+  rjCheckout_7_5_1:
+    order:  rjOrder_3_5
+    amount: 1500
+    createdAt: '-249 days'
+  rjCheckout_7_5_2:
+    order:  rjOrder_3_5
+    amount: 1500
+    createdAt: '-249 days'
+  rjCheckout_7_6_1:
+    order:  rjOrder_3_6
+    amount: 1500
+    createdAt: '-219 days'
+  rjCheckout_7_6_2:
+    order:  rjOrder_3_6
+    amount: 1500
+    createdAt: '-219 days'
+  rjCheckout_7_7_1:
+    order:  rjOrder_3_7
+    amount: 1500
+    createdAt: '-189 days'
+  rjCheckout_7_7_2:
+    order:  rjOrder_3_7
+    amount: 1500
+    createdAt: '-189 days'
+  rjCheckout_7_8_1:
+    order:  rjOrder_3_8
+    amount: 1500
+    createdAt: '-159 days'
+  rjCheckout_7_8_2:
+    order:  rjOrder_3_8
+    amount: 1500
+    createdAt: '-156 days'
+  rjCheckout_7_9_1:
+    order:  rjOrder_3_9
+    amount: 1500
+    createdAt: '-129 days'
+  rjCheckout_7_9_2:
+    order:  rjOrder_3_9
+    amount: 1500
+    createdAt: '-129 days'
+  rjCheckout_7_10_1:
+    order:  rjOrder_3_10
+    amount: 1500
+    createdAt: '-99 days'
+  rjCheckout_7_10_2:
+    order:  rjOrder_3_10
+    amount: 1500
+    createdAt: '-99 days'

@@ -29,4 +29,21 @@ fixtures:
     orders:
       - rjOrder_6
     contract: Contract_1
-    type: rent        
+    type: rent
+# finished contract
+  rjOperationReport_7:
+    orders:
+      - rjOrder_3_1
+      - rjOrder_3_2_1
+      - rjOrder_3_2_2
+      - rjOrder_3_3
+      - rjOrder_3_4
+      - rjOrder_3_5
+      - rjOrder_3_6
+      - rjOrder_3_7
+      - rjOrder_3_8
+      - rjOrder_3_9
+      - rjOrder_3_10
+    contract: Contract_3
+    type: rent
+    

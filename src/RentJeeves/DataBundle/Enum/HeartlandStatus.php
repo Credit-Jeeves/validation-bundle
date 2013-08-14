@@ -9,7 +9,7 @@ use CreditJeeves\CoreBundle\Enum;
 class HeartlandStatus extends \CreditJeeves\CoreBundle\Enum
 {
     const PENDING = 'pending';
-    const RETURNED = 'returned';
-    const PRCESSED = 'processed';
+    const REFUNDED = 'refunded';
+    const FINISHED = 'finished';
     const CANCELLED = 'cancelled';
 }

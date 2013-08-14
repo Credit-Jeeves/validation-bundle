@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use RentJeeves\DataBundle\Model\Checkout as Base;
+use RentJeeves\DataBundle\Model\Heartland as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\HeartlandStatus;
 
