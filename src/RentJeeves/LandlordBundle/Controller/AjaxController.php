@@ -453,13 +453,13 @@ class AjaxController extends Controller
         $page = $page['data'];
         $data = array('payments' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Heartland');
-        $total = $repo->countPayments($group);
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
+        $total = $repo->countOrders($group);
         $total = count($total);
         if ($total) {
-            $payments = $repo->getPaymentsPage($group, $page['page'], $page['limit']);
-            foreach ($payments as $payment) {
-                $item = $payment->getItem();
+            $orders = $repo->getOrdersPage($group, $page['page'], $page['limit']);
+            foreach ($orders as $order) {
+                $item = $order->getItem();
                 $items[] = $item;
             }
         }

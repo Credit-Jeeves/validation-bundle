@@ -13,9 +13,4 @@ use RentJeeves\DataBundle\Enum\HeartlandStatus;
  */
 class Heartland extends Base
 {
-    public function getItem()
-    {
-        $result = array();
-        return $result;
-    }
 }

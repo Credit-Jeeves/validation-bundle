@@ -31,4 +31,18 @@ class Order extends BaseOrder
 
         return $this;
     }
+
+    public function getItem()
+    {
+        $result = array();
+        $contract = $this->getOperations()->last()->getContract();
+        $result['amount'] = $this->getHeartlands()->last()->getAmount();
+        $result['status'] = $this->getStatus();
+        $result['tenant'] = $contract->getTenant()->getFullName();
+        $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
+        $result['start'] = $this->getHeartlands()->first()->getCreatedAt()->format('m/d/Y');
+        $result['finish'] = $this->getHeartlands()->last()->getCreatedAt()->format('m/d/Y');
+        $result['style'] = 'contract-pending';
+        return $result;
+    }
 }

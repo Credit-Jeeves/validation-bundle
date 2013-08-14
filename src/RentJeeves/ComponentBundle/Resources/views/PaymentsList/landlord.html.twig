@@ -1,9 +1,11 @@
     <div id="payments-block" class="contracts-block">
         <div class="">
-            <div class="units-total floatleft"><h2 data-bind="text: 'Rent Total (' + $root.total() + ')'"></h2></div>
+            <div class="units-total floatleft"><h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2></div>
         </div>
         <div class="clearboth"></div>
+        
         <!-- ko if: pages().length -->
+        <div class="row-20"></div>
         <div class="">
             <!-- ko foreach: pages() -->
                 <!-- ko if: $data == $root.current() -->
@@ -37,9 +39,8 @@
                     <td data-bind="attr: {'class': style}">
                         <div data-bind="text: status"></div>
                     </td>
-                    <td data-bind="text: posted"></td>
-                    <td data-bind="text: initiated"></td>
-                    <td data-bind="text: property"></td>
+                    <td data-bind="text: finish"></td>
+                    <td data-bind="text: start"></td>
                     <td data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
                     <td data-bind="text: tenant"></td>
                     <td data-bind="text: amount"></td>
