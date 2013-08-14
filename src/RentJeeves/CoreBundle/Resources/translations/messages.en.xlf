@@ -440,33 +440,24 @@
             </trans-unit>
             <trans-unit id="tenant.info">
                 <source>tenant.info</source>
-                <target>
-                   Tenant Information
+                <target>Tenant Information
                 </target>
             </trans-unit>
             <trans-unit id="request.payments">
                 <source>request.payments</source>
-                <target>
-                   Requested Payment
-                </target>
+                <target>Requested Payment</target>
             </trans-unit>
             <trans-unit id="amount">
                 <source>amount</source>
-                <target>
-                   Amount
-                </target>
+                <target>Amount</target>
             </trans-unit>
             <trans-unit id="start">
                 <source>start</source>
-                <target>
-                   Start
-                </target>
+                <target>Start</target>
             </trans-unit>
             <trans-unit id="end">
                 <source>end</source>
-                <target>
-                   End
-                </target>
+                <target>End</target>
             </trans-unit>
             <trans-unit id="remove.tenant">
                 <source>remove.tenant</source>
@@ -475,27 +466,20 @@
             </trans-unit>
             <trans-unit id="approve.tenant.info">
                 <source>approve.tenant.info</source>
-                <target>
-                   Approve Tenant Information
-                </target>
+                <target>Approve Tenant Information</target>
             </trans-unit>
             <trans-unit id="pending.tenant.info">
                 <source>pending.tenant.info</source>
-                <target>
-                   This pending tenant is awaiting your approval.
-                </target>
+                <target>This pending tenant is awaiting your approval.</target>
             </trans-unit>
             <trans-unit id="monthly">
                 <source>monthly</source>
-                <target>
-                   Monthly
+                <target>Monthly
                 </target>
             </trans-unit>
             <trans-unit id="Due">
                 <source>Due</source>
-                <target>
-                   Due
-                </target>
+                <target>Due</target>
             </trans-unit>
             <trans-unit id="approve.tenant">
                 <source>approve.tenant</source>
@@ -571,33 +555,23 @@
             </trans-unit>
             <trans-unit id="type">
                 <source>type</source>
-                <target>
-                   Type
-                </target>
+                <target>Type</target>
             </trans-unit>
             <trans-unit id="edit">
                 <source>edit</source>
-                <target>
-                   Edit
-                </target>
+                <target>Edit</target>
             </trans-unit>
             <trans-unit id="approve">
                 <source>approve</source>
-                <target>
-                   Approve
-                </target>
+                <target>Approve</target>
             </trans-unit>
             <trans-unit id="review">
                 <source>review</source>
-                <target>
-                  Review
-                </target>
+                <target>Review</target>
             </trans-unit>
             <trans-unit id="alert">
                 <source>alert</source>
-                <target>
-                  Alert
-                </target>
+                <target>Alert</target>
             </trans-unit>
             <trans-unit id="E-Check">
                 <source>E-Check</source>

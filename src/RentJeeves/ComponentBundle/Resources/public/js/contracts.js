@@ -9,15 +9,26 @@ function ContractDetails() {
   this.cancelEdit = function(data)
   {
     $('#tenant-edit-property-popup').dialog('close');
-    self.approveContract(self.contract());
+    if(self.approve()) {
+      self.approveContract(self.contract());
+    }
     self.clearDetails();
   }
 
   this.editContract = function(data) {
     $('#tenant-approve-property-popup').dialog('close');
     $('#tenant-edit-property-popup').dialog('open');
+    if (data.first_name) {
+      self.contract(data);
+    }
+    if(self.approve()) {
+      var flag = true;
+    } else {
+      var flag = false;
+    }
     self.clearDetails();
     self.edit(true);
+    self.approve(flag);
     window.jQuery.curCSS = window.jQuery.css;
     $('#contractEditStart').datepicker({
       showOn: "button",
