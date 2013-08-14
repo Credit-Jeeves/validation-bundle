@@ -129,8 +129,7 @@ class IframeCase extends BaseTestCase
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('.thisIsMyRental').length > 0");
+        $this->session->wait($this->timeout, "$('#register').length > 0");
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
         $this->acceptAlert();
@@ -183,7 +182,6 @@ class IframeCase extends BaseTestCase
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->fillGoogleAddress($fillAddress);
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#formNewUser').length > 0");
         $fillAddress = '710 Broadway, Manhattan, New York City, NY 10003 ';
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
