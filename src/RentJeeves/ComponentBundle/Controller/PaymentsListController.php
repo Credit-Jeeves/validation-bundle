@@ -12,7 +12,7 @@ class PaymentsListController extends Controller
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Group $group)
     {
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Checkout');
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Heartland');
         $total = $repo->countPayments($group);
         var_dump(count($total));
         return array(

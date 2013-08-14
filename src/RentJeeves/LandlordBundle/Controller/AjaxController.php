@@ -434,6 +434,16 @@ class AjaxController extends Controller
 
     /* Payments */
 
+    /**
+     * @Route(
+     *     "/payment/list",
+     *     name="landlord_payments_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
     public function getPaymentsList()
     {
         $items = array();
@@ -443,8 +453,8 @@ class AjaxController extends Controller
         $page = $page['data'];
         $data = array('payments' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Checkout');
-        $total = $repo->countPaymnets($group);
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Heartland');
+        $total = $repo->countPayments($group);
         $total = count($total);
         if ($total) {
             $payments = $repo->getPaymentsPage($group, $page['page'], $page['limit']);

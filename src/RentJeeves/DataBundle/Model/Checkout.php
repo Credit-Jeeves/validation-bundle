@@ -28,7 +28,7 @@ abstract class Checkout
     /**
      * @var \CreditJeeves\DataBundle\Entity\Order
      *
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
      *     inversedBy="checkout"
      * )

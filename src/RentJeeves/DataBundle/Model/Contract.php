@@ -166,15 +166,20 @@ abstract class Contract
     protected $updatedAt;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
      *     mappedBy="contract",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
      */
-    protected $operation;
+    protected $operations;
 
+    public function __construct()
+    {
+        $this->operations = new ArrayCollection();
+    }
+    
     /**
      * Get id
      *
@@ -491,5 +496,38 @@ abstract class Contract
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * Add operation
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
+     * @return Contract
+     */
+    public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    {
+        $this->operations[] = $operation;
+    
+        return $this;
+    }
+    
+    /**
+     * Remove operation
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Operation $opeartion
+     */
+    public function removeScore(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    {
+        $this->opeartions->removeElement($operation);
+    }
+    
+    /**
+     * Get operations
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOperations()
+    {
+        return $this->operations;
     }
 }

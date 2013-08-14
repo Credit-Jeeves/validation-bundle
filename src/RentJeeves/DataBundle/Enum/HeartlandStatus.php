@@ -6,7 +6,7 @@ use CreditJeeves\CoreBundle\Enum;
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
-class CheckoutStatus extends \CreditJeeves\CoreBundle\Enum
+class HeartlandStatus extends \CreditJeeves\CoreBundle\Enum
 {
     const PENDING = 'pending';
     const RETURNED = 'returned';

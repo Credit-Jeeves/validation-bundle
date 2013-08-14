@@ -58,14 +58,14 @@ abstract class Order
     protected $authorize;
 
     /**
-     * @ORM\OneToOne(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\Checkout",
+     * @ORM\OneToMany(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\Heartland",
      *     mappedBy="order",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
      */
-    protected $checkout;
+    protected $heartlands;
 
     /**
      * @var ArrayCollection
@@ -82,6 +82,7 @@ abstract class Order
     public function __construct()
     {
         $this->operations = new ArrayCollection();
+        $this->heartlands = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
 
@@ -254,5 +255,38 @@ abstract class Order
     public function getOperations()
     {
         return $this->operations;
+    }
+
+    /**
+     * Add heartland 
+     *
+     * @param \RentJeeves\DataBundle\Entity\Heartland
+     * @return User
+     */
+    public function addHeartland(\RentJeeves\DataBundle\Entity\Heartland $heartland)
+    {
+        $this->heartlands[] = $heartland;
+    
+        return $this;
+    }
+
+    /**
+     * Remove heartland
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Heartland $geartland
+     */
+    public function removeHeartland(\RentJeeves\DataBundle\Entity\Heartland $heartland)
+    {
+        $this->heartlands->removeElement($heartland);
+    }
+
+    /**
+     * Get heartlands
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getHeartlands()
+    {
+        return $this->heartlands;
     }
 }

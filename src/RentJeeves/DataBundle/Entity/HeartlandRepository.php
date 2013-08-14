@@ -4,7 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
-class CheckoutRepository extends EntityRepository
+class HeartlandRepository extends EntityRepository
 {
     public function countPayments($group, $searchBy = 'address', $search = '')
     {

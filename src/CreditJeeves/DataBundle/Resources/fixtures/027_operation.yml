@@ -3,10 +3,30 @@ fixtures:
   rjOperationReport_1:
     orders:
       - rjOrder_1
-      - rjOrder_2
-      - rjOrder_3
-      - rjOrder_4
-      - rjOrder_5
-      - rjOrder_6
     contract: Contract_1
     type: rent
+  rjOperationReport_2:
+    orders:
+      - rjOrder_2
+    contract: Contract_1
+    type: rent
+  rjOperationReport_3:
+    orders:
+      - rjOrder_3
+    contract: Contract_1
+    type: rent
+  rjOperationReport_4:
+    orders:
+      - rjOrder_4
+    contract: Contract_1
+    type: rent
+  rjOperationReport_5:
+    orders:
+      - rjOrder_5
+    contract: Contract_1
+    type: rent
+  rjOperationReport_6:
+    orders:
+      - rjOrder_6
+    contract: Contract_1
+    type: rent        
