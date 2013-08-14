@@ -18,8 +18,8 @@ class ContractRepository extends EntityRepository
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
             $this->applyCollum($searchBy);
-            $query->andWhere($searchBy.' = :search');
-            $query->setParameter('search', $search);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
@@ -33,7 +33,7 @@ class ContractRepository extends EntityRepository
                 $field= 't.'.$field;
                 break;
             case 'tenant':
-                $field = 't.first_name';
+                $field = 'CONCAT(t.first_name, t.last_name)';
                 break;
             case 'street':
                 $field = 'p.street';
@@ -64,8 +64,8 @@ class ContractRepository extends EntityRepository
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search) && !empty($searchBy)) {
             $this->applyCollum($searchBy);
-            $query->andWhere($searchBy.' = :search');
-            $query->setParameter('search', $search);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
         $this->applyCollum($sort);
         $query->orderBy($sort, $order);

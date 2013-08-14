@@ -29,7 +29,7 @@ class Contract extends Base
         if ($unit) {
             $result['unit_id'] = $unit->getId();
         }
-        $result['tenant'] = ucfirst(strtolower($tenant->getFullName()));
+        $result['tenant'] = ucwords(strtolower($tenant->getFullName()));
         $result['first_name'] = $tenant->getFirstName();
         $result['last_name'] = $tenant->getLastName();
         $result['email'] = $tenant->getEmail();
