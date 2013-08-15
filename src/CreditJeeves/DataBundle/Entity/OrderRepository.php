@@ -78,4 +78,18 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->execute();
     }
+
+    /**
+     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     */
+    public function getContractHistory(\RentJeeves\DataBundle\Entity\Contract $contract)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->innerJoin('o.operations', 'p');
+        $query->where('p.contract = :contract');
+        $query->setParameter('contract', $contract);
+        $query->orderBy('o.created_at', 'ASC');
+        $query = $query->getQuery();
+        return $query->execute();
+    }
 }

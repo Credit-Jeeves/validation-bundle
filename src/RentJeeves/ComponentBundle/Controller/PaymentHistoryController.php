@@ -19,6 +19,7 @@ class PaymentHistoryController extends Controller
         for ($i = 1; $i < 13; $i++) {
             $aMonthes[] = date('M', mktime(0, 0, 0, $i));
         }
+        $em = $this->get('doctrine.orm.default_entity_manager');//->getRepository('DataBundle:Order');
         $contracts = $user->getContracts();
         foreach ($contracts as $contract) {
             if (ContractStatus::PENDING == $contract->getStatus()) {
@@ -39,16 +40,16 @@ class PaymentHistoryController extends Controller
             $item['balance_year'] = $contract->getFinishAt()->format('Y');
             $item['balance_month'] = $contract->getFinishAt()->format('m');
             switch ($status = $contract->getStatus()) {
-                case 'approved':
-                    $history = $contract->getFinishedPaymentHistory();
+                case ContractStatus::CURRENT:
+                    $history = $contract->getFinishedPaymentHistory($em);
                     $item['history'] = $history['history'];
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = 'ACTIVE';
                     $active[] = $item;
                     break;
-                case 'finished':
-                    $history = $contract->getActivePaymentHistory();
+                case ContractStatus::FINISHED:
+                    $history = $contract->getActivePaymentHistory($em);
                     $item['history'] = $history['history'];
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
@@ -57,11 +58,6 @@ class PaymentHistoryController extends Controller
                     break;
             }
         }
-        // For finished contracts it's a good idea to create history table
-//         echo '<pre>';
-//         print_r($finished);
-//         echo '</pre>';
-        
         return array(
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,

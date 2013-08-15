@@ -5,7 +5,7 @@
         {% if isActive == true %}
         <div class="tradeline-status tradeline-O rent-status">{{ aContract.status }}</div>
         {% else %}
-        <div class="tradeline-status tradeline-red rent-status">{{ aContract.status }}</div>
+        <div class="tradeline-status tradeline-C rent-status">{{ aContract.status }}</div>
         {% endif %}
         <div class="tradeline-balance"><b>{{ 'rent.monthly.rent' | trans }}: ${{ aContract.rent }}</b></div>
         <div class="tradeline-last-payment">

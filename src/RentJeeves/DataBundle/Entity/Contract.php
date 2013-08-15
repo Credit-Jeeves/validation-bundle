@@ -93,42 +93,40 @@ class Contract extends Base
         return implode(', #', $result);
     }
 
-    public function getActivePaymentHistory()
+    public function getActivePaymentHistory($em)
     {
-        return $this->getPaymentHistory();
+        return $this->getPaymentHistory($em);
     }
 
-    public function getFinishedPaymentHistory()
+    public function getFinishedPaymentHistory($em)
     {
-        return $this->getPaymentHistory();
+        return $this->getPaymentHistory($em);
     }
 
-    public function getPaymentHistory()
+    public function getPaymentHistory($em)
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '');
         $payments = array();
         $currentDate = new \DateTime('now');
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
-        $operations = $this->getOperations();
-        foreach ($operations as $operation) {
-            $orders = $operation->getOrders();
-            foreach ($orders as $order) {
-                $orderDate = $order->getCreatedAt();
-                $interval = $currentDate->diff($orderDate)->format('%r%a');
-                if ($interval > $lastDate) {
-                    $result['last_amount'] = $order->getAmount();
-                    $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
-                }
-                $nYear = $order->getCreatedAt()->format('Y');
-                $nMonth = $order->getCreatedAt()->format('m');
-                if (!isset($payments[$nYear][$nMonth])) {
-                    $payments[$nYear][$nMonth] = array('status' => 'C', 'text' => 'OK');
-                }
+        $repo = $em->getRepository('DataBundle:Order');
+        $orders = $repo->getContractHistory($this);
+        foreach ($orders as $order) {
+            $orderDate = $order->getCreatedAt();
+            $interval = $currentDate->diff($orderDate)->format('%r%a');
+            if ($interval > $lastDate) {
+                $result['last_amount'] = $order->getAmount();
+                $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
+            }
+            $nYear = $order->getCreatedAt()->format('Y');
+            $nMonth = $order->getCreatedAt()->format('m');
+            if (!isset($payments[$nYear][$nMonth])) {
+                $payments[$nYear][$nMonth] = array('status' => 'C', 'text' => 'OK');
             }
         }
         $result['history'] = $payments;
 //         echo '<pre>';
-//         print_r($result);
+         //print_r(serialize($result));
 //         echo '</pre>';
         return $result;
     }
