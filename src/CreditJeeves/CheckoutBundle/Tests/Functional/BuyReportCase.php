@@ -81,6 +81,7 @@ class BuyReportCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#checkout_buy_box .button').length > 0");
         $this->page->clickLink('buy-link');
 
+        $this->session->wait($this->timeout, "$('#checkout_authorize_net_aim_type').length > 0");
         $this->assertNotNull($form = $this->page->find('css', '#checkout_authorize_net_aim_type'));
 
         $form->pressButton('buy-report-form-submit');
