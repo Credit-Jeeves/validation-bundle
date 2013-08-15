@@ -63,7 +63,7 @@ function Properties() {
       success: function(response) {
         self.aProperties([]);
         self.aProperties(response.properties);
-        if (self.aProperties().length <= 0 && self.searchText().length > 0) {
+        if (self.aProperties().length <= 0 && self.searchText().length == 0) {
           return location.href = Routing.generate('landlord_property_new');
         }
         self.total(response.total);
@@ -193,14 +193,16 @@ function Search() {
        searchCollum = '';
     }
     if(self.searchText().length <= 0) {
+      $('#search').css('border-color', 'red');
       return;
+    } else {
+      $('#search').css('border-color', '#bdbdbd');
     }
-
+    self.isSearch(true);
     self.property().searchText(self.searchText());
     self.property().searchCollum(searchCollum);
     self.property().current(1);
     self.property().ajaxAction();
-    self.isSearch(true);
   }
 
   this.clearSearch = function() {
@@ -208,6 +210,8 @@ function Search() {
     self.property().searchCollum('');
     self.property().current(1);
     self.property().ajaxAction();
+    self.searchCollum('');
+    self.searchText('');
     self.isSearch(false);
   }
 }

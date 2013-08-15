@@ -415,6 +415,199 @@
                 <source>landlord.register.text4</source>
                 <target>Tell us a bit about the property you’re renting.</target>
             </trans-unit>
+            <trans-unit id="tenant.found.match">
+                <source>tenant.found.match</source>
+                <target>Good news! We found are match.</target>
+            </trans-unit>
+            <trans-unit id="result.search">
+                <source>result.search</source>
+                <target>
+                    %count% rentals in %city%, %area%:
+                </target>
+            </trans-unit>
+            <trans-unit id="edit.tenant.info">
+                <source>edit.tenant.info</source>
+                <target>
+                    Edit Tenant Information
+                </target>
+            </trans-unit>
+            <trans-unit id="are.you.sure.you.want.remove.property">
+                <source>are.you.sure.you.want.remove.property</source>
+                <target>
+                    Are you sure you want to remove this property? Any payments 
+          scheduled for this property will be cancelled. 
+                </target>
+            </trans-unit>
+            <trans-unit id="tenant.info">
+                <source>tenant.info</source>
+                <target>Tenant Information</target>
+            </trans-unit>
+            <trans-unit id="request.payments">
+                <source>request.payments</source>
+                <target>Requested Payment</target>
+            </trans-unit>
+            <trans-unit id="amount">
+                <source>amount</source>
+                <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="start">
+                <source>start</source>
+                <target>Start</target>
+            </trans-unit>
+            <trans-unit id="end">
+                <source>end</source>
+                <target>End</target>
+            </trans-unit>
+            <trans-unit id="remove.tenant">
+                <source>remove.tenant</source>
+                <target><![CDATA[Remove<br>Tenant]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="approve.tenant.info">
+                <source>approve.tenant.info</source>
+                <target>Approve Tenant Information</target>
+            </trans-unit>
+            <trans-unit id="pending.tenant.info">
+                <source>pending.tenant.info</source>
+                <target>This pending tenant is awaiting your approval.</target>
+            </trans-unit>
+            <trans-unit id="monthly">
+                <source>monthly</source>
+                <target>Monthly
+                </target>
+            </trans-unit>
+            <trans-unit id="Due">
+                <source>Due</source>
+                <target>Due</target>
+            </trans-unit>
+            <trans-unit id="approve.tenant">
+                <source>approve.tenant</source>
+                <target>
+                   Approve Tenant
+                </target>
+            </trans-unit>
+            <trans-unit id="edit.Info">
+                <source>edit.Info</source>
+                <target>
+                   Edit Info
+                </target>
+            </trans-unit>
+            <trans-unit id="Information">
+                <source>Information</source>
+                <target>
+                   Information
+                </target>
+            </trans-unit>
+            <trans-unit id="filter.by">
+                <source>filter.by</source>
+                <target>
+                   Filter by
+                </target>
+            </trans-unit>
+            <trans-unit id="filter.status">
+                <source>filter.status</source>
+                <target>
+                   Status
+                </target>
+            </trans-unit>
+            <trans-unit id="email">
+                <source>email</source>
+                <target>
+                   Email
+                </target>
+            </trans-unit>
+            <trans-unit id="phone">
+                <source>phone</source>
+                <target>
+                   Phone
+                </target>
+            </trans-unit>
+            <trans-unit id="street">
+                <source>street</source>
+                <target>
+                   Street
+                </target>
+            </trans-unit>
+            <trans-unit id="add.tenant">
+                <source>add.tenant</source>
+                <target>Add Tenant</target>
+            </trans-unit>
+            <trans-unit id="tenant">
+                <source>tenant</source>
+                <target>
+                   Tenant
+                </target>
+            </trans-unit>
+            <trans-unit id="due_date">
+                <source>due_date</source>
+                <target>
+                   Due Date
+                </target>
+            </trans-unit>
+            <trans-unit id="paid_to">
+                <source>paid_to</source>
+                <target>
+                   Paid To
+                </target>
+            </trans-unit>
+            <trans-unit id="type">
+                <source>type</source>
+                <target>Type</target>
+            </trans-unit>
+            <trans-unit id="edit">
+                <source>edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="approve">
+                <source>approve</source>
+                <target>Approve</target>
+            </trans-unit>
+            <trans-unit id="review">
+                <source>review</source>
+                <target>Review</target>
+            </trans-unit>
+            <trans-unit id="alert">
+                <source>alert</source>
+                <target>Alert</target>
+            </trans-unit>
+            <trans-unit id="E-Check">
+                <source>E-Check</source>
+                <target>
+                  E-Check
+                </target>
+            </trans-unit>
+            <trans-unit id="credit.card">
+                <source>credit.card</source>
+                <target>
+                  Credit Card
+                </target>
+            </trans-unit>
+            <trans-unit id="recurring">
+                <source>recurring</source>
+                <target>
+                  Recurring
+                </target>
+            </trans-unit>
+            <trans-unit id="credit.service.member">
+                <source>credit.service.member</source>
+                <target>
+                  Credit Service Member
+                </target>
+            </trans-unit>
+           <trans-unit id="ach.fee">
+                <source>ach.fee</source>
+                <target>
+                  ACH fee waived
+                </target>
+            </trans-unit>
+           <trans-unit id="invite.tenant">
+                <source>invite.tenant</source>
+                <target>Invite Tenant</target>
+            </trans-unit>
+           <trans-unit id="donthavedata">
+                <source>donthavedata</source>
+                <target>Don't have data.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

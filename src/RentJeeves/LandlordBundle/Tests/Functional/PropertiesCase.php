@@ -8,6 +8,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class PropertiesCase extends BaseTestCase
 {
+    protected $timeout = 20000;
     /**
      * @test
      */
@@ -42,7 +43,8 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
-
+        $this->assertNotNull($searchButton = $this->page->find('css', '#searchButton'));
+        $searchButton->click();
         $this->assertNotNull($search = $this->page->find('css', '#search'));
         $this->assertNotNull($searchFilterSelectLink = $this->page->find('css', '#searchFilterSelect_link'));
         
@@ -83,6 +85,8 @@ class PropertiesCase extends BaseTestCase
 
         $propertyButtonAdd->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+        $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty'));
+        $saveProperty->click();
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
         $fillAddress = 'New York Homestay, West 42nd Street, Manhattan, New York City, NY';
@@ -104,7 +108,7 @@ class PropertiesCase extends BaseTestCase
         $unitNames[3]->setValue('1D');
         $unitNames[4]->setValue('1T');
 
-        $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty>span'));
+        $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty'));
         $saveProperty->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");

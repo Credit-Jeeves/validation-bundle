@@ -148,7 +148,7 @@ $(document).ready(function(){
           checkDeleteButton();
         });
 
-        $('#search-submit>span').click(function(){
+        $('#search-submit').click(function(){
             var place = autocomplete.getPlace();
             $('#propertyId').val('');
             $('#register').addClass('greyButton');

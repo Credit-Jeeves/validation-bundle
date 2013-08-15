@@ -11,7 +11,8 @@
               <option value="country">{{ 'country'|trans }}</option>
       </select>
       <div class="finder-box">
-        <input type="text" id="search" name="searsh-field" data-bind="value: searchText" value="">
+        <input type="text" id="search" name="searsh-field" 
+        data-bind="value: searchText" value="">
         <a style="display:block;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }"id="delete" class="pie-el">x</a>
         <button type="submit" id="searchButton" data-bind="click: searchFunction" class="pie-el">{{ 'search'|trans }}</button>
         <ul class="list-search-result pie-el">
@@ -27,12 +28,22 @@
         <table class="properties-table zebra-grid">
           <thead>
             <tr class="properties-th" >
-              <th class="pie-el" ><span>Address<i> </i></span></th>
-              <th class="pie-el" ><span id='zip' class="sort" data-bind="click: sortFunction">ZIP<i> </i></span></th>
-              <th class="pie-el" ><span id='city' class="sort" data-bind="click: sortFunction">City<i> </i></span></th>
-              <th class="pie-el" ><span id='area' class="sort" data-bind="click: sortFunction">State<i> </i></span></th>
-              <th class="pie-el" ><span id='country' class="sort" data-bind="click: sortFunction">Country<i> </i></span></th>
-              <th class="pie-el"><span>Units</span></th>
+              <th class="pie-el" ><span>{{ 'address'|trans }}<i> </i></span></th>
+              <th class="pie-el" ><span id='zip' class="sort" data-bind="click: sortFunction">
+                {{ 'zip'|trans }}
+              <i></i>
+              </span></th>
+              <th class="pie-el" ><span id='city' class="sort" data-bind="click: sortFunction">
+                {{ 'city'|trans }}
+              <i></i>
+              </span></th>
+              <th class="pie-el" ><span id='area' class="sort" data-bind="click: sortFunction">
+                {{ 'state'|trans }}<i> </i></span></th>
+              <th class="pie-el" ><span id='country' class="sort" data-bind="click: sortFunction">
+                {{ 'country'|trans }}
+              <i></i>
+              </span></th>
+              <th class="pie-el"><span>{{ 'units'|trans }}</span></th>
               <th class="pie-el">&nbsp;</th>
             </tr>
           </thead>
@@ -121,8 +132,8 @@
     
   </div>
   <div class="footer-button-box">
-    <button class="button grey buttonFix" id="saveProperty" >
-      <span data-bind="click: saveProperty">{{ 'add.property'|trans }}</span>
+    <button class="button grey buttonFix" id="saveProperty" data-bind="click: saveProperty">
+      <span>{{ 'add.property'|trans }}</span>
     </button>
     <button class="button grey buttonFix" onclick="$('#add-property-popup').dialog( 'close' ); return false;">
       <span>{{ 'cancel'|trans}}</span>
