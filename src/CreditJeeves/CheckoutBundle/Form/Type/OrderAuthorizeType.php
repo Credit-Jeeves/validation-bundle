@@ -20,7 +20,7 @@ class OrderAuthorizeType extends AbstractType
             array(
                 'data_class' => 'CreditJeeves\DataBundle\Entity\Order',
                 'translation_domain' => 'checkout',
-                'validation_groups' => array('buy_report'),
+                'validation_groups' => array('buy_report_new'),
                 'cascade_validation' => true,
             )
         );

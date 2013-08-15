@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\SimulationBundle\Model\BaseReport;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\MappedSuperclass
@@ -28,6 +29,7 @@ abstract class Report extends BaseReport
     protected $raw_data;
 
     /**
+     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime")
      */
     protected $created_at;
@@ -42,6 +44,11 @@ abstract class Report extends BaseReport
      */
     protected $atbs;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="reportsD2c")
+     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
+     */
+    protected $user;
 
     public function __construct()
     {
@@ -134,5 +141,28 @@ abstract class Report extends BaseReport
     public function getAtbs()
     {
         return $this->atbs;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \CreditJeeves\DataBundle\Entity\User $user
+     * @return Report
+     */
+    public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \CreditJeeves\DataBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

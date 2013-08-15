@@ -7,7 +7,7 @@ class QuestionsController extends Controller
 {
     public function indexAction()
     {
-        $sEmail = $this->container->getParameter('core.help.email');
+        $sEmail = $this->container->getParameter('support_email');
         return $this->render('ComponentBundle:Questions:index.html.twig', array('sEmail' => $sEmail, 'sPhone' => ''));
     }
 }

@@ -93,18 +93,11 @@ class DashboardCase extends BaseTestCase
             $this->timeout + 3000,
             "jQuery('#lightbox-container').css('display') == 'none'"
         );
-//         $this->session->wait(
-//             $this->timeout,
-//             "jQuery('#simulation-container .overlay').length > 0"
-//         );
-//         $this->session->wait(
-//             $this->timeout,
-//             "jQuery('#simulation-container .overlay').length == 0"
-//         );
-//         $this->session->wait(
-//             $this->timeout + 10000,
-//             "jQuery('#simulation-container .scroller ul').children().length > 0"
-//         );
+
+        $this->session->wait(
+            $this->timeout + $this->timeout,
+            "jQuery('.target-name span').text() == 'Honda Civic'"
+        );
         $this->assertNotNull($target = $this->page->find('css', '.target-name span'));
         $this->assertEquals('Honda Civic', $target->getText(), 'Wrong target');
         $this->assertNotNull($success = $this->page->find('css', '.success-title'));

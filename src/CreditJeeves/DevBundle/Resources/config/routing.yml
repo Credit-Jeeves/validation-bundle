@@ -1,3 +1,0 @@
-credit_jeeves_dev_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: CreditJeevesDevBundle:Default:index }

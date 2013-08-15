@@ -21,7 +21,7 @@ class AuthorizeNetAimType extends AbstractType
                 'text',
                 array(
                     'constraints' => array(
-                        new NotBlank(),
+                        new NotBlank(array('groups' => array('buy_report_new'))),
                     )
                 )
             )
@@ -30,7 +30,7 @@ class AuthorizeNetAimType extends AbstractType
                 'text',
                 array(
                     'constraints' => array(
-                        new NotBlank(),
+                        new NotBlank(array('groups' => array('buy_report_new'))),
                     )
                 )
             )
@@ -49,7 +49,7 @@ class AuthorizeNetAimType extends AbstractType
                         'day' => 1,
                     ),
                     'constraints' => array(
-                        new NotBlank(),
+                        new NotBlank(array('groups' => array('buy_report_new'))),
                     )
                 )
             );
