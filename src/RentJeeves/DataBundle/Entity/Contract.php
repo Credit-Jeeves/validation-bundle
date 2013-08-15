@@ -106,7 +106,7 @@ class Contract extends Base
     public function getPaymentHistory($em)
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '');
-        $payments = array();
+        $payments = $this->createHistoryArray();
         $currentDate = new \DateTime('now');
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $repo = $em->getRepository('DataBundle:Order');
@@ -118,16 +118,37 @@ class Contract extends Base
                 $result['last_amount'] = $order->getAmount();
                 $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
             }
-            $nYear = $order->getCreatedAt()->format('Y');
-            $nMonth = $order->getCreatedAt()->format('m');
-            if (!isset($payments[$nYear][$nMonth])) {
+            $nYear = $orderDate->format('Y');
+            $nMonth = $orderDate->format('m');
+            if ($late = $order->getDaysLate()) {
+                $nMonth = $orderDate->modify('-'.$late.' days')->format('m');
+                $payments[$nYear][$nMonth] = array('status' => '1', 'text' => $late);
+            } else {
                 $payments[$nYear][$nMonth] = array('status' => 'C', 'text' => 'OK');
             }
         }
         $result['history'] = $payments;
-//         echo '<pre>';
-         //print_r(serialize($result));
-//         echo '</pre>';
+        return $result;
+    }
+
+    private function createHistoryArray()
+    {
+        $result = array();
+        $aMonthes = array();
+        for ($i = 1; $i < 13; $i++) {
+            $aMonthes[date('m', mktime(0, 0, 0, $i))] = array(
+                'status' => 'empty-month',
+                'text' => '',
+                'amount' => 0,
+            );
+        }
+        $start = $this->getStartAt();
+        $finish = $this->getFinishAt();
+        $startYear = $start->format('Y');
+        $finishYear = $finish->format('Y');
+        for ($i = $startYear; $i <= $finishYear; $i++) {
+            $result[$i] = $aMonthes;
+        }
         return $result;
     }
 }

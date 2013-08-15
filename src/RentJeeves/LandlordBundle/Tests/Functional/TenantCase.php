@@ -123,7 +123,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (12)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count of tenants');
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('edit.Info');
@@ -131,7 +131,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (11)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (12)', $allh2->getText(), 'Wrong count');
         $this->logout();
     }
 

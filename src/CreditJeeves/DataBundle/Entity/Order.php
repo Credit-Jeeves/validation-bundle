@@ -40,12 +40,12 @@ class Order extends BaseOrder
         $result['amount'] = $this->getAmount();
         $result['tenant'] = $contract->getTenant()->getFullName();
         $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
-        $result['start'] = $this->getHeartlands()->first()->getCreatedAt()->format('m/d/Y');
+        $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $result['status'] = 'PENDING';
         $result['finish'] = '--';
         $result['style'] = 'contract-pending';
         if (OrderStatus::COMPLETE == $this->getStatus()) {
-            $result['finish'] = $this->getHeartlands()->last()->getCreatedAt()->format('m/d/Y');
+            $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
             $result['style'] = '';
             $result['status'] = 'PAID';
         }
