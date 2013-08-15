@@ -13,9 +13,9 @@ require_once __DIR__.'/../app/AppKernel.php';
 require_once __DIR__.'/../app/AppRjKernel.php';
 require_once __DIR__.'/../app/AppRjTestKernel.php';
 
-\Symfony\Component\Debug\Debug::enable();
+//\Symfony\Component\Debug\Debug::enable();
 
-$kernel = new AppRjTestKernel('test', true);
+$kernel = new AppRjTestKernel('test', false);
 $kernel->loadClassCache();
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);

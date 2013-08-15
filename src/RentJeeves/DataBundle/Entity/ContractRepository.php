@@ -6,7 +6,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class ContractRepository extends EntityRepository
 {
-    public function countContracts($group, $searchBy = 'address', $search = '')
+    public function countContracts($group, $searchBy = '', $search = '')
     {
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
@@ -17,20 +17,43 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+            $this->applyCollum($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
     }
     
+    private function applyCollum(&$field)
+    {
+        switch ($field) {
+            case 'phone':
+            case 'email':
+                $field= 't.'.$field;
+                break;
+            case 'tenant':
+                $field = 'CONCAT(t.first_name, t.last_name)';
+                break;
+            case 'first_name':
+                $field = 't.first_name';
+                break;
+            case 'street':
+                $field = 'p.street';
+                break;
+            default:
+                $field = 'c.'.$field;
+                break;
+        }
+    }
+
     public function getContractsPage(
         $group,
         $page = 1,
         $limit = 100,
         $sort = 'c.status',
         $order = 'ASC',
-        $searchBy = 'p.street',
+        $searchBy = '',
         $search = ''
     ) {
         $offset = ($page - 1) * $limit;
@@ -42,10 +65,12 @@ class ContractRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
-        if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+        if (!empty($search) && !empty($searchBy)) {
+            $this->applyCollum($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
+        $this->applyCollum($sort);
         $query->orderBy($sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);

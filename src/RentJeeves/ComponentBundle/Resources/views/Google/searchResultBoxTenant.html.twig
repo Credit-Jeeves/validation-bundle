@@ -33,7 +33,13 @@
       {% endif %}
 
       {% if countProperyHaveLandlord > 0 %}
-        <h4 class="titleSearch">{{ countProperyHaveLandlord }} rentals in {{ property.city }}, {{ property.area }}:</h4>
+        <h4 class="titleSearch">
+          {% if countProperyHaveLandlord == 1 %}
+            {{ 'tenant.found.match'|trans }}
+          {% else %}
+            {{ 'result.search'|trans({'%count%': countProperyHaveLandlord, '%city%': property.city, '%area%': property.area}) }}
+          {% endif %}
+        </h4>
         <ul>
             {% for prop in propertyListHaveLandlord %}
             <li class="addressText" data="{{ prop.id }}" number="{{ i }}">

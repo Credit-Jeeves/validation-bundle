@@ -53,8 +53,13 @@ class Property extends Base
     {
         if (isset($data['geometry']['location'])) {
             $location = $data['geometry']['location'];
-            $property['jb'] = $location['lb'];
-            $property['kb'] = $location['mb'];
+
+            if (count($location) == 2) {
+                $property['jb'] = reset($location);
+                $property['kb'] = end($location);
+            } else {
+                throw new \Exception("Unknown location from google", 1);
+            }
         }
         return $property;
     }

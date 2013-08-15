@@ -16,7 +16,7 @@ use RentJeeves\DataBundle\Entity\Invite;
 class PropertyController extends Controller
 {
     /**
-     * @Route("/add", name="property_add", options={"expose"=true})
+     * @Route("/add", name="property_add")
      * @Route("/add/{propertyId}", name="property_add_id", options={"expose"=true})
      * @Template()
      */

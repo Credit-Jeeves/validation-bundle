@@ -78,7 +78,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_7
         rent:     1750
-        status:   approved
+        status:   current
         paid_to:  '20 days'
         startAt:   '-10 month'
         finishAt: '2 month'
@@ -91,7 +91,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_8
         rent:     1750
-        status:   approved
+        status:   current
         paid_to:  '3 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -104,7 +104,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_9
         rent:     1750
-        status:   approved
+        status:   current
         paid_to:  '15 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -117,7 +117,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_10
         rent:     1750
-        status:   approved
+        status:   current
         paid_to:  '15 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -130,7 +130,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_11
         rent:     2100
-        status:   approved
+        status:   current
         paid_to:  '30 days'
         startAt:   '-90 days'
         finishAt: '60 days'
