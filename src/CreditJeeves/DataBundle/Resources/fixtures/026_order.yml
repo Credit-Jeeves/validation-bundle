@@ -195,3 +195,100 @@ fixtures:
     created_at: '-2 month'
     updated_at: '-2 month'
 
+  rjOrder_5_1:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-11 month'
+    updated_at: '-11 month'
+  rjOrder_5_2:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-10 month'
+    updated_at: '-10 month'
+  rjOrder_5_3:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-10 month'
+    updated_at: '-10 month'
+  rjOrder_5_4:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-8 month'
+    updated_at: '-8 month'
+  rjOrder_5_5:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-7 month'
+    updated_at: '-7 month'
+  rjOrder_5_6:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 30
+    created_at: '-5 month'
+    updated_at: '-5 month'
+  rjOrder_5_7:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-5 month'
+    updated_at: '-5 month'
+  rjOrder_5_8:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-4 month'
+    updated_at: '-4 month'
+  rjOrder_5_9:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-3 month'
+    updated_at: '-3 month'
+  rjOrder_5_10:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-2 month'
+    updated_at: '-2 month'
+  rjOrder_5_11:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-1 month'
+    updated_at: '-1 month'
+  rjOrder_5_12:
+    user: Tenant_1
+    status: complete
+    type: heartland_card
+    amount: 1250
+    days_late: 0
+    created_at: '-1 days'
+    updated_at: '-1 days'
+

@@ -3,6 +3,7 @@ namespace RentJeeves\ComponentBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class PaymentHistoryController extends Controller
 {
@@ -14,21 +15,43 @@ class PaymentHistoryController extends Controller
     {
         $active = array();
         $finished = array();
+        $aMonthes = array();
+        for ($i = 1; $i < 13; $i++) {
+            $aMonthes[] = date('M', mktime(0, 0, 0, $i));
+        }
         $contracts = $user->getContracts();
         foreach ($contracts as $contract) {
+            if (ContractStatus::PENDING == $contract->getStatus()) {
+                continue;
+            }
+            $currentDate = new \DateTime('now');
+            $startDate = $contract->getStartAt();
+            $interval = $startDate->diff($currentDate)->format('%r%a');
+            if ($interval < 0) {
+                continue;
+            }
             $item = array();
             $item['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
             $item['rent'] = $contract->getRent();
-            $item['start'] = $contract->getStartAt();
+            $item['start'] = $contract->getStartAt()->format('m/d/Y');
             $item['finish'] = $contract->getFinishAt();
+            $item['updated'] = $contract->getUpdatedAt()->format('F d, Y');
+            $item['balance_year'] = $contract->getFinishAt()->format('Y');
+            $item['balance_month'] = $contract->getFinishAt()->format('m');
             switch ($status = $contract->getStatus()) {
                 case 'approved':
-                    $item['history'] = $contract->getFinishedPaymentHistory();
+                    $history = $contract->getFinishedPaymentHistory();
+                    $item['history'] = $history['history'];
+                    $item['last_date'] = $history['last_date'];
+                    $item['last_amount'] = $history['last_amount'];
                     $item['status'] = 'ACTIVE';
                     $active[] = $item;
                     break;
                 case 'finished':
-                    $item['history'] = $contract->getActivePaymentHistory();
+                    $history = $contract->getActivePaymentHistory();
+                    $item['history'] = $history['history'];
+                    $item['last_date'] = $history['last_date'];
+                    $item['last_amount'] = $history['last_amount'];
                     $item['status'] = 'FINISHED';
                     $finished[] = $item;
                     break;
@@ -42,6 +65,7 @@ class PaymentHistoryController extends Controller
         return array(
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
+            'aMonthes' => $aMonthes,
         );
     }
 }

@@ -249,3 +249,15 @@
   float: right;
   text-align: right;
 }
+
+.rent-info {
+    width: 170px;
+}
+
+.rent-status {
+    width: 160px;
+}
+
+.rent-details {
+    width: 135px;
+}

@@ -105,14 +105,31 @@ class Contract extends Base
 
     public function getPaymentHistory()
     {
+        $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '');
         $payments = array();
+        $currentDate = new \DateTime('now');
+        $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $operations = $this->getOperations();
         foreach ($operations as $operation) {
             $orders = $operation->getOrders();
             foreach ($orders as $order) {
-                //$payments[] = $order;
+                $orderDate = $order->getCreatedAt();
+                $interval = $currentDate->diff($orderDate)->format('%r%a');
+                if ($interval > $lastDate) {
+                    $result['last_amount'] = $order->getAmount();
+                    $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
+                }
+                $nYear = $order->getCreatedAt()->format('Y');
+                $nMonth = $order->getCreatedAt()->format('m');
+                if (!isset($payments[$nYear][$nMonth])) {
+                    $payments[$nYear][$nMonth] = array('status' => 'C', 'text' => 'OK');
+                }
             }
         }
-        return $payments;
+        $result['history'] = $payments;
+//         echo '<pre>';
+//         print_r($result);
+//         echo '</pre>';
+        return $result;
     }
 }

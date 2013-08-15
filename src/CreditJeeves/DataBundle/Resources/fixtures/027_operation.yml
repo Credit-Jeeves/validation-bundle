@@ -62,4 +62,20 @@ fixtures:
       - rjOrder_4_7
     contract: Contract_4
     type: rent
+  rjOperation_10:
+    orders:
+      - rjOrder_5_1
+      - rjOrder_5_2
+      - rjOrder_5_3
+      - rjOrder_5_4
+      - rjOrder_5_5
+      - rjOrder_5_6
+      - rjOrder_5_7
+      - rjOrder_5_8
+      - rjOrder_5_9
+      - rjOrder_5_10
+      - rjOrder_5_11
+      - rjOrder_5_12
+    contract: Contract_7
+    type: rent
 
