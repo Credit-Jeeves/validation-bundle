@@ -14,6 +14,9 @@ class HistoryController extends Controller
      */
     public function indexAction()
     {
-        return array();
+        $user = $this->getUser();
+        return array(
+            'user' => $user,
+        );
     }
 }

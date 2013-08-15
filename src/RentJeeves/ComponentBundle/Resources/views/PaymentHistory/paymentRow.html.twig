@@ -1,0 +1,33 @@
+    <div class="tradeline-block">
+      <div class="tradeline-name">{{ aContract.address }}</div>
+      <div class="clearboth"></div>
+      <div class="tradeline-info">
+        {% if isActive == true %}
+        <div class="tradeline-status tradeline-O">{{ aContract.status }}</div>
+        {% else %}
+        <div class="tradeline-status tradeline-red">{{ aContract.status }}</div>
+        {% endif %}
+        <div class="tradeline-balance"><b>{{ 'tradeline.balance' | trans }}: ${{ aContract.rent }}</b></div>
+        <div class="tradeline-last-payment">
+            <span class="tradeline-amount">******</span>{{ 'tradeline.last.payment' | trans }}:</div>
+      </div>
+      <div class="tradeline-history">
+        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} <a class="tradeline-legend-link" href="">» {{ 'common.legend.view' | trans }}</a></div>
+        <div class="tradeline-history-date">Updated&nbsp;******</div>
+        <div class="clearboth"></div>
+        <div class="tradeline-history-body">
+
+
+
+
+
+        </div>
+      </div>
+      <div class="tradeline-details">
+
+
+
+
+      </div>
+      <div class="clearboth"></div>
+    </div>

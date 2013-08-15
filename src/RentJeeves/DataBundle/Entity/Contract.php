@@ -92,4 +92,27 @@ class Contract extends Base
         }
         return implode(', #', $result);
     }
+
+    public function getActivePaymentHistory()
+    {
+        return $this->getPaymentHistory();
+    }
+
+    public function getFinishedPaymentHistory()
+    {
+        return $this->getPaymentHistory();
+    }
+
+    public function getPaymentHistory()
+    {
+        $payments = array();
+        $operations = $this->getOperations();
+        foreach ($operations as $operation) {
+            $orders = $operation->getOrders();
+            foreach ($orders as $order) {
+                //$payments[] = $order;
+            }
+        }
+        return $payments;
+    }
 }

@@ -3,7 +3,6 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
-
 class OrderRepository extends EntityRepository
 {
     /**
@@ -52,13 +51,13 @@ class OrderRepository extends EntityRepository
      * @param string $search
      */
     public function getOrdersPage(
-            \CreditJeeves\DataBundle\Entity\Group $group,
-            $page = 1,
-            $limit = 100,
-            $sort = 'o.status',
-            $order = 'ASC',
-            $searchBy = 'p.street',
-            $search = ''
+        \CreditJeeves\DataBundle\Entity\Group $group,
+        $page = 1,
+        $limit = 100,
+        $sort = 'o.status',
+        $order = 'ASC',
+        $searchBy = 'p.street',
+        $search = ''
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
@@ -79,6 +78,4 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->execute();
     }
-    
-    
 }
