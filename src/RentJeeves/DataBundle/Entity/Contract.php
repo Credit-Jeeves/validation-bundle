@@ -74,7 +74,7 @@ class Contract extends Base
                 $result['class'] = 'contract-late';
                 return $result;
             }
-            $result['status'] = 'CURRENT';
+            $result['status'] = strtoupper(ContractStatus::CURRENT);
             $result['class'] = '';
             return $result;
         }
