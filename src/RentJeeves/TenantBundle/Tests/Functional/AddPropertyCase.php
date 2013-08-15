@@ -8,10 +8,11 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class AddPropertyCase extends BaseTestCase
 {
-    protected $timeout = 25000;
+    protected $timeout = 30000;
 
     protected function fillGoogleAddress($fillAddress)
     {
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();

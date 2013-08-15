@@ -8,7 +8,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
  */
 class IframeCase extends BaseTestCase
 {
-    protected $timeout = 25000;
+    protected $timeout = 30000;
 
     protected function fillGoogleAddress($fillAddress)
     {
@@ -130,7 +130,7 @@ class IframeCase extends BaseTestCase
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
-        $this->session->wait($this->timeout, "window.location.pathname != '/rj_test.php/iframe'");
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#register').length > 0");
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
