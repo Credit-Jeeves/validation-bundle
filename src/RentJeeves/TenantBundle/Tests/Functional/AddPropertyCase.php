@@ -41,6 +41,7 @@ class AddPropertyCase extends BaseTestCase
         $this->assertCount(3, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
+        $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
         $this->fillGoogleAddress('770 Broadway, Manhattan, New York, NY 10003');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $this->page->pressButton('find.your.rental');
@@ -71,6 +72,7 @@ class AddPropertyCase extends BaseTestCase
         $this->assertCount(3, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
+        $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
         $this->fillGoogleAddress('710 Broadway, Manhattan, New York, NY 10003');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $this->page->pressButton('find.your.rental');

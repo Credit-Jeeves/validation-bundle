@@ -138,10 +138,10 @@ function Contracts() {
        searchCollum = '';
     }
     if(self.searchText().length <= 0) {
-      $('#search').css('border-color', 'red');
+      $('#searsh-field').css('border-color', 'red');
       return;
     } else {
-      $('#search').css('border-color', '#bdbdbd');
+      $('#searsh-field').css('border-color', '#bdbdbd');
     }
     self.isSearch(true);
     self.searchText(self.searchText());
@@ -182,6 +182,7 @@ function Contracts() {
 
   this.ajaxAction = function() {
     self.aContracts([]);
+    self.notHaveResult(false);
     self.processLoading(true);
     $.ajax({
       url: Routing.generate('landlord_contracts_list'),
@@ -248,7 +249,12 @@ function Contracts() {
     DetailsViewModel.reviewContract(data);
   };
   this.addTenant = function() {
-    
+    $('#tenant-add-property-popup').dialog('open');
+    $('#payment-start, #payment-end').datepicker({
+      showOn: "button",
+      buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+      format:'m/d/Y'
+    });
   };
   this.filterAddress = function(data) {
     console.log(data.id);
@@ -281,6 +287,14 @@ $(document).ready(function(){
       width:'520px'
   });
 
+
+  $('#tenant-add-property-popup').dialog({
+      autoOpen: false,
+      resizable: false,
+      modal: true,
+      width:'520px'
+  });
+  
   ContractsViewModel.ajaxAction();
   $('#searchFilter').linkselect("destroy");
   $('#searchFilter').linkselect();

@@ -219,6 +219,77 @@
           </button>
       </div>
     </div>
+
+    <!-- Action Add Tenant-->
+   <div id="tenant-add-property-popup" class="pricing-popup dashboard-popup properties-popup">
+      <h1>{{'add.tenant'|trans}}</h1>
+      <div class="clearfix col-box">
+        
+        <div class="col">
+          <h4 class="clearfix">
+            <span>{{ 'tenant.info'|trans }}</span>
+            <small><b>*</b>{{'required'|trans}}</small>
+          </h4>
+          <div class="form-row clearfix">
+            <label>{{'name'|trans}}<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" class="half-width" placeholder="First">
+              <input type="text" class="half-width" placeholder="Last">
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>{{'property'|trans }}<b>*</b></label>
+            <div class="fields-box">
+              <select class="long-width custom-select">
+                <option selected="selected" value="0">Select</option>
+                <option value="1">328 De La Vina St.</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>{{ 'phone'|trans }}</label>
+            <div class="fields-box">
+              <input type="text" class="half-width" >
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>{{ 'email'|trans }}<b>*</b></label>
+            <div class="fields-box">
+              <input type="text">
+            </div>
+          </div>
+          
+        </div>
+        
+        <div class="col">
+          <h4 class="clearfix">
+            <span>{{'request.payments'|trans}}</span>
+            <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
+          </h4>
+          <div class="form-row clearfix">
+            <label>{{'amount'|trans}}<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" placeholder="$" class="half-of-right">
+            </div>
+          </div>
+          <div class="form-row clearfix">
+            <label>{{'start'|trans}}<b>*</b></label>
+            <div class="fields-box">
+              <input type="text" placeholder="" class="datepicker-field" id="payment-start">
+              <label class="fixed">{{'end'|trans}}</label>
+              <input type="text" placeholder="" class="datepicker-field" id="payment-end">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-button-box">
+        <button class="button"><span>{{'invite.tenant'|trans }}</span></button>
+        <div class="with-seperator-box">
+          <button class="button grey" onclick="$('#tenant-add-property-popup').dialog( 'close' ); return false;">
+            <span>{{ 'cancel'|trans }}</span></button>
+        </div>
+      </div>
+    </div>
 </div>
 
 <div id="contracts-block">
@@ -320,7 +391,7 @@
             <img src="/bundles/core/images/img_loading.gif" id="processLoading" class="processLoading" >
         <!-- /ko -->
         <!-- ko if: notHaveResult()  -->
-            <h3 class="notHaveData">Not have data.</h3>
+            <h3 class="notHaveData">{{ 'donthavedata'|trans }}</h3>
         <!-- /ko -->
         </div>
       </div>

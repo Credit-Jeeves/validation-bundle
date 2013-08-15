@@ -21,7 +21,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
+        
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
         $this->assertCount(2, $contractPendings, 'Wrong number of pending');
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
@@ -47,7 +47,6 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
         $this->assertEquals('Timothy Applegate', $td[1]->getText(), 'Wrong text in field');
 
