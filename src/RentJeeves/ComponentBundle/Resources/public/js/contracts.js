@@ -284,4 +284,5 @@ $(document).ready(function(){
   ContractsViewModel.ajaxAction();
   $('#searchFilter').linkselect("destroy");
   $('#searchFilter').linkselect();
+  $('.properties-table-block').show();
 });

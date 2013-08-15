@@ -35,6 +35,9 @@ class ContractRepository extends EntityRepository
             case 'tenant':
                 $field = 'CONCAT(t.first_name, t.last_name)';
                 break;
+            case 'first_name':
+                $field = 't.first_name';
+                break;
             case 'street':
                 $field = 'p.street';
                 break;

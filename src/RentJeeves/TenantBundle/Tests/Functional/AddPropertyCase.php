@@ -89,6 +89,7 @@ class AddPropertyCase extends BaseTestCase
         $this->fillGoogleAddress('770 Broadway, Manhattan, New York, NY 10003');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $propertySearch->click();
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
         $this->assertCount(4, $searchResult, 'Search result');
