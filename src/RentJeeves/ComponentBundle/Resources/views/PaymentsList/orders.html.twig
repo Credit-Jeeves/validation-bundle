@@ -1,0 +1,61 @@
+    <div id="payments-block" class="contracts-block">
+        <div class="">
+            <div class="units-total floatleft"><h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2></div>
+        </div>
+        <div class="clearboth"></div>
+        
+        <div class="clearboth"></div>
+        <div class="contract-table-block">
+            <div class="row-20"></div>
+            <!-- ko if: countPayments() -->
+            <table class="properties-table zebra-grid">
+                <thead>
+                <tr class="properties-th">
+                    <th>Status</th>
+                    <th>Date Posted</th>
+                    <th>Date Initiated</th>
+                    <th>Property</th>
+                    <th>Tenant</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- ko foreach: { data: aPayments() } -->
+                <tr>
+                    <td data-bind="attr: {'class': style}">
+                        <div data-bind="text: status"></div>
+                    </td>
+                    <td data-bind="text: finish"></td>
+                    <td data-bind="text: start"></td>
+                    <td data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
+                    <td data-bind="text: tenant"></td>
+                    <td data-bind="text: amount"></td>
+                    <td></td>
+                </tr>
+                <!-- /ko -->
+                </tbody>
+            </table>
+            <!-- /ko -->
+        </div>
+        <div class="clearboth"></div>
+<!-- ko if: pages().length -->
+    <div class="landrord-box without-top clearfix">
+          <nav class="pagination-box">
+              <ul>
+                <!-- ko foreach: pages() -->
+                  <!-- ko if: $data == $root.current() -->
+                  <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
+                  <!-- /ko -->
+                  <!-- ko ifnot: $data == $root.current() -->
+                  <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
+                  <!-- /ko -->
+                  <!-- ko ifnot: $data == $root.last() -->
+                    <li>|</li>
+                  <!-- /ko -->
+                <!-- /ko -->
+              </ul>
+          </nav>
+    </div>
+<!-- /ko -->        
+    </div>

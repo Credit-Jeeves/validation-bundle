@@ -12,4 +12,5 @@ class OrderStatus extends Enum
     const COMPLETE = 'complete';
     const ERROR = 'error';
     const CANCELLED = 'cancelled';
+    const REFUNDED = 'refunded';
 }

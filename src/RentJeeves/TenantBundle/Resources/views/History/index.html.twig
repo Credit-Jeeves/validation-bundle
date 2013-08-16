@@ -4,5 +4,5 @@
     <div id="rent-menu">
     {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'CoreBundle:Menu:user_rent.html.twig' }) }}
     </div>
-
+        {{ render(controller('RjComponentBundle:PaymentHistory:index', {'user': user})) }}
 {% endblock %}
