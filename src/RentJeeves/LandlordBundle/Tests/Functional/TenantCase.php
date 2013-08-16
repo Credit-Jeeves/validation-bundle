@@ -148,7 +148,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (12)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searsh-field'));
         $searchField->setValue('PENDING');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
