@@ -250,7 +250,7 @@ function Contracts() {
   };
   this.addTenant = function() {
     $('#tenant-add-property-popup').dialog('open');
-    $('#payment-start, #payment-end').datepicker({
+    $('.payment-start, .payment-end').datepicker({
       showOn: "button",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       format:'m/d/Y'

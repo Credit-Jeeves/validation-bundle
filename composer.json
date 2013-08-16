@@ -182,7 +182,8 @@
         "sonata-project/doctrine-orm-admin-bundle": "dev-master",
         "doctrine/migrations": "dev-master",
         "doctrine/doctrine-migrations-bundle": "dev-master",
-        "guzzle/http": "v3.5.0"
+        "guzzle/http": "v3.5.0",
+        "apy/jsfv-bundle":"dev-master"
     },
     "require-dev": {
         "qunit": "v1",

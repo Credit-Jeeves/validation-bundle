@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Controller;
 use CreditJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use RentJeeves\LandlordBundle\Form\InviteTenantContractType;
 
 class TenantController extends Controller
 {
@@ -24,4 +25,34 @@ class TenantController extends Controller
             'Group' => $this->getCurrentGroup(),
         );
     }
+
+    /**
+     * @Route(
+     *     "/tenant/invite/save",
+     *     name="landlord_invite_save",
+     *     options={"expose"=true}
+     * )
+     * @Template()
+     */
+    public function saveInviteTenantAction()
+    {
+        $form = $this->createForm(
+             new InviteTenantContractType($this->getUser())
+        );
+
+        $request = $this->get('request');
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                echo "form is valid";
+                exit;
+            }
+        }
+
+        print_r($form->getErrors());
+        echo "form not valid";
+        exit;
+    }
+
 }
