@@ -57,7 +57,7 @@ class AddPropertyCase extends BaseTestCase
         $register->click();
         $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
-        $this->assertCount(4, $tr, 'List of property');
+        $this->assertCount(6, $tr, 'List of property');
         $this->logout();
     }
 
