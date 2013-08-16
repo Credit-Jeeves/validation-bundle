@@ -27,4 +27,28 @@ class LoginCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
     {
         $this->login('admin@example.com', '123');
     }
+
+    /**
+     * @test
+     * @expectedException PHPUnit_Framework_AssertionFailedError
+     */
+    public function passwordDefense()
+    {
+        $this->load(true);
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->logout();
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', '123');
+        $this->login('admin@creditjeeves.com', 'P@ssW0rd');
+        $this->assertNotNull($error = $this->page->findAll('css', 'div.login-error'));
+        $this->assertEquals('Please', $error->getText());
+    }
 }

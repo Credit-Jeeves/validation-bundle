@@ -22,11 +22,16 @@ abstract class LoginDefense
     protected $id;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="user_id", type="bigint")
+     * @ORM\OneToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="defense"
+     * )
+     * @ORM\JoinColumn(
+     *     name="user_id",
+     *     referencedColumnName="id"
+     * )
      */
-    protected $userId;
+    protected $user;
 
     /**
      * @var integer
@@ -50,6 +55,10 @@ abstract class LoginDefense
      */
     protected $updatedAt;
 
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTime();
+    }
 
     /**
      * Get id
@@ -62,26 +71,26 @@ abstract class LoginDefense
     }
 
     /**
-     * Set userId
+     * Set user
      *
-     * @param integer $userId
+     * @param integer $user
      * @return LoginDefense
      */
-    public function setUserId($userId)
+    public function setUser($user)
     {
-        $this->userId = $userId;
+        $this->user = $user;
     
         return $this;
     }
 
     /**
-     * Get userId
+     * Get user
      *
      * @return integer 
      */
-    public function getUserId()
+    public function getUser()
     {
-        return $this->userId;
+        return $this->user;
     }
 
     /**
@@ -105,6 +114,13 @@ abstract class LoginDefense
     public function getAttempts()
     {
         return $this->attempts;
+    }
+
+    public function addAttempt()
+    {
+        $attempts = $this->getAttempts();
+        $attempts++;
+        return $this->setAttempts($attempts);
     }
 
     /**
