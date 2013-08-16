@@ -47,7 +47,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->pressButton('find.your.rental');
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        $this->assertCount(5, $searchResult, 'Search result');
+        $this->assertCount(4, $searchResult, 'Search result');
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
         $this->acceptAlert();
@@ -57,7 +57,7 @@ class AddPropertyCase extends BaseTestCase
         $register->click();
         $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
-        $this->assertCount(5, $tr, 'List of property');
+        $this->assertCount(4, $tr, 'List of property');
         $this->logout();
     }
 
@@ -95,7 +95,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        $this->assertCount(5, $searchResult, 'Search result');
+        $this->assertCount(4, $searchResult, 'Search result');
         
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"
