@@ -1,0 +1,3 @@
+apy_js_form_validation:
+    script_directory: uploads/js/
+    translation_group: messages
