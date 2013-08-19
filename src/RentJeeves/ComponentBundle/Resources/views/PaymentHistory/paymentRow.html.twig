@@ -13,7 +13,7 @@
             <span class="tradeline-amount">${{ aContract.last_amount }}</span>{{ 'rent.last.amount' | trans }}:</div>
       </div>
       <div class="tradeline-history">
-        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} <a class="tradeline-legend-link" href="">» {{ 'common.legend.view' | trans }}</a></div>
+        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} </div>
         <div class="tradeline-history-date">Updated&nbsp;{{ aContract.updated }}</div>
         <div class="clearboth"></div>
         <div class="tradeline-history-body">
@@ -39,13 +39,15 @@
                 {% endfor %}
             {% endif %}
             {% for nMonth, aStatus in aData %}
-            <div class="tradeline-history-empty-month status-{{ aStatus.status }}">{{ aStatus.text }}</div>
+            <div class="tradeline-history-empty-month status-{{ aStatus.status }}" title="{{ aStatus.amount }}">{{ aStatus.text }}</div>
           {% endfor %}
           <div class="clearboth"></div>
         {% endfor %}
-
-
-
+            <div class="row-10"></div>
+            <div class="">
+                <div class="tradeline-history-year"></div>
+                <a class="tradeline-legend-link" href="">{{ 'common.legend.view' | trans }}</a>
+            </div>
         </div>
       </div>
       <div class="tradeline-details rent-details">
