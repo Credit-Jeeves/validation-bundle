@@ -46,6 +46,7 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = 'ACTIVE';
+                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::FINISHED:

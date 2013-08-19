@@ -1,6 +1,6 @@
 {% if aActiveContracts | length > 0 %}
 <div class="row-20"></div>
-<div class="pod-large pod-border pod-padding shadow">
+<div class="pod-large pod-border pod-padding shadow" id="contracts-history">
     <h3>{{ 'rent.contracts.active' |trans }}</h3>
     <div class="row-10"></div>
     {% for aContract in aActiveContracts %}
@@ -13,6 +13,9 @@
     {% endfor %}
     <div class="clearboth"></div>
 </div>
+{% javascripts '@RjComponentBundle/Resources/public/js/reporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
 {% endif %}
 
 {% if aFinishedContracts | length > 0 %}

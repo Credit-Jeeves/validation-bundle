@@ -56,7 +56,13 @@
         <div><span><b>{{ 'tradeline.details.type' | trans }}:</b>&nbsp;Rent</span></div>
         <div><span><b>{{ 'tradeline.details.responsibility' | trans }}:</b>&nbsp;Individual</span></div>
         <div><span><b>{{ 'tradeline.details.date_opened' | trans }}:</b>&nbsp;{{ aContract.start }}</span></div>
-
+        {% if aContract.reporting is defined %}
+        {% if aContract.reporting %} 
+        <div><span><b><a>Stop Reporting</a>&nbsp;[<a>?</a>]</span></div>
+        {% else %}
+        <div><span><b><a>Start Reporting</a>&nbsp;[<a>?</a>]</span></div>
+        {% endif %}
+        {% endif %}
 
 
 
