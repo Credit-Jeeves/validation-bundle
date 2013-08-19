@@ -620,6 +620,45 @@
                 <source>error.rent.empty</source>
                 <target>Rent can't be empty.</target>
             </trans-unit>
+           </trans-unit>
+
+           <trans-unit id="bureau.reporting.title">
+                <source>bureau.reporting.title</source>
+                <target>Start Bureau Reporting</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.start">
+                <source>bureau.reporting.start</source>
+                <target>Start Reporting to Experian</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.setup">
+                <source>bureau.reporting.setup</source>
+                <target>Set Up Your for Bureau Reporting</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.text">
+                <source>bureau.reporting.text</source>
+                <target>We can report your payments to the credit bureau Experian. This optional activity helps establish a history of on-time payments in your credit profile. You can stop reporting at any time.</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.title">
+                <source>info.reporting.title</source>
+                <target>Payment reporting</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.see">
+                <source>info.reporting.see</source>
+                <target>See Your Payment Reporting</target>
+           </trans-unit>
+           <trans-unit id="info.reporting.text">
+                <source>info.reporting.text</source>
+                <target>You'll be able to see your your credit score once
+                you've set up your first rent payment and verified 
+                your identity. Than track your progress by allowing
+                RentJeeves to send activity reports to Experian. You first
+                need  to allow RentJeeves to report activity on your behalf
+                - you can stop reporting in any time. Copy TBD. </target>
+           </trans-unit>
+           
+            
+            
+            
         </body>
     </file>
 </xliff>
