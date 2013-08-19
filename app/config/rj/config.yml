@@ -31,3 +31,6 @@ framework:
 twig:
     globals:
         application: rj
+
+apy_js_form_validation:
+    script_directory: uploads/js/
