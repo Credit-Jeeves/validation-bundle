@@ -3,7 +3,7 @@ namespace CreditJeeves\UserBundle\Tests\Functional;
 
 use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
-class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
+class ResettingCase extends BaseTestCase
 {
     /**
      * @test
@@ -11,7 +11,7 @@ class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
     public function resettingPassword()
     {
         $this->setDefaultSession('symfony');
-        $this->setDefaultSession('goutte');
+//        $this->setDefaultSession('goutte');
 //        $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->session->visit($this->getUrl() . 'login');
@@ -35,9 +35,8 @@ class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function checkEmail()
     {
-        $this->markTestIncomplete('Depends on FOS user bundle fixes');
-        //$this->setDefaultSession('goutte');
-         $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
+//        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
 
         $this->assertNotNull($links = $this->page->findAll('css', 'a'));
@@ -67,7 +66,7 @@ class ResettingCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
      */
     public function fillPassword()
     {
-        $this->markTestIncomplete('FINISH');
+        $this->markTestIncomplete('FINISH'); //FIXME cli url generation!!!
         $form = $this->page->find('css', '#fos_user_resetting_form');
         $this->assertNotNull($form);
 

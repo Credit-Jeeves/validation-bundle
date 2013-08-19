@@ -8,10 +8,3 @@ jms_di_extra:
 jms_security_extra:
     secure_all_services: false
     expressions: true
-
-payum:
-    contexts:
-        simple_purchase_authorize_net:
-            authorize_net_aim_payment:
-                api:
-                    options: %authorize_net%

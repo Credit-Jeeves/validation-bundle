@@ -53,9 +53,6 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 $url = $this->container->get('router')->generate($sType . '_homepage');
                 break;
             case UserType::DEALER:
-//                $this->container->get('core.session.dealer')->setUser($User);
-//                $url = $this->container->get('router')->generate($sType.'_homepage');
-
                 $url = $this->container->get('router')->generate('fos_user_security_login');
                 $this->container->get('session')->getFlashBag()->add(
                     'notice',
@@ -75,7 +72,42 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 $url = $this->container->get('router')->generate('landlord_homepage');
                 break;
         }
-
+        if (!$isDefense = $this->checkLogindefense($User)) {
+            $url = $this->container->get('router')->generate('fos_user_security_login');
+        }
         return new RedirectResponse($url);
+    }
+
+    private function checkLogindefense($user)
+    {
+        $defense = $user->getDefense();
+        if ($defense) {
+            $now = new \DateTime('now');
+            $attempts = $defense->getAttempts();
+            $last = $defense->getUpdatedAt();
+            $interval = $now->diff($last, true)->format('%i');
+            if ($attempts > 5) {
+                if ($interval < 30) {
+                    $this->container->get('session')->getFlashBag()->add(
+                        'defense',
+                        sprintf('Please, try "%s" minutes later.', (30- $interval))
+                    );
+                    return false;
+                } else {
+                    $defense->setAttempts(0);
+                    $em = $this->container->get('doctrine.orm.default_entity_manager');
+                    $user->setDefense($defense);
+                    $em->persist($user);
+                    $em->flush();
+                }
+            } else {
+                $defense->setAttempts(0);
+                $em = $this->container->get('doctrine.orm.default_entity_manager');
+                $user->setDefense($defense);
+                $em->persist($user);
+                $em->flush();
+            }
+        }
+        return true;
     }
 }

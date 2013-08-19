@@ -23,6 +23,10 @@ class RjDataBundle extends Bundle
                 'ContractStatus',
                 'RentJeeves\DataBundle\Enum\ContractStatus'
             );
+            Type::addType(
+                'HeartlandStatus',
+                'RentJeeves\DataBundle\Enum\HeartlandStatus'
+            );
             $this->container->get('doctrine.orm.default_entity_manager')
                 ->getConnection()
                 ->getDatabasePlatform()

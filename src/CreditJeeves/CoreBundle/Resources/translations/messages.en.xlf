@@ -1108,6 +1108,25 @@
                 <source>dyk.message.utilization</source>
                 <target>Your credit card utilization is %AVAILABLE_DEBT%%. By opening a new card and maintaining a zero balance, you could lower your overall utilization which may help your score.</target>
             </trans-unit>
+
+            <trans-unit id="rent.monthly.rent">
+                <source>rent.monthly.rent</source>
+                <target>Monthly Rent</target>
+            </trans-unit>
+            <trans-unit id="rent.last.amount">
+                <source>rent.last.amount</source>
+                <target>Last Payment Amount</target>
+            </trans-unit>
+            <trans-unit id="rent.contracts.active">
+                <source>rent.contracts.active</source>
+                <target>Current Properties</target>
+            </trans-unit>
+            <trans-unit id="rent.contracts.finished">
+                <source>rent.contracts.finished</source>
+                <target>Past Properties</target>
+            </trans-unit>
+
+            
         </body>
     </file>
 </xliff>

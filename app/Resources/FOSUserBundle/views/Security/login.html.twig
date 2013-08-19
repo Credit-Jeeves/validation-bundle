@@ -14,7 +14,13 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-        <form action="{{ path("fos_user_security_check") }}" method="post" id="login_form">
+            {% for flashMessage in app.session.flashbag.get('defense') %}
+            <div class="row-20"></div>
+                <div class="login-error">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            <form action="{{ path("fos_user_security_check") }}" method="post" id="login_form">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
             <table class="form-table">
                 {% if error %}

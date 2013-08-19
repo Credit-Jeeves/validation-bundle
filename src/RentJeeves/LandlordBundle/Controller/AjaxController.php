@@ -440,6 +440,43 @@ class AjaxController extends Controller
         return new JsonResponse(array());
     }
 
+    /* Payments */
+
+    /**
+     * @Route(
+     *     "/payment/list",
+     *     name="landlord_payments_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function getPaymentsList()
+    {
+        $items = array();
+        $total = 0;
+        $request = $this->getRequest();
+        $page = $request->request->all('data');
+        $page = $page['data'];
+        $data = array('payments' => array(), 'total' => 0, 'pagination' => array());
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
+        $total = $repo->countOrders($group);
+        $total = count($total);
+        if ($total) {
+            $orders = $repo->getOrdersPage($group, $page['page'], $page['limit']);
+            foreach ($orders as $order) {
+                $item = $order->getItem();
+                $items[] = $item;
+            }
+        }
+        $data['payments'] = $items;
+        $data['total'] = $total;
+        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
+        return new JsonResponse($data);
+    }
+
     /* Service methods */
 
     /**

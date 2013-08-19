@@ -8,12 +8,13 @@ class RightsController extends Controller
 {
     /**
      * @Template()
-     * @param \Report $Report
      */
     public function indexAction()
     {
-        $Settings =  $this->getDoctrine()->getRepository('DataBundle:Settings')->find(1);
-        $sRights = $Settings->getRights();
+        $sRights = '';
+        if ($Settings =  $this->getDoctrine()->getRepository('DataBundle:Settings')->find(1)) {
+            $sRights = $Settings->getRights();
+        }
         return array(
                 'sRights' => $sRights,
             );

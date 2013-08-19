@@ -62,7 +62,7 @@ class AppRjKernel extends AppKernel
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             $bundles[] = new Khepin\YamlFixturesBundle\KhepinYamlFixturesBundle();
-            $bundles[] = new CreditJeeves\DevBundle\CreditJeevesDevBundle();
+            $bundles[] = new CreditJeeves\DevBundle\CjDevBundle();
         }
         if (in_array($this->getEnvironment(), array('test'))) {
             $bundles[] = new Behat\MinkBundle\MinkBundle();

@@ -60,6 +60,7 @@ class Mailer extends BaseMailer implements MailerInterface
 
     public function sendResettingEmailMessage(UserInterface $user)
     {
+        # \Symfony\Component\DependencyInjection\ContainerInterface::get
         $url = $this->container->get('router')->generate(
             'fos_user_resetting_reset',
             array('token' => $user->getConfirmationToken()),

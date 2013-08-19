@@ -74,12 +74,8 @@ abstract class BaseTestCase extends Base
             return;
         }
        
-        $khepin = static::getContainer()->get('khepin.yaml_loader');
-
-        if ($reload) {
-            $khepin->purgeDatabase('orm');
-        }
-
+        $khepin = $this->getContainer()->get('khepin.yaml_loader');
+        $khepin->purgeDatabase('orm');
         $khepin->loadFixtures();
         self::$isFixturesLoaded = true;
         $this->clearEmail();

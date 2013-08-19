@@ -92,4 +92,63 @@ class Contract extends Base
         }
         return implode(', #', $result);
     }
+
+    public function getActivePaymentHistory($em)
+    {
+        return $this->getPaymentHistory($em);
+    }
+
+    public function getFinishedPaymentHistory($em)
+    {
+        return $this->getPaymentHistory($em);
+    }
+
+    public function getPaymentHistory($em)
+    {
+        $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '');
+        $payments = $this->createHistoryArray();
+        $currentDate = new \DateTime('now');
+        $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
+        $repo = $em->getRepository('DataBundle:Order');
+        $orders = $repo->getContractHistory($this);
+        foreach ($orders as $order) {
+            $orderDate = $order->getCreatedAt();
+            $interval = $currentDate->diff($orderDate)->format('%r%a');
+            if ($interval > $lastDate) {
+                $result['last_amount'] = $order->getAmount();
+                $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
+            }
+            $nYear = $orderDate->format('Y');
+            $nMonth = $orderDate->format('m');
+            if ($late = $order->getDaysLate()) {
+                $nMonth = $orderDate->modify('-'.$late.' days')->format('m');
+                $payments[$nYear][$nMonth] = array('status' => '1', 'text' => $late);
+            } else {
+                $payments[$nYear][$nMonth] = array('status' => 'C', 'text' => 'OK');
+            }
+        }
+        $result['history'] = $payments;
+        return $result;
+    }
+
+    private function createHistoryArray()
+    {
+        $result = array();
+        $aMonthes = array();
+        for ($i = 1; $i < 13; $i++) {
+            $aMonthes[date('m', mktime(0, 0, 0, $i))] = array(
+                'status' => 'empty-month',
+                'text' => '',
+                'amount' => 0,
+            );
+        }
+        $start = $this->getStartAt();
+        $finish = $this->getFinishAt();
+        $startYear = $start->format('Y');
+        $finishYear = $finish->format('Y');
+        for ($i = $startYear; $i <= $finishYear; $i++) {
+            $result[$i] = $aMonthes;
+        }
+        return $result;
+    }
 }

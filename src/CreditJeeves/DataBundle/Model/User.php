@@ -454,6 +454,18 @@ abstract class User extends BaseUser
     /**
      * @var ArrayCollection
      *
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\LoginDefense",
+     *     mappedBy="user",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $defense;
+
+    /**
+     * @var ArrayCollection
+     *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq",
      *      mappedBy="user"
@@ -1422,6 +1434,29 @@ abstract class User extends BaseUser
         return $this->vehicle;
     }
 
+    /**
+     * Set defense
+     *
+     * @param \CreditJeeves\DataBundle\Entity\LoginDefense $defense
+     * @return User
+     */
+    public function setDefense(\CreditJeeves\DataBundle\Entity\LoginDefense $defense = null)
+    {
+        $this->defense = $defense;
+    
+        return $this;
+    }
+    
+    /**
+     * Get defense
+     *
+     * @return \CreditJeeves\DataBundle\Entity\LoginDefense
+     */
+    public function getDefense()
+    {
+        return $this->defense;
+    }
+    
     /**
      * Add pidkiqs
      *

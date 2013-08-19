@@ -1,4 +1,4 @@
-parameters:
+parameters:ArfAutomotiveDetails
     database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: null
@@ -11,9 +11,8 @@ parameters:
     mailer_password: null
 
     server: live
-    server_name: my.creditjeeves.com
-    application_rj: rj
-    application_cj: cj
+    server_name_cj: my.creditjeeves.com
+    server_name_rj: rentjeeves.com
     google_maps_key: AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24
     authorize_net:
         login_id: '29fDg7sU24G'
