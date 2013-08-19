@@ -107,7 +107,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/APYJsFormValidationBundle.git",
-                "reference": "40797e194a3362f676cf69cb6df79bd0f6807890"
+                "reference": "946ce7953e9a7abc01cb01af79dd2e6135c7a1a2"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -157,7 +157,7 @@
                 "javascript",
                 "validation"
             ],
-            "time": "2013-08-19 08:05:52"
+            "time": "2013-08-19 13:02:05"
         },
         {
             "name": "credit-jeeves/arf-bundle",
