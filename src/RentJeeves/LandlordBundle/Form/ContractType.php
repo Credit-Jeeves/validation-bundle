@@ -12,7 +12,7 @@ class ContractType extends AbstractType
 
     protected $user;
 
-    public function __construct($user) 
+    public function __construct($user)
     {
         $this->user = $user;
     }
@@ -50,10 +50,10 @@ class ContractType extends AbstractType
         $builder->add(
             'property',
             'entity',
-             array(
+            array(
                 'class'             => 'RjDataBundle:Property',
                 'error_bubbling'    => true,
-                'query_builder'     => function(EntityRepository $er) use ($groups) {
+                'query_builder'     => function (EntityRepository $er) use ($groups) {
 
                     if (!$groups) {
                         $query = $er->createQueryBuilder('p');
@@ -82,7 +82,7 @@ class ContractType extends AbstractType
             array(
                 'class'             => 'RjDataBundle:Property',
                 'error_bubbling'    => true,
-                'query_builder'     => function(EntityRepository $er) {
+                'query_builder'     => function (EntityRepository $er) {
                     //it's need becouse I need empty unit field and fill it dinamic
                     $query = $er->createQueryBuilder('p');
                     $query->where('p.id = :sero');

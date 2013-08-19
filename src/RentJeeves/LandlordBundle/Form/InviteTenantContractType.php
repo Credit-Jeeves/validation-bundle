@@ -15,7 +15,7 @@ class InviteTenantContractType extends AbstractType
 
     protected $user;
 
-    public function __construct($user) 
+    public function __construct($user)
     {
         $this->user = $user;
     }

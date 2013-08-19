@@ -17,7 +17,7 @@ class TenantsController extends Controller
     {
         $groups = $this->getGroups();
         $form = $this->createForm(
-             new InviteTenantContractType($this->getUser())
+            new InviteTenantContractType($this->getUser())
         );
 
         $data = array(
