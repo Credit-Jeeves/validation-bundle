@@ -59,7 +59,7 @@
 .properties-table-block {
     display: none;
 }
-input[type="number"] {
+#rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent {
     border: 1px solid #bdbdbd;
     background: #fff;
     padding: 4px 9px 3px;
@@ -80,6 +80,8 @@ input[type="number"] {
     background: -ms-linear-gradient(top, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
     background: linear-gradient(to bottom, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
     -pie-background: linear-gradient(to bottom, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    width: 100px;
+    margin-left: 10px;
 }
 .form-row>label, .fields-box>label{
     font-size: 12px !important;
@@ -93,7 +95,7 @@ background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
 width: 19px;
 height: 23px;
 }
-#rentjeeves_publicbundle_invitetenanttype_contract_property_link {
+#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_link {
     width: 223px;
     height: 22px;
     padding-top: 1px;
@@ -101,11 +103,18 @@ height: 23px;
     font-size: 12px;
     margin-left: 9px;
 }
-#rentjeeves_publicbundle_invitetenanttype_contract_unit_link {
+#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit_link {
     width: 20px;
     height: 22px;
     padding-top: 1px;
     padding-left: 0px;
     font-size: 12px;
     margin-left: 9px;
+}
+.error_list {
+    margin-left: 10px;
+}
+
+.error_list>li {
+    font-size: 12px;
 }

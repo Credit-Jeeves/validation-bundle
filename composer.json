@@ -128,6 +128,10 @@
         {
             "type": "git",
             "url":"git@github.com:Remixjobs/RjEmailBundle.git"
+        },
+        {
+            "type": "git",
+            "url":"git@github.com:Tobur/APYJsFormValidationBundle.git"
         }
     ],
     "require": {
@@ -183,7 +187,8 @@
         "doctrine/migrations": "dev-master",
         "doctrine/doctrine-migrations-bundle": "dev-master",
         "guzzle/http": "v3.5.0",
-        "apy/jsfv-bundle":"dev-master"
+        "apy/jsfv-bundle":"dev-master",
+        "willdurand/expose-translation-bundle": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",

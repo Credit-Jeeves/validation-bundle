@@ -31,26 +31,29 @@ class ContractType extends AbstractType
             'finishAt',
             'date',
             array(
-                'input'     => 'string',
-                'widget'    => 'single_text',
-                'format'    => 'dd/MM/yyyy',
+                'input'             => 'string',
+                'widget'            => 'single_text',
+                'format'            => 'dd/MM/yyyy',
+                'error_bubbling'    => true,
             )
         );
         $builder->add(
             'startAt',
             'date',
             array(
-                'input'     => 'string',
-                'widget'    => 'single_text',
-                'format'    => 'dd/MM/yyyy',
+                'input'             => 'string',
+                'widget'            => 'single_text',
+                'format'            => 'dd/MM/yyyy',
+                'error_bubbling'    => true,
             )
         );
         $builder->add(
             'property',
             'entity',
              array(
-                'class'         => 'RjDataBundle:Property',
-                'query_builder' => function(EntityRepository $er) use ($groups) {
+                'class'             => 'RjDataBundle:Property',
+                'error_bubbling'    => true,
+                'query_builder'     => function(EntityRepository $er) use ($groups) {
 
                     if (!$groups) {
                         $query = $er->createQueryBuilder('p');
@@ -77,8 +80,9 @@ class ContractType extends AbstractType
             'unit',
             'entity',
             array(
-                'class'         => 'RjDataBundle:Property',
-                'query_builder' => function(EntityRepository $er) {
+                'class'             => 'RjDataBundle:Property',
+                'error_bubbling'    => true,
+                'query_builder'     => function(EntityRepository $er) {
                     //it's need becouse I need empty unit field and fill it dinamic
                     $query = $er->createQueryBuilder('p');
                     $query->where('p.id = :sero');

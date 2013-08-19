@@ -49,10 +49,29 @@ class TenantController extends Controller
                 exit;
             }
         }
-
-        print_r($form->getErrors());
+        var_dump($form->getErrors());
+        //print_r($form->getErrorsAsString());
+        //print_r(get_class_methods($form));
+        exit;
         echo "form not valid";
         exit;
     }
 
+private function getErrorMessages(\Symfony\Component\Form\Form $form) {
+    $errors = array();
+
+    if ($form->hasChildren()) {
+        foreach ($form->getChildren() as $child) {
+            if (!$child->isValid()) {
+                $errors[$child->getName()] = $this->getErrorMessages($child);
+            }
+        }
+    } else {
+        foreach ($form->getErrors() as $key => $error) {
+            $errors[] = $error->getMessage();
+        }   
+    }
+
+    return $errors;
+}
 }

@@ -10,10 +10,34 @@ class InviteTenantType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('first_name');
-        $builder->add('last_name');
-        $builder->add('email');
-        $builder->add('phone');
+        $builder->add(
+            'first_name',
+            null,
+            array(
+                'error_bubbling'    => true,
+            )
+        );
+        $builder->add(
+            'last_name',
+            null,
+            array(
+                'error_bubbling'    => true,
+            )
+        );
+        $builder->add(
+            'email',
+            null,
+            array(
+                'error_bubbling'    => true,
+            )
+        );
+        $builder->add(
+            'phone',
+            null,
+            array(
+                'error_bubbling'    => true,
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

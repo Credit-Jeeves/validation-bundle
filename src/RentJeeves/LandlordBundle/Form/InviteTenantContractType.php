@@ -39,12 +39,18 @@ class InviteTenantContractType extends AbstractType
                 'csrf_protection'    => true,
                 'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
+                'validation_groups' => array(
+                    'tenant_invite',
+                ),
+                'error_mapping' => array(
+                    'addressValid' => 'address'
+                ),
             )
         );
     }
 
     public function getName()
     {
-        return 'rentjeeves_publicbundle_invitetenanttype';
+        return 'rentjeeves_landlordbundle_invitetenantcontracttype';
     }
 }
