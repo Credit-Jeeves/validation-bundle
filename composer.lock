@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "31d5eebc441601382a36909b547f1948",
+    "hash": "9f55e33f2c027255aefce61d0e4c6e1f",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/a2lix/TranslationFormBundle.git",
-                "reference": "8dfc3ce8e87bb2e2436aceda7f8cb59fe82a27c3"
+                "reference": "fbb3efc3d2a90571ecee799d5c692e6ba14fccb0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/8dfc3ce8e87bb2e2436aceda7f8cb59fe82a27c3",
-                "reference": "8dfc3ce8e87bb2e2436aceda7f8cb59fe82a27c3",
+                "url": "https://api.github.com/repos/a2lix/TranslationFormBundle/zipball/fbb3efc3d2a90571ecee799d5c692e6ba14fccb0",
+                "reference": "fbb3efc3d2a90571ecee799d5c692e6ba14fccb0",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,7 @@
                 "translatable",
                 "translation"
             ],
-            "time": "2013-08-09 22:29:40"
+            "time": "2013-08-12 14:50:00"
         },
         {
             "name": "ajbdev/authorizenet-php-api",
@@ -101,13 +101,72 @@
             "time": "2013-02-11 21:09:06"
         },
         {
+            "name": "apy/jsfv-bundle",
+            "version": "dev-master",
+            "target-dir": "APY/JsFormValidationBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Tobur/APYJsFormValidationBundle.git",
+                "reference": "946ce7953e9a7abc01cb01af79dd2e6135c7a1a2"
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/symfony": ">=2.1,<2.4-dev",
+                "willdurand/expose-translation-bundle": ">=0.2.1"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "*",
+                "doctrine/doctrine-fixtures-bundle": "*",
+                "doctrine/orm": "*",
+                "jms/aop-bundle": "*",
+                "jms/di-extra-bundle": "*",
+                "liip/functional-test-bundle": "*",
+                "sensio/framework-extra-bundle": "*",
+                "symfony/assetic-bundle": "2.*",
+                "symfony/framework-bundle": ">=2.1,<2.4-dev"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "APY\\JsFormValidationBundle": ""
+                }
+            },
+            "authors": [
+                {
+                    "name": "Yoann Petit",
+                    "email": "abhoryo@free.fr"
+                },
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/Abhoryo/APYJsFormValidationBundle/graphs/contributors"
+                }
+            ],
+            "description": "Symfony2 Javascript Form Validation Bundle with localisation support",
+            "homepage": "https://github.com/Abhoryo/APYJsFormValidationBundle",
+            "keywords": [
+                "L10n",
+                "Symfony",
+                "form",
+                "g11n",
+                "i18n",
+                "javascript",
+                "validation"
+            ],
+            "time": "2013-08-19 13:02:05"
+        },
+        {
             "name": "credit-jeeves/arf-bundle",
             "version": "dev-master",
             "target-dir": "CreditJeeves/ArfBundle",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "e6e6e6fce1162b7805fc56df8c49bd3f9ed21674"
+                "reference": "ab4742070f6499d4994ced0c885c80727a9dd190"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -128,7 +187,7 @@
                 }
             ],
             "description": "CreditJeeves ARF Bundle",
-            "time": "2013-08-12 15:28:45"
+            "time": "2013-08-13 17:15:33"
         },
         {
             "name": "credit-jeeves/core-bundle",
@@ -268,7 +327,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -317,7 +376,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -577,9 +636,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -681,7 +740,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan Wage",
+                    "name": "Jonathan H. Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -1438,7 +1497,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1717,21 +1776,21 @@
         },
         {
             "name": "jms/serializer",
-            "version": "0.12.0",
+            "version": "0.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "0.12.0"
+                "reference": "0.13.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/0.12.0",
-                "reference": "0.12.0",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/0.13.0",
+                "reference": "0.13.0",
                 "shasum": ""
             },
             "require": {
                 "doctrine/annotations": "1.*",
-                "jms/metadata": ">=1.1,<2.0",
+                "jms/metadata": "~1.1",
                 "jms/parser-lib": "1.*",
                 "php": ">=5.3.2",
                 "phpcollection/phpcollection": ">=0.1,<0.3-dev"
@@ -1751,7 +1810,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.12-dev"
+                    "dev-master": "0.13-dev"
                 }
             },
             "autoload": {
@@ -1767,7 +1826,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1780,7 +1839,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-03-28 16:41:24"
+            "time": "2013-07-29 13:39:49"
         },
         {
             "name": "jms/serializer-bundle",
@@ -1789,12 +1848,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSSerializerBundle.git",
-                "reference": "5531198a73c4adee669a8a2d1452999349822771"
+                "reference": "07b6b6a2ba6566fd25d3db3177ef7e82255a2757"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/5531198a73c4adee669a8a2d1452999349822771",
-                "reference": "5531198a73c4adee669a8a2d1452999349822771",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/07b6b6a2ba6566fd25d3db3177ef7e82255a2757",
+                "reference": "07b6b6a2ba6566fd25d3db3177ef7e82255a2757",
                 "shasum": ""
             },
             "require": {
@@ -1821,7 +1880,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.12-dev"
+                    "dev-master": "0.13-dev"
                 }
             },
             "autoload": {
@@ -1850,7 +1909,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-07-29 12:36:36"
+            "time": "2013-08-17 18:18:35"
         },
         {
             "name": "knplabs/knp-menu",
@@ -1900,7 +1959,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "KnpLabs",
+                    "name": "Knplabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -2185,7 +2244,7 @@
             ],
             "authors": [
                 {
-                    "name": "Kotlyar Maksim",
+                    "name": "Maksim Kotlyar",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -2366,7 +2425,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2654,12 +2713,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataAdminBundle.git",
-                "reference": "add977ac7ec56094a11f0e084c5df1b5d959f710"
+                "reference": "6806397db1970480f53f9521683f57bcfbcb94b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/add977ac7ec56094a11f0e084c5df1b5d959f710",
-                "reference": "add977ac7ec56094a11f0e084c5df1b5d959f710",
+                "url": "https://api.github.com/repos/sonata-project/SonataAdminBundle/zipball/6806397db1970480f53f9521683f57bcfbcb94b6",
+                "reference": "6806397db1970480f53f9521683f57bcfbcb94b6",
                 "shasum": ""
             },
             "require": {
@@ -2721,7 +2780,7 @@
                 "bootstrap",
                 "sonata"
             ],
-            "time": "2013-08-12 07:31:33"
+            "time": "2013-08-19 07:41:19"
         },
         {
             "name": "sonata-project/block-bundle",
@@ -2730,12 +2789,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataBlockBundle.git",
-                "reference": "03ff77585eaff60058b33a98793168b4d3865c2c"
+                "reference": "710e57a72c9b6e9302da5035bced9c50a622880f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/03ff77585eaff60058b33a98793168b4d3865c2c",
-                "reference": "03ff77585eaff60058b33a98793168b4d3865c2c",
+                "url": "https://api.github.com/repos/sonata-project/SonataBlockBundle/zipball/710e57a72c9b6e9302da5035bced9c50a622880f",
+                "reference": "710e57a72c9b6e9302da5035bced9c50a622880f",
                 "shasum": ""
             },
             "require": {
@@ -2785,7 +2844,7 @@
                 "block",
                 "sonata"
             ],
-            "time": "2013-07-29 08:28:01"
+            "time": "2013-08-14 07:49:43"
         },
         {
             "name": "sonata-project/doctrine-orm-admin-bundle",
@@ -2794,12 +2853,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sonata-project/SonataDoctrineORMAdminBundle.git",
-                "reference": "db213672ced36a9d31acaab0c2e7b37deeb51319"
+                "reference": "fe79d83d451eafde20cab15fa75ba44bc23b6e4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/db213672ced36a9d31acaab0c2e7b37deeb51319",
-                "reference": "db213672ced36a9d31acaab0c2e7b37deeb51319",
+                "url": "https://api.github.com/repos/sonata-project/SonataDoctrineORMAdminBundle/zipball/fe79d83d451eafde20cab15fa75ba44bc23b6e4d",
+                "reference": "fe79d83d451eafde20cab15fa75ba44bc23b6e4d",
                 "shasum": ""
             },
             "require": {
@@ -2842,7 +2901,7 @@
                 "generator",
                 "sonata"
             ],
-            "time": "2013-08-09 16:40:31"
+            "time": "2013-08-12 22:09:32"
         },
         {
             "name": "sonata-project/exporter",
@@ -3484,6 +3543,59 @@
                 "templating"
             ],
             "time": "2013-08-03 15:35:31"
+        },
+        {
+            "name": "willdurand/expose-translation-bundle",
+            "version": "dev-master",
+            "target-dir": "Bazinga/ExposeTranslationBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/willdurand/BazingaExposeTranslationBundle.git",
+                "reference": "6df1246d89d1eb36242c8ee12d57f46a6a43f195"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/willdurand/BazingaExposeTranslationBundle/zipball/6df1246d89d1eb36242c8ee12d57f46a6a43f195",
+                "reference": "6df1246d89d1eb36242c8ee12d57f46a6a43f195",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": ">=2.0,<2.4-dev",
+                "symfony/finder": ">=2.0,<2.4-dev",
+                "symfony/framework-bundle": ">=2.0,<2.4-dev"
+            },
+            "require-dev": {
+                "symfony/browser-kit": ">=2.0,<2.4-dev",
+                "symfony/yaml": ">=2.0,<2.4-dev"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Bazinga\\ExposeTranslationBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "William Durand",
+                    "email": "william.durand1@gmail.com",
+                    "homepage": "http://www.willdurand.fr"
+                }
+            ],
+            "description": "A pretty nice way to expose your translation messages to your JavaScript.",
+            "keywords": [
+                "javascript",
+                "translation"
+            ],
+            "time": "2013-06-20 15:42:20"
         }
     ],
     "packages-dev": [
@@ -3619,11 +3731,11 @@
                 "symfony/framework-bundle": "~2.2"
             },
             "require-dev": {
-                "behat/mink-goutte-driver": ">=1.0.8,<1.1",
-                "behat/mink-sahi-driver": ">=1.1,<1.2",
-                "behat/mink-selenium-driver": ">=1.1,<1.2",
-                "behat/mink-selenium2-driver": ">=1.1,<1.2",
-                "behat/mink-zombie-driver": ">=1.1,<1.2"
+                "behat/mink-goutte-driver": "~1.0.8",
+                "behat/mink-sahi-driver": "~1.1.0",
+                "behat/mink-selenium-driver": "~1.1.0",
+                "behat/mink-selenium2-driver": "~1.1.0",
+                "behat/mink-zombie-driver": "~1.1.0"
             },
             "suggest": {
                 "behat/mink-goutte-driver": "fast headless driver for any app without JS emulation",
@@ -4047,7 +4159,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "Fork Maintainer"
+                    "role": "developer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
@@ -4164,6 +4276,8 @@
         "sonata-project/doctrine-orm-admin-bundle": 20,
         "doctrine/migrations": 20,
         "doctrine/doctrine-migrations-bundle": 20,
+        "apy/jsfv-bundle": 20,
+        "willdurand/expose-translation-bundle": 20,
         "behat/mink-bundle": 20,
         "doctrine/data-fixtures": 20,
         "doctrine/doctrine-fixtures-bundle": 15,

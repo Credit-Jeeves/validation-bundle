@@ -57,6 +57,8 @@ class AppCjKernel extends AppKernel
             new RentJeeves\PublicBundle\RjPublicBundle(),
             new RentJeeves\ComponentBundle\RjComponentBundle(),
             new RentJeeves\CoreBundle\RjCoreBundle(),
+            new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
+            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

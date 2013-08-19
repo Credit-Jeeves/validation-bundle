@@ -210,4 +210,9 @@ class Property extends Base
     {
         return ($this->getPropertyGroups()->count() > 0)? true : false;
     }
+
+    public function __toString()
+    {
+        return $this->getFullAddress();
+    }
 }

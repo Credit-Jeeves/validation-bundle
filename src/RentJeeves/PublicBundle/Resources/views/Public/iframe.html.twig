@@ -1,31 +1,27 @@
 {% extends "RjPublicBundle::base_iframe.html.twig" %}
 
 {% block content %}
-<div class="form-box">
-        <div class="mainform-box">
-            <div class="mainform">
-              <h1>{{ 'iframe.title'|trans }}</h1>
-              <h4>{{ 'iframe.description'|trans }}</h4>
-              <form action="#" id="formSearch">
-                <div class="clearfix">
-                  <div class="field-box">
-                    <input id="property-search" type="text" placeholder="{{ 'iframe.placeholdersearch'|trans }}">
-                    <span class="icon-find">&nbsp;</span>
-                  </div>
-                  <button type="submit"  id="property-add" class="button">
-                    <span>{{ 'iframe.find'|trans }}</span>
-                  </button>
-                </div>
-              </form>
-              <div class="property-rent-box">
-                <div class="property-rent">
-                  <i> </i>
-                  <p>{{ 'iframe.haveProperty'|trans }}</p>
-                  <a href="#">{{ 'iframe.findOut'|trans }}</a>
-                </div>
-              </div>
-            </div>
-        </div>
+<div class="mainform" style="width: 545px;">
+  <h1>{{ 'iframe.title'|trans }}</h1>
+  <h4>{{ 'iframe.description'|trans }}</h4>
+  <form action="#" id="formSearch">
+    <div class="clearfix">
+      <div class="field-box">
+        <input id="property-search" type="text" placeholder="{{ 'iframe.placeholdersearch'|trans }}">
+        <span class="icon-find">&nbsp;</span>
+      </div>
+      <button type="submit"  id="property-add" class="button">
+        <span>{{ 'iframe.find'|trans }}</span>
+      </button>
+    </div>
+  </form>
+  <div class="property-rent-box">
+    <div class="property-rent">
+      <i> </i>
+      <p>{{ 'iframe.haveProperty'|trans }}</p>
+      <a href="#">{{ 'iframe.findOut'|trans }}</a>
+    </div>
+  </div>
 </div>
 <div id="map-canvas" style="display:none;"></div>
 {% endblock %}

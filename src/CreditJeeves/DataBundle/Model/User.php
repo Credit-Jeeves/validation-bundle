@@ -32,6 +32,7 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
+     *         "tenant_invite"
      *     }
      * )
      * @Assert\Length(
@@ -44,6 +45,7 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
+     *         "tenant_invite"
      *     }
      * )
      */
@@ -63,6 +65,7 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
+     *         "tenant_invite"
      *     }
      * )
      * @Assert\Length(
@@ -75,6 +78,7 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
+     *         "tenant_invite"
      *     }
      * )
      */
@@ -86,12 +90,14 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
+     *         "tenant_invite"
      *     }
      * )
      * @Assert\Email(
      *     groups={
      *         "user_admin",
      *         "invite",
+     *         "tenant_invite"
      *     }
      * )
      */

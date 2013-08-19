@@ -59,3 +59,62 @@
 .properties-table-block {
     display: none;
 }
+#rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent {
+    border: 1px solid #bdbdbd;
+    background: #fff;
+    padding: 4px 9px 3px;
+    margin: 0;
+    height: 16px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    -webkit-box-shadow: inset 0px 0px 5px 0px #fff;
+    -moz-box-shadow: inset 0px 0px 5px 0px #fff;
+    box-shadow: inset 0px 0px 5px 0px #fff;
+    background: #fff;
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…EiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top, #f3f3f3 0%, #ffffff 45%, #ffffff 100%);
+    background: -moz-linear-gradient(top, #f3f3f3 0%, #ffffff 45%, #ffffff 100%);
+    background: -webkit-linear-gradient(top, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    background: -o-linear-gradient(top, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    background: -ms-linear-gradient(top, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    background: linear-gradient(to bottom, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    -pie-background: linear-gradient(to bottom, #f3f3f3 0%,#ffffff 45%,#ffffff 100%);
+    width: 100px;
+    margin-left: 10px;
+}
+.form-row>label, .fields-box>label{
+    font-size: 12px !important;
+}
+#rentjeeves_publicbundle_invitetenanttype_contract_rent {
+    margin-left: 10px;
+}
+
+#tenant-add-property-popup .linkselect-link-icon {
+background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
+width: 19px;
+height: 23px;
+}
+#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property_link {
+    width: 223px;
+    height: 22px;
+    padding-top: 1px;
+    padding-left: 0px;
+    font-size: 12px;
+    margin-left: 9px;
+}
+#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit_link {
+    width: 20px;
+    height: 22px;
+    padding-top: 1px;
+    padding-left: 0px;
+    font-size: 12px;
+    margin-left: 9px;
+}
+.error_list {
+    margin-left: 10px;
+}
+
+.error_list>li {
+    font-size: 12px;
+}

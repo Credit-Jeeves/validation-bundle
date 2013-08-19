@@ -1,3 +1,6 @@
+
+{% form_theme form ':Form:form_errors.html.twig' %}
+
 <div id="contract-actions">
     <!-- Action Edit -->
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
@@ -219,12 +222,12 @@
           </button>
       </div>
     </div>
-
     <!-- Action Add Tenant-->
    <div id="tenant-add-property-popup" class="pricing-popup dashboard-popup properties-popup">
+      <form novalidate id="{{ form.vars.id }}" action="{{ path('landlord_invite_save') }}" method="post" {{ form_enctype(form) }}>
       <h1>{{'add.tenant'|trans}}</h1>
+      {{ form_errors(form) }}
       <div class="clearfix col-box">
-        
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'tenant.info'|trans }}</span>
@@ -233,29 +236,27 @@
           <div class="form-row clearfix">
             <label>{{'name'|trans}}<b>*</b></label>
             <div class="fields-box">
-              <input type="text" class="half-width" placeholder="First">
-              <input type="text" class="half-width" placeholder="Last">
+              {{ form_widget(form.tenant.first_name, { 'attr': {'class': 'half-width', 'placeholder':"First"} }) }}
+              {{ form_widget(form.tenant.last_name, { 'attr': {'class': 'half-width', 'placeholder':"Last"} }) }}
             </div>
           </div>
           <div class="form-row clearfix">
             <label>{{'property'|trans }}<b>*</b></label>
             <div class="fields-box">
-              <select class="long-width custom-select">
-                <option selected="selected" value="0">Select</option>
-                <option value="1">328 De La Vina St.</option>
-              </select>
+              {{ form_widget(form.contract.property) }}
+              {{ form_widget(form.contract.unit) }}
             </div>
           </div>
           <div class="form-row clearfix">
             <label>{{ 'phone'|trans }}</label>
             <div class="fields-box">
-              <input type="text" class="half-width" >
+              {{ form_widget(form.tenant.phone, { 'attr': {'class': 'half-width', 'placeholder':"Phone"} }) }}
             </div>
           </div>
           <div class="form-row clearfix">
             <label>{{ 'email'|trans }}<b>*</b></label>
             <div class="fields-box">
-              <input type="text">
+              {{ form_widget(form.tenant.email) }}
             </div>
           </div>
           
@@ -269,26 +270,46 @@
           <div class="form-row clearfix">
             <label>{{'amount'|trans}}<b>*</b></label>
             <div class="fields-box">
-              <input type="text" placeholder="$" class="half-of-right">
+              {{ form_widget(form.contract.rent, { 'attr': {'class': 'half-width', 'placeholder':"$"} }) }}
             </div>
           </div>
           <div class="form-row clearfix">
             <label>{{'start'|trans}}<b>*</b></label>
             <div class="fields-box">
-              <input type="text" placeholder="" class="datepicker-field" id="payment-start">
+              {{ form_widget(
+                form.contract.startAt,
+                   { 'attr': 
+                    {
+                      'class': 'datepicker-field payment-start',
+                      'placeholder':"dd/mm/YYYY"
+                    }
+                   }
+                ) 
+              }}
               <label class="fixed">{{'end'|trans}}</label>
-              <input type="text" placeholder="" class="datepicker-field" id="payment-end">
+              {{ form_widget(
+                form.contract.finishAt,
+                   { 'attr': 
+                    {
+                      'class': 'datepicker-field payment-end',
+                      'placeholder':"dd/mm/YYYY"
+                    }
+                   }
+                ) 
+              }}
             </div>
           </div>
         </div>
       </div>
       <div class="footer-button-box">
-        <button class="button"><span>{{'invite.tenant'|trans }}</span></button>
+        <button type="submit"  class="button"><span>{{'invite.tenant'|trans }}</span></button>
         <div class="with-seperator-box">
           <button class="button grey" onclick="$('#tenant-add-property-popup').dialog( 'close' ); return false;">
             <span>{{ 'cancel'|trans }}</span></button>
         </div>
       </div>
+      {{ form_rest(form) }}
+      </form>
     </div>
 </div>
 

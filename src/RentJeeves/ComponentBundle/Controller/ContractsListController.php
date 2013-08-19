@@ -10,9 +10,11 @@ class ContractsListController extends Controller
      * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
      * @return multitype:
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
+    public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group, $form)
     {
         return array(
+            'form'  => $form,
+            'Group' => $Group,
         );
     }
 
