@@ -159,4 +159,96 @@ class TenantCase extends BaseTestCase
         $this->assertEquals('All (2)', $allh2->getText(), 'Wrong count');
         $this->logout();
     }
+
+    /**
+     * @test
+     */
+    public function addTenantNoneExist()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->clearEmail();
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->page->pressButton('add.tenant');
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
+        $this->page->pressButton('invite.tenant');
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'mail@com.ru',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt'  => '01/08/2013',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAt' => '01/12/2013',
+            )
+        );
+        $this->page->pressButton('invite.tenant');
+
+        //Check created contracts
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
+        $this->assertNotNull($searchField = $this->page->find('css', '#searsh-field'));
+        $searchField->setValue('INVITE');
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (1)', $allh2->getText(), 'Wrong count');
+        $this->logout();
+        // end
+
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
+        $link->click();
+        $this->assertNotNull($form = $this->page->find('css', '#tenantInviteRegister'));
+        $form->pressButton('continue');
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(2, $errorList, 'Wrong number of pending');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_tenanttype_password_Password'          => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'   => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos'                        => true,
+            )
+        );
+        $form->pressButton('continue');
+        $fields = $this->page->findAll('css', '#inviteText>h4');
+        $this->assertCount(2, $fields, 'wrong number of text h4');
+
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(2, $email, 'Wrong number of emails');
+        $email = end($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#email-body a'));
+        $link->click();
+        $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
+        $loginButton->click();
+        $this->login('mail@com.ru', 'pass');
+        $this->assertNotNull($this->page->find('css', '.titleAlert'));
+        $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
+        $this->assertCount(1, $contracts, 'wrong number of contracts');
+    }
 }
