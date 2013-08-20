@@ -13,4 +13,5 @@ class ContractStatus extends \CreditJeeves\CoreBundle\Enum
     const FINISHED = 'finished';
     const ACTIVE = 'active';
     const CURRENT = 'current';
+    const INVITE = 'invite';
 }
