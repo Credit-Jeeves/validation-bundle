@@ -24,6 +24,7 @@
 {% endjavascripts %}
 {% endif %}
 
+{% if short == false %}
 {% if aFinishedContracts | length > 0 %}
 <div class="row-20"></div>
 <div class="pod-large pod-border pod-padding shadow">
@@ -39,4 +40,5 @@
     {% endfor %}
     <div class="clearboth"></div>
 </div>
+{% endif %}
 {% endif %}
