@@ -4,7 +4,6 @@
 
 {% block content %}
 <section class="form-content">
-    <!-- novalidate -->
 <form action="{{ path('tenant_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="landlordRegister" >
     <div class="box type1">
       {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form }) }}
