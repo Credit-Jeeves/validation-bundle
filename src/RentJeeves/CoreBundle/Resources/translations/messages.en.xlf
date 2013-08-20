@@ -665,6 +665,20 @@
                 <source>error.rent.empty</source>
                 <target>Rent can't be empty.</target>
             </trans-unit>
+           <trans-unit id="legend.close">
+                <source>legend.close</source>
+                <target>close</target>
+            </trans-unit>
+           <trans-unit id="legend.ok">
+                <source>legend.ok</source>
+                <target>Paid OK</target>
+            </trans-unit>
+           <trans-unit id="legend.delinquent">
+                <source>legend.delinquent</source>
+                <target>N days delinquent</target>
+            </trans-unit>
+            
+
         </body>
     </file>
 </xliff>
