@@ -20,11 +20,9 @@ class ReportingCase extends BaseTestCase
         $button->click();
         $this->assertNotNull($button = $this->page->find('css', '#blockPopupEditProperty button.button'));
         $button->click();
-        $this->session->wait($this->timeout, "jQuery('#reporting-popup').css('display') == 'none'");
-        $this->page->clickLink('rent.history');
+        $this->session->wait($this->timeout, "jQuery('#contracts-history').length > 0");
         $this->assertNotNull($link = $this->page->find('css', 'a span.reporting-action'));
         $link->click();
-        $this->session->wait($this->timeout, "jQuery('#contracts-history').length > 0");
         $this->assertNotNull($button = $this->page->find('css', '#stop-reporting'));
         $button->click();
         $this->session->wait($this->timeout, "jQuery('#reporting-stop').css('display') == 'none'");

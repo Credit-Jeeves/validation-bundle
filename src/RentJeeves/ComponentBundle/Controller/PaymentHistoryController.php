@@ -11,7 +11,7 @@ class PaymentHistoryController extends Controller
      * @Template("RjComponentBundle:PaymentHistory:index.html.twig")
      * @return multitype:
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\User $user)
+    public function indexAction(\CreditJeeves\DataBundle\Entity\User $user, $short = false)
     {
         $active = array();
         $finished = array();
@@ -65,6 +65,7 @@ class PaymentHistoryController extends Controller
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,
+            'short' => $short,
         );
     }
 }

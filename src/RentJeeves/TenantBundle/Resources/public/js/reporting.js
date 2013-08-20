@@ -10,7 +10,7 @@ function Reporting() {
         'action': 'start'
       },
       success: function(response) {
-        self.closePopup();
+        location.reload();
       }
     });
   };
