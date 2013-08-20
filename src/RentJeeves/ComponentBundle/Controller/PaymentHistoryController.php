@@ -32,6 +32,7 @@ class PaymentHistoryController extends Controller
                 continue;
             }
             $item = array();
+            $item['id'] = $contract->getId();
             $item['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
             $item['rent'] = $contract->getRent();
             $item['start'] = $contract->getStartAt()->format('m/d/Y');
@@ -39,6 +40,7 @@ class PaymentHistoryController extends Controller
             $item['updated'] = $contract->getUpdatedAt()->format('F d, Y');
             $item['balance_year'] = $contract->getFinishAt()->format('Y');
             $item['balance_month'] = $contract->getFinishAt()->format('m');
+            $item['tenant'] = $contract->getTenant()->getFullName();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::CURRENT:
                     $history = $contract->getFinishedPaymentHistory($em);
