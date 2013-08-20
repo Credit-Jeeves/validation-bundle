@@ -1,7 +1,7 @@
 {% extends "LandlordBundle::base.html.twig" %}
 
 {% block content %}
-        {{ render(controller('RjComponentBundle:ContractsList:index', {'Group': Group})) }}
+        {{ render(controller('RjComponentBundle:ContractsList:index', {'Group': Group, 'form': form})) }}
 {% endblock %}
 
 {% block javascripts %}
@@ -12,6 +12,12 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
+
+    <!-- Call JsFormValidationBundle -->
+    {{ JSFV(form) }}
+    <!-- END Call JsFormValidationBundle -->
 {% endblock %}
 
 {% block stylesheets %}

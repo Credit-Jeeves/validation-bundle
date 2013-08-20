@@ -37,13 +37,6 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="unit", type="encrypt", nullable=true)
-     * @Assert\Length(
-     *     min=1,
-     *     max=31,
-     *     groups={
-     *         "user_address_new"
-     *     }
-     * )
      */
     protected $unit;
 

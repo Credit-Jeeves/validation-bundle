@@ -10,6 +10,7 @@ imports:
     - { resource: ../base/email.yml }
     - { resource: ../base/framework.yml }
     - { resource: ../base/twig.yml }
+    - { resource: ../base/apy_js_form_validation.yml }
 
 parameters:
     server_name: '%server_name_rj%'

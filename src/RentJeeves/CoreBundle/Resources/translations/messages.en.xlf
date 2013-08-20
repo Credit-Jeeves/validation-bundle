@@ -607,6 +607,7 @@
            <trans-unit id="donthavedata">
                 <source>donthavedata</source>
                 <target>Don't have data.</target>
+<<<<<<< HEAD
            </trans-unit>
 
            <trans-unit id="bureau.reporting.title">
@@ -646,6 +647,21 @@
             
             
             
+=======
+            </trans-unit>
+           <trans-unit id="error.property.empty">
+                <source>error.property.empty</source>
+                <target>Property can't be empty.</target>
+            </trans-unit>
+           <trans-unit id="error.unit.empty">
+                <source>error.unit.empty</source>
+                <target>Unit can't be empty.</target>
+            </trans-unit>
+           <trans-unit id="error.rent.empty">
+                <source>error.rent.empty</source>
+                <target>Rent can't be empty.</target>
+            </trans-unit>
+>>>>>>> 4ee172a0376cd01407a3ea7cad5e65ba357cd4b4
         </body>
     </file>
 </xliff>

@@ -31,8 +31,7 @@ class UserAddressType extends AbstractType
             'unit',
             'text',
             array(
-                'label' => '',
-                'error_bubbling' => true,
+                'label' => false
             )
         );
         $builder->add(

@@ -65,6 +65,12 @@ abstract class Contract
      *     name="property_id",
      *     referencedColumnName="id"
      * )
+     * @Assert\NotBlank(
+     *     message="error.property.empty",
+     *     groups={
+     *         "tenant_invite"
+     *     }
+     * )
      */
     protected $property;
 
@@ -76,6 +82,12 @@ abstract class Contract
      * @ORM\JoinColumn(
      *     name="unit_id",
      *     referencedColumnName="id"
+     * )
+     * @Assert\NotBlank(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "tenant_invite"
+     *     }
      * )
      */
     protected $unit;
@@ -109,6 +121,12 @@ abstract class Contract
      * @ORM\Column(
      *     type="integer",
      *     nullable=true
+     * )
+     * @Assert\NotBlank(
+     *     message="error.rent.empty",
+     *     groups={
+     *         "tenant_invite"
+     *     }
      * )
      */
     protected $rent;
@@ -145,6 +163,12 @@ abstract class Contract
      *     type="datetime",
      *     nullable=true
      * )
+     * @Assert\NotBlank(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "tenant_invite"
+     *     }
+     * )
      */
     protected $startAt;
 
@@ -153,6 +177,12 @@ abstract class Contract
      *     name="finish_at",
      *     type="datetime",
      *     nullable=true
+     * )
+     * @Assert\NotBlank(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "tenant_invite"
+     *     }
      * )
      */
     protected $finishAt;

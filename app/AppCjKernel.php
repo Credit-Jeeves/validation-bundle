@@ -57,6 +57,8 @@ class AppCjKernel extends AppKernel
             new RentJeeves\PublicBundle\RjPublicBundle(),
             new RentJeeves\ComponentBundle\RjComponentBundle(),
             new RentJeeves\CoreBundle\RjCoreBundle(),
+            new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
+            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -64,7 +66,7 @@ class AppCjKernel extends AppKernel
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             $bundles[] = new Khepin\YamlFixturesBundle\KhepinYamlFixturesBundle();
-            $bundles[] = new CreditJeeves\DevBundle\CreditJeevesDevBundle();
+            $bundles[] = new CreditJeeves\DevBundle\CjDevBundle();
         }
         if (in_array($this->getEnvironment(), array('test'))) {
             $bundles[] = new Behat\MinkBundle\MinkBundle();

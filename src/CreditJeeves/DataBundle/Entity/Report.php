@@ -14,11 +14,4 @@ use CreditJeeves\DataBundle\Model\Report as BaseReport;
  */
 class Report extends BaseReport
 {
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->created_at = new \DateTime();
-    }
 }

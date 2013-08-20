@@ -93,7 +93,16 @@ $(document).ready(function(){
                 //location.href = Routing.generate('landlord_properties');
               },
               success: function(data, textStatus, jqXHR) {
-                location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
+                var isInIFrame = (window.location != window.parent.location);
+                var location = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
+                console.info(isInIFrame);
+                if (isInIFrame == true) {
+                    // iframe
+                    window.parent.location.href = location;
+                } else {
+                    // no iframe
+                    window.location.href = location;
+                }
               }
             });
         });
