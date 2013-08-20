@@ -4,7 +4,7 @@
 
 {% block content %}
 <section class="form-content">
-<form action="{{ path('tenant_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="landlordRegister" >
+<form action="{{ path('tenant_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="tenantInviteRegister" >
     <div class="box type1">
       {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form }) }}
     </div>

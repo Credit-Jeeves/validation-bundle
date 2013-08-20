@@ -47,6 +47,7 @@ class TenantController extends Controller
 
             if ($form->isValid()) {
                 $tenant = $form->getData()['tenant'];
+                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
                 $contract = $form->getData()['contract'];
                 $tenant->setPassword(md5(md5(1)));
                 $contract->setStatus(ContractStatus::INVITE);
