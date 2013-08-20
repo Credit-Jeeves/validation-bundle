@@ -108,6 +108,14 @@
         },
         {
             "type": "git",
+            "url": "git@github.com:66Ton99/Heartland.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:66Ton99/BadaBoom.git"
         },
         {
@@ -173,6 +181,9 @@
         "payum/payum": "dev-master as 0.5.x-dev",
         "payum/payum-bundle": "dev-master",
         "payum/authorize-net-aim": "0.5.*",
+        "payum/heartland": "dev-master",
+        "besimple/soap-common": "dev-master",
+        "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",
         "fp/badaboom": "dev-ton as dev-not-approved",
