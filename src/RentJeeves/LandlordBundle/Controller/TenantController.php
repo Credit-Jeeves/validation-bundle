@@ -73,23 +73,4 @@ class TenantController extends Controller
 
         return $this->redirect($this->generateUrl('landlord_tenants'));
     }
-
-    private function getErrorMessages(\Symfony\Component\Form\Form $form)
-    {
-        $errors = array();
-
-        if ($form->hasChildren()) {
-            foreach ($form->getChildren() as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrorMessages($child);
-                }
-            }
-        } else {
-            foreach ($form->getErrors() as $key => $error) {
-                $errors[] = $error->getMessage();
-            }
-        }
-
-        return $errors;
-    }
 }
