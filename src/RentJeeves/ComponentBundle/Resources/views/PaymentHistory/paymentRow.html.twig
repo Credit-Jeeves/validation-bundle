@@ -1,5 +1,5 @@
     <div class="tradeline-block">
-      <div class="tradeline-name">{{ aContract.address }}</div>
+      <div id="address-{{ aContract.id }}" class="tradeline-name">{{ aContract.address }}</div>
       <div class="clearboth"></div>
       <div class="tradeline-info rent-info">
         {% if isActive == true %}
@@ -46,7 +46,7 @@
             <div class="row-10"></div>
             <div class="">
                 <div class="tradeline-history-year"></div>
-                <a class="tradeline-legend-link">{{ 'common.legend.view' | trans }}</a>
+                <a class="tradeline-legend-link"><span>{{ 'common.legend.view' | trans }}</span></a>
             </div>
         </div>
       </div>
@@ -57,11 +57,12 @@
         <div><span><b>{{ 'tradeline.details.responsibility' | trans }}:</b>&nbsp;Individual</span></div>
         <div><span><b>{{ 'tradeline.details.date_opened' | trans }}:</b>&nbsp;{{ aContract.start }}</span></div>
         {% if aContract.reporting is defined %}
-        {% if aContract.reporting %} 
-        <div><span><b><a>Stop Reporting</a>&nbsp;[<a>?</a>]</span></div>
-        {% else %}
-        <div><span><b><a>Start Reporting</a>&nbsp;[<a>?</a>]</span></div>
-        {% endif %}
+            <div style="display: none;" id="tenant-{{ aContract.id }}">{{ aContract.tenant }}</div>
+            {% if aContract.reporting %} 
+            <div><b><a><span id="action-{{ aContract.id }}" class="reporting-action" title="stop">Stop Reporting</span></a>&nbsp;[<a><span>?</span></a>]</div>
+            {% else %}
+            <div><b><a><span id="action-{{ aContract.id }}" class="reporting-action" title="start">Start Reporting</span></a>&nbsp;[<a><span>?</span></a>]</div>
+            {% endif %}
         {% endif %}
 
 

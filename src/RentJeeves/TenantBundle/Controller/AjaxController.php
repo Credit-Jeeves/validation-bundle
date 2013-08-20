@@ -55,4 +55,34 @@ class AjaxController extends Controller
         }
         return new JsonResponse(array());
     }
+
+    /**
+     * @Route(
+     *  "/bureau/reporting",
+     *  name="tenant_contract_reporting",
+     *  defaults={"_format"="json"},
+     *  requirements={"_format"="html|json"},
+     *  options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     *
+     * @return array
+     */
+    public function contractBureauReporting()
+    {
+        $request = $this->getRequest();
+        $data = $request->request->all('data');
+        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
+        $action = $data['action'];
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+        if ($action == 'start') {
+            $contract->setReporting(true);
+        } else {
+            $contract->setReporting(false);
+        }
+        $em->persist($contract);
+        $em->flush();
+        return new JsonResponse(array($action));
+    }
 }

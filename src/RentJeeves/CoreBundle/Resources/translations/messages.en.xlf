@@ -613,9 +613,17 @@
                 <source>bureau.reporting.title</source>
                 <target>Start Bureau Reporting</target>
            </trans-unit>
+           <trans-unit id="bureau.reporting.title.stop">
+                <source>bureau.reporting.title.stop</source>
+                <target>Stop Bureau Reporting</target>
+           </trans-unit>
            <trans-unit id="bureau.reporting.start">
                 <source>bureau.reporting.start</source>
                 <target>Start Reporting to Experian</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.stop">
+                <source>bureau.reporting.stop</source>
+                <target>Stop Reporting to Experian</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.setup">
                 <source>bureau.reporting.setup</source>
