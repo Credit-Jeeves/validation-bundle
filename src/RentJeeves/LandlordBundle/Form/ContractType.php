@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 class ContractType extends AbstractType
 {
@@ -80,16 +82,45 @@ class ContractType extends AbstractType
             'unit',
             'entity',
             array(
-                'class'             => 'RjDataBundle:Property',
-                'error_bubbling'    => true,
-                'query_builder'     => function (EntityRepository $er) {
-                    //it's need becouse I need empty unit field and fill it dinamic
-                    $query = $er->createQueryBuilder('p');
-                    $query->where('p.id = :sero');
-                    $query->setParameter('sero', 0);
-                    return $query;
-                }
+                'class'             => 'RjDataBundle:Unit',
+                'error_bubbling'    => true
             )
+        );
+
+        $builder->addEventListener(
+            FormEvents::PRE_BIND,
+            function (FormEvent $event) use ($groups) {
+                $form = $event->getForm();
+                $data = $event->getData();
+                if (!isset($data['property'])) {
+                    return;
+                }
+
+                $property = $data['property'];
+
+                $formOptions = array(
+                    'class'             => 'RjDataBundle:Unit',
+                    'error_bubbling'    => true,
+                    'query_builder'     => function (EntityRepository $er) use ($groups, $property) {
+                        
+                        $ids = array();
+                        foreach ($groups as $group) {
+                            $ids[$group->getId()] = $group->getId();
+                        }
+                        $groupsIds = implode("','", $ids);
+
+                        $query = $er->createQueryBuilder('u');
+                        $query->where('u.property = :property');
+                        $query->andWhere('u.group IN (:groupsIds)');
+                        $query->setParameter('property', $property);
+                        $query->setParameter('groupsIds', $groupsIds);
+
+                        return $query;
+                    },
+                );
+
+                $form->add('unit', 'entity', $formOptions);
+            }
         );
     }
 

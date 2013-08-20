@@ -620,6 +620,14 @@
                 <source>error.rent.empty</source>
                 <target>Rent can't be empty.</target>
             </trans-unit>
+           <trans-unit id="error.start.empty">
+                <source>error.start.empty</source>
+                <target>Start date can't be empty.</target>
+            </trans-unit>
+           <trans-unit id="error.finish.empty">
+                <source>error.finish.empty</source>
+                <target>Finish date can't be empty.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

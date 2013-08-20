@@ -153,7 +153,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Assert\NotBlank(
-     *     message="error.unit.empty",
+     *     message="error.start.empty",
      *     groups={
      *         "tenant_invite"
      *     }
@@ -168,7 +168,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Assert\NotBlank(
-     *     message="error.unit.empty",
+     *     message="error.finish.empty",
      *     groups={
      *         "tenant_invite"
      *     }

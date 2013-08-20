@@ -24,3 +24,5 @@ fixtures:
     name: rjCheck.html
   email_12:
     name: rjLandLordInvite.html
+  email_13:
+    name: rjTenantInvite.html
