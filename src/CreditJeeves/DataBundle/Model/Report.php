@@ -44,12 +44,6 @@ abstract class Report extends BaseReport
      */
     protected $atbs;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="reportsD2c")
-     * @ORM\JoinColumn(name="cj_applicant_id", referencedColumnName="id")
-     */
-    protected $user;
-
     public function __construct()
     {
         $this->atbs = new ArrayCollection();
@@ -114,12 +108,11 @@ abstract class Report extends BaseReport
      * Add atbs
      *
      * @param \CreditJeeves\DataBundle\Entity\Atb $atb
-     * @return User
+     * @return Report
      */
     public function addAtbs(\CreditJeeves\DataBundle\Entity\Atb $atb)
     {
         $this->atbs[] = $atb;
-
         return $this;
     }
 
@@ -152,7 +145,6 @@ abstract class Report extends BaseReport
     public function setUser(\CreditJeeves\DataBundle\Entity\User $user = null)
     {
         $this->user = $user;
-
         return $this;
     }
 
