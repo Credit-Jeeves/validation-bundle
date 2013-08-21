@@ -461,7 +461,9 @@ class AjaxController extends Controller
         if (!isset($data['action'])) {
             return new JsonResponse(array());
         }
-        $contract = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
+        $contract = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository('RjDataBundle:Contract')
+            ->find($data['contract_id']);
 //         echo $contract->getId();
 //         echo get_class($contract);
 //         $operations = $contract->getOperations();

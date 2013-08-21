@@ -244,9 +244,9 @@ class Mailer extends BaseMailer implements MailerInterface
         }
         if (!empty($isHtml)) {
             $htmlContent = $this->manager->renderEmail(
-                    $sTemplate.'.html',
-                    $tenant->getCulture(),
-                    $vars
+                $sTemplate.'.html',
+                $tenant->getCulture(),
+                $vars
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($subject);
@@ -255,9 +255,9 @@ class Mailer extends BaseMailer implements MailerInterface
             $message->addPart($htmlContent['body'], 'text/html');
             if (!empty($isPlain)) {
                 $plainContent = $this->manager->renderEmail(
-                        $sTemplate.'.text',
-                        $tenant->getCulture(),
-                        $vars
+                    $sTemplate.'.text',
+                    $tenant->getCulture(),
+                    $vars
                 );
                 $message->addPart($plainContent['body'], 'text/plain');
             }
@@ -266,9 +266,9 @@ class Mailer extends BaseMailer implements MailerInterface
         }
         if (!empty($isPlain)) {
             $plainContent = $this->manager->renderEmail(
-                    $sTemplate.'.text',
-                    $tenant->getCulture(),
-                    $vars
+                $sTemplate.'.text',
+                $tenant->getCulture(),
+                $vars
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($subject);
