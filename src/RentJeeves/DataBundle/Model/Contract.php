@@ -148,12 +148,23 @@ abstract class Contract
 
     /**
      * @ORM\Column(
+     *     type="boolean",
+     *     nullable=true,
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     */
+    protected $reporting = 0;
+
+    /**
+     * @ORM\Column(
      *     name="start_at",
      *     type="datetime",
      *     nullable=true
      * )
      * @Assert\NotBlank(
-     *     message="error.unit.empty",
+     *     message="error.start.empty",
      *     groups={
      *         "tenant_invite"
      *     }
@@ -168,7 +179,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Assert\NotBlank(
-     *     message="error.unit.empty",
+     *     message="error.finish.empty",
      *     groups={
      *         "tenant_invite"
      *     }
@@ -441,6 +452,28 @@ abstract class Contract
     }
 
     /**
+     * Set Reporting
+     *
+     * @param boolean $reporting
+     * @return Contract
+     */
+    public function setReporting($reporting)
+    {
+        $this->reporting = $reporting;
+        return $this;
+    }
+
+    /**
+     * Get Reporting
+     *
+     * @return boolean
+     */
+    public function getReporting()
+    {
+        return $this->reporting;
+    }
+
+    /**
      * Set startAt
      *
      * @param \DateTime $startAt
@@ -537,10 +570,9 @@ abstract class Contract
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
         $this->operations[] = $operation;
-    
         return $this;
     }
-    
+
     /**
      * Remove operation
      *
@@ -550,7 +582,7 @@ abstract class Contract
     {
         $this->opeartions->removeElement($operation);
     }
-    
+
     /**
      * Get operations
      *

@@ -220,6 +220,11 @@
   background-color: #999999;
 }
 
+.status-auto {
+     background-color: #00AEEF;
+     font-size: 10px;
+}
+
 /** details block **/
 .tradeline-details .creditor-contact {
   margin-top: 10px;

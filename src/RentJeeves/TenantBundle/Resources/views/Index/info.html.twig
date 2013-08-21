@@ -1,22 +1,64 @@
-<div class="pod-large pod-border pod-padding shadow">
-    <h1>Payment reporting</h1>
+<!-- popup -->
+<div data-bind="style: { display: process() ? 'block' : 'none' }" id="reporting-popup">
+    <div class="ui-widget-overlay ui-front"></div>
+    <div
+        class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable"
+        style="height: auto; width: 520px; top: 99.9967px; left: 692px; display: block;"
+        tabindex="-1"
+        role="dialog"
+        aria-describedby="edit-property-popup"
+        aria-labelledby="ui-id-3"
+        >
+        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+            <span id="ui-id-3" class="ui-dialog-title">&nbsp;</span>
+            <button
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
+                role="button"
+                aria-disabled="false"
+                title="close"
+                data-bind="click: closePopup"
+                >
+                <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                <span class="ui-button-text">close</span>
+            </button>
+        </div>
+        <div
+            class="pricing-popup dashboard-popup properties-popup ui-dialog-content ui-widget-content"
+            id="edit-property-popup"
+            style="display: block; width: auto; min-height: 80px; max-height: none; height: auto;"
+            >
+            <h1>{{ 'bureau.reporting.title' | trans() }}</h1>
+            <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
+                <div class="col">
+                <h4>
+                {{ 'bureau.reporting.text' | trans() }}
+                </h4>
+                </div>
+                <div class="footer-button-box">
+                    <button class="button buttonFix" data-bind="click: startReporting">
+                        <span id="saveManageUnits" >{{ 'bureau.reporting.start' | trans() }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End popup -->
+
+<div class="pod-large pod-border pod-padding shadow" id="info-block">
+    <h1>{{ 'info.reporting.title' | trans() }}</h1>
     <br />
     <div class="infoBlock">
         <div class="text">
-            <h3>See Your Payment Reporting</h3>
+            <h3>{{ 'info.reporting.see' | trans() }}</h3>
             <br />
             <p>
-                You'll be able to see your your credit score once
-                you've set up your first rent payment and verified 
-                your identity. Than track your progress by allowing
-                RentJeeves to send activity reports to Experian. You first
-                need  to allow RentJeeves to report activity on your behalf
-                - you can stop reporting in any time. Copy TBD. 
+                {{ 'info.reporting.text' | trans() }}
             </p>
             <br />
             <center>
-                <button class="button small{% if status == false %} greyButton {% endif %}">
-                    <span>Set Up Your for Bureau Reporting</span>
+                <button class="button small{% if status == false %} greyButton {% endif %}" data-bind="click: openPopup">
+                    <span>{{ 'bureau.reporting.setup' | trans() }}</span>
                 </button>
             </center>
         </div>
@@ -26,3 +68,7 @@
         <div class="clearfix"></div>
     </div>
 </div>
+
+{% javascripts '@TenantBundle/Resources/public/js/reporting.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}

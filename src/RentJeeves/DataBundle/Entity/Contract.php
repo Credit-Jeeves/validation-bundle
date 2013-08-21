@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 
 /**
  * Contract
@@ -122,11 +123,23 @@ class Contract extends Base
             $nMonth = $orderDate->format('m');
             if ($late = $order->getDaysLate()) {
                 $nMonth = $orderDate->modify('-'.$late.' days')->format('m');
-                $payments[$nYear][$nMonth] = array('status' => '1', 'text' => $late);
+                $payments[$nYear][$nMonth]['status'] = '1';
+                $payments[$nYear][$nMonth]['text'] = $late;
+                
             } else {
-                $payments[$nYear][$nMonth] = array('status' => 'C', 'text' => 'OK');
+                $payments[$nYear][$nMonth]['status'] = 'C';
+                $payments[$nYear][$nMonth]['text'] = 'OK';
+                
             }
+            if (OrderStatus::NEWONE == $order->getStatus()) {
+                $payments[$nYear][$nMonth]['status'] = 'auto';
+                $payments[$nYear][$nMonth]['text'] = 'AUTO';
+            }
+            $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
         }
+//         echo '<pre>';
+//         print_r($payments);
+//         echo '</pre>';
         $result['history'] = $payments;
         return $result;
     }

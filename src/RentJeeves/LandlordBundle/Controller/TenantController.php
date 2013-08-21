@@ -6,6 +6,7 @@ use CreditJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\LandlordBundle\Form\InviteTenantContractType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class TenantController extends Controller
 {
@@ -45,27 +46,31 @@ class TenantController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                //@TODO save form
+                $tenant = $form->getData()['tenant'];
+                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+                $contract = $form->getData()['contract'];
+                $tenant->setPassword(md5(md5(1)));
+                $contract->setStatus(ContractStatus::INVITE);
+                $contract->setTenant($tenant);
+                $user = $this->getUser();
+                $holding = $user->getHolding();
+                $group = $this->getCurrentGroup();
+                $contract->setHolding($holding);
+                $contract->setGroup($group);
+                $date = \DateTime::createFromFormat('Y-m-d', $contract->getStartAt());
+                $contract->setStartAt($date);
+                $date = \DateTime::createFromFormat('Y-m-d', $contract->getFinishAt());
+                $contract->setFinishAt($date);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($contract);
+                $em->persist($tenant);
+                $em->flush();
+
+                $this->get('creditjeeves.mailer')->sendRjTenantInvite($tenant, $user, $contract);
             }
         }
-    }
 
-    private function getErrorMessages(\Symfony\Component\Form\Form $form)
-    {
-        $errors = array();
-
-        if ($form->hasChildren()) {
-            foreach ($form->getChildren() as $child) {
-                if (!$child->isValid()) {
-                    $errors[$child->getName()] = $this->getErrorMessages($child);
-                }
-            }
-        } else {
-            foreach ($form->getErrors() as $key => $error) {
-                $errors[] = $error->getMessage();
-            }
-        }
-
-        return $errors;
+        return $this->redirect($this->generateUrl('landlord_tenants'));
     }
 }

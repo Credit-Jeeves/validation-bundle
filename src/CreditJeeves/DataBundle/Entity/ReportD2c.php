@@ -17,4 +17,16 @@ class ReportD2c extends Report
      * )
      */
     protected $operation;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="reportsD2c"
+     * )
+     * @ORM\JoinColumn(
+     *     name="cj_applicant_id",
+     *     referencedColumnName="id"
+     * )
+     */
+    protected $user;
 }
