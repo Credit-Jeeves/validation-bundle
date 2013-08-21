@@ -100,7 +100,7 @@
             </trans-unit>
             <trans-unit id="terms.service">
                 <source>terms.service</source>
-                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentJeeves, LLC under the Fair Credit Reporting Act authorizing RentJeeves LLC to obtain information from your personal credit profile or other information from Experian. You authorize RentJeeves LLC to obtain such information solely to authenticate your identity, provie you with your score and aggregated credit information and prequalify you for loan options.</target>
+                <target>You understand that by agreeing to the Terms of Service you are providing "written instructions" to RentTrack, LLC under the Fair Credit Reporting Act authorizing RentTrack LLC to obtain information from your personal credit profile or other information from a credit reporting agency. You authorize RentTrack LLC to obtain such information solely to verify your identity, provide you with your score and aggregated credit information, and pre-qualify you for custom offers.</target>
             </trans-unit>
             <trans-unit id="terms.service.pre-link">
                 <source>terms.service.pre-link</source>
@@ -164,7 +164,7 @@
             </trans-unit>
             <trans-unit id="property.info">
                 <source>property.info</source>
-                <target>Property information</target>
+                <target>Property Information</target>
             </trans-unit>
             <trans-unit id="required">
                 <source>required</source>
@@ -172,7 +172,7 @@
             </trans-unit>
             <trans-unit id="property.add">
                 <source>property.add</source>
-                <target>Add your rental property</target>
+                <target>Add your Rental Property</target>
             </trans-unit>
             <trans-unit id="verify.rental">
                 <source>verify.rental</source>
@@ -417,7 +417,7 @@
             </trans-unit>
             <trans-unit id="tenant.found.match">
                 <source>tenant.found.match</source>
-                <target>Good news! We found are match.</target>
+                <target>Good news! We found a match.</target>
             </trans-unit>
             <trans-unit id="result.search">
                 <source>result.search</source>
@@ -608,18 +608,6 @@
                 <source>donthavedata</source>
                 <target>Don't have data.</target>
             </trans-unit>
-           <trans-unit id="error.property.empty">
-                <source>error.property.empty</source>
-                <target>Property couldn't be empt.</target>
-            </trans-unit>
-           <trans-unit id="error.unit.empty">
-                <source>error.unit.empty</source>
-                <target>Unit couldn't be empt.</target>
-            </trans-unit>
-           <trans-unit id="error.rent.empty">
-                <source>error.rent.empty</source>
-                <target>Rent couldn't be empt.</target>
-            </trans-unit>
            <trans-unit id="bureau.reporting.title">
                 <source>bureau.reporting.title</source>
                 <target>Start Bureau Reporting</target>
@@ -646,7 +634,7 @@
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
-                <target>Payment reporting</target>
+                <target>Payment Reporting</target>
            </trans-unit>
            <trans-unit id="info.reporting.see">
                 <source>info.reporting.see</source>
