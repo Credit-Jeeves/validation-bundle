@@ -71,9 +71,10 @@ class TenantController extends Controller
     {
         $response = new RedirectResponse($this->generateUrl('tenant_homepage'));
         $this->container->get('fos_user.security.login_manager')->loginUser(
-                $this->container->getParameter('fos_user.firewall_name'),
-                $tenant,
-                $response);
+            $this->container->getParameter('fos_user.firewall_name'),
+            $tenant,
+            $response
+        );
 
         $this->container->get('user.service.login_success_handler')
                 ->onAuthenticationSuccess(

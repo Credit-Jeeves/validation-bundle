@@ -355,13 +355,17 @@ $(document).ready(function(){
               $('.userInfo').hide();
               $('#userExistMessage').show();
               $.each($('.userInfo').find('input'), function(index, value) {
-                $(this).val('12345');
+                if (value.length <= 0) {
+                  $(this).val('none');
+                }
               });
            } else {
               $('.userInfo').show();
               $('#userExistMessage').hide();
               $.each($('.userInfo').find('input'), function(index, value) {
-                $(this).val(' ');
+                if (value == 'none') {
+                  $(this).val(' ');
+                }
               });
            }
         }
