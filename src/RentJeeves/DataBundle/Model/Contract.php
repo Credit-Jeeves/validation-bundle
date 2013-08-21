@@ -22,7 +22,7 @@ abstract class Contract
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Tenant",
+     *     targetEntity="RentJeeves\DataBundle\Entity\Tenant",
      *     inversedBy="contracts"
      * )
      * @ORM\JoinColumn(
@@ -234,10 +234,10 @@ abstract class Contract
     /**
      * Set Tenant
      *
-     * @param \CreditJeeves\DataBundle\Entity\Tenant $tenant
+     * @param \RentJeeves\DataBundle\Entity\Tenant $tenant
      * @return contract
      */
-    public function setTenant(\CreditJeeves\DataBundle\Entity\Tenant $tenant)
+    public function setTenant(\RentJeeves\DataBundle\Entity\Tenant $tenant)
     {
         $this->tenant = $tenant;
         return $this;
@@ -246,7 +246,7 @@ abstract class Contract
     /**
      * Get Tenant
      *
-     * @return \CreditJeeves\DataBundle\Entity\Tenant
+     * @return \RentJeeves\DataBundle\Entity\Tenant
      */
     public function getTenant()
     {

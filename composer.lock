@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c644e4e6fece5272753d3e25303cbb52",
+    "hash": "588ebd6b84eb4051b448fe93bb47f6a7",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -160,6 +160,108 @@
             "time": "2013-08-19 13:02:05"
         },
         {
+            "name": "ass/xmlsecurity",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aschamberger/XmlSecurity.git",
+                "reference": "ce8c5e20fae33b92173be0ec37a572de5cb7bd16"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aschamberger/XmlSecurity/zipball/ce8c5e20fae33b92173be0ec37a572de5cb7bd16",
+                "reference": "ce8c5e20fae33b92173be0ec37a572de5cb7bd16",
+                "shasum": ""
+            },
+            "require": {
+                "lib-openssl": ">=0.9.0",
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "ass\\XmlSecurity": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Robert Richards",
+                    "email": "rrichards@cdatazone.org"
+                },
+                {
+                    "name": "Andreas Schamberger",
+                    "email": "mail@andreass.net"
+                }
+            ],
+            "description": "The XmlSecurity library is written in PHP for working with XML Encryption and Signatures",
+            "homepage": "https://github.com/aschamberger/XmlSecurity",
+            "keywords": [
+                "encryption",
+                "security",
+                "signature",
+                "xml"
+            ],
+            "time": "2013-07-18 19:52:20"
+        },
+        {
+            "name": "besimple/soap-common",
+            "version": "dev-master",
+            "target-dir": "BeSimple/SoapCommon",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git",
+                "reference": "653e1f23c49dd8bbf7cd7226697dce6dffa68663"
+            },
+            "require": {
+                "ass/xmlsecurity": "dev-master",
+                "ext-soap": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "ext-mcrypt": "*",
+                "mikey179/vfsstream": "dev-master"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "BeSimple\\SoapCommon": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Francis Besset",
+                    "email": "francis.besset@gmail.com"
+                },
+                {
+                    "name": "Christian Kerl",
+                    "email": "christian-kerl@web.de"
+                },
+                {
+                    "name": "Andreas Schamberger",
+                    "email": "mail@andreass.net"
+                }
+            ],
+            "description": "Build and consume SOAP Common based web services",
+            "homepage": "https://github.com/BeSimple/BeSimpleSoapCommon",
+            "keywords": [
+                "soap",
+                "soap-common"
+            ],
+            "time": "2013-08-16 15:18:31"
+        },
+        {
             "name": "credit-jeeves/arf-bundle",
             "version": "dev-master",
             "target-dir": "CreditJeeves/ArfBundle",
@@ -226,11 +328,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "61e80b239261d904c010e8ef4149ba0d0af855a0"
+                "reference": "acd28d9160097dff90b61538a5b7cf6e44657e3e"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-08-19 15:44:51"
+            "time": "2013-08-21 14:18:36"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -327,7 +429,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -376,7 +478,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan Wage",
+                    "name": "Jonathan H. Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -636,9 +738,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -740,7 +842,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -1497,7 +1599,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1959,7 +2061,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "Knplabs",
+                    "name": "KnpLabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -2244,7 +2346,7 @@
             ],
             "authors": [
                 {
-                    "name": "Maksim Kotlyar",
+                    "name": "Kotlyar Maksim",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -2255,6 +2357,54 @@
                 "payment"
             ],
             "time": "2013-06-03 07:57:15"
+        },
+        {
+            "name": "payum/heartland",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/Heartland.git",
+                "reference": "7e74a5b2a123ebaa21f250d9a39258615bf6ea74"
+            },
+            "require": {
+                "ass/xmlsecurity": "dev-master",
+                "besimple/soap-common": "dev-master",
+                "payum/payum": "0.5.x-dev",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "besimple/wsdl2php": "dev-dev",
+                "ext-curl": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.5-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Payum\\Heartland": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ton Sharp",
+                    "email": "Forma-PRO@66ton99.org.ua"
+                }
+            ],
+            "description": "Heartland pro checkout",
+            "keywords": [
+                "heartland",
+                "library",
+                "open source",
+                "payment",
+                "src"
+            ],
+            "time": "2013-08-21 14:58:27"
         },
         {
             "name": "payum/payum",
@@ -2319,7 +2469,7 @@
         },
         {
             "name": "payum/payum-bundle",
-            "version": "dev-master",
+            "version": "dev-heartland",
             "target-dir": "Payum/Bundle/PayumBundle",
             "source": {
                 "type": "git",
@@ -2425,7 +2575,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -3731,11 +3881,11 @@
                 "symfony/framework-bundle": "~2.2"
             },
             "require-dev": {
-                "behat/mink-goutte-driver": "~1.0.8",
-                "behat/mink-sahi-driver": "~1.1.0",
-                "behat/mink-selenium-driver": "~1.1.0",
-                "behat/mink-selenium2-driver": "~1.1.0",
-                "behat/mink-zombie-driver": "~1.1.0"
+                "behat/mink-goutte-driver": ">=1.0.8,<1.1",
+                "behat/mink-sahi-driver": ">=1.1,<1.2",
+                "behat/mink-selenium-driver": ">=1.1,<1.2",
+                "behat/mink-selenium2-driver": ">=1.1,<1.2",
+                "behat/mink-zombie-driver": ">=1.1,<1.2"
             },
             "suggest": {
                 "behat/mink-goutte-driver": "fast headless driver for any app without JS emulation",
@@ -4159,7 +4309,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
@@ -4263,6 +4413,9 @@
         "jms/security-extra-bundle": 20,
         "payum/payum": 20,
         "payum/payum-bundle": 20,
+        "payum/heartland": 20,
+        "besimple/soap-common": 20,
+        "ass/xmlsecurity": 20,
         "hat/environment": 20,
         "knplabs/knp-menu-bundle": 20,
         "fp/badaboom": 20,

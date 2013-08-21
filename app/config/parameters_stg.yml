@@ -12,4 +12,4 @@ parameters:
 
     server: stg
     server_name_cj: stg2.creditjeeves.com
-    server_name_rj: stg2.rentjeeves.com
+    server_name_rj: stg2.renttrack.com

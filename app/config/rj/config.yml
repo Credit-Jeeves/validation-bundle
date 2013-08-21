@@ -32,3 +32,13 @@ framework:
 twig:
     globals:
         application: rj
+
+
+doctrine:
+    orm:
+        mappings:
+            heartland:
+                is_bundle: false
+                type: xml
+                dir: %kernel.root_dir%/../vendor/payum/heartland/src/Payum/Heartland/Bridge/Doctrine/Resources/mapping
+                prefix: Payum\Heartland\Bridge\Doctrine\Entity

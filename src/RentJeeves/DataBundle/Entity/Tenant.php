@@ -1,6 +1,7 @@
 <?php
-namespace CreditJeeves\DataBundle\Entity;
+namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -37,6 +38,22 @@ class Tenant extends User
      */
     protected $contracts;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *     mappedBy="user",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $payment_accounts;
+
     public function __construct()
     {
         parent::__construct();
@@ -47,7 +64,7 @@ class Tenant extends User
      * Set invite
      *
      * @param \RentJeeves\DataBundle\Entity\Invite $invite
-     * @return Tenant
+     * @return \RentJeeves\DataBundle\Entity\Tenant
      */
     public function setInvite(\RentJeeves\DataBundle\Entity\Invite $invite = null)
     {
@@ -74,7 +91,7 @@ class Tenant extends User
      * Add Contract
      *
      * @param Contract $contract
-     * @return Tenant
+     * @return \RentJeeves\DataBundle\Entity\Tenant
      */
     public function addContract(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
@@ -116,5 +133,37 @@ class Tenant extends User
     public function getFomattedPhone()
     {
         return $this->formatPhoneOutput($this->getPhone());
+    }
+
+    /**
+     * Add account
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $account
+     * @return \RentJeeves\DataBundle\Entity\Landlord
+     */
+    public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $account)
+    {
+        $this->payment_accounts[] = $account;
+        return $this;
+    }
+
+    /**
+     * Remove account
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $account
+     */
+    public function removePaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $account)
+    {
+        $this->payment_accounts->removeElement($account);
+    }
+
+    /**
+     * Get payment_accounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPaymentAccounts()
+    {
+        return $this->payment_accounts;
     }
 }

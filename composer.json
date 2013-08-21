@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "61e80b239261d904c010e8ef4149ba0d0af855a0"
+                    "reference": "acd28d9160097dff90b61538a5b7cf6e44657e3e"
                 }
             }
         },
@@ -105,6 +105,14 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/PayumBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/Heartland.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git"
         },
         {
             "type": "git",
@@ -171,8 +179,11 @@
         "friendsofsymfony/user-bundle": "v1.3.2",
         "friendsofsymfony/jsrouting-bundle": "~1.1",
         "payum/payum": "dev-master as 0.5.x-dev",
-        "payum/payum-bundle": "dev-master",
+        "payum/payum-bundle": "dev-heartland",
         "payum/authorize-net-aim": "0.5.*",
+        "payum/heartland": "dev-master",
+        "besimple/soap-common": "dev-master",
+        "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",
         "fp/badaboom": "dev-ton as dev-not-approved",

@@ -1,4 +1,4 @@
-model: CreditJeeves\DataBundle\Entity\Tenant
+model: RentJeeves\DataBundle\Entity\Tenant
 fixtures:
     Tenant_1:
         first_name: TIMOTHY
