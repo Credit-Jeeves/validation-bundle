@@ -181,6 +181,7 @@ function Contracts() {
   };
 
   this.ajaxAction = function() {
+    $('.content-box').show();
     self.aContracts([]);
     self.notHaveResult(false);
     self.processLoading(true);
@@ -298,8 +299,7 @@ $(document).ready(function(){
   ContractsViewModel.ajaxAction();
   $('#searchFilter').linkselect("destroy");
   $('#searchFilter').linkselect();
-  $('.properties-table-block').show();
-      
+
   var idProperty = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property';
   var idUnit = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit'; 
   function getUnits(propertyId)
@@ -343,4 +343,44 @@ $(document).ready(function(){
   });
 
   getUnits($(idProperty).linkselect('val'));
+
+  $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email').change(function () {
+      $.ajax({
+        url: Routing.generate('landlord_check_email'),
+        type: 'POST',
+        dataType: 'json',
+        data: {'email': $(this).val() },
+        success: function(response) {
+           if (response.userExist) {
+              if(response.isTenant == false) {
+                $('.userInfo').hide();
+                $('#userExistMessageLanlord').show();
+              } else {
+                $('.userInfo').hide();
+                $('#userExistMessage').show();
+                $.each($('.userInfo').find('input'), function(index, value) {
+                  if (value.length <= 0) {
+                    $(this).val('none');
+                  }
+                });
+              }
+           } else {
+              $('.userInfo').show();
+              $('.messageInfoUserAdd').hide();
+              $.each($('.userInfo').find('input'), function(index, value) {
+                if (value == 'none') {
+                  $(this).val(' ');
+                }
+              });
+           }
+        }
+      });
+  });
+  
+  $('#rentjeeves_landlordbundle_invitetenantcontracttype').submit(function() {
+    if($('#userExistMessageLanlord').is(':visible')) {
+      return false;
+    }
+    return true;
+  });
 });

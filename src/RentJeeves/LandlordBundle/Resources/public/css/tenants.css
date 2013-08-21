@@ -118,3 +118,7 @@ height: 23px;
 .error_list>li {
     font-size: 12px;
 }
+
+#userExistMessage, #userExistMessageLanlord, .content-box {
+    display: none;
+}

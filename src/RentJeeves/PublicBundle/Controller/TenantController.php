@@ -8,6 +8,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\TenantType;
 use CreditJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class TenantController extends Controller
 {
@@ -40,21 +43,21 @@ class TenantController extends Controller
 
                 $contracts = $tenant->getContracts();
                 $em = $this->getDoctrine()->getManager();
+
                 if (!empty($contracts)) {
                     foreach ($contracts as $contract) {
                         if ($contract->getStatus() == ContractStatus::INVITE) {
-                            $contract->setStatus(ContractStatus::PENDING);
+                            $contract->setStatus(ContractStatus::ACTIVE);
                             $em->persist($contract);
                         }
                     }
                 }
 
+                $tenant->setInviteCode(null);
                 $em->persist($tenant);
                 $em->flush();
 
-                $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
-
-                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
+                return $this->login($tenant);
             }
         }
 
@@ -62,5 +65,23 @@ class TenantController extends Controller
             'code'      => $code,
             'form'      => $form->createView(),
         );
+    }
+
+    private function login($tenant)
+    {
+        $response = new RedirectResponse($this->generateUrl('tenant_homepage'));
+        $this->container->get('fos_user.security.login_manager')->loginUser(
+            $this->container->getParameter('fos_user.firewall_name'),
+            $tenant,
+            $response
+        );
+
+        $this->container->get('user.service.login_success_handler')
+                ->onAuthenticationSuccess(
+                    $this->container->get('request'),
+                    $this->container->get('security.context')->getToken()
+                );
+
+        return $response;
     }
 }

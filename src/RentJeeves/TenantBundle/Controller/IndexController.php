@@ -21,7 +21,7 @@ class IndexController extends Controller
         $allContracts = $emContract->getCountByStatus($tenant);
         $pendingContracts = $emContract->getCountByStatus($tenant, ContractStatus::PENDING);
         $activeContracts = $emContract->getCountByStatus($tenant, ContractStatus::ACTIVE);
-        
+
         if ($allContracts === $pendingContracts) {
             $status = 'new';
         } elseif ($activeContracts > 0) {

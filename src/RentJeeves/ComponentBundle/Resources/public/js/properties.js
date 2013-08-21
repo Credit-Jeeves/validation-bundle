@@ -45,6 +45,7 @@ function Properties() {
      self.ajaxAction();
   };
   this.ajaxAction = function() {
+    $('#properties-block').show();
     self.processProperty(true);
     $.ajax({
       url: Routing.generate('landlord_properties_list'),
