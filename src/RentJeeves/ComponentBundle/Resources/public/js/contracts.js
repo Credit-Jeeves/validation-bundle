@@ -359,7 +359,8 @@ $(document).ready(function(){
                 $('.userInfo').hide();
                 $('#userExistMessage').show();
                 $.each($('.userInfo').find('input'), function(index, value) {
-                  if (value.length <= 0) {
+                  var val = $.trim($(this).val());
+                  if (val.length <= 0) {
                     $(this).val('none');
                   }
                 });
@@ -368,9 +369,10 @@ $(document).ready(function(){
               $('.userInfo').show();
               $('.messageInfoUserAdd').hide();
               $.each($('.userInfo').find('input'), function(index, value) {
-                if (value == 'none') {
-                  $(this).val(' ');
-                }
+                  var val = $.trim($(this).val());
+                  if (val.length <= 0) {
+                    $(this).val('none');
+                  }
               });
            }
         }
