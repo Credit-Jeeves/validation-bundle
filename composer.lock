@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "20e09e75f8a5279fbbf0d21cc569da38",
+    "hash": "588ebd6b84eb4051b448fe93bb47f6a7",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -328,11 +328,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "c1a22d9e4b87bf4a084108bf1dc3610b18c2d740"
+                "reference": "acd28d9160097dff90b61538a5b7cf6e44657e3e"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-07-24 11:51:25"
+            "time": "2013-08-21 14:18:36"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -2469,7 +2469,7 @@
         },
         {
             "name": "payum/payum-bundle",
-            "version": "dev-master",
+            "version": "dev-heartland",
             "target-dir": "Payum/Bundle/PayumBundle",
             "source": {
                 "type": "git",

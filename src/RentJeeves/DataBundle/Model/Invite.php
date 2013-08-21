@@ -87,7 +87,7 @@ abstract class Invite
 
     /**
      * @ORM\OneToOne(
-     *  targetEntity="CreditJeeves\DataBundle\Entity\Tenant",
+     *  targetEntity="RentJeeves\DataBundle\Entity\Tenant",
      *  inversedBy="invite",
      *  cascade={"persist", "merge"}
      *)
@@ -235,10 +235,10 @@ abstract class Invite
     /**
      * Set tenant
      *
-     * @param \CreditJeeves\DataBundle\Entity\Tenant $tenant
+     * @param \RentJeeves\DataBundle\Entity\Tenant $tenant
      * @return Invite
      */
-    public function setTenant(\CreditJeeves\DataBundle\Entity\Tenant $tenant = null)
+    public function setTenant(\RentJeeves\DataBundle\Entity\Tenant $tenant = null)
     {
         $this->tenant = $tenant;
     
@@ -248,7 +248,7 @@ abstract class Invite
     /**
      * Get tenant
      *
-     * @return \CreditJeeves\DataBundle\Entity\Tenant 
+     * @return \RentJeeves\DataBundle\Entity\Tenant
      */
     public function getTenant()
     {

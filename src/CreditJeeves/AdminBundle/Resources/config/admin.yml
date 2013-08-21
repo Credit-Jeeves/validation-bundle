@@ -114,7 +114,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Landlords" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\Landlord
+            - RentJeeves\DataBundle\Entity\Landlord
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
@@ -125,7 +125,7 @@ services:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Tenants" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\Tenant
+            - RentJeeves\DataBundle\Entity\Tenant
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]

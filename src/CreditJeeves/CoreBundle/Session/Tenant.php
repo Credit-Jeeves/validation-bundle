@@ -3,7 +3,7 @@ namespace CreditJeeves\CoreBundle\Session;
 
 use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Service;
-use CreditJeeves\DataBundle\Entity\Tenant as UserEntity;
+use RentJeeves\DataBundle\Entity\Tenant as UserEntity;
 
 /**
  * @Service("core.session.tenant")

@@ -64,10 +64,12 @@ class sfConfig
 
         try {
             $vars = Yaml::parse(self::getRoot() . '/vendor/credit-jeeves/credit-jeeves/config/vars.yml');
+            $experian = $vars['prod']['experian'];
         } catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
             $vars = Yaml::parse(self::getRoot() . '/vendor/credit-jeeves/credit-jeeves/config/vars_dev_base.yml');
+            $experian = $vars['all']['experian'];
         }
-        self::fill($vars['all']['experian'], 'global_experian');
+        self::fill($experian, 'global_experian');
 
         $configs = Yaml::parse(self::getRoot() . '/vendor/credit-jeeves/credit-jeeves/config/experian.yml');
         self::fill($configs['all'], 'experian');

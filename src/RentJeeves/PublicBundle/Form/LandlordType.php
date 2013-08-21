@@ -70,7 +70,7 @@ class LandlordType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Landlord',
+                'data_class' => 'RentJeeves\DataBundle\Entity\Landlord',
                 'validation_groups' => array(
                     'registration_tos',
                     'invite',
