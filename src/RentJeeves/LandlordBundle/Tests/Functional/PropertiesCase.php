@@ -89,7 +89,7 @@ class PropertiesCase extends BaseTestCase
         $saveProperty->click();
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
-        $fillAddress = 'New York Homestay, West 42nd Street, Manhattan, New York City, NY';
+        $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY';
         $propertySearch->setValue($fillAddress);
         $propertySearch->click();
         $this->session->wait($this->timeout, "$('.pac-item').length > 0");
