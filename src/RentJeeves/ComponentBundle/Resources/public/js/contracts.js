@@ -181,6 +181,7 @@ function Contracts() {
   };
 
   this.ajaxAction = function() {
+    $('.content-box').show();
     self.aContracts([]);
     self.notHaveResult(false);
     self.processLoading(true);
@@ -298,8 +299,7 @@ $(document).ready(function(){
   ContractsViewModel.ajaxAction();
   $('#searchFilter').linkselect("destroy");
   $('#searchFilter').linkselect();
-  $('.properties-table-block').show();
-      
+
   var idProperty = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property';
   var idUnit = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit'; 
   function getUnits(propertyId)

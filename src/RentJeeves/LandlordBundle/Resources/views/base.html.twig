@@ -1,30 +1,32 @@
 {% extends "CoreBundle::rj_base.html.twig" %}
 
 {% block stylesheets %}
-    <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/report.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/tradelines-history.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/credit-summary.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/score.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/credit-balance.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/account-status.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/goods.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/inquiries.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/automotive-details.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/footer.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/leads.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/component/css/ad-creditcards.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/core/css/rj-logos.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/core/css/google-maps.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/core/css/check.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/checkout/css/checkout.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/core/css/landlord.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/core/css/buttons.less') }}" rel="stylesheet/less" type="text/css" />
+    {% stylesheets '@ComponentBundle/Resources/public/css/components.css'
+                   '@ComponentBundle/Resources/public/css/report.css'
+                   '@ComponentBundle/Resources/public/css/tradelines-history.css'
+                   '@ComponentBundle/Resources/public/css/credit-summary.css'
+                   '@ComponentBundle/Resources/public/css/score.css'
+                   '@ComponentBundle/Resources/public/css/credit-balance.css'
+                   '@ComponentBundle/Resources/public/css/account-status.css'
+                   '@ComponentBundle/Resources/public/css/goods.css'
+                   '@ComponentBundle/Resources/public/css/inquiries.css'
+                   '@ComponentBundle/Resources/public/css/automotive-details.css'
+                   '@ComponentBundle/Resources/public/css/footer.css'
+                   '@ComponentBundle/Resources/public/css/leads.css'
+                   '@ComponentBundle/Resources/public/css/ad-creditcards.css'
+                   '@CoreBundle/Resources/public/css/rj-logos.css'
+                   '@CoreBundle/Resources/public/css/tabs.css'
+                   '@UserBundle/Resources/public/css/login.css'
+                   '@CoreBundle/Resources/public/css/google-maps.css'
+                   '@CoreBundle/Resources/public/css/check.css'
+                   '@CheckoutBundle/Resources/public/css/checkout.css'
+                   '@CoreBundle/Resources/public/css/landlord.css'
+                   '@CoreBundle/Resources/public/css/datepicker.css'
+                   '@RjPublicBundle/Resources/public/css/styles.css'
+     %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
     <script src="{{ asset('bundles/core/js/less.min.js') }}"></script>
-    <link href="{{ asset('bundles/core/css/datepicker.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/rjpublic/css/styles.css') }}" rel="stylesheet" type="text/css" />
     <script src="{{ asset('bundles/core/js/datepicker.js') }}"></script>
 {% endblock %}
 
