@@ -473,3 +473,6 @@ a.linkselect-link .linkselect-link-text {
     padding: 6px 14px 0;
     height: 16px;
 }
+#properties-block {
+    display: none;
+}
