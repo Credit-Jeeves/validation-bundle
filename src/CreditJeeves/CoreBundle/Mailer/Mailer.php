@@ -226,4 +226,58 @@ class Mailer extends BaseMailer implements MailerInterface
         }
         return false;
     }
+
+    public function sendRjTenantLatePayment($tenant, $landlord, $contract, $sTemplate = 'rjTenantLatePayment')
+    {
+        $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
+        $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
+        $vars = array(
+                'fullNameLandlord'      => $landlord->getFullName(),
+                'nameTenant'            => $tenant->getFirstName(),
+                'address'               => $contract->getProperty()->getAddress(),
+                'unitName'              => $contract->getUnit()->getName(),
+                'inviteCode'            => $tenant->getInviteCode(),
+        );
+        $subject = 'Your landlord '.$landlord->getFullName().' request a rent payment using RentTrack';
+        if (empty($isPlain) && empty($isHtml)) {
+            $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
+        }
+        if (!empty($isHtml)) {
+            $htmlContent = $this->manager->renderEmail(
+                    $sTemplate.'.html',
+                    $tenant->getCulture(),
+                    $vars
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($subject);
+            $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
+            $message->setTo($tenant->getEmail());
+            $message->addPart($htmlContent['body'], 'text/html');
+            if (!empty($isPlain)) {
+                $plainContent = $this->manager->renderEmail(
+                        $sTemplate.'.text',
+                        $tenant->getCulture(),
+                        $vars
+                );
+                $message->addPart($plainContent['body'], 'text/plain');
+            }
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+        if (!empty($isPlain)) {
+            $plainContent = $this->manager->renderEmail(
+                    $sTemplate.'.text',
+                    $tenant->getCulture(),
+                    $vars
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($subject);
+            $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
+            $message->setTo($tenant->getEmail());
+            $message->addPart($plainContent['body'], 'text/plain');
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+        return false;
+    }
 }

@@ -14,6 +14,21 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
  */
 class Contract extends Base
 {
+    /**
+     * @var string
+     */
+    const RESOLVE_EMAIL = 'email';
+
+    /**
+     * @var string
+     */
+    const RESOLVE_PAID = 'paid';
+
+    /**
+     * @var string
+     */
+    const RESOLVE_UNPAID = 'unpaid';
+
     public function getItem()
     {
         $result = array();

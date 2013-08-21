@@ -26,3 +26,5 @@ fixtures:
     name: rjLandLordInvite.html
   email_13:
     name: rjTenantInvite.html
+  email_14:
+    name: rjTenantLatePayment.html

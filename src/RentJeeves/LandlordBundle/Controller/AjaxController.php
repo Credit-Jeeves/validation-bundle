@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
@@ -452,9 +453,26 @@ class AjaxController extends Controller
      */
     public function resolveContract()
     {
+        $request = $this->getRequest();
+        $data = $request->request->all('data');
+        $contract = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
+        $tenant = $contract->getTenant();
+        $action = $data['action'];
+        switch ($action) {
+            case Contract::RESOLVE_EMAIL:
+                $this->get('creditjeeves.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
+                break;
+            case Contract::RESOLVE_PAID:
+                $em = $this->getDoctrine()->getManager();
+                
+                break;
+            case Contract::RESOLVE_UNPAID:
+                // @TODO Here will be report to Experian
+                break;
+        }
         return new JsonResponse(array());
     }
-    
+
     /* Payments */
 
     /**
