@@ -77,7 +77,6 @@ class TenantController extends Controller
                 $date = \DateTime::createFromFormat('Y-m-d', $contract->getFinishAt());
                 $contract->setFinishAt($date);
 
-                
                 $em->persist($contract);
                 $em->persist($tenant);
                 $em->flush();

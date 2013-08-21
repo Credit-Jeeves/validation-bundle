@@ -352,16 +352,21 @@ $(document).ready(function(){
         data: {'email': $(this).val() },
         success: function(response) {
            if (response.userExist) {
-              $('.userInfo').hide();
-              $('#userExistMessage').show();
-              $.each($('.userInfo').find('input'), function(index, value) {
-                if (value.length <= 0) {
-                  $(this).val('none');
-                }
-              });
+              if(response.isTenant == false) {
+                $('.userInfo').hide();
+                $('#userExistMessageLanlord').show();
+              } else {
+                $('.userInfo').hide();
+                $('#userExistMessage').show();
+                $.each($('.userInfo').find('input'), function(index, value) {
+                  if (value.length <= 0) {
+                    $(this).val('none');
+                  }
+                });
+              }
            } else {
               $('.userInfo').show();
-              $('#userExistMessage').hide();
+              $('.messageInfoUserAdd').hide();
               $.each($('.userInfo').find('input'), function(index, value) {
                 if (value == 'none') {
                   $(this).val(' ');
@@ -371,5 +376,11 @@ $(document).ready(function(){
         }
       });
   });
-
+  
+  $('#rentjeeves_landlordbundle_invitetenantcontracttype').submit(function() {
+    if($('#userExistMessageLanlord').is(':visible')) {
+      return false;
+    }
+    return true;
+  });
 });

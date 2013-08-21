@@ -228,8 +228,11 @@
       <h1>{{'add.tenant'|trans}}</h1>
       {{ form_errors(form) }}
       <div class="clearfix col-box">
-        <div id="userExistMessage" class="information-box pie-el">
+        <div id="userExistMessage" class="information-box pie-el messageInfoUserAdd">
           {{ 'user.alredy.in.system'|trans }}
+        </div>
+        <div id="userExistMessageLanlord" class="atansion-box pie-el pie-el messageInfoUserAdd">
+          {{ 'user.itslandlord'|trans }}
         </div>
         <div class="col">
           <h4 class="clearfix">

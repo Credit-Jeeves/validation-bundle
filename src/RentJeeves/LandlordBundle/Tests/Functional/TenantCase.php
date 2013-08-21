@@ -295,4 +295,34 @@ class TenantCase extends BaseTestCase
         $this->assertCount(1, $contracts, 'wrong number of contracts');
         $this->logout();
     }
+
+    /**
+     * @test
+     */
+    public function checkNotifyLandlord()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->clearEmail();
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->page->pressButton('add.tenant');
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
+        $this->page->pressButton('invite.tenant');
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'landlord1@example.com'
+            )
+        );
+        $this->session->wait($this->timeout, "$('#userExistMessageLanlord').is(':visible')");
+        $this->logout();
+    }
 }
