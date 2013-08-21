@@ -184,25 +184,30 @@ class Property extends Base
         if ($street = $this->getStreet()) {
             $address[] = $street;
         }
-
         if ($address) {
             $result[] = implode(' ', $address);
         }
-
         if ($district = $this->getDistrict()) {
             $result[] = $district;
         }
-
         if ($city = $this->getCity()) {
             $result[] = $city;
         }
-
-
         if ($area = $this->getArea()) {
             $result[] = $area;
         }
+        return implode(', ', $result).' '.$this->getZip();
+    }
 
-
+    public function getLocationAddress()
+    {
+        $result = array();
+        if ($city = $this->getCity()) {
+            $result[] = $city;
+        }
+        if ($area = $this->getArea()) {
+            $result[] = $area;
+        }
         return implode(', ', $result).' '.$this->getZip();
     }
 

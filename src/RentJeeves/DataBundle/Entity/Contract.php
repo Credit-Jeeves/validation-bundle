@@ -25,7 +25,7 @@ class Contract extends Base
         $result['status'] = $status['status'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
-        $result['full_address'] = $this->getRentAddress($property, $unit);
+        $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['property_id'] = $property->getId();
         $result['unit_id'] = null;
         if ($unit) {
