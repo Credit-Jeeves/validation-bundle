@@ -12,6 +12,9 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
  * 
@@ -455,7 +458,16 @@ class AjaxController extends Controller
     {
         $request = $this->getRequest();
         $data = $request->request->all('data');
+        if (!isset($data['action'])) {
+            return new JsonResponse(array());
+        }
         $contract = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
+//         echo $contract->getId();
+//         echo get_class($contract);
+//         $operations = $contract->getOperations();
+//         echo get_class($operation);
+        
+//         exit;
         $tenant = $contract->getTenant();
         $action = $data['action'];
         switch ($action) {
@@ -464,7 +476,18 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
+//                 echo get_class($contract);
+//                 $operations = $contract->getOperations();
                 
+//                 exit;
+//                 $order = new Order();
+//                 $order->addOperation($operation);
+//                 $order->setUser($tenant);
+//                 $order->setAmount($contract->getRent());
+//                 $order->setStatus(OrderStatus::COMPLETE);
+//                 $order->setType(OrderType::CASH);
+//                 $em->persist($order);
+//                 $em->flush();
                 break;
             case Contract::RESOLVE_UNPAID:
                 // @TODO Here will be report to Experian

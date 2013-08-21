@@ -21,5 +21,5 @@ class OrderType extends Enum
     /**
      * @var string
      */
-    const CACH = 'cash';
+    const CASH = 'cash';
 }
