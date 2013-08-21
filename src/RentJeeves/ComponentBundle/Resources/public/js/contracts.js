@@ -253,7 +253,7 @@ function Contracts() {
     $('.payment-start, .payment-end').datepicker({
       showOn: "button",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
-      format:'m/d/Y'
+      dateFormat:'dd/mm/yy'
     });
   };
   this.filterAddress = function(data) {
@@ -299,4 +299,48 @@ $(document).ready(function(){
   $('#searchFilter').linkselect("destroy");
   $('#searchFilter').linkselect();
   $('.properties-table-block').show();
+      
+  var idProperty = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property';
+  var idUnit = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit'; 
+  function getUnits(propertyId)
+  {
+      $(idUnit).linkselect('destroy');
+      $(idUnit).html(' ');
+      $(idUnit).linkselect();
+      $.ajax({
+        url: Routing.generate('landlord_units_list'),
+        type: 'POST',
+        dataType: 'json',
+        data: {'property_id': propertyId},
+        success: function(response) {
+
+            if(response.units.length <= 0) {
+              return;
+            }
+
+            var html = '';
+            $.each(response.units, function(index, value) {
+               var id = $(this).get(0).id;
+               var name = $(this).get(0).name;
+               var option = '<option value="'+id+'">'+name+'</option>';
+               html += option;
+            });
+
+            $(idUnit).linkselect('destroy');
+            $(idUnit).html(html);
+            $(idUnit).linkselect();
+        }
+      });
+  }
+
+
+  $(idProperty).linkselect('destroy');
+
+  $(idProperty).linkselect({
+    change: function(li, value, text){
+      getUnits(value);
+    }
+  });
+
+  getUnits($(idProperty).linkselect('val'));
 });

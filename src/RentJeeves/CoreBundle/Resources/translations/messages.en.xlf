@@ -652,15 +652,23 @@
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
-                <target>Property can't be empty.</target>
+                <target>Property couldn't be empt.</target>
             </trans-unit>
            <trans-unit id="error.unit.empty">
                 <source>error.unit.empty</source>
-                <target>Unit can't be empty.</target>
+                <target>Unit couldn't be empt.</target>
             </trans-unit>
            <trans-unit id="error.rent.empty">
                 <source>error.rent.empty</source>
-                <target>Rent can't be empty.</target>
+                <target>Rent couldn't be empt.</target>
+            </trans-unit>
+           <trans-unit id="error.start.empty">
+                <source>error.start.empty</source>
+                <target>Start date couldn't be empt.</target>
+            </trans-unit>
+           <trans-unit id="error.finish.empty">
+                <source>error.finish.empty</source>
+                <target>Finish date couldn't be empt.</target>
             </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
