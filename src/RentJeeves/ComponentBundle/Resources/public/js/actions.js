@@ -1,3 +1,31 @@
+function Resolve() {
+  var self = this;
+  this.process = ko.observable(false);
+  this.details = ko.observable();
+  this.openForm = function(data) {
+    self.process(true);
+    self.details(data);
+  };
+  this.closeForm = function() {
+    self.process(false);
+  };
+  this.resolve = function() {
+    $.ajax({
+      url: Routing.generate('landlord_conflict_resolve'),
+      type: 'POST',
+      dataType: 'json',
+      data: {
+          'contract_id' : self.details().id,
+          'action' : $('input[name=ResolutionOptions]:checked').attr('title')
+      },
+      success: function() {
+        ActionsViewModel.ajaxAction();
+        self.closeForm();
+      }
+    });
+  };
+};
+
 function Actions() {
   var limit = 10;
   var current = 1;
@@ -7,6 +35,7 @@ function Actions() {
   this.total = ko.observable(0);
   this.current = ko.observable(1);
   this.ajaxAction = function() {
+    self.aActions([]);
     $.ajax({
       url: Routing.generate('landlord_actions_list'),
       type: 'POST',
@@ -18,7 +47,6 @@ function Actions() {
         }
       },
       success: function(response) {
-        self.aActions([]);
         self.aActions(response.actions);
         self.total(response.total);
         self.pages(response.pagination);
@@ -38,14 +66,16 @@ function Actions() {
     }
     self.ajaxAction();
   };
-  this.Resolve = function() {
-    return false;
+  this.Resolve = function(data) {
+    ResolveViewModel.openForm(data);
   };
 }
 
 var ActionsViewModel = new Actions();
+var ResolveViewModel = new Resolve();
 
 $(document).ready(function(){
   ko.applyBindings(ActionsViewModel, $('#actions-block').get(0));
+  ko.applyBindings(ResolveViewModel, $('#contract-resolve').get(0));
   ActionsViewModel.ajaxAction();
 });

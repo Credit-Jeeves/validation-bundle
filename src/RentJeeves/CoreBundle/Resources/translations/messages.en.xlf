@@ -682,6 +682,44 @@
                 <source>legend.delinquent</source>
                 <target>N days delinquent</target>
             </trans-unit>
+
+           <trans-unit id="conflict.resolve.uppercase">
+                <source>conflict.resolve.uppercase</source>
+                <target>RESOLVE</target>
+            </trans-unit>
+
+           <trans-unit id="conflict.resolve.action">
+                <source>conflict.resolve.action</source>
+                <target>Resolve</target>
+            </trans-unit>
+           <trans-unit id="conflict.resolve.title">
+                <source>conflict.resolve.title</source>
+                <target>Resolve this late payment</target>
+            </trans-unit>
+           <trans-unit id="conflict.tenant">
+                <source>conflict.resolve.title</source>
+                <target>Resolve this late payment</target>
+            </trans-unit>
+           <trans-unit id="conflict.due.date">
+                <source>conflict.due.date</source>
+                <target>Original Due Date</target>
+            </trans-unit>
+           <trans-unit id="conflict.resolve.options">
+                <source>conflict.resolve.options</source>
+                <target>Resolution options</target>
+            </trans-unit>
+           <trans-unit id="conflict.resolve.email">
+                <source>conflict.resolve.email</source>
+                <target>Send email reminder to tenant</target>
+            </trans-unit>
+           <trans-unit id="conflict.resolve.paid">
+                <source>conflict.resolve.paid</source>
+                <target>Mark as “Paid” (tenant paid by paper check, cash, etc.)</target>
+            </trans-unit>
+           <trans-unit id="conflict.resolve.unpaid">
+                <source>conflict.resolve.unpaid</source>
+                <target>Mark as “Unpaid” (this will report to credit bureau as an unpaid account - this cannot be undone)</target>
+            </trans-unit>
             
 
         </body>

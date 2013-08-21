@@ -440,6 +440,21 @@ class AjaxController extends Controller
         return new JsonResponse(array());
     }
 
+    /**
+     * @Route(
+     *     "/contract/resolve",
+     *     name="landlord_conflict_resolve",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function resolveContract()
+    {
+        return new JsonResponse(array());
+    }
+    
     /* Payments */
 
     /**

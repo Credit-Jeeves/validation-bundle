@@ -25,6 +25,7 @@ class Contract extends Base
         $result['status'] = $status['status'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
+        $result['full_address'] = $this->getRentAddress($property, $unit);
         $result['property_id'] = $property->getId();
         $result['unit_id'] = null;
         if ($unit) {
@@ -40,9 +41,12 @@ class Contract extends Base
             $result['amount'] = '$'.$this->getRent();
         }
         $result['due_day'] = $this->getDueDay().'th';
+        $result['late'] = $this->getLateDays();
         $result['paid_to'] = '';
+        $result['late_date'] = '';
         if ($date = $this->getPaidTo()) {
             $result['paid_to'] = $date->format('M d, Y');
+            $result['late_date'] = $date->format('n/j/Y');
         }
         $result['start'] = '';
         if ($start = $this->getStartAt()) {
@@ -51,6 +55,20 @@ class Contract extends Base
         $result['finish'] = '';
         if ($finish = $this->getFinishAt()) {
             $result['finish'] = $finish->format('m/d/Y');
+        }
+        return $result;
+    }
+
+    private function getLateDays()
+    {
+        $result = '1 DAY LATE';
+        if ($date = $this->getPaidTo()) {
+            $now = new \DateTime();
+            $interval = $now->diff($date);
+            $days = $interval->format('%d');
+            if ($days > 1) {
+                $result = $days.' DAYS LATE';
+            }
         }
         return $result;
     }
@@ -137,9 +155,6 @@ class Contract extends Base
             }
             $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
         }
-//         echo '<pre>';
-//         print_r($payments);
-//         echo '</pre>';
         $result['history'] = $payments;
         return $result;
     }
