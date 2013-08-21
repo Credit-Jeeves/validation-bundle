@@ -131,7 +131,7 @@ class ContractRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('c');
         $query->select('count(c.id)');
-        $query->leftJoin('c.tenant', 't');
+        $query->innerJoin('c.tenant', 't');
         $query->where('t.id = :tenant');
         if (!is_null($status)) {
             $query->andWhere('c.status =:status');
@@ -139,6 +139,20 @@ class ContractRepository extends EntityRepository
         }
         $query->setParameter('tenant', $tenant->getId());
 
+        $query = $query->getQuery();
+        return $query->getSingleScalarResult();
+    }
+
+    public function countReporting($tenant)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('count(c.id)');
+        $query->innerJoin('c.tenant', 't');
+        $query->where('t.id = :tenant');
+        $query->andWhere('c.reporting = 1');
+        $query->andWhere('c.status = :status');
+        $query->setParameter('tenant', $tenant->getId());
+        $query->setParameter('status', ContractStatus::CURRENT);
         $query = $query->getQuery();
         return $query->getSingleScalarResult();
     }

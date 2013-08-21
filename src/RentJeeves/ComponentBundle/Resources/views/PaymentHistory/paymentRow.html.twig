@@ -1,5 +1,5 @@
     <div class="tradeline-block">
-      <div class="tradeline-name">{{ aContract.address }}</div>
+      <div id="address-{{ aContract.id }}" class="tradeline-name">{{ aContract.address }}</div>
       <div class="clearboth"></div>
       <div class="tradeline-info rent-info">
         {% if isActive == true %}
@@ -13,7 +13,7 @@
             <span class="tradeline-amount">${{ aContract.last_amount }}</span>{{ 'rent.last.amount' | trans }}:</div>
       </div>
       <div class="tradeline-history">
-        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} <a class="tradeline-legend-link" href="">» {{ 'common.legend.view' | trans }}</a></div>
+        <div class="tradeline-history-toolbar">{{ 'tradeline.history.payment' | trans }} </div>
         <div class="tradeline-history-date">Updated&nbsp;{{ aContract.updated }}</div>
         <div class="clearboth"></div>
         <div class="tradeline-history-body">
@@ -39,13 +39,15 @@
                 {% endfor %}
             {% endif %}
             {% for nMonth, aStatus in aData %}
-            <div class="tradeline-history-empty-month status-{{ aStatus.status }}">{{ aStatus.text }}</div>
+            <div class="tradeline-history-empty-month status-{{ aStatus.status }}" title="{{ aStatus.amount }}">{{ aStatus.text }}</div>
           {% endfor %}
           <div class="clearboth"></div>
         {% endfor %}
-
-
-
+            <div class="row-10"></div>
+            <div class="">
+                <div class="tradeline-history-year"></div>
+                <a class="tradeline-legend-link"><span>{{ 'common.legend.view' | trans }}</span></a>
+            </div>
         </div>
       </div>
       <div class="tradeline-details rent-details">
@@ -54,7 +56,14 @@
         <div><span><b>{{ 'tradeline.details.type' | trans }}:</b>&nbsp;Rent</span></div>
         <div><span><b>{{ 'tradeline.details.responsibility' | trans }}:</b>&nbsp;Individual</span></div>
         <div><span><b>{{ 'tradeline.details.date_opened' | trans }}:</b>&nbsp;{{ aContract.start }}</span></div>
-
+        {% if aContract.reporting is defined %}
+            <div style="display: none;" id="tenant-{{ aContract.id }}">{{ aContract.tenant }}</div>
+            {% if aContract.reporting %} 
+            <div><b><a><span id="action-{{ aContract.id }}" class="reporting-action" title="stop">Stop Reporting</span></a>&nbsp;[<a><span>?</span></a>]</div>
+            {% else %}
+            <div><b><a><span id="action-{{ aContract.id }}" class="reporting-action" title="start">Start Reporting</span></a>&nbsp;[<a><span>?</span></a>]</div>
+            {% endif %}
+        {% endif %}
 
 
 

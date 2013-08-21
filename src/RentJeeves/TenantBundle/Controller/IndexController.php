@@ -30,7 +30,13 @@ class IndexController extends Controller
             $status = 'approved';
         }
 
-        return array('status' => $status);
+        $isReporting = $activeContracts = $em->getRepository('RjDataBundle:Contract')
+                                ->countReporting($tenant);
+        return array(
+            'status' => $status,
+            'reporting' => $isReporting,
+            'user' => $tenant,
+        );
     }
 
     /**

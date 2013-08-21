@@ -11,7 +11,7 @@ class PaymentHistoryController extends Controller
      * @Template("RjComponentBundle:PaymentHistory:index.html.twig")
      * @return multitype:
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\User $user)
+    public function indexAction(\CreditJeeves\DataBundle\Entity\User $user, $short = false)
     {
         $active = array();
         $finished = array();
@@ -32,6 +32,7 @@ class PaymentHistoryController extends Controller
                 continue;
             }
             $item = array();
+            $item['id'] = $contract->getId();
             $item['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
             $item['rent'] = $contract->getRent();
             $item['start'] = $contract->getStartAt()->format('m/d/Y');
@@ -39,6 +40,7 @@ class PaymentHistoryController extends Controller
             $item['updated'] = $contract->getUpdatedAt()->format('F d, Y');
             $item['balance_year'] = $contract->getFinishAt()->format('Y');
             $item['balance_month'] = $contract->getFinishAt()->format('m');
+            $item['tenant'] = $contract->getTenant()->getFullName();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::CURRENT:
                     $history = $contract->getFinishedPaymentHistory($em);
@@ -46,6 +48,7 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = 'ACTIVE';
+                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::FINISHED:
@@ -62,6 +65,7 @@ class PaymentHistoryController extends Controller
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,
+            'short' => $short,
         );
     }
 }

@@ -1,65 +1,41 @@
-<!-- Tradelines legend -->
-<div class="tradeline-legend" id="tradeline-legend">
-  <div class="tradeline-history-block">
-    <div class="tradeline-history-empty-month status-0">OK</div>
-    <div class="tradeline-history-text">-&nbsp;Current with zero balance - Update recieved</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-1">30</div>
-    <div class="tradeline-history-text">-&nbsp;30 day delinquent</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-2">60</div>
-    <div class="tradeline-history-text">-&nbsp;60 day delinquent</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-3">90</div>
-    <div class="tradeline-history-text">-&nbsp;90 day delinquent</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-4">120</div>
-    <div class="tradeline-history-text">-&nbsp;120 day delinquent</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-5">150</div>
-    <div class="tradeline-history-text">-&nbsp;150 day delinquent</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-6">180</div>
-    <div class="tradeline-history-text">-&nbsp;180 day delinquent</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-7">BR</div>
-    <div class="tradeline-history-text">-&nbsp;Bankruptcy Chapter 13 Petitioned, or Discharged and Bankruptcy Chapter 13 Reaffirmation of Debt Rescined</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-8">FC</div>
-    <div class="tradeline-history-text">-&nbsp;Foreclosure Proceedings Started, Deed in Lieu</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-9">DR</div>
-    <div class="tradeline-history-text">-&nbsp;Settled, Insurance Claim, Term Default, Government Claim, Paid by Dealer, BK Chapter 7, 11 or 12 Petitioned, or Discharged and BK Chapter 7, 11 or 12 Reaffirmation of Debt Rescinded</div>
-    <div class="clear"></div>
-  </div>
-  <div class="tradeline-history-block">
-    <div class="tradeline-history-empty-month status-B">NA</div>
-    <div class="tradeline-history-text">-&nbsp;Account Condition Changed - Payment Code Not Applicable</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-C">OK</div>
-    <div class="tradeline-history-text">-&nbsp;Current</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-G">CL</div>
-    <div class="tradeline-history-text">-&nbsp;Collection</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-H">FC</div>
-    <div class="tradeline-history-text">-&nbsp;Foreclosure</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-J">VS</div>
-    <div class="tradeline-history-text">-&nbsp;Voluntary Surrender</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-K">RS</div>
-    <div class="tradeline-history-text">-&nbsp;Repossession</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-L">CO</div>
-    <div class="tradeline-history-text">-&nbsp;Charge Off</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status-N">0</div>
-    <div class="tradeline-history-text">-&nbsp;Current with zero balance - no update received</div>
-    <div class="clear"></div>
-    <div class="tradeline-history-empty-month status--">?</div>
-    <div class="tradeline-history-text">-&nbsp;No update recieved</div>
-    <div class="clear"></div>
-  </div>
+<div style="display: none;" id="legend-popup">
+    <div class="ui-widget-overlay ui-front"></div>
+    <div
+        class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable"
+        style="height: auto; width: 520px; top: 99.9967px; left: 692px; display: block;"
+        tabindex="-1"
+        role="dialog"
+        aria-describedby="edit-property-popup"
+        aria-labelledby="ui-id-3"
+        >
+        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
+            <span id="ui-id-3" class="ui-dialog-title">&nbsp;</span>
+            <button
+                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
+                role="button"
+                aria-disabled="false"
+                title="close"
+                data-bind="click: closePopup"
+                id="legend-close"
+                >
+                <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
+                <span class="ui-button-text">{{ 'legend.close' | trans() }}</span>
+            </button>
+        </div>
+        <div
+            class="pricing-popup dashboard-popup properties-popup ui-dialog-content ui-widget-content"
+            id="edit-property-popup"
+            style="display: block; width: auto; min-height: 80px; max-height: none; height: auto;"
+            >
+            <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
+                <div class="row-20"></div>
+                <div class="tradeline-history-empty-month status-C">OK</div>
+                <div class="tradeline-history-text">-&nbsp;{{ 'legend.ok' | trans() }}</div>
+                <div class="clearboth"></div>
+                <div class="tradeline-history-empty-month status-1">N</div>
+                <div class="tradeline-history-text">-&nbsp;{{ 'legend.delinquent' | trans() }}</div>
+                <div class="clearboth"></div>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- End Tradelines legend -->

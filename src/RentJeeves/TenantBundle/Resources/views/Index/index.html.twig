@@ -14,5 +14,9 @@
     {% endif %}
     <br />
     <br />
+    {% if reporting > 0 %}
+    {{ render(controller('RjComponentBundle:PaymentHistory:index', {'user': user, 'short': 'true'})) }}
+    {% else %}
     {{ render(controller('TenantBundle:Index:info')) }}
+    {% endif %}
 {% endblock %}
