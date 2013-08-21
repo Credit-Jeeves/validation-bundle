@@ -37,6 +37,7 @@ class TenantController extends Controller
      */
     public function saveInviteTenantAction()
     {
+        $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser())
         );
@@ -47,11 +48,25 @@ class TenantController extends Controller
 
             if ($form->isValid()) {
                 $tenant = $form->getData()['tenant'];
-                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
                 $contract = $form->getData()['contract'];
-                $tenant->setPassword(md5(md5(1)));
-                $contract->setStatus(ContractStatus::INVITE);
+                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+                $tenantInDb = $this->getDoctrine()->getRepository('DataBundle:Tenant')->findOneBy(
+                    array(
+                        'email' => $tenant->getEmail(),
+                    )
+                );
+
+                if ($tenantInDb) {
+                    unset($tenant);
+                    $tenant = $tenantInDb;
+                    $contract->setStatus(ContractStatus::ACTIVE);
+                } else {
+                    $contract->setStatus(ContractStatus::INVITE);
+                    $tenant->setPassword(md5(md5(1)));
+                }
+
                 $contract->setTenant($tenant);
+                $tenant->addContract($contract);
                 $user = $this->getUser();
                 $holding = $user->getHolding();
                 $group = $this->getCurrentGroup();
@@ -62,7 +77,7 @@ class TenantController extends Controller
                 $date = \DateTime::createFromFormat('Y-m-d', $contract->getFinishAt());
                 $contract->setFinishAt($date);
 
-                $em = $this->getDoctrine()->getManager();
+                
                 $em->persist($contract);
                 $em->persist($tenant);
                 $em->flush();
