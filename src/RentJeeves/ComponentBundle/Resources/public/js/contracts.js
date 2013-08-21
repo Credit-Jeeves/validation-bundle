@@ -343,4 +343,29 @@ $(document).ready(function(){
   });
 
   getUnits($(idProperty).linkselect('val'));
+
+  $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email').change(function () {
+      $.ajax({
+        url: Routing.generate('landlord_check_email'),
+        type: 'POST',
+        dataType: 'json',
+        data: {'email': $(this).val() },
+        success: function(response) {
+           if (response.userExist) {
+              $('.userInfo').hide();
+              $('#userExistMessage').show();
+              $.each($('.userInfo').find('input'), function(index, value) {
+                $(this).val('12345');
+              });
+           } else {
+              $('.userInfo').show();
+              $('#userExistMessage').hide();
+              $.each($('.userInfo').find('input'), function(index, value) {
+                $(this).val(' ');
+              });
+           }
+        }
+      });
+  });
+
 });
