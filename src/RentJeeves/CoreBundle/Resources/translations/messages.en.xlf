@@ -628,6 +628,10 @@
                 <source>error.finish.empty</source>
                 <target>Finish date couldn't be empt.</target>
             </trans-unit>
+           <trans-unit id="user.alredy.in.system">
+                <source>user.alredy.in.system</source>
+                <target>User alredy on the RentTrack.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
