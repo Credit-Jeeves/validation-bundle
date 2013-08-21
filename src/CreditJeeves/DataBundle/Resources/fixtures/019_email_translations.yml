@@ -229,7 +229,13 @@ fixtures:
         <br /> <br />
 
         Ready to build your pay? <br /> <br />
-        <a id="payRentLink" href="http://{{ app.request.host }}{{ path('tenant_invite', {'code': inviteCode }) }}"  style="
+        <a id="payRentLink" 
+        {% if inviteCode %}
+          href="http://{{ app.request.host }}{{ path('tenant_invite', {'code': inviteCode }) }}"
+        {% else %}
+          href="http://{{ app.request.host }}/"
+        {% endif %}
+          style="
                         border: none;
                         padding: 2px 7px;
                         text-align: left;

@@ -682,8 +682,16 @@
                 <source>legend.delinquent</source>
                 <target>N days delinquent</target>
             </trans-unit>
-            
-
+            <trans-unit id="user.alredy.in.system">
+                <source>user.alredy.in.system</source>
+                <target>User alredy on the RentTrack.</target>
+            </trans-unit>
+            <trans-unit id="user.itslandlord">
+                <source>user.itslandlord</source>
+                <target>User alredy on the RentTrack and its Landlord user.
+                        Your can't create contract with landlord.
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

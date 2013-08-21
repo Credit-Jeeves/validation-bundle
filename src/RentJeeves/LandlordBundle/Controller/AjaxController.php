@@ -497,6 +497,34 @@ class AjaxController extends Controller
         return new JsonResponse($data);
     }
 
+
+    /**
+     * @Route(
+     *     "/check/email/tenant",
+     *     name="landlord_check_email",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function checkEmail()
+    {
+        $request = $this->get('request');
+        $email = $request->request->get('email');
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('DataBundle:User')->findOneBy(
+            array('email' => $email)
+        );
+
+        $data = array(
+            'userExist' => (!empty($user))? true : false,
+            'isTenant'  => (!empty($user) && $user->getType() === UserType::TETNANT)? true : false,
+        );
+
+        return new JsonResponse($data);
+    }
+
     private function datagridPagination($total, $limit)
     {
         $result = array();
