@@ -3,13 +3,13 @@
     <div class="title-box clearfix">
       <h2 data-bind="text: 'Action Required (' + $root.total() + ')'"></h2>
       <div class="fiter-box">
-        <label>Filter by</label>
+        <label>{{ 'filter.by'|trans }}</label>
         <select class="select custom-select blue-arrow selectBox" style="display: none;">
           <option selected="selected" value="0">- Select One -</option>
         </select>
         <div class="finder-box">
-          <input type="text" id="searsh-field" name="searsh-field" placeholder="Your rental address">
-          <button type="submit" id="search-submit" class="pie-el">Search</button>
+          <input type="text" id="searsh-field" name="searsh-field" placeholder="">
+          <button type="submit" id="search-submit" class="pie-el">{{ 'search' }}</button>
         </div>
       </div>
     </div>
@@ -19,12 +19,12 @@
           <table class="properties-table zebra-grid">
             <thead>
               <tr class="properties-th">
-                <th class="pie-el" colspan="2"><span class="sort">Status<i> </i></span></th>
-                <th class="pie-el"><span class="sort">Due Date<i> </i></span></th>
-                <th class="pie-el"><span class="sort">Property<i> </i></span></th>
-                <th class="pie-el"><span class="sort">Tenant<i> </i></span></th>
-                <th class="pie-el"><span>Amount</span></th>
-                <th class="pie-el"><span class="sort">Type<i> </i></span></th>
+                <th class="pie-el" colspan="2"><span class="sort">{{ 'filter.status'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span class="sort">{{ 'due_date'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span class="sort">{{ 'property'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span class="sort">{{ 'tenant'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span>{{ 'amount'|trans }}</span></th>
+                <th class="pie-el"><span class="sort">{{ 'type'|trans }}<i> </i></span></th>
               </tr>
             </thead>
             <tbody>
@@ -32,7 +32,9 @@
               <tr>
                 <td class="actions-status late" data-bind="text: status"></td>
                 <td class="action-box">
-                  <a href="#" class="action-alert pie-el"  data-bind="click: $root.Resolve"><i> </i>RESOLVE</a>
+                  <a href="#" class="action-alert pie-el"  data-bind="click: $root.Resolve">
+                    <i> </i>{{'resolve'|trans|upper}}
+                  </a>
                 </td>
                 <td data-bind="text: due_day"></td>
                 <td data-bind="text: address"></td>

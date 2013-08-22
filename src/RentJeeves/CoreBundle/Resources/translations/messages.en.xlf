@@ -534,15 +534,11 @@
             </trans-unit>
             <trans-unit id="tenant">
                 <source>tenant</source>
-                <target>
-                   Tenant
-                </target>
+                <target>Tenant</target>
             </trans-unit>
             <trans-unit id="due_date">
                 <source>due_date</source>
-                <target>
-                   Due Date
-                </target>
+                <target>Due Date</target>
             </trans-unit>
             <trans-unit id="paid_to">
                 <source>paid_to</source>
@@ -572,21 +568,15 @@
             </trans-unit>
             <trans-unit id="E-Check">
                 <source>E-Check</source>
-                <target>
-                  E-Check
-                </target>
+                <target>E-Check</target>
             </trans-unit>
             <trans-unit id="credit.card">
                 <source>credit.card</source>
-                <target>
-                  Credit Card
-                </target>
+                <target>Credit Card</target>
             </trans-unit>
             <trans-unit id="recurring">
                 <source>recurring</source>
-                <target>
-                  Recurring
-                </target>
+                <target>Recurring</target>
             </trans-unit>
             <trans-unit id="credit.service.member">
                 <source>credit.service.member</source>
@@ -691,6 +681,26 @@
                 <target>This user is already part of RentTrack, but is a landlord.
                          You can't invite a landlord as a tenant.
                 </target>
+            </trans-unit>
+            <trans-unit id="date.initiated">
+                <source>date.initiated</source>
+                <target>Date Initiated</target>
+            </trans-unit>
+            <trans-unit id="resolve">
+                <source>resolve</source>
+                <target>resolve</target>
+            </trans-unit>
+            <trans-unit id="date.posted">
+                <source>date.posted</source>
+                <target>Date Posted</target>
+            </trans-unit>
+            <trans-unit id="legend">
+                <source>legend</source>
+                <target>Legend</target>
+            </trans-unit>
+            <trans-unit id="pending">
+                <source>pending</source>
+                <target>Pending</target>
             </trans-unit>
         </body>
     </file>

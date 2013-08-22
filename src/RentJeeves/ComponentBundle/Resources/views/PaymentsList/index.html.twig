@@ -2,13 +2,13 @@
       <div class="title-box clearfix">
         <h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2>
         <div class="fiter-box">
-          <label>Filter by</label>
+          <label>{{ 'filter.by'|trans }}</label>
           <select class="select custom-select blue-arrow selectBox" style="display: none;">
             <option selected="selected" value="0">- Select One -</option>
           </select>
           <div class="finder-box">
-            <input type="text" id="searsh-field" name="searsh-field" placeholder="Your rental address">
-            <button type="submit" id="search-submit" class="pie-el">Search</button>
+            <input type="text" id="searsh-field" name="searsh-field" placeholder="">
+            <button type="submit" id="search-submit" class="pie-el">{{ 'search' }}</button>
           </div>
         </div>
       </div>
@@ -21,13 +21,13 @@
             >
               <thead>
                 <tr class="properties-th">
-                  <th class="pie-el"><span class="sort" >Status<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">Date Posted<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">Date Initiated<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">Property<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">Tenant<i> </i></span></th>
-                  <th class="pie-el"><span>Amount</span></th>
-                  <th class="pie-el"><span class="sort">Type<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'filter.status'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'date.posted'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'date.initiated'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'property'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'tenant'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span>{{ 'amount'|trans }}</span></th>
+                  <th class="pie-el"><span class="sort">{{ 'type'|trans }}<i> </i></span></th>
                 </tr>
               </thead>
               <tbody>
@@ -54,7 +54,7 @@
         <ul class="legeng">
           <li class="tr">
             <div class="th cell">
-              Legend
+              {{ 'legend'|trans }}
             </div>
             <div class="th cell"></div>
           </li>
@@ -62,20 +62,20 @@
             <div class="cell">
               <ul class="vert">
                 <li>
-                  <span class="clarification alert"><i> </i>Alert</span>
+                  <span class="clarification alert"><i> </i>{{ 'alert'|trans }}</span>
                 </li>
                 <li>
-                  <span class="clarification pending"><i> </i>Pending</span>
+                  <span class="clarification pending"><i> </i>{{ 'pending'|trans }}</span>
                 </li>
               </ul>
             </div>
             <div class="cell">
               <ul class="hor">
                 <li>
-                  <span class="clarification alert"><i> </i>Alert</span>
-                  <span class="clarification e-check"><i> </i>E-Check</span>
-                  <span class="clarification credit-card"><i> </i>Credit Card</span>
-                  <span class="clarification recurring"><i> </i>Recurring</span>
+                  <span class="clarification alert"><i> </i>{{ 'alert'|trans }}</span>
+                  <span class="clarification e-check"><i> </i>{{ 'E-Check'|trans }}</span>
+                  <span class="clarification credit-card"><i> </i>{{ 'credit.card'|trans }}</span>
+                  <span class="clarification recurring"><i> </i>{{ 'recurring'|trans }}</span>
                 </li>
               </ul>
             </div>
