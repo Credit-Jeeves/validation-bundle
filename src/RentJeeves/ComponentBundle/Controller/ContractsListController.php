@@ -19,10 +19,9 @@ class ContractsListController extends Controller
     }
 
     /**
-     * @Template("RjComponentBundle:ContractsList:actions.html.twig")
-     * @return multitype:
+     * @Template()
      */
-    public function requiredAction(\CreditJeeves\DataBundle\Entity\Group $Group)
+    public function actionsAction(\CreditJeeves\DataBundle\Entity\Group $Group)
     {
         return array(
         );
@@ -30,11 +29,11 @@ class ContractsListController extends Controller
 
     /**
      * @Template()
-     * @return multitype:
      */
     public function tenantNewAction($status)
     {
         $user = $this->get('core.session.tenant')->getUser();
+
         return array(
             'contracts' => $user->getContracts(),
             'status'    => $status,
@@ -43,11 +42,11 @@ class ContractsListController extends Controller
 
     /**
      * @Template()
-     * @return multitype:
      */
     public function tenantAction()
     {
         $user = $this->get('core.session.tenant')->getUser();
+
         return array(
             'contracts' => $user->getContracts(),
         );

@@ -120,6 +120,28 @@ class ContractRepository extends EntityRepository
             //             $query->andWhere('p.'.$searchBy.' = :search');
             //             $query->setParameter('search', $search);
         }
+
+        switch ($sort) {
+            case 'statusA':
+                $sort = 'c.status';
+                break;
+            case 'due_dateA':
+                $sort = 'c.due_day';
+                break;
+            case 'propertyA':
+                $sort = 'p.street';
+                break;
+            case 'tenantA':
+                $sort = 't.first_name';
+                break;
+            case 'amountA':
+                $sort = 'c.rent';
+                break;
+            default:
+                $sort = 'c.status';
+                break;
+        }
+
         $query->orderBy($sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);

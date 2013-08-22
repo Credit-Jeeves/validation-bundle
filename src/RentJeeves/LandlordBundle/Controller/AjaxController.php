@@ -374,23 +374,30 @@ class AjaxController extends Controller
         $total = 0;
         $request = $this->getRequest();
         $page = $request->request->all('data');
-        $page = $page['data'];
-        $data = array('actions' => array(), 'total' => 0, 'pagination' => array());
+        $data = $page['data'];
+
+        $sortColumn = $data['sortColumn'];
+        $isSortAsc = $data['isSortAsc'];
+        $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
+
+        $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
         $total = $repo->countActionsRequired($group);
         $total = count($total);
         if ($total) {
-            $contracts = $repo->getActionsRequiredPage($group, $page['page'], $page['limit']);
+            $contracts = $repo->getActionsRequiredPage($group, $data['page'], $data['limit'], $sortColumn, $sortType);
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
                 $items[] = $item;
             }
         }
-        $data['actions'] = $items;
-        $data['total'] = $total;
-        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
-        return new JsonResponse($data);
+        
+        $result['actions'] = $items;
+        $result['total'] = $total;
+        $result['pagination'] = $this->datagridPagination($total, $data['limit']);
+        
+        return new JsonResponse($result);
     }
 
     /**
