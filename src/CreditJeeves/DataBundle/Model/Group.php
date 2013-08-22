@@ -243,7 +243,7 @@ abstract class Group
 
     /**
      * @ORM\ManyToMany(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Landlord",
+     *     targetEntity="RentJeeves\DataBundle\Entity\Landlord",
      *     mappedBy="agent_groups"
      * )
      */

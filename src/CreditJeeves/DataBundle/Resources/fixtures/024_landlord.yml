@@ -1,4 +1,4 @@
-model: CreditJeeves\DataBundle\Entity\Landlord
+model: RentJeeves\DataBundle\Entity\Landlord
 fixtures:
     Landlord_1:
         holding:  rjHolding_1

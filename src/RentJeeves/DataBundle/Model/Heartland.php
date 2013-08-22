@@ -4,27 +4,22 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\Common\Collections\ArrayCollection;
-use RentJeeves\DataBundle\Enum\ContractStatus;
+use Payum\Heartland\Bridge\Doctrine\Entity\PaymentDetails;
 
 /**
  * @ORM\MappedSuperclass
- * @ORM\HasLifecycleCallbacks()
  */
-abstract class Heartland
+abstract class Heartland extends PaymentDetails
 {
     /**
-     * @ORM\Column(
-     *     name="id",
-     *     type="bigint"
-     * )
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(
-     *     strategy="AUTO"
-     * )
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
+    
     /**
      * @var \CreditJeeves\DataBundle\Entity\Order
      *
@@ -39,47 +34,6 @@ abstract class Heartland
      * )
      */
     protected $order;
-
-    /**
-     * @ORM\Column(
-     *     type="HeartlandStatus",
-     *     options={
-     *         "default"="pending"
-     *     }
-     * )
-     */
-    protected $status = 'pending';
-
-    /**
-     * @ORM\Column(
-     *     type="integer"
-     * )
-     */
-    protected $amount;
-
-    /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(
-     *     name="created_at",
-     *     type="datetime"
-     * )
-     */
-    protected $createdAt;
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
-    
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set Order
@@ -101,71 +55,5 @@ abstract class Heartland
     public function getOrder()
     {
         return $this->order;
-    }
-
-    /**
-     * Set status
-     *
-     * @param string $status
-     * @return Unit
-     */
-    public function setStatus($status = ContractStatus::PENDING)
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * Set Amount
-     *
-     * @param double $amount
-     * @return Checkout
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-        return $this;
-    }
-
-    /**
-     * Get amount
-     *
-     * @return double
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     * @return Contract
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
     }
 }

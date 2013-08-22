@@ -70,7 +70,7 @@ class TenantType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Tenant',
+                'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
                 'validation_groups' => array(
                     'registration_tos',
                     'invite',

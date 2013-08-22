@@ -534,15 +534,11 @@
             </trans-unit>
             <trans-unit id="tenant">
                 <source>tenant</source>
-                <target>
-                   Tenant
-                </target>
+                <target>Tenant</target>
             </trans-unit>
             <trans-unit id="due_date">
                 <source>due_date</source>
-                <target>
-                   Due Date
-                </target>
+                <target>Due Date</target>
             </trans-unit>
             <trans-unit id="paid_to">
                 <source>paid_to</source>
@@ -572,21 +568,15 @@
             </trans-unit>
             <trans-unit id="E-Check">
                 <source>E-Check</source>
-                <target>
-                  E-Check
-                </target>
+                <target>E-Check</target>
             </trans-unit>
             <trans-unit id="credit.card">
                 <source>credit.card</source>
-                <target>
-                  Credit Card
-                </target>
+                <target>Credit Card</target>
             </trans-unit>
             <trans-unit id="recurring">
                 <source>recurring</source>
-                <target>
-                  Recurring
-                </target>
+                <target>Recurring</target>
             </trans-unit>
             <trans-unit id="credit.service.member">
                 <source>credit.service.member</source>
@@ -652,23 +642,23 @@
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
-                <target>Property couldn't be empt.</target>
+                <target>Property couldn't be empty.</target>
             </trans-unit>
            <trans-unit id="error.unit.empty">
                 <source>error.unit.empty</source>
-                <target>Unit couldn't be empt.</target>
+                <target>Unit couldn't be empty.</target>
             </trans-unit>
            <trans-unit id="error.rent.empty">
                 <source>error.rent.empty</source>
-                <target>Rent couldn't be empt.</target>
+                <target>Rent couldn't be empty.</target>
             </trans-unit>
            <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
-                <target>Start date couldn't be empt.</target>
+                <target>Start date couldn't be empty.</target>
             </trans-unit>
            <trans-unit id="error.finish.empty">
                 <source>error.finish.empty</source>
-                <target>Finish date couldn't be empt.</target>
+                <target>Finish date couldn't be empty.</target>
             </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
@@ -724,13 +714,33 @@
 
             <trans-unit id="user.alredy.in.system">
                 <source>user.alredy.in.system</source>
-                <target>User alredy on the RentTrack.</target>
+                <target>This user is already part of RentTrack.</target>
             </trans-unit>
             <trans-unit id="user.itslandlord">
                 <source>user.itslandlord</source>
-                <target>User alredy on the RentTrack and its Landlord user.
-                        Your can't create contract with landlord.
+                <target>This user is already part of RentTrack, but is a landlord.
+                         You can't invite a landlord as a tenant.
                 </target>
+            </trans-unit>
+            <trans-unit id="date.initiated">
+                <source>date.initiated</source>
+                <target>Date Initiated</target>
+            </trans-unit>
+            <trans-unit id="resolve">
+                <source>resolve</source>
+                <target>resolve</target>
+            </trans-unit>
+            <trans-unit id="date.posted">
+                <source>date.posted</source>
+                <target>Date Posted</target>
+            </trans-unit>
+            <trans-unit id="legend">
+                <source>legend</source>
+                <target>Legend</target>
+            </trans-unit>
+            <trans-unit id="pending">
+                <source>pending</source>
+                <target>Pending</target>
             </trans-unit>
         </body>
     </file>

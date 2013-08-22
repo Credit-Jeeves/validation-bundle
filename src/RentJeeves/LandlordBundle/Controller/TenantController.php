@@ -50,7 +50,7 @@ class TenantController extends Controller
                 $tenant = $form->getData()['tenant'];
                 $contract = $form->getData()['contract'];
                 $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-                $tenantInDb = $this->getDoctrine()->getRepository('DataBundle:Tenant')->findOneBy(
+                $tenantInDb = $this->getDoctrine()->getRepository('RjDataBundle:Tenant')->findOneBy(
                     array(
                         'email' => $tenant->getEmail(),
                     )

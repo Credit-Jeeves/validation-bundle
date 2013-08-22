@@ -6,7 +6,7 @@ use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\TenantType;
-use CreditJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
@@ -22,7 +22,7 @@ class TenantController extends Controller
      */
     public function tenantInviteAction($code)
     {
-        $tenant  = $this->getDoctrine()->getRepository('DataBundle:Tenant')->findOneBy(array('invite_code' => $code));
+        $tenant  = $this->getDoctrine()->getRepository('RjDataBundle:Tenant')->findOneBy(array('invite_code' => $code));
 
         if (empty($tenant)) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));

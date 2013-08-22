@@ -1,0 +1,103 @@
+<div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
+      <div class="title-box clearfix">
+        <h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2>
+        <div class="fiter-box">
+          <label>{{ 'filter.by'|trans }}</label>
+          <select class="select custom-select blue-arrow selectBox" style="display: none;">
+            <option selected="selected" value="0">- Select One -</option>
+          </select>
+          <div class="finder-box">
+            <input type="text" id="searsh-field" name="searsh-field" placeholder="">
+            <button type="submit" id="search-submit" class="pie-el">{{ 'search' }}</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-box">
+        <div class="properties-table-block table-wrap">
+          <div class="table-margin">
+            <table class="properties-table zebra-grid" 
+            data-bind="style: { display: processPayment() ? 'none ' :  'table' }"
+            style="display:none;"
+            >
+              <thead>
+                <tr class="properties-th">
+                  <th class="pie-el"><span class="sort">{{ 'filter.status'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'date.posted'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'date.initiated'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'property'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">{{ 'tenant'|trans }}<i> </i></span></th>
+                  <th class="pie-el"><span>{{ 'amount'|trans }}</span></th>
+                  <th class="pie-el"><span class="sort">{{ 'type'|trans }}<i> </i></span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- ko foreach: { data: aPayments() } -->
+                <tr>
+                  <td data-bind="attr: {'class': 'actions-status '+style}, text: status"></td>
+                  <td data-bind="text: start"></td>
+                  <td data-bind="text: finish"></td>
+                  <td data-bind="text: address"></td>
+                  <td data-bind="text: tenant"></td>
+                  <td data-bind="text: amount"></td>
+                  <td class="type-box"></td>
+                </tr>
+                <!-- /ko -->
+              </tbody>
+            </table>
+            <img src="/bundles/core/images/img_loading.gif" id="processPayment" class="processPayment" data-bind="style: { display: processPayment() ? 'block' : 'none' }">
+          </div>
+        </div>
+      </div>
+      <div class="clearboth"></div>
+      <br />
+      <div class="legeng-box">
+        <ul class="legeng">
+          <li class="tr">
+            <div class="th cell">
+              {{ 'legend'|trans }}
+            </div>
+            <div class="th cell"></div>
+          </li>
+          <li class="tr">
+            <div class="cell">
+              <ul class="vert">
+                <li>
+                  <span class="clarification alert"><i> </i>{{ 'alert'|trans }}</span>
+                </li>
+                <li>
+                  <span class="clarification pending"><i> </i>{{ 'pending'|trans }}</span>
+                </li>
+              </ul>
+            </div>
+            <div class="cell">
+              <ul class="hor">
+                <li>
+                  <span class="clarification alert"><i> </i>{{ 'alert'|trans }}</span>
+                  <span class="clarification e-check"><i> </i>{{ 'E-Check'|trans }}</span>
+                  <span class="clarification credit-card"><i> </i>{{ 'credit.card'|trans }}</span>
+                  <span class="clarification recurring"><i> </i>{{ 'recurring'|trans }}</span>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- ko if: pages().length -->
+      <nav class="pagination-box">
+          <ul>
+            <!-- ko foreach: pages() -->
+              <!-- ko if: $data == $root.current() -->
+              <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
+              <!-- /ko -->
+              <!-- ko ifnot: $data == $root.current() -->
+              <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
+              <!-- /ko -->
+              <!-- ko ifnot: $data == $root.last() -->
+                <li>|</li>
+              <!-- /ko -->
+            <!-- /ko -->
+          </ul>
+      </nav>
+      <!-- /ko -->
+      <div class="clearboth"></div>
+</div>

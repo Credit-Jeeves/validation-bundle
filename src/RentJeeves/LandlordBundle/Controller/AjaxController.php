@@ -304,7 +304,7 @@ class AjaxController extends Controller
         $data = array('tenants' => array(), 'total' => 0, 'pagination' => array());
     
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Tenant');
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Tenant');
         $total = $repo->countTenants($group);
         $total = count($total);
         if ($total) {

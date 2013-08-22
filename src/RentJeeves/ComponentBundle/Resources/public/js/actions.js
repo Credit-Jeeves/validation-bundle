@@ -46,6 +46,8 @@ function Actions() {
         }
       },
       success: function(response) {
+        $('#actions-block').show();
+        self.aActions([]);
         self.aActions(response.actions);
         self.total(response.total);
         self.pages(response.pagination);

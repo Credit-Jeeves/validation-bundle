@@ -6,7 +6,7 @@ use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LandlordAddressType;
-use CreditJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Landlord;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Unit;

@@ -6,7 +6,7 @@ use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
-use CreditJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Alert;
 use RentJeeves\PublicBundle\Form\TenantType;
 use CreditJeeves\DataBundle\Enum\UserType;
