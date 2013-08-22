@@ -16,9 +16,9 @@ class ResolveCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
-        $this->session->wait($this->timeout, "jQuery('div.actions-table-block table tbody tr').length > 0");
+        $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
-            $resolve = $this->page->findAll('css', 'div.actions-table-block table tbody tr td div.action-resolve')
+            $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
         $this->assertCount(1, $resolve, 'Wrong number of resolve contracts');
         $resolve[0]->click();
