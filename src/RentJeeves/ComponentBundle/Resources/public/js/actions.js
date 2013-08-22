@@ -1,13 +1,12 @@
 function Resolve() {
   var self = this;
-  this.process = ko.observable(false);
   this.details = ko.observable();
   this.openForm = function(data) {
-    self.process(true);
+    $('#contract-resolve').dialog('open');
     self.details(data);
   };
   this.closeForm = function() {
-    self.process(false);
+    $('#contract-resolve').dialog('close');
   };
   this.resolve = function() {
     $.ajax({
@@ -78,4 +77,10 @@ $(document).ready(function(){
   ko.applyBindings(ActionsViewModel, $('#actions-block').get(0));
   ko.applyBindings(ResolveViewModel, $('#contract-resolve').get(0));
   ActionsViewModel.ajaxAction();
+  $('#contract-resolve').dialog({ 
+    autoOpen: false,
+    resizable: false,
+    modal: true,
+    width:'520px'
+});  
 });

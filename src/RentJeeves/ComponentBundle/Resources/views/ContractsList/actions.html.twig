@@ -1,32 +1,5 @@
 <!-- Resolve Popup -->
-<div data-bind="style: { display: process() ? 'block' : 'none' }" id="contract-resolve">
-    <div class="ui-widget-overlay ui-front"></div>
-    <div
-        class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable"
-        style="height: auto; width: 520px; top: 99.9967px; left: 692px; display: block;"
-        tabindex="-1"
-        role="dialog"
-        aria-describedby="edit-property-popup"
-        aria-labelledby="ui-id-3"
-        >
-        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span id="ui-id-3" class="ui-dialog-title">&nbsp;</span>
-            <button
-                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
-                role="button"
-                aria-disabled="false"
-                title="close"
-                data-bind="click: closeForm"
-                >
-                <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
-                <span class="ui-button-text">{{ 'legend.close' | trans() }}</span>
-            </button>
-        </div>
-        <div
-            class="pricing-popup dashboard-popup properties-popup ui-dialog-content ui-widget-content"
-            id="edit-property-popup"
-            style="display: block; width: auto; min-height: 80px; max-height: none; height: auto;"
-            >
+<div id="contract-resolve" class="pricing-popup dashboard-popup properties-popup">
             <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
             <div class="clearfix halfs-box">
                 <div class="grey-half-box" data-bind="with: details">
@@ -78,8 +51,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
 <!-- End Resolve Popup -->
 
 <!-- Actions required datagrid -->
@@ -141,6 +113,11 @@
         <!-- /ko -->
     </div>
 
-{% javascripts '@RjComponentBundle/Resources/public/js/actions.js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
+{% block javascripts %}
+    {% javascripts '@RjComponentBundle/Resources/public/js/actions.js'
+                   '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+                   
+     %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
