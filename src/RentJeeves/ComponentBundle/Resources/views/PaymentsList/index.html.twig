@@ -33,7 +33,7 @@
               <tbody>
                 <!-- ko foreach: { data: aPayments() } -->
                 <tr>
-                  <td class="actions-status" data-bind="text: status"></td>
+                  <td data-bind="attr: {'class': 'actions-status '+style}, text: status"></td>
                   <td data-bind="text: start"></td>
                   <td data-bind="text: finish"></td>
                   <td data-bind="text: address"></td>
