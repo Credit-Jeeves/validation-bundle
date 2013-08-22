@@ -1,0 +1,12 @@
+.fiter-box .linkselect-link-icon {
+    background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
+    height: 22px;
+    width: 19px;
+    margin-top: 1px;
+}
+.fiter-box a {
+    width: 135px;
+    font-size: 13px;
+    height: 23px;
+    margin-left: 10px;
+}

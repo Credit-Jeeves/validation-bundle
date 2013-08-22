@@ -1,0 +1,99 @@
+<div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
+      <div class="title-box clearfix">
+        <h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2>
+        <div class="fiter-box">
+          <label>Filter by</label>
+          <select class="select custom-select blue-arrow selectBox" style="display: none;">
+            <option selected="selected" value="0">- Select One -</option>
+          </select>
+          <div class="finder-box">
+            <input type="text" id="searsh-field" name="searsh-field" placeholder="Your rental address">
+            <button type="submit" id="search-submit" class="pie-el">Search</button>
+          </div>
+        </div>
+      </div>
+      <div class="content-box">
+        <div class="properties-table-block table-wrap">
+          <div class="table-margin">
+            <table class="properties-table zebra-grid">
+              <thead>
+                <tr class="properties-th">
+                  <th class="pie-el"><span class="sort" >Status<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">Date Posted<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">Date Initiated<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">Property<i> </i></span></th>
+                  <th class="pie-el"><span class="sort">Tenant<i> </i></span></th>
+                  <th class="pie-el"><span>Amount</span></th>
+                  <th class="pie-el"><span class="sort">Type<i> </i></span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- ko foreach: { data: aPayments() } -->
+                <tr>
+                  <td class="actions-status" data-bind="text: status"></td>
+                  <td data-bind="text: start"></td>
+                  <td data-bind="text: finish"></td>
+                  <td data-bind="text: address"></td>
+                  <td data-bind="text: tenant"></td>
+                  <td data-bind="text: amount"></td>
+                  <td class="type-box"></td>
+                </tr>
+                <!-- /ko -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="clearboth"></div>
+      <br />
+      <div class="legeng-box">
+        <ul class="legeng">
+          <li class="tr">
+            <div class="th cell">
+              Legend
+            </div>
+            <div class="th cell"></div>
+          </li>
+          <li class="tr">
+            <div class="cell">
+              <ul class="vert">
+                <li>
+                  <span class="clarification alert"><i> </i>Alert</span>
+                </li>
+                <li>
+                  <span class="clarification pending"><i> </i>Pending</span>
+                </li>
+              </ul>
+            </div>
+            <div class="cell">
+              <ul class="hor">
+                <li>
+                  <span class="clarification alert"><i> </i>Alert</span>
+                  <span class="clarification e-check"><i> </i>E-Check</span>
+                  <span class="clarification credit-card"><i> </i>Credit Card</span>
+                  <span class="clarification recurring"><i> </i>Recurring</span>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- ko if: pages().length -->
+      <nav class="pagination-box">
+          <ul>
+            <!-- ko foreach: pages() -->
+              <!-- ko if: $data == $root.current() -->
+              <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
+              <!-- /ko -->
+              <!-- ko ifnot: $data == $root.current() -->
+              <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
+              <!-- /ko -->
+              <!-- ko ifnot: $data == $root.last() -->
+                <li>|</li>
+              <!-- /ko -->
+            <!-- /ko -->
+          </ul>
+      </nav>
+      <!-- /ko -->
+      <div class="clearboth"></div>
+</div>
