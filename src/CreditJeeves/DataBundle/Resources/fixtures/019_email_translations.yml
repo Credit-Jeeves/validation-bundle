@@ -256,12 +256,12 @@ fixtures:
       {% endblock %}
 
 # rjTenantLatePayment.html email
-  translation_125:
+  translation_126:
     translatable: email_14
     locale: %locale%
     property: subject
     value: Invite
-  translation_126:
+  translation_127:
     translatable: email_14
     locale: %locale%
     property: body
