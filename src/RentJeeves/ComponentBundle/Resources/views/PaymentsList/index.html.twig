@@ -15,7 +15,10 @@
       <div class="content-box">
         <div class="properties-table-block table-wrap">
           <div class="table-margin">
-            <table class="properties-table zebra-grid">
+            <table class="properties-table zebra-grid" 
+            data-bind="style: { display: processPayment() ? 'none ' :  'table' }"
+            style="display:none;"
+            >
               <thead>
                 <tr class="properties-th">
                   <th class="pie-el"><span class="sort" >Status<i> </i></span></th>
@@ -41,6 +44,7 @@
                 <!-- /ko -->
               </tbody>
             </table>
+            <img src="/bundles/core/images/img_loading.gif" id="processPayment" class="processPayment" data-bind="style: { display: processPayment() ? 'block' : 'none' }">
           </div>
         </div>
       </div>
