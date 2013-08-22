@@ -7,7 +7,9 @@ function Payments() {
   this.total = ko.observable(0);
   this.current = ko.observable(1);
   this.last = ko.observable('Last');
+  this.processPayment = ko.observable(true);
   this.ajaxAction = function() {
+    self.processPayment(true);
     $.ajax({
       url: Routing.generate('landlord_payments_list'),
       type: 'POST',
@@ -19,6 +21,7 @@ function Payments() {
         }
       },
       success: function(response) {
+        self.processPayment(false);
         self.aPayments([]);
         self.aPayments(response.payments);
         self.total(response.total);

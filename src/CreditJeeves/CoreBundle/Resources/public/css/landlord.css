@@ -476,3 +476,16 @@ a.linkselect-link .linkselect-link-text {
 #properties-block {
     display: none;
 }
+
+.group-select .linkselect-link-icon {
+    background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
+    height: 22px;
+    width: 19px;
+    margin-top: 1px;
+}
+.group-select a {
+    width: 135px;
+    font-size: 13px;
+    height: 23px;
+    margin-left: 10px;
+}

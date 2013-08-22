@@ -26,8 +26,6 @@
      %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
-    <script src="{{ asset('bundles/core/js/less.min.js') }}"></script>
-    <script src="{{ asset('bundles/core/js/datepicker.js') }}"></script>
 {% endblock %}
 
 {% block google_api %}
@@ -52,6 +50,12 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('bundles/component/js/groups.js') }}"></script>
+    {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
+                    '@CoreBundle/Resources/public/js/datepicker.js'
+                    '@ComponentBundle/Resources/public/js/groups.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
 

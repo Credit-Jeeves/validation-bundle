@@ -1,57 +1,70 @@
-    <div id="actions-block" class="contracts-block">
-        <!-- ko if: countActions() -->
-        <div class="">
-            <div class="units-total floatleft">
-                <h2 data-bind="text: 'Action Required (' + $root.total() + ')'"></h2>
-            </div>
+<!-- ko if: countActions() -->
+<div id="actions-block" class="landrord-box contracts-block" style="display:none;">
+    <div class="title-box clearfix">
+      <h2 data-bind="text: 'Action Required (' + $root.total() + ')'"></h2>
+      <div class="fiter-box">
+        <label>{{ 'filter.by'|trans }}</label>
+        <select class="select custom-select blue-arrow selectBox" style="display: none;">
+          <option selected="selected" value="0">- Select One -</option>
+        </select>
+        <div class="finder-box">
+          <input type="text" id="searsh-field" name="searsh-field" placeholder="">
+          <button type="submit" id="search-submit" class="pie-el">{{ 'search' }}</button>
         </div>
-        <div class="clearboth"></div>
-        <div class="row-20"></div>
-        <div class="actions-table-block">
-            <table class="properties-table zebra-grid">
-                <thead>
-                <tr class="properties-th">
-                    <th>Status</th>
-                    <th>Due Date</th>
-                    <th>Property</th>
-                    <th>Tenant</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- ko foreach: { data: aActions() } -->
-                <tr>
-                    <td data-bind="attr: {'class': style}">
-                        <div class="actions-status floatleft" data-bind="text: status"></div>
-                        <div class="action-alert floatleft"></div>
-                        <div class="action-resolve floatleft" data-bind="click: $root.Resolve">RESOLVE</div>
-                    </td>
-                    <td data-bind="text: due_day"></td>
-                    <td data-bind="text: address"></td>
-                    <td data-bind="text: tenant"></td>
-                    <td data-bind="text: amount"></td>
-                    <td></td>
-                </tr>
-                <!-- /ko -->
-                </tbody>
-            </table>
+      </div>
+    </div>
+    <div class="content-box">
+      <div class="properties-table-block table-wrap">
+        <div class="table-margin">
+          <table class="properties-table zebra-grid">
+            <thead>
+              <tr class="properties-th">
+                <th class="pie-el" colspan="2"><span class="sort">{{ 'filter.status'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span class="sort">{{ 'due_date'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span class="sort">{{ 'property'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span class="sort">{{ 'tenant'|trans }}<i> </i></span></th>
+                <th class="pie-el"><span>{{ 'amount'|trans }}</span></th>
+                <th class="pie-el"><span class="sort">{{ 'type'|trans }}<i> </i></span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- ko foreach: { data: aActions() } -->
+              <tr>
+                <td class="actions-status late" data-bind="text: status"></td>
+                <td class="action-box">
+                  <a href="#" class="action-alert pie-el"  data-bind="click: $root.Resolve">
+                    <i> </i>{{'resolve'|trans|upper}}
+                  </a>
+                </td>
+                <td data-bind="text: due_day"></td>
+                <td data-bind="text: address"></td>
+                <td data-bind="text: tenant"></td>
+                <td data-bind="text: amount"></td>
+                <td class="type-box">
+                </td>
+              </tr>
+              <!-- /ko -->
+            </tbody>
+          </table>
         </div>
-        <div class="clearboth"></div>
-        <!-- ko if: pages().length -->
-        <div class="row-20"></div>
-        <div class="floatright">
-            <!-- ko foreach: pages() -->
-                <!-- ko if: $data == $root.current() -->
-                <div class="btn grey floatleft" data-bind="click: $root.goToPage, text: $data"></div>
-                <!-- /ko -->
-                <!-- ko ifnot: $data == $root.current() -->
-                <div class="btn green floatleft" data-bind="click: $root.goToPage, text: $data"></div>
-                <!-- /ko -->
+      </div>
+    </div>
+    <div class="clearboth"></div>
+    <!-- ko if: pages().length -->
+    <div class="row-20"></div>
+    <div class="floatright">
+        <!-- ko foreach: pages() -->
+            <!-- ko if: $data == $root.current() -->
+            <div class="btn grey floatleft" data-bind="click: $root.goToPage, text: $data"></div>
             <!-- /ko -->
-        </div>
-        <!-- /ko -->
-        <div class="clearboth"></div>
-        <div class="row-20"></div>
+            <!-- ko ifnot: $data == $root.current() -->
+            <div class="btn green floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+            <!-- /ko -->
         <!-- /ko -->
     </div>
+    <!-- /ko -->
+    <div class="clearboth"></div>
+    <div class="row-20"></div>
+    <!-- /ko -->
+</div>
+    <!-- /ko -->
