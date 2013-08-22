@@ -239,18 +239,26 @@ abstract class User extends BaseUser
             'ssn',
             'is_verified',
         );
-        $return = array();
+        $return = array(
+            'unit' => '',
+            'number' => '',
+            'street' => '',
+            'city' => '',
+            'zip' => '',
+            'country' => '',
+        );
         foreach ($data as $key) {
             $return[$key] = $this->$key;
         }
         /** @var Address $address */
-        $address = $this->getDefaultAddress();
-        $return['unit'] = $address->getUnit();
-        $return['number'] = $address->getNumber();
-        $return['street'] = $address->getStreet();
-        $return['city'] = $address->getCity();
-        $return['zip'] = $address->getZip();
-        $return['country'] = $address->getCountry();
+        if ($address = $this->getDefaultAddress()) {
+            $return['unit'] = $address->getUnit();
+            $return['number'] = $address->getNumber();
+            $return['street'] = $address->getStreet();
+            $return['city'] = $address->getCity();
+            $return['zip'] = $address->getZip();
+            $return['country'] = $address->getCountry();
+        }
         return $return;
     }
 

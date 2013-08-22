@@ -194,4 +194,29 @@ class Contract extends Base
         }
         return $result;
     }
+
+    public function shiftPaidTo($amount = null)
+    {
+        $paidTo = $this->getPaidTo();
+        $newDate = clone $paidTo;
+        $rent = $this->getRent();
+        $amount = ($amount) ? $amount : $rent;
+        if ($amount > $rent) {
+            $newDate->modify('+1 months');
+            $diff = $amount - $rent;
+            $days = $this->countPaidDays($rent, $diff);
+            $newDate->modify('+'.$days.' days');
+        } elseif ($amount < $rent) {
+            $days = $this->countPaidDays($rent, $amount);
+            $newDate->modify('+'.$days.' days');
+        } else {
+            $newDate->modify('+1 months');
+        }
+        return $this->setPaidTo($newDate);
+    }
+
+    private function countPaidDays($rent, $paid)
+    {
+        return floor($paid * 30/ $rent);
+    }
 }
