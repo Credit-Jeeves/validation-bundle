@@ -254,3 +254,30 @@ fixtures:
                         border-radius: 4px;
                 ">Pay Rent</a> Still have some questions? <a href="#">Learn More</a>
       {% endblock %}
+
+# rjTenantLatePayment.html email
+  translation_126:
+    translatable: email_14
+    locale: %locale%
+    property: subject
+    value: Invite
+  translation_127:
+    translatable: email_14
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Pay Rent. Built Credit.{% endblock %}
+      {% block email %}
+        {% if nameTenant %}
+            Hi {{ nameTenant }}! <br />  <br />
+        {% else %}
+            Hello!  <br /> <br /> 
+        {% endif %}
+        Your landlord, {{ fullNameLandlord }}, would like to use RentTrack to pay your rent for
+        {{ address }} {{ unitName }}. RentTrack facilitates easy payments through secure electronic check transfers
+        and credit cards - you get choose.
+        <br /> <br />
+
+        <a href="#">Learn More</a>
+      {% endblock %}
