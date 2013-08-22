@@ -21,13 +21,39 @@
             >
               <thead>
                 <tr class="properties-th">
-                  <th class="pie-el"><span class="sort">{{ 'filter.status'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'date.posted'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'date.initiated'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'property'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'tenant'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span>{{ 'amount'|trans }}</span></th>
-                  <th class="pie-el"><span class="sort">{{ 'type'|trans }}<i> </i></span></th>
+                  <th class="pie-el">
+                    <span class="sort" id="status" data-bind="click: sortIt" data="status">
+                      {{ 'filter.status'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="date-posted" data-bind="click: sortIt" data="date.posted">
+                      {{ 'date.posted'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el" >
+                    <span class="sort" id="date-initiated" data-bind="click: sortIt" data="date.initiated">
+                      {{ 'date.initiated'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="property" data-bind="click: sortIt" data="property">
+                      {{ 'property'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="tenant" data-bind="click: sortIt" data="tenant">
+                      {{ 'tenant'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="amount" data-bind="click: sortIt" data="amount">
+                      {{ 'amount'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span>{{ 'type'|trans }}<i> </i></span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
