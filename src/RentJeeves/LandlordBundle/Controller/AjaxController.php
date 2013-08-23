@@ -7,10 +7,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Enum\OperationType;
 
 /**
  * 
@@ -455,6 +462,71 @@ class AjaxController extends Controller
             $em->persist($contract);
         }
         $em->flush();
+        return new JsonResponse(array());
+    }
+
+    /**
+     * @Route(
+     *     "/contract/resolve",
+     *     name="landlord_conflict_resolve",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function resolveContract()
+    {
+        $amount = null;
+        $request = $this->getRequest();
+        $data = $request->request->all('data');
+        if (!isset($data['action'])) {
+            return new JsonResponse(array());
+        }
+        if (isset($date['amount'])) {
+            $amount = $data['amount'];
+        }
+        $contract = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository('RjDataBundle:Contract')
+            ->find($data['contract_id']);
+        $tenant = $contract->getTenant();
+        $action = $data['action'];
+        switch ($action) {
+            case Contract::RESOLVE_EMAIL:
+                $this->get('creditjeeves.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
+                break;
+            case Contract::RESOLVE_PAID:
+                $em = $this->getDoctrine()->getManager();
+                // Check operations
+                $operations = $contract->getOperations();
+                if (count($operations) > 0) {
+                    $operation = $operations->last();
+                } else {
+                    $operation = new Operation();
+                    $operation->setType(OperationType::RENT);
+                    $operation->setContract($contract);
+                    $em->persist($operation);
+                    $em->flush();
+                }
+                // Create order
+                $order = new Order();
+                $order->addOperation($operation);
+                $order->setUser($tenant);
+                $order->setAmount($contract->getRent());
+                $order->setStatus(OrderStatus::COMPLETE);
+                $order->setType(OrderType::CASH);
+                $em->persist($order);
+                $em->flush();
+                // Change paid to date
+                $contract->shiftPaidTo($amount);
+                $contract->setStatus(ContractStatus::CURRENT);
+                $em->persist($contract);
+                $em->flush();
+                break;
+            case Contract::RESOLVE_UNPAID:
+                // @TODO Here will be report to Experian
+                break;
+        }
         return new JsonResponse(array());
     }
 

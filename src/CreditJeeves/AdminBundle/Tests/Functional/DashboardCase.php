@@ -19,7 +19,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($tableTr = $this->page->find('css', '#id_block_emails'));
         $tableTr->clickLink('link_list');
         $this->assertNotNull($emails = $this->page->findAll('css', 'a.edit_link'));
-        $this->assertCount(13, $emails);
+        $this->assertCount(14, $emails);
         $this->page->clickLink('link_action_create');
         $this->assertNotNull($tabs = $this->page->findAll('css', 'form ul li a'));
         $this->assertCount(3, $tabs, 'wrong number of tabs');
@@ -62,11 +62,11 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertEquals('flash_create_success', $message->getText());
         $this->page->clickLink('Email Template List');
         $this->assertNotNull($rows = $this->page->findAll('css', 'form table tbody tr'));
-        $this->assertCount(14, $rows);
-        $this->assertNotNull($items = $rows[13]->findAll('css', 'td'));
+        $this->assertCount(15, $rows);
+        $this->assertNotNull($items = $rows[14]->findAll('css', 'td'));
         $this->assertEquals('test', $items[1]->getText());
         $this->assertNotNull($delete = $this->page->findAll('css', 'a.delete_link'));
-        $this->assertCount(14, $delete);
+        $this->assertCount(15, $delete);
         $delete[11]->click();
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($delete = $form->findButton('btn_delete'));
