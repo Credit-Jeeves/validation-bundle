@@ -13,6 +13,31 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 class Order extends BaseOrder
 {
     /**
+     * @var string
+     */
+    const STATUS_NEWONE = 'PENDING';
+
+    /**
+     * @var string
+     */
+    const STATUS_COMPLETE = 'PAID';
+
+    /**
+     * @var string
+     */
+    const STATUS_ERROR = 'ERROR';
+
+    /**
+     * @var string
+     */
+    const STATUS_CANCELLED = 'CANCELLED';
+
+    /**
+     * @var string
+     */
+    const STATUS_REFUNDED = 'REFUNDED';
+
+    /**
      * @ORM\PrePersist
      */
     public function prePersist()
@@ -41,14 +66,43 @@ class Order extends BaseOrder
         $result['tenant'] = $contract->getTenant()->getFullName();
         $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
-        $result['status'] = 'PENDING';
+        $result['status'] = self::STATUS_NEWONE;
         $result['finish'] = '--';
         $result['style'] = 'contract-pending';
-        if (OrderStatus::COMPLETE == $this->getStatus()) {
-            $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
-            $result['style'] = '';
-            $result['status'] = 'PAID';
+        $result['icon'] = $this->getOrderTypes();
+        $status = $this->getStatus();
+        switch ($status) {
+            case OrderStatus::NEWONE:
+                break;
+            case OrderStatus::COMPLETE:
+                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['style'] = '';
+                $result['status'] = self::STATUS_COMPLETE;
+                break;
+            case OrderStatus::ERROR:
+                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['style'] = 'late';
+                $result['status'] = self::STATUS_ERROR;
+                break;
+            case OrderStatus::CANCELLED:
+                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['style'] = 'late';
+                $result['status'] = self::STATUS_CANCELLED;
+                break;
+            case OrderStatus::REFUNDED:
+                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['style'] = 'late';
+                $result['status'] = self::STATUS_REFUNDED;
+                break;
         }
+        return $result;
+    }
+
+    public function getOrderTypes()
+    {
+        // @todo don't hardcode path to images
+        $result = '/bundles/rjpublic/images/icon-cash.png';
+        
         return $result;
     }
 }

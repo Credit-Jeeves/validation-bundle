@@ -12,10 +12,10 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
-        $query->andWhere('c.paid_to > :date OR c.paid_to IS NULL OR c.status = :status');
+        //$query->andWhere('c.paid_to > :date OR c.paid_to IS NULL OR c.status = :status');
         $query->setParameter('group', $group);
-        $query->setParameter('date', new \Datetime());
-        $query->setParameter('status', ContractStatus::FINISHED);
+        //$query->setParameter('date', new \Datetime());
+        //$query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
             $this->applyCollum($searchBy);
             $query->andWhere($searchBy.' LIKE :search');
@@ -61,10 +61,10 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
-        $query->andWhere('c.paid_to > :date OR c.paid_to IS NULL  OR c.status = :status');
+        //$query->andWhere('c.paid_to > :date OR c.paid_to IS NULL  OR c.status = :status');
         $query->setParameter('group', $group);
-        $query->setParameter('date', new \Datetime());
-        $query->setParameter('status', ContractStatus::FINISHED);
+        //$query->setParameter('date', new \Datetime());
+        //$query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search) && !empty($searchBy)) {
             $this->applyCollum($searchBy);
             $query->andWhere($searchBy.' LIKE :search');
