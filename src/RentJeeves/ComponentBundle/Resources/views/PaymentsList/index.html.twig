@@ -12,7 +12,7 @@
           <div class="finder-box">
             <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
             <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
-            <button type="submit" id="search-submit" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+            <button type="submit" id="search-submit-payments" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
           </div>
         </div>
       </div>
@@ -60,7 +60,7 @@
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="payments-block-tbody">
                 <!-- ko foreach: { data: aPayments() } -->
                 <tr>
                   <td data-bind="attr: {'class': 'actions-status '+style}, text: status"></td>
