@@ -378,15 +378,26 @@ class AjaxController extends Controller
 
         $sortColumn = $data['sortColumn'];
         $isSortAsc = $data['isSortAsc'];
+        $searchField = $data['searchCollum'];
+        $searchText = $data['searchText'];
+
         $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countActionsRequired($group);
+        $total = $repo->countActionsRequired($group, $searchField, $searchText);
         $total = count($total);
         if ($total) {
-            $contracts = $repo->getActionsRequiredPage($group, $data['page'], $data['limit'], $sortColumn, $sortType);
+            $contracts = $repo->getActionsRequiredPage(
+                $group,
+                $data['page'],
+                $data['limit'],
+                $sortColumn,
+                $sortType,
+                $searchField,
+                $searchText
+            );
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
                 $items[] = $item;
@@ -468,16 +479,27 @@ class AjaxController extends Controller
         $data = $page['data'];
         $sortColumn = $data['sortColumn'];
         $isSortAsc = $data['isSortAsc'];
+        $searchCollum = $data['searchCollum'];
+        $searchText = $data['searchText'];
+
         $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
 
         $result = array();
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
-        $total = $repo->countOrders($group);
+        $total = $repo->countOrders($group, $searchCollum, $searchText);
         $total = count($total);
 
         if ($total) {
-            $orders = $repo->getOrdersPage($group, $data['page'], $data['limit'], $sortColumn, $sortType);
+            $orders = $repo->getOrdersPage(
+                $group,
+                $data['page'],
+                $data['limit'],
+                $sortColumn,
+                $sortType,
+                $searchCollum,
+                $searchText
+            );
             foreach ($orders as $order) {
                 $item = $order->getItem();
                 $items[] = $item;

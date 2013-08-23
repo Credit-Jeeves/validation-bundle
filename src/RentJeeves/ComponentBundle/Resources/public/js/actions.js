@@ -9,6 +9,36 @@ function Actions() {
   this.processActions = ko.observable(true);
   this.sortColumn = ko.observable("statusA");
   this.isSortAsc = ko.observable(false);
+  this.searchText = ko.observable("");
+  this.searchCollum = ko.observable("");
+  this.isSearch = ko.observable(false);
+  this.notHaveResult = ko.observable(false);
+
+  this.search = function() {
+    var searchCollum = $('#searchActions').linkselect('val');
+    if(typeof searchCollum != 'string') {
+       searchCollum = '';
+    }
+    if(self.searchText().length <= 0) {
+      $('#searsh-field-actions').css('border-color', 'red');
+      return;
+    } else {
+      $('#searsh-field-actions').css('border-color', '#bdbdbd');
+    }
+    self.isSearch(true);
+    self.searchCollum(searchCollum);
+    self.current(1);
+    self.ajaxAction();
+  }
+
+  this.clearSearch = function() {
+    self.searchText('');
+    self.searchCollum('');
+    self.current(1);
+    self.ajaxAction();
+    self.isSearch(false);
+  }
+
   this.ajaxAction = function() {
     self.processActions(true);
     $.ajax({
@@ -20,7 +50,9 @@ function Actions() {
           'page' : self.current(),
           'limit' : limit,
           'sortColumn': self.sortColumn(),
-          'isSortAsc': self.isSortAsc()
+          'isSortAsc': self.isSortAsc(),
+          'searchCollum': self.searchCollum(),
+          'searchText': self.searchText()
         }
       },
       success: function(response) {

@@ -4,12 +4,15 @@
       <h2 data-bind="text: 'Action Required (' + $root.total() + ')'"></h2>
       <div class="fiter-box">
         <label>{{ 'filter.by'|trans }}</label>
-        <select class="select custom-select blue-arrow selectBox" style="display: none;">
-          <option selected="selected" value="0">- Select One -</option>
+        <select id="searchActions"class="select custom-select blue-arrow selectBox">
+            <option value="property">{{ 'property'|trans }}</option>
+            <option value="tenant">{{ 'tenant'|trans }}</option>
+            <option value="amount">{{ 'amount'|trans }}</option>
         </select>
         <div class="finder-box">
-          <input type="text" id="searsh-field" name="searsh-field" placeholder="">
-          <button type="submit" id="search-submit" class="pie-el">{{ 'search' }}</button>
+          <input type="text" id="searsh-field-actions" name="searsh-field" data-bind="value: searchText">
+          <a href="#" style="display:block;" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
+          <button type="submit" id="search-submit" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
         </div>
       </div>
     </div>

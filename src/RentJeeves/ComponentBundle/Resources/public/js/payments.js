@@ -9,7 +9,36 @@ function Payments() {
   this.last = ko.observable('Last');
   this.processPayment = ko.observable(true);
   this.sortColumn = ko.observable("status");
-  this.isSortAsc = ko.observable(false);
+  this.isSortAsc = ko.observable(true);
+  this.searchText = ko.observable("");
+  this.searchCollum = ko.observable("");
+  this.isSearch = ko.observable(false);
+  this.notHaveResult = ko.observable(false);
+
+  this.search = function() {
+    var searchCollum = $('#searchPayments').linkselect('val');
+    if(typeof searchCollum != 'string') {
+       searchCollum = '';
+    }
+    if(self.searchText().length <= 0) {
+      $('#searsh-field-payments').css('border-color', 'red');
+      return;
+    } else {
+      $('#searsh-field-payments').css('border-color', '#bdbdbd');
+    }
+    self.isSearch(true);
+    self.searchCollum(searchCollum);
+    self.current(1);
+    self.ajaxAction();
+  }
+
+  this.clearSearch = function() {
+    self.searchText('');
+    self.searchCollum('');
+    self.current(1);
+    self.ajaxAction();
+    self.isSearch(false);
+  }
   this.ajaxAction = function() {
     self.processPayment(true);
     $.ajax({
@@ -21,7 +50,9 @@ function Payments() {
           'page' : self.current(),
           'limit' : limit,
           'sortColumn': self.sortColumn(),
-          'isSortAsc': self.isSortAsc()
+          'isSortAsc': self.isSortAsc(),
+          'searchCollum': self.searchCollum(),
+          'searchText': self.searchText()
         }
       },
       success: function(response) {
@@ -81,4 +112,6 @@ var PaymentsViewModel = new Payments();
 $(document).ready(function(){
   ko.applyBindings(PaymentsViewModel, $('#payments-block').get(0));
   PaymentsViewModel.ajaxAction();
+  $('#searchPayments').linkselect("destroy");
+  $('#searchPayments').linkselect();
 });

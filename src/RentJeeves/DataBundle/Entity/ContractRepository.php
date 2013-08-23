@@ -78,6 +78,27 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
+
+    private function applySearchFieldActionsRequered(&$searchBy)
+    {
+        switch ($searchBy) {
+            case 'property':
+                $sort = 'p.street';
+                break;
+            case 'tenant':
+                $sort = 'CONCAT(t.first_name, t.last_name)';
+                break;
+            case 'amount':
+                $sort = 'c.rent';
+                break;
+            default:
+                $sort = 'p.street';
+                break;
+        }
+
+        $searchBy = $sort;
+    }
+
     public function countActionsRequired($group, $searchBy = 'address', $search = '')
     {
         $query = $this->createQueryBuilder('c');
@@ -90,8 +111,9 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+            $this->applySearchFieldActionsRequered($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
@@ -116,9 +138,10 @@ class ContractRepository extends EntityRepository
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
-        if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+        if (!empty($search) && !empty($searchBy)) {
+            $this->applySearchFieldActionsRequered($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
 
         switch ($sort) {
