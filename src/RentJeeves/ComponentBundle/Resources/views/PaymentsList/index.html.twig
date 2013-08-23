@@ -9,11 +9,21 @@
             <option value="tenant">{{ 'tenant'|trans }}</option>
             <option value="amount">{{ 'amount'|trans }}</option>
           </select>
-          <div class="finder-box">
+          <div id="searchInput" style="display:none;" class="finder-box">
             <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
             <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
             <button type="submit" id="search-submit-payments" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
           </div>
+          <div id="searchSelect" class="finder-box" >
+            <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
+              <option value=''>- select status -</option>
+             <option value='new'>Pending</option>
+             <option value='complete'>Paid</option>
+             <option value='error'>Error</option>
+            </select>
+            <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+          </div>
+
         </div>
       </div>
       <div class="content-box">
