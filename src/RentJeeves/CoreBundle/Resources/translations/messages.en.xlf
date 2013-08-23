@@ -760,7 +760,7 @@
                 <target>Error</target>
             </trans-unit>
             <trans-unit id="payments.total">
-                <source>payments.total </source>
+                <source>payments.total</source>
                 <target>Payments Total</target>
             </trans-unit>
             <trans-unit id="select.status">
