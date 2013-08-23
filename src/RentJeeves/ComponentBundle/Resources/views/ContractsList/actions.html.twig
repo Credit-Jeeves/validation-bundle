@@ -50,36 +50,56 @@
                     </button>
                 </div>
             </div>
-        </div>
+</div>
 
 <!-- End Resolve Popup -->
 <!-- ko if: countActions() -->
 <div id="actions-block" class="landrord-box contracts-block" style="display:none;">
     <div class="title-box clearfix">
-      <h2 data-bind="text: 'Action Required (' + $root.total() + ')'"></h2>
+      <h2 data-bind="text: '{{'action.required'|trans}} (' + $root.total() + ')'"></h2>
       <div class="fiter-box">
         <label>{{ 'filter.by'|trans }}</label>
-        <select class="select custom-select blue-arrow selectBox" style="display: none;">
-          <option selected="selected" value="0">- Select One -</option>
+        <select id="searchActions"class="select custom-select blue-arrow selectBox">
+            <option value="property">{{ 'property'|trans }}</option>
+            <option value="tenant">{{ 'tenant'|trans }}</option>
+            <option value="amount">{{ 'amount'|trans }}</option>
         </select>
         <div class="finder-box">
-          <input type="text" id="searsh-field" name="searsh-field" placeholder="">
-          <button type="submit" id="search-submit" class="pie-el">{{ 'search' }}</button>
+          <input type="text" id="searsh-field-actions" name="searsh-field" data-bind="value: searchText">
+          <a href="#" style="display:block;" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
+          <button type="submit" id="search-submit" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
         </div>
       </div>
     </div>
     <div class="content-box">
       <div class="properties-table-block table-wrap">
         <div class="table-margin">
-          <table class="properties-table zebra-grid">
+          <table class="properties-table zebra-grid"
+          data-bind="style: { display: processActions() ? 'none ' :  'table' }"
+            style="display:none;"
+          >
             <thead>
               <tr class="properties-th">
-                <th class="pie-el" colspan="2"><span class="sort">{{ 'filter.status'|trans }}<i> </i></span></th>
-                <th class="pie-el"><span class="sort">{{ 'due_date'|trans }}<i> </i></span></th>
-                <th class="pie-el"><span class="sort">{{ 'property'|trans }}<i> </i></span></th>
-                <th class="pie-el"><span class="sort">{{ 'tenant'|trans }}<i> </i></span></th>
-                <th class="pie-el"><span>{{ 'amount'|trans }}</span></th>
-                <th class="pie-el"><span class="sort">{{ 'type'|trans }}<i> </i></span></th>
+                <th class="pie-el" colspan="2">
+                  <span class="sort" id="statusA" data-bind="click: sortIt" >{{ 'filter.status'|trans }}<i> </i></span>
+                </th>
+                <th class="pie-el">
+                  <span class="sort"  id="due_dateA" data-bind="click: sortIt">{{ 'due_date'|trans }}<i> </i>
+                  </span>
+                </th>
+                <th class="pie-el">
+                  <span class="sort" id="propertyA" data-bind="click: sortIt">{{ 'property'|trans }}<i> </i>
+                  </span>
+                </th>
+                <th class="pie-el">
+                  <span id="tenantA" data-bind="click: sortIt" class="sort">{{ 'tenant'|trans }}<i> </i>
+                  </span>
+                </th>
+                <th class="pie-el">
+                  <span  id="amountA" data-bind="click: sortIt" class="sort">{{ 'amount'|trans }}<i> </i>
+                  </span>
+                </th>
+                <th class="pie-el">{{ 'type'|trans }}</th>
               </tr>
             </thead>
             <tbody>
@@ -101,6 +121,7 @@
               <!-- /ko -->
             </tbody>
           </table>
+          <img src="/bundles/core/images/img_loading.gif" class="processPayment" data-bind="style: { display: processActions() ? 'block' : 'none' }">
         </div>
       </div>
     </div>

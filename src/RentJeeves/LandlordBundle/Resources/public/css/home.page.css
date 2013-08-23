@@ -10,8 +10,12 @@
     height: 23px;
     margin-left: 10px;
 }
-#processPayment {
+.processPayment {
     margin-left: 405px;
     margin-top: 50px;
     padding-bottom: 50px;
+}
+#searchPaymentsStatus_link, #searchSelect {
+    margin-left: 0px;
+    margin-right: 0px;
 }

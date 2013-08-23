@@ -470,8 +470,9 @@ table.properties-table th {
     width: 20px !important;
 }
 a.linkselect-link .linkselect-link-text {
-    padding: 6px 14px 0;
+    padding: 6px 14px;
     height: 16px;
+    padding-top: 4px !important;
 }
 #properties-block {
     display: none;
@@ -482,6 +483,7 @@ a.linkselect-link .linkselect-link-text {
     height: 22px;
     width: 19px;
     margin-top: 1px;
+    
 }
 .group-select a {
     width: 135px;
