@@ -58,7 +58,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('Payments Total (36)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (36)', $allh2->getText(), 'Wrong count');
 
         $this->assertNotNull($searchPayments_link = $this->page->find('css', '#searchPayments_link'));
         $searchPayments_link->click();
@@ -71,7 +71,16 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('Payments Total (7)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (7)', $allh2->getText(), 'Wrong count');
+
+        $this->assertNotNull($delete = $this->page->find('css', '#payments-block .pie-el'));
+        $delete->click();
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+
+        $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
+        $this->assertEquals('payments.total (36)', $allh2->getText(), 'Wrong count');
+
         $this->logout();
     }
 }

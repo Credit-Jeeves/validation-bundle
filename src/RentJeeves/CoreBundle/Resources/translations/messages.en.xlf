@@ -751,6 +751,26 @@
                 <source>pending</source>
                 <target>Pending</target>
             </trans-unit>
+            <trans-unit id="paid">
+                <source>paid</source>
+                <target>Paid</target>
+            </trans-unit>
+            <trans-unit id="error">
+                <source>error</source>
+                <target>Error</target>
+            </trans-unit>
+            <trans-unit id="payments.total">
+                <source>payments.total </source>
+                <target>Payments Total</target>
+            </trans-unit>
+            <trans-unit id="select.status">
+                <source>select.status </source>
+                <target>Select Status</target>
+            </trans-unit>
+            <trans-unit id="action.required">
+                <source>action.required</source>
+                <target>Action Required</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

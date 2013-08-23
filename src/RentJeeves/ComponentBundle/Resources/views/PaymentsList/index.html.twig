@@ -1,6 +1,6 @@
 <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
       <div class="title-box clearfix">
-        <h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2>
+        <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')'"></h2>
         <div class="fiter-box">
           <label>{{ 'filter.by'|trans }}</label>
           <select id="searchPayments" class="select custom-select blue-arrow selectBox">
@@ -16,10 +16,10 @@
           </div>
           <div id="searchSelect" class="finder-box" >
             <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
-              <option value=''>- select status -</option>
-             <option value='new'>Pending</option>
-             <option value='complete'>Paid</option>
-             <option value='error'>Error</option>
+              <option value=''>- {{'select.status'|trans}} -</option>
+             <option value='new'>{{'pending'|trans}}</option>
+             <option value='complete'>{{'paid'|trans}}</option>
+             <option value='error'>{{'error'|trans}}</option>
             </select>
             <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
           </div>
