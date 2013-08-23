@@ -1,7 +1,7 @@
 {% extends "LandlordBundle::base.html.twig" %}
 
 {% block content %}
-        {{ render(controller('RjComponentBundle:ContractsList:required', {'Group': Group})) }}
+        {{ render(controller('RjComponentBundle:ContractsList:actions', {'Group': Group})) }}
         {{ render(controller('RjComponentBundle:PaymentsList:index', {'group': Group})) }}
 {% endblock %}
 
