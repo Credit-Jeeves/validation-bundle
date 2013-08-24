@@ -2,18 +2,54 @@
 
 namespace RentJeeves\CheckoutBundle\Controller;
 
+use Payum\Heartland\Soap\Base\ACHAccountType;
+use Payum\Heartland\Soap\Base\ACHDepositType;
+use Payum\Heartland\Soap\Base\GetTokenRequest;
+use Payum\Heartland\Soap\Base\TokenPaymentMethod;
+use Payum\Request\CaptureRequest;
+use RentJeeves\DataBundle\Entity\Heartland;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use \DateTime;
 
 class DefaultController extends Controller
 {
     /**
-     * @Route("/hello/{name}")
+     * @Route("/checkout/get_token")
      * @Template()
      */
-    public function indexAction($name)
+    public function indexAction()
     {
-        return array('name' => $name);
+
+        $request = new GetTokenRequest();
+
+        $request->setACHAccountType(ACHAccountType::PERSONAL);
+        $request->setACHDepositType(ACHDepositType::CHECKING);
+        $request->getAccountHolderData()->setAddress('123 Main Street');
+        $request->getAccountHolderData()->setCity('Washington');
+        $request->getAccountHolderData()->setEmail('JQAdams@gmail.com');
+        $request->getAccountHolderData()->setFirstName('John');
+        $request->getAccountHolderData()->setLastName('Adams');
+        $request->getAccountHolderData()->setPhone('1112223333');
+        $request->getAccountHolderData()->setState('DC');
+        $request->getAccountHolderData()->setZip('12321');
+        $request->setAccountNumber('5473500000000014');
+        $now = new DateTime('+1 year');
+        $request->setExpirationMonth($now->format('m'));
+        $request->setExpirationYear($now->format('Y'));
+        $request->setPaymentMethod(TokenPaymentMethod::ACH);
+        $request->setRoutingNumber('062202574'); // TODO find out!
+
+        $paymentDetails = new Heartland();
+        $paymentDetails->setMerchantName('Monticeto_Percent');
+        $paymentDetails->setRequest($request);
+
+        $this->get('payum')->getPayment('heartland')->execute(new CaptureRequest($paymentDetails));
+
+        $this->get('doctrine.orm.entity_manager')->persist($paymentDetails);
+        $this->get('doctrine.orm.entity_manager')->flush($paymentDetails);
+
+        return array();
     }
 }
