@@ -14,6 +14,21 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
  */
 class Contract extends Base
 {
+    /**
+     * @var string
+     */
+    const RESOLVE_EMAIL = 'email';
+
+    /**
+     * @var string
+     */
+    const RESOLVE_PAID = 'paid';
+
+    /**
+     * @var string
+     */
+    const RESOLVE_UNPAID = 'unpaid';
+
     public function getItem()
     {
         $result = array();
@@ -25,6 +40,7 @@ class Contract extends Base
         $result['status'] = $status['status'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
+        $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['property_id'] = $property->getId();
         $result['unit_id'] = null;
         if ($unit) {
@@ -40,9 +56,12 @@ class Contract extends Base
             $result['amount'] = '$'.$this->getRent();
         }
         $result['due_day'] = $this->getDueDay().'th';
+        $result['late'] = $this->getLateDays();
         $result['paid_to'] = '';
+        $result['late_date'] = '';
         if ($date = $this->getPaidTo()) {
             $result['paid_to'] = $date->format('M d, Y');
+            $result['late_date'] = $date->format('n/j/Y');
         }
         $result['start'] = '';
         if ($start = $this->getStartAt()) {
@@ -51,6 +70,20 @@ class Contract extends Base
         $result['finish'] = '';
         if ($finish = $this->getFinishAt()) {
             $result['finish'] = $finish->format('m/d/Y');
+        }
+        return $result;
+    }
+
+    private function getLateDays()
+    {
+        $result = '1 DAY LATE';
+        if ($date = $this->getPaidTo()) {
+            $now = new \DateTime();
+            $interval = $now->diff($date);
+            $days = $interval->format('%d');
+            if ($days > 1) {
+                $result = $days.' DAYS LATE';
+            }
         }
         return $result;
     }
@@ -137,9 +170,6 @@ class Contract extends Base
             }
             $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
         }
-//         echo '<pre>';
-//         print_r($payments);
-//         echo '</pre>';
         $result['history'] = $payments;
         return $result;
     }
@@ -163,5 +193,30 @@ class Contract extends Base
             $result[$i] = $aMonthes;
         }
         return $result;
+    }
+
+    public function shiftPaidTo($amount = null)
+    {
+        $paidTo = $this->getPaidTo();
+        $newDate = clone $paidTo;
+        $rent = $this->getRent();
+        $amount = ($amount) ? $amount : $rent;
+        if ($amount > $rent) {
+            $newDate->modify('+1 months');
+            $diff = $amount - $rent;
+            $days = $this->countPaidDays($rent, $diff);
+            $newDate->modify('+'.$days.' days');
+        } elseif ($amount < $rent) {
+            $days = $this->countPaidDays($rent, $amount);
+            $newDate->modify('+'.$days.' days');
+        } else {
+            $newDate->modify('+1 months');
+        }
+        return $this->setPaidTo($newDate);
+    }
+
+    private function countPaidDays($rent, $paid)
+    {
+        return floor($paid * 30/ $rent);
     }
 }

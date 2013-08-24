@@ -13,7 +13,7 @@ function ContractDetails() {
       self.approveContract(self.contract());
     }
     self.clearDetails();
-  }
+  };
 
   this.editContract = function(data) {
     $('#tenant-approve-property-popup').dialog('close');
@@ -21,10 +21,9 @@ function ContractDetails() {
     if (data.first_name) {
       self.contract(data);
     }
+    var flag = false;
     if(self.approve()) {
-      var flag = true;
-    } else {
-      var flag = false;
+      flag = true;
     }
     self.clearDetails();
     self.edit(true);
@@ -148,7 +147,7 @@ function Contracts() {
     self.searchCollum(searchCollum);
     self.current(1);
     self.ajaxAction();
-  }
+  };
 
   this.clearSearch = function() {
     self.searchText('');
@@ -156,8 +155,7 @@ function Contracts() {
     self.current(1);
     self.ajaxAction();
     self.isSearch(false);
-  }
-
+  };
 
   this.sortFunction = function(data, event) {
      field = event.target.id;
@@ -288,7 +286,6 @@ $(document).ready(function(){
       width:'520px'
   });
 
-
   $('#tenant-add-property-popup').dialog({
       autoOpen: false,
       resizable: false,
@@ -332,7 +329,6 @@ $(document).ready(function(){
         }
       });
   }
-
 
   $(idProperty).linkselect('destroy');
 

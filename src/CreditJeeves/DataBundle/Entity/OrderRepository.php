@@ -30,14 +30,66 @@ class OrderRepository extends EntityRepository
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->innerJoin('t.property', 'prop');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
-        if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+        if (!empty($search) && !empty($searchBy)) {
+            $this->applySearchField($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
+    }
+
+
+    private function applySearchField(&$field)
+    {
+        switch ($field) {
+            case 'status':
+            case 'amount':
+                $field = 'o.'.$field;
+                break;
+            case 'property':
+                $field = 'prop.street';
+                break;
+            case 'tenant':
+                $field = 'CONCAT(ten.first_name, ten.last_name)';
+                break;
+            default:
+                $field = 'o.status';
+                break;
+        }
+    }
+
+
+    private function applyField(&$field)
+    {
+        switch ($field) {
+            case 'status':
+            case 'amount':
+                $field = 'o.'.$field;
+                break;
+            case 'date-posted':
+                $field = 'o.created_at';
+                break;
+            case 'date-initiated':
+                $field = 'o.updated_at';
+                break;
+            case 'property':
+                $field = 'prop.street';
+                break;
+            case 'tenant':
+                $field = 'CONCAT(ten.first_name, ten.last_name)';
+                break;
+            case 'first_name':
+                $field = 'ten.first_name';
+                break;
+            default:
+                $field = 'o.status';
+                break;
+        }
     }
 
     /**
@@ -63,15 +115,19 @@ class OrderRepository extends EntityRepository
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->innerJoin('t.property', 'prop');
         $query->where('t.group = :group');
         //$query->andWhere('c.paid_to > :date OR c.paid_to IS NULL  OR c.status = :status');
         $query->setParameter('group', $group);
         //         $query->setParameter('date', new \Datetime());
         //         $query->setParameter('status', ContractStatus::FINISHED);
-        if (!empty($search)) {
-            //             $query->andWhere('p.'.$searchBy.' = :search');
-            //             $query->setParameter('search', $search);
+        if (!empty($search) && !empty($searchBy)) {
+            $this->applySearchField($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
+            $query->setParameter('search', '%'.$search.'%');
         }
+        $this->applyField($sort);
         $query->orderBy($sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);

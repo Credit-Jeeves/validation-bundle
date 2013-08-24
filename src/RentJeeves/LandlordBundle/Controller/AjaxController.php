@@ -7,10 +7,17 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use Doctrine\DBAL\DBALException;
 use CreditJeeves\DataBundle\Enum\UserType;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Enum\OperationType;
 
 /**
  * 
@@ -374,23 +381,41 @@ class AjaxController extends Controller
         $total = 0;
         $request = $this->getRequest();
         $page = $request->request->all('data');
-        $page = $page['data'];
-        $data = array('actions' => array(), 'total' => 0, 'pagination' => array());
+        $data = $page['data'];
+
+        $sortColumn = $data['sortColumn'];
+        $isSortAsc = $data['isSortAsc'];
+        $searchField = $data['searchCollum'];
+        $searchText = $data['searchText'];
+
+        $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
+
+        $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countActionsRequired($group);
+        $total = $repo->countActionsRequired($group, $searchField, $searchText);
         $total = count($total);
         if ($total) {
-            $contracts = $repo->getActionsRequiredPage($group, $page['page'], $page['limit']);
+            $contracts = $repo->getActionsRequiredPage(
+                $group,
+                $data['page'],
+                $data['limit'],
+                $sortColumn,
+                $sortType,
+                $searchField,
+                $searchText
+            );
             foreach ($contracts as $contract) {
                 $item = $contract->getItem();
                 $items[] = $item;
             }
         }
-        $data['actions'] = $items;
-        $data['total'] = $total;
-        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
-        return new JsonResponse($data);
+        
+        $result['actions'] = $items;
+        $result['total'] = $total;
+        $result['pagination'] = $this->datagridPagination($total, $data['limit']);
+        
+        return new JsonResponse($result);
     }
 
     /**
@@ -440,6 +465,71 @@ class AjaxController extends Controller
         return new JsonResponse(array());
     }
 
+    /**
+     * @Route(
+     *     "/contract/resolve",
+     *     name="landlord_conflict_resolve",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function resolveContract()
+    {
+        $amount = null;
+        $request = $this->getRequest();
+        $data = $request->request->all('data');
+        if (!isset($data['action'])) {
+            return new JsonResponse(array());
+        }
+        if (isset($date['amount'])) {
+            $amount = $data['amount'];
+        }
+        $contract = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository('RjDataBundle:Contract')
+            ->find($data['contract_id']);
+        $tenant = $contract->getTenant();
+        $action = $data['action'];
+        switch ($action) {
+            case Contract::RESOLVE_EMAIL:
+                $this->get('creditjeeves.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
+                break;
+            case Contract::RESOLVE_PAID:
+                $em = $this->getDoctrine()->getManager();
+                // Check operations
+                $operations = $contract->getOperations();
+                if (count($operations) > 0) {
+                    $operation = $operations->last();
+                } else {
+                    $operation = new Operation();
+                    $operation->setType(OperationType::RENT);
+                    $operation->setContract($contract);
+                    $em->persist($operation);
+                    $em->flush();
+                }
+                // Create order
+                $order = new Order();
+                $order->addOperation($operation);
+                $order->setUser($tenant);
+                $order->setAmount($contract->getRent());
+                $order->setStatus(OrderStatus::COMPLETE);
+                $order->setType(OrderType::CASH);
+                $em->persist($order);
+                $em->flush();
+                // Change paid to date
+                $contract->shiftPaidTo($amount);
+                $contract->setStatus(ContractStatus::CURRENT);
+                $em->persist($contract);
+                $em->flush();
+                break;
+            case Contract::RESOLVE_UNPAID:
+                // @TODO Here will be report to Experian
+                break;
+        }
+        return new JsonResponse(array());
+    }
+
     /* Payments */
 
     /**
@@ -458,23 +548,42 @@ class AjaxController extends Controller
         $total = 0;
         $request = $this->getRequest();
         $page = $request->request->all('data');
-        $page = $page['data'];
-        $data = array('payments' => array(), 'total' => 0, 'pagination' => array());
+        $data = $page['data'];
+        $sortColumn = $data['sortColumn'];
+        $isSortAsc = $data['isSortAsc'];
+        $searchCollum = $data['searchCollum'];
+        $searchText = $data['searchText'];
+
+        $sortType = ($isSortAsc == 'true')? "ASC" : "DESC";
+
+        $result = array();
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
-        $total = $repo->countOrders($group);
+        $total = $repo->countOrders($group, $searchCollum, $searchText);
         $total = count($total);
+
         if ($total) {
-            $orders = $repo->getOrdersPage($group, $page['page'], $page['limit']);
+            $orders = $repo->getOrdersPage(
+                $group,
+                $data['page'],
+                $data['limit'],
+                $sortColumn,
+                $sortType,
+                $searchCollum,
+                $searchText
+            );
             foreach ($orders as $order) {
                 $item = $order->getItem();
                 $items[] = $item;
             }
         }
-        $data['payments'] = $items;
-        $data['total'] = $total;
-        $data['pagination'] = $this->datagridPagination($total, $page['limit']);
-        return new JsonResponse($data);
+
+        $result['payments'] = $items;
+        $result['total'] = $total;
+        $result['pagination'] = $this->datagridPagination($total, $data['limit']);
+        $result['sort'] = $sortType;
+
+        return new JsonResponse($result);
     }
 
     /* Service methods */

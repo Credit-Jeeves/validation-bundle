@@ -1,15 +1,29 @@
 <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
       <div class="title-box clearfix">
-        <h2 data-bind="text: 'Payments Total (' + $root.total() + ')'"></h2>
+        <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')'"></h2>
         <div class="fiter-box">
           <label>{{ 'filter.by'|trans }}</label>
-          <select class="select custom-select blue-arrow selectBox" style="display: none;">
-            <option selected="selected" value="0">- Select One -</option>
+          <select id="searchPayments" class="select custom-select blue-arrow selectBox">
+            <option value="status">{{ 'filter.status'|trans }}</option>
+            <option value="property">{{ 'property'|trans }}</option>
+            <option value="tenant">{{ 'tenant'|trans }}</option>
+            <option value="amount">{{ 'amount'|trans }}</option>
           </select>
-          <div class="finder-box">
-            <input type="text" id="searsh-field" name="searsh-field" placeholder="">
-            <button type="submit" id="search-submit" class="pie-el">{{ 'search' }}</button>
+          <div id="searchInput" style="display:none;" class="finder-box">
+            <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
+            <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
+            <button type="submit" id="search-submit-payments" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
           </div>
+          <div id="searchSelect" class="finder-box" >
+            <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
+              <option value=''>- {{'select.status'|trans}} -</option>
+             <option value='new'>{{'pending'|trans}}</option>
+             <option value='complete'>{{'paid'|trans}}</option>
+             <option value='error'>{{'error'|trans}}</option>
+            </select>
+            <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+          </div>
+
         </div>
       </div>
       <div class="content-box">
@@ -21,16 +35,42 @@
             >
               <thead>
                 <tr class="properties-th">
-                  <th class="pie-el"><span class="sort">{{ 'filter.status'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'date.posted'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'date.initiated'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'property'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span class="sort">{{ 'tenant'|trans }}<i> </i></span></th>
-                  <th class="pie-el"><span>{{ 'amount'|trans }}</span></th>
-                  <th class="pie-el"><span class="sort">{{ 'type'|trans }}<i> </i></span></th>
+                  <th class="pie-el">
+                    <span class="sort" id="status" data-bind="click: sortIt" data="status">
+                      {{ 'filter.status'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="date-posted" data-bind="click: sortIt" data="date.posted">
+                      {{ 'date.posted'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el" >
+                    <span class="sort" id="date-initiated" data-bind="click: sortIt" data="date.initiated">
+                      {{ 'date.initiated'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="property" data-bind="click: sortIt" data="property">
+                      {{ 'property'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="first_name" data-bind="click: sortIt" data="tenant">
+                      {{ 'tenant'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span class="sort" id="amount" data-bind="click: sortIt" data="amount">
+                      {{ 'amount'|trans }}<i> </i>
+                    </span>
+                  </th>
+                  <th class="pie-el">
+                    <span>{{ 'type'|trans }}<i> </i></span>
+                  </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="payments-block-tbody">
                 <!-- ko foreach: { data: aPayments() } -->
                 <tr>
                   <td data-bind="attr: {'class': 'actions-status '+style}, text: status"></td>
