@@ -9,7 +9,7 @@ class SuccessController extends Controller
     /**
      * @Template()
      * @param \CreditJeeves\DataBundle\Entity\Lead $Lead
-     * @return multitype:
+     * @return mixed
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Lead $Lead)
     {

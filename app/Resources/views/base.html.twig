@@ -3,15 +3,42 @@
 <head>
     <meta charset="UTF-8" />
     <title>{% block title %}{{ 'project_name'|trans }}{% endblock %}</title>
-    
-    <link href="{{ asset('bundles/core/css/main.css') }}" rel="stylesheet" type="text/css" />
+
+    {% stylesheets  '@CoreBundle/Resources/public/css/main.css'
+                    '@CoreBundle/Resources/public/css/linkselect.css'
+                    '@CoreBundle/Resources/public/css/buttons.css'
+                    '@CoreBundle/Resources/public/css/zebra.css'
+                    '@CoreBundle/Resources/public/css/lightbox.css'
+                    '@CoreBundle/Resources/public/css/form.css'
+                    '@ExperianBundle/Resources/public/css/pidkiq-questions.css'
+    %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+    <!--link href="{{ asset('bundles/core/css/main.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/linkselect.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/buttons.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/zebra.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/lightbox.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/form.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/experian/css/pidkiq-questions.css') }}" rel="stylesheet" type="text/css" />
-    <script src="{{ asset('bundles/core/js/jquery-1.9.1.min.js') }}" type="text/javascript"></script>
+    <link href="{{ asset('bundles/experian/css/pidkiq-questions.css') }}" rel="stylesheet" type="text/css" /-->
+    {% javascripts  '@CoreBundle/Resources/public/js/jquery-1.9.1.min.js'
+                    '@CoreBundle/Resources/public/js/jquery.placeholder.min.js'
+                    '@CoreBundle/Resources/public/js/jquery.linkselect.min.js'
+                    '@CoreBundle/Resources/public/js/jquery.ssn.js'
+                    '@CoreBundle/Resources/public/js/jquery.overlay.js'
+                    '@CoreBundle/Resources/public/js/jquery.overlay-ext.js'
+                    '@CoreBundle/Resources/public/js/checkbox.js'
+                    '@CoreBundle/Resources/public/js/zebra.js'
+                    '@CoreBundle/Resources/public/js/lightbox.js'
+                    '@CoreBundle/Resources/public/js/ReLoader.js'
+                    '@RjComponentBundle/Resources/public/js/lib/knockout-2.3.0.js'
+                    '@CoreBundle/Resources/public/js/knockout.mapping-latest.js'
+                    '@CoreBundle/Resources/public/js/common.js'
+                    '@FOSJsRoutingBundle/Resources/public/js/router.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <!--script src="{{ asset('bundles/core/js/jquery-1.9.1.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('bundles/core/js/jquery.placeholder.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('bundles/core/js/jquery.linkselect.js') }}" type="text/javascript"></script>
     <script src="{{ asset('bundles/core/js/jquery.ssn.js') }}" type="text/javascript"></script>
@@ -24,7 +51,7 @@
     <script src="{{ asset('bundles/rjcomponent/js/lib/knockout-2.3.0.js') }}"></script>
     <script src="{{ asset('bundles/core/js/knockout.mapping-latest.js') }}" type="text/javascript"></script>
     <script src="{{ asset('bundles/core/js/common.js') }}" type="text/javascript"></script>
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script-->
     {% if 'dev' == env %}
         <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
     {% else %}
@@ -78,7 +105,7 @@
         {% block footer %}{% endblock %}
         {% if application == 'cj' %}
             <div class="experian-logo">
-                <span class="experian-data">Data provided by</span><br>
+                <span class="experian-data">{{ 'footer.data_provided_by' | trans }}</span><br>
                 <img alt="" src="{{ asset('bundles/core/images/logo/experian_sm.png') }}" />
             </div>
         {% endif %}

@@ -8,7 +8,7 @@ class ContractsListController extends Controller
 {
     /**
      * @Template("RjComponentBundle:ContractsList:landlord.html.twig")
-     * @return multitype:
+     * @return mixed
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group, $form)
     {

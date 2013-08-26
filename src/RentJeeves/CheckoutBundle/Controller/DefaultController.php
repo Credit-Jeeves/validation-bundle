@@ -17,7 +17,6 @@ class DefaultController extends Controller
 {
     /**
      * @Route("/checkout/get_token")
-     * @Template()
      */
     public function indexAction()
     {
@@ -46,6 +45,8 @@ class DefaultController extends Controller
         $paymentDetails->setRequest($request);
 
         $this->get('payum')->getPayment('heartland')->execute(new CaptureRequest($paymentDetails));
+
+        var_dump($paymentDetails->getRequest()->getCredential());
 
         $this->get('doctrine.orm.entity_manager')->persist($paymentDetails);
         $this->get('doctrine.orm.entity_manager')->flush($paymentDetails);

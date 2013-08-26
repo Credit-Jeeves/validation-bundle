@@ -771,6 +771,30 @@
                 <source>action.required</source>
                 <target>Action Required</target>
             </trans-unit>
+            <trans-unit id="current_payments.title">
+                <source>current_payments.title</source>
+                <target>Current Payments</target>
+            </trans-unit>
+            <trans-unit id="pay_to">
+                <source>pay_to</source>
+                <target>Pay To</target>
+            </trans-unit>
+            <trans-unit id="status">
+                <source>status</source>
+                <target>Status To</target>
+            </trans-unit>
+            <trans-unit id="next_due_date">
+                <source>next_due_date</source>
+                <target>Next Due Date</target>
+            </trans-unit>
+            <trans-unit id="norton_secured">
+                <source>norton_secured</source>
+                <target>Norton Secured</target>
+            </trans-unit>
+            <trans-unit id="set_up_your_first_rental_payment">
+                <source>set_up_your_first_rental_payment</source>
+                <target>Set Up Your First Rental Payment</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

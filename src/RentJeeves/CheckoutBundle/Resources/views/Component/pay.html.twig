@@ -1,0 +1,188 @@
+<div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup">
+    <h1>{{ 'pay_popup.title' | trans }}</h1>
+    <div class="clearfix col-box">
+
+        <ul class="steps clearfix">
+            <li class="step1" data-bind="css: { 'active': 1 == step() }">
+                <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
+            </li>
+            <li class="step2" data-bind="css: { 'active': 2 == step() }">
+                <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
+            </li>
+            <li class="step3" data-bind="css: { 'active': 3 == step() }">
+                <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
+            </li>
+            <li class="step4" data-bind="css: { 'active': 4 == step() }">
+                <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
+            </li>
+        </ul>
+
+        <div class="col" data-bind="visible: 1 == step()">
+            <div class="form-row clearfix">
+                <label>Property<b>*</b></label>
+                <div class="fields-box">
+                    <span class="value big left">908 Andante Rd., #1, Santa Barbara, CA 93105</span>
+                    <small><b>*</b>Required</small>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Amount<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text" value="$2500.00" class="half-of-right">
+                </div>
+            </div>
+            <div class="form-row with-tooltip clearfix">
+                <label>Start Date<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text" value="06/01/13" class="datepicker-field" id="due">
+                    <div class="tooltip-box type1 pie-el">
+                        <h4>
+                            <span>Start On: 6/1/13</span>&nbsp;&nbsp;&nbsp;
+                            <span>Settle By: 6/4/13</span>
+                        </h4>
+                        <p>
+                            Initiate first payment and notify your landlord on 6/1/13. Allow 3 business days for delivery.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row checkboxes clearfix">
+                <label class="checkbox">
+                    <input type="checkbox" checked="checked">
+                    <i> </i>
+                    <span class="big">Set up a recurring payment</span>
+                </label>
+            </div>
+            <div class="hidden-box show">
+                <div class="form-row clearfix">
+                    <label>Type<b>*</b></label>
+                    <div class="fields-box">
+                        <select class="half-of-right2 custom-select">
+                            <option value="0">Select</option>
+                            <option selected="selected" value="1">Monthly</option>
+                        </select>
+                        <div class="tooltip-box type1 pie-el">
+                            <h4>
+                                <span>Recur On: Day 1 of Each Month</span>
+                            </h4>
+                            <p>
+                                Initiate subsequent payments of $2500 on day 1 of each month until the last payment on 5/1/14.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>Ends*</label>
+                    <div class="fields-box">
+                        <label class="checkbox radio">
+                            <input type="radio" name="EndDate">
+                            <i> </i>
+                            <span>When Cancelled</span>
+                        </label>
+                    </div>
+                    <div class="fields-box">
+                        <label class="checkbox radio">
+                            <input type="radio" name="EndDate" checked="checked">
+                            <i> </i>
+                            <span>On:</span>
+                        </label>
+                        <input type="text" value="05/01/14" class="datepicker-field" id="payment-end">
+                    </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col long-label" data-bind="visible: 2 == step()">
+            <div class="form-row clearfix">
+                <label>Payment Type<b>*</b></label>
+                <div class="fields-box">
+                    <label class="checkbox radio">
+                        <input type="radio" name="PaymentType" checked="checked">
+                        <i> </i>
+                        <span>E-Check</span>
+                    </label>
+                    <label class="checkbox radio">
+                        <input type="radio" name="PaymentType">
+                        <i> </i>
+                        <span>Credit Card</span>
+                    </label>
+                    <small><b>*</b>Required</small>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Account Nickname<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Bank Name<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Name on Account<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Routing Number<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text">
+                    <div class="tooltip-box type2 pie-el">
+                        <div class="banking-numbers clearfix">
+                            <h4>Where to find your banking numbers:</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Account Number<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text">
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Account Type<b>*</b></label>
+                <div class="fields-box">
+                    <label class="checkbox radio">
+                        <input type="radio" name="AccountType">
+                        <i> </i>
+                        <span>Checking</span>
+                    </label>
+                    <label class="checkbox radio">
+                        <input type="radio" name="AccountType">
+                        <i> </i>
+                        <span>Savings</span>
+                    </label>
+                    <label class="checkbox radio">
+                        <input type="radio" name="AccountType">
+                        <i> </i>
+                        <span>Business Checking</span>
+                    </label>
+                </div>
+                <div class="fields-box">
+                    <label class="checkbox">
+                        <input type="checkbox">
+                        <i> </i>
+                        <span>Save this payment information for later</span>
+                    </label>
+                    <i title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines." class="help after-checkbox pie-el tooltip-link">?</i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-button-box">
+        <button class="button grey fixed" data-bind="visible: 1 < step(), click: previous">
+            <span>{{ 'pay_popup.step.previous' | trans }}</span>
+        </button>
+        <button class="button fixed" data-bind="visible: 4 > step(), click: next">
+            <span>{{ 'pay_popup.step.next' | trans }}</span>
+        </button>
+        {{ include('RjCoreBundle::nortonSecured.html.twig') }}
+    </div>
+</div>

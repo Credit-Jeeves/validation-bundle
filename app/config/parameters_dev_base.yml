@@ -17,6 +17,7 @@ parameters:
         transaction_key: '5588K4QpHFhhqL5A'
         sandbox: true
     heartland:
+        env: testing
         application_id: 3
         username: RTAPI
         password: $RTapi13
