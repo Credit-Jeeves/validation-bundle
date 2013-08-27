@@ -20,3 +20,11 @@
     {{ render(controller('TenantBundle:Index:info')) }}
     {% endif %}
 {% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
