@@ -56,7 +56,7 @@ function Actions() {
     self.searchCollum(searchCollum);
     self.current(1);
     self.ajaxAction();
-  }
+  };
 
   this.clearSearch = function() {
     self.searchText('');
@@ -64,7 +64,7 @@ function Actions() {
     self.current(1);
     self.ajaxAction();
     self.isSearch(false);
-  }
+  };
 
   this.ajaxAction = function() {
 	self.processActions(true);

@@ -9,7 +9,7 @@
         {{ render(controller('RjComponentBundle:ContractsList:tenantNew', {'status':status })) }}
     {% elseif status == 'approved' %}
         {{ render(controller('RjComponentBundle:ContractsList:tenantNew', {'status':status })) }}
-    {% elseif status == 'active'%}
+    {% elseif status == 'current'%}
         {{ render(controller('RjComponentBundle:ContractsList:tenant')) }}
     {% endif %}
     <br />

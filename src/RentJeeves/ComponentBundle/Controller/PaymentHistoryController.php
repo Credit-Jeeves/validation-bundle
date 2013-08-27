@@ -19,7 +19,7 @@ class PaymentHistoryController extends Controller
         for ($i = 1; $i < 13; $i++) {
             $aMonthes[] = date('M', mktime(0, 0, 0, $i));
         }
-        $em = $this->get('doctrine.orm.default_entity_manager');//->getRepository('DataBundle:Order');
+        $em = $this->get('doctrine.orm.default_entity_manager');
         $contracts = $user->getContracts();
         foreach ($contracts as $contract) {
             if (ContractStatus::PENDING == $contract->getStatus()) {
@@ -28,9 +28,9 @@ class PaymentHistoryController extends Controller
             $currentDate = new \DateTime('now');
             $startDate = $contract->getStartAt();
             $interval = $startDate->diff($currentDate)->format('%r%a');
-            if ($interval < 0) {
-                continue;
-            }
+//             if ($interval < 0) {
+//                 continue;
+//             }
             $item = array();
             $item['id'] = $contract->getId();
             $item['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
@@ -42,6 +42,15 @@ class PaymentHistoryController extends Controller
             $item['balance_month'] = $contract->getFinishAt()->format('m');
             $item['tenant'] = $contract->getTenant()->getFullName();
             switch ($status = $contract->getStatus()) {
+                case ContractStatus::APPROVED:
+                    $history = $contract->getFuturePaymentHistory($em);
+                    $item['history'] = $history['history'];
+                    $item['last_date'] = $history['last_date'];
+                    $item['last_amount'] = $history['last_amount'];
+                    $item['status'] = 'PAY';
+                    $item['reporting'] = $contract->getReporting();
+                    $active[] = $item;
+                    break;
                 case ContractStatus::CURRENT:
                     $history = $contract->getFinishedPaymentHistory($em);
                     $item['history'] = $history['history'];
