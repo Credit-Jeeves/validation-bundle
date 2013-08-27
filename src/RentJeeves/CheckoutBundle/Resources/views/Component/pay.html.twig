@@ -175,6 +175,252 @@
                 </div>
             </div>
         </div>
+
+        <div class="col" data-bind="visible: 3 == step()">
+            <div class="form-row clearfix">
+                <div class="fields-box">
+                    <small><b>*</b>Required</small>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Date of Birth<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text" placeholder="MM" class="phone-width">
+                    <span class="dash">/</span>
+                    <input type="text" placeholder="DD" class="phone-width">
+                    <span class="dash">/</span>
+                    <input type="text" placeholder="YYYY" class="phone-width">
+                    <div class="tooltip-box type3 pie-el">
+                        <p class="verify">Federal law requires that payment processors verify and record the identity of anyone who schedules an online payment.</p>
+                        <p class="verify">This is not a formal credit report inquiry and will not be reflected as such on your credit report. This step helps the government fight money laundering and the funding of terrorism.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row clearfix">
+                <label>Social Security Number<b>*</b></label>
+                <div class="fields-box">
+                    <input type="text" class="phone-width">
+                    <span class="dash">-</span>
+                    <input type="text" class="phone-width">
+                    <span class="dash">-</span>
+                    <input type="text" class="phone-width">
+                </div>
+            </div>
+        </div>
+
+        <div class="col long-label" data-bind="visible: 3 == step()">
+
+            <div class="scroll-box">
+                <div id="vi-questions" class="scroll">
+                    <div class="vi-questions-content">
+                        <div class="box">
+                            <h4>Question with a fairly short description:</h4>
+                            <ul class="checkboxes">
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="shortDescription">
+                                        <i> </i>
+                                        <span>
+                                          Very short answer
+                                        </span>
+                                    </label>
+                                </li>
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="shortDescription">
+                                        <i> </i>
+                                        <span>
+                                          Somewhat longer answer
+                                        </span>
+                                    </label>
+                                </li>
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="shortDescription">
+                                        <i> </i>
+                                        <span>
+                                          Fairly long answer wrapping to two lines so it looks just like this
+                                        </span>
+                                    </label>
+                                </li>
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="shortDescription">
+                                        <i> </i>
+                                        <span>
+                                          None of the above
+                                        </span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="box">
+                            <h4>Question with a fairly long description that wraps to many lines:</h4>
+                            <ul class="checkboxes">
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="longDescription">
+                                        <i> </i>
+                                        <span>
+                                          Very short answer
+                                        </span>
+                                    </label>
+                                </li>
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="longDescription">
+                                        <i> </i>
+                                        <span>
+                                          Somewhat longer answer
+                                        </span>
+                                    </label>
+                                </li>
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="longDescription">
+                                        <i> </i>
+                                        <span>
+                                          Fairly long answer wrapping to two lines so it looks just like this
+                                        </span>
+                                    </label>
+                                </li>
+                                <li class="clearfix">
+                                    <label class="checkbox radio">
+                                        <input type="radio" name="longDescription">
+                                        <i> </i>
+                                        <span>
+                                          None of the above
+                                        </span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="tooltip-box type3 pie-el">
+                    <p class="verify">
+                        Please answer the questions carefully – they contain information only you should know that relates to your credit history.
+                    </p>
+                    <p class="verify">
+                        Please note that the correct answer may not be listed and some information information on your credit file may be from past addresses and employers.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="atansion-box pie-el" data-bind="visible: 31 == step()" style="display: none;">
+            <h3>Sorry, there was a problem verifying your identity – try again in an hour.</h3>
+            <p>
+                Your answers do not match the information the credit bureau has on file for you.
+                You can try setting up your payment and
+                answering a new set of questions again in an hour.
+            </p>
+            <p>
+                Your rent payment process is incomplete though the account information
+                you provided is being held on file to expedite the rest of the process. If you have
+                questions you can call us at (866) 976-6622 or email us at
+                <a href="mailto:help@renttrack.com">help@renttrack.com</a>.
+            </p>
+
+            <h3>Sorry, there was a problem verifying your identity – try again in 24 hours.</h3>
+            <p>
+                Your answers do not match the information the credit bureau has on file for you. You can try
+                answering a new set of questions again in 24 hours – we'll send you an email to try
+                again.
+            </p>
+            <p>
+                Your rent payment process is incomplete though the account information
+                you provided is being held on file to expedite the rest of the process. If you have
+                questions you can call us at (866) 976-6622 or email us at
+                <a href="mailto:help@renttrack.com">help@renttrack.com</a>.
+            </p>
+        </div>
+
+        <div data-bind="visible: 4== step()">
+            <h3 class="italic">Recurring rent payment for 960 Andante Rd., Unit 1, Santa Barbara, CA  93105</h3>
+
+            <div class="clearfix halfs-box">
+                <div class="half-box left">
+                    <h4>Who's Getting Paid</h4>
+                    <div class="form-row clearfix">
+                        <label>Send To</label>
+                        <div class="fields-box">
+                <span class="value">
+                  Seth McFarland 123 Mimosa Lane Santa Barbara, CA 93101
+                </span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Rent Amount</label>
+                        <div class="fields-box">
+                            <span class="value">$2500.00</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Starts</label>
+                        <div class="fields-box">
+                            <span class="value">6/1/13</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Payment Sent</label>
+                        <div class="fields-box">
+                            <span class="value">Day 1 of Each Month</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Ends</label>
+                        <div class="fields-box">
+                            <span class="value">5/1/14</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="half-box right">
+                    <h4>How You're Paying</h4>
+                    <div class="form-row clearfix">
+                        <label>Method</label>
+                        <div class="fields-box">
+                            <span class="value">E-Check</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Bank Name</label>
+                        <div class="fields-box">
+                            <span class="value">Citibank, N.A.</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Routing Number</label>
+                        <div class="fields-box">
+                            <span class="value">32117189</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Account Number</label>
+                        <div class="fields-box">
+                            <span class="value">4001789635467297</span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>Fee</label>
+                        <div class="fields-box">
+                            <span class="value">It’s Free!</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row checkboxes alone clearfix">
+                <label class="checkbox">
+                    <input type="checkbox" checked="checked">
+                    <i> </i>
+                    <span class="big">Track my score as I build credit for $1.95/month, paid using the method above.</span>
+                </label>
+                <i class="help after-checkbox pie-el tooltip-link" title="We will get and display your latest credit score each month as part of our $1.95/mo Score Track service.">?</i>
+            </div>
+        </div>
     </div>
     <div class="footer-button-box">
         <button class="button grey fixed" data-bind="visible: 1 < step(), click: previous">
