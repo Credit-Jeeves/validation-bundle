@@ -202,12 +202,14 @@ class PublicController extends Controller
         $alert->setMessage('rj.task.firstRent');
         $alert->setUser($user);
         $em->persist($alert);
-        $em->flush();
-        
 
         if ($user->getInvite()) {
-            $this->get('creditjeeves.mailer')->sendRjLandLordInvite($user->getInvite());
+            $invite = $user->getInvite();
+            $this->get('invite.landord')->invite($invite, $user);
+            $em->remove($invite);
         }
+
+        $em->flush();
 
         return array(
             'signinUrl' => $this->get('router')->generate('fos_user_security_login')

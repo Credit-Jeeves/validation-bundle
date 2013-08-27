@@ -132,4 +132,20 @@ class Landlord extends User
     {
         return $this->payment_accounts;
     }
+
+    public function getCurrentGroup()
+    {
+        if ($isAdmin = $this->getIsSuperAdmin()) {
+            $holding = $this->getHolding();
+            $groups = $holding->getGroups() ? $holding->getGroups() : null;
+        } else {
+            $groups = $this->getAgentGroups() ? $this->getAgentGroups() : null;
+        }
+
+        if ($groups) {
+            return $groups->first();
+        }
+
+        return null;
+    }
 }

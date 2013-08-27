@@ -107,20 +107,20 @@ class Mailer extends BaseMailer implements MailerInterface
         );
     }
 
-    public function sendRjLandLordInvite($invite, $sTemplate = 'rjLandLordInvite')
+    public function sendRjLandLordInvite($landlord, $tenant, $contract, $sTemplate = 'rjLandLordInvite')
     {
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         $vars = array(
-            'nameLandlord'          => $invite->getFirstName(),
-            'fullNameTenant'        => $invite->getTenant()->getFullName(),
-            'nameTenant'            => $invite->getTenant()->getFirstName(),
-            'address'               => $invite->getProperty()->getAddress(),
-            'unit'                  => $invite->getUnit(),
+            'nameLandlord'          => $landlord->getFirstName(),
+            'fullNameTenant'        => $tenant->getFullName(),
+            'nameTenant'            => $tenant->getFirstName(),
+            'address'               => $contract->getProperty()->getAddress(),
+            'unit'                  => $contract->getUnit(),
+            'inviteCode'            => $landlord->getInviteCode(),
         );
 
-        $subject = $invite->getTenant()->getFullName().' wonts to pay her rent using RentTrack';
-        $tenant = $invite->getTenant();
+        $subject = $tenant->getFullName().' wonts to pay her rent using RentTrack';
 
         if (empty($isPlain) && empty($isHtml)) {
             $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
@@ -129,14 +129,14 @@ class Mailer extends BaseMailer implements MailerInterface
         if (!empty($isHtml)) {
             $htmlContent = $this->manager->renderEmail(
                 $sTemplate.'.html',
-                $tenant->getCulture(),
+                $landlord->getCulture(),
                 $vars
             );
 
             $message = \Swift_Message::newInstance();
             $message->setSubject($subject);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
-            $message->setTo($invite->getEmail());
+            $message->setTo($landlord->getEmail());
             $message->addPart($htmlContent['body'], 'text/html');
             if (!empty($isPlain)) {
                 $plainContent = $this->manager->renderEmail(
@@ -153,17 +153,18 @@ class Mailer extends BaseMailer implements MailerInterface
         if (!empty($isPlain)) {
             $plainContent = $this->manager->renderEmail(
                 $sTemplate.'.text',
-                $tenant->getCulture(),
+                $landlord->getCulture(),
                 $vars
             );
             $message = \Swift_Message::newInstance();
             $message->setSubject($subject);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
-            $message->setTo($invite->getEmail());
+            $message->setTo($landlord->getEmail());
             $message->addPart($plainContent['body'], 'text/plain');
             $this->container->get('mailer')->send($message);
             return true;
         }
+
         return false;
     }
 
