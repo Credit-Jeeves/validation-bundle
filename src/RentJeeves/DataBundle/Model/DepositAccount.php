@@ -18,27 +18,28 @@ abstract class DepositAccount extends PaymentAccount
      *     name="user_id",
      *     referencedColumnName="id"
      * )
+     * @var \RentJeeves\DataBundle\Entity\Landlord
      */
     protected $user;
 
     /**
      * @ORM\Column(
-     *     name="processor_token",
+     *     name="merchant_name",
      *     type="string",
      *     length=255
      * )
      */
-    protected $processorToken;
+    protected $merchantName;
 
     /**
      * Set processorToken
      *
-     * @param string $processorToken
+     * @param string $merchantName
      * @return DepositAccount
      */
-    public function setProcessorToken($processorToken)
+    public function setMerchantName($merchantName)
     {
-        $this->processorToken = $processorToken;
+        $this->merchantName = $merchantName;
 
         return $this;
     }
@@ -48,8 +49,16 @@ abstract class DepositAccount extends PaymentAccount
      *
      * @return string
      */
-    public function getProcessorToken()
+    public function getMerchantName()
     {
-        return $this->processorToken;
+        return $this->merchantName;
+    }
+
+    /**
+     * @return \RentJeeves\DataBundle\Entity\Landlord
+     */
+    public function getUser()
+    {
+        return parent::getUser();
     }
 }

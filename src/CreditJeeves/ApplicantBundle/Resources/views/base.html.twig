@@ -1,7 +1,18 @@
 {% extends "CoreBundle::base.html.twig" %}
 
 {% block stylesheets %}
-    <link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
+    {% stylesheets  '@ComponentBundle/Resources/public/css/*'
+                    '@CoreBundle/Resources/public/css/rj-logos.css'
+                    '@CoreBundle/Resources/public/css/tabs.css'
+                    '@UserBundle/Resources/public/css/login.css'
+                    '@CoreBundle/Resources/public/css/google-maps.css'
+                    '@CoreBundle/Resources/public/css/check.css'
+                    '@CheckoutBundle/Resources/public/css/checkout.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+    <!--link href="{{ asset('bundles/component/css/components.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/report.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/tradelines-history.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/component/css/credit-summary.css') }}" rel="stylesheet" type="text/css" />
@@ -20,7 +31,7 @@
     <link href="{{ asset('bundles/core/css/tabs.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/check.css') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('bundles/checkout/css/checkout.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/checkout/css/checkout.css') }}" rel="stylesheet" type="text/css" /-->
 {% endblock %}
 
 {% block google_api %}

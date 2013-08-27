@@ -9,7 +9,7 @@ class PropertiesListController extends Controller
     /**
      * @Template()
      * @param \CreditJeeves\DataBundle\Entity\Group $Group
-     * @return multitype:
+     * @return mixed
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group)
     {

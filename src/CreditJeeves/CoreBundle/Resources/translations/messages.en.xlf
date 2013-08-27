@@ -1125,6 +1125,10 @@
                 <source>rent.contracts.finished</source>
                 <target>Past Properties</target>
             </trans-unit>
+            <trans-unit id="footer.data_provided_by">
+                <source>footer.data_provided_by</source>
+                <target>Data provided by</target>
+            </trans-unit>
 
             
         </body>

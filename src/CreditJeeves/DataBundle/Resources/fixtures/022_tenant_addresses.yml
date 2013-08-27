@@ -1,0 +1,190 @@
+model: CreditJeeves\DataBundle\Entity\Address
+fixtures:
+    TenantAddres_1:
+        user: Tenant_1
+        street: KINGSTON DR
+        number:
+        unit: 2209
+        city: LAWRENCE
+        area: KS
+        zip: 660491614
+        
+    TenantAddres_2:
+        user: Tenant_2
+        street: PO BOX 445
+        number: ''
+        unit: apt 1
+        city: APO
+        area: AE
+        zip: 09061
+        
+    TenantAddres_3:
+        user: Tenant_3
+        street: JCT RR 133 140 B
+        number: ''
+        unit: ''
+        city: MIDDLETOWN
+        area: NJ
+        zip: '05717'
+        
+    TenantAddres_4:
+        user: Tenant_4
+        street: '702 N LINCOLN AVE # 1'
+        number: ''
+        unit: ''
+        city: URBANA
+        area: IL
+        zip: '61801'
+        
+    TenantAddres_5:
+        user: Tenant_5
+        street: 'SAINT NAZAIRE 2010'
+        number: ''
+        unit: '116TH 1'
+        city: HOMESTEAD
+        area: FL
+        zip: '33039'
+        
+    TenantAddres_6:
+        user: Tenant_6
+        street: '1900 Avenue of Stars'
+        number: ''
+        unit:         'apt 8'
+        city:            Minsk
+        area:           KY
+        zip:             '22007'
+        
+    TenantAddres_7:
+        user: Tenant_7
+        street: 'PO BOX 1563'
+        number: ''
+        unit: '116TH 1'
+        city: BELTSVILLE
+        area: MD
+        zip: '207041563'
+        
+    TenantAddres_8:
+        user: Tenant_8
+        street: 'LANEY 2505'
+        number: ''
+        unit: ''
+        city: DENTON
+        area: TX
+        zip: '762086621'
+        
+    TenantAddres_9:
+        user: Tenant_9
+        street: 'LEHIGH 350'
+        number: ''
+        unit: ''
+        city: PITTSBURGH
+        area: PA
+        zip: '152322008'
+        
+    TenantAddres_10:
+        user: Tenant_10
+        street: 'INGLEWOOD 934 S'
+        number: ''
+        unit: ''
+        city: INGLEWOOD
+        area: CA
+        zip: '903013646'
+        
+    TenantAddres_11:
+        user: Tenant_11
+        street: 'PO BOX 121'
+        number: ''
+        unit: ''
+        city: 'BOX ELDER'
+        area: MT
+        zip: '595210121'
+        
+    TenantAddres_12:
+        user: Tenant_12
+        street: '331 RAMSEY HL'
+        number: ''
+        unit: ''
+        city: 'WEST CHESTER'
+        area: PA
+        zip: '19383'
+        
+    TenantAddres_13:
+        user: Tenant_13
+        street: '331 RAMSEY HL'
+        number: ''
+        unit: ''
+        city: EMPORIA
+        area: KS
+        zip: '669016102'
+        
+    TenantAddres_14:
+        user: Tenant_14
+        street: '10046 COLONNADE DR'
+        number: ''
+        unit: ''
+        city: TAMPA
+        area: FL
+        zip: '33647'
+        
+    TenantAddres_15:
+        user: Tenant_15
+        street: '308-1 CHESTER RIVER HTS'
+        number: ''
+        unit: ''
+        city: MILLINGTON
+        area: MD
+        zip: '20704'
+        
+    TenantAddres_16:
+        user: Tenant_16
+        street: '7635 LANKERSHIM BLVD APT 16'
+        number: ''
+        unit: ''
+        city: NORTH HOLLYWOOD
+        area: CA
+        zip: '916056557'
+        
+    TenantAddres_17:
+        user: Tenant_17
+        street: '270 25 H GRAND CENTRA'
+        number: ''
+        unit: ''
+        city: FLORAL PARK
+        area: NY
+        zip: '11005'
+        
+    TenantAddres_18:
+        user: Tenant_18
+        street: '3010 FURMAN LN APT 402'
+        number: ''
+        unit: ''
+        city: ALEXANDRIA
+        area: VA
+        zip: '22306'
+        
+    TenantAddres_19:
+        user: Tenant_19
+        street:  '3507 WOODLEA AVE'
+        number:
+        unit: ''
+        city: BALTIMORE
+        area: MO
+        zip: '26214'
+        
+#    TenantAddres_20:
+#        user: Tenant_20
+#        street: null
+#        number: ''
+#        unit: ''
+#        city: empty
+#        area: nu
+#        zip: 000
+        
+    TenantAddres_21:
+        user: Tenant_21
+        street: '100 50TH ST SW APT 125'
+        number: ''
+        unit: ''
+        city: GRAND RAPIDS
+        area: MI
+        zip: '49548'

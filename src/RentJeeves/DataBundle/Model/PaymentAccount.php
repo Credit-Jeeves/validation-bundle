@@ -27,6 +27,7 @@ abstract class PaymentAccount
      *     name="user_id",
      *     referencedColumnName="id"
      * )
+     * @var \RentJeeves\DataBundle\Entity\Tenant
      */
     protected $user;
 

@@ -69,6 +69,18 @@
     </div>
 </div>
 
-{% javascripts '@TenantBundle/Resources/public/js/reporting.js' %}
+{% javascripts  '@TenantBundle/Resources/public/js/Reporting.js'
+                '@TenantBundle/Resources/public/js/Info.js'
+%}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
+
+<script type="text/javascript">
+    var ReportingViewModel = new Reporting();
+    var InfoViewModel = new Info(ReportingViewModel);
+
+    $(document).ready(function(){
+        ko.applyBindings(ReportingViewModel, $('#reporting-popup').get(0));
+        ko.applyBindings(InfoViewModel, $('#info-block').get(0));
+    });
+</script>
