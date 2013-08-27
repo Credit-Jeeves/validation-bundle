@@ -7,6 +7,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteType;
 use RentJeeves\DataBundle\Entity\Invite;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\Holding;
 
 /**
  * @Route("/property")
@@ -123,10 +129,8 @@ class PropertyController extends Controller
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                $em->persist($invite);
-                $em->flush();
 
-                $this->get('creditjeeves.mailer')->sendRjLandLordInvite($invite);
+                $this->get('invite.landord')->invite($invite, $this->getUser());
 
                 return $this->redirect($this->generateUrl('tenant_homepage'), 301);
             }

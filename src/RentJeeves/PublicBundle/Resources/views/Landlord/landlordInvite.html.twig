@@ -1,0 +1,33 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+{% form_theme form ':Form:form_errors.html.twig' %}
+
+{% block content %}
+<section class="form-content">
+<form action="{{ path('landlord_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="landlordInviteRegister" >
+    <div class="box type1">
+      {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form }) }}
+    </div>
+    <div class="buttons-box clearfix">
+      <div class="buttons left">
+        <button id="submitForm" type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>
+      </div>
+    </div>
+    <div style="display:none;">
+        {{ form_rest(form) }}
+    </div>
+  </form>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}
+
+
+{% block stylesheets %}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/tenant/invite.css'
+    %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

@@ -93,8 +93,8 @@ class AjaxController extends Controller
         $data = $request->request->all('address');
         $addGroup = $request->request->all('addGroup');
         $data = json_decode($data['data'], true);
-        $addGroup = (empty($data['addGroup'])
-                     || (isset($addGroup['addGroup']) && $addGroup['addGroup'] == 1)
+        $addGroup = (!isset($data['addGroup'])
+                     || (isset($data['addGroup']) && $data['addGroup'] == 1)
                     )?  true : false;
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
