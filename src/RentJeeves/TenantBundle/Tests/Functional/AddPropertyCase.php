@@ -66,6 +66,7 @@ class AddPropertyCase extends BaseTestCase
      */
     public function invite()
     {
+        $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
@@ -122,10 +123,36 @@ class AddPropertyCase extends BaseTestCase
         $this->page->pressButton('add.property');
         $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
-        $this->assertCount(4, $tr, 'List of property');
-        $this->setDefaultSession('goutte');
+        $this->assertCount(5, $tr, 'List of property');
+        $this->logout();
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
+        $link->click();
+        $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
+        $form->pressButton('continue');
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(2, $errorList, 'Wrong number of pending');
+        $this->fillForm(
+            $form,
+            array(
+                'landlordType_password_Password'          => 'pass',
+                'landlordType_password_Verify_Password'   => 'pass',
+                'landlordType_tos'                        => true,
+            )
+        );
+        $form->pressButton('continue');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        
+        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
+        $this->assertCount(1, $contractPendings, 'Wrong number of pending');
+
     }
 }

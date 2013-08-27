@@ -18,12 +18,11 @@ class SummaryController extends Controller
         $user = $this->getUser();
         $sEmail = $user->getEmail();
         $Report  = $this->getReport();
+
         if (!$Report) {
             return new RedirectResponse($this->get('router')->generate('core_report_get'));
         }
-//         echo '<pre>';
-//         print_r($Report->getArfArray());
-        //exit;
+
         $Score = $this->getScore();
         return array(
             'sEmail' => $sEmail,

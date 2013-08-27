@@ -87,7 +87,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_invitetenanttype_invite_unit'                      => 'e3',
                 'rentjeeves_publicbundle_invitetenanttype_invite_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetenanttype_invite_last_name'                 => 'Sharamko',
-                'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'newtenant@yandex.ru',
+                'rentjeeves_publicbundle_invitetenanttype_invite_email'                     => 'landlord@ya.ru',
                 'rentjeeves_publicbundle_invitetenanttype_tenant_first_name'                => "Alex",
                 'rentjeeves_publicbundle_invitetenanttype_tenant_last_name'                 => "Sharamko",
                 'rentjeeves_publicbundle_invitetenanttype_tenant_email'                     => "newtenant12@yandex.ru",
@@ -114,9 +114,36 @@ class IframeCase extends BaseTestCase
         $loginButton->click();
         $this->login('newtenant12@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
+        $this->logout();
+        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
+        $email = end($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
+        $link->click();
+        $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
+        $form->pressButton('continue');
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(2, $errorList, 'Wrong number of pending');
+        $this->fillForm(
+            $form,
+            array(
+                'landlordType_password_Password'          => 'pass',
+                'landlordType_password_Verify_Password'   => 'pass',
+                'landlordType_tos'                        => true,
+            )
+        );
+        $form->pressButton('continue');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        
+        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
+        $this->assertCount(1, $contractPendings, 'Wrong number of pending');
     }
 
     /**
