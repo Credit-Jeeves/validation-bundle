@@ -184,7 +184,7 @@ fixtures:
         all in one place <br /> <br />
 
         Ready to get pay? <br /> <br />
-        <a id="payRentLink"
+        <a id="payRentLinkLandlord"
         {% if inviteCode %}
           href="http://{{ app.request.host }}{{ path('landlord_invite', {'code': inviteCode }) }}"
         {% else %}

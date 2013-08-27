@@ -131,7 +131,7 @@ class AddPropertyCase extends BaseTestCase
         $email = array_pop($email);
         $email->click();
         $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
+        $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
         $link->click();
         $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
         $form->pressButton('continue');
