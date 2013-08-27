@@ -74,7 +74,7 @@ fixtures:
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
         score_changed_notification: true
         offer_notification: true
-        culture: en
+        culture: %locale%
         has_data: true
         has_report: true
         is_verified: passed
@@ -101,7 +101,7 @@ fixtures:
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
         score_changed_notification: true
         offer_notification: true
-        culture:  'en'
+        culture:  %locale%
         has_data: false
         has_report: null
         is_verified: passed
@@ -128,7 +128,7 @@ fixtures:
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
         score_changed_notification: true
         offer_notification: true
-        culture: en
+        culture: %locale%
         has_data: true
         has_report: true
         is_verified: passed
