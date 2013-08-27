@@ -47,7 +47,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->pressButton('find.your.rental');
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        $this->assertCount(4, $searchResult, 'Search result');
+        $this->assertCount(3, $searchResult, 'Search result');
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
         $this->acceptAlert();
@@ -80,7 +80,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "window.location.pathname != '/rj_test.php/property/add'");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        $this->assertCount(5, $searchResult, 'Search result');
+        $this->assertCount(4, $searchResult, 'Search result');
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
         $this->session->wait($this->timeout, "$('#register').length > 0");
@@ -96,7 +96,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        $this->assertCount(4, $searchResult, 'Search result');
+        $this->assertCount(3, $searchResult, 'Search result');
         
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"
