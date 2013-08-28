@@ -68,7 +68,7 @@ class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $landlords[0]->click();
         $this->page->clickLink('tabs.tenants');
         $this->page->clickLink('tabs.properties');
-        $this->page->clickLink('Back to Admin');
+        $this->page->clickLink('back.to.admin');
         $this->logout();
     }
 }

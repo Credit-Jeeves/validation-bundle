@@ -64,7 +64,7 @@ class TenantCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertCount(21, $tenants);
         $tenants[0]->click();
         $this->page->clickLink('tabs.settings');
-        $this->page->clickLink('Back to Admin');
+        $this->page->clickLink('back.to.admin');
         $this->logout();
     }
 }
