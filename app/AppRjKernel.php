@@ -36,20 +36,20 @@ class AppRjKernel extends AppKernel
 
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
+            new CreditJeeves\DataBundle\DataBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new CreditJeeves\ExperianBundle\ExperianBundle(),
             new CreditJeeves\UserBundle\UserBundle(),
+            new CreditJeeves\ApplicantBundle\ApplicantBundle(),
 //             new CreditJeeves\AdminBundle\AdminBundle(),
 //             new CreditJeeves\DealerBundle\DealerBundle(),
 //             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
 
             // Must be last in the list
-            new CreditJeeves\DataBundle\DataBundle(),
             new RentJeeves\DataBundle\RjDataBundle(),
-            new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new RentJeeves\TenantBundle\TenantBundle(),
             new RentJeeves\LandlordBundle\LandlordBundle(),
             new RentJeeves\PublicBundle\RjPublicBundle(),

@@ -3,15 +3,17 @@ landlord:
     type:     annotation
     prefix:   /landlord
 
-applicant:
-    resource: "@ApplicantBundle/Controller"
-    type:     annotation
-    prefix:   /
 
 tenant:
     resource: "@TenantBundle/Controller/"
     type:     annotation
     prefix:   /
+
+applicant:
+    resource: "@ApplicantBundle/Controller"
+    type:     annotation
+    prefix:   /
+
 
 checkout:
     resource: "@CheckoutBundle/Controller/"
@@ -34,8 +36,8 @@ RjPublicBundle:
     prefix:   /
 
 core:
-    resource:   "@CoreBundle/Controller"
-    type:       annotation
+    resource: "@CoreBundle/Controller"
+    type:     annotation
 
 RjCheckoutBundle:
     resource: "@RjCheckoutBundle/Controller/"
@@ -43,22 +45,22 @@ RjCheckoutBundle:
     prefix:   /
 
 fos_user_security:
-    resource:   "@FOSUserBundle/Resources/config/routing/security.xml"
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
 fos_user_profile:
-    resource:   "@FOSUserBundle/Resources/config/routing/profile.xml"
-    prefix:     /profile
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix:   /profile
 
 fos_user_register:
-    resource:   "@FOSUserBundle/Resources/config/routing/registration.xml"
-    prefix:     /register
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix:   /register
 
 fos_user_resetting:
-    resource:   "@FOSUserBundle/Resources/config/routing/resetting.xml"
-    prefix:     /resetting
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix:   /resetting
 
 fos_user_resetting_request:
-    path:       /resetting
+    path:     /resetting
     defaults:
         _controller: FOSUserBundle:Resetting:request
         _method:     GET
@@ -71,8 +73,8 @@ fos_user_resetting_request:
 
 
 fos_user_change_password:
-    resource:   "@FOSUserBundle/Resources/config/routing/change_password.xml"
-    prefix:     /profile
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix:   /profile
 
 
 fos_js_routing:

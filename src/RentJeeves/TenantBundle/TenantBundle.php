@@ -9,8 +9,8 @@ class TenantBundle extends Bundle
     /**
      * {@inheritdoc}
      */
-    public function getParent()
-    {
-        return 'ApplicantBundle';
-    }
+//    public function getParent()
+//    {
+//        return 'ApplicantBundle';
+//    }
 }

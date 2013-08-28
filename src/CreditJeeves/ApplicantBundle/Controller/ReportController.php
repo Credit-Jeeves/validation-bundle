@@ -11,11 +11,14 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
+ */
 class ReportController extends Controller
 {
     /**
      * @Route("/report", name="applicant_report")
-     * @Route("/report", name="tenant_report")
+     * @Route("/tenant/report", name="tenant_report")
      * @Template()
      *
      * @return array

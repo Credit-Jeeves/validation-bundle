@@ -76,7 +76,7 @@ class ReportController extends Controller
         }
         return array(
             'parentTemplate' => ('tenant' == $user->getType() ?
-                'ExperianBundle:Report:rj_get.html.twig' : 'ApplicantBundle::base.html.twig'),
+                'TenantBundle::base.html.twig' : 'ApplicantBundle::base.html.twig'),
             'url' => $this->generateUrl('core_report_get_ajax'),
             'redirect' => $this->redirect//$this->getRequest()->headers->get('referer'), //FIXME
         );

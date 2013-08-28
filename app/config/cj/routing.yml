@@ -13,21 +13,21 @@ public:
     type:     annotation
 
 core:
-    resource:   "@CoreBundle/Controller"
-    type:       annotation
+    resource: "@CoreBundle/Controller"
+    type:     annotation
 
 user:
-    resource:   "@UserBundle/Controller"
-    type:       annotation
+    resource: "@UserBundle/Controller"
+    type:     annotation
 
 admin_common:
-    resource:   "@AdminBundle/Controller"
-    type:       annotation
-    prefix:     /admin
+    resource: "@AdminBundle/Controller"
+    type:     annotation
+    prefix:   /admin
 
 admin:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
-    prefix: /admin
+    prefix:   /admin
 
 _sonata_admin:
     resource: .
@@ -35,13 +35,13 @@ _sonata_admin:
     prefix: /admin
 
 dealer:
-    resource:   "@DealerBundle/Controller"
-    type:       annotation
-    prefix:     /dealer
+    resource: "@DealerBundle/Controller"
+    type:     annotation
+    prefix:   /dealer
 
 applicant:
-    resource:   "@ApplicantBundle/Controller"
-    type:       annotation
+    resource: "@ApplicantBundle/Controller"
+    type:     annotation
 
 landlord:
     resource: "@LandlordBundle/Controller/"
@@ -54,22 +54,22 @@ tenant:
     prefix:   /tenant
 
 fos_user_security:
-    resource:   "@FOSUserBundle/Resources/config/routing/security.xml"
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
 fos_user_profile:
-    resource:   "@FOSUserBundle/Resources/config/routing/profile.xml"
-    prefix:     /profile
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix:   /profile
 
 fos_user_register:
-    resource:   "@FOSUserBundle/Resources/config/routing/registration.xml"
-    prefix:     /register
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix:   /register
 
 fos_user_resetting:
-    resource:   "@FOSUserBundle/Resources/config/routing/resetting.xml"
-    prefix:     /resetting
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix:   /resetting
 
 fos_user_resetting_request:
-    path:       /resetting
+    path:     /resetting
     defaults:
         _controller: FOSUserBundle:Resetting:request
         _method:     GET
@@ -78,8 +78,8 @@ fos_user_resetting_request:
 
 
 fos_user_change_password:
-    resource:   "@FOSUserBundle/Resources/config/routing/change_password.xml"
-    prefix:     /profile
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix:   /profile
 
 
 fos_js_routing:
