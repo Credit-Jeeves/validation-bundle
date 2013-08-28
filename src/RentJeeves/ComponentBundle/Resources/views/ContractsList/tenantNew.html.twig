@@ -24,8 +24,7 @@
     <tbody>
     {% for contract in contracts %}
         <tr class="contracts">
-            <td>{{contract.status}}
-                <br />
+            <td>
                 {{ contract.property.fullAddress }}
                 {% if contract.unit %}
                     <span>{{ contract.unit }}</span>
