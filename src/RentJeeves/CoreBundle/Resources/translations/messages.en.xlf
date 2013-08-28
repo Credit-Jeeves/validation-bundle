@@ -841,6 +841,10 @@
                 <source>pay</source>
                 <target>Pay</target>
             </trans-unit>
+            <trans-unit id="loading">
+                <source>loading</source>
+                <target>Loading</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

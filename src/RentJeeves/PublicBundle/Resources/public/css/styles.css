@@ -4279,3 +4279,9 @@ table.ui-datepicker-calendar tbody tr td a {
 .footer {
   padding: 0px;
 }
+
+.loadingSpinner {
+  position: absolute;
+  margin-top: 10px;
+  display: none;
+}

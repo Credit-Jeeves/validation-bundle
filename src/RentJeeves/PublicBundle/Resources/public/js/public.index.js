@@ -84,6 +84,8 @@ $(document).ready(function(){
                 return false;
             }
             var data = {'address': place.address_components, 'geometry':place.geometry};
+            $('#property-add').addClass('disabled grey');
+            $('#property-add').find('.loadingSpinner').show();
             jQuery.ajax({
               url: Routing.generate('landlord_property_add'),
               type: 'POST',
@@ -95,7 +97,6 @@ $(document).ready(function(){
               success: function(data, textStatus, jqXHR) {
                 var isInIFrame = (window.location != window.parent.location);
                 var location = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
-                console.info(isInIFrame);
                 if (isInIFrame == true) {
                     // iframe
                     window.parent.location.href = location;
