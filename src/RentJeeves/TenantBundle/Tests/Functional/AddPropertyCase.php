@@ -123,7 +123,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->pressButton('add.property');
         $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
-        $this->assertCount(3, $tr, 'List of property');
+        $this->assertCount(4, $tr, 'List of property');
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
