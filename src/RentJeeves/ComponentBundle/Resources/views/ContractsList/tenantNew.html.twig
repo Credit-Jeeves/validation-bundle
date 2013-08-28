@@ -67,7 +67,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    {{ contract.dueDay }}th
+                    {% if contract.canSetupRentalPayment %}
+                        {{ contract.dueDay }}th
+                    {% endif %}
                 </td>
                 <td>
                     <center>
