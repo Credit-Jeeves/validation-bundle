@@ -277,15 +277,15 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (15)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searsh-field'));
-        $searchField->setValue('ACTIVE');
+        $searchField->setValue('CURRENT');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (1)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (6)', $allh2->getText(), 'Wrong count');
         $this->logout();
         // end
 
