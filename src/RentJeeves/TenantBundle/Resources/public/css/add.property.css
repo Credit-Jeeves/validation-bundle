@@ -123,3 +123,7 @@ a.linkselect-link .linkselect-link-text {
 #cancel {
     margin-left: -25px !important;
 }
+.loadingSpinner {
+  margin-top: 3px;
+  margin-left: 48px;
+}

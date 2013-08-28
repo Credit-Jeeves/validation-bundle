@@ -83,12 +83,15 @@ $(document).ready(function(){
                 showError('Such address doesn\'t exist!');
                 return false;
             }
+            var data = {'address': place.address_components, 'geometry':place.geometry};
+
             if($('#property-add').hasClass('grey')) {
               return false;
             }
-            var data = {'address': place.address_components, 'geometry':place.geometry};
+
             $('#property-add').addClass('disabled grey');
             $('#property-add').find('.loadingSpinner').show();
+
             jQuery.ajax({
               url: Routing.generate('landlord_property_add'),
               type: 'POST',
