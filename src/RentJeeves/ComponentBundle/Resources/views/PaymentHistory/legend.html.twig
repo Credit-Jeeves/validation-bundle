@@ -1,41 +1,18 @@
-<div style="display: none;" id="legend-popup">
-    <div class="ui-widget-overlay ui-front"></div>
-    <div
-        class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable"
-        style="height: auto; width: 520px; top: 99.9967px; left: 692px; display: block;"
-        tabindex="-1"
-        role="dialog"
-        aria-describedby="edit-property-popup"
-        aria-labelledby="ui-id-3"
-        >
-        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span id="ui-id-3" class="ui-dialog-title">&nbsp;</span>
-            <button
-                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
-                role="button"
-                aria-disabled="false"
-                title="close"
-                data-bind="click: closePopup"
-                id="legend-close"
-                >
-                <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
-                <span class="ui-button-text">{{ 'legend.close' | trans() }}</span>
-            </button>
-        </div>
-        <div
-            class="pricing-popup dashboard-popup properties-popup ui-dialog-content ui-widget-content"
-            id="edit-property-popup"
-            style="display: block; width: auto; min-height: 80px; max-height: none; height: auto;"
-            >
-            <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
-                <div class="row-20"></div>
-                <div class="tradeline-history-empty-month status-C">OK</div>
-                <div class="tradeline-history-text">-&nbsp;{{ 'legend.ok' | trans() }}</div>
-                <div class="clearboth"></div>
-                <div class="tradeline-history-empty-month status-1">N</div>
-                <div class="tradeline-history-text">-&nbsp;{{ 'legend.delinquent' | trans() }}</div>
-                <div class="clearboth"></div>
-            </div>
-        </div>
+<div id="legend-popup" class="pricing-popup properties-popup">
+    <h1>{{ 'payments.legend' | trans() }}</h1>
+    <div class="clearfix col-box">
+        <div class="row-20"></div>
+        <div class="tradeline-history-empty-month status-C">OK</div>
+        <div class="tradeline-history-text">-&nbsp;{{ 'legend.ok' | trans() }}</div>
+        <div class="clearboth"></div>
+        <div class="tradeline-history-empty-month status-1">N</div>
+        <div class="tradeline-history-text">-&nbsp;{{ 'legend.delinquent' | trans() }}</div>
+        <div class="clearboth"></div>
+        <div class="tradeline-history-empty-month payment-history-month status-auto">PAY</div>
+        <div class="tradeline-history-text">-&nbsp;{{ 'legend.pay' | trans() }}</div>
+        <div class="clearboth"></div>
+        <div class="tradeline-history-empty-month payment-history-month status-auto">AUTO</div>
+        <div class="tradeline-history-text">-&nbsp;{{ 'legend.auto' | trans() }}</div>
+        <div class="clearboth"></div>
     </div>
 </div>

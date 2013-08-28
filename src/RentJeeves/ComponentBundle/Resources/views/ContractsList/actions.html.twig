@@ -1,56 +1,50 @@
 <!-- Resolve Popup -->
 <div id="contract-resolve" class="pricing-popup dashboard-popup properties-popup">
-            <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
-            <div class="clearfix halfs-box">
-                <div class="grey-half-box" data-bind="with: details">
-                    <h4>{{ 'tenant.info' | trans() }}</h4>
-                    <div class="sub-box">
-                        <p data-bind="text: tenant"></p>
-                        <p data-bind="text: full_address"></p>
-                    </div>
-                    <div class="sub-box">
-                        <p>{{ 'conflict.due.date' | trans() }}:&nbsp;<strong data-bind="text: late_date"></strong></p>
-                        <p class="late" data-bind="text: late"></p>
-                    </div>
-                </div>
-                <div class="half-box right">
-                    <h4>{{ 'conflict.resolve.options' | trans() }}</h4>
-                    <ul class="checkboxes">
-                        <li>
-                            <label class="checkbox radio">
-                                <input type="radio" name="ResolutionOptions" title="email" checked>
-                                <i></i>
-                                <span>{{ 'conflict.resolve.email' | trans() }}</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="checkbox radio">
-                                <input type="radio" name="ResolutionOptions" title="paid">
-                                <i></i>
-                                <span>{{ 'conflict.resolve.paid' | trans() }}</span>
-                            </label>
-                        </li>
-                        <li>
-                            <label class="checkbox radio">
-                                <input type="radio" name="ResolutionOptions" title="unpaid">
-                                <i></i>
-                                <span>{{ 'conflict.resolve.unpaid' | trans() }}</span>
-                            </label>
-                        </li>
-                    </ul>
-                </div>
+    <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
+    <div class="clearfix halfs-box">
+        <div class="grey-half-box" data-bind="with: details">
+            <h4>{{ 'tenant.info' | trans() }}</h4>
+            <div class="sub-box">
+                <p data-bind="text: tenant"></p>
+                <p data-bind="text: full_address"></p>
             </div>
-            <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
-                <div class="footer-button-box">
-                    <button class="button buttonFix" data-bind="click: resolve">
-                        <span>{{ 'conflict.resolve.action' | trans() }}</span>
-                    </button>
-                    <button class="button grey buttonFix" data-bind="click: closeForm">
-                        <span>{{ 'cancel' | trans() }}</span>
-                    </button>
-                </div>
+            <div class="sub-box">
+                <p>{{ 'conflict.due.date' | trans() }}:&nbsp;<strong data-bind="text: late_date"></strong></p>
+                <p class="late" data-bind="text: late"></p>
             </div>
+        </div>
+        <div class="half-box right">
+            <h4>{{ 'conflict.resolve.options' | trans() }}</h4>
+            <ul class="checkboxes">
+                <li>
+                    <label class="checkbox radio">
+                        <input type="radio" name="ResolutionOptions" title="email" checked>
+                        <i></i>
+                        <span>{{ 'conflict.resolve.email' | trans() }}</span>
+                    </label>
+                </li>
+                <li>
+                    <label class="checkbox radio">
+                        <input type="radio" name="ResolutionOptions" title="paid">
+                        <i></i>
+                        <span>{{ 'conflict.resolve.paid' | trans() }}</span>
+                    </label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
+        <div class="footer-button-box">
+            <button class="button buttonFix" data-bind="click: resolve">
+                <span>{{ 'conflict.resolve.action' | trans() }}</span>
+            </button>
+            <button class="button grey buttonFix" data-bind="click: closeForm">
+                <span>{{ 'cancel' | trans() }}</span>
+            </button>
+        </div>
+    </div>
 </div>
+<!-- End Resolve Popup -->
 
 <!-- End Resolve Popup -->
 <div id="actions-block" class="landrord-box contracts-block" style="display:none;"
