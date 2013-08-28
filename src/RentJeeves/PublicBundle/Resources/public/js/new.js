@@ -46,7 +46,9 @@ $(document).ready(function(){
 
     function search(place, map) 
     {
-
+        if($('#search-submit').hasClass('grey')) {
+          return false;
+        }
         var data = {'address': place.address_components, 'geometry':place.geometry, 'addGroup': 0};
         $('#search-submit').addClass('disabled grey');
         $('#search-submit').find('.loadingSpinner').show();

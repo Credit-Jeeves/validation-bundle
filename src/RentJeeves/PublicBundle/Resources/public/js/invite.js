@@ -83,6 +83,9 @@ $(document).ready(function(){
                 showError('Such address doesn\'t exist!');
                 return false;
             }
+            if($('#search-submit').hasClass('grey')) {
+              return false;
+            }
             var data = {'address': place.address_components, 'geometry':place.geometry, 'addGroup': 0};
 
             $('#search-submit').parent().find('.loadingSpinner').show();
