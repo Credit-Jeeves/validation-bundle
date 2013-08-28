@@ -1,6 +1,12 @@
 .site-logo {
-    background-image: url("/bundles/core/images/logo/rj-logo.png");
+    background-image: url("/bundles/rjpublic/images/logo_rj.png");
     float: left;
-    height: 127px;
+    height: 61px;
     width: 338px;
+    background-repeat: no-repeat;
+    margin-left: 26px;
+}
+body {
+    border-top: 5px solid #1E88EB; /* Линия сверху текста */
+    padding-top: 5px; /* Поля вокруг текста */
 }
