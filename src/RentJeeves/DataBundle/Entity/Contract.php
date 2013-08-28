@@ -219,4 +219,24 @@ class Contract extends Base
     {
         return floor($paid * 30/ $rent);
     }
+
+    public function canSetupRentalPayment()
+    {
+        switch ($this->status) {
+            case ContractStatus::PENDING:
+                $canSetupRentalPayment = false;
+                break;
+            case ContractStatus::INVITE:
+                $canSetupRentalPayment = false;
+                break;
+            case ContractStatus::FINISHED:
+                $canSetupRentalPayment = false;
+                break;
+            default:
+                $canSetupRentalPayment = true;
+                break;
+        }
+
+        return $canSetupRentalPayment;
+    }
 }

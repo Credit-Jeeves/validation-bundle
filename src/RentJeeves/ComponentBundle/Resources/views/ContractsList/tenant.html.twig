@@ -32,11 +32,19 @@
                 {% endif %}
             </td>
             <td>
-                {{ contract.holding }}<br />
-                {{ contract.group }}
+                {% if contract.holding.name == contract.group.name %}
+                    {{ contract.holding }}
+                {% else %}
+                    {{ contract.holding }}<br />
+                    {{ contract.group }}
+                {% endif %}
             </td>
             <td>
-                {{ contract.rent }}
+                {% if contract.canSetupRentalPayment %}
+                    {{ contract.rent }}
+                {% else %}
+                    {{ contract.status }}
+                {% endif %}
             </td>
             <td>
                 --
@@ -52,9 +60,15 @@
             </td>
             <td>
                 <center>
-                    <button class="button small">
-                        <span>Pay</span>
-                    </button>
+                    {% if contract.canSetupRentalPayment %}
+                        <button class="button small">
+                            <span>Pay</span>
+                        </button>
+                    {% else %}
+                        <button class="button small disabled grey">
+                            <span>Pay</span>
+                        </button>
+                    {% endif %}
                 </center>
             </td>
         </tr>

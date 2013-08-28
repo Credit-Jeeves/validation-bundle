@@ -24,7 +24,8 @@
     <tbody>
     {% for contract in contracts %}
         <tr class="contracts">
-            <td>
+            <td>{{contract.status}}
+                <br />
                 {{ contract.property.fullAddress }}
                 {% if contract.unit %}
                     <span>{{ contract.unit }}</span>
@@ -33,8 +34,12 @@
                 {% endif %}
             </td>
             <td>
-                {{ contract.holding }}<br />
-                {{ contract.group }}
+                {% if contract.holding.name == contract.group.name %}
+                    {{ contract.holding }}
+                {% else %}
+                    {{ contract.holding }}<br />
+                    {{ contract.group }}
+                {% endif %}
             </td>
             {% if status == 'new' %}
                 <td>
@@ -42,23 +47,41 @@
                 </td>
                 <td>
                     <center>
-                        <button class="button small greyButton" data-bind="click: openPopup.bind($data, {{ contract.id }})">
-                            <span>{{ 'set_up_your_first_rental_payment' | trans }}</span>
-                        </button>
+                        {% if contract.canSetupRentalPayment %}
+                            <button class="button small" 
+                                data-bind="click: openPopup.bind($data, {{ contract.id }})">
+                                <span>{{ 'set_up_your_first_rental_payment' | trans }}</span>
+                            </button>
+                        {% else %}
+                            <button class="button small disabled grey">
+                                <span>{{ 'set_up_your_first_rental_payment' | trans }}</span>
+                            </button>
+                        {% endif %}
                     </center>
                 </td>
             {% else %}
                 <td>
-                    {{ contract.rent }}
+                    {% if contract.canSetupRentalPayment %}
+                        {{ contract.rent }}
+                    {% else %}
+                        {{ contract.status }}
+                    {% endif %}
                 </td>
                 <td>
                     {{ contract.dueDay }}th
                 </td>
                 <td>
                     <center>
-                        <button class="button small" data-bind="click: openPopup.bind($data, {{ contract.id }})">
-                            <span>{{ 'set_up_your_first_rental_payment' | trans }}</span>
-                        </button>
+                        {% if contract.canSetupRentalPayment %}
+                            <button class="button small" 
+                                data-bind="click: openPopup.bind($data, {{ contract.id }})">
+                                <span>{{ 'set_up_your_first_rental_payment' | trans }}</span>
+                            </button>
+                        {% else %}
+                            <button class="button small disabled grey">
+                                <span>{{ 'set_up_your_first_rental_payment' | trans }}</span>
+                            </button>
+                        {% endif %}
                     </center>
                 </td>
             {% endif %}
