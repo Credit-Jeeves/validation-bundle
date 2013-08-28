@@ -146,7 +146,6 @@ class AddPropertyCase extends BaseTestCase
             )
         );
         $form->pressButton('continue');
-        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
