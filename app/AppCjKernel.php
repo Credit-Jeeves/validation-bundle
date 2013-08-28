@@ -55,6 +55,7 @@ class AppCjKernel extends AppKernel
             new RentJeeves\DataBundle\RjDataBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
             new RentJeeves\PublicBundle\RjPublicBundle(),
+            new RentJeeves\CheckoutBundle\RjCheckoutBundle(),
             new RentJeeves\ComponentBundle\RjComponentBundle(),
             new RentJeeves\CoreBundle\RjCoreBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),

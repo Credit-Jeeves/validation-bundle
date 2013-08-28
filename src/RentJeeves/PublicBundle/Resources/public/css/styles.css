@@ -4275,3 +4275,7 @@ table.ui-datepicker-calendar tbody tr td a {
 .menubar ul {
   *zoom: 1;
 }
+
+.footer {
+  padding: 0px;
+}
