@@ -19,17 +19,17 @@ class IndexController extends Controller
         $em = $this->get('doctrine')->getManager();
         $emContract = $em->getRepository('RjDataBundle:Contract');
         $allContracts = $emContract->getCountByStatus($tenant);
+        
         $pendingContracts = $emContract->getCountByStatus($tenant, ContractStatus::PENDING);
-        $activeContracts = $emContract->getCountByStatus($tenant, ContractStatus::ACTIVE);
-
+        $activeContracts = $emContract->getCountByStatus($tenant, ContractStatus::CURRENT);
+        
         if ($allContracts === $pendingContracts) {
-            $status = 'new';
+            $status = ContractStatus::PENDING;
         } elseif ($activeContracts > 0) {
-            $status = 'active';
+            $status = ContractStatus::CURRENT;
         } else {
-            $status = 'approved';
+            $status = ContractStatus::APPROVED;
         }
-
         $isReporting = $activeContracts = $em->getRepository('RjDataBundle:Contract')
                                 ->countReporting($tenant);
         return array(
@@ -47,7 +47,7 @@ class IndexController extends Controller
         $tenant = $this->getUser();
         $em = $this->get('doctrine')->getManager();
         $activeContracts = $em->getRepository('RjDataBundle:Contract')
-                                ->getCountByStatus($tenant, ContractStatus::ACTIVE);
+                                ->getCountByStatus($tenant, ContractStatus::CURRENT);
         
         if ($activeContracts > 0) {
             $status = true;

@@ -35,7 +35,7 @@ class ContractsListController extends Controller
         $user = $this->get('core.session.tenant')->getUser();
 
         return array(
-            'contracts' => $user->getContracts(),
+            'contracts' => $user->getActiveContracts(),
             'status'    => $status,
         );
     }
@@ -48,7 +48,7 @@ class ContractsListController extends Controller
         $user = $this->get('core.session.tenant')->getUser();
 
         return array(
-            'contracts' => $user->getContracts(),
+            'contracts' => $user->getActiveContracts(),
         );
     }
 }

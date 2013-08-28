@@ -1,89 +1,32 @@
-<div style="display: none;" id="reporting-start">
-    <div class="ui-widget-overlay ui-front"></div>
-    <div
-        class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable"
-        style="height: auto; width: 520px; top: 99.9967px; left: 692px; display: block;"
-        tabindex="-1"
-        role="dialog"
-        aria-describedby="edit-property-popup"
-        aria-labelledby="ui-id-3"
-        >
-        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span id="ui-id-3" class="ui-dialog-title">&nbsp;</span>
-            <button
-                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
-                role="button"
-                aria-disabled="false"
-                title="close"
-                id="close-start"
-                >
-                <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
-                <span class="ui-button-text">{{ 'legend.close' | trans() }}</span>
-            </button>
+<!-- Popup Reporting start -->
+<div id="reporting-start" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'bureau.reporting.title' | trans() }}</h1>
+    <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
+        <div class="col">
+            <h4>{{ 'bureau.reporting.text' | trans() }}</h4>
+            <div class="row-20"></div>
+            <h4 id="reporting-agreement"></h4>
         </div>
-        <div
-            class="pricing-popup dashboard-popup properties-popup ui-dialog-content ui-widget-content"
-            id="edit-property-popup"
-            style="display: block; width: auto; min-height: 80px; max-height: none; height: auto;"
-            >
-            <h1>{{ 'bureau.reporting.title' | trans() }}</h1>
-            <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
-                <div class="col">
-                <h4>
-                {{ 'bureau.reporting.text' | trans() }}
-                </h4>
-                <div class="row-20"></div>
-                <h4 id="reporting-agreement"></h4>
-                </div>
-                <div class="footer-button-box">
-                    <button class="button buttonFix" id="start-reporting">
-                        <span id="saveManageUnits" >{{ 'bureau.reporting.start' | trans() }}</span>
-                    </button>
-                </div>
-            </div>
+        <div class="footer-button-box">
+            <button class="button buttonFix" id="start-reporting">
+                <span id="saveManageUnits" >{{ 'bureau.reporting.start' | trans() }}</span>
+            </button>
         </div>
     </div>
 </div>
-
-<div style="display: none;" id="reporting-stop">
-    <div class="ui-widget-overlay ui-front"></div>
-    <div
-        class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front ui-draggable"
-        style="height: auto; width: 520px; top: 99.9967px; left: 692px; display: block;"
-        tabindex="-1"
-        role="dialog"
-        aria-describedby="edit-property-popup"
-        aria-labelledby="ui-id-3"
-        >
-        <div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">
-            <span id="ui-id-3" class="ui-dialog-title">&nbsp;</span>
-            <button
-                class="ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close"
-                role="button"
-                aria-disabled="false"
-                title="close"
-                id="close-stop"
-                >
-                <span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span>
-                <span class="ui-button-text">{{ 'legend.close' | trans() }}</span>
-            </button>
+<!-- end Reporting start -->
+<!-- start Reporting srop popup -->
+<div id="reporting-stop" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'bureau.reporting.title.stop' | trans() }}</h1>
+    <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
+        <div class="col">
+            <h4 id="reporting-alert"></h4>
         </div>
-        <div
-            class="pricing-popup dashboard-popup properties-popup ui-dialog-content ui-widget-content"
-            id="edit-property-popup"
-            style="display: block; width: auto; min-height: 80px; max-height: none; height: auto;"
-            >
-            <h1>{{ 'bureau.reporting.title.stop' | trans() }}</h1>
-            <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
-                <div class="col">
-                <h4 id="reporting-alert"></h4>
-                </div>
-                <div class="footer-button-box">
-                    <button class="button buttonFix" id="stop-reporting">
-                        <span id="saveManageUnits" >{{ 'bureau.reporting.stop' | trans() }}</span>
-                    </button>
-                </div>
-            </div>
+        <div class="footer-button-box">
+            <button class="button buttonFix" id="stop-reporting">
+                <span id="saveManageUnits" >{{ 'bureau.reporting.stop' | trans() }}</span>
+            </button>
         </div>
     </div>
 </div>
+<!-- End Reporting stop popup -->

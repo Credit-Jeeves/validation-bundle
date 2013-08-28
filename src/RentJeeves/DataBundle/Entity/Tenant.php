@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -117,6 +118,19 @@ class Tenant extends User
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    public function getActiveContracts()
+    {
+        $result = array();
+        $contracts = $this->getContracts();
+        foreach ($contracts as $contract) {
+            if (ContractStatus::FINISHED == $contract->getStatus()) {
+                continue;
+            }
+            $result[] = $contract;
+        }
+        return $result;
     }
 
     public function getItem()

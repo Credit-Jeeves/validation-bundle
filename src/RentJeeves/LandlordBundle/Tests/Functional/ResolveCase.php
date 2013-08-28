@@ -77,7 +77,7 @@ class ResolveCase extends BaseTestCase
         $resolve[0]->click();
         $this->session->wait($this->timeout, "jQuery('#contract-resolve').is(':visible')");
         $this->assertNotNull($checkboxes = $this->page->findAll('css', 'ul.checkboxes li label i'));
-        $this->assertCount(3, $checkboxes, 'Wrong number of checkboxes');
+        $this->assertCount(2, $checkboxes, 'Wrong number of checkboxes');
         $checkboxes[1]->click();
         $this->assertNotNull($buttons = $this->page->findAll('css', '#blockPopupEditProperty button.button'));
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
