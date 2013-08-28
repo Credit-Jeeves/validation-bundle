@@ -10,6 +10,9 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\PublicBundle\Form\LandlordType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class LandlordController extends Controller
 {
@@ -82,5 +85,85 @@ class LandlordController extends Controller
             'form'          => $form->createView(),
             'propertyName'  => $propertyName,
         );
+    }
+
+    /**
+     * @Route("/landlord/invite/{code}", name="landlord_invite")
+     * @Template()
+     *
+     * @return array
+     */
+    public function landlordInviteAction($code)
+    {
+        $landlord = $this->getDoctrine()->getRepository('RjDataBundle:Landlord')->findOneBy(
+            array(
+                'invite_code' => $code
+            )
+        );
+
+        if (empty($landlord)) {
+            return $this->redirect($this->generateUrl('fos_user_security_login'));
+        }
+
+        $form = $this->createForm(
+            new LandlordType(),
+            $landlord
+        );
+        $request = $this->get('request');
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $landlord = $form->getData();
+                $aForm = $request->request->get($form->getName());
+                $landlord->setPassword(md5($aForm['password']['Password']));
+                $landlord->setCulture($this->container->parameters['kernel.default_locale']);
+
+                $rep = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+                $contracts = $rep->findBy(
+                    array(
+                        'group' => $landlord->getCurrentGroup()->getId(),
+                    )
+                );
+                $em = $this->getDoctrine()->getManager();
+
+                if (!empty($contracts)) {
+                    foreach ($contracts as $contract) {
+                        if ($contract->getStatus() == ContractStatus::INVITE) {
+                            $contract->setStatus(ContractStatus::PENDING);
+                            $em->persist($contract);
+                        }
+                    }
+                }
+
+                $landlord->setInviteCode(null);
+                $em->persist($landlord);
+                $em->flush();
+
+                return $this->login($landlord);
+            }
+        }
+
+        return array(
+            'code'      => $code,
+            'form'      => $form->createView(),
+        );
+    }
+
+    private function login($landlord)
+    {
+        $response = new RedirectResponse($this->generateUrl('landlord_homepage'));
+        $this->container->get('fos_user.security.login_manager')->loginUser(
+            $this->container->getParameter('fos_user.firewall_name'),
+            $landlord,
+            $response
+        );
+
+        $this->container->get('user.service.login_success_handler')
+                ->onAuthenticationSuccess(
+                    $this->container->get('request'),
+                    $this->container->get('security.context')->getToken()
+                );
+
+        return $response;
     }
 }

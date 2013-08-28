@@ -8,7 +8,7 @@ class TenantsListController extends Controller
 {
     /**
      * @Template()
-     * @return multitype:
+     * @return mixed
      */
     public function indexAction($Group)
     {

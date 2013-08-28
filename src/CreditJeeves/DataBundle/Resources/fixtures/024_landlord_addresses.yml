@@ -1,0 +1,55 @@
+model: CreditJeeves\DataBundle\Entity\Address
+fixtures:
+    LandlordAddress_1:
+        user: Landlord_1
+        street: KINGSTON DR
+        number: 
+        unit: 2209
+        city: LAWRENCE
+        area: KS
+        zip: 660491614
+        
+    LandlordAddress_2:
+        user: Landlord_2
+        street: PO BOX 445
+        number: ''
+        unit: apt 1
+        city: APO
+        area: AE
+        zip: 09061
+        
+    LandlordAddress_3:
+        user: Landlord_3
+        street: JCT RR 133 140 B
+        number: ''
+        unit: ''
+        city: MIDDLETOWN
+        area: NJ
+        zip: '05717'
+        
+    LandlordAddress_4:
+        user: Landlord_4
+        street: '702 N LINCOLN AVE # 1'
+        number: ''
+        unit: ''
+        city: URBANA
+        area: IL
+        zip: '61801'
+        
+    LandlordAddress_5:
+        user: Landlord_5
+        street: 'SAINT NAZAIRE 2010'
+        number: ''
+        unit: '116TH 1'
+        city: HOMESTEAD
+        area: FL
+        zip: '33039'
+        
+    LandlordAddress_6:
+        user: Landlord_6
+        street: PO BOX 445
+        number: ''
+        unit: apt 1
+        city: APO
+        area: AE
+        zip: 09061

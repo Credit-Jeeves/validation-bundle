@@ -16,7 +16,7 @@ mkdir $BUILD_DIR/coverage
 mkdir $BUILD_DIR/coverage/html
 
 if [ ! -f $DIR/vendor/autoload.php ]; then
-     php bin/composer.phar install --prefer-source
+     php bin/composer.phar install
 fi
 
 php bin/environment.php --dev || exit 1

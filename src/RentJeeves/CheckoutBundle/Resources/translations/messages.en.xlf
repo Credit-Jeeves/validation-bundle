@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="pay_popup.title">
+                <source>pay_popup.title</source>
+                <target>Pay Rent</target>
+            </trans-unit>
+            <trans-unit id="pay_popup.step.1">
+                <source>pay_popup.step.1</source>
+                <target>Payment Details</target>
+            </trans-unit>
+            <trans-unit id="pay_popup.step.2">
+                <source>pay_popup.step.2</source>
+                <target>Payment Source</target>
+            </trans-unit>
+            <trans-unit id="pay_popup.step.3">
+                <source>pay_popup.step.3</source>
+                <target>Verify Identity</target>
+            </trans-unit>
+            <trans-unit id="pay_popup.step.4">
+                <source>pay_popup.step.4</source>
+                <target>Review &amp; Pay</target>
+            </trans-unit>
+            <trans-unit id="pay_popup.step.previous">
+                <source>pay_popup.step.previous</source>
+                <target>Previous</target>
+            </trans-unit>
+            <trans-unit id="pay_popup.step.next">
+                <source>pay_popup.step.next</source>
+                <target>Next</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

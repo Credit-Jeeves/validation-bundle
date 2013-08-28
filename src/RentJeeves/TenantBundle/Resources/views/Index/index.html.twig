@@ -2,7 +2,7 @@
 
 {% block content %}
     <div id="rent-menu">
-    {{ knp_menu_render('TenantBundle:Builder:rentMenu', {'template': 'CoreBundle:Menu:user_rent.html.twig'}) }}
+        {{ knp_menu_render('TenantBundle:Builder:rentMenu', {'template': 'CoreBundle:Menu:user_rent.html.twig'}) }}
     </div>
     <div class="row-20"></div>
     {% if status == 'new' %}
@@ -15,9 +15,9 @@
     <br />
     <br />
     {% if reporting > 0 %}
-    {{ render(controller('RjComponentBundle:PaymentHistory:index', {'user': user, 'short': 'true'})) }}
+        {{ render(controller('RjComponentBundle:PaymentHistory:index', {'user': user, 'short': 'true'})) }}
     {% else %}
-    {{ render(controller('TenantBundle:Index:info')) }}
+        {{ render(controller('TenantBundle:Index:info')) }}
     {% endif %}
 {% endblock %}
 

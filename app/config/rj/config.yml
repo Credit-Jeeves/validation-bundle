@@ -42,3 +42,10 @@ doctrine:
                 type: xml
                 dir: %kernel.root_dir%/../vendor/payum/heartland/src/Payum/Heartland/Bridge/Doctrine/Resources/mapping
                 prefix: Payum\Heartland\Bridge\Doctrine\Entity
+
+payum:
+    contexts:
+        heartland:
+            heartland:
+                api:
+                    options: %heartland%

@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Payum\Heartland\Bridge\Doctrine\Entity\PaymentDetails;
+use \DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -36,6 +37,16 @@ abstract class Heartland extends PaymentDetails
     protected $order;
 
     /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(
+     *     name="created_at",
+     *     type="datetime"
+     * )
+     * @var DateTime
+     */
+    protected $createdAt;
+
+    /**
      * Set Order
      *
      * @param \CreditJeeves\DataBundle\Entity\Order
@@ -55,5 +66,27 @@ abstract class Heartland extends PaymentDetails
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     * @return PaymentDetails
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 }

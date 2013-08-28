@@ -32,7 +32,10 @@ class ReportController extends Controller
                 return $this->redirect($this->generateUrl('core_report_get_d2c'));
             }
         } else {
-            return $this->createNotFoundException('Order does not found');
+            throw $this->createNotFoundException('Order does not found');
+        }
+        if (empty($Report)) {
+            throw $this->createNotFoundException('Report does not found');
         }
 
         return array(

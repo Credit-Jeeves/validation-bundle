@@ -6,12 +6,6 @@ fixtures:
         middle_initial: A
         last_name: APPLEGATE
         email: landlord1@example.com
-        street_address1: KINGSTON DR
-        street_address2: 
-        unit_no: 2209
-        city: LAWRENCE
-        state: KS
-        zip: 660491614
         phone_type: 2
         phone: 7858655392
         ssn: 666309041
@@ -31,12 +25,6 @@ fixtures:
         middle_initial: WAKEFIELD
         last_name: BREEN
         email: landlord2@example.com
-        street_address1: PO BOX 445
-        street_address2: ''
-        unit_no: apt 1
-        city: APO
-        state: AE
-        zip: 09061
         phone_type: 2
         phone: 913 76 44 215
         date_of_birth: '1957-02-19'
@@ -60,12 +48,6 @@ fixtures:
         middle_initial: 
         last_name: JORDAN
         email: landlord3@example.com
-        street_address1: JCT RR 133 140 B
-        street_address2: ''
-        unit_no: ''
-        city: MIDDLETOWN
-        state: NJ
-        zip: '05717'
         phone_type: '2'
         phone: '8 6037   90319'
         date_of_birth: '1951-01-01'
@@ -88,12 +70,6 @@ fixtures:
         middle_initial: MAE
         last_name: TAYLOR
         email: landlord4@example.com
-        street_address1: '702 N LINCOLN AVE # 1'
-        street_address2: ''
-        unit_no: ''
-        city: URBANA
-        state: IL
-        zip: '61801'
         phone_type: '2'
         phone: '309-74-58-439'
         date_of_birth: '1955-09-14'
@@ -117,12 +93,6 @@ fixtures:
         middle_initial: P
         last_name: KURTH
         email: landlord5@example.com
-        street_address1: 'SAINT NAZAIRE 2010'
-        street_address2: ''
-        unit_no: '116TH 1'
-        city: HOMESTEAD
-        state: FL
-        zip: '33039'
         phone_type: '2'
         phone: '7188491319'
         date_of_birth: '1957-02-19'
@@ -149,12 +119,6 @@ fixtures:
         middle_initial:
         last_name: Test
         email: agent1@example.com
-        street_address1: ''
-        street_address2: ''
-        unit_no: ''
-        city: LAWRENCE
-        state: KS
-        zip: ''
         phone_type: 2
         phone: 
         date_of_birth: ''
@@ -180,12 +144,6 @@ fixtures:
         middle_initial: WAKEFIELD
         last_name: BREEN
         email: landlord6@example.com
-        street_address1: PO BOX 445
-        street_address2: ''
-        unit_no: apt 1
-        city: APO
-        state: AE
-        zip: 09061
         phone_type: 2
         phone: 913 76 44 215
         date_of_birth: '1957-02-19'

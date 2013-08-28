@@ -9,7 +9,7 @@ class PaymentHistoryController extends Controller
 {
     /**
      * @Template("RjComponentBundle:PaymentHistory:index.html.twig")
-     * @return multitype:
+     * @return mixed
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\User $user, $short = false)
     {
