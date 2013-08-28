@@ -47,7 +47,7 @@ class TenantController extends Controller
                 if (!empty($contracts)) {
                     foreach ($contracts as $contract) {
                         if ($contract->getStatus() == ContractStatus::INVITE) {
-                            $contract->setStatus(ContractStatus::ACTIVE);
+                            $contract->setStatus(ContractStatus::CURRENT);
                             $em->persist($contract);
                         }
                     }
