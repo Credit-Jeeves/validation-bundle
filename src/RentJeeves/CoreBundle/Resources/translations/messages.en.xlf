@@ -12,7 +12,7 @@
             </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
-                <target>%nYear% RentJeeves, LLC.All rights reserved.</target>
+                <target>%nYear% RentTrack, LLC.All rights reserved.</target>
             </trans-unit>
             <trans-unit id="rj.footer.comment">
                 <source>rj.footer.comment</source>
@@ -160,7 +160,7 @@
             </trans-unit>
             <trans-unit id="iframe.findOut">
                 <source>iframe.findOut</source>
-                <target>Find out how Rent Jeeves can help you.</target>
+                <target>Find out how RentTrack can help you.</target>
             </trans-unit>
             <trans-unit id="property.info">
                 <source>property.info</source>
@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="keep.paying.text">
                 <source>keep.paying.text</source>
-                <target>We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
+                <target>We'll reach out to your landlord to see if we can get them onboard with RentTrack. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
                 </target>
             </trans-unit>
             <trans-unit id="continue">
@@ -382,7 +382,7 @@
             </trans-unit>
             <trans-unit id="setup.your.rent">
                 <source>setup.your.rent</source>
-                <target>Set up your Rent Jeeves account.</target>
+                <target>Set up your RentTrack account.</target>
             </trans-unit>
             <trans-unit id="name">
                 <source>name</source>
@@ -399,7 +399,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*A monthly fee of $9.95 will be debited from your payments (for up to 10 units per month). Additional units are $1 per month for ACH [?] fees. You will not be charged for fees associated with credit card payments – convenience fees are charged to the tenant.
+                <target>*Up to 10 units are included with your minimum monthly fee of $9.95. Additional units are $1 each per month. Fees will be debited automatically from your deposit account at the end of each month.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -409,7 +409,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text3">
                 <source>landlord.register.text3</source>
-                <target>We'll reach out to your landlord to see if we can get them onboard with RentJeeves. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.</target>
+                <target>We'll reach out to your landlord to see if we can invite them to RentTrack. You'll be notified via email when you can sent up rent for this property and start benefiting from positive bureau reporting.</target>
             </trans-unit>
             <trans-unit id="landlord.register.text4">
                 <source>landlord.register.text4</source>
@@ -618,19 +618,19 @@
            </trans-unit>
            <trans-unit id="bureau.reporting.start">
                 <source>bureau.reporting.start</source>
-                <target>Start Reporting to Experian</target>
+                <target>Start Reporting to Bureaus</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.stop">
                 <source>bureau.reporting.stop</source>
-                <target>Stop Reporting to Experian</target>
+                <target>Stop Reporting to Bureaus</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.setup">
                 <source>bureau.reporting.setup</source>
-                <target>Set Up Your for Bureau Reporting</target>
+                <target>Set Up Bureau Reporting</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.text">
                 <source>bureau.reporting.text</source>
-                <target>We can report your payments to the credit bureau Experian. This optional activity helps establish a history of on-time payments in your credit profile. You can stop reporting at any time.</target>
+                <target>We can report your payments to credit bureaus. This optional activity helps establish a history of on-time payments in your credit profile. You can stop reporting at any time.</target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -644,10 +644,9 @@
                 <source>info.reporting.text</source>
                 <target>You'll be able to see your your credit score once
                 you've set up your first rent payment and verified 
-                your identity. Than track your progress by allowing
-                RentJeeves to send activity reports to Experian. You first
-                need  to allow RentJeeves to report activity on your behalf
-                - you can stop reporting in any time. Copy TBD. </target>
+                your identity. Then, put RentTrack to work by opting in to
+                report your on-time payments to credit bureaus.
+                You can turn off reporting at any time. </target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
