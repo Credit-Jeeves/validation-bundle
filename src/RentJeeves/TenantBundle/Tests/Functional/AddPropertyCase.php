@@ -80,7 +80,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "window.location.pathname != '/rj_test.php/property/add'");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        $this->assertCount(4, $searchResult, 'Search result');
+        $this->assertCount(3, $searchResult, 'Search result');
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
         $this->session->wait($this->timeout, "$('#register').length > 0");
