@@ -166,7 +166,7 @@ fixtures:
     locale: %locale%
     property: body
     value: |
-      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Your RentTrack account is almost ready!{% endblock %}
       {% block email %}
       Hello {{ user.full_name }},
