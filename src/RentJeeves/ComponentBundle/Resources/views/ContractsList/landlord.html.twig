@@ -127,7 +127,7 @@
           <div class="form-row clearfix">
             <label>{{ 'amount'|trans }}</label>
             <div class="fields-box">
-              <span class="value left" id="amount-edit" data-bind="text: amount"></span>
+              <span class="value left" id="amount-edit" data-bind="text: '$'+amount"></span>
             </div>
           </div>
           <div class="form-row clearfix">
@@ -392,7 +392,7 @@
                 <td data-bind="text: phone"></td>
                 <td class="property-box ellipsis-box" 
                 data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
-                <td data-bind="text: amount"></td>
+                <td data-bind="text: '$'+amount"></td>
                 <td data-bind="text: due_day"></td>
                 <td class="type-box" data-bind="text: paid_to"></td>
                 <td></td>

@@ -53,7 +53,7 @@ class Contract extends Base
         $result['phone'] = $tenant->getFomattedPhone();
         $result['amount'] = 'undefined';
         if ($rent = $this->getRent()) {
-            $result['amount'] = '$'.$this->getRent();
+            $result['amount'] = $this->getRent();
         }
         $result['due_day'] = $this->getDueDay().'th';
         $result['late'] = $this->getLateDays();
