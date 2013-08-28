@@ -1,22 +1,22 @@
 <div class="pod-large pod-border pod-padding shadow">
-    <h1>Current Payments</h1>
+    <h1>{{ 'current_payments.title'|trans }}</h1>
     <div class="addPropertyContainer">
         <center>
             <a href="{{ path('property_add')}}" class="button small">
-                <span>Add Property</span>
+                <span>{{ 'add.property'|trans }}</span>
             </a>
         </center>
     </div>
     <table class="listOfPayments listOfPaymentsActive">
         <thead>
             <tr>
-                <th class="address">Address</th>
-                <th class="payTo">Pay To</th>
-                <th>Amount</th>
-                <th>Pay Source</th>
-                <th>Last Payment</th>
-                <th>Next Due Date</th>
-                <th>Recurs?</th>
+                <th class="address">{{'address'|trans}}</th>
+                <th class="payTo">{{'pay_to'|trans}}</th>
+                <th>{{'amount'|trans}}</th>
+                <th>{{'pay_source'|trans}}</th>
+                <th>{{'last.payment'|trans}}</th>
+                <th>{{'next_due_date'|trans}}</th>
+                <th>{{'recurs'|trans}}?</th>
                 <th></th>
             </tr>
         </thead>
@@ -62,11 +62,11 @@
                 <center>
                     {% if contract.canSetupRentalPayment %}
                         <button class="button small">
-                            <span>Pay</span>
+                            <span>{{'pay'|trans}}</span>
                         </button>
                     {% else %}
                         <button class="button small disabled grey">
-                            <span>Pay</span>
+                            <span>{{'pay'|trans}}</span>
                         </button>
                     {% endif %}
                 </center>

@@ -795,6 +795,22 @@
                 <source>set_up_your_first_rental_payment</source>
                 <target>Set Up Your First Rental Payment</target>
             </trans-unit>
+            <trans-unit id="pay_source">
+                <source>pay_source</source>
+                <target>Pay Source</target>
+            </trans-unit>
+            <trans-unit id="last.payment">
+                <source>last.payment</source>
+                <target>Last Payment</target>
+            </trans-unit>
+            <trans-unit id="recurs">
+                <source>recurs</source>
+                <target>Recurs</target>
+            </trans-unit>
+            <trans-unit id="pay">
+                <source>pay</source>
+                <target>Pay</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
