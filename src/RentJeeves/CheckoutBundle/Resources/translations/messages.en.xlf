@@ -30,6 +30,42 @@
                 <source>pay_popup.step.next</source>
                 <target>Next</target>
             </trans-unit>
+            <trans-unit id="checkout.amount">
+                <source>checkout.amount</source>
+                <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="checkout.set_up_recurring_payment">
+                <source>checkout.set_up_recurring_payment</source>
+                <target>Set up a recurring payment</target>
+            </trans-unit>
+            <trans-unit id="checkout.type">
+                <source>checkout.type</source>
+                <target>Type</target>
+            </trans-unit>
+            <trans-unit id="checkout.ends">
+                <source>checkout.ends</source>
+                <target>Ends</target>
+            </trans-unit>
+            <trans-unit id="checkout.monthly">
+                <source>checkout.monthly</source>
+                <target>Monthly</target>
+            </trans-unit>
+            <trans-unit id="checkout.select">
+                <source>checkout.select</source>
+                <target>Select</target>
+            </trans-unit>
+            <trans-unit id="checkout.when_cancelled">
+                <source>checkout.when_cancelled</source>
+                <target>When Cancelled</target>
+            </trans-unit>
+            <trans-unit id="checkout.on">
+                <source>checkout.on</source>
+                <target>On:</target>
+            </trans-unit>
+            <trans-unit id="">
+                <source></source>
+                <target></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

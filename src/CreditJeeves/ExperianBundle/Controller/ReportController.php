@@ -3,6 +3,7 @@ namespace CreditJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\ReportType;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use Doctrine\DBAL\DBALException;
@@ -26,6 +27,8 @@ class ReportController extends Controller
 {
     protected $reportType = ReportType::PREQUAL;
 
+    protected $redirect = null;
+
     /**
      * @var \CreditJeeves\ExperianBundle\NetConnect
      */
@@ -39,12 +42,9 @@ class ReportController extends Controller
     protected function isReportLoadAllowed($isD2c = false)
     {
         if ($isD2c) {
-            if ($order = $this->getUser()->getLastCompleteOrder()) {
-                return !($operation = $order->getOperations()->last());
-            }
-            return true;
+            return !$this->getUser()->getLastCompleteOperation(OperationType::REPORT);
         }
-        return !$this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
+        return !$this->getUser()->getReportsPrequal()->last();
     }
 
     /**
@@ -55,74 +55,31 @@ class ReportController extends Controller
      */
     public function getD2cAction()
     {
-        $user = $this->get('core.session.applicant')->getUser();
-        $type = $user->getType();
-        if (!$this->isReportLoadAllowed(true)) {
-            switch ($type) {
-                case 'tenant':
-                    return new RedirectResponse($this->generateUrl('tenant_homepage'));
-                    break;
-                default:
-                    return new RedirectResponse($this->generateUrl('applicant_homepage'));
-                    break;
-            }
-        }
         $this->get('session')->getFlashBag()->set('isD2cReport', true);
-        switch ($type) {
-            case 'tenant':
-                return $this->render(
-                    'ExperianBundle:Report:rj_get.html.twig',
-                    array(
-                        'url' => $this->generateUrl('core_report_get_ajax'),
-                    'redirect' => $this->generateUrl('tenant_report'),
-                        )
-                );
-                break;
-            default:
-                return array(
-                    'url' => $this->generateUrl('core_report_get_ajax'),
-                    'redirect' => $this->generateUrl('applicant_report'),
-                );
-                break;
-        }
+        $this->redirect = $this->generateUrl($this->getUser()->getType() . '_report');
+        return $this->getAction();
     }
 
     /**
      * @Route("/get", name="core_report_get")
      * @Template()
      *
+     *
+     *
      * @return array
      */
     public function getAction()
     {
-        $user = $this->get('core.session.applicant')->getUser();
-        $type = $user->getType();
+        $user = $this->getUser();
         if (!$this->isReportLoadAllowed()) {
-            switch ($type) {
-                case 'tenant':
-                    return new RedirectResponse($this->generateUrl('tenant_summary'));
-                    break;
-                default:
-                    return new RedirectResponse($this->generateUrl('applicant_homepage'));
-                    break;
-            }
+            throw $this->createNotFoundException('Report does not allowed');
         }
-        switch ($type) {
-            case 'tenant':
-                return $this->render(
-                    'ExperianBundle:Report:rj_get.html.twig',
-                    array(
-                        'url' => $this->generateUrl('core_report_get_ajax'),
-                        'redirect' => null//$this->getRequest()->headers->get('referer'),
-                    )
-                );
-                break;
-            default:
-                return array(
-                    'url' => $this->generateUrl('core_report_get_ajax'),
-                    'redirect' => null//$this->getRequest()->headers->get('referer'),
-                );
-        }
+        return array(
+            'parentTemplate' => ('tenant' == $user->getType() ?
+                'ExperianBundle:Report:rj_get.html.twig' : 'ApplicantBundle::base.html.twig'),
+            'url' => $this->generateUrl('core_report_get_ajax'),
+            'redirect' => $this->redirect//$this->getRequest()->headers->get('referer'), //FIXME
+        );
     }
 
     protected function getArf()

@@ -3,6 +3,11 @@ landlord:
     type:     annotation
     prefix:   /landlord
 
+applicant:
+    resource: "@ApplicantBundle/Controller"
+    type:     annotation
+    prefix:   /
+
 tenant:
     resource: "@TenantBundle/Controller/"
     type:     annotation

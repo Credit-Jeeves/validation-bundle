@@ -6,6 +6,7 @@ use CreditJeeves\CheckoutBundle\Form\Type\OrderAuthorizeType;
 use CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\UserType;
 use Payum\AuthorizeNet\Aim\Model\PaymentDetails;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
@@ -88,21 +89,12 @@ class DefaultController extends Controller
                 }
             }
         }
-        switch ($type) {
-            case 'tenant':
-                return $this->render(
-                    'CheckoutBundle:Default:rj_index.html.twig',
-                    array(
-                        'form' => $this->form->createView()
-                    )
-                );
-                break;
-            default:
-                return array(
-                    'form' => $this->form->createView()
-                );
-            break;
-        }
+        return array(
+            'parentTemplate' => (UserType::TETNANT == $this->getUser()->getType() ?
+                'TenantBundle::base.html.twig' : 'ApplicantBundle::base.html.twig'),
+            'form' => $this->form->createView(),
+            'parent' => 'ApplicantBundle::base.html.twig'
+        );
     }
 
     protected function process(CheckoutAuthorizeNetAim $authorize)

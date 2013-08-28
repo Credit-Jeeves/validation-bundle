@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\TenantBundle\Menu;
 
+use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -8,8 +10,9 @@ class Builder extends ContainerAware
 {
     public function mainMenu(FactoryInterface $factory, array $options)
     {
+        /** @var User $user */
         $user = $this->container->get('core.session.tenant')->getUser();
-        $isCompleteOrder = $user->isCompleteOrderExist();
+        $isCompleteOrder = $user->getLastCompleteOperation(OperationType::REPORT);
         $sRoute = $this->container->get('request')->get('_route');
 
         $menu = $factory->createItem('root');

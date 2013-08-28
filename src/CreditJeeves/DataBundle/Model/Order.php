@@ -57,7 +57,7 @@ abstract class Order
      *     nullable=true
      * )
      */
-    protected $type = OrderType::HL_CARD;
+    protected $type = OrderType::AUTHORIZE_CARD;
 
     /**
      * @ORM\Column(
@@ -73,7 +73,7 @@ abstract class Order
      *     nullable=true
      * )
      */
-    protected $days_late = 0;
+    protected $days_late = null;
 
     /**
      * @ORM\Column(
