@@ -7,6 +7,5 @@
     margin-left: 26px;
 }
 body {
-    border-top: 5px solid #1E88EB; /* Линия сверху текста */
-    padding-top: 5px; /* Поля вокруг текста */
-}
+    border-top: 5px solid #1E88EB;
+    padding-top: 5px;
