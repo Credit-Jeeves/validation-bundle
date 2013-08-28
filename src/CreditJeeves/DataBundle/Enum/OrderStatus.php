@@ -4,13 +4,44 @@ namespace CreditJeeves\DataBundle\Enum;
 use CreditJeeves\CoreBundle\Enum;
 
 /**
+ * Order statuses
+ * First status will be NEWONE for all orders
+ * Avaliable chains:
+ * 1. NEWONE -> COMPLETE
+ * 2. NEWONE -> ERROR
+ * 3. NEWONE -> CANCELLED
+ * 4. NEWONE -> COMPLETE -> REFUNDED
  * @author Ton Sharp <66ton99@gmail.com>
  */
 class OrderStatus extends Enum
 {
+    /**
+     * 
+     * @var string
+     */
     const NEWONE = 'new';
+
+    /**
+     * 
+     * @var string
+     */
     const COMPLETE = 'complete';
+
+    /**
+     * 
+     * @var string
+     */
     const ERROR = 'error';
+
+    /**
+     * 
+     * @var string
+     */
     const CANCELLED = 'cancelled';
+
+    /**
+     * 
+     * @var string
+     */
     const REFUNDED = 'refunded';
 }

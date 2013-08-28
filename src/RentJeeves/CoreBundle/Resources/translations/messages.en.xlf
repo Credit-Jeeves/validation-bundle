@@ -673,6 +673,14 @@
                 <source>legend.delinquent</source>
                 <target>N days delinquent</target>
             </trans-unit>
+           <trans-unit id="legend.pay">
+                <source>legend.pay</source>
+                <target>Month to pay</target>
+            </trans-unit>
+           <trans-unit id="legend.auto">
+                <source>legend.auto</source>
+                <target>Monthly auto payment</target>
+            </trans-unit>
 
            <trans-unit id="conflict.resolve.uppercase">
                 <source>conflict.resolve.uppercase</source>
@@ -763,6 +771,28 @@
                 <source>payments.total</source>
                 <target>Payments Total</target>
             </trans-unit>
+            <trans-unit id="payments.type.rent">
+                <source>payments.type.rent</source>
+                <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="payments.individual">
+                <source>payments.individual</source>
+                <target>Individual</target>
+            </trans-unit>
+            <trans-unit id="payments.legend">
+                <source>payments.legend</source>
+                <target>Legend</target>
+            </trans-unit>
+            
+            <trans-unit id="reporting.start">
+                <source>reporting.start</source>
+                <target>Start Reporting</target>
+            </trans-unit>
+            <trans-unit id="reporting.stop">
+                <source>reporting.stop</source>
+                <target>Stop Reporting</target>
+            </trans-unit>
+            
             <trans-unit id="select.status">
                 <source>select.status </source>
                 <target>Select Status</target>

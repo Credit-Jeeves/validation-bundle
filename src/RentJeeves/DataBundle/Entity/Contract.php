@@ -29,6 +29,37 @@ class Contract extends Base
      */
     const RESOLVE_UNPAID = 'unpaid';
 
+    /**
+     * @var string
+     */
+    const PAYMENT_OK = 'OK';
+
+    /**
+     * @var string
+     */
+    const PAYMENT_PAY = 'PAY';
+
+    /**
+     * @var string
+     */
+    const PAYMENT_AUTO = 'AUTO';
+
+    /**
+     * @var string
+     */
+    const PAYMENT_LATE = ' DAYS LATE';
+
+    const STATUS_EMPTY = 'empty-month';
+
+    const STATUS_PAY = 'auto';
+
+    const STATUS_OK = 'C';
+
+    const STATUS_LATE = '1';
+
+    /**
+     * @return array
+     */
     public function getItem()
     {
         $result = array();
@@ -82,7 +113,7 @@ class Contract extends Base
             $interval = $now->diff($date);
             $days = $interval->format('%d');
             if ($days > 1) {
-                $result = $days.' DAYS LATE';
+                $result = $days.self::PAYMENT_LATE;
             }
         }
         return $result;
@@ -137,10 +168,18 @@ class Contract extends Base
         return $this->getPaymentHistory($em);
     }
 
+    public function getFuturePaymentHistory($em)
+    {
+        return $this->getPaymentHistory($em);
+    }
+
     public function getPaymentHistory($em)
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '');
         $payments = $this->createHistoryArray();
+//         echo '<pre>';
+//         print_r($payments);
+//         echo '</pre>';
         $currentDate = new \DateTime('now');
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $repo = $em->getRepository('DataBundle:Order');
@@ -156,17 +195,17 @@ class Contract extends Base
             $nMonth = $orderDate->format('m');
             if ($late = $order->getDaysLate()) {
                 $nMonth = $orderDate->modify('-'.$late.' days')->format('m');
-                $payments[$nYear][$nMonth]['status'] = '1';
+                $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
                 $payments[$nYear][$nMonth]['text'] = $late;
                 
             } else {
-                $payments[$nYear][$nMonth]['status'] = 'C';
-                $payments[$nYear][$nMonth]['text'] = 'OK';
+                $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
+                $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
                 
             }
             if (OrderStatus::NEWONE == $order->getStatus()) {
-                $payments[$nYear][$nMonth]['status'] = 'auto';
-                $payments[$nYear][$nMonth]['text'] = 'AUTO';
+                $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
+                $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
             }
             $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
         }
@@ -180,7 +219,7 @@ class Contract extends Base
         $aMonthes = array();
         for ($i = 1; $i < 13; $i++) {
             $aMonthes[date('m', mktime(0, 0, 0, $i))] = array(
-                'status' => 'empty-month',
+                'status' => self::STATUS_EMPTY,
                 'text' => '',
                 'amount' => 0,
             );
@@ -191,6 +230,14 @@ class Contract extends Base
         $finishYear = $finish->format('Y');
         for ($i = $startYear; $i <= $finishYear; $i++) {
             $result[$i] = $aMonthes;
+        }
+        if (ContractStatus::FINISHED != $this->getStatus()) {
+            $paidTo = $this->getPaidTo();
+            $result[$paidTo->format('Y')][$paidTo->format('m')] = array(
+                'status' => self::STATUS_PAY,
+                'text' => self::PAYMENT_PAY,
+                'amount' => $this->getRent(),
+            );
         }
         return $result;
     }
