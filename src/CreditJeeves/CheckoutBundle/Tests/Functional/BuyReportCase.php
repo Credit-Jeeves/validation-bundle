@@ -89,7 +89,7 @@ class BuyReportCase extends BaseTestCase
 
         $formData = array(
             'order_authorize_authorizes_0_card_num' => '0005105105105100',
-            'order_authorize_authorizes_0_card_code' => '000',
+            'order_authorize_authorizes_0_card_code' => '002',
             'order_authorize_authorizes_0_exp_date_month' => date('m'),
             'order_authorize_authorizes_0_exp_date_year' => date('Y'),
         );
@@ -105,19 +105,34 @@ class BuyReportCase extends BaseTestCase
             static::getContainer()->getParameter('support_email'),
             $globalErrors[0]->getText()
         );
+
         $formData['order_authorize_authorizes_0_card_num'] = '4111111111111111';
-        $this->fillForm($form, $formData);
-        $form->pressButton('buy-report-form-submit');
+        $i = 4;
+        $date = null;
+        while($i--) {
+            $formData['order_authorize_authorizes_0_card_code'] = '00' . $i;
+            $month = ($month = date('m') + $i) <= 12?$month:$month - 11;
+            $formData['order_authorize_authorizes_0_exp_date_month'] = 2 == strlen($month)? $month : '0' . $month;
+            $formData['order_authorize_authorizes_0_exp_date_year'] = date('Y') + $i;
+            $this->fillForm($form, $formData);
+            $form->pressButton('buy-report-form-submit');
 
-        $this->session->wait(
-            $this->timeout + 10000,
-            "jQuery('#report_page').children().length > 0"
-        );
+            if (!($globalErrors = $form->findAll('css', '.flash-error li')) ||
+                'authorize-net-aim-error-main-message-3--' .
+                static::getContainer()->getParameter('support_email') != $globalErrors[0]->getText()
+            ) {
+                $this->session->wait(
+                    $this->timeout + 10000,
+                    "jQuery('.pod-large .datetime.floatright').length > 0"
+                );
+            }
+            if ($date = $this->page->find('css', '.pod-large .datetime.floatright')) {
+                break;
+            }
+        }
 
-        $this->assertNotNull($date = $this->page->find('css', '.pod-large .datetime.floatright'));
-        $dateShortFormat = static::getContainer()->getParameter('date_short');
-
-        $this->assertEquals(date($dateShortFormat), $date->getText());
+        $this->assertNotNull($date);
+        $this->assertEquals(date(static::getContainer()->getParameter('date_short')), $date->getText());
     }
 
     /**

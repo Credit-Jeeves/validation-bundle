@@ -72,5 +72,4 @@ class PaymentDetailsType extends AbstractType
     {
         return 'rentjeeves_checkoutbundle_paymentdetailstype';
     }
-
 }

@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use JMS\DiExtraBundle\Annotation as DI;
 
 /**
- * @DI\Service("security.context")
+ * @~DI\Service("security.context")
  */
 class Context extends SecurityContext
 {

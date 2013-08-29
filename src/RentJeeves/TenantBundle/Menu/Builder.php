@@ -99,12 +99,12 @@ class Builder extends ContainerAware
             case 'user_contact':
                 $menu['settings.contact_information']->setUri('');
                 break;
-             case 'user_email':
-                 $menu['settings.email']->setUri('');
-                 break;
-             case 'user_remove':
-                 $menu['settings.remove']->setUri('');
-                 break;
+            case 'user_email':
+                $menu['settings.email']->setUri('');
+                break;
+            case 'user_remove':
+                $menu['settings.remove']->setUri('');
+                break;
         }
         return $menu;
     }

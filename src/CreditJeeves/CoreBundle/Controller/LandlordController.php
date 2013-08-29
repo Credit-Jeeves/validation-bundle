@@ -8,8 +8,8 @@ class LandlordController extends Controller
     public function getUser()
     {
         if ($user = parent::getUser()) {
-            $user = $this->get('core.session.landlord')->getUser();
-            return $user;
+            $this->get('core.session.landlord')->setUser($user);
+            return $this->get('core.session.landlord')->getUser();
         }
     }
 

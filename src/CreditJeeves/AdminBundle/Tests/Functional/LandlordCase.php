@@ -6,7 +6,7 @@ use CreditJeeves\TestBundle\Functional\BaseTestCase;
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
-class LandlordCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
+class LandlordCase extends BaseTestCase
 {
 
     /**

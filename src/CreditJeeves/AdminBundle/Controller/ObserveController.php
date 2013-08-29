@@ -20,7 +20,9 @@ class ObserveController extends Controller
     public function indexAction($id, $type)
     {
         $this->get('session')->set('observe_admin_id', $this->getUser()->getId());
-        $this->get('session')->set('observe_user_id', $id);
-        return new RedirectResponse($this->get('router')->generate($type . '_homepage'));
+        $this->get('security.context')
+            ->getToken()
+            ->setUser($this->get('doctrine.orm.entity_manager')->getRepository('DataBundle:User')->find($id));
+        return $this->redirect($this->get('router')->generate($type . '_homepage'));
     }
 }

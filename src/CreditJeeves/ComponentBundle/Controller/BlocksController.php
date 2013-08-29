@@ -18,7 +18,7 @@ class BlocksController extends Controller
         $isAdmin = false;
         $user = $this->getUser();
         $type =  $user->getType();
-        if ($type == 'admin') {
+        if ($this->get('session')->get('observe_admin_id')) {
             $isAdmin = true;
         }
         if (in_array($type, array('tenant', 'applicant'))) {
