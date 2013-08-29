@@ -124,8 +124,10 @@ class Tenant extends User
     {
         $result = array();
         $contracts = $this->getContracts();
+         
         foreach ($contracts as $contract) {
-            if (ContractStatus::FINISHED == $contract->getStatus()) {
+            $status = $contract->getStatus();
+            if (in_array($status, array(ContractStatus::FINISHED, ContractStatus::DELETED))) {
                 continue;
             }
             $result[] = $contract;

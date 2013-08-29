@@ -14,7 +14,10 @@
     </div>
 </div>
 <!-- end Delete Contract -->
-
+<!-- Loader -->
+<div id="contract-loader" class="pricing-popup dashboard-popup properties-popup">
+</div>
+<!-- endloader -->
 <div class="pod-large pod-border pod-padding shadow">
     <h1>{{ 'current_payments.title' | trans() }}</h1>
     <div class="addPropertyContainer">
@@ -81,9 +84,14 @@
                                 </div>
                             </div>
                             {% elseif contract.status == 'current' %}
-                            <button class="button small button-contract-pay">
-                                <span>{{ 'contract.pay' | trans() }}</span>
-                            </button>
+                            <div class="contract-potential">
+                                <button class="button small button-contract-pay floatleft">
+                                    <span>{{ 'contract.pay' | trans() }}</span>
+                                </button>
+                                <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
+                                    <input type="hidden" value="{{ contract.full_address }}">
+                                </div>
+                            </div>
                             {% endif %}
                         </td>
                     </tr>

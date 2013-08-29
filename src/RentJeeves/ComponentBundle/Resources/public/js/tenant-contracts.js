@@ -1,5 +1,7 @@
 $(document).ready(function(){
+  var id = 0;
   $('.contract-delete').click(function(){
+    id = this.id.split('-')[1];
     var address = $(this).find('input').val();
     $('#contract-address').html(address);
     $('#contract-delete').dialog('open');
@@ -8,44 +10,30 @@ $(document).ready(function(){
   $('#button-cancel').click(function(){
     $('#contract-delete').dialog('close');
   });
-//  $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email').change(function () {
-//    $.ajax({
-//      url: Routing.generate('landlord_check_email'),
-//      type: 'POST',
-//      dataType: 'json',
-//      data: {'email': $(this).val() },
-//      success: function(response) {
-//         if (response.userExist) {
-//            if(response.isTenant == false) {
-//              $('.userInfo').hide();
-//              $('#userExistMessageLanlord').show();
-//            } else {
-//              $('.userInfo').hide();
-//              $('#userExistMessage').show();
-//              $.each($('.userInfo').find('input'), function(index, value) {
-//                var val = $.trim($(this).val());
-//                if (val.length <= 0) {
-//                  $(this).val('none');
-//                }
-//              });
-//            }
-//         } else {
-//            $('.userInfo').show();
-//            $('.messageInfoUserAdd').hide();
-//            $.each($('.userInfo').find('input'), function(index, value) {
-//                var val = $.trim($(this).val());
-//                if (val.length <= 0) {
-//                  $(this).val('none');
-//                }
-//            });
-//         }
-//      }
-//    });
-//});  
+  $('#button-contract-delete').click(function(){
+    $('#contract-delete').dialog('close');
+    $('#contract-loader').dialog('open');
+    $.ajax({
+      url: Routing.generate('tenant_contract_delete'),
+      type: 'POST',
+      dataType: 'json',
+      data: {'contract_id': id },
+      success: function(response) {
+        location.reload();
+      }
+    });
+  });
   $('#contract-delete').dialog({ 
     autoOpen: false,
     resizable: false,
     modal: true,
     width:'520px'
   });
+  $('#contract-loader').dialog({ 
+    autoOpen: false,
+    resizable: false,
+    modal: true,
+    width:'520px'
+  });
+  
 });

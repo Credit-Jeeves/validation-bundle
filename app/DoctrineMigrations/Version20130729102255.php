@@ -33,7 +33,7 @@ class Version20130729102255 extends AbstractMigration
         );
 
         $this->addSql("ALTER TABLE  `rj_contract` CHANGE  `status`  
-                      `status` ENUM('pending','approved','finished','current','active', 'invite')
+                      `status` ENUM('pending','approved','finished','current','deleted', 'invite')
                       CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL 
                       DEFAULT 'pending' COMMENT '(DC2Type:ContractStatus)'");
     }
