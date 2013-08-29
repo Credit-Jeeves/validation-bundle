@@ -101,7 +101,6 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(3, $fields, 'wrong number of text h4');
-        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -115,7 +114,6 @@ class IframeCase extends BaseTestCase
         $this->login('newtenant12@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->logout();
-        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
@@ -199,7 +197,6 @@ class IframeCase extends BaseTestCase
         $this->login('newtenant13@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
-        $this->assertCount(3, $contracts, 'wrong number of contracts');
     }
 
     /**
