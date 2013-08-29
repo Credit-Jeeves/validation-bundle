@@ -88,7 +88,7 @@ fixtures:
     translatable: email_8
     locale: %locale%
     property: subject
-    value: Reset Password for RentTrack
+    value: Reset Password
   translation_82:
     translatable: email_8
     locale: %locale%
@@ -113,7 +113,7 @@ fixtures:
     translatable: email_9
     locale: %locale%
     property: subject
-    value: Get Started with Credit Jeeves
+    value: Check Email
   translation_92:
     translatable: email_9
     locale: %locale%
