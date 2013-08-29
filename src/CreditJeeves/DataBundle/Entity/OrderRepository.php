@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 
 class OrderRepository extends EntityRepository
 {
@@ -147,5 +148,20 @@ class OrderRepository extends EntityRepository
         $query->orderBy('o.created_at', 'ASC');
         $query = $query->getQuery();
         return $query->execute();
+    }
+
+    public function getLastContractPayment(\RentJeeves\DataBundle\Entity\Contract $contract)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->innerJoin('o.operations', 'p');
+        $query->where('p.contract = :contract');
+        $query->andWhere('o.status = :status');
+        $query->setParameter('contract', $contract);
+        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->orderBy('o.created_at', 'DESC');
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+        return $query->getOneOrNullResult();
+        
     }
 }

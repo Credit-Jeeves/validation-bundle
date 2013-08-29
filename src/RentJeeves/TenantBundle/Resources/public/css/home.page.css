@@ -94,3 +94,41 @@
     margin-left: 762px;
     margin-top: -20px;
 }
+
+.button-contract-pay {
+    padding-left: 0 !important;
+    height: 25px !important;
+}
+/*
+.contracts td,
+.contracts th {
+    font-family: "Helvetica Neue",HelveticaNeue,helvetica-neue,helvetica,arial,sans-serif;
+}
+*/
+.table-wrap .contracts-table th {
+    background: linear-gradient(to bottom, #F6F6F6 0%, #E6E6E6 100%) repeat scroll 0 0 transparent;
+    box-shadow: 1px 1px 0 0 rgba(255, 255, 255, 0.75) inset;
+    color: #666666;
+    font: bold 13px/16px "Helvetica Neue",HelveticaNeue,helvetica-neue,helvetica,arial,sans-serif;
+    padding: 12px;
+}
+
+.contract-delete {
+    background-color: #EB6024;
+    background-image: url("/bundles/rjpublic/images/sprite-icons.png");
+    background-repeat: no-repeat;
+    background-position: 5px -235px;
+    border-radius: 4px 4px 4px 4px;
+    display: block;
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+}
+
+.contract-delete:hover {
+    background-color: #E44018;
+}
+
+.contract-potential {
+    width: 90px;
+}

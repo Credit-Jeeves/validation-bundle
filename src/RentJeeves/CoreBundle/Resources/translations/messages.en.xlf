@@ -829,6 +829,30 @@
                 <source>contract.pay</source>
                 <target>Pay</target>
             </trans-unit>
+            <trans-unit id="contract.pay.source">
+                <source>contract.pay.source</source>
+                <target>Pay Source</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.last">
+                <source>contract.payment.last</source>
+                <target>Last Payment</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.next">
+                <source>contract.payment.next</source>
+                <target>Next Due Date</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.recurring">
+                <source>contract.payment.recurring</source>
+                <target>Recurs?</target>
+            </trans-unit>
+            <trans-unit id="contract.status">
+                <source>contract.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="contract.delete">
+                <source>contract.delete</source>
+                <target>Delete Contract?</target>
+            </trans-unit>
 
         </body>
     </file>

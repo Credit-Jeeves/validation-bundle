@@ -1,3 +1,20 @@
+<!-- Popup Delete Contract -->
+<div id="contract-delete" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'contract.delete' | trans() }}</h1>
+    <div class="clearfix col-box">
+        <div class="col" id="contract-address"></div>
+        <div class="footer-button-box">
+            <button id="button-contract-delete" class="button buttonFix">
+                <span>{{ 'delete' | trans() }}</span>
+            </button>
+            <button id="button-cancel" class="button grey buttonFix">
+                <span>{{ 'cancel' | trans() }}</span>
+            </button>
+        </div>
+    </div>
+</div>
+<!-- end Delete Contract -->
+
 <div class="pod-large pod-border pod-padding shadow">
     <h1>{{ 'current_payments.title' | trans() }}</h1>
     <div class="addPropertyContainer">
@@ -10,58 +27,69 @@
     <div class="row-20"></div>
     <div class="properties-table-block table-wrap">
         <div class="table-margin">
-            <table class="properties-table zebra-grid">
+            <table class="properties-table zebra-grid contracts-table">
                 <thead>
-                <tr class="properties-th">
-                <th class="pie-el">{{ 'address' | trans() }}</th>
-                <th class="pie-el">{{ 'pay_to' | trans() }}</th>
-                <th class="pie-el">{{ 'amount' | trans() }}</th>
-                <th class="pie-el">Pay Source</th>
-                <th class="pie-el">Last Payment</th>
-                <th class="pie-el">Next Due Date</th>
-                <th class="pie-el">Recurs?</th>
-                <th class="pie-el"></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for contract in contracts %}
-            <tr class="contracts">
-                <td title="{{ contract.full_address }}">{{ contract.row_address }}</td>
-                <td></td>
-                <td>${{ contract.rent }}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <center>
-                
-                    {% if contract.status == 'pending' %}
-                    <button class="button small grey">
-                        <span>{{ 'contract.pay' | trans() }}</span>
-                    </button>
-
-                    {% elseif contract.status == 'invite' %}
-                    <button class="button small grey ">
-                        <span>{{ 'contract.pay' | trans() }}</span>
-                    </button>
-
-                    {% elseif contract.status == 'approved' %}
-                    <button class="button small">
-                        <span>{{ 'contract.pay' | trans() }}</span>
-                    </button>
-                    {% elseif contract.status == 'current' %}
-                    <button class="button small">
-                        <span>{{ 'contract.pay' | trans() }}</span>
-                    </button>
-                    {% endif %}
-                    </center>
-                </td>
-                
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    </div>
+                    <tr class="contracts">
+                        <th>{{ 'address' | trans() }}</th>
+                        <th>{{ 'pay_to' | trans() }}</th>
+                        <th>{{ 'amount' | trans() }}</th>
+                        <th>{{ 'contract.pay.source' | trans() }}</th>
+                        <th>{{ 'contract.payment.last' | trans() }}</th>
+                        <th>{{ 'contract.payment.next' | trans() }}</th>
+                        <th>{{ 'contract.payment.recurring' | trans() }}</th>
+                        <th>{{ 'contract.status' | trans() }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for contract in contracts %}
+                    <tr class="contracts">
+                        <td title="{{ contract.full_address }}">{{ contract.row_address }}</td>
+                        <td title="{{ contract.full_pay_to }}">{{ contract.row_pay_to }}</td>
+                        <td>{{ contract.rent }}</td>
+                        <td title="{{ contract.full_payment_source }}">{{ contract.row_payment_source }}</td>
+                        <td>{{ contract.payment_last }}</td>
+                        <td>{{ contract.payment_next }}</td>
+                        <td>{{ contract.recur | capitalize }}</td>
+                        <td>{{ contract.status | upper }}</td>
+                        <td>
+                            {% if contract.status == 'pending' %}
+                            <div class="contract-potential">
+                                <button class="button small button-contract-pay grey floatleft">
+                                    <span>{{ 'contract.pay' | trans() }}</span>
+                                </button>
+                                <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                    <input type="hidden" value="{{ contract.full_address }}">
+                                </div>
+                            </div>
+                            {% elseif contract.status == 'invite' %}
+                            <div class="contract-potential">
+                                <button class="button small button-contract-pay grey floatleft">
+                                    <span>{{ 'contract.pay' | trans() }}</span>
+                                </button>
+                                <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                    <input type="hidden" value="{{ contract.full_address }}">
+                                </div>
+                            </div>
+                            {% elseif contract.status == 'approved' %}
+                            <div class="contract-potential">
+                                <button class="button small button-contract-pay floatleft">
+                                    <span>{{ 'contract.pay' | trans() }}</span>
+                                </button>
+                                <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                    <input type="hidden" value="{{ contract.full_address }}">
+                                </div>
+                            </div>
+                            {% elseif contract.status == 'current' %}
+                            <button class="button small button-contract-pay">
+                                <span>{{ 'contract.pay' | trans() }}</span>
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

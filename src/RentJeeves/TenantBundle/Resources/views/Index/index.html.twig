@@ -15,7 +15,9 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    {% javascripts 
+        '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+        '@RjComponentBundle/Resources/public/js/tenant-contracts.js'
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

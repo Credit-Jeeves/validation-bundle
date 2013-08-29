@@ -47,9 +47,10 @@ class ContractsListController extends Controller
     {
         $tenant = $this->get('core.session.tenant')->getUser();
         $contracts = $tenant->getActiveContracts();
+        $em = $this->get('doctrine.orm.default_entity_manager');
         $data = array();
         foreach ($contracts as $contract) {
-            $data[] = $contract->getDatagridRow();
+            $data[] = $contract->getDatagridRow($em);
         }
         return array(
             'contracts' => $data,
