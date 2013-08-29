@@ -116,7 +116,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     private function inviteProcess($user)
     {
 
-        if(!$user) {
+        if (!$user) {
             return false;
         }
 
@@ -149,21 +149,15 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 
         $holding = $user->getHolding();
         $group = $user->getCurrentGroup();
-/*        var_dump($holding->getId());
-        var_dump($group->getId());
-        var_dump($holding->getName());
-        var_dump($group->getName());*/
 
         foreach ($contractsLandlord as $key => $contract) {
 
             if ($contract->getStatus() != ContractStatus::INVITE) {
                 continue;
             }
-            //var_dump($contract->getHolding()->getId());
             if ($holding) {
                 $contract->setHolding($holding);
             }
-            //var_dump($contract->getGroup()->getId());
             if ($group) {
                 $contract->setGroup($group);
             }

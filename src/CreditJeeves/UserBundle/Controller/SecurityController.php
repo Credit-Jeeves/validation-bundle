@@ -14,7 +14,7 @@ class SecurityController extends BaseController
      * @Route("/login", name="fos_user_security_login")
      * @Route("/invite/login/{inviteCode}", name="fos_user_security_login_invite")
      */
-    public function loginAction($inviteCode = NULL)
+    public function loginAction($inviteCode = null)
     {
         $request = $this->container->get('request');
         $session = $request->getSession();
