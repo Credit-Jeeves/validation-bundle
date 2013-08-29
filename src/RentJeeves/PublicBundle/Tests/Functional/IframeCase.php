@@ -111,6 +111,7 @@ class IframeCase extends BaseTestCase
         $link->click();
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->login('newtenant12@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->logout();
