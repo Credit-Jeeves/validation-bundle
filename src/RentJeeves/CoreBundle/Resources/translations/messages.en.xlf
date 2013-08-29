@@ -845,6 +845,14 @@
                 <source>loading</source>
                 <target>Loading</target>
             </trans-unit>
+            <trans-unit id="login.please">
+                <source>login.please</source>
+                <target>Login please</target>
+            </trans-unit>
+            <trans-unit id="alredy.member">
+                <source>already.member</source>
+                <target>Already are member?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * @DI\Service("user.service.login_success_handler")
@@ -70,6 +71,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             case UserType::LANDLORD:
                 $this->container->get('core.session.landlord')->setUser($User);
                 $url = $this->container->get('router')->generate('landlord_homepage');
+                $this->inviteProcess($User);
                 break;
         }
         if (!$isDefense = $this->checkLogindefense($User)) {
@@ -108,6 +110,77 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 $em->flush();
             }
         }
+        return true;
+    }
+
+    private function inviteProcess($user)
+    {
+
+        if(!$user) {
+            return false;
+        }
+
+        $request = $this->container->get('request');
+        $session = $request->getSession();
+        $inviteCode = $session->get('inviteCode');
+
+        if (!$inviteCode) {
+            return false;
+        }
+
+        $session->remove('inviteCode');
+        $em = $this->container->get('doctrine.orm.entity_manager');
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneBy(
+            array(
+                'invite_code' => $inviteCode,
+                'is_active'   => 0,
+            )
+        );
+
+        if (!$landlord) {
+            return false;
+        }
+
+        $contractsLandlord = $em->getRepository('RjDataBundle:Contract')->getContractsLandlord($landlord);
+
+        if (empty($contractsLandlord)) {
+            return false;
+        }
+
+        $holding = $user->getHolding();
+        $group = $user->getCurrentGroup();
+/*        var_dump($holding->getId());
+        var_dump($group->getId());
+        var_dump($holding->getName());
+        var_dump($group->getName());*/
+
+        foreach ($contractsLandlord as $key => $contract) {
+
+            if ($contract->getStatus() != ContractStatus::INVITE) {
+                continue;
+            }
+            //var_dump($contract->getHolding()->getId());
+            if ($holding) {
+                $contract->setHolding($holding);
+            }
+            //var_dump($contract->getGroup()->getId());
+            if ($group) {
+                $contract->setGroup($group);
+            }
+            $contract->setStatus(ContractStatus::PENDING);
+            $em->persist($contract);
+        }
+
+        $em->flush();
+        $contractsLandlord = $em->getRepository('RjDataBundle:Contract')->getContractsLandlord($landlord);
+
+        if (!empty($contractsLandlord)) {
+            return true;
+        }
+
+        $em->remove($landlord);
+        $em->flush();
+
         return true;
     }
 }

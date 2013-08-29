@@ -78,3 +78,7 @@ _apy_jsformvalidation:
 
 _bazinga_exposetranslation:
     resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
+
+fos_security:
+    resource:   "@UserBundle/Controller/SecurityController.php"
+    type:       annotation
