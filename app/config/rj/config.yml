@@ -1,5 +1,6 @@
 imports:
     - { resource: ../base/config.yml }
+    - { resource: ../base/sonata.yml }
     - { resource: ../parameters.yml } # would be generated from parameters_SERVER.yml depends on SERVER
     - { resource: security.yml } #different for each application
     - { resource: ../base/fos.yml }

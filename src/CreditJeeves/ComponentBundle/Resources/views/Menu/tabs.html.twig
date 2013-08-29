@@ -13,15 +13,15 @@
             </a>
         </li>
         {% if nReport > 0 %}
-        <li class="{% if sRouteName == 'applicant_report' %}active{% endif %}">
-            <a href="{{ path('applicant_report') }}">
+        <li class="{% if sRouteName == 'user_report' %}active{% endif %}">
+            <a href="{{ path('user_report') }}">
                 <span class="tab-corner"></span>
                 {{ 'tab.report'|trans }}
             </a>
         </li>
         {% endif %}
-        <li class="{% if sRouteName == 'applicant_password' %}active{% endif %}">
-            <a href="{{ path('applicant_password') }}">
+        <li class="{% if sRouteName == 'user_password' %}active{% endif %}">
+            <a href="{{ path('user_password') }}">
                 <span class="tab-corner"></span>
                 {{ 'my_account'|trans }}
             </a>

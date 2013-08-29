@@ -3,6 +3,7 @@ namespace RentJeeves\TenantBundle\Menu;
 
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
@@ -22,24 +23,26 @@ class Builder extends ContainerAware
                 'route' => 'tenant_homepage'
             )
         );
-        $menu->addChild(
-            'tabs.summary',
-            array(
-                'route' => 'tenant_summary'
-            )
-        );
+        if (UserIsVerified::PASSED == $user->getIsVerified()) {
+            $menu->addChild(
+                'tabs.summary',
+                array(
+                    'route' => 'tenant_summary'
+                )
+            );
+        }
         if ($isCompleteOrder) {
             $menu->addChild(
                 'tabs.report',
                 array(
-                    'route' => 'tenant_report'
+                    'route' => 'user_report'
                 )
             );
         }
         $menu->addChild(
             'tabs.settings',
             array(
-                'route' => 'tenant_password'
+                'route' => 'user_password'
             )
         );
         switch ($sRoute) {
@@ -56,10 +59,13 @@ class Builder extends ContainerAware
                 $menu['tabs.summary']->setAttribute('class', 'active');
                 break;
             case 'core_report_get_d2c':
-            case 'tenant_report':
+            case 'user_report':
                 $menu['tabs.report']->setAttribute('class', 'active');
                 break;
-            default:
+            case 'user_password':
+            case 'user_contact':
+            case 'user_email':
+            case 'user_remove':
                 $menu['tabs.settings']->setAttribute('class', 'active');
                 break;
         }
@@ -73,32 +79,32 @@ class Builder extends ContainerAware
         $menu->addChild(
             'settings.password',
             array(
-                'route' => 'tenant_password'
+                'route' => 'user_password'
             )
         );
         $menu->addChild(
             'settings.contact_information',
             array(
-                'route' => 'tenant_contact'
+                'route' => 'user_contact'
             )
         );
-//        $menu->addChild('settings.email', array('route' => 'tenant_email'));
-//        $menu->addChild('settings.remove', array('route' => 'tenant_remove'));
+        $menu->addChild('settings.email', array('route' => 'user_email'));
+        $menu->addChild('settings.remove', array('route' => 'user_remove'));
 
        
         switch ($sRoute) {
-            case 'tenant_password':
+            case 'user_password':
                 $menu['settings.password']->setUri('');
                 break;
-            case 'tenant_contact':
+            case 'user_contact':
                 $menu['settings.contact_information']->setUri('');
                 break;
-//             case 'tenant_email':
-//                 $menu['settings.email']->setUri('');
-//                 break;
-//             case 'tenant_remove':
-//                 $menu['settings.remove']->setUri('');
-//                 break;
+             case 'user_email':
+                 $menu['settings.email']->setUri('');
+                 break;
+             case 'user_remove':
+                 $menu['settings.remove']->setUri('');
+                 break;
         }
         return $menu;
     }

@@ -85,13 +85,13 @@ class BuyReportCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#checkout_authorize_net_aim_type'));
 
         $form->pressButton('buy-report-form-submit');
-        $this->assertCount(3, $form->findAll('css', '.error_list'), 'Number of errors is wrong');
+        $this->assertCount(3, $form->findAll('css', '.error_list li'), 'Number of errors is wrong');
 
         $formData = array(
-            'order_authorize_authorize_card_num' => '0005105105105100',
-            'order_authorize_authorize_card_code' => '000',
-            'order_authorize_authorize_exp_date_month' => date('m'),
-            'order_authorize_authorize_exp_date_year' => date('Y'),
+            'order_authorize_authorizes_0_card_num' => '0005105105105100',
+            'order_authorize_authorizes_0_card_code' => '000',
+            'order_authorize_authorizes_0_exp_date_month' => date('m'),
+            'order_authorize_authorizes_0_exp_date_year' => date('Y'),
         );
 
         // Fake data: card number
@@ -105,12 +105,12 @@ class BuyReportCase extends BaseTestCase
             static::getContainer()->getParameter('support_email'),
             $globalErrors[0]->getText()
         );
-        $formData['order_authorize_authorize_card_num'] = '4111111111111111';
+        $formData['order_authorize_authorizes_0_card_num'] = '4111111111111111';
         $this->fillForm($form, $formData);
         $form->pressButton('buy-report-form-submit');
 
         $this->session->wait(
-            $this->timeout,
+            $this->timeout + 10000,
             "jQuery('#report_page').children().length > 0"
         );
 

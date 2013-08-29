@@ -1,10 +1,11 @@
 <?php
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace CreditJeeves\UserBundle\Controller;
 
 use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
 use CreditJeeves\ApplicantBundle\Form\Type\ContactType;
 use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
+use CreditJeeves\CoreBundle\Controller\ApplicantController;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -13,7 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class SettingsController extends Controller
 {
     /**
-     * @Route("/password", name="applicant_password")
+     * @Route("/password", name="user_password")
      * @Route("/profile/")
      * @Template()
      */
@@ -44,17 +45,14 @@ class SettingsController extends Controller
             }
         }
 
-        return $this->render(
-            'ApplicantBundle:Settings:password.html.twig',
-            array(
-                'sEmail' => $sEmail,
-                'form' => $form->createView()
-            )
+        return array(
+            'sEmail' => $sEmail,
+            'form' => $form->createView()
         );
     }
 
     /**
-     * @Route("/contact", name="applicant_contact")
+     * @Route("/contact", name="user_contact")
      * @Template()
      */
     public function contactAction()
@@ -73,18 +71,15 @@ class SettingsController extends Controller
             }
         }
 
-        return $this->render(
-            'ApplicantBundle:Settings:contact.html.twig',
-            array(
-                'sEmail' => $sEmail,
-                'form' => $form->createView()
-            )
+        return array(
+            'sEmail' => $sEmail,
+            'form' => $form->createView()
         );
 
     }
 
     /**
-     * @Route("/email", name="applicant_email")
+     * @Route("/email", name="user_email")
      * @Template()
      */
     public function emailAction()
@@ -103,18 +98,15 @@ class SettingsController extends Controller
             }
         }
 
-        return $this->render(
-            'ApplicantBundle:Settings:email.html.twig',
-            array(
-                'sEmail' => $sEmail,
-                'form' => $form->createView()
-            )
+        return array(
+            'sEmail' => $sEmail,
+            'form' => $form->createView()
         );
 
     }
 
     /**
-     * @Route("/remove", name="applicant_remove")
+     * @Route("/remove", name="user_remove")
      * @Template()
      */
     public function removeAction()
@@ -155,12 +147,9 @@ class SettingsController extends Controller
                 }
             }
         }
-        return $this->render(
-            'ApplicantBundle:Settings:remove.html.twig',
-            array(
-                'sEmail' => $sEmail,
-                'form' => $form->createView()
-            )
+        return array(
+            'sEmail' => $sEmail,
+            'form' => $form->createView()
         );
     }
 }

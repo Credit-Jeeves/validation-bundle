@@ -42,7 +42,7 @@ class ReportController extends Controller
     protected function isReportLoadAllowed($isD2c = false)
     {
         if ($isD2c) {
-            return !$this->getUser()->getLastCompleteOperation(OperationType::REPORT);
+            return $this->getUser()->getLastCompleteOperation(OperationType::REPORT);
         }
         return !$this->getUser()->getReportsPrequal()->last();
     }
@@ -56,29 +56,28 @@ class ReportController extends Controller
     public function getD2cAction()
     {
         $this->get('session')->getFlashBag()->set('isD2cReport', true);
-        $this->redirect = $this->generateUrl($this->getUser()->getType() . '_report');
-        return $this->getAction();
+//        $this->redirect = ;
+        return $this->getAction(null, true);
     }
 
     /**
      * @Route("/get", name="core_report_get")
+     * @Route("/get/{redirect}", name="core_report_get")
      * @Template()
      *
      *
      *
      * @return array
      */
-    public function getAction()
+    public function getAction($redirect = null, $isD2c = false)
     {
-        $user = $this->getUser();
-        if (!$this->isReportLoadAllowed()) {
+        if (!$this->isReportLoadAllowed($isD2c)) {
             throw $this->createNotFoundException('Report does not allowed');
         }
         return array(
-            'parentTemplate' => ('tenant' == $user->getType() ?
-                'TenantBundle::base.html.twig' : 'ApplicantBundle::base.html.twig'),
             'url' => $this->generateUrl('core_report_get_ajax'),
-            'redirect' => $this->redirect//$this->getRequest()->headers->get('referer'), //FIXME
+            'redirect' => $redirect?$this->generateUrl($redirect):null
+            //$this->getRequest()->headers->get('referer'), //FIXME redirect does not preserve referer
         );
     }
 
@@ -96,19 +95,12 @@ class ReportController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         if ($isD2c) {
-            $report = new ReportD2c();
-            $operation = new Operation();
-            $order = $this->getUser()->getOrders()->last();
-            $operation->setReportD2c($report);
-            $em->persist($operation);
-            $order->addOperation($operation);
-            $em->persist($order);
-
+            $report = $this->getUser()->getLastCompleteOperation(OperationType::REPORT)->getReportD2c();
         } else {
             $report = new ReportPrequal();
+            $report->setUser($this->getUser());
         }
         $report->setRawData($this->getArf());
-        $report->setUser($this->get('core.session.applicant')->getUser());
         $em->persist($report);
         $em->flush();
         return true;

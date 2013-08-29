@@ -1,4 +1,4 @@
-{% extends parentTemplate %}
+{% extends app.user.type | capitalize ~ 'Bundle::base.html.twig' %}
 
 {% block content %}
 

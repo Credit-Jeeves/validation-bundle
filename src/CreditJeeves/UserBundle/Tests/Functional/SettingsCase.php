@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\ApplicantBundle\Tests\Functional;
+namespace CreditJeeves\UserBundle\Tests\Functional;
 
 use CreditJeeves\TestBundle\Functional\BaseTestCase;
 

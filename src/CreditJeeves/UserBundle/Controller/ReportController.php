@@ -1,7 +1,8 @@
 <?php
 
-namespace CreditJeeves\ApplicantBundle\Controller;
+namespace CreditJeeves\UserBundle\Controller;
 
+use CreditJeeves\CoreBundle\Controller\ApplicantController;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
@@ -11,14 +12,10 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-/**
- * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
- */
 class ReportController extends Controller
 {
     /**
-     * @Route("/report", name="applicant_report")
-     * @Route("/tenant/report", name="tenant_report")
+     * @Route("/report", name="user_report")
      * @Template()
      *
      * @return array
@@ -36,15 +33,18 @@ class ReportController extends Controller
             if ($Operation = $User->getLastCompleteOperation(OperationType::REPORT)) {
                 $Report = $Operation->getReportD2c();
             } else {
-                return $this->redirect($this->generateUrl('core_report_get_d2c'));
+                throw $this->createNotFoundException('Operation does not found');
             }
+
+            if (empty($Report) || !$Report->getRawData()) {
+                return $this->forward('ExperianBundle:Report:getD2c');
+            }
+
         } else {
-            return $this->createNotFoundException('Order does not found');
+            throw $this->createNotFoundException('Order does not found');
         }
 
         return array(
-            'parentTemplate' => (UserType::TETNANT == $this->getUser()->getType() ?
-                'TenantBundle::base.html.twig' : 'ApplicantBundle::base.html.twig'),
             'Report' => $Report,
             'sSupportEmail' => $this->container->getParameter('support_email'),
             'sSupportPhone' => $this->container->getParameter('support_phone'),

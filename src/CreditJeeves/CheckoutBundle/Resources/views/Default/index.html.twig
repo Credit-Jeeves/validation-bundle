@@ -1,4 +1,4 @@
-{% extends parentTemplate %}
+{% extends app.user.type | capitalize ~ 'Bundle::base.html.twig' %}
 {% trans_default_domain 'checkout' %}
 {% block stylesheets %}
     <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
@@ -68,16 +68,16 @@
                                 <img alt="" src="{{ asset('bundles/core/images/cc.png') }}" />
                             </div>
                         </div>
-                        {{ form_row(form.authorize.card_num) }}
-                        {{ form_row(form.authorize.card_code) }}
+                        {{ form_row(form.authorizes[0].card_num) }}
+                        {{ form_row(form.authorizes[0].card_code) }}
 
                         <div class="form-row">
-                            {{ form_errors(form.authorize.exp_date) }}
-                            <div class="form-label">{{ form_label(form.authorize.exp_date) }}</div>
+                            {{ form_errors(form.authorizes[0].exp_date) }}
+                            <div class="form-label">{{ form_label(form.authorizes[0].exp_date) }}</div>
                             <div class="form-widget">
-                                {{ form_widget(form.authorize.exp_date.month) }}
-                                {{ form_widget(form.authorize.exp_date.year) }}
-                                {{ form_widget(form.authorize.exp_date.day) }}
+                                {{ form_widget(form.authorizes[0].exp_date.month) }}
+                                {{ form_widget(form.authorizes[0].exp_date.year) }}
+                                {{ form_widget(form.authorizes[0].exp_date.day) }}
                             </div>
                         </div>
 

@@ -85,7 +85,7 @@ class Mailer extends BaseMailer implements MailerInterface
             array(
                 'date' => $order->getCreatedAt()->format($dateShortFormat),
                 'amout' => '$9.00', // TODO move to config file and add correct currency formatting
-                'number' => $order->getAuthorize()->getTransactionId(),
+                'number' => $order->getAuthorizes()->last()->getTransactionId(),
             )
         );
     }

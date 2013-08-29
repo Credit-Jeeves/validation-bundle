@@ -57,22 +57,22 @@ class Builder extends ContainerAware
     {
         $menu = $factory->createItem('root');
 //         $menu->addChild('settings.password', array('route' => 'applicant_password'));
-//         $menu->addChild('settings.contact_information', array('route' => 'applicant_contact'));
-//         $menu->addChild('settings.email', array('route' => 'applicant_email'));
-//         $menu->addChild('settings.remove', array('route' => 'applicant_remove'));
+//         $menu->addChild('settings.contact_information', array('route' => 'user_contact'));
+//         $menu->addChild('settings.email', array('route' => 'user_email'));
+//         $menu->addChild('settings.remove', array('route' => 'user_remove'));
 
 //         $sRoute = $this->container->get('request')->get('_route');
 //         switch ($sRoute) {
 //             case 'applicant_password':
 //                 $menu['settings.password']->setUri('');
 //                 break;
-//             case 'applicant_contact':
+//             case 'user_contact':
 //                 $menu['settings.contact_information']->setUri('');
 //                 break;
-//             case 'applicant_email':
+//             case 'user_email':
 //                 $menu['settings.email']->setUri('');
 //                 break;
-//             case 'applicant_remove':
+//             case 'user_remove':
 //                 $menu['settings.remove']->setUri('');
 //                 break;
 //         }

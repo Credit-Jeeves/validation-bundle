@@ -117,7 +117,9 @@ class Filter implements ContainerAwareInterface
         if (!$this->getUser()->getReportsPrequal()->last()) {
             $event->stopPropagation();
             return $event->getResponseEvent()->setResponse(
-                new RedirectResponse($this->getRoute()->generate('core_report_get'))
+                new RedirectResponse(
+                    $this->getRoute()->generate('core_report_get', array('redirect' => 'applicant_homepage'))
+                )
             );
         }
     }

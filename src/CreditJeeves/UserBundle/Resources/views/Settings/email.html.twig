@@ -1,10 +1,10 @@
-{% extends "ApplicantBundle::base.html.twig" %}
+{% extends app.user.type | capitalize ~ "Bundle::base.html.twig" %}
 
 {% block content %}
     <div class="column-small floatleft">
         <div class="pod-small pod-border pod-padding shadow">
             <h2>{{ 'settings.title' | trans }}</h2>
-            {{ knp_menu_render('ApplicantBundle:Builder:settingsMenu', { 'template': 'ApplicantBundle:Menu:applicant_settings.html.twig' }) }}
+            {{ knp_menu_render(app.user.type | capitalize ~ 'Bundle:Builder:settingsMenu', { 'template': '::menu.html.twig' }) }}
         </div>
     </div>
     <div class="column-middle floatright">
@@ -16,7 +16,7 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-            <form action="{{ path('applicant_email') }}" method="post" {{ form_enctype(form) }}>
+            <form action="{{ path('user_email') }}" method="post" {{ form_enctype(form) }}>
                 {{ form_errors(form) }}
                 <table>
                     <tr>
