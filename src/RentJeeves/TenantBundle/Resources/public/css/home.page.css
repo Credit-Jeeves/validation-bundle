@@ -114,19 +114,30 @@
 }
 
 .contract-delete {
-    background-color: #EB6024;
+    border: 1px solid red;
     background-image: url("/bundles/rjpublic/images/sprite-icons.png");
     background-repeat: no-repeat;
-    background-position: 5px -235px;
+    background-position: 4px -236px;
     border-radius: 4px 4px 4px 4px;
     display: block;
-    height: 25px;
-    width: 25px;
+    height: 23px;
+    width: 23px;
     cursor: pointer;
 }
 
 .contract-delete:hover {
-    background-color: #E44018;
+    
+}
+
+.contract-delete-grey {
+    border: 1px solid #c4c4c4;
+    background-image: url("/bundles/rjpublic/images/sprite-icons.png");
+    background-repeat: no-repeat;
+    background-position: 4px -236px;
+    border-radius: 4px 4px 4px 4px;
+    display: block;
+    height: 23px;
+    width: 23px;
 }
 
 .contract-potential {
