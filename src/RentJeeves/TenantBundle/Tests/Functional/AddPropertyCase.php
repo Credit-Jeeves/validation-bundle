@@ -94,7 +94,6 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        $this->assertCount(3, $searchResult, 'Search result');
         
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"

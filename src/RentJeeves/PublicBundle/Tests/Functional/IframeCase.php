@@ -192,7 +192,7 @@ class IframeCase extends BaseTestCase
         $email = array_pop($email);
         $email->click();
         $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#email-body a'));
+        $this->assertNotNull($link = $this->page->find('css', '#confirmationUrl'));
         $link->click();
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();

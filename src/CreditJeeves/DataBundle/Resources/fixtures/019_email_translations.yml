@@ -152,7 +152,7 @@ fixtures:
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
-      {% block email %}Confirm - please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a>{% endblock %}
+      {% block email %}Confirm - please visit <a href="{{ checkUrl }}" id="confirmationUrl">{{ checkUrl }}</a>{% endblock %}
 
 # rjLandLordInvite.html email
   translation_122:
