@@ -825,6 +825,11 @@
                 <source>set_up_your_first_rental_payment</source>
                 <target>Set Up Your First Rental Payment</target>
             </trans-unit>
+            <trans-unit id="contract.pay">
+                <source>contract.pay</source>
+                <target>Pay</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

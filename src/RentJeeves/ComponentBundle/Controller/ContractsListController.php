@@ -45,10 +45,14 @@ class ContractsListController extends Controller
      */
     public function tenantAction()
     {
-        $user = $this->get('core.session.tenant')->getUser();
-
+        $tenant = $this->get('core.session.tenant')->getUser();
+        $contracts = $tenant->getActiveContracts();
+        $data = array();
+        foreach ($contracts as $contract) {
+            $data[] = $contract->getDatagridRow();
+        }
         return array(
-            'contracts' => $user->getActiveContracts(),
+            'contracts' => $data,
         );
     }
 }

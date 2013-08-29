@@ -266,4 +266,18 @@ class Contract extends Base
     {
         return floor($paid * 30/ $rent);
     }
+
+    public function getDatagridRow()
+    {
+        $property = $this->getProperty();
+        $tenant = $this->getTenant();
+        $unit = $this->getUnit();
+        $result = array();
+        $result['status'] = $this->getStatus();
+        $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
+        $result['row_address'] = substr($result['full_address'], 0, 26).'...';
+        $result['rent'] = $this->getRent();
+        //$result['due_date'] = $this->getPaidTo()->fo
+        return $result;
+    }
 }
