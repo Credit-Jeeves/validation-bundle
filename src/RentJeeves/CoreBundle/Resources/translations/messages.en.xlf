@@ -720,7 +720,10 @@
                 <target>Mark as “Unpaid” (this will report to credit bureau as an unpaid account - this cannot be undone)</target>
             </trans-unit>
             
-
+           <trans-unit id="error.email.already.use">
+                <source>error.email.already.use</source>
+                <target>Email already use in the system.</target>
+            </trans-unit>
            <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
                 <target>Start date couldn't be empt.</target>

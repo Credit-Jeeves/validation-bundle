@@ -10,3 +10,10 @@ body {
     border-top: 5px solid #1E88EB;
     padding-top: 5px;
 }
+
+.user-logout {
+    font-size: 12px;
+}
+.info-block {
+    margin-right: 30px;
+}
