@@ -382,7 +382,7 @@
             </trans-unit>
             <trans-unit id="setup.your.rent">
                 <source>setup.your.rent</source>
-                <target>Set up your Rent Jeeves account.</target>
+                <target>Set up your RentTrack account.</target>
             </trans-unit>
             <trans-unit id="name">
                 <source>name</source>
@@ -845,13 +845,13 @@
                 <source>loading</source>
                 <target>Loading</target>
             </trans-unit>
-            <trans-unit id="login.please">
-                <source>login.please</source>
-                <target>Login please</target>
+            <trans-unit id="log_in">
+                <source>log_in</source>
+                <target>Log In</target>
             </trans-unit>
-            <trans-unit id="alredy.member">
-                <source>already.member</source>
-                <target>Already are member?</target>
+            <trans-unit id="have.an.account">
+                <source>have.an.account</source>
+                <target>Have an account</target>
             </trans-unit>
         </body>
     </file>

@@ -6,10 +6,7 @@
 <section class="form-content">
 <form action="{{ path('landlord_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="landlordInviteRegister" >
     <div class="box type1">
-  <p class="haveAccount">
-    {{ 'already.member'|trans }} <a href="{{ path('fos_user_security_login_invite', {'inviteCode':code})}}">{{ 'login.please'|trans }}</a>
-  </p>
-      {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form }) }}
+      {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form, "inviteCodeLandlord": code }) }}
     </div>
     <div class="buttons-box clearfix">
       <div class="buttons left">
