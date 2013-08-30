@@ -3866,12 +3866,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkBundle.git",
-                "reference": "f5b39338b89cacd525281f90e78c9329879212e4"
+                "reference": "3102a20665dff73bc8040c226f061ed1ad8d19ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/f5b39338b89cacd525281f90e78c9329879212e4",
-                "reference": "f5b39338b89cacd525281f90e78c9329879212e4",
+                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/3102a20665dff73bc8040c226f061ed1ad8d19ed",
+                "reference": "3102a20665dff73bc8040c226f061ed1ad8d19ed",
                 "shasum": ""
             },
             "require": {
@@ -3881,11 +3881,11 @@
                 "symfony/framework-bundle": "~2.2"
             },
             "require-dev": {
-                "behat/mink-goutte-driver": ">=1.0.8,<1.1",
-                "behat/mink-sahi-driver": ">=1.1,<1.2",
-                "behat/mink-selenium-driver": ">=1.1,<1.2",
-                "behat/mink-selenium2-driver": ">=1.1,<1.2",
-                "behat/mink-zombie-driver": ">=1.1,<1.2"
+                "behat/mink-goutte-driver": "~1.0.8",
+                "behat/mink-sahi-driver": "~1.1.0",
+                "behat/mink-selenium-driver": "~1.1.0",
+                "behat/mink-selenium2-driver": "~1.1.0",
+                "behat/mink-zombie-driver": "~1.1.0"
             },
             "suggest": {
                 "behat/mink-goutte-driver": "fast headless driver for any app without JS emulation",
@@ -3921,7 +3921,7 @@
                 "test",
                 "web"
             ],
-            "time": "2013-06-25 12:19:16"
+            "time": "2013-08-30 02:16:59"
         },
         {
             "name": "behat/mink-goutte-driver",

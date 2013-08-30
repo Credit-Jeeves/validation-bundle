@@ -13,19 +13,30 @@ abstract class BaseTestCase extends MinkTestCase
     const APP = 'AppCj';
 
     /**
-     * @return \Symfony\Component\HttpKernel\Kernel
+     * {@inheritdoc}
      */
     public function getKernel()
     {
         static $current;
-        if ($current != static::APP || null === static::$kernel) {
+        if ($current != static::APP) {
             $current = static::APP;
-            static::$kernel = static::createKernel();
+            static::$kernel = null;
         }
-        if (!static::$kernel->getContainer()) {
-            static::$kernel->boot();
+        return parent::getKernel();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMink()
+    {
+        static $current;
+        if ($current != static::APP) {
+            $current = static::APP;
+            static:: = null;
         }
-        return static::$kernel;
+        return parent::getMink();
+
     }
 
     /**
