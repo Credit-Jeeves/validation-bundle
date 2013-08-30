@@ -37,7 +37,7 @@ class AddPropertyCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(3, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
@@ -54,8 +54,8 @@ class AddPropertyCase extends BaseTestCase
         $thisIsMyRental->click();
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
-        $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
-        $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
+        $this->session->wait($this->timeout, "$('.properties-table').length > 0");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(5, $tr, 'List of property');
         $this->logout();
     }
@@ -68,7 +68,7 @@ class AddPropertyCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(3, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
@@ -118,8 +118,8 @@ class AddPropertyCase extends BaseTestCase
         );
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $this->page->pressButton('add.property');
-        $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
-        $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
+        $this->session->wait($this->timeout, "$('.properties-table').length > 0");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(4, $tr, 'List of property');
     }
 
@@ -167,7 +167,7 @@ class AddPropertyCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(3, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
@@ -193,8 +193,8 @@ class AddPropertyCase extends BaseTestCase
             )
         );
         $this->page->pressButton('add.property');
-        $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
-        $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
+        $this->session->wait($this->timeout, "$('.properties-table').length > 0");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(4, $tr, 'List of property');
     }
 
