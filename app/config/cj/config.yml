@@ -29,6 +29,8 @@ parameters:
 framework:
     router:
         resource: "%kernel.root_dir%/config/cj/routing.yml"
+    session:
+        name: cj
 
 twig:
     globals:

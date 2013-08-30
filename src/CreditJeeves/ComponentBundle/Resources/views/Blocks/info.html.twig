@@ -1,6 +1,6 @@
 <p class="user-email">{{ sEmail }} </p>
 {% if isAdmin %}
-    <a href="{{ path('public_back_to_admin') }}">Back to Admin</a>
+    <a href="{{ path('public_back_to_admin') }}">{{ 'back.to.admin' | trans }}</a>
 {% else %}
     {% include '::userLogout.html.twig' %}
 {% endif %}

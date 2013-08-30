@@ -29,6 +29,8 @@ parameters:
 framework:
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
+    session:
+        name: rj
 
 sonata_admin:
     title:      Admin

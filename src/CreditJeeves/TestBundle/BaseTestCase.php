@@ -21,6 +21,7 @@ abstract class BaseTestCase extends MinkTestCase
         if ($current != static::APP) {
             $current = static::APP;
             static::$kernel = null;
+            static::$class = null;
             $this->setMink();
         }
         return parent::getKernel();
