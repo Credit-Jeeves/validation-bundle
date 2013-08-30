@@ -30,6 +30,17 @@ framework:
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
 
+sonata_admin:
+    title:      Admin
+    title_logo: /bundles/rjpublic/images/logo-new.png
+    dashboard:
+        blocks:
+            # display a dashboard block
+            - { position: left, type: sonata.admin.block.admin_list }
+        groups:
+            admin: ~
+            RentJeeves: ~
+
 twig:
     globals:
         application: rj

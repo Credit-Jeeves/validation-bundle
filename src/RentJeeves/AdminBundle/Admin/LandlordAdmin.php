@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\AdminBundle\Admin;
+namespace RentJeeves\AdminBundle\Admin;
 
 use CreditJeeves\DataBundle\Enum\UserType;
 
@@ -30,7 +30,7 @@ class LandlordAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_'.self::TYPE;
+        return 'admin_'.self::TYPE;
     }
 
     /**
@@ -38,7 +38,7 @@ class LandlordAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/'.self::TYPE;
+        return '/'.self::TYPE;
     }
 
     public function configureListFields(ListMapper $listMapper)

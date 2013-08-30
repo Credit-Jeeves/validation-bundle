@@ -36,7 +36,10 @@ class Filter implements ContainerAwareInterface
      */
     protected function getUser()
     {
-        return $this->container->get('core.session.applicant')->getUser();
+        if ($token = $this->container->get('security.context')->getToken()) {
+            return $token->getUser();
+        }
+        return null;
     }
 
     /**

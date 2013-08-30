@@ -7,10 +7,14 @@ _sonata_admin:
     type: sonata_admin
     prefix: /admin
 
-admin_common:
+admin_base_common:
     resource: "@AdminBundle/Controller"
     type:     annotation
     prefix:   /admin
+
+admin_dashboard:
+    pattern: /admin
+    defaults: { _controller: SonataAdminBundle:Core:dashboard }
 
 landlord:
     resource: "@LandlordBundle/Controller/"

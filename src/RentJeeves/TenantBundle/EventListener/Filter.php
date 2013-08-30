@@ -16,14 +16,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class Filter extends BaseFilter
 {
     /**
-     * @return \CreditJeeves\DataBundle\Entity\User
-     */
-    protected function getUser()
-    {
-        return $this->container->get('core.session.tenant')->getUser();
-    }
-    
-    /**
      * @DI\Observe("tenant.filter")
      */
     public function isReturned(FilterEvent $event)

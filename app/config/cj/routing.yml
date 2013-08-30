@@ -34,6 +34,10 @@ _sonata_admin:
     type: sonata_admin
     prefix: /admin
 
+admin_dashboard:
+    pattern: /admin
+    defaults: { _controller: SonataAdminBundle:Core:dashboard }
+
 dealer:
     resource: "@DealerBundle/Controller"
     type:     annotation

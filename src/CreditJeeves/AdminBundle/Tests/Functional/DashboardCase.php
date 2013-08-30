@@ -87,9 +87,9 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         //$this->setDefaultSession('Goutte');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
-        $this->assertCount(3, $tables, 'Wrong number of blocks');
+        $this->assertCount(2, $tables, 'Wrong number of blocks');
         $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(10, $list, 'Wrong number of blocks');
+        $this->assertCount(7, $list, 'Wrong number of blocks');
         $link = $list[1]->getParent();
         $link->click();
         $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));

@@ -1,12 +1,12 @@
 <?php
-namespace CreditJeeves\AdminBundle\Tests\Functional;
+namespace RentJeeves\AdminBundle\Tests\Functional;
 
-use CreditJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
-class TenantCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
+class TenantCase extends BaseTestCase
 {
     /**
      * @test
@@ -62,7 +62,9 @@ class TenantCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $tableBlock->clickLink('link_list');
         $this->assertNotNull($tenants = $this->page->findAll('css', 'a.observe_link'));
         $this->assertCount(21, $tenants);
+        sleep(3);
         $tenants[0]->click();
+        sleep(10);
         $this->page->clickLink('tabs.settings');
         $this->page->clickLink('Back to Admin');
         $this->logout();

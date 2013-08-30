@@ -17,15 +17,15 @@ class AdminAdmin extends Admin
     const TYPE = UserType::ADMIN;
 
     protected $formOptions = array(
-            'validation_groups' => 'user_admin'
-        );
+        'validation_groups' => 'user_admin'
+    );
 
     /**
      * {@inheritdoc}
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_user_'.self::TYPE;
+        return 'admin_'.self::TYPE;
     }
 
     /**
@@ -33,7 +33,7 @@ class AdminAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/user/'.self::TYPE;
+        return '/'.self::TYPE;
     }
 
     public function configureListFields(ListMapper $listMapper)

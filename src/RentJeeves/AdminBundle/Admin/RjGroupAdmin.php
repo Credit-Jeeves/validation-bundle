@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\AdminBundle\Admin;
+namespace RentJeeves\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;

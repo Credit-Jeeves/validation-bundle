@@ -1,6 +1,7 @@
 <?php
-namespace CreditJeeves\CoreBundle\Session;
+namespace RentJeeves\CoreBundle\Session;
 
+use CreditJeeves\CoreBundle\Session\User;
 use CreditJeeves\DataBundle\Enum\UserType;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\Landlord as UserEntity;

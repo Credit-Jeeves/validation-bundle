@@ -178,7 +178,7 @@ class LeadAdmin extends Admin
                     'SonataAdminBundle'
                 ),
                 array(
-                    'uri' => $this->routeGenerator->generate('admin_cj_dealer_list')
+                    'uri' => $this->routeGenerator->generate('admin_dealer_list')
                 )
             );
         }

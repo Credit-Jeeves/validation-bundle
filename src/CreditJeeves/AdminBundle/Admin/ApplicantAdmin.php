@@ -34,7 +34,7 @@ class ApplicantAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_cj_'.self::TYPE;
+        return 'admin_'.self::TYPE;
     }
 
     /**
@@ -42,7 +42,7 @@ class ApplicantAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/cj/'.self::TYPE;
+        return '/'.self::TYPE;
     }
 
     public function configureRoutes(RouteCollection $collection)

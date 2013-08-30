@@ -19,17 +19,14 @@ class AdminController extends Controller
     public function indexAction()
     {
         $adminId = $this->get('session')->get('observe_admin_id');
-        if (!$adminId) {
+        if (!$adminId || !($token = $this->get('security.context')->getToken())) {
             throw $this->createNotFoundException('It is not admin');
         }
-        $this->get('security.context')
-            ->getToken()
-            ->setUser($this->get('doctrine.orm.entity_manager')->getRepository('DataBundle:User')->find($adminId));
+        $type = $token->getUser()->getType();
+        $token->setUser($this->get('doctrine.orm.entity_manager')->getRepository('DataBundle:User')->find($adminId));
 
         $this->get('session')->set('observe_admin_id', null);
 
-        return $this->redirect($this->get('router')->generate($type . '_homepage'));
-
-
+        return $this->redirect($this->get('router')->generate("admin_{$type}_list"));
     }
 }

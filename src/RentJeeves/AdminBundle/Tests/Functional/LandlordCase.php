@@ -1,7 +1,7 @@
 <?php
-namespace CreditJeeves\AdminBundle\Tests\Functional;
+namespace RentJeeves\AdminBundle\Tests\Functional;
 
-use CreditJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>

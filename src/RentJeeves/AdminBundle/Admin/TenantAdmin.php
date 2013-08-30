@@ -1,5 +1,5 @@
 <?php 
-namespace CreditJeeves\AdminBundle\Admin;
+namespace RentJeeves\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -27,7 +27,7 @@ class TenantAdmin extends Admin
      */
     public function getBaseRouteName()
     {
-        return 'admin_rj_'.self::TYPE;
+        return 'admin_'.self::TYPE;
     }
 
     /**
@@ -35,7 +35,7 @@ class TenantAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/'.self::TYPE;
+        return '/'.self::TYPE;
     }
 
     public function configureListFields(ListMapper $listMapper)
