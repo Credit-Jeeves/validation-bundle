@@ -22,7 +22,8 @@ class PaymentHistoryController extends Controller
         $em = $this->get('doctrine.orm.default_entity_manager');
         $contracts = $user->getContracts();
         foreach ($contracts as $contract) {
-            if (ContractStatus::PENDING == $contract->getStatus()) {
+            $status = $contract->getStatus();
+            if (in_array($status, array(ContractStatus::PENDING, ContractStatus::DELETED))) {
                 continue;
             }
             $currentDate = new \DateTime('now');

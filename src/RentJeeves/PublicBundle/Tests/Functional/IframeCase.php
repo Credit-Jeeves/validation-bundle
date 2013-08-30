@@ -199,7 +199,7 @@ class IframeCase extends BaseTestCase
         $this->login('newtenant13@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
-        $this->assertCount(3, $contracts, 'wrong number of contracts');
+        $this->assertCount(4, $contracts, 'wrong number of contracts');
     }
 
     /**
