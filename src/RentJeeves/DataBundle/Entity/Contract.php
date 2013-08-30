@@ -84,7 +84,7 @@ class Contract extends Base
         $result['phone'] = $tenant->getFomattedPhone();
         $result['amount'] = 'undefined';
         if ($rent = $this->getRent()) {
-            $result['amount'] = '$'.$this->getRent();
+            $result['amount'] = $this->getRent();
         }
         $result['due_day'] = $this->getDueDay().'th';
         $result['late'] = $this->getLateDays();
@@ -177,9 +177,6 @@ class Contract extends Base
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '');
         $payments = $this->createHistoryArray();
-//         echo '<pre>';
-//         print_r($payments);
-//         echo '</pre>';
         $currentDate = new \DateTime('now');
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $repo = $em->getRepository('DataBundle:Order');
@@ -218,7 +215,7 @@ class Contract extends Base
         $result = array();
         $aMonthes = array();
         for ($i = 1; $i < 13; $i++) {
-            $aMonthes[date('m', mktime(0, 0, 0, $i))] = array(
+            $aMonthes[date('m', mktime(0, 0, 0, $i, 1))] = array(
                 'status' => self::STATUS_EMPTY,
                 'text' => '',
                 'amount' => 0,
@@ -265,5 +262,35 @@ class Contract extends Base
     private function countPaidDays($rent, $paid)
     {
         return floor($paid * 30/ $rent);
+    }
+
+    public function getDatagridRow($em)
+    {
+        $property = $this->getProperty();
+        $tenant = $this->getTenant();
+        $unit = $this->getUnit();
+        $repo = $em->getRepository('DataBundle:Order');
+        $result = array();
+        $result['id'] = $this->getId();
+        $result['status'] = $this->getStatus();
+        $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
+        $result['row_address'] = substr($result['full_address'], 0, 20).'...';
+        $result['rent'] = ($rent = $this->getRent()) ? '$'.$rent : '--';
+        $result['full_pay_to'] = $this->getHolding()->getName().' '.$this->getGroup()->getName();
+        $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10).'...';
+        $result['status'] = $this->getStatus();
+        $result['recur'] = 'NO';
+        // @todo get payment source name
+        $result['full_payment_source'] = 'N/A';
+        $result['row_payment_source'] = substr($result['full_payment_source'], 0, 10).'...';
+        $result['payment_last'] = 'N/A';
+        if ($order = $repo->getLastContractPayment($this)) {
+            $result['payment_last'] = $order->getUpdatedAt()->format('m/d/Y');
+        }
+        $result['payment_next'] = 'N/A';
+        if ($paidTo = $this->getPaidTo()) {
+            $result['payment_next'] = $paidTo->format('m/d/Y');
+        }
+        return $result;
     }
 }

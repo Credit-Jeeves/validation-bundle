@@ -1,0 +1,16 @@
+{% if app.user %}
+    <div class="user-logout">
+        {% if isAdmin %}
+            <a href="{{ path('admin_rj_tenant_list') }}">{{ 'back.to.admin'|trans }}</a> &nbsp;|&nbsp;
+        {% endif %}
+        <a href="#">{{ 'common.help' | trans }} </a> &nbsp;|&nbsp;
+        <a href="{{ path('landlord_edit_profile') }}">{{ 'common.account'|trans }}</a> &nbsp;|&nbsp;
+        <a href="{{ path('fos_user_security_logout') }}"> {{ 'common.log_out' | trans }}</a>
+    </div>
+{% else %}
+    <div class="user-logout">
+        <a href="{{ path('fos_user_security_login') }}">{{ 'login.submit' | trans }}</a>
+        &nbsp;|&nbsp;
+        <a href="#">{{ 'common.help' | trans }}</a>
+    </div>
+{% endif %}

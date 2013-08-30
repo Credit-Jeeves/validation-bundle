@@ -5,13 +5,8 @@
         {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'TenantBundle:Sources:menu.html.twig' }) }}
     </div>
     <div class="row-20"></div>
-    {% if status == 'current' %}
         {{ render(controller('RjComponentBundle:ContractsList:tenant')) }}
-    {% else %}
-        {{ render(controller('RjComponentBundle:ContractsList:tenantNew', {'status':status })) }}
-    {% endif %}
-    <br />
-    <br />
+    <div class="row-20"></div>
     {% if reporting > 0 %}
         {{ render(controller('RjComponentBundle:PaymentHistory:index', {'user': user, 'short': 'true'})) }}
     {% else %}
@@ -20,9 +15,10 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-
+    {% javascripts 
+        '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+        '@RjComponentBundle/Resources/public/js/tenant-contracts.js'
     %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
+    <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

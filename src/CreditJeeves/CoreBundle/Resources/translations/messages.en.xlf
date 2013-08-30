@@ -1151,6 +1151,10 @@
             <!-- /Checkout/ -->
 
 
+            <trans-unit id="back.to.admin">
+                <source>back.to.admin</source>
+                <target>Back to Admin</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

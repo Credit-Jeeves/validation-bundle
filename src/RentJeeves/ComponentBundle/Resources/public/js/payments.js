@@ -14,9 +14,10 @@ function Payments() {
   this.searchCollum = ko.observable("");
   this.isSearch = ko.observable(false);
   this.notHaveResult = ko.observable(false);
-
+  this.haveData = ko.observable(true);
   this.ajaxAction = function() {
     self.processPayment(true);
+    self.haveData(true);
     $.ajax({
       url: Routing.generate('landlord_payments_list'),
       type: 'POST',
@@ -37,6 +38,9 @@ function Payments() {
         self.aPayments(response.payments);
         self.total(response.total);
         self.pages(response.pagination);
+        if (self.countPayments() <= 0) {
+          self.haveData(false);
+        }
         if(self.sortColumn().length == 0) {
           return;
         }

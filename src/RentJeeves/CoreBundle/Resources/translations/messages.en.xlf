@@ -382,7 +382,7 @@
             </trans-unit>
             <trans-unit id="setup.your.rent">
                 <source>setup.your.rent</source>
-                <target>Set up your Rent Jeeves account.</target>
+                <target>Set up your RentTrack account.</target>
             </trans-unit>
             <trans-unit id="name">
                 <source>name</source>
@@ -512,15 +512,11 @@
             </trans-unit>
             <trans-unit id="email">
                 <source>email</source>
-                <target>
-                   Email
-                </target>
+                <target>Email</target>
             </trans-unit>
             <trans-unit id="phone">
                 <source>phone</source>
-                <target>
-                   Phone
-                </target>
+                <target>Phone</target>
             </trans-unit>
             <trans-unit id="street">
                 <source>street</source>
@@ -720,7 +716,10 @@
                 <target>Mark as “Unpaid” (this will report to credit bureau as an unpaid account - this cannot be undone)</target>
             </trans-unit>
             
-
+           <trans-unit id="error.email.already.use">
+                <source>error.email.already.use</source>
+                <target>Email already use in the system.</target>
+            </trans-unit>
            <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
                 <target>Start date couldn't be empt.</target>
@@ -824,6 +823,46 @@
             <trans-unit id="set_up_your_first_rental_payment">
                 <source>set_up_your_first_rental_payment</source>
                 <target>Set Up Your First Rental Payment</target>
+            </trans-unit>
+            <trans-unit id="contract.pay">
+                <source>contract.pay</source>
+                <target>Pay</target>
+            </trans-unit>
+            <trans-unit id="contract.pay.source">
+                <source>contract.pay.source</source>
+                <target>Pay Source</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.last">
+                <source>contract.payment.last</source>
+                <target>Last Payment</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.next">
+                <source>contract.payment.next</source>
+                <target>Next Due Date</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.recurring">
+                <source>contract.payment.recurring</source>
+                <target>Recurs?</target>
+            </trans-unit>
+            <trans-unit id="contract.status">
+                <source>contract.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="contract.delete">
+                <source>contract.delete</source>
+                <target>Delete Contract?</target>
+            </trans-unit>
+            <trans-unit id="log_in">
+                <source>log_in</source>
+                <target>Log In</target>
+            </trans-unit>
+            <trans-unit id="have.an.account">
+                <source>have.an.account</source>
+                <target>Have an account</target>
+            </trans-unit>
+            <trans-unit id="change.your.basic">
+                <source>change.your.basic</source>
+                <target>Change your basic contact information</target>
             </trans-unit>
         </body>
     </file>

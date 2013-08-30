@@ -46,7 +46,6 @@ class Builder extends ContainerAware
                 $menu['tabs.tenants']->setAttribute('class', 'active');
                 break;
             default:
-                $menu['tabs.settings']->setAttribute('class', 'active');
                 break;
         }
         

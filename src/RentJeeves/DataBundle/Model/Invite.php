@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use RentJeeves\CoreBundle\Validator\InviteEmail;
 
 /**
  * @ORM\MappedSuperclass
@@ -73,7 +74,12 @@ abstract class Invite
      *     groups={
      *         "invite",
      *     }
-     * )     
+     * )
+     * @InviteEmail(
+     *     groups={
+     *         "invite",
+     *     }
+     * )
      */
     protected $email;
 

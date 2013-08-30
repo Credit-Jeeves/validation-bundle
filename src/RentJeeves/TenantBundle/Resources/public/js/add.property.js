@@ -165,6 +165,13 @@ $(document).ready(function(){
                 return showError('Such address doesn\'t exist!');
             }
 
+            if($('#search-submit').hasClass('grey')) {
+              return false;
+            }
+
+            $('#search-submit').addClass('disabled grey');
+            $('#search-submit').find('.loadingSpinner').show();
+
             search(place, map);
             return false;
         });
