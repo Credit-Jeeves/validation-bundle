@@ -1,0 +1,36 @@
+/**
+ * @author   Alexandr Sharamko <alexandr.sharamko@gmail.com>
+ */
+function InviteEmail(field, params)
+{
+    var value = field && field.nodeName ? {{ getJsFormElementValue('field') }} : field;
+    var cache, url, cacheindex = 'm' + value + '';
+    if (params && params.fields && field.nodeName) {
+        cache = $(field).data('_inviteEmailCache');
+        if (!cache) cache = {};
+        if (cache[cacheindex] != undefined) {
+            if (cache[cacheindex] === false) {
+                return getComputeMessage(params.message);
+            } else return true;
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ path('rj.core.validator.inviteEmail') }}',
+            data: {
+                'value': value
+            },
+            success: function(data, textStatus) {
+                if (data.status && data.status == 'ok') {
+                    cache[cacheindex] = data.isUnique;
+                    $(field).data('_inviteEmailCache', cache);
+                    if (!cache[cacheindex]) {
+                        checkError($(field).attr('id'), inviteEmailCache, params);
+                    }
+                }
+            },
+            dataType: 'json'
+       });
+    }
+    return true;
+}
