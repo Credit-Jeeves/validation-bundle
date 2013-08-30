@@ -158,4 +158,9 @@ class Landlord extends User
             return $this->getAgentGroups() ? $this->getAgentGroups() : null;
         }
     }
+
+    public function getAddress()
+    {
+        return $this->getAddresses()->last();
+    }
 }

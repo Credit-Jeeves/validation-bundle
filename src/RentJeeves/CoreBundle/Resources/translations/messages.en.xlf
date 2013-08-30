@@ -512,15 +512,11 @@
             </trans-unit>
             <trans-unit id="email">
                 <source>email</source>
-                <target>
-                   Email
-                </target>
+                <target>Email</target>
             </trans-unit>
             <trans-unit id="phone">
                 <source>phone</source>
-                <target>
-                   Phone
-                </target>
+                <target>Phone</target>
             </trans-unit>
             <trans-unit id="street">
                 <source>street</source>
@@ -855,6 +851,10 @@
             <trans-unit id="have.an.account">
                 <source>have.an.account</source>
                 <target>Have an account</target>
+            </trans-unit>
+            <trans-unit id="change.your.basic">
+                <source>change.your.basic</source>
+                <target>Change your basic contact information</target>
             </trans-unit>
         </body>
     </file>
