@@ -129,6 +129,7 @@ class AddPropertyCase extends BaseTestCase
      */
     public function checkInvite()
     {
+        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -203,6 +204,7 @@ class AddPropertyCase extends BaseTestCase
      */
     public function checkEmailInviteLandlordAlreadyExist()
     {
+        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
