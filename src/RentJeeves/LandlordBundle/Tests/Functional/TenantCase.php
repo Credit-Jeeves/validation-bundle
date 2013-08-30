@@ -233,7 +233,7 @@ class TenantCase extends BaseTestCase
             )
         );
         $form->pressButton('continue');
-        $this->assertNotNull($contracts = $this->page->findAll('css', '.listOfPaymentsActive>tbody>tr'));
+        $this->assertNotNull($contracts = $this->page->findAll('css', 'div.table-margin table tbody tr'));
         $this->assertCount(1, $contracts, 'wrong number of contracts');
     }
 
@@ -291,7 +291,7 @@ class TenantCase extends BaseTestCase
 
         $this->setDefaultSession('goutte');
         $this->login('robyn@rentrack.com', 'pass');
-        $this->assertNotNull($contracts = $this->page->findAll('css', '.listOfPaymentsActive>tbody>tr'));
+        $this->assertNotNull($contracts = $this->page->findAll('css', 'div.table-margin table tbody tr'));
         $this->assertCount(1, $contracts, 'wrong number of contracts');
         $this->logout();
     }

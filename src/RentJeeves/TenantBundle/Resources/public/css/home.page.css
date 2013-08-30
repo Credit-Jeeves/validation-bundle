@@ -111,6 +111,7 @@
     color: #666666;
     font: bold 13px/16px "Helvetica Neue",HelveticaNeue,helvetica-neue,helvetica,arial,sans-serif;
     padding: 12px;
+    word-wrap: break-word;
 }
 
 .contract-delete {
@@ -146,4 +147,12 @@
 
 .popup-loader {
     margin-top: 80px;
+}
+
+.properties-table-block.table-wrap {
+    border: 1px solid #BDBDBD;
+    border-radius: 4px 4px 4px 4px;
+    display: block;
+    margin: 0 !important;
+    
 }
