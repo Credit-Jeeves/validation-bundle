@@ -2,6 +2,7 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -84,5 +85,29 @@ class AjaxController extends Controller
         $em->persist($contract);
         $em->flush();
         return new JsonResponse(array($action));
+    }
+
+    /**
+     * @Route(
+     *  "/contract/delete",
+     *  name="tenant_contract_delete",
+     *  defaults={"_format"="json"},
+     *  requirements={"_format"="html|json"},
+     *  options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     *
+     * @return array
+     */
+    public function deleteContract()
+    {
+        $request = $this->getRequest();
+        $data = $request->request->all('data');
+        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
+        $contract->setStatus(ContractStatus::DELETED);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($contract);
+        $em->flush();
+        return new JsonResponse(array());
     }
 }

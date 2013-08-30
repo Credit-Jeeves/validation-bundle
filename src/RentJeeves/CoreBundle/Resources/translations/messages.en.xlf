@@ -824,25 +824,33 @@
                 <source>set_up_your_first_rental_payment</source>
                 <target>Set Up Your First Rental Payment</target>
             </trans-unit>
-            <trans-unit id="pay_source">
-                <source>pay_source</source>
-                <target>Pay Source</target>
-            </trans-unit>
-            <trans-unit id="last.payment">
-                <source>last.payment</source>
-                <target>Last Payment</target>
-            </trans-unit>
-            <trans-unit id="recurs">
-                <source>recurs</source>
-                <target>Recurs</target>
-            </trans-unit>
-            <trans-unit id="pay">
-                <source>pay</source>
+            <trans-unit id="contract.pay">
+                <source>contract.pay</source>
                 <target>Pay</target>
             </trans-unit>
-            <trans-unit id="loading">
-                <source>loading</source>
-                <target>Loading</target>
+            <trans-unit id="contract.pay.source">
+                <source>contract.pay.source</source>
+                <target>Pay Source</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.last">
+                <source>contract.payment.last</source>
+                <target>Last Payment</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.next">
+                <source>contract.payment.next</source>
+                <target>Next Due Date</target>
+            </trans-unit>
+            <trans-unit id="contract.payment.recurring">
+                <source>contract.payment.recurring</source>
+                <target>Recurs?</target>
+            </trans-unit>
+            <trans-unit id="contract.status">
+                <source>contract.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="contract.delete">
+                <source>contract.delete</source>
+                <target>Delete Contract?</target>
             </trans-unit>
             <trans-unit id="log_in">
                 <source>log_in</source>

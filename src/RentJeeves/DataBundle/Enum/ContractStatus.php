@@ -6,8 +6,12 @@ use CreditJeeves\CoreBundle\Enum;
 /**
  * Contract statuses
  * Avaliable chains:
- * 1. PENDING -> APPROVED -> CURRENT -> FINISHED
- * 2. INVITE -> APPROVED -> CURRENT -> FINISHED
+ * 1. PENDING -> DELETED
+ * 2. PENDING -> APPROVED -> DELETED
+ * 3. PENDING -> APPROVED -> CURRENT -> FINISHED
+ * 4. INVITE -> DELETED
+ * 5. INVITE -> APPROVED -> DELETED
+ * 6. INVITE -> APPROVED -> CURRENT -> FINISHED
  * 
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
@@ -42,4 +46,10 @@ class ContractStatus extends \CreditJeeves\CoreBundle\Enum
      * @var string
      */
     const FINISHED = 'finished';
+
+    /**
+     * Contract was deleted
+     * @var string
+     */
+    const DELETED = 'deleted';
 }
