@@ -101,6 +101,15 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(3, $fields, 'wrong number of text h4');
+    }
+
+    /**
+     * @test
+     * @depends iframeNotFound
+     */
+    public function checkEmailIframeNotFound()
+    {
+        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -111,10 +120,18 @@ class IframeCase extends BaseTestCase
         $link->click();
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->login('newtenant12@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->logout();
+    }
+
+    /**
+     * @test
+     * @depends checkEmailIframeNotFound
+     */
+    public function checkInviteIframeNotFound()
+    {
+        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
@@ -185,6 +202,15 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(2, $fields, 'wrong number of text h4');
+    }
+
+    /**
+     * @test
+     * @depends iframeFound
+     */
+    public function  iframeFoundCheckEmail()
+    {
+        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
