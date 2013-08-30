@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\TenantBundle\Tests\Functional;
+namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 

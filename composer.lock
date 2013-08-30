@@ -3866,12 +3866,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkBundle.git",
-                "reference": "3102a20665dff73bc8040c226f061ed1ad8d19ed"
+                "reference": "d181d8d77661f75d4909d0e4f0f154dc9fdd52e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/3102a20665dff73bc8040c226f061ed1ad8d19ed",
-                "reference": "3102a20665dff73bc8040c226f061ed1ad8d19ed",
+                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/d181d8d77661f75d4909d0e4f0f154dc9fdd52e8",
+                "reference": "d181d8d77661f75d4909d0e4f0f154dc9fdd52e8",
                 "shasum": ""
             },
             "require": {
@@ -3921,7 +3921,7 @@
                 "test",
                 "web"
             ],
-            "time": "2013-08-30 02:16:59"
+            "time": "2013-08-30 02:49:34"
         },
         {
             "name": "behat/mink-goutte-driver",

@@ -21,22 +21,9 @@ abstract class BaseTestCase extends MinkTestCase
         if ($current != static::APP) {
             $current = static::APP;
             static::$kernel = null;
+            $this->setMink();
         }
         return parent::getKernel();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMink()
-    {
-        static $current;
-        if ($current != static::APP) {
-            $current = static::APP;
-            static:: = null;
-        }
-        return parent::getMink();
-
     }
 
     /**
