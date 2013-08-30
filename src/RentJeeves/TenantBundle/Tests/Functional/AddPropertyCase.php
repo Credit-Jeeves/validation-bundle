@@ -121,6 +121,14 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
         $this->assertCount(4, $tr, 'List of property');
+    }
+
+    /**
+     * @test
+     * @depends invite
+     */
+    public function checkInvite()
+    {
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -149,7 +157,6 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
         $this->assertCount(1, $contractPendings, 'Wrong number of pending');
     }
-
 
     /**
      * @test
@@ -188,6 +195,14 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.listOfPayments>tbody>tr'));
         $this->assertCount(4, $tr, 'List of property');
+    }
+
+    /**
+     * @test
+     * @depends inviteLandlordAlreadyExist
+     */
+    public function checkEmailInviteLandlordAlreadyExist()
+    {
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
