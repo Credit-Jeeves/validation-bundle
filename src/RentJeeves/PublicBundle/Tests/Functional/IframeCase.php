@@ -208,7 +208,7 @@ class IframeCase extends BaseTestCase
      * @test
      * @depends iframeFound
      */
-    public function  iframeFoundCheckEmail()
+    public function iframeFoundCheckEmail()
     {
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
