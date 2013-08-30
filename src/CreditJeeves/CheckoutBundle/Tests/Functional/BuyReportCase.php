@@ -109,7 +109,7 @@ class BuyReportCase extends BaseTestCase
         $formData['order_authorize_authorizes_0_card_num'] = '4111111111111111';
         $i = 4;
         $date = null;
-        while($i--) {
+        while ($i--) {
             $formData['order_authorize_authorizes_0_card_code'] = '00' . $i;
             $month = ($month = date('m') + $i) <= 12?$month:$month - 11;
             $formData['order_authorize_authorizes_0_exp_date_month'] = 2 == strlen($month)? $month : '0' . $month;
