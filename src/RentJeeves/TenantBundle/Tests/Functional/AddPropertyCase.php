@@ -137,7 +137,8 @@ class AddPropertyCase extends BaseTestCase
         $email->click();
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
-        $link->click();sleep(1);// TODO try to fix
+        $link->click();
+        $this->session->wait($this->timeout, '$("#landlordInviteRegister").length > 0');
         $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
@@ -213,6 +214,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
         $link->click();
+        $this->session->wait($this->timeout, '$("#.haveAccount a").length > 0');
         $this->assertNotNull($link = $this->page->find('css', '.haveAccount a'));
         $link->click();
         $this->login('landlord2@example.com', 'pass');
