@@ -132,7 +132,7 @@ class IframeCase extends BaseTestCase
     public function checkInviteIframeNotFound()
     {
         $this->setDefaultSession('selenium2');
-        $this->visitEmailsPage();
+        $this->visitEmailsPage(); // TODO it must be done by goutte driver!!!
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
         $email = end($email);

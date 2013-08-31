@@ -214,7 +214,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
         $link->click();
-        $this->session->wait($this->timeout, '$("#.haveAccount a").length > 0');
+        $this->session->wait($this->timeout, '$(".haveAccount a").length > 0');
         $this->assertNotNull($link = $this->page->find('css', '.haveAccount a'));
         $link->click();
         $this->login('landlord2@example.com', 'pass');
