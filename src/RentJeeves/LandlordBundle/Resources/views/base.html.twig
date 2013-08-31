@@ -10,6 +10,7 @@
                    '@CoreBundle/Resources/public/css/landlord.css'
                    '@CoreBundle/Resources/public/css/datepicker.css'
                    '@RjPublicBundle/Resources/public/css/styles.css'
+                   '@RjPublicBundle/Resources/public/css/footer.css'
      %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -29,7 +30,7 @@
 
 {% block tabs %}
         <div class="top-nav">
-    {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': 'CoreBundle:Menu:user_tabs.html.twig' }) }}
+    {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': '::menu.html.twig' }) }}
     </div>
     
 {% endblock %}

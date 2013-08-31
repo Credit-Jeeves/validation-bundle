@@ -2,7 +2,7 @@
 
 namespace RentJeeves\PublicBundle\Controller;
 
-use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LandlordAddressType;
@@ -151,7 +151,7 @@ class LandlordController extends Controller
 
     private function login($landlord)
     {
-        $response = new RedirectResponse($this->generateUrl('landlord_homepage'));
+        $response = new RedirectResponse($this->generateUrl('landlord_tenants'));
         $this->container->get('fos_user.security.login_manager')->loginUser(
             $this->container->getParameter('fos_user.firewall_name'),
             $landlord,

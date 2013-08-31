@@ -83,3 +83,8 @@ Auto update cached css & js
 php app/console assetic:dump --app=cj --watch
 php app/console assetic:dump --app=rj --watch
 ```
+
+Tests
+-----
+
+Selenium server (RC) version 2.28.0 and it does not work with Firefox 23.x

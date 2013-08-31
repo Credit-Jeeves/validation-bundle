@@ -1815,82 +1815,6 @@ label.checkbox input[type="radio"]:checked + i {
   line-height:13px;
 }
 
-footer {
-  display:block;
-  background:url(/bundles/rjpublic/images/bg-footer-internal.jpg) 50% 0 no-repeat;
-  font-family:"PT Sans Caption", "ABeeZee",sans-serif;
-  line-height:18px;
-  border-top:1px solid #ddd4d0;
-}
-
-footer > div.clearfix {
-  display:block;
-  width:990px;
-  height:197px;
-  margin:auto;
-}
-
-footer .text-box {
-  float:left;
-  width:235px;
-  margin:22px 0 0 25px;
-}
-
-footer .text-box h3 {
-  display:block;
-  font-size:14px;
-}
-
-footer .text-box p {
-  display:block;
-  margin-top:2px;
-  font-size:11px;
-}
-
-.banner-ns {
-  display:block;
-  width:80px;
-  height:45px;
-  margin-top:10px;
-  font-size:0;
-  line-height:0;
-  text-indent:-999px;
-  overflow:hidden;
-  background:url(/bundles/rjpublic/images/logo-norton-secured.png) 0 0 no-repeat;
-}
-
-footer nav {
-  float:right;
-  margin:22px 25px 0 0;
-}
-
-footer nav .navigation li {
-  float:left;
-  margin-left:120px;
-}
-
-footer nav .navigation li:first-child {
-  margin:0;
-}
-
-footer nav .navigation dt {
-  font-size:12px;
-  padding-bottom:2px;
-}
-
-footer nav .navigation dd {
-  font-size:11px;
-}
-
-footer nav .copyright {
-  padding-top:20px;
-}
-
-footer nav .copyright li {
-  float:left;
-  font-size:10px;
-  padding-right:6px;
-}
 
 .select-box label {
   color:#000;
@@ -4274,4 +4198,10 @@ table.ui-datepicker-calendar tbody tr td a {
 .clearfix,
 .menubar ul {
   *zoom: 1;
+}
+
+.loadingSpinner {
+  position: absolute;
+  margin-top: 10px;
+  display: none;
 }

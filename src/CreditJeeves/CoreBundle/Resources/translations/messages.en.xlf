@@ -1130,7 +1130,31 @@
                 <target>Data provided by</target>
             </trans-unit>
 
-            
+
+            <!--  Checkout  -->
+            <trans-unit id="error.card_num.empty">
+                <source>error.card_num.empty</source>
+                <target>Card num should not be blank.</target>
+            </trans-unit>
+            <trans-unit id="error.card_code.empty">
+                <source>error.card_code.empty</source>
+                <target>Card code should not be blank.</target>
+            </trans-unit>
+            <trans-unit id="error.exp_date.empty">
+                <source>error.exp_date.empty</source>
+                <target>Exp date should not be blank.</target>
+            </trans-unit>
+            <trans-unit id="error.exp_date.valid">
+                <source>error.exp_date.valid</source>
+                <target>Exp date is not valid.</target>
+            </trans-unit>
+            <!-- /Checkout/ -->
+
+
+            <trans-unit id="back.to.admin">
+                <source>back.to.admin</source>
+                <target>Back to Admin</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

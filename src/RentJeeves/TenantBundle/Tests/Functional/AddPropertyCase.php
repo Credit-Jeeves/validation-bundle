@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\LandlordBundle\Tests\Functional;
+namespace RentJeeves\TenantBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -30,15 +30,15 @@ class AddPropertyCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * @~test
      */
     public function addWithLandlord()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($tr = $this->page->findAll('css', 'div.table-margin table tbody tr'));
-        $this->assertCount(3, $tr, 'Wrong list of contracts');
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(3, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
@@ -46,8 +46,7 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $this->page->pressButton('find.your.rental');
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
-//         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-//         $this->assertCount(1, $searchResult, 'Search result');
+        $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
         $this->acceptAlert();
@@ -55,9 +54,9 @@ class AddPropertyCase extends BaseTestCase
         $thisIsMyRental->click();
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
-        $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
-        $this->assertNotNull($tr = $this->page->findAll('css', 'div.table-margin table tbody tr'));
-        $this->assertCount(5, $tr, 'List of contracts');
+        $this->session->wait($this->timeout, "$('.properties-table').length > 0");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(5, $tr, 'List of property');
         $this->logout();
     }
 
@@ -69,7 +68,7 @@ class AddPropertyCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->assertNotNull($tr = $this->page->findAll('css', 'div.table-margin table tbody tr'));
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(3, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
@@ -79,8 +78,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->pressButton('find.your.rental');
         $this->session->wait($this->timeout, "window.location.pathname != '/rj_test.php/property/add'");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
-//         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-//         $this->assertCount(2, $searchResult, 'Search result');
+        $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
         $this->session->wait($this->timeout, "$('#register').length > 0");
@@ -95,8 +93,7 @@ class AddPropertyCase extends BaseTestCase
         $propertySearch->click();
         $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
-//         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-//         $this->assertCount(2, $searchResult, 'Search result');
+        $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
         
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"
@@ -121,10 +118,18 @@ class AddPropertyCase extends BaseTestCase
         );
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $this->page->pressButton('add.property');
-        $this->session->wait($this->timeout, "$('.listOfPayments').length > 0");
-        $this->assertNotNull($tr = $this->page->findAll('css', 'div.table-margin table tbody tr'));
+        $this->session->wait($this->timeout, "$('.properties-table').length > 0");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(4, $tr, 'List of property');
-        //$this->setDefaultSession('goutte');
+    }
+
+    /**
+     * @test
+     * @depends invite
+     */
+    public function checkInvite()
+    {
+        $this->setDefaultSession('selenium2');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -133,6 +138,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
         $link->click();
+        $this->session->wait($this->timeout, '$("#landlordInviteRegister").length > 0');
         $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
@@ -146,6 +152,72 @@ class AddPropertyCase extends BaseTestCase
             )
         );
         $form->pressButton('continue');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        
+        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
+        $this->assertCount(1, $contractPendings, 'Wrong number of pending');
+    }
+
+    /**
+     * @test
+     */
+    public function inviteLandlordAlreadyExist()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(3, $tr, 'List of property');
+        $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
+        $addProperty->click();
+        $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
+        $this->fillGoogleAddress('710 Broadway, Manhattan, New York, NY 10003');
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
+        $this->page->pressButton('find.your.rental');
+        $this->session->wait($this->timeout, "window.location.pathname != '/rj_test.php/property/add'");
+        $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
+        $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
+        $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
+        $inviteLandlord->click();
+
+        $this->session->wait($this->timeout, "$('#inviteForm').length > 0");
+        $this->assertNotNull($inviteForm = $this->page->find('css', '#inviteForm'));
+        $this->fillForm(
+            $inviteForm,
+            array(
+                'rentjeeves_publicbundle_invitetype_unit'                      => 'e3',
+                'rentjeeves_publicbundle_invitetype_first_name'                => 'Alex',
+                'rentjeeves_publicbundle_invitetype_last_name'                 => 'Sharamko',
+                'rentjeeves_publicbundle_invitetype_email'                     => 'landlord@yandex.ru',
+            )
+        );
+        $this->page->pressButton('add.property');
+        $this->session->wait($this->timeout, "$('.properties-table').length > 0");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(4, $tr, 'List of property');
+    }
+
+    /**
+     * @test
+     * @depends inviteLandlordAlreadyExist
+     */
+    public function checkEmailInviteLandlordAlreadyExist()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+        $email = array_pop($email);
+        $email->click();
+        $this->page->clickLink('text/html');
+        $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
+        $link->click();
+        $this->session->wait($this->timeout, '$(".haveAccount a").length > 0');
+        $this->assertNotNull($link = $this->page->find('css', '.haveAccount a'));
+        $link->click();
+        $this->login('landlord2@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
@@ -153,5 +225,6 @@ class AddPropertyCase extends BaseTestCase
         
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
         $this->assertCount(1, $contractPendings, 'Wrong number of pending');
+        $this->logout();
     }
 }

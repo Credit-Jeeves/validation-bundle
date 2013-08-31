@@ -26,7 +26,7 @@ abstract class CheckoutAuthorizeNetAim extends PaymentDetails
     protected $cjOrderId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Order", inversedBy="authorize")
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Order", inversedBy="authorizes")
      * @ORM\JoinColumn(name="cj_order_id", referencedColumnName="id")
      */
     protected $order;

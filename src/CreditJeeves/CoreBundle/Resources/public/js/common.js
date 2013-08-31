@@ -36,7 +36,7 @@ $(document).ready(function(){
     $.browser = browser;
   }
   // Now we could use linkselect plugin
-  $('select').linkselect();
+  $('select:not(.original)').linkselect();
   
   jQuery('input[placeholder], textarea[placeholder]').placeholder();
   

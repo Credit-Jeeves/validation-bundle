@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\LandlordBundle\Tests\Functional;
+namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -101,6 +101,14 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(3, $fields, 'wrong number of text h4');
+    }
+
+    /**
+     * @test
+     * @depends iframeNotFound
+     */
+    public function checkEmailIframeNotFound()
+    {
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
@@ -115,8 +123,16 @@ class IframeCase extends BaseTestCase
         $this->login('newtenant12@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->logout();
+    }
+
+    /**
+     * @test
+     * @depends checkEmailIframeNotFound
+     */
+    public function checkInviteIframeNotFound()
+    {
         $this->setDefaultSession('selenium2');
-        $this->visitEmailsPage();
+        $this->visitEmailsPage(); // TODO it must be done by goutte driver!!!
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
         $email = end($email);
@@ -124,6 +140,8 @@ class IframeCase extends BaseTestCase
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
         $link->click();
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#landlordInviteRegister').is(':visible')");
         $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
@@ -137,7 +155,6 @@ class IframeCase extends BaseTestCase
             )
         );
         $form->pressButton('continue');
-        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -185,6 +202,14 @@ class IframeCase extends BaseTestCase
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(2, $fields, 'wrong number of text h4');
+    }
+
+    /**
+     * @test
+     * @depends iframeFound
+     */
+    public function iframeFoundCheckEmail()
+    {
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
@@ -192,14 +217,21 @@ class IframeCase extends BaseTestCase
         $email = array_pop($email);
         $email->click();
         $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#email-body a'));
-        $link->click();
+        $this->assertEquals(
+            1,
+            preg_match(
+                "/Please visit.*href=\"(.*)\".*to confirm your registration/is",
+                $this->page->getContent(),
+                $matches
+            )
+        );
+        $this->assertNotEmpty($matches[1]);
+        $this->session->visit($matches[1]);
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
         $this->login('newtenant13@yandex.ru', 'pass');
         $this->assertNotNull($this->page->find('css', '.titleAlert'));
         $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
-        $this->assertCount(4, $contracts, 'wrong number of contracts');
     }
 
     /**

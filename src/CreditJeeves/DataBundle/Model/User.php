@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use RentJeeves\CoreBundle\Validator\InviteEmail;
 
 /**
  * @ORM\MappedSuperclass
@@ -98,6 +99,11 @@ abstract class User extends BaseUser
      *         "user_admin",
      *         "invite",
      *         "tenant_invite"
+     *     }
+     * )
+     * @InviteEmail(
+     *     groups={
+     *         "invite",
      *     }
      * )
      */
@@ -474,13 +480,12 @@ abstract class User extends BaseUser
     protected $pidkiqs;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
      *      mappedBy="user",
      *      cascade={"persist", "remove", "merge"}
      * )
+     * @var ArrayCollection
      */
     protected $addresses;
 

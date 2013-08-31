@@ -2,7 +2,7 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
-use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteType;

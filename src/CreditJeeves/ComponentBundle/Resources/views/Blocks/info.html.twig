@@ -1,13 +1,7 @@
 <p class="user-email">{{ sEmail }} </p>
 {% if isAdmin %}
-{% if site == 'cj' %}
-    <a href="{{ path('admin_cj_applicant_list') }}">Back to Admin</a>
-{% endif %}
-{% if site == 'rj' %}
-    <a href="{{ path('admin_rj_tenant_list') }}">Back to Admin</a>
-{% endif %}
-
+    <a href="{{ path('public_back_to_admin') }}">{{ 'back.to.admin' | trans }}</a>
 {% else %}
-{% include '::userLogout.html.twig' %}
+    {% include '::userLogout.html.twig' %}
 {% endif %}
 <div id="dealer-select" class="dealer-name">{{ sGroup }}</div>

@@ -148,4 +148,19 @@ class Landlord extends User
 
         return null;
     }
+
+    public function getGroups()
+    {
+        if ($isAdmin = $this->getIsSuperAdmin()) {
+            $holding = $this->getHolding();
+            return $holding->getGroups() ? $holding->getGroups() : null;
+        } else {
+            return $this->getAgentGroups() ? $this->getAgentGroups() : null;
+        }
+    }
+
+    public function getAddress()
+    {
+        return $this->getAddresses()->last();
+    }
 }
