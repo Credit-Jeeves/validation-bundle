@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\LandlordBundle\Tests\Functional;
+namespace RentJeeves\PublicBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -217,8 +217,16 @@ class IframeCase extends BaseTestCase
         $email = array_pop($email);
         $email->click();
         $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#confirmationUrl'));
-        $link->click();
+        $this->assertEquals(
+            1,
+            preg_match(
+                "/Please visit.*href=\"(.*)\".*to confirm your registration/is",
+                $this->page->getContent(),
+                $matches
+            )
+        );
+        $this->assertNotEmpty($matches[1]);
+        $this->session->visit($matches[1]);
         $this->assertNotNull($loginButton = $this->page->find('css', '#loginButton'));
         $loginButton->click();
         $this->login('newtenant13@yandex.ru', 'pass');
