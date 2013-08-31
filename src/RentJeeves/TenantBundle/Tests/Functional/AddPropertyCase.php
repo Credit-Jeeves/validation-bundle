@@ -30,7 +30,7 @@ class AddPropertyCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function addWithLandlord()
     {
