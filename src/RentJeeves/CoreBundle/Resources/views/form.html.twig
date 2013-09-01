@@ -3,24 +3,69 @@
 
 {% block form_row %}
     {% spaceless %}
-        <div class="form-row clearfix">
+        {% set type = form.vars.block_prefixes[1]|default('text') %}
+        <div class="form-row clearfix type-{{ type }}{% if attr.tooltip_title is defined %}with-tooltip{% endif %}"
+             id="{{ id }}_row"
+        >
             {{ form_errors(form) }}
-            {{ form_label(form, label|default(null)) }}
-            <div class="fields-box">
+            {% if 'checkbox' == type %}
+                <label class="checkbox">
+                    {{ block('checkbox_widget') }}
+                    <span>{{ label|trans({}, translation_domain) }}</span>
+                </label>
+            {% elseif 'choice' == type and expanded %}
+                {{ form_label(form, label|default(null)) }}
                 {{ form_widget(form) }}
-            </div>
+            {% else %}
+                {{ form_label(form, label|default(null)) }}
+                <div class="fields-box">
+                    {{ form_widget(form) }}
+                </div>
+            {% endif %}
+            {% if attr.help is defined %}
+                <i title="{{ attr.help | trans({}, translation_domain) }}"
+                   class="help after-checkbox pie-el tooltip-link"
+                >
+                    ?
+                </i>
+            {% endif %}
+
+            {% if attr.tooltip_title is defined %}
+                <div class="{{ attr.tooltip_class | default('tooltip-box type1 pie-el') }}">
+                    <h4>{{ attr.tooltip_title | trans({}, translation_domain) }}</h4>
+                    {% if attr.tooltip_text is defined %}
+                        <p class="{{ attr.tooltip_text_class | default('') }}">
+                            {{ attr.tooltip_text | trans({}, translation_domain) }}
+                        </p>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     {% endspaceless %}
 {% endblock form_row %}
 
+{% block radio_widget %}
+    {% spaceless %}
+        {{ parent() }}
+        <i> </i>
+    {% endspaceless %}
+{% endblock radio_widget %}
+
+{% block checkbox_widget %}
+    {% spaceless %}
+        {{ parent() }}
+        <i> </i>
+    {% endspaceless %}
+{% endblock checkbox_widget %}
+
 {% block choice_widget_expanded %}
     {% spaceless %}
-        <div class="children" {{ block('widget_container_attributes') }}>
+        <div class="fields-box">
             {% for child in form %}
-                <div class="field">
+                <label class="checkbox radio">
                     {{ form_widget(child) }}
-                    {{ form_label(child) }}
-                </div>
+                    <span>{{ child.vars.label|trans({}, translation_domain) }}</span>
+                </label>
             {% endfor %}
         </div>
     {% endspaceless %}
@@ -39,11 +84,7 @@
                 {% set label = name|humanize %}
             {% endif %}
             <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-                {{ label|trans({}, translation_domain) }}
-
-                {% if required %}
-                    <b>*</b>
-                {% endif %}
+                {{ label|trans({}, translation_domain) }}{% if required %}<b>*</b>{% endif %}
             </label>
         {% endif %}
     {% endspaceless %}

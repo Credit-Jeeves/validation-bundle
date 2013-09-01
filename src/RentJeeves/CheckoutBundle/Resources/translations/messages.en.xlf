@@ -30,9 +30,25 @@
                 <source>pay_popup.step.next</source>
                 <target>Next</target>
             </trans-unit>
+            <trans-unit id="checkout.property">
+                <source>checkout.property</source>
+                <target>Property</target>
+            </trans-unit>
             <trans-unit id="checkout.amount">
                 <source>checkout.amount</source>
                 <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="checkout.start_date">
+                <source>checkout.start_date</source>
+                <target>Start Date</target>
+            </trans-unit>
+            <trans-unit id="checkout.start_date.tooltip.title">
+                <source>checkout.start_date.tooltip.title</source>
+                <target>Start On: 6/1/13 Settle By: 6/4/13</target>
+            </trans-unit>
+            <trans-unit id="checkout.start_date.tooltip.text">
+                <source>checkout.start_date.tooltip.text</source>
+                <target>Initiate first payment and notify your landlord on 6/1/13. Allow 3 business days for delivery.</target>
             </trans-unit>
             <trans-unit id="checkout.set_up_recurring_payment">
                 <source>checkout.set_up_recurring_payment</source>
@@ -41,6 +57,14 @@
             <trans-unit id="checkout.type">
                 <source>checkout.type</source>
                 <target>Type</target>
+            </trans-unit>
+            <trans-unit id="checkout.type.tooltip.title">
+                <source>checkout.type.tooltip.title</source>
+                <target>Recur On: Day 1 of Each Month</target>
+            </trans-unit>
+            <trans-unit id="checkout.type.tooltip.text">
+                <source>checkout.type.tooltip.text</source>
+                <target>Initiate subsequent payments of $2500 on day 1 of each month until the last payment on 5/1/14.</target>
             </trans-unit>
             <trans-unit id="checkout.ends">
                 <source>checkout.ends</source>
@@ -62,9 +86,73 @@
                 <source>checkout.on</source>
                 <target>On:</target>
             </trans-unit>
-            <trans-unit id="">
-                <source></source>
-                <target></target>
+            <trans-unit id="checkout.payment_type">
+                <source>checkout.payment_type</source>
+                <target>Payment Type</target>
+            </trans-unit>
+            <trans-unit id="checkout.bank">
+                <source>checkout.bank</source>
+                <target>E-Check</target>
+            </trans-unit>
+            <trans-unit id="checkout.card">
+                <source>checkout.card</source>
+                <target>Credit Card</target>
+            </trans-unit>
+            <trans-unit id="checkout.account_nickname">
+                <source>checkout.account_nickname</source>
+                <target>Account Nickname</target>
+            </trans-unit>
+            <trans-unit id="checkout.payor_name">
+                <source>checkout.payor_name</source>
+                <target>Name on Account</target>
+            </trans-unit>
+            <trans-unit id="checkout.routing_number">
+                <source>checkout.routing_number</source>
+                <target>Routing Number</target>
+            </trans-unit>
+            <trans-unit id="checkout.routing_number.tooltip.title">
+                <source>checkout.routing_number.tooltip.title</source>
+                <target>Where to find your banking numbers:</target>
+            </trans-unit>
+            <trans-unit id="checkout.account_number">
+                <source>checkout.account_number</source>
+                <target>Account Number</target>
+            </trans-unit>
+            <trans-unit id="checkout.account_type">
+                <source>checkout.account_type</source>
+                <target>Account Type</target>
+            </trans-unit>
+            <trans-unit id="checkout.account_type.checking">
+                <source>checkout.account_type.checking</source>
+                <target>Checking</target>
+            </trans-unit>
+            <trans-unit id="checkout.account_type.savings">
+                <source>checkout.account_type.savings</source>
+                <target>Savings</target>
+            </trans-unit>
+            <trans-unit id="checkout.account_type.business_checking">
+                <source>checkout.account_type.business_checking</source>
+                <target>Business Checking</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.save">
+                <source>checkout.payment.save</source>
+                <target>Save this payment information for later</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.save.help">
+                <source>checkout.payment.save.help</source>
+                <target>Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
+            </trans-unit>
+            <trans-unit id="checkout.card_number">
+                <source>checkout.card_number</source>
+                <target>Card Number</target>
+            </trans-unit>
+            <trans-unit id="checkout.csc">
+                <source>checkout.csc</source>
+                <target>CSC</target>
+            </trans-unit>
+            <trans-unit id="checkout.expiration">
+                <source>checkout.expiration</source>
+                <target>Expiration</target>
             </trans-unit>
         </body>
     </file>

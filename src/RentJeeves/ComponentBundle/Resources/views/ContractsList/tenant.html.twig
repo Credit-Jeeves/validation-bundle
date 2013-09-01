@@ -23,7 +23,7 @@
     </div>
 </div>
 <!-- endloader -->
-<div class="pod-large pod-border pod-padding shadow">
+<div class="pod-large pod-border pod-padding shadow" id="current-payments">
     <h1>{{ 'current_payments.title' | trans() }}</h1>
     <div class="addPropertyContainer">
         <center>
@@ -72,7 +72,9 @@
                                 </div>
                             {% elseif contract.status == 'approved' %}
                                 <div class="contract-potential">
-                                    <button class="button small button-contract-pay floatleft">
+                                    <button class="button small button-contract-pay floatleft"
+                                            data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
+                                    >
                                         <span>{{ 'contract.pay' | trans() }}</span>
                                     </button>
                                     <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
@@ -81,7 +83,9 @@
                                 </div>
                             {% elseif contract.status == 'current' %}
                                 <div class="contract-potential">
-                                    <button class="button small button-contract-pay floatleft">
+                                    <button class="button small button-contract-pay floatleft"
+                                            data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
+                                    >
                                         <span>{{ 'contract.pay' | trans() }}</span>
                                     </button>
                                     <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
@@ -97,3 +101,20 @@
         </div>
     </div>
 </div>
+
+{{ render(controller('RjCheckoutBundle:Component:pay')) }}
+
+{% javascripts  '@RjCheckoutBundle/Resources/public/js/Pay.js'
+                '@TenantBundle/Resources/public/js/CurrentPayments.js'
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
+<script type="text/javascript">
+    var CurrentPaymentsViewModel = new CurrentPayments();
+
+    $(document).ready(function(){
+        ko.applyBindings(CurrentPaymentsViewModel, $('#current-payments').get(0));
+    });
+</script>
+

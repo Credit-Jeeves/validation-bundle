@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -48,24 +49,6 @@ abstract class PaymentAccount
      * )
      */
     protected $accountName;
-
-    /**
-     * @ORM\Column(
-     *     name="number",
-     *     type="string",
-     *     length=255
-     * )
-     */
-    protected $number;
-
-    /**
-     * @ORM\Column(
-     *     name="routing",
-     *     type="string",
-     *     length=255
-     * )
-     */
-    protected $routing;
 
     /**
      * @ORM\Column(
@@ -159,52 +142,6 @@ abstract class PaymentAccount
     public function getAccountName()
     {
         return $this->accountName;
-    }
-
-    /**
-     * Set number
-     *
-     * @param string $number
-     * @return PaymentAccount
-     */
-    public function setNumber($number)
-    {
-        $this->number = $number;
-
-        return $this;
-    }
-
-    /**
-     * Get number
-     *
-     * @return string
-     */
-    public function getNumber()
-    {
-        return $this->number;
-    }
-
-    /**
-     * Set routing
-     *
-     * @param string $routing
-     * @return PaymentAccount
-     */
-    public function setRouting($routing)
-    {
-        $this->routing = $routing;
-
-        return $this;
-    }
-
-    /**
-     * Get routing
-     *
-     * @return string
-     */
-    public function getRouting()
-    {
-        return $this->routing;
     }
 
     /**

@@ -9,15 +9,22 @@ class PaymentDetailsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('amount');
+        $builder->add('amount', 'text', array('attr' => array('class' => 'half-of-right')));
         $builder->add(
             'start_date',
             'date',
             array(
-                'label' => 'checkout.amount',
+                'label' => 'checkout.start_date',
                 'input' => 'string',
                 'widget' => 'single_text',
                 'format' => 'dd/MM/yy',
+                'empty_data' => '',
+                'attr' => array(
+                    'class' => 'datepicker-field',
+                    'tooltip_title' => 'checkout.start_date.tooltip.title',
+                    'tooltip_text' => 'checkout.start_date.tooltip.text',
+                ),
+
                 'error_bubbling' => true,
             )
         );
@@ -29,7 +36,11 @@ class PaymentDetailsType extends AbstractType
                 'label' => 'checkout.type',
                 'empty_data' => 'checkout.select',
                 'choices' => array('monthly' => 'checkout.monthly'),
-                'required'  => false,
+                'attr' => array(
+                    'class' => 'original',
+                    'tooltip_title' => 'checkout.type.tooltip.title',
+                    'tooltip_text' => 'checkout.type.tooltip.text',
+                )
             )
         );
         $builder->add(
@@ -39,7 +50,7 @@ class PaymentDetailsType extends AbstractType
                 'label' => 'checkout.ends',
                 'expanded' => true,
                 'choices' => array('cancelled' => 'checkout.when_cancelled', 'on' => 'checkout.on'),
-                'required'  => false,
+                'empty_value'  => false,
             )
         );
         $builder->add(
@@ -52,6 +63,9 @@ class PaymentDetailsType extends AbstractType
                 'format' => 'dd/MM/yy',
                 'error_bubbling' => true,
                 'required'  => false,
+                'attr' => array(
+                    'class' => 'datepicker-field',
+                )
             )
         );
     }

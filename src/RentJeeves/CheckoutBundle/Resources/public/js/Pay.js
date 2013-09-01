@@ -1,14 +1,27 @@
-function Pay(data, contractId) {
+function Pay(data, /*paretn,*/ contractId) {
     ko.cleanNode($('#pay-popup').get(0));
 
-    this.step = ko.observable(1);
+    var current = 0;
+    var steps = ['details', 'source', 'verify', 'pay'];
+
+//    steps.splice(2, 1);
+    this.step = ko.observable('details');
+
+    this.stepExist = function(step) {
+        return -1 != steps.indexOf(step);
+    };
 
     this.next = function() {
-       this.step(this.step() + 1);
+        current++;
+        this.step(steps[current]);
+    };
+
+    this.submit = function(step) {
     };
 
     this.previous = function() {
-       this.step(this.step() - 1);
+        current--;
+        this.step(steps[current]);
     };
 
     // Constructor
@@ -19,7 +32,7 @@ function Pay(data, contractId) {
     });
 
 
-    $("#pay-popup #payment-start,#pay-popup #payment-end,#pay-popup #due").datepicker({
+    $("input.datepicker-field").datepicker({
         showOn: "button",
         buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
         buttonImageOnly: true,

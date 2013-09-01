@@ -7,6 +7,7 @@ use Payum\Heartland\Soap\Base\ACHDepositType;
 use Payum\Heartland\Soap\Base\GetTokenRequest;
 use Payum\Heartland\Soap\Base\TokenPaymentMethod;
 use Payum\Request\CaptureRequest;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentDetailsType;
 use RentJeeves\DataBundle\Entity\Heartland;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -52,5 +53,19 @@ class DefaultController extends Controller
         $this->get('doctrine.orm.entity_manager')->flush($paymentDetails);
 
         return array();
+    }
+
+
+    /**
+     * @Route("/checkout/test")
+     * @Template()
+     */
+    public function testAction()
+    {
+        $paymentDetailsType = $this->createForm(new PaymentDetailsType());
+        ini_set('memory_limit', -1);
+        return array(
+            'paymentDetailsType' => $paymentDetailsType->createView()
+        );
     }
 }

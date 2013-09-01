@@ -1,5 +1,5 @@
 function CurrentPayments() {
-    this.openPopup = function(contractId) {
+    this.openPayPopup = function(contractId) {
         new Pay(contractId);
     };
 }

@@ -1,6 +1,15 @@
 {% extends "TenantBundle::base.html.twig" %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+
 {% block content %}
+
+
     <div id="rent-menu">
         {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'TenantBundle:Sources:menu.html.twig' }) }}
     </div>
