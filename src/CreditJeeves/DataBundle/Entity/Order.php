@@ -121,9 +121,11 @@ class Order extends BaseOrder
 
     public function getHeartlandTransactionId()
     {
-        if ($heartlands = $this->getHeartlands()) {
-            ;
+        $result = 'N/A';
+        $heartlands = $this->getHeartlands();
+        if (count($heartlands) > 0) {
+            $result = $heartlands->last()->getTransactionId();
         }
-        return '****';
+        return $result;
     }
 }
