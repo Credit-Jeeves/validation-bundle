@@ -3923,7 +3923,7 @@ label.checkbox input[type="radio"]:checked + i {
   display: none;
 }
 .createNewUnit>input {
-  width: 50px;
+  width: 50px !important;
 }
 .lab1,.createNewUnit {
   display: none;

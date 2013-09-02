@@ -131,15 +131,17 @@ class IframeCase extends BaseTestCase
      */
     public function checkInviteIframeNotFound()
     {
-        $this->setDefaultSession('selenium2');
-        $this->visitEmailsPage(); // TODO it must be done by goutte driver!!!
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(2, $email, 'Wrong number of emails');
         $email = end($email);
         $email->click();
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
-        $link->click();
+        $url = $link->getAttribute('href');
+        $this->setDefaultSession('selenium2');
+        $this->session->visit($url);
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#landlordInviteRegister').is(':visible')");
         $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));

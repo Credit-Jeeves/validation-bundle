@@ -55,26 +55,23 @@ class Builder extends ContainerAware
     public function settingsMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
-//         $menu->addChild('settings.password', array('route' => 'applicant_password'));
-//         $menu->addChild('settings.contact_information', array('route' => 'user_contact'));
-//         $menu->addChild('settings.email', array('route' => 'user_email'));
-//         $menu->addChild('settings.remove', array('route' => 'user_remove'));
+        $menu->addChild('account.information', array('route' => 'landlord_edit_profile'));
+        $menu->addChild('settings.password', array('route' => 'landlord_password'));
+        $menu->addChild('settings.deposit', array('route' => 'settings_deposit'));
 
-//         $sRoute = $this->container->get('request')->get('_route');
-//         switch ($sRoute) {
-//             case 'applicant_password':
-//                 $menu['settings.password']->setUri('');
-//                 break;
-//             case 'user_contact':
-//                 $menu['settings.contact_information']->setUri('');
-//                 break;
-//             case 'user_email':
-//                 $menu['settings.email']->setUri('');
-//                 break;
-//             case 'user_remove':
-//                 $menu['settings.remove']->setUri('');
-//                 break;
-//         }
+
+        $sRoute = $this->container->get('request')->get('_route');
+        switch ($sRoute) {
+            case 'landlord_edit_profile':
+                $menu['account.information']->setUri('');
+                break;
+            case 'landlord_password':
+                $menu['settings.password']->setUri('');
+                break;
+            case 'settings_deposit':
+                $menu['settings.deposit']->setUri('');
+                break;
+        }
         return $menu;
     }
 }
