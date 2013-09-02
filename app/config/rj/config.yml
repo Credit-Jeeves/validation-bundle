@@ -41,7 +41,11 @@ sonata_admin:
             - { position: left, type: sonata.admin.block.admin_list }
         groups:
             admin: ~
-            RentJeeves: ~
+            RentJeeves:
+              items:
+                - sonata.admin.rj_group
+                - sonata.admin.landlord
+                - sonata.admin.tenant
 
 twig:
     globals:
