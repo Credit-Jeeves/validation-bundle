@@ -221,6 +221,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, '$(".haveAccount a").length > 0');
         $this->assertNotNull($link = $this->page->find('css', '.haveAccount a'));
         $link->click();
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->login('landlord2@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
