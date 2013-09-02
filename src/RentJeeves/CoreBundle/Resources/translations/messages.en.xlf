@@ -871,7 +871,31 @@
                 <source>admin.list.landlords</source>
                 <target>Landlords</target>
             </trans-unit>
-
+            <trans-unit id="settings.deposit">
+                <source>settings.deposit</source>
+                <target>Direct Deposit Accounts</target>
+            </trans-unit>
+            <trans-unit id="settings.deposit.description">
+                <source>settings.deposit.description</source>
+                <target>
+                    Specify where you wold like us to deposit incoming rent payments.
+                    Any RentTrack fees will also be withdrawn from this account.
+                </target>
+            </trans-unit>
+            <trans-unit id="add.account">
+                <source>add.account</source>
+                <target>Add Account</target>
+            </trans-unit>
+            <trans-unit id="add.account.popup.desc">
+                <source>add.account.popup.desc</source>
+                <target>This information is only used to direct payments to you.
+                        Deposit will be initiate on you "Rent Due Date" and typically
+                        take 1-3 days to show up in you chosen account.</target>
+            </trans-unit>
+            <trans-unit id="add.account.popup.title.edit">
+                <source>add.account.popup.title.edit</source>
+                <target>Add direct deposit account</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

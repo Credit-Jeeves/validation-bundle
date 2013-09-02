@@ -5,14 +5,83 @@ namespace RentJeeves\LandlordBundle\Controller;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
+use RentJeeves\LandlordBundle\Form\AccountInfoType;
 
 class SettingsController extends Controller
 {
     /**
-     * @Route("/settings", name="landlord_settings")
+     * @Route("/password", name="landlord_password")
      * @Template()
      */
-    public function indexAction()
+    public function passwordAction()
+    {
+        $request = $this->get('request');
+        /** @var \CreditJeeves\DataBundle\Entity\User $User */
+        $User = $this->getUser();
+        $sOldPassword = $User->getPassword();
+        $sEmail = $User->getEmail();
+        $form = $this->createForm(new PasswordType(), $User);
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $User = $form->getData();
+                $reEnteredPassword = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($User->getPassword(), $User->getSalt());
+                if ($sOldPassword == $reEnteredPassword) {
+                    $aForm = $request->request->get($form->getName());
+                    $sNewPassword = $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($aForm['password_new']['Password'], $User->getSalt());
+                    $User->setPassword($sNewPassword);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($User);
+                    $em->flush();
+                    $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
+                }
+            }
+        }
+
+        return array(
+                'form'   => $form->createView()
+        );
+    }
+
+    /**
+     * @Route("/account/edit", name="landlord_edit_profile")
+     * @Template()
+     */
+    public function editProfileAction()
+    {
+        $landlord = $this->getUser();
+
+        $form = $this->createForm(
+            new AccountInfoType(),
+            $landlord
+        );
+        $request = $this->get('request');
+
+        if ($request->getMethod() == 'POST') {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $address = $form->getData()->getAddress();
+
+                $em->persist($address);
+                $em->persist($landlord);
+                $em->flush();
+            }
+        }
+        return array(
+            'form'    => $form->createView(),
+        );
+    }
+
+
+    /**
+     * @Route("/settings/deposit", name="settings_deposit")
+     * @Template()
+     */
+    public function settingsDepositAction()
     {
         return array();
     }
