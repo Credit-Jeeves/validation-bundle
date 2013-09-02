@@ -116,7 +116,7 @@ class Mailer extends BaseMailer implements MailerInterface
             'fullNameTenant'        => $tenant->getFullName(),
             'nameTenant'            => $tenant->getFirstName(),
             'address'               => $contract->getProperty()->getAddress(),
-            'unit'                  => $contract->getUnit(),
+            'unitName'              => ($contract->getUnit())? $contract->getUnit()->getName() : null,
             'inviteCode'            => $landlord->getInviteCode(),
         );
 
