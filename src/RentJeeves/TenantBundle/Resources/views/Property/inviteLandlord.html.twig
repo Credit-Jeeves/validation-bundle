@@ -36,7 +36,9 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets '@TenantBundle/Resources/public/css/invite.landlord.css'
+    {% stylesheets 
+        '@RjPublicBundle/Resources/public/css/styles.css'
+        '@TenantBundle/Resources/public/css/invite.landlord.css'
     %}
       <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}

@@ -15,6 +15,7 @@ class SettingsController extends Controller
 {
     /**
      * @Route("/password", name="user_password")
+     * @Route("/landlord/password", name="landlord_password")
      * @Route("/profile/")
      * @Template()
      */
