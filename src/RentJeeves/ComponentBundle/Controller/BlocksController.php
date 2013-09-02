@@ -18,7 +18,8 @@ class BlocksController extends Controller
         $user = $this->getUser();
         if (!$user) {
             return array(
-                'isAdmin' => $isAdmin,
+                'isAdmin'     => $isAdmin,
+                'accountType' => false
             );
         }
 
@@ -26,8 +27,11 @@ class BlocksController extends Controller
             $isAdmin = true;
         }
 
+
+
         return array(
-            'isAdmin' => $isAdmin,
+            'isAdmin'     => $isAdmin,
+            'accountType' => $user->getType()
         );
     }
 
