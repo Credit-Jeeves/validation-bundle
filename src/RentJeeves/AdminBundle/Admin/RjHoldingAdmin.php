@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\AdminBundle\Admin;
+namespace RentJeeves\AdminBundle\Admin;
 
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -7,34 +7,32 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use CreditJeeves\DataBundle\Enum\GroupType;
 
-class HoldingAdmin extends Admin
+class RjHoldingAdmin extends Admin
 {
-    /**
-     *
-     * @var string
-     */
-    const TYPE = 'holding';
-
     protected $formOptions = array(
             'validation_groups' => 'holding'
     );
 
-
     /**
      * {@inheritdoc}
      */
-    public function getBaseRouteName()
+    public function createQuery($context = 'list')
     {
-        return 'admin_cj_'.self::TYPE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRoutePattern()
-    {
-        return '/cj/'.self::TYPE;
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        $query->innerJoin($alias.'.groups', $alias.'_g');
+        $query->add(
+            'where',
+            $query->expr()->in(
+                $alias.'_g.type',
+                array(
+                    GroupType::RENT
+                )
+            )
+        );
+        return $query;
     }
 
     public function configureListFields(ListMapper $listMapper)
@@ -63,6 +61,6 @@ class HoldingAdmin extends Admin
     public function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-                ->add('name');
+            ->add('name');
     }
 }
