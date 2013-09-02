@@ -124,6 +124,13 @@ a.linkselect-link .linkselect-link-text {
     margin-left: -25px !important;
 }
 .loadingSpinner {
-  margin-top: 3px;
+  margin-top: 1px;
   margin-left: 48px;
+}
+
+@-moz-document url-prefix() { 
+  .loadingSpinner {
+    margin-left: -69px;
+    margin-top: 29px;
+  }
 }
