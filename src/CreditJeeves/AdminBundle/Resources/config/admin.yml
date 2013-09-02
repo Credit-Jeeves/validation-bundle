@@ -43,16 +43,7 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
-    sonata.admin.orders:
-        class: CreditJeeves\AdminBundle\Admin\OrderAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Payments" }
-        arguments:
-            - ~
-            - CreditJeeves\DataBundle\Entity\Order
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
 
 #Credit jeeves application
     sonata.admin.cj_group:
@@ -139,13 +130,4 @@ services:
 #        calls:
 #            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
-    sonata.admin.contract:
-        class: CreditJeeves\AdminBundle\Admin\ContractAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Contracts" }
-        arguments:
-            - ~
-            - RentJeeves\DataBundle\Entity\Contract
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
