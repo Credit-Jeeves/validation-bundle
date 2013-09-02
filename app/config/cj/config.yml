@@ -29,7 +29,23 @@ parameters:
 framework:
     router:
         resource: "%kernel.root_dir%/config/cj/routing.yml"
+    session:
+        name: cj
 
 twig:
     globals:
         application: cj
+
+
+sonata_admin:
+    dashboard:
+        blocks:
+            # display a dashboard block
+            - { position: left, type: sonata.admin.block.admin_list }
+        groups:
+            admin: ~
+            CreditJeeves:
+                items:
+                    - sonata.admin.cj_group
+                    - sonata.admin.dealer
+                    - sonata.admin.applicant

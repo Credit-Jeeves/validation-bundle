@@ -11,12 +11,17 @@ class OrderType extends Enum
     /**
      * @var string
      */
-    const HL_CARD = 'heartland_card';
+    const AUTHORIZE_CARD = 'authorize_card';
 
     /**
      * @var string
      */
-    const HL_BANK = 'heartland_bank';
+    const HEARTLAND_CARD = 'heartland_card';
+
+    /**
+     * @var string
+     */
+    const HEARTLAND_BANK = 'heartland_bank';
 
     /**
      * @var string

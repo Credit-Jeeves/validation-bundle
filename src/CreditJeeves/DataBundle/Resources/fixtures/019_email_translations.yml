@@ -95,8 +95,18 @@ fixtures:
     property: body
     value: |
       {% extends "CoreBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
-      {% block email %}To reset your password - please visit <a href="{{ confirmationUrl }}">{{ confirmationUrl }}</a>{% endblock %}
+      {% block h1 %}Hi {{ user.full_name }}!{% endblock %}
+      {% block email %}
+        You recently asked to reset your password.
+        <a href="{{ confirmationUrl }}">Click here to change your password.</a>
+
+        Didn't request this change?
+        If you didn't request a new password, please contact us at <a mailto="help@renttrack.com">help@renttrack.com</a>.
+
+        RentTrack will never e-mail you and ask you to disclose or verify your RentTrack.com password, credit card, or banking account number.
+
+        Thank you for using RentTrack!
+      {% endblock %}
 
 # check.html email
   translation_91:
@@ -110,8 +120,14 @@ fixtures:
     property: body
     value: |
       {% extends "CoreBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
-      {% block email %}Confirm - please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a>{% endblock %}
+      {% block h1 %}Your Credit Jeeves account is almost ready!{% endblock %}
+      {% block email %}Hello {{ user.full_name }},
+
+      Please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a> to confirm your registration.
+
+      See you soon,
+      The Credit Jeeves Team
+      {% endblock %}
 
 # check.html email
   translation_101:
@@ -144,22 +160,29 @@ fixtures:
     translatable: email_11
     locale: %locale%
     property: subject
-    value: Check Email
+    value: Get Started with RentTrack
   translation_121:
     translatable: email_11
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ user.full_name }}!{% endblock %}
-      {% block email %}Confirm - please visit <a href="{{ checkUrl }}" id="confirmationUrl">{{ checkUrl }}</a>{% endblock %}
+      {% block h1 %}Your RentTrack account is almost ready!{% endblock %}
+      {% block email %}
+      Hello {{ user.full_name }},
+
+      Please visit <a href="{{ checkUrl }}">{{ checkUrl }}</a> to confirm your registration.
+
+      See you soon,
+      The RentTrack Team
+      {% endblock %}
 
 # rjLandLordInvite.html email
   translation_122:
     translatable: email_12
     locale: %locale%
     property: subject
-    value: Invite
+    value: Your Tenant is Ready to Pay Rent through RentTrack
   translation_123:
     translatable: email_12
     locale: %locale%
@@ -174,16 +197,17 @@ fixtures:
             Hello!  <br /> <br /> 
         {% endif %}
         Your tenant, {{ fullNameTenant }}, would like to use RentTrack to pay rent on your property at
-        {{ address }}. RentTrack allows {{ nameTenant }} to build credit history by
+        {{ address }} {{ unitName }}. RentTrack allows {{ nameTenant }} to build credit history by
         reporting on-time payments to credit bureaus. <br /> <br />
 
         As a landlord, you benefit because RentTrack facilitates easy payments through secure electronic
-        check transfers and credit cords - payments are deposited faster and directly to your account. 
-        Reminders are sent automatically to your tenants before rent is due and late notices ore sent
-        to you immediately. If  you have  multiple  properties, you can see the status  of  your  payments
-        all in one place <br /> <br />
+        check transfers and credit cards - payments are deposited faster and directly to your account.
+        Reminders are sent automatically to your tenants before rent is due and late notices are sent
+        to you immediately. If you have multiple properties, you can see the status of your payments
+        all in one place. Top top it off, your tenant has an additional incentive to pay
+        on time each month.<br /> <br />
 
-        Ready to get pay? <br /> <br />
+        Ready to get paid? <br /> <br />
         <a id="payRentLinkLandlord"
         {% if inviteCode %}
           href="http://{{ app.request.host }}{{ path('landlord_invite', {'code': inviteCode }) }}"
@@ -214,7 +238,7 @@ fixtures:
     translatable: email_13
     locale: %locale%
     property: subject
-    value: Invite
+    value: Your Landlord is Requesting Rent Payment through RentTrack
   translation_125:
     translatable: email_13
     locale: %locale%
@@ -228,12 +252,13 @@ fixtures:
         {% else %}
             Hello!  <br /> <br /> 
         {% endif %}
-        Your landlord, {{ fullNameLandlord }}, would like to use RentTrack to pay your rent for
-        {{ address }} {{ unitName }}. RentTrack facilitates easy payments through secure electronic check transfers
-        and credit cards - you get choose.
+        Your landlord, {{ fullNameLandlord }}, would like you to use RentTrack to pay your rent for
+        {{ address }} {{ unitName }}. RentTrack makes it easy to pay rent through secure electronic check transfers
+        and credit card payments - you get to choose. You also have the opportunity to build credit by signing up for
+        credit bureau payment reporting. Finally, <b>paying by electronic checks is completely free</b>.
         <br /> <br />
 
-        Ready to build your pay? <br /> <br />
+        Ready to get something out of your rent payments?<br /> <br />
         <a id="payRentLink" 
         {% if inviteCode %}
           href="http://{{ app.request.host }}{{ path('tenant_invite', {'code': inviteCode }) }}"
@@ -265,24 +290,27 @@ fixtures:
     translatable: email_14
     locale: %locale%
     property: subject
-    value: Invite
+    value: Your Rent Payment is Late
   translation_127:
     translatable: email_14
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Pay Rent. Built Credit.{% endblock %}
+      {% block h1 %}Your Rent is Late. Pay Today!{% endblock %}
       {% block email %}
         {% if nameTenant %}
             Hi {{ nameTenant }}! <br />  <br />
         {% else %}
             Hello!  <br /> <br /> 
         {% endif %}
-        Your landlord, {{ fullNameLandlord }}, would like to use RentTrack to pay your rent for
-        {{ address }} {{ unitName }}. RentTrack facilitates easy payments through secure electronic check transfers
-        and credit cards - you get choose.
-        <br /> <br />
+        It looks like you have not paid in full for {{ address }} {{ unitName }} this month. Your landlord,
+        {{ fullNameLandlord }}, expected payment already.
 
-        <a href="#">Learn More</a>
+        <a href="http://my.renttrack.com/">Log in today</a> and set up a payment.
+
+        Better yet, you can set up automatic payments so you never miss one again. <a href="#">Learn More</a>
+
+        Watching out for you,
+        The RentTrack Team
       {% endblock %}

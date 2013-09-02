@@ -298,7 +298,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "88c32bfbcf636a43fb1a9d14ae1850eaddca4230"
+                "reference": "9a6c7e50eec84914ce605158381322f5a87bcbca"
             },
             "require": {
                 "ext-mcrypt": "*",
@@ -320,7 +320,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-08-01 13:42:04"
+            "time": "2013-08-28 00:36:45"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -3866,12 +3866,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkBundle.git",
-                "reference": "f5b39338b89cacd525281f90e78c9329879212e4"
+                "reference": "b88582f03243597bff9a71bfc4b57d41161c3009"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/f5b39338b89cacd525281f90e78c9329879212e4",
-                "reference": "f5b39338b89cacd525281f90e78c9329879212e4",
+                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/b88582f03243597bff9a71bfc4b57d41161c3009",
+                "reference": "b88582f03243597bff9a71bfc4b57d41161c3009",
                 "shasum": ""
             },
             "require": {
@@ -3921,7 +3921,7 @@
                 "test",
                 "web"
             ],
-            "time": "2013-06-25 12:19:16"
+            "time": "2013-08-30 03:30:00"
         },
         {
             "name": "behat/mink-goutte-driver",

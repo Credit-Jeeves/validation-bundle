@@ -84,7 +84,14 @@ class AppCjKernel extends AppKernel
 
     public function getCacheDir()
     {
-        return $this->rootDir.'/cache/cj/'.$this->environment;
-    }    
-    
+        return $this->rootDir.'/cache/'.$this->environment;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'cj';
+    }
 }

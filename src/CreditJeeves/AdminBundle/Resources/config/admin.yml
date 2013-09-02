@@ -43,6 +43,7 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+#Credit jeeves application
     sonata.admin.cj_group:
         class: CreditJeeves\AdminBundle\Admin\CjGroupAdmin
         tags:
@@ -53,9 +54,6 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
-
-#Credit jeeves application
 
     sonata.admin.lead:
         class: CreditJeeves\AdminBundle\Admin\LeadAdmin
@@ -96,38 +94,4 @@ services:
             - ~
             - CreditJeeves\DataBundle\Entity\Report
             - 'SonataAdminBundle:CRUD'
-
-    sonata.admin.rj_group:
-        class: CreditJeeves\AdminBundle\Admin\RjGroupAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Groups" }
-        arguments:
-            - ~
-            - CreditJeeves\DataBundle\Entity\Group
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
-    sonata.admin.landlord:
-        class: CreditJeeves\AdminBundle\Admin\LandlordAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Landlords" }
-        arguments:
-            - ~
-            - RentJeeves\DataBundle\Entity\Landlord
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
-    sonata.admin.tenant:
-        class: CreditJeeves\AdminBundle\Admin\TenantAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Tenants" }
-        arguments:
-            - ~
-            - RentJeeves\DataBundle\Entity\Tenant
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
 

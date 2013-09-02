@@ -15,6 +15,21 @@ abstract class BaseTestCase extends MinkTestCase
     /**
      * {@inheritdoc}
      */
+    public function getKernel()
+    {
+        static $current;
+        if ($current != static::APP) {
+            $current = static::APP;
+            static::$kernel = null;
+            static::$class = null;
+            $this->setMink();
+        }
+        return parent::getKernel();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected static function getKernelClass()
     {
         $dir = isset($_SERVER['KERNEL_DIR']) ?

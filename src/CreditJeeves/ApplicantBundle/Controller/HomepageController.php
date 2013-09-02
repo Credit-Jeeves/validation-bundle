@@ -13,7 +13,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 
 /**
  * @author Alex
- * @Route("/")
  */
 class HomepageController extends Controller
 {

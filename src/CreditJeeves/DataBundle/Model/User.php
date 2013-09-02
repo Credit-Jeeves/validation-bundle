@@ -480,13 +480,12 @@ abstract class User extends BaseUser
     protected $pidkiqs;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
      *      mappedBy="user",
      *      cascade={"persist", "remove", "merge"}
      * )
+     * @var ArrayCollection
      */
     protected $addresses;
 

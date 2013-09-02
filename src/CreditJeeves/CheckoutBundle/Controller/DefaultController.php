@@ -4,8 +4,11 @@ namespace CreditJeeves\CheckoutBundle\Controller;
 use CreditJeeves\CheckoutBundle\Form\Type\AuthorizeNetAimType;
 use CreditJeeves\CheckoutBundle\Form\Type\OrderAuthorizeType;
 use CreditJeeves\DataBundle\Entity\CheckoutAuthorizeNetAim;
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\ReportD2c;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\UserType;
 use Payum\AuthorizeNet\Aim\Model\PaymentDetails;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
@@ -15,7 +18,9 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Validator\Constraints\Range;
+use Doctrine\Common\Collections\ArrayCollection;
 use \DateTime;
 
 /**
@@ -23,6 +28,8 @@ use \DateTime;
  */
 class DefaultController extends Controller
 {
+    const AMOUNT = '9.00';
+
     /**
      * @var Order
      */
@@ -51,14 +58,18 @@ class DefaultController extends Controller
         $user = $this->getuser();
         $type = $user->getType();
         $this->order = new Order();
+        $this->order->addAuthorize(new CheckoutAuthorizeNetAim());
         $this->order->setUser($user);
+        $this->order->setAmount(static::AMOUNT);
         $this->form = $this->createForm(new OrderAuthorizeType(), $this->order);
+        $em = $this->get('doctrine.orm.default_entity_manager');
 
         if ($request->isMethod('POST')) {
             $this->form->bind($request);
             if ($this->form->isValid()) {
                 $this->order->setStatus(OrderStatus::NEWONE);
-                $authorize = $this->order->getAuthorize();
+                /** @var CheckoutAuthorizeNetAim $authorize */
+                $authorize = $this->order->getAuthorizes()[0];
                 $authorize->setOrder($this->order);
                 $authorize->setFirstName($this->form->getData()->getUser()->getFirstName());
                 $authorize->setLastName($this->form->getData()->getUser()->getLastName());
@@ -66,43 +77,32 @@ class DefaultController extends Controller
                 $authorize->setCity($this->form->getData()->getUser()->getCity());
                 $authorize->setState($this->form->getData()->getUser()->getState());
                 $authorize->setZip($this->form->getData()->getUser()->getZip());
-                $authorize->setAmount('9.00');
-                $this->order->setAuthorize(); // TODO Fix it
-                $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
-                $this->get('doctrine.orm.default_entity_manager')->flush();
+                $authorize->setAmount(static::AMOUNT);
+                $this->order->setAuthorizes(new ArrayCollection());
+                $em->persist($this->order);
+                $em->flush();
 
                 if ($this->process($authorize)) {
+                    $this->order->setAuthorizes(new ArrayCollection(array($authorize)));
                     $this->order->setStatus(OrderStatus::COMPLETE);
-                    $this->get('doctrine.orm.default_entity_manager')->persist($this->order);
-                    $this->get('doctrine.orm.default_entity_manager')->flush();
-                    $this->order->setAuthorize($authorize); // TODO Fix it
-                    switch ($type) {
-                        case 'tenant':
-                            return $this->redirect($this->generateUrl('tenant_report'));
-                            break;
-                        default:
-                            $this->get('creditjeeves.mailer')->sendReceipt($this->order);
-                            return $this->redirect($this->generateUrl('applicant_report'));
-                            break;
-                    }
+                    $report = new ReportD2c();
+                    $report->setUser($this->getUser());
+                    $report->setRawData('');
+                    $operation = new Operation();
+                    $operation->setReportD2c($report);
+                    $this->order->addOperation($operation);
+                    $em->persist($operation);
+                    $em->persist($report);
+                    $em->persist($this->order);
+                    $em->flush();
+                    $this->get('creditjeeves.mailer')->sendReceipt($this->order);
+                    return $this->redirect($this->generateUrl('user_report'));
                 }
             }
         }
-        switch ($type) {
-            case 'tenant':
-                return $this->render(
-                    'CheckoutBundle:Default:rj_index.html.twig',
-                    array(
-                        'form' => $this->form->createView()
-                    )
-                );
-                break;
-            default:
-                return array(
-                    'form' => $this->form->createView()
-                );
-            break;
-        }
+        return array(
+            'form' => $this->form->createView(),
+        );
     }
 
     protected function process(CheckoutAuthorizeNetAim $authorize)

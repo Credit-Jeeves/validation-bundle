@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\SecurityContext;
 
 abstract class User
 {
@@ -16,20 +17,27 @@ abstract class User
     protected $session;
 
     /**
+     * @var SecurityContext
+     */
+    protected $security;
+
+    /**
      * @InjectParams({
      *     "session" = @Inject("session"),
-     *     "em" = @Inject("doctrine.orm.entity_manager")
+     *     "em" = @Inject("doctrine.orm.entity_manager"),
+     *     "security" = @Inject("security.context")
      * })
      */
-    public function __construct(Session $session, $em)
+    public function __construct(Session $session, $em, $security)
     {
         $this->session = $session;
         $this->em = $em;
+        $this->security = $security;
     }
 
     public function isAdmin()
     {
-        return $this->session->has(UserType::ADMIN);
+        return (bool)$this->session->get('observe_admin_id');
     }
 
     protected function findUser($nUserId)

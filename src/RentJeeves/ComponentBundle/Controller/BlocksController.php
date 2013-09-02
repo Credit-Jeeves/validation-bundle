@@ -22,8 +22,7 @@ class BlocksController extends Controller
             );
         }
 
-        $type =  $user->getType();
-        if ($type == 'admin') {
+        if ($this->get('session')->get('observe_admin_id')) {
             $isAdmin = true;
         }
 

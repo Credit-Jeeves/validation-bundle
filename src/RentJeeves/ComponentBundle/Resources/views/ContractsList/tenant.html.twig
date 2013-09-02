@@ -61,42 +61,33 @@
                         <td>{{ contract.recur | capitalize }}</td>
                         <td>{{ contract.status | upper }}</td>
                         <td>
-                            {% if contract.status == 'pending' %}
-                            <div class="contract-potential">
-                                <button class="button small button-contract-pay grey floatleft">
-                                    <span>{{ 'contract.pay' | trans() }}</span>
-                                </button>
-                                <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
-                                    <input type="hidden" value="{{ contract.full_address }}">
+                            {% if contract.status == 'pending' or contract.status == 'invite' %}
+                                <div class="contract-potential">
+                                    <button class="button small button-contract-pay grey floatleft">
+                                        <span>{{ 'contract.pay' | trans() }}</span>
+                                    </button>
+                                    <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                        <input type="hidden" value="{{ contract.full_address }}">
+                                    </div>
                                 </div>
-                            </div>
-                            {% elseif contract.status == 'invite' %}
-                            <div class="contract-potential">
-                                <button class="button small button-contract-pay grey floatleft">
-                                    <span>{{ 'contract.pay' | trans() }}</span>
-                                </button>
-                                <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
-                                    <input type="hidden" value="{{ contract.full_address }}">
-                                </div>
-                            </div>
                             {% elseif contract.status == 'approved' %}
-                            <div class="contract-potential">
-                                <button class="button small button-contract-pay floatleft">
-                                    <span>{{ 'contract.pay' | trans() }}</span>
-                                </button>
-                                <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
-                                    <input type="hidden" value="{{ contract.full_address }}">
+                                <div class="contract-potential">
+                                    <button class="button small button-contract-pay floatleft">
+                                        <span>{{ 'contract.pay' | trans() }}</span>
+                                    </button>
+                                    <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                        <input type="hidden" value="{{ contract.full_address }}">
+                                    </div>
                                 </div>
-                            </div>
                             {% elseif contract.status == 'current' %}
-                            <div class="contract-potential">
-                                <button class="button small button-contract-pay floatleft">
-                                    <span>{{ 'contract.pay' | trans() }}</span>
-                                </button>
-                                <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
-                                    <input type="hidden" value="{{ contract.full_address }}">
+                                <div class="contract-potential">
+                                    <button class="button small button-contract-pay floatleft">
+                                        <span>{{ 'contract.pay' | trans() }}</span>
+                                    </button>
+                                    <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
+                                        <input type="hidden" value="{{ contract.full_address }}">
+                                    </div>
                                 </div>
-                            </div>
                             {% endif %}
                         </td>
                     </tr>

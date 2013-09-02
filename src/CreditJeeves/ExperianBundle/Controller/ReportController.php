@@ -3,6 +3,7 @@ namespace CreditJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\ReportType;
 use CreditJeeves\DataBundle\Entity\ReportD2c;
 use Doctrine\DBAL\DBALException;
@@ -26,6 +27,8 @@ class ReportController extends Controller
 {
     protected $reportType = ReportType::PREQUAL;
 
+    protected $redirect = null;
+
     /**
      * @var \CreditJeeves\ExperianBundle\NetConnect
      */
@@ -39,12 +42,9 @@ class ReportController extends Controller
     protected function isReportLoadAllowed($isD2c = false)
     {
         if ($isD2c) {
-            if ($order = $this->getUser()->getLastCompleteOrder()) {
-                return !($operation = $order->getOperations()->last());
-            }
-            return true;
+            return $this->getUser()->getLastCompleteOperation(OperationType::REPORT);
         }
-        return !$this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
+        return !$this->getUser()->getReportsPrequal()->last();
     }
 
     /**
@@ -55,74 +55,30 @@ class ReportController extends Controller
      */
     public function getD2cAction()
     {
-        $user = $this->get('core.session.applicant')->getUser();
-        $type = $user->getType();
-        if (!$this->isReportLoadAllowed(true)) {
-            switch ($type) {
-                case 'tenant':
-                    return new RedirectResponse($this->generateUrl('tenant_homepage'));
-                    break;
-                default:
-                    return new RedirectResponse($this->generateUrl('applicant_homepage'));
-                    break;
-            }
-        }
         $this->get('session')->getFlashBag()->set('isD2cReport', true);
-        switch ($type) {
-            case 'tenant':
-                return $this->render(
-                    'ExperianBundle:Report:rj_get.html.twig',
-                    array(
-                        'url' => $this->generateUrl('core_report_get_ajax'),
-                    'redirect' => $this->generateUrl('tenant_report'),
-                        )
-                );
-                break;
-            default:
-                return array(
-                    'url' => $this->generateUrl('core_report_get_ajax'),
-                    'redirect' => $this->generateUrl('applicant_report'),
-                );
-                break;
-        }
+//        $this->redirect = ;
+        return $this->getAction(null, true);
     }
 
     /**
      * @Route("/get", name="core_report_get")
+     * @Route("/get/{redirect}", name="core_report_get")
      * @Template()
+     *
+     *
      *
      * @return array
      */
-    public function getAction()
+    public function getAction($redirect = null, $isD2c = false)
     {
-        $user = $this->get('core.session.applicant')->getUser();
-        $type = $user->getType();
-        if (!$this->isReportLoadAllowed()) {
-            switch ($type) {
-                case 'tenant':
-                    return new RedirectResponse($this->generateUrl('tenant_summary'));
-                    break;
-                default:
-                    return new RedirectResponse($this->generateUrl('applicant_homepage'));
-                    break;
-            }
+        if (!$this->isReportLoadAllowed($isD2c)) {
+            throw $this->createNotFoundException('Report does not allowed');
         }
-        switch ($type) {
-            case 'tenant':
-                return $this->render(
-                    'ExperianBundle:Report:rj_get.html.twig',
-                    array(
-                        'url' => $this->generateUrl('core_report_get_ajax'),
-                        'redirect' => null//$this->getRequest()->headers->get('referer'),
-                    )
-                );
-                break;
-            default:
-                return array(
-                    'url' => $this->generateUrl('core_report_get_ajax'),
-                    'redirect' => null//$this->getRequest()->headers->get('referer'),
-                );
-        }
+        return array(
+            'url' => $this->generateUrl('core_report_get_ajax'),
+            'redirect' => $redirect?$this->generateUrl($redirect):null
+            //$this->getRequest()->headers->get('referer'), //FIXME redirect does not preserve referer
+        );
     }
 
     protected function getArf()
@@ -139,19 +95,12 @@ class ReportController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         if ($isD2c) {
-            $report = new ReportD2c();
-            $operation = new Operation();
-            $order = $this->getUser()->getOrders()->last();
-            $operation->setReportD2c($report);
-            $em->persist($operation);
-            $order->addOperation($operation);
-            $em->persist($order);
-
+            $report = $this->getUser()->getLastCompleteOperation(OperationType::REPORT)->getReportD2c();
         } else {
             $report = new ReportPrequal();
+            $report->setUser($this->getUser());
         }
         $report->setRawData($this->getArf());
-        $report->setUser($this->get('core.session.applicant')->getUser());
         $em->persist($report);
         $em->flush();
         return true;
