@@ -6,6 +6,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use CreditJeeves\DataBundle\Enum\GroupType;
+use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class RjGroupAdmin extends Admin
 {
@@ -107,5 +108,57 @@ class RjGroupAdmin extends Admin
     {
         $datagridMapper
             ->add('name');
+    }
+
+    
+    public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
+    {
+        $nHoldingId = $this->getRequest()->get('holding_id', $this->request->getSession()->get('holding_id', null));
+        $menu = $this->menuFactory->createItem('root');
+        $menu = $menu->addChild(
+            $this->trans(
+                $this->getLabelTranslatorStrategy()->getLabel(
+                    'dashboard',
+                    'breadcrumb',
+                    'link'
+                ),
+                array(),
+                'SonataAdminBundle'
+            ),
+            array(
+                'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
+            )
+        );
+        if ('list' == $action & !empty($nHoldingId)) {
+            $menu = $menu->addChild(
+                $this->trans(
+                    $this->getLabelTranslatorStrategy()->getLabel(
+                        'Landlords List',
+                        'breadcrumb',
+                        'link'
+                    ),
+                    array(),
+                    'SonataAdminBundle'
+                ),
+                array(
+                    'uri' => $this->routeGenerator->generate('admin_landlord_list')
+                )
+            );
+        }
+        $menu = $menu->addChild(
+            $this->trans(
+                $this->getLabelTranslatorStrategy()->getLabel(
+                    'RentTrack Groups List',
+                    'breadcrumb',
+                    'link'
+                ),
+                array(),
+                'SonataAdminBundle'
+            ),
+            array(
+                'uri' => $this->routeGenerator->generate('admin_rj_group_list')
+            )
+        );
+        return $this->breadcrumbs[$action] = $menu;
     }
 }
