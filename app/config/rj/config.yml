@@ -47,7 +47,7 @@ sonata_admin:
                 - sonata.admin.orders
             RentJeeves:
               items:
-                - sonata.admin.holding
+                - sonata.admin.rj_holding
                 - sonata.admin.rj_group
                 - sonata.admin.landlord
                 - sonata.admin.tenant

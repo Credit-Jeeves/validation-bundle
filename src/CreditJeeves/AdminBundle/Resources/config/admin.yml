@@ -21,8 +21,9 @@ services:
             - 'RjEmailBundle:EmailTemplateAdmin'
         calls:
             - [ setLocales, [%rj_email.locales%]]
-    sonata.admin.holding:
-        class: CreditJeeves\AdminBundle\Admin\HoldingAdmin
+
+    sonata.admin.cj_holding:
+        class: CreditJeeves\AdminBundle\Admin\CjHoldingAdmin
         tags:
             - { name: sonata.admin, manager_type: orm, group: admin, label: "Holdings" }
         arguments:

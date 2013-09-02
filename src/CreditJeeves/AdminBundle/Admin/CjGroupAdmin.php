@@ -9,23 +9,23 @@ use CreditJeeves\DataBundle\Enum\GroupType;
 
 class CjGroupAdmin extends Admin
 {
-    /**
-     *
-     * @var string
-     */
-    const TYPE = 'group';
+//     /**
+//      *
+//      * @var string
+//      */
+//     const TYPE = 'group';
 
     protected $formOptions = array(
             'validation_groups' => 'holding'
     );
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRouteName()
-    {
-        return 'admin_cj_'.self::TYPE;
-    }
+//     /**
+//      * {@inheritdoc}
+//      */
+//     public function getBaseRouteName()
+//     {
+//         return 'admin_cj_'.self::TYPE;
+//     }
 
     /**
      * {@inheritdoc}
@@ -40,13 +40,13 @@ class CjGroupAdmin extends Admin
     
         
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBaseRoutePattern()
-    {
-        return '/cj/'.self::TYPE;
-    }
+//     /**
+//      * {@inheritdoc}
+//      */
+//     public function getBaseRoutePattern()
+//     {
+//         return '/cj/'.self::TYPE;
+//     }
 
     protected function configureListFields(ListMapper $listMapper)
     {

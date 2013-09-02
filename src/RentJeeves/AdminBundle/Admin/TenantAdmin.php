@@ -63,7 +63,7 @@ class TenantAdmin extends Admin
                             'template' => 'AdminBundle:CRUD:list__tenant_contracts.html.twig'
                         ),
                         'payments' => array(
-                                'template' => 'AdminBundle:CRUD:list__tenant_orders.html.twig'
+                            'template' => 'AdminBundle:CRUD:list__tenant_orders.html.twig'
                         )
                     )
                 )
@@ -97,7 +97,7 @@ class TenantAdmin extends Admin
                     'hidden',
                     array(
                         'required' => false
-                        )
+                    )
                 )
                 ->add(
                     'password_new',
@@ -105,16 +105,16 @@ class TenantAdmin extends Admin
                     array(
                         'required' => false,
                         'mapped' => false
-                        )
                     )
+                )
                 ->add(
                     'password_retype',
                     'password',
                     array(
                         'required' => false,
                         'mapped' => false
-                        )
                     )
+                )
                 ->add(
                     'culture'
                 )

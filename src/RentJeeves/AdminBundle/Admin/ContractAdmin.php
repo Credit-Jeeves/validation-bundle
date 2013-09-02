@@ -42,17 +42,16 @@ class ContractAdmin extends Admin
             ->add('status')
             ->add('rent')
             ->add(
-                    '_action',
-                    'actions',
-                    array(
-                            'actions' => array(
-                                    'payments' => array(
-                                            'template' => 'AdminBundle:CRUD:list__contract_orders.html.twig'
-                                    )
-                            )
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'payments' => array(
+                            'template' => 'AdminBundle:CRUD:list__contract_orders.html.twig'
+                        )
                     )
+                )
             );
-            
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)

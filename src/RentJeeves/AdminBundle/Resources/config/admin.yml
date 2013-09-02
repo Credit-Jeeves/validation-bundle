@@ -1,12 +1,14 @@
 services:
-    sonata.admin.report:
-        class: CreditJeeves\AdminBundle\Admin\ReportAdmin
+    sonata.admin.rj_holding:
+        class: RentJeeves\AdminBundle\Admin\RjHoldingAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: CreditJeeves, label: "Reports" }
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Holdings" }
         arguments:
             - ~
-            - CreditJeeves\DataBundle\Entity\Report
+            - CreditJeeves\DataBundle\Entity\Holding
             - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
     sonata.admin.rj_group:
         class: RentJeeves\AdminBundle\Admin\RjGroupAdmin

@@ -63,9 +63,7 @@ class OrderAdmin extends Admin
             ->add('amount')
             ->add('status')
             ->add('created_at', 'doctrine_orm_date')
-            ->add('updated_at', 'doctrine_orm_date')
-            
-        ;
+            ->add('updated_at', 'doctrine_orm_date');
     }
 
 //     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
@@ -74,5 +72,4 @@ class OrderAdmin extends Admin
 //         return parent::buildBreadcrumbs($action, $menu);
         
 //     }
-    
 }
