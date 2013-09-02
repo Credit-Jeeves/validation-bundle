@@ -31,4 +31,14 @@ class BlocksController extends Controller
             'isAdmin' => $isAdmin,
         );
     }
+
+    /**
+     * @Template
+     *
+     * @return array
+     */
+    public function passwordAction($formPath, $form)
+    {
+        return array('formPath' => $formPath, 'form' => $form);
+    }
 }
