@@ -1130,7 +1130,14 @@
                 <target>Data provided by</target>
             </trans-unit>
 
-
+            <trans-unit id="admin.action.orders">
+                <source>admin.action.orders</source>
+                <target>Payments</target>
+            </trans-unit>
+            <trans-unit id="admin.action.contracts">
+                <source>admin.action.contracts</source>
+                <target>Contracts</target>
+            </trans-unit>
             <!--  Checkout  -->
             <trans-unit id="error.card_num.empty">
                 <source>error.card_num.empty</source>
