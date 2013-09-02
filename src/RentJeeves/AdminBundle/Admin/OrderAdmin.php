@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class OrderAdmin extends Admin
 {
@@ -26,7 +27,6 @@ class OrderAdmin extends Admin
         }
         if (!empty($nContractId)) {
             $contract =  $this->getModelManager()->find('RjDataBundle:Contract', $nContractId);
-            
             $this->request->getSession()->set('contract_id', $nContractId);
             $query->innerJoin($alias.'.operations', $alias.'_o');
             $query->andWhere($alias.'_o.contract = :contract');
@@ -62,14 +62,81 @@ class OrderAdmin extends Admin
             ->add('type')
             ->add('amount')
             ->add('status')
-            ->add('created_at', 'doctrine_orm_date')
-            ->add('updated_at', 'doctrine_orm_date');
+            ->add(
+                'created_at',
+                'doctrine_orm_date'
+            )
+            ->add(
+                'updated_at',
+                'doctrine_orm_date'
+            );
     }
 
-//     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
-//     {
-//         echo __METHOD__;
-//         return parent::buildBreadcrumbs($action, $menu);
-        
-//     }
+    public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
+    {
+        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
+        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
+        $menu = $this->menuFactory->createItem('root');
+        $menu = $menu->addChild(
+            $this->trans(
+                $this->getLabelTranslatorStrategy()->getLabel(
+                    'dashboard',
+                    'breadcrumb',
+                    'link'
+                ),
+                array(),
+                'SonataAdminBundle'
+            ),
+            array(
+                'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
+            )
+        );
+        if ('list' == $action & !empty($nUserId)) {
+            $menu = $menu->addChild(
+                $this->trans(
+                    $this->getLabelTranslatorStrategy()->getLabel(
+                        'Tenant List',
+                        'breadcrumb',
+                        'link'
+                    ),
+                    array(),
+                    'SonataAdminBundle'
+                ),
+                array(
+                    'uri' => $this->routeGenerator->generate('admin_tenant_list')
+                )
+            );
+        }
+        if ('list' == $action & !empty($nContractId)) {
+            $menu = $menu->addChild(
+                $this->trans(
+                    $this->getLabelTranslatorStrategy()->getLabel(
+                        'Contracts List',
+                        'breadcrumb',
+                        'link'
+                    ),
+                    array(),
+                    'SonataAdminBundle'
+                ),
+                array(
+                    'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
+                )
+            );
+        }
+        $menu = $menu->addChild(
+            $this->trans(
+                $this->getLabelTranslatorStrategy()->getLabel(
+                    'Payments List',
+                    'breadcrumb',
+                    'link'
+                ),
+                array(),
+                'SonataAdminBundle'
+            ),
+            array(
+                'uri' => $this->routeGenerator->generate('admin_creditjeeves_data_order_list')
+            )
+        );
+        return $this->breadcrumbs[$action] = $menu;
+    }
 }
