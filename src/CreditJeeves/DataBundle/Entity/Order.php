@@ -105,4 +105,25 @@ class Order extends BaseOrder
         
         return $result;
     }
+
+    public function getOperationType()
+    {
+        $result = array();
+        $operations = $this->getOperations();
+        foreach ($operations as $operation) {
+            $type = $operation->getType();
+            if (!in_array($type, $result)) {
+                $result[] = $type;
+            }
+        }
+        return implode(', ', $result);
+    }
+
+    public function getHeartlandTransactionId()
+    {
+        if ($heartlands = $this->getHeartlands()) {
+            ;
+        }
+        return '****';
+    }
 }

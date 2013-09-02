@@ -19,7 +19,7 @@ class TenantAdmin extends Admin
     const TYPE = 'tenant';
 
     protected $formOptions = array(
-            'validation_groups' => 'user_admin'
+        'validation_groups' => 'user_admin'
     );
 
     /**
@@ -40,14 +40,13 @@ class TenantAdmin extends Admin
 
     public function configureListFields(ListMapper $listMapper)
     {
+        $this->request->getSession()->set('contract_id', null);
+        $this->request->getSession()->set('user_id', null);
         $listMapper
             ->add('first_name')
             ->add('middle_initial')
             ->add('last_name')
             ->add('email')
-//            ->add('state')
-//            ->add('zip')
-//            ->add('city')
             ->add('phone')
             ->add('is_active')
             ->add(
@@ -60,6 +59,12 @@ class TenantAdmin extends Admin
                         'observe' => array(
                             'template' => 'AdminBundle:CRUD:list__tenant_observe.html.twig'
                         ),
+                        'contracts' => array(
+                            'template' => 'AdminBundle:CRUD:list__tenant_contracts.html.twig'
+                        ),
+                        'payments' => array(
+                                'template' => 'AdminBundle:CRUD:list__tenant_orders.html.twig'
+                        )
                     )
                 )
             );
@@ -68,24 +73,51 @@ class TenantAdmin extends Admin
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('is_active')
-//            ->add('state')
-//            ->add('city')
-        ;
+            ->add('is_active');
     }
 
     public function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
             ->with('Profile')
-            ->add('first_name')
-            ->add('middle_initial')
-            ->add('last_name')
-            ->add('email')
-            ->add('password', 'hidden', array('required' => false))
-            ->add('password_new', 'password', array('required' => false, 'mapped' => false))
-            ->add('password_retype', 'password', array('required' => false, 'mapped' => false))
-            ->add('culture')
+                ->add(
+                    'first_name'
+                )
+                ->add(
+                    'middle_initial'
+                )
+                ->add(
+                    'last_name'
+                )
+                ->add(
+                    'email'
+                )
+                ->add(
+                    'password',
+                    'hidden',
+                    array(
+                        'required' => false
+                        )
+                )
+                ->add(
+                    'password_new',
+                    'password',
+                    array(
+                        'required' => false,
+                        'mapped' => false
+                        )
+                    )
+                ->add(
+                    'password_retype',
+                    'password',
+                    array(
+                        'required' => false,
+                        'mapped' => false
+                        )
+                    )
+                ->add(
+                    'culture'
+                )
             ->end();
     }
 

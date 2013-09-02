@@ -32,4 +32,9 @@ class Operation extends Base
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getType();
+    }
 }
