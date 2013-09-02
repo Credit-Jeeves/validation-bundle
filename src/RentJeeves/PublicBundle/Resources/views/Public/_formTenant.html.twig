@@ -5,7 +5,13 @@
    {{ form_errors(form) }}
   <div class="col-box clearfix">
     <div class="col">
-      <h4>Set up your Rent Jeeves account.</h4>
+      <h4>{{ 'setup.your.rent'|trans }}
+          {% if inviteCodeLandlord is defined %}
+              <span class="haveAccount">
+                {{ 'have.an.account'|trans }}? <a href="{{ path('fos_user_security_login_invite', {'inviteCode':inviteCodeLandlord})}}">{{ 'log_in'|trans }}</a>
+              </span>
+          {% endif %}
+      </h4>
       <div class="form-row clearfix">
         {{ form_label(form.first_name) }}
         <div class="fields-box">

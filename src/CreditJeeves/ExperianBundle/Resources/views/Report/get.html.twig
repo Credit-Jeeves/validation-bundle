@@ -1,4 +1,4 @@
-{% extends "ApplicantBundle::base.html.twig" %}
+{% extends app.user.type | capitalize ~ 'Bundle::base.html.twig' %}
 
 {% block content %}
 

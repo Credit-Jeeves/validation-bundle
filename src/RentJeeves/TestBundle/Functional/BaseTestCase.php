@@ -19,7 +19,7 @@ abstract class BaseTestCase extends Base
             return;
         }
 
-        $container = static::getContainer();
+        $container = $this->getContainer();
         $khepin = $container->get('khepin.yaml_loader');
 
         if ($reload) {

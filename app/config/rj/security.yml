@@ -23,6 +23,7 @@ security:
             anonymous:    true
 
     access_control:
+        - { path: ^/back_to_admin$,                 role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_profiler/,                     role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_wdt/,                          role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/js/*,                           role: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -31,6 +32,7 @@ security:
         - { path: ^/i18n/*,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/tenant/invite/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/invite/*,              role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/validator/*,                    role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_profiler/,                     role: ROLE_LANDLORD }
         - { path: ^/_profiler/,                     role: ROLE_TENANT }
         - { path: ^/test,                           role: IS_AUTHENTICATED_ANONYMOUSLY }

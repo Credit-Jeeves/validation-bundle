@@ -2,7 +2,9 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
-use CreditJeeves\CoreBundle\Controller\TenantController as Controller;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use CreditJeeves\DataBundle\Enum\UserType;
+use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,11 +18,15 @@ class SummaryController extends Controller
     public function indexAction()
     {
         $user = $this->getUser();
+        if (UserIsVerified::PASSED != $user->getIsVerified()) {
+            throw $this->createNotFoundException('Verification do not passed');
+        }
+
         $sEmail = $user->getEmail();
         $Report  = $this->getReport();
 
         if (!$Report) {
-            return new RedirectResponse($this->get('router')->generate('core_report_get'));
+            return $this->forward('ExperianBundle:Report:get');
         }
 
         $Score = $this->getScore();

@@ -51,7 +51,11 @@ class ResettingCase extends BaseTestCase
 
         $this->assertEquals(
             1,
-            preg_match("/To reset your password - please visit ([^ ]*) /", $this->page->getText(), $matches)
+            preg_match(
+                "/.*href=\"(.*)\".*Click here to change your password./is",
+                $this->page->getContent(),
+                $matches
+            )
         );
         $this->assertNotEmpty($matches[1]);
 //        die('OK');

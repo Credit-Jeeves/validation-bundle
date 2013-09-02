@@ -54,6 +54,7 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+#Credit jeeves application
     sonata.admin.cj_group:
         class: CreditJeeves\AdminBundle\Admin\CjGroupAdmin
         tags:
@@ -64,9 +65,6 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
-
-#Credit jeeves application
 
     sonata.admin.lead:
         class: CreditJeeves\AdminBundle\Admin\LeadAdmin
@@ -151,4 +149,3 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-

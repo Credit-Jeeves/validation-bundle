@@ -1,3 +1,21 @@
+admin:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix:   /admin
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
+
+admin_base_common:
+    resource: "@AdminBundle/Controller"
+    type:     annotation
+    prefix:   /admin
+
+admin_dashboard:
+    pattern: /admin
+    defaults: { _controller: SonataAdminBundle:Core:dashboard }
+
 landlord:
     resource: "@LandlordBundle/Controller/"
     type:     annotation
@@ -29,31 +47,36 @@ RjPublicBundle:
     prefix:   /
 
 core:
-    resource:   "@CoreBundle/Controller"
-    type:       annotation
+    resource: "@CoreBundle/Controller"
+    type:     annotation
 
 RjCheckoutBundle:
     resource: "@RjCheckoutBundle/Controller/"
     type:     annotation
     prefix:   /
 
+user:
+    resource: "@UserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 fos_user_security:
-    resource:   "@FOSUserBundle/Resources/config/routing/security.xml"
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
 fos_user_profile:
-    resource:   "@FOSUserBundle/Resources/config/routing/profile.xml"
-    prefix:     /profile
+    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+    prefix:   /profile
 
 fos_user_register:
-    resource:   "@FOSUserBundle/Resources/config/routing/registration.xml"
-    prefix:     /register
+    resource: "@FOSUserBundle/Resources/config/routing/registration.xml"
+    prefix:   /register
 
 fos_user_resetting:
-    resource:   "@FOSUserBundle/Resources/config/routing/resetting.xml"
-    prefix:     /resetting
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix:   /resetting
 
 fos_user_resetting_request:
-    path:       /resetting
+    path:     /resetting
     defaults:
         _controller: FOSUserBundle:Resetting:request
         _method:     GET
@@ -66,8 +89,8 @@ fos_user_resetting_request:
 
 
 fos_user_change_password:
-    resource:   "@FOSUserBundle/Resources/config/routing/change_password.xml"
-    prefix:     /profile
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix:   /profile
 
 
 fos_js_routing:
@@ -78,3 +101,7 @@ _apy_jsformvalidation:
 
 _bazinga_exposetranslation:
     resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
+
+fos_security:
+    resource:   "@UserBundle/Controller/SecurityController.php"
+    type:       annotation

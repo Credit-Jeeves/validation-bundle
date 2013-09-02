@@ -56,7 +56,11 @@ class InviteLandlord
         if ($landlordInDb) {
             unset($landlord);
             $landlord = $landlordInDb;
-            $contract->setStatus(ContractStatus::INVITE);
+            if ($landlordInDb->getIsActive()) {
+                $contract->setStatus(ContractStatus::PENDING);
+            } else {
+                $contract->setStatus(ContractStatus::INVITE);
+            }
             $holding = $landlord->getHolding();
             $group = $landlord->getCurrentGroup();
         } else {

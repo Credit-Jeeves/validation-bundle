@@ -174,6 +174,27 @@ abstract class User extends BaseUser
     }
 
     /**
+     * @param \CreditJeeves\DataBundle\Enum\OperationType $type
+     */
+    public function getLastCompleteOperation($type)
+    {
+        $orders = reverseIterator($this->getOrders());
+
+        /** @var Order $order */
+        foreach ($orders as $order) {
+            if (OrderStatus::COMPLETE == $order->getStatus()) {
+                /** @var Operation $operation */
+                foreach ($order->getOperations() as $operation) {
+                    if ($operation->getType() == $type) {
+                        return $operation;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return string
      */
     public function displaySsn()
@@ -289,31 +310,61 @@ abstract class User extends BaseUser
      */
     public function getDefaultAddress()
     {
-        return $this->getAddresses()->first();
+        return $this->getAddresses()->first(); // FIXME add field default
     }
 
+    /**
+     * @deprecated
+     */
     public function getStreetAddress1()
     {
-        return $this->getDefaultAddress()->getStreet();
+        if ($address = $this->getDefaultAddress()) {
+            return $address->getStreet();
+        }
+        return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getStreetAddress2()
     {
-        return $this->getDefaultAddress()->getUnit();
+        if ($address = $this->getDefaultAddress()) {
+            return $address->getUnit();
+        }
+        return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getState()
     {
-        return $this->getDefaultAddress()->getArea();
+        if ($address = $this->getDefaultAddress()) {
+            return $address->getArea();
+        }
+        return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getZip()
     {
-        return $this->getDefaultAddress()->getZip();
+        if ($address = $this->getDefaultAddress()) {
+            return $address->getZip();
+        }
+        return null;
     }
 
+    /**
+     * @deprecated
+     */
     public function getCity()
     {
-        return $this->getDefaultAddress()->getCity();
+        if ($address = $this->getDefaultAddress()) {
+            return $address->getCity();
+        }
+        return null;
     }
 }

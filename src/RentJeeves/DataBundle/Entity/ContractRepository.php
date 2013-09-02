@@ -201,4 +201,28 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->getSingleScalarResult();
     }
+
+    public function getContractsLandlord($landlord)
+    {
+        $groups = $landlord->getGroups();
+        $groupArray = array();
+        
+        foreach ($groups as $value) {
+            $groupArray[$value->getId()] = $value->getId();
+        }
+
+        if (empty($groupArray)) {
+            return null;
+        }
+        
+        $groupsIds = implode("','", $groupArray);
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.property', 'p');
+        $query->innerJoin('c.tenant', 't');
+        $query->where('c.group IN (:groups)');
+        $query->setParameter('groups', $groupsIds);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
 }

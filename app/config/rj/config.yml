@@ -1,5 +1,6 @@
 imports:
     - { resource: ../base/config.yml }
+    - { resource: ../base/sonata.yml }
     - { resource: ../parameters.yml } # would be generated from parameters_SERVER.yml depends on SERVER
     - { resource: security.yml } #different for each application
     - { resource: ../base/fos.yml }
@@ -28,6 +29,19 @@ parameters:
 framework:
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
+    session:
+        name: rj
+
+sonata_admin:
+    title:      Admin
+    title_logo: /bundles/rjpublic/images/logo-new.png
+    dashboard:
+        blocks:
+            # display a dashboard block
+            - { position: left, type: sonata.admin.block.admin_list }
+        groups:
+            admin: ~
+            RentJeeves: ~
 
 twig:
     globals:
@@ -49,3 +63,7 @@ payum:
             heartland:
                 api:
                     options: %heartland%
+        simple_purchase_authorize_net:
+            authorize_net_aim:
+                api:
+                    options: %authorize_net%

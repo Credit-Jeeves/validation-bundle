@@ -29,4 +29,8 @@
 {% endblock %}
 
 {% block stylesheets %}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/invite.css'
+    %}
+      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
 {% endblock %}

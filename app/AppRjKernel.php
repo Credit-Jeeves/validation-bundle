@@ -33,21 +33,24 @@ class AppRjKernel extends AppKernel
             new Rj\EmailBundle\RjEmailBundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new Sonata\AdminBundle\SonataAdminBundle(),
+            new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
+            new Sonata\jQueryBundle\SonatajQueryBundle(),
+            new Sonata\BlockBundle\SonataBlockBundle(),
 
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
+            new CreditJeeves\DataBundle\DataBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new CreditJeeves\ExperianBundle\ExperianBundle(),
             new CreditJeeves\UserBundle\UserBundle(),
-//             new CreditJeeves\AdminBundle\AdminBundle(),
-//             new CreditJeeves\DealerBundle\DealerBundle(),
-//             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
+            new CreditJeeves\AdminBundle\AdminBundle(),
 
             // Must be last in the list
-            new CreditJeeves\DataBundle\DataBundle(),
+            new RentJeeves\AdminBundle\RjAdminBundle(),
             new RentJeeves\DataBundle\RjDataBundle(),
             new RentJeeves\TenantBundle\TenantBundle(),
             new RentJeeves\LandlordBundle\LandlordBundle(),
@@ -81,7 +84,14 @@ class AppRjKernel extends AppKernel
 
     public function getCacheDir()
     {
-        return $this->rootDir.'/cache/rj/'.$this->environment;
-    }    
-    
+        return $this->rootDir.'/cache/'.$this->environment;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'rj';
+    }
 }

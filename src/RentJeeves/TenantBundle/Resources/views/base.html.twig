@@ -3,11 +3,13 @@
 {% block stylesheets %}
     {% stylesheets  '@ComponentBundle/Resources/public/css/*'
                     '@RjPublicBundle/Resources/public/css/styles.css'
+                    '@RjPublicBundle/Resources/public/css/footer.css'
                     '@CoreBundle/Resources/public/css/rj-logos.css'
                     '@CoreBundle/Resources/public/css/tabs.css'
                     '@UserBundle/Resources/public/css/login.css'
                     '@CoreBundle/Resources/public/css/check.css'
                     '@CoreBundle/Resources/public/css/rent-menu.css'
+                    '@CheckoutBundle/Resources/public/css/checkout.css'
                     '@TenantBundle/Resources/public/css/alert.css'
                     '@TenantBundle/Resources/public/css/home.page.css'
     %}
@@ -51,7 +53,7 @@
 
 {% block tabs %}
     <div class="top-nav">
-    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': 'CoreBundle:Menu:user_tabs.html.twig' }) }}
+    {{ knp_menu_render('TenantBundle:Builder:mainMenu', { 'template': '::menu.html.twig' }) }}
     </div>
 {% endblock %}
 

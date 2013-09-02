@@ -18,7 +18,7 @@ class Kernel
     public function request(GetResponseEvent $event)
     {
         $controller = $event->getRequest()->attributes->get('_controller');
-        if (preg_match('/CreditJeeves\\\\(.*)Bundle\\\\Controller/i', $controller, $matches)) {
+        if (preg_match('/.*Jeeves\\\\(.*)Bundle\\\\Controller/i', $controller, $matches)) {
             $eventName = strtolower($matches[1]) . '.filter';
             $dispatcher = $event->getDispatcher();
             $newEvent = new Filter();

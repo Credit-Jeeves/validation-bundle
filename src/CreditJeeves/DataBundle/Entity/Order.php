@@ -45,13 +45,13 @@ class Order extends BaseOrder
         $this->updated_at = new \DateTime();
     }
 
-    public function setOperations($operation)
+    public function setOperations($operations)
     {
-        if (is_object($orders)) {
-            $this->addOperation($operation);
+        if (is_object($operations)) {
+            $this->addOperation($operations);
         }
 
-        foreach ($orders as $order) {
+        foreach ($operations as $operation) {
             $this->addOperation($operation);
         }
 

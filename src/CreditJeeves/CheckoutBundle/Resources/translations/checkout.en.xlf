@@ -145,6 +145,18 @@
                 <source>order_authorize_authorize_we_accept</source>
                 <target>We Accept</target>
             </trans-unit>
+            <trans-unit id="card_num">
+                <source>card_num</source>
+                <target>Card num</target>
+            </trans-unit>
+            <trans-unit id="card_code">
+                <source>card_code</source>
+                <target>Card code</target>
+            </trans-unit>
+            <trans-unit id="exp_date">
+                <source>exp_date</source>
+                <target>Exp date</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
