@@ -36,6 +36,21 @@ abstract class Heartland extends PaymentDetails
      */
     protected $order;
 
+//     /**
+//      * @ORM\Column(
+//      *     type="text",
+//      *     nullable=true
+//      * )
+//      */
+//     protected $message;
+
+//     /**
+//      * @ORM\Column(
+//      *     type="boolean"
+//      * )
+//      */
+//     protected $is_successfull = true;
+
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
@@ -68,11 +83,47 @@ abstract class Heartland extends PaymentDetails
         return $this->order;
     }
 
+//     /**
+//      * @param text $message
+//      * @return Heartland
+//      */
+//     public function setMessage($message = null)
+//     {
+//         $this->message = $message;
+//         return $this;
+//     }
+
+//     /**
+//      * @return text
+//      */
+//     public function getMessage()
+//     {
+//         return $this->message;
+//     }
+
+//     /**
+//      * @param smallInt $isSuccesfull
+//      * @return Heartland
+//      */
+//     public function setIsSuccessfull($isSuccessfull)
+//     {
+//         $this->is_successfull = $isSuccessfull;
+//         return $this;
+//     }
+
+//     /**
+//      * @return smallint
+//      */
+//     public function getIsSuccessfull()
+//     {
+//         return $this->is_successfull;
+//     }
+
     /**
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return PaymentDetails
+     * @return Heartland
      */
     public function setCreatedAt($createdAt)
     {

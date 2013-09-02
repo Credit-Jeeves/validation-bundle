@@ -9,8 +9,8 @@ file that was distributed with this source code.
 
 #}
 {% if admin.isGranted('EDIT', object)%}
-    <a href="{{ path('admin_landlord_list', { "group_id": object.id }) }}" class="btn edit_link" title="{{ 'admin.list.landlords'|trans({}) }}">
-        <i class="icon-dealer"></i>
-        {{ 'admin.list.landlords'|trans({}) }}
+    <a href="{{ path('admin_rentjeeves_data_contract_list', { "user_id": object.id }) }}" class="btn contract_link" title="{{ 'admin.action.contracts'|trans({}) }}">
+        <i class="icon-contract"></i>
+        {{ 'admin.action.contracts'|trans({}) }}
     </a>
 {% endif %}

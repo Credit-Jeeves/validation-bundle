@@ -20,11 +20,6 @@ user:
     resource: "@UserBundle/Controller"
     type:     annotation
 
-admin_common:
-    resource: "@AdminBundle/Controller"
-    type:     annotation
-    prefix:   /admin
-
 admin:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
     prefix:   /admin
@@ -34,9 +29,10 @@ _sonata_admin:
     type: sonata_admin
     prefix: /admin
 
-admin_dashboard:
-    pattern: /admin
-    defaults: { _controller: SonataAdminBundle:Core:dashboard }
+admin_common:
+    resource:   "@AdminBundle/Controller"
+    type:       annotation
+    prefix:     /admin
 
 dealer:
     resource: "@DealerBundle/Controller"

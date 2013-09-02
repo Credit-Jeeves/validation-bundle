@@ -7,15 +7,6 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
-// use Sonata\AdminBundle\Datagrid\DatagridMapper;
-// use Sonata\AdminBundle\Datagrid\ListMapper;
-// use Sonata\AdminBundle\Show\ShowMapper;
-// use Sonata\AdminBundle\Route\RouteCollection;
-
-// use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Query;
-
-// use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class ApplicantAdmin extends Admin
 {
@@ -58,9 +49,6 @@ class ApplicantAdmin extends Admin
             ->add('middle_initial')
             ->add('last_name')
             ->add('email')
-//            ->add('state')
-//            ->add('zip')
-//            ->add('city')
             ->add('phone')
             ->add('current_score')
             ->add(
@@ -115,7 +103,6 @@ class ApplicantAdmin extends Admin
                 ->add('email')
                 ->add('is_verified')
                 ->add('culture')
-//                 ->add('user_leads', 'sonata_type_model', array('expanded' => true, 'multiple' => true))
             ->end();
     }
 }
