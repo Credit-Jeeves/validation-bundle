@@ -863,6 +863,17 @@
                 <source>change.your.basic</source>
                 <target>Change your basic contact information</target>
             </trans-unit>
+            <trans-unit id="settings.deposit">
+                <source>settings.deposit</source>
+                <target>Direct Deposit Accounts</target>
+            </trans-unit>
+            <trans-unit id="settings.deposit.description">
+                <source>settings.deposit.description</source>
+                <target>
+                    Specify where you wold like us to deposit incoming rent payments.
+                    Any RentTrack fees will also be withdrawn from this account.
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

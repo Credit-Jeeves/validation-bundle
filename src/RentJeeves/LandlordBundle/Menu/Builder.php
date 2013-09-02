@@ -57,6 +57,7 @@ class Builder extends ContainerAware
         $menu = $factory->createItem('root');
         $menu->addChild('account.information', array('route' => 'landlord_edit_profile'));
         $menu->addChild('settings.password', array('route' => 'landlord_password'));
+        $menu->addChild('settings.deposit', array('route' => 'settings_deposit'));
 
 
         $sRoute = $this->container->get('request')->get('_route');
@@ -66,6 +67,9 @@ class Builder extends ContainerAware
                 break;
             case 'landlord_password':
                 $menu['settings.password']->setUri('');
+                break;
+            case 'settings_deposit':
+                $menu['settings.deposit']->setUri('');
                 break;
         }
         return $menu;

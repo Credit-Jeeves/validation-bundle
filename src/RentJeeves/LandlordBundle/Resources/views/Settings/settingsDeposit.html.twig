@@ -1,0 +1,32 @@
+{% extends "LandlordBundle::base.html.twig" %}
+
+{% block content %}
+{% include 'LandlordBundle:Settings:_menu.html.twig' %}
+<div class="column-middle floatright">
+  <div class="pod-middle pod-border pod-padding shadow">
+    <section class="form-content">
+      <h3>{{'settings.deposit'|trans}}</h3>
+      <hr />
+      <p>{{'settings.deposit.description'|trans}}</p>
+      <hr>
+      <a href="#"></a>
+    </section>
+    <div class="col-box clearfix"></div>
+  </div>
+</div>
+<div class="col-box clearfix"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/settings.deposit.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts  '@LandlordBundle/Resources/public/js/settings.deposit.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

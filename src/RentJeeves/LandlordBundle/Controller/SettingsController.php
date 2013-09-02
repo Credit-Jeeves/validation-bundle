@@ -11,15 +11,6 @@ use RentJeeves\LandlordBundle\Form\AccountInfoType;
 class SettingsController extends Controller
 {
     /**
-     * @Route("/settings", name="landlord_settings")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        return array();
-    }
-
-    /**
      * @Route("/password", name="landlord_password")
      * @Template()
      */
@@ -83,5 +74,15 @@ class SettingsController extends Controller
         return array(
             'form'    => $form->createView(),
         );
+    }
+
+
+    /**
+     * @Route("/settings/deposit", name="settings_deposit")
+     * @Template()
+     */
+    public function settingsDepositAction()
+    {
+        return array();
     }
 }
