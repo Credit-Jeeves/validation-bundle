@@ -129,7 +129,7 @@ class AddPropertyCase extends BaseTestCase
      */
     public function checkInvite()
     {
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
@@ -137,7 +137,9 @@ class AddPropertyCase extends BaseTestCase
         $email->click();
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
-        $link->click();
+        $url = $link->getAttribute('href');
+        $this->setDefaultSession('selenium2');
+        $this->session->visit($url);
         $this->session->wait($this->timeout, '$("#landlordInviteRegister").length > 0');
         $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
         $form->pressButton('continue');
