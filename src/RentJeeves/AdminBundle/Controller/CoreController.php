@@ -18,10 +18,9 @@ class CoreController extends BaseController
      */
     public function dashboardAction()
     {
-//         $request = $this->getRequest();
-//         $request->getSession()->set('contract_id', null);
-//         $request->getSession()->set('user_id', null);
-        
+        $request = $this->getRequest();
+        $request->getSession()->set('contract_id', null);
+        $request->getSession()->set('user_id', null);
         return parent::dashboardAction();
     }
 }
