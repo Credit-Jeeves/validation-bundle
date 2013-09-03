@@ -168,12 +168,13 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             }
 
             $tenant = $contract->getTenant();
-            $this->container->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
-                $tenant,
-                $user,
-                $contract
-            );
-
+            if ($tenant->setIsActive()) {
+                $this->container->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
+                    $tenant,
+                    $user,
+                    $contract
+                );
+            }
             $em->persist($contract);
         }
 
