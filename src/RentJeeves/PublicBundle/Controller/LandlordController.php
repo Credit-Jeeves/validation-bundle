@@ -37,7 +37,11 @@ class LandlordController extends Controller
                 $landlord = $form->getData()['landlord'];
                 $address = $form->getData()['address'];
                 $aForm = $request->request->get($form->getName());
-                $landlord->setPassword(md5($aForm['landlord']['password']['Password']));
+
+                $password = $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($aForm['landlord']['password']['Password'], $landlord->getSalt());
+
+                $landlord->setPassword($password);
                 $address->setUser($landlord);
                 $landlord->setCulture($this->container->parameters['kernel.default_locale']);
 
@@ -115,7 +119,11 @@ class LandlordController extends Controller
             if ($form->isValid()) {
                 $landlord = $form->getData();
                 $aForm = $request->request->get($form->getName());
-                $landlord->setPassword(md5($aForm['password']['Password']));
+
+                $password = $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($aForm['password']['Password'], $landlord->getSalt());
+
+                $landlord->setPassword($password);
                 $landlord->setCulture($this->container->parameters['kernel.default_locale']);
 
                 $rep = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
@@ -126,7 +134,7 @@ class LandlordController extends Controller
                 );
                 $em = $this->getDoctrine()->getManager();
 
-                if (!empty($contracts)) {
+                if (!empty($contracts) && $landlord->hasMerchant()) {
                     foreach ($contracts as $contract) {
                         if ($contract->getStatus() == ContractStatus::INVITE) {
                             $contract->setStatus(ContractStatus::PENDING);

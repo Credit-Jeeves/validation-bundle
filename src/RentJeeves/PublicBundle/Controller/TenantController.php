@@ -38,7 +38,10 @@ class TenantController extends Controller
             if ($form->isValid()) {
                 $tenant = $form->getData();
                 $aForm = $request->request->get($form->getName());
-                $tenant->setPassword(md5($aForm['password']['Password']));
+                $password = $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
+
+                $tenant->setPassword($password);
                 $tenant->setCulture($this->container->parameters['kernel.default_locale']);
 
                 $contracts = $tenant->getContracts();

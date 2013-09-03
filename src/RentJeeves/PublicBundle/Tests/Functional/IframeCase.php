@@ -161,8 +161,8 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         
-        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
-        $this->assertCount(1, $contractPendings, 'Wrong number of pending');
+        $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(1, $contract, 'Wrong number of pending');
     }
 
     /**
