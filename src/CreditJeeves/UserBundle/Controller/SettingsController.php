@@ -7,7 +7,7 @@ use CreditJeeves\ApplicantBundle\Form\Type\NotificationType;
 use CreditJeeves\ApplicantBundle\Form\Type\RemoveType;
 use CreditJeeves\CoreBundle\Controller\ApplicantController;
 use CreditJeeves\DataBundle\Entity\User;
-use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -46,12 +46,9 @@ class SettingsController extends Controller
             }
         }
 
-        $request = $this->container->get('request');
-
         return array(
             'sEmail'    => $sEmail,
             'form'      => $form->createView(),
-            'formPath'  => $this->get('router')->generate($request->get('_route')),
         );
     }
 
