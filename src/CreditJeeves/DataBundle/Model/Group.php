@@ -303,6 +303,18 @@ abstract class Group
      */
     protected $contracts;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\DepositAccount",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $deposit_accounts;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();

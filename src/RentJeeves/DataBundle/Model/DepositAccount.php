@@ -7,20 +7,29 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class DepositAccount extends PaymentAccount
+abstract class DepositAccount
 {
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Landlord",
-     *     inversedBy="payment_accounts"
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     inversedBy="deposit_accounts"
      * )
      * @ORM\JoinColumn(
-     *     name="user_id",
+     *     name="group_id",
      *     referencedColumnName="id"
      * )
-     * @var \RentJeeves\DataBundle\Entity\Landlord
+     * @var \CreditJeeves\DataBundle\Entity\Group
      */
-    protected $user;
+    protected $group;
 
     /**
      * @ORM\Column(
@@ -30,6 +39,16 @@ abstract class DepositAccount extends PaymentAccount
      * )
      */
     protected $merchantName;
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set processorToken
@@ -57,8 +76,8 @@ abstract class DepositAccount extends PaymentAccount
     /**
      * @return \RentJeeves\DataBundle\Entity\Landlord
      */
-    public function getUser()
+    public function getGroup()
     {
-        return parent::getUser();
+        return $this->group;
     }
 }
