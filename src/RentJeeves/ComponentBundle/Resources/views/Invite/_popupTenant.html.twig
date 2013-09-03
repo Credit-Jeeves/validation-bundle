@@ -13,7 +13,7 @@
                 </div>
                 <div class="table-cell info-cell">
                     <div class="info-title pie-el">{{ 'popup.invite.tenant.scoretrack' | trans() }}</div>
-                    <div class="info-content"><sup>$</sup>1<sup>95/{{ 'popup.invite.tenant.per_month' | trans() }}</sup></div>
+                    <div class="info-content"><sup>$</sup>{{ tenant_payment_per_month_dollars }}<sup>{{ tenant_payment_per_month_cents }}/{{ 'popup.invite.tenant.per_month' | trans() }}</sup></div>
                 </div>
             </li>
             <li>
@@ -69,5 +69,5 @@
             </li>
         </ul>
     </div>
-    <p class="note">{{ 'popup.tenant.footer.note_3' | trans({"%payment_percent%": 2.95, "%payment_dollars%": 20}) }}</p>
+    <p class="note">{{ 'popup.tenant.footer.note_3' | trans({"%payment_percent%": payment_fee, "%payment_dollars%": payment_dollars}) }}</p>
 </div>

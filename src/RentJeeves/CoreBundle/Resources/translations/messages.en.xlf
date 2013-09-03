@@ -975,7 +975,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_3">
                 <source>popup.tenant.footer.note_3</source>
-                <target>*We charge a convenience fee of %payment_percent%%, or $%payment_dollars% if you live in CA, CO, CT, FL, KS, ME, MA, NY, OK or TX.</target>
+                <target>*We charge a convenience fee of %payment_percent%, or %payment_dollars% if you live in CA, CO, CT, FL, KS, ME, MA, NY, OK or TX.</target>
             </trans-unit>
             <!-- Landlord Invite Popup -->
             <trans-unit id="popup.landlord.title_1">
@@ -1044,7 +1044,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.per_screen">
                 <source>popup.landlord.per_screen</source>
-                <target>per screen</target>
+                <target>%landlord_per_screen% per screen</target>
             </trans-unit>
             <!-- Pay box -->
             <trans-unit id="paybox.landlord.title">

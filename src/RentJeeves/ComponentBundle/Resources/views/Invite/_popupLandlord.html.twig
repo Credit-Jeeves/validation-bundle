@@ -8,12 +8,12 @@
                 </div>
                 <div class="table-cell info-cell">
                     <div class="info-title pie-el">{{ 'popup.landlord.title.info' | trans() }}</div>
-                    <div class="info-content"><sup>$</sup>1<sup>/{{ 'popup.landlord.unit' | trans() }}*</sup></div>
+                    <div class="info-content"><sup>$</sup>{{ landlord_payment_per_month_dollars }}<sup>{{ landlord_payment_per_month_cents }}/{{ 'popup.landlord.unit' | trans() }}*</sup></div>
                 </div>
             </li>
             <li>
                 <div class="table-cell th-cell">{{ 'popup.landlord.monthly.minimum' | trans() }}</div>
-                <div class="table-cell th">$9.95</div>
+                <div class="table-cell th">{{ landlord_monthly_minimum }}</div>
             </li>
             <li>
                 <div class="table-cell th-cell">{{ 'popup.landlord.electronic.check.online' | trans() }}</div>
@@ -49,7 +49,7 @@
             </li>
             <li>
                 <div class="table-cell th-cell">{{ 'popup.landlord.check' | trans() }}</div>
-                <div class="table-cell th">$9.95 {{ 'popup.landlord.per_screen' | trans() }}</div>
+                <div class="table-cell th">{{ 'popup.landlord.per_screen' | trans({'%landlord_per_screen%': landlord_per_screen}) }}</div>
             </li>
             <li class="table-footer big-padding">
                 <div class="table-cell">
