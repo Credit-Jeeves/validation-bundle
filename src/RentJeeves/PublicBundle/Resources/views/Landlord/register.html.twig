@@ -4,219 +4,194 @@
 
 {% block content %}
 <section class="form-content">
-
-<form action="{{ path('landlord_register') }}" method="post" {{ form_enctype(form) }} id="landlordRegister" >
+{{ include('RjComponentBundle:Invite:_popupLandlord.html.twig') }}
+<form action="{{ path('landlord_register') }}" method="post" {{ form_enctype(form) }} id="landlordRegister">
     <div class="box type1">
-      <h3 class="clearfix">
-        <span>{{ 'account.information'|trans }}</span>
-        <small><b>*</b>{{ 'required' }}</small>
-      </h3>
-      <div class="col-box clearfix">
-        <div class="col">
-          <h4>{{ 'setup.your.rent'|trans }}</h4>
-          <div class="form-row clearfix">
-            <label>{{ 'name'|trans }}<b>*</b></label>
-            <div class="fields-box">
-              {{ form_widget(form.landlord.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first"} }) }}
-              {{ form_widget(form.landlord.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
-              {{ form_errors(form.landlord.first_name) }}
-              {{ form_errors(form.landlord.last_name) }}
+        <h3 class="clearfix">
+            <span>{{ 'account.information'|trans }}</span>
+            <small><b>*</b>{{ 'required' }}</small>
+        </h3>
+        <div class="col-box clearfix">
+            <div class="col">
+                <h4>{{ 'setup.your.rent'|trans }}</h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'name'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        {{ form_widget(form.landlord.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first"} }) }}
+                        {{ form_widget(form.landlord.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+                        {{ form_errors(form.landlord.first_name) }}
+                        {{ form_errors(form.landlord.last_name) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'address'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        {{ form_widget(form.address.street, { 'attr': {'class': 'street-width', 'placeholder':"Street"} }) }}
+                        {{ form_widget(form.address.unit, { 'attr': {'class': 'zc-width', 'placeholder':"Unit"} }) }}
+                        {{ form_errors(form.address.street) }}
+                        {{ form_errors(form.address.unit) }}
+                    </div>
+                    <div class="fields-box">
+                        {{ form_widget(form.address.city, { 'attr': {'class': 'city-width', 'placeholder':"City"} }) }}
+                        {{ form_widget(form.address.area, { 'attr': {'class': 'two-chars-width custom-select'} }) }}
+                        {{ form_widget(form.address.zip, { 'attr': {'class': 'zc-width', 'placeholder':"Zip Code"} }) }}
+                        {{ form_errors(form.address.city) }}
+                        {{ form_errors(form.address.area) }}
+                        {{ form_errors(form.address.zip) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(form.landlord.phone) }}
+                    <div class="fields-box">
+                        {{ form_widget(form.landlord.phone, { 'attr': {'placeholder':"phone"} }) }}
+                        {{ form_errors(form.landlord.phone) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(form.landlord.email) }}
+                    <div class="fields-box">
+                        {{ form_widget(form.landlord.email, { 'attr': {'placeholder':"example@mail.com"} }) }}
+                        {{ form_errors(form.landlord.email) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(form.landlord.password.Password) }}
+                    <div class="fields-box">
+                    {{ form_widget(form.landlord.password.Password) }}
+                    {{ form_errors(form.landlord.password.Password) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(form.landlord.password.Verify_Password) }}
+                    <div class="fields-box">
+                        {{ form_widget(form.landlord.password.Verify_Password) }}
+                    </div>
+                </div>
+                <div class="tooltip-box with-header pie-el">
+                    <p>{{ 'landlord.register.text3'|trans }}</p>
+                </div>
             </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'address'|trans }}<b>*</b></label>
-            <div class="fields-box">
-              {{ form_widget(form.address.street, { 'attr': {'class': 'street-width', 'placeholder':"Street"} }) }}
-              {{ form_widget(form.address.unit, { 'attr': {'class': 'zc-width', 'placeholder':"Unit"} }) }}
-              {{ form_errors(form.address.street) }}
-              {{ form_errors(form.address.unit) }}
-            </div>
-            <div class="fields-box">
-              {{ form_widget(form.address.city, { 'attr': {'class': 'city-width', 'placeholder':"City"} }) }}
-              {{ form_widget(form.address.area, { 'attr': {'class': 'two-chars-width custom-select'} }) }}
-              {{ form_widget(form.address.zip, { 'attr': {'class': 'zc-width', 'placeholder':"Zip Code"} }) }}
-              {{ form_errors(form.address.city) }}
-              {{ form_errors(form.address.area) }}
-              {{ form_errors(form.address.zip) }}
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            {{ form_label(form.landlord.phone) }}
-            <div class="fields-box">
-                {{ form_widget(form.landlord.phone, { 'attr': {'placeholder':"phone"} }) }}
-                {{ form_errors(form.landlord.phone) }}
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            {{ form_label(form.landlord.email) }}
-            <div class="fields-box">
-              {{ form_widget(form.landlord.email, { 'attr': {'placeholder':"example@mail.com"} }) }}
-              {{ form_errors(form.landlord.email) }}
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            {{ form_label(form.landlord.password.Password) }}
-            <div class="fields-box">
-              {{ form_widget(form.landlord.password.Password) }}
-              {{ form_errors(form.landlord.password.Password) }}
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            {{ form_label(form.landlord.password.Verify_Password) }}
-            <div class="fields-box">
-              {{ form_widget(form.landlord.password.Verify_Password) }}
-            </div>
-          </div>
-
-          <div class="tooltip-box with-header pie-el">
-            <p>
-              {{ 'landlord.register.text3'|trans }}
-            </p>
-          </div>
         </div>
-      </div>
     </div>
-
     <div class="box type1">
-
-      <h3 class="clearfix">
-        <span>{{ 'property.info'|trans}} </span>
-      </h3>
-      
-      <div class="col-box clearfix">
-        <div class="col">
-          
-          <h4>{{ 'landlord.register.text4'|trans }}</h4>
-          
-          <div class="search-box pie-el">
-            <label for="searsh-field">{{ 'find.your.rentaladdress'|trans }}</label>
-            <div class="clearfix">
-              <input type="text" value="{{ propertyName }}" id="property-search" name="searsh-field" placeholder="Your rental address">
-              <a href="#" id="delete" class="pie-el">x</a>
-              <button type="submit" id="search-submit" class="pie-el">Search</button>
+        <h3 class="clearfix">
+            <span>{{ 'property.info'|trans}} </span>
+        </h3>
+        <div class="col-box clearfix">
+            <div class="col">
+                <h4>{{ 'landlord.register.text4'|trans }}</h4>
+                <div class="search-box pie-el">
+                    <label for="searsh-field">{{ 'find.your.rentaladdress'|trans }}</label>
+                    <div class="clearfix">
+                        <input type="text" value="{{ propertyName }}" id="property-search" name="searsh-field" placeholder="Your rental address">
+                        <a href="#" id="delete" class="pie-el">x</a>
+                        <button type="submit" id="search-submit" class="pie-el">{{ 'search' | trans() }}</button>
+                    </div>
+                    <div id="errorForm"></div>
+                    <div id="search-result-map"></div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'unit.numberof'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" placeholder="" id="numberOfUnit" class="zc-width">
+                        <button type="button" id="addUnit" class="button small grey"><span>{{ 'add'|trans }}</span></button>
+                    </div>
+                </div>
+                <div class="form-row clearfix full show">
+                    <label>{{ 'nameofunit'|trans}}<b>*</b></label>
+                    <div id="unit-fields-list" class="fields-box unitsListNames">
+                        {% for unitField in form.units %}
+                            {{ form_errors(unitField) }}
+                            {{ form_widget(unitField) }}
+                        {% endfor %}
+                    </div>
+                </div>
+                <input type="hidden" value="{{ form.units | length }}" id="unitCount">
+                <div class="tooltip-box with-header pie-el">{{'landlord.register.text1'|trans|raw}}</div>
             </div>
-            <div id="errorForm"> </div>
-            <div id="search-result-map"></div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'unit.numberof'|trans }}<b>*</b></label>
-            <div class="fields-box">
-              <input type="text" placeholder="" id="numberOfUnit" class="zc-width">
-              <button type="button" id="addUnit" class="button small grey">
-                <span>{{ 'add'|trans }}</span>
-              </button>
-            </div>
-          </div>
-          <div class="form-row clearfix full show">
-            <label>{{ 'nameofunit'|trans}}<b>*</b></label>
-            <div id="unit-fields-list" class="fields-box unitsListNames">
-                {% for unitField in form.units %}
-                    {{ form_errors(unitField) }}
-                    {{ form_widget(unitField) }}
-                {% endfor %}
-            </div>
-          </div>
-          <input type="hidden" value="{{ form.units | length }}" id="unitCount">
-          <div class="tooltip-box with-header pie-el">
-              {{'landlord.register.text1'|trans|raw}}
-          </div>
         </div>
-      </div>
     </div>
-
     <div class="accept-terms-box pie-el">
-      <div class="form-row checkboxes clearfix">
-        <label class="checkbox">
-          {{ form_widget(form.landlord.tos) }}
-          <i> </i>
-          <span class="big">{{ 'landlord.register.terms'|trans({'%link%': '#'})|raw }}</span>
-        </label>
-      </div>
-      {{ form_errors(form.landlord.tos) }}
-      <p>
-        {{ 'landlord.register.text2'|trans }}
-      </p>
+        <div class="form-row checkboxes clearfix">
+            <label class="checkbox">
+                {{ form_widget(form.landlord.tos) }}
+                <i></i>
+                <span class="big">{{ 'landlord.register.terms'|trans({'%link%': '#'})|raw }}</span>
+            </label>
+        </div>
+        {{ form_errors(form.landlord.tos) }}
+        <p>
+            {{ 'landlord.register.text2'|trans }}
+        </p>
     </div>
     {{ form_widget(form.property, { 'attr': {'class': 'propertyId'}}) }}
     <div class="buttons-box clearfix">
-      <div class="buttons left">
-        <button id="submitForm" type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>
-        <img src="/bundles/rjpublic/images/ajax-loader.gif" class="loader">
-      </div>
+        <div class="buttons left">
+            <button id="submitForm" type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>
+            <img src="/bundles/rjpublic/images/ajax-loader.gif" class="loader">
+        </div>
     </div>
     <div style="display:none;">
         {{ form_rest(form) }}
     </div>
-  </form>
+</form>
 </section>
 {% endblock %}
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@RjPublicBundle/Resources/public/js/landlord/register.js'
-
-    %}
+    {% javascripts '@RjPublicBundle/Resources/public/js/landlord/register.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
 
-
 {% block stylesheets %}
-    {% stylesheets '@RjPublicBundle/Resources/public/css/landlord/register.css'
-    %}
-      <link rel="stylesheet" href="{{ asset_url }}" />
+    {% stylesheets '@RjPublicBundle/Resources/public/css/landlord/register.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
-
 
 {% block payBox %}
 <section class="pay-box">
     <div class="pay-content">
-      <h1>Why do landlords use RentTrack?</h1>
-      <div class="pay-credit clearfix">
-        <div class="col one-third quickly">
-          <i class="pie-el"> </i>
-          <div>
-            <h3>GET PAID<br>QUICKLY</h3>
-            <h4>Tired of chasing down rent?</h4>
-            <p>
-              RentTrack lets you know the moment your tenants have paid. Funds typically are in your account within 24-48 hours, without you having to go to the bank.
-            </p>
-          </div>
+        <h1>{{ 'paybox.landlord.title' | trans() }}</h1>
+        <div class="pay-credit clearfix">
+            <div class="col one-third quickly">
+                <i class="pie-el"> </i>
+                <div>
+                    <h3>{{ 'paybox.landlord.get.paid' | trans() }}<br>{{ 'paybox.landlord.quickly' | trans() }}</h3>
+                    <h4>{{ 'paybox.landlord.title_2' | trans() }}</h4>
+                    <p>{{ 'paybox.landlord.title_3' | trans() }}</p>
+                </div>
+            </div>
+            <div class="col one-third gain">
+                <i class="pie-el"></i>
+                <div>
+                    <h3>{{ 'paybox.landlord.gein.reliable' | trans() }}<br>{{ 'paybox.landlord.tenants' | trans() }}</h3>
+                    <h4>{{ 'paybox.landlord.title_5' | trans() }}</h4>
+                    <p>{{ 'paybox.landlord.title_5' | trans() }}</p>
+                </div>
+            </div>
+            <div class="col one-third collect">
+                <i class="pie-el"> </i>
+                <div>
+                    <h3>{{ 'paybox.landlord.collect.paymnets' | trans() }}<br>{{ 'paybox.landlord.effortlessly' | trans() }}</h3>
+                    <h4>{{ 'paybox.landlord.title_6' | trans() }}</h4>
+                    <p>{{ 'paybox.landlord.title_7' | trans() }}</p>
+                </div>
+            </div>
         </div>
-        <div class="col one-third gain">              
-          <i class="pie-el"> </i>
-          <div>
-            <h3>GAIN RELIABLE<br>TENANTS</h3>
-            <h4>Looking for responsible tenants?</h4>
-            <p>
-              Through RentTrack, your tenants have an incentive to pay on time. If they opt-in, we report tenant payment history to the credit bureau Experian.
-            </p>
-          </div>
+        <div class="quote-box">
+            <q><span>{{ 'paybox.landlord.quote_1' | trans() }}</span></q>
+            <p>{{ 'paybox.landlord.quote_1' | trans() }}</p>
         </div>
-        <div class="col one-third collect">              
-          <i class="pie-el"> </i>
-          <div>
-            <h3>COLLECT PAYMENTS<br>EFFORTLESSLY</h3>
-            <h4>Overwhelmed with units?</h4>
-            <p>
-              RentTrack works for landlords with 1–1000’s of properties. You can manage thousands of payments without the hassle of paper checks, insufficient funds or lost mail.
-            </p>
-          </div>
-        </div>
-      </div>
-      <div class="quote-box">
-        <q>
-          <span>RentTrack reduced the time I spent chasing down my tenants - it’s invaluable!</span>
-        </q>
-        <p>- Rick S., Los Angeles, CA -</p>
-      </div>
     </div>
 </section>
 {% endblock %}
+
 {% block pricingBenefitStatement %}
- <div class="pricing-benefit-statement clearfix">
-    <a href="#" title="Pricing Options">Pricing Options</a>
-    <strong>Try it and get your first rent payment for FREE!</strong>
-  </div>
+<div class="pricing-benefit-statement clearfix">
+    <a href="#"  id="popup-pricing" title="Pricing Options">{{ 'benefit.landlord.pricing.options' | trans() }}</a>
+    <strong>{{ 'benefit.landlord.text' | trans() }}</strong>
+</div>
 {% endblock %}
