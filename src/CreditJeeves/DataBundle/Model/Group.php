@@ -973,4 +973,14 @@ abstract class Group
     {
         return $this->contracts;
     }
+
+    /**
+     * Get DepositAccounts
+     *
+     * @return DepositAccount
+     */
+    public function getDepositAccounts()
+    {
+        return $this->deposit_accounts;
+    }
 }

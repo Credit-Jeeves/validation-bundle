@@ -74,10 +74,15 @@ abstract class DepositAccount
     }
 
     /**
-     * @return \RentJeeves\DataBundle\Entity\Landlord
+     * @return CreditJeeves\DataBundle\Entity\Group
      */
     public function getGroup()
     {
         return $this->group;
+    }
+
+    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    {
+        $this->group = $group;
     }
 }

@@ -29,27 +29,10 @@ class Landlord extends User
      */
     protected $agent_groups;
 
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
-     *     mappedBy="user",
-     *     cascade={
-     *         "persist",
-     *         "remove",
-     *         "merge"
-     *     },
-     *     orphanRemoval=true
-     * )
-     *
-     * @var ArrayCollection
-     */
-    protected $payment_accounts;
-    
     public function __construct()
     {
         parent::__construct();
         $this->agent_groups = new ArrayCollection();
-        $this->payment_accounts = new ArrayCollection();
     }
     
     /**
@@ -101,37 +84,6 @@ class Landlord extends User
         return $this->agent_groups;
     }
 
-    /**
-     * Add account
-     *
-     * @param \RentJeeves\DataBundle\Entity\DepositAccount $account
-     * @return \RentJeeves\DataBundle\Entity\Landlord
-     */
-    public function addPaymentAccount(\RentJeeves\DataBundle\Entity\DepositAccount $account)
-    {
-        $this->payment_accounts[] = $account;
-        return $this;
-    }
-
-    /**
-     * Remove account
-     *
-     * @param \RentJeeves\DataBundle\Entity\DepositAccount $account
-     */
-    public function removePaymentAccount(\RentJeeves\DataBundle\Entity\DepositAccount $account)
-    {
-        $this->payment_accounts->removeElement($account);
-    }
-
-    /**
-     * Get payment_accounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPaymentAccounts()
-    {
-        return $this->payment_accounts;
-    }
 
     public function getCurrentGroup()
     {
@@ -162,5 +114,23 @@ class Landlord extends User
     public function getAddress()
     {
         return $this->getAddresses()->last();
+    }
+
+    public function hasMerchant()
+    {
+        $groups = $this->getGroups();
+        if (!$groups) {
+            return false;
+        }
+
+        $merchantExist = false;
+        foreach ($groups as $group) {
+            if ($group->getDepositAccounts()) {
+                $merchantExist = true;
+                break;
+            }
+        }
+
+        return $merchantExist;
     }
 }

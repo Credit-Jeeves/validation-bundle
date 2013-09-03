@@ -158,16 +158,21 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             if ($holding) {
                 $contract->setHolding($holding);
             }
+
             if ($group) {
                 $contract->setGroup($group);
             }
-            $contract->setStatus(ContractStatus::PENDING);
+
+            if ($user->hasMerchant()) {
+                $contract->setStatus(ContractStatus::PENDING);
+            }
+
             $em->persist($contract);
         }
 
         $em->flush();
-        $contractsLandlord = $em->getRepository('RjDataBundle:Contract')->getContractsLandlord($landlord);
 
+        $contractsLandlord = $em->getRepository('RjDataBundle:Contract')->getContractsLandlord($landlord);
         if (!empty($contractsLandlord)) {
             return true;
         }
