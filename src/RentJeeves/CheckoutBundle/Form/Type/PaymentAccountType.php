@@ -91,28 +91,36 @@ class PaymentAccountType extends AbstractType
             )
         );
         $builder->add(
-            'expiration',
-            new MonthYearType(),
+            'ExpirationMonth',
+            'choice',
             array(
-                'error_bubbling' => true,
                 'label' => 'checkout.expiration',
-                'input' => 'array',
-                'format' => 'MMyyyy-d',
-                'years' => range(date('Y'), date('Y') + 12),
-                'months' => range(1, 12),
-                'days' => array(1),
-                'invalid_message' => 'checkout.error.expiration.invalid',
+                'choices' => range(1, 12, 1),
+                'empty_value'  => false,
                 'attr' => array(
                     'class' => 'original',
                 ),
-                'empty_value' => array(
-                    'year' => 'Year',
-                    'month' => 'Month',
-                    'day' => 1,
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => array('buy_report_new'),
+                            'message' => 'checkout.error.expiration.empty',
+                        )
+                    ),
+                )
+            )
+        );
+        $builder->add(
+            'ExpirationYear',
+            'choice',
+            array(
+                'label' => false,
+                'choices' => range(date('Y'), 12, 1),
+                'empty_value'  => false,
+                'attr' => array(
+                    'class' => 'original',
                 ),
                 'constraints' => array(
-                    new Valid(
-                    ),
                     new NotBlank(
                         array(
                             'groups' => array('buy_report_new'),
