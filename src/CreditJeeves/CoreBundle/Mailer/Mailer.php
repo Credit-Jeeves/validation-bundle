@@ -116,11 +116,11 @@ class Mailer extends BaseMailer implements MailerInterface
             'fullNameTenant'        => $tenant->getFullName(),
             'nameTenant'            => $tenant->getFirstName(),
             'address'               => $contract->getProperty()->getAddress(),
-            'unit'                  => $contract->getUnit(),
+            'unitName'              => ($contract->getUnit())? $contract->getUnit()->getName() : null,
             'inviteCode'            => $landlord->getInviteCode(),
         );
 
-        $subject = $tenant->getFullName().' wonts to pay her rent using RentTrack';
+        //$subject = $tenant->getFullName().' wonts to pay her rent using RentTrack';
 
         if (empty($isPlain) && empty($isHtml)) {
             $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
@@ -134,7 +134,7 @@ class Mailer extends BaseMailer implements MailerInterface
             );
 
             $message = \Swift_Message::newInstance();
-            $message->setSubject($subject);
+            $message->setSubject($htmlContent['subject']);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
             $message->setTo($landlord->getEmail());
             $message->addPart($htmlContent['body'], 'text/html');
@@ -157,7 +157,7 @@ class Mailer extends BaseMailer implements MailerInterface
                 $vars
             );
             $message = \Swift_Message::newInstance();
-            $message->setSubject($subject);
+            $message->setSubject($plainContent['subject']);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
             $message->setTo($landlord->getEmail());
             $message->addPart($plainContent['body'], 'text/plain');
@@ -181,7 +181,7 @@ class Mailer extends BaseMailer implements MailerInterface
             'inviteCode'            => $tenant->getInviteCode(),
         );
 
-        $subject = 'Your landlord '.$landlord->getFullName().' request a rent payment using RentTrack';
+        //$subject = 'Your landlord '.$landlord->getFullName().' request a rent payment using RentTrack';
 
         if (empty($isPlain) && empty($isHtml)) {
             $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
@@ -195,7 +195,7 @@ class Mailer extends BaseMailer implements MailerInterface
             );
 
             $message = \Swift_Message::newInstance();
-            $message->setSubject($subject);
+            $message->setSubject($htmlContent['subject']);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
             $message->setTo($tenant->getEmail());
             $message->addPart($htmlContent['body'], 'text/html');
@@ -218,7 +218,7 @@ class Mailer extends BaseMailer implements MailerInterface
                 $vars
             );
             $message = \Swift_Message::newInstance();
-            $message->setSubject($subject);
+            $message->setSubject($plainContent['subject']);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
             $message->setTo($tenant->getEmail());
             $message->addPart($plainContent['body'], 'text/plain');
@@ -239,7 +239,7 @@ class Mailer extends BaseMailer implements MailerInterface
                 'unitName'              => $contract->getUnit()->getName(),
                 'inviteCode'            => $tenant->getInviteCode(),
         );
-        $subject = 'Your landlord '.$landlord->getFullName().' request a rent payment using RentTrack';
+        //$subject = 'Your landlord '.$landlord->getFullName().' request a rent payment using RentTrack';
         if (empty($isPlain) && empty($isHtml)) {
             $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
         }
@@ -250,7 +250,7 @@ class Mailer extends BaseMailer implements MailerInterface
                 $vars
             );
             $message = \Swift_Message::newInstance();
-            $message->setSubject($subject);
+            $message->setSubject($htmlContent['subject']);
             $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
             $message->setTo($tenant->getEmail());
             $message->addPart($htmlContent['body'], 'text/html');
@@ -272,7 +272,7 @@ class Mailer extends BaseMailer implements MailerInterface
                 $vars
             );
             $message = \Swift_Message::newInstance();
-            $message->setSubject($subject);
+            $message->setSubject($plainContent['subject']);
             $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
             $message->setTo($tenant->getEmail());
             $message->addPart($plainContent['body'], 'text/plain');

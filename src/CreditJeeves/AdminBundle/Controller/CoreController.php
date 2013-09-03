@@ -1,0 +1,26 @@
+<?php
+
+namespace CreditJeeves\AdminBundle\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sonata\AdminBundle\Controller\CoreController as BaseController;
+
+class CoreController extends BaseController
+{
+    /**
+     * @Route("/dashboard", name="sonata_admin_dashboard")
+     * @Template()
+     *
+     * @return array
+     */
+    public function dashboardAction()
+    {
+        $request = $this->getRequest();
+        $request->getSession()->set('user_id', null);
+        $request->getSession()->set('group_id', null);
+        return parent::dashboardAction();
+    }
+}

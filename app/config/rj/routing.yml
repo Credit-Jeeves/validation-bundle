@@ -7,14 +7,10 @@ _sonata_admin:
     type: sonata_admin
     prefix: /admin
 
-admin_base_common:
-    resource: "@AdminBundle/Controller"
+admin_common:
+    resource: "@RjAdminBundle/Controller"
     type:     annotation
     prefix:   /admin
-
-admin_dashboard:
-    pattern: /admin
-    defaults: { _controller: SonataAdminBundle:Core:dashboard }
 
 landlord:
     resource: "@LandlordBundle/Controller/"
@@ -81,17 +77,9 @@ fos_user_resetting_request:
         _controller: FOSUserBundle:Resetting:request
         _method:     GET
 
-# rj_data:
-#     resource: "@RjDataBundle/Controller/"
-#     type:     annotation
-#     prefix:   /
-#fos_user_profile_show:
-
-
 fos_user_change_password:
     resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
     prefix:   /profile
-
 
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
@@ -103,5 +91,5 @@ _bazinga_exposetranslation:
     resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
 
 fos_security:
-    resource:   "@UserBundle/Controller/SecurityController.php"
-    type:       annotation
+    resource: "@UserBundle/Controller/SecurityController.php"
+    type:     annotation
