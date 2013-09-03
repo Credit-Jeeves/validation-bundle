@@ -138,6 +138,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
         $url = $link->getAttribute('href');
+        $this->clearEmail();
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
         $this->session->wait($this->timeout, '$("#landlordInviteRegister").length > 0');
@@ -160,6 +161,12 @@ class AddPropertyCase extends BaseTestCase
         
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $contract, 'Wrong number of contract');
+
+        //Check notify tenant about landlord come
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
     }
 
     /**
@@ -216,6 +223,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
         $url = $link->getAttribute('href');
+        $this->clearEmail();
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
         $this->session->wait($this->timeout, '$(".haveAccount a").length > 0');
@@ -231,5 +239,11 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $contract, 'Wrong number of pending');
         $this->logout();
+
+        //Check notify tenant about landlord come
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
     }
 }

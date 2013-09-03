@@ -320,7 +320,7 @@ fixtures:
     translatable: email_15
     locale: %locale%
     property: subject
-    value: Your landlord has signed up with RentTrack.
+    value: Your Landlord Signed Up - Set up your Rent Payment
   translation_127:
     translatable: email_15
     locale: %locale%

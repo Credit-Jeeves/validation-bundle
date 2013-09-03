@@ -26,7 +26,7 @@ class Doctrine
             $depositAccount = $entity;
             $group = $depositAccount->getGroup();
             $holding = $group->getHolding();
-            $landlors = $holding->getUsers();
+            $landlords = $holding->getDealers();
 
             foreach ($landlords as $landlord) {
                 $groups = $landlord->getAgentGroups();
@@ -41,7 +41,7 @@ class Doctrine
 
                 foreach ($contractsLandlord as $contract) {
                     $tenant = $contract->getTenant();
-                    if ($tenant->setIsActive() && $contract->getStatus() == ContractStatus::INVITE) {
+                    if ($tenant->getIsActive() && $contract->getStatus() == ContractStatus::INVITE) {
                         $contract->setStatus(ContractStatus::PENDING);
                         $em->persist($contract);
                     }

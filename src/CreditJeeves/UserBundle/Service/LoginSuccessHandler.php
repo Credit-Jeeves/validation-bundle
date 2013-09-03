@@ -168,7 +168,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             }
 
             $tenant = $contract->getTenant();
-            if ($tenant->setIsActive()) {
+            if ($tenant->getIsActive()) {
                 $this->container->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
                     $tenant,
                     $user,
