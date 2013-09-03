@@ -143,4 +143,52 @@ abstract class BaseMailer
         
         return $aResult;
     }
+
+    public function sendBaseLetter($sTemplate, $vars, $emailTo, $culture)
+    {
+        $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
+        $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
+
+        if (empty($isPlain) && empty($isHtml)) {
+            $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
+        }
+
+        if (!empty($isHtml)) {
+            $htmlContent = $this->manager->renderEmail(
+                $sTemplate.'.html',
+                $culture,
+                $vars
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($htmlContent['subject']);
+            $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
+            $message->setTo($emailTo);
+            $message->addPart($htmlContent['body'], 'text/html');
+            if (!empty($isPlain)) {
+                $plainContent = $this->manager->renderEmail(
+                    $sTemplate.'.text',
+                    $culture,
+                    $vars
+                );
+                $message->addPart($plainContent['body'], 'text/plain');
+            }
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+        if (!empty($isPlain)) {
+            $plainContent = $this->manager->renderEmail(
+                $sTemplate.'.text',
+                $culture,
+                $vars
+            );
+            $message = \Swift_Message::newInstance();
+            $message->setSubject($plainContent['subject']);
+            $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
+            $message->setTo($emailTo);
+            $message->addPart($plainContent['body'], 'text/plain');
+            $this->container->get('mailer')->send($message);
+            return true;
+        }
+        return false;
+    }
 }

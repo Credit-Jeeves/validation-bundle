@@ -314,3 +314,30 @@ fixtures:
         Watching out for you,
         The RentTrack Team
       {% endblock %}
+
+# rjLandlordComeFromInvite.html
+  translation_126:
+    translatable: email_15
+    locale: %locale%
+    property: subject
+    value: Your landlord has signed up with RentTrack.
+  translation_127:
+    translatable: email_15
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% block email %}
+        Congratulations! {{ fullNameLandlord }} has signed up with RentTrack. 
+        <br />
+        To start paying rent for {{ address }} {{ unitName }}, 
+        <a href="http://my.renttrack.com/">log in and set up your payment</a> 
+        for {{ rentAmount }} due on {{ dueDate }}. 
+        <br />
+        You're ready to build credit buy paying rent securely online. 
+        <br />
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
+      {% endblock %}

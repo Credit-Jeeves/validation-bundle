@@ -134,12 +134,19 @@ class LandlordController extends Controller
                 );
                 $em = $this->getDoctrine()->getManager();
 
-                if (!empty($contracts) && $landlord->hasMerchant()) {
+                if (!empty($contracts)) {
                     foreach ($contracts as $contract) {
-                        if ($contract->getStatus() == ContractStatus::INVITE) {
+                        if ($contract->getStatus() == ContractStatus::INVITE && $landlord->hasMerchant()) {
                             $contract->setStatus(ContractStatus::PENDING);
                             $em->persist($contract);
                         }
+
+                        $tenant = $contract->getTenant();
+                        $this->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
+                            $tenant,
+                            $landlord,
+                            $contract
+                        );
                     }
                 }
 

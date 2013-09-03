@@ -150,7 +150,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
         $holding = $user->getHolding();
         $group = $user->getCurrentGroup();
 
-        foreach ($contractsLandlord as $key => $contract) {
+        foreach ($contractsLandlord as $contract) {
 
             if ($contract->getStatus() != ContractStatus::INVITE) {
                 continue;
@@ -166,6 +166,13 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             if ($user->hasMerchant()) {
                 $contract->setStatus(ContractStatus::PENDING);
             }
+
+            $tenant = $contract->getTenant();
+            $this->container->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
+                $tenant,
+                $user,
+                $contract
+            );
 
             $em->persist($contract);
         }
