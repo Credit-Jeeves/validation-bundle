@@ -46,9 +46,12 @@ class SettingsController extends Controller
             }
         }
 
+        $request = $this->container->get('request');
+
         return array(
-            'sEmail' => $sEmail,
-            'form' => $form->createView()
+            'sEmail'    => $sEmail,
+            'form'      => $form->createView(),
+            'formPath'  => $this->get('router')->generate($request->get('_route')),
         );
     }
 

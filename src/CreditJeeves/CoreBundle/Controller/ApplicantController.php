@@ -2,6 +2,7 @@
 namespace CreditJeeves\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Enum\UserType;
 
 class ApplicantController extends Controller
 {
@@ -12,6 +13,12 @@ class ApplicantController extends Controller
     public function getUser()
     {
         if ($user = parent::getUser()) {
+            //@TODO it's hack for password change, becouse we use the same code for change passowrd
+            // on the RentRack and CreditJeeves in future I think need change this code.
+            $type = $user->getType();
+            if ($type == UserType::LANDLORD || $type == UserType::TETNANT) {
+                return $user;
+            }
             $user = $this->get('core.session.applicant')->getUser();
             $this->getUserDetails($user);
             return $user;
