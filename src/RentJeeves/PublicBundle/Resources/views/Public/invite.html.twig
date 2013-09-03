@@ -5,6 +5,7 @@
 {% block content %}
 <section class="form-content">
 {{ include('RjComponentBundle:Invite:_formSearch.html.twig') }}
+{{ include('RjComponentBundle:Invite:_popupTenant.html.twig') }}
 <form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }} id="inviteForm">
     {{ include('RjComponentBundle:Invite:_form.html.twig', {"form": form.invite }) }}
     <br />
@@ -17,6 +18,7 @@
     </div>
 </form>
 </section>
+
 {% endblock %}
 
 {% block javascripts %}
