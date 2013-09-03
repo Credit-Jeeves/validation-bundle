@@ -1,46 +1,65 @@
 {% use "form_div_layout.html.twig" %}
 {% use ':Form:form_errors.html.twig' %}
 
+{% block form_rows %}
+    {% spaceless %}
+        {% set _firstRow = true %}
+
+        {% for child in form %}
+            {% set type = child.vars.block_prefixes[1]|default('text') %}
+            {% if child.vars.label != false or _firstRow == true %}
+                {% if _firstRow != true %}
+                    </div>
+                {% endif %}
+                <div class="form-row clearfix type-{{ type }}
+                        {% if child.attr.tooltip_title is defined %}with-tooltip{% endif %}"
+                     id="{{ child.vars.id }}_row"
+                >
+            {% endif %}
+            {{ form_row(child) }}
+
+            {% set _firstRow = false %}
+        {% endfor %}
+        </div>
+    {% endspaceless %}
+{% endblock form_rows %}
+
 {% block form_row %}
     {% spaceless %}
         {% set type = form.vars.block_prefixes[1]|default('text') %}
-        <div class="form-row clearfix type-{{ type }}{% if attr.tooltip_title is defined %}with-tooltip{% endif %}"
-             id="{{ id }}_row"
-        >
-            {{ form_errors(form) }}
-            {% if 'checkbox' == type %}
-                <label class="checkbox">
-                    {{ block('checkbox_widget') }}
-                    <span>{{ label|trans({}, translation_domain) }}</span>
-                </label>
-            {% elseif 'choice' == type and expanded %}
-                {{ form_label(form, label|default(null)) }}
+        {{ form_errors(form) }}
+        {% if 'checkbox' == type %}
+            <label class="checkbox">
+                {{ block('checkbox_widget') }}
+                <span>{{ label|trans({}, translation_domain) }}</span>
+            </label>
+        {% elseif 'choice' == type and expanded %}
+            {{ form_label(form, label|default(null)) }}
+            {{ form_widget(form) }}
+        {% else %}
+            {{ form_label(form, label|default(null)) }}
+            <div class="fields-box">
                 {{ form_widget(form) }}
-            {% else %}
-                {{ form_label(form, label|default(null)) }}
-                <div class="fields-box">
-                    {{ form_widget(form) }}
-                </div>
-            {% endif %}
-            {% if attr.help is defined %}
-                <i title="{{ attr.help | trans({}, translation_domain) }}"
-                   class="help after-checkbox pie-el tooltip-link"
-                >
-                    ?
-                </i>
-            {% endif %}
+            </div>
+        {% endif %}
+        {% if attr.help is defined %}
+            <i title="{{ attr.help | trans({}, translation_domain) }}"
+               class="help after-checkbox pie-el tooltip-link"
+            >
+                ?
+            </i>
+        {% endif %}
 
-            {% if attr.tooltip_title is defined %}
-                <div class="{{ attr.tooltip_class | default('tooltip-box type1 pie-el') }}">
-                    <h4>{{ attr.tooltip_title | trans({}, translation_domain) }}</h4>
-                    {% if attr.tooltip_text is defined %}
-                        <p class="{{ attr.tooltip_text_class | default('') }}">
-                            {{ attr.tooltip_text | trans({}, translation_domain) }}
-                        </p>
-                    {% endif %}
-                </div>
-            {% endif %}
-        </div>
+        {% if attr.tooltip_title is defined %}
+            <div class="{{ attr.tooltip_class | default('tooltip-box type1 pie-el') }}">
+                <h4>{{ attr.tooltip_title | trans({}, translation_domain) }}</h4>
+                {% if attr.tooltip_text is defined %}
+                    <p class="{{ attr.tooltip_text_class | default('') }}">
+                        {{ attr.tooltip_text | trans({}, translation_domain) }}
+                    </p>
+                {% endif %}
+            </div>
+        {% endif %}
     {% endspaceless %}
 {% endblock form_row %}
 
