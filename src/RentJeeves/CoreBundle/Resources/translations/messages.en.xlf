@@ -896,6 +896,153 @@
                 <source>add.account.popup.title.edit</source>
                 <target>Add direct deposit account</target>
             </trans-unit>
+            <!-- Tenant Invite popup -->
+            <trans-unit id="popup.invite.tenant.title_1">
+                <source>popup.invite.tenant.title_1</source>
+                <target>Make Your Money Count!</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.title_2">
+                <source>popup.invite.tenant.title_2</source>
+                <target>Build credit while you pay rent.</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.note.title">
+                <source>popup.invite.tenant.note.title</source>
+                <target>You can choose to report your on-time payments to credit bureaus with any of our plans. This helps you build a strong credit history.</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.renttrack">
+                <source>popup.invite.tenant.renttrack</source>
+                <target>RentTrack</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.free">
+                <source>popup.invite.tenant.free</source>
+                <target>Free</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.scoretrack">
+                <source>popup.invite.tenant.scoretrack</source>
+                <target>ScoreTrack</target>
+            </trans-unit>
+            <trans-unit id="popup.invite.tenant.per_month">
+                <source>popup.invite.tenant.per_month</source>
+                <target>mo.</target>
+            </trans-unit>
+            <trans-unit id="popup.checked">
+                <source>popup.checked</source>
+                <target>checked</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.get.credit.score">
+                <source>popup.tenant.get.credit.score</source>
+                <target>Get Your Credit Score</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.get.first.free">
+                <source>popup.tenant.get.first.free</source>
+                <target>First One Free</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.pay.e-check">
+                <source>popup.tenant.pay.e-check</source>
+                <target>Pay Rent by E-Check</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.pay.credit-card">
+                <source>popup.tenant.pay.credit-card</source>
+                <target>Pay Rent by Credit Card*</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.pay.auto">
+                <source>popup.tenant.pay.auto</source>
+                <target>Set up Auto Payments</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.build.credit">
+                <source>popup.tenant.build.credit</source>
+                <target>Build Credit (opt-in)</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.support">
+                <source>popup.tenant.support</source>
+                <target>Free and Friendly Customer Support</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.safeguards">
+                <source>popup.tenant.safeguards</source>
+                <target>Rock-Solid Security Safeguards</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.footer.note_1">
+                <source>popup.tenant.footer.note_1</source>
+                <target>We’ll invite your landlord to join. Once they join and accept rent electronically, you can start building your credit.</target>
+            </trans-unit>
+            <trans-unit id="popup.sign.up.today">
+                <source>popup.sign.up.today</source>
+                <target>Sign Up Today</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.footer.note_2">
+                <source>popup.tenant.footer.note_2</source>
+                <target>We’ll sign you up for ScoreTrack when you set up your first rent payment.</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.footer.note_3">
+                <source>popup.tenant.footer.note_3</source>
+                <target>*We charge a convenience fee of 2.95%, or $20 if you live in CA, CO, CT, FL, KS, ME, MA, NY, OK or TX.</target>
+            </trans-unit>
+            <!-- Landlord Invite Popup -->
+            <trans-unit id="popup.landlord.title_1">
+                <source>popup.landlord.title_1</source>
+                <target>See how easy it is to get paid.</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.title.note_1">
+                <source>popup.landlord.title.note_1</source>
+                <target>Try it for FREE. If you cancel in the first month, we’ll refund your monthly minimum and you keep your rent.</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.title.info">
+                <source>popup.landlord.title.info</source>
+                <target>RentTrack Manager</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.unit">
+                <source>popup.landlord.unit</source>
+                <target>unit</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.monthly.minimum">
+                <source>popup.landlord.monthly.minimum</source>
+                <target>Monthly Minimum</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.electronic.check.online">
+                <source>popup.landlord.electronic.check.online</source>
+                <target>Accept Electronic Checks Online</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.credit.check.online">
+                <source>popup.landlord.credit.check.online</source>
+                <target>Accept Credit Cards Online</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.tenant.verification">
+                <source>popup.landlord.tenant.verification</source>
+                <target>Tenant Identity Verification</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.easy.reporting">
+                <source>popup.landlord.easy.reporting</source>
+                <target>Easy Reporting</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.customer.support">
+                <source>popup.landlord.customer.support</source>
+                <target>Free and Friendly Customer Support</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.safeguards">
+                <source>popup.landlord.safeguards</source>
+                <target>Rock-Solid Safeguards</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.collect.payments">
+                <source>popup.landlord.collect.payments</source>
+                <target>Collect Payment Website Widget</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.additional.service">
+                <source>popup.landlord.additional.service</source>
+                <target>ADDITIONAL SERVICES</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.check">
+                <source>popup.landlord.check</source>
+                <target>Paperless Credit Report &amp; Criminal and Eviction Checks</target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.footer.note_1">
+                <source>popup.landlord.footer.note_1</source>
+                <target>*We'll waive your unit fee if the tenant enrolls in any one of our monthly </target>
+            </trans-unit>
+            <trans-unit id="popup.landlord.footer.link">
+                <source>popup.landlord.footer.link</source>
+                <target>credit services</target>
+            </trans-unit>
+            
         </body>
     </file>
 </xliff>
