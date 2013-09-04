@@ -9,7 +9,7 @@ use RentJeeves\DataBundle\Entity\DepositAccount;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
- * @author Ton Sharp <66ton99@gmail.com>
+ * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
  * @Service("data.event_listener.doctrine")
  * @Tag("doctrine.event_listener", attributes = { "event" = "prePersist", "method" = "prePersist" })
@@ -22,18 +22,15 @@ class Doctrine
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof DepositAccount) {
-            //@TODO need check this method, becouse I am write code, but not check it.
             $depositAccount = $entity;
             $group = $depositAccount->getGroup();
-            $holding = $group->getHolding();
-            $landlords = $holding->getDealers();
+            $landlords = $em->getRepository('RjDataBundle:Landlord')->getLandlordsByGroup($group->getId());
+
+            if (empty($landlords)) {
+                return;
+            }
 
             foreach ($landlords as $landlord) {
-                $groups = $landlord->getAgentGroups();
-                if (!$groups->contains($group)) {
-                    continue;
-                }
-
                 $contractsLandlord = $em->getRepository('RjDataBundle:Contract')->getContractsLandlord($landlord);
                 if (empty($contractsLandlord)) {
                     continue;
