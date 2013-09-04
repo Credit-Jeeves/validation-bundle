@@ -188,11 +188,11 @@
             </trans-unit>
             <trans-unit id="keep.paying">
                 <source>keep.paying</source>
-                <target>Keep paying your rent for now – we’ll contact your landlord.</target>
+                <target>Keep paying your rent the old-fashioned way for now.</target>
             </trans-unit>
             <trans-unit id="keep.paying.text">
                 <source>keep.paying.text</source>
-                <target>We'll reach out to your landlord to see if we can get them onboard with RentTrack. You'll be notified via email or upon sign in so you can complete the rent payment process for this property and start benefitting from positives credit reports.
+                <target>We'll reach out to your landlord to see if we can get them on-board with RentTrack. You'll be notified via email when you can set up the rent payment for this property.
                 </target>
             </trans-unit>
             <trans-unit id="continue">
@@ -602,7 +602,7 @@
             </trans-unit>
            <trans-unit id="donthavedata">
                 <source>donthavedata</source>
-                <target>Don't have data.</target>
+                <target>No results found.</target>
             </trans-unit>
            <trans-unit id="bureau.reporting.title">
                 <source>bureau.reporting.title</source>
@@ -654,7 +654,7 @@
             </trans-unit>
            <trans-unit id="error.rent.empty">
                 <source>error.rent.empty</source>
-                <target>Rent can't be empty.</target>
+                <target>Please specify the rent amount.</target>
             </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
@@ -721,20 +721,20 @@
             </trans-unit>
            <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
-                <target>Start date couldn't be empt.</target>
+                <target>Specify a start date.</target>
             </trans-unit>
            <trans-unit id="error.finish.empty">
                 <source>error.finish.empty</source>
-                <target>Finish date couldn't be empt.</target>
+                <target>Specify an end date.</target>
             </trans-unit>
            <trans-unit id="user.alredy.in.system">
                 <source>user.alredy.in.system</source>
-                <target>User alredy on the RentTrack.</target>
+                <target>User is a current member of RentTrack.</target>
             </trans-unit>
             <trans-unit id="user.itslandlord">
                 <source>user.itslandlord</source>
-                <target>User alredy on the RentTrack and its Landlord user.
-                        Your can't create contract with landlord.
+                <target>User already on RentTrack as a Landlord.
+                        You can't create a contract with a landlord.
                 </target>
             </trans-unit>
             <trans-unit id="date.initiated">
@@ -792,7 +792,7 @@
             </trans-unit>
             
             <trans-unit id="select.status">
-                <source>select.status </source>
+                <source>select.status</source>
                 <target>Select Status</target>
             </trans-unit>
             <trans-unit id="action.required">

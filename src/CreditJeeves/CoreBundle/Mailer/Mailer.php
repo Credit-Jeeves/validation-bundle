@@ -120,7 +120,7 @@ class Mailer extends BaseMailer implements MailerInterface
             'inviteCode'            => $landlord->getInviteCode(),
         );
 
-        //$subject = $tenant->getFullName().' wonts to pay her rent using RentTrack';
+        //$subject = $tenant->getFullName().' wants to pay rent using RentTrack';
 
         if (empty($isPlain) && empty($isHtml)) {
             $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
