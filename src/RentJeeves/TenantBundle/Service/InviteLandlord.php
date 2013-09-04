@@ -82,9 +82,12 @@ class InviteLandlord
             $em->persist($group);
             $em->persist($holding);
         }
-
         $unit = new Unit();
-        $unit->setName($invite->getUnit());
+        $name = $invite->getUnit();
+        if (empty($name)) {
+            $name = '';
+        }
+        $unit->setName($name);
         $unit->setProperty($invite->getProperty());
         $unit->setHolding($holding);
         $unit->setGroup($group);
