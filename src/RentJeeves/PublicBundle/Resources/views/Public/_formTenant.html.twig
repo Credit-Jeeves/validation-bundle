@@ -55,8 +55,8 @@
 <div class="accept-terms-box pie-el">
   <div class="form-row checkboxes clearfix">
     <label id="checkboxterms"class="checkbox">
-      {{ form_widget(form.tos) }}
-      <i> </i>
+      {{ form_widget(form.tos, {'attr': {'class': 'tos-input-field'}}) }}
+      <i class="tos-label"> </i>
       <span class="big">{{'terms.service.pre-link'|trans }}<a href="#" type="Terms of Service">{{'terms.service.link.text'|trans }}</a></span>
     </label>
   </div>
