@@ -54,6 +54,10 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
         $username = $data['_username'];
         $user = $this->em->getRepository('DataBundle:User')->findOneByEmail($username);
         if ($user) {
+            $this->container->get('session')->getFlashBag()->add(
+                    'error',
+                    'Incorrect email or password.'
+            );
             $defense = $user->getDefense();
             if ($defense) {
                 $defense->addAttempt();
