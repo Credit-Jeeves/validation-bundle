@@ -189,7 +189,7 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Receive automatic rent payments through RentTrack {% endblock %}
+      {% block h1 %}Get Paid On-Time Using RentTrack{% endblock %}
       {% block email %}
         {% if nameLandlord %}
             Hi {{ nameLandlord }}! <br />  <br />
