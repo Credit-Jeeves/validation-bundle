@@ -46,10 +46,7 @@
 </div>
 <!-- End Resolve Popup -->
 
-<!-- End Resolve Popup -->
-<div id="actions-block" class="landrord-box contracts-block" style="display:none;"
-data-bind="style: { display: countActions() <= 0 ? 'none' : 'block' }"
->
+<div id="actions-block" class="landrord-box contracts-block">
     <div class="title-box clearfix">
       <h2 data-bind="text: '{{'action.required'|trans}} (' + $root.total() + ')'"></h2>
       <div class="fiter-box">
@@ -98,6 +95,7 @@ data-bind="style: { display: countActions() <= 0 ? 'none' : 'block' }"
               </tr>
             </thead>
             <tbody>
+            <!-- ko if: countActions -->
               <!-- ko foreach: { data: aActions() } -->
               <tr>
                 <td class="actions-status late" data-bind="text: status"></td>
@@ -113,6 +111,12 @@ data-bind="style: { display: countActions() <= 0 ? 'none' : 'block' }"
                 <td class="type-box">
                 </td>
               </tr>
+              <!-- /ko -->
+              <!-- /ko -->
+              <!-- ko ifnot: countActions -->
+                <tr>
+                    <td colspan="7">{{ 'donthavedata'|trans }}</td>
+                </tr>
               <!-- /ko -->
             </tbody>
           </table>

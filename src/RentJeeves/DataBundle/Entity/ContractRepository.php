@@ -83,7 +83,7 @@ class ContractRepository extends EntityRepository
     {
         switch ($searchBy) {
             case 'property':
-                $sort = 'p.street';
+                $sort = 'CONCAT(p.street, p.number)';
                 break;
             case 'tenant':
                 $sort = 'CONCAT(t.first_name, t.last_name)';
