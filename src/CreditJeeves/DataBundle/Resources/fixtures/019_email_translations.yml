@@ -210,9 +210,9 @@ fixtures:
         Ready to get paid? <br /> <br />
         <a id="payRentLinkLandlord"
         {% if inviteCode %}
-          href="http://{{ app.request.host }}{{ path('landlord_invite', {'code': inviteCode }) }}"
+          href="http://{{ serverName }}{{ path('landlord_invite', {'code': inviteCode }) }}"
         {% else %}
-          href="http://{{ app.request.host }}/"
+          href="http://{{ serverName }}/"
         {% endif %}
                   style="border: none;
                   padding: 2px 7px;
@@ -261,9 +261,9 @@ fixtures:
         Ready to get something out of your rent payments?<br /> <br />
         <a id="payRentLink" 
         {% if inviteCode %}
-          href="http://{{ app.request.host }}{{ path('tenant_invite', {'code': inviteCode }) }}"
+          href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode }) }}"
         {% else %}
-          href="http://{{ app.request.host }}/"
+          href="http://{{ serverName }}/"
         {% endif %}
           style="
                         border: none;
