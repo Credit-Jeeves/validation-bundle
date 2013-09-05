@@ -23,15 +23,13 @@ class PaymentHistoryController extends Controller
         $contracts = $user->getContracts();
         foreach ($contracts as $contract) {
             $status = $contract->getStatus();
-            if (in_array($status, array(ContractStatus::PENDING, ContractStatus::DELETED))) {
+            if (in_array($status, array(ContractStatus::PENDING, ContractStatus::DELETED, ContractStatus::INVITE))) {
                 continue;
             }
             $currentDate = new \DateTime('now');
             $startDate = $contract->getStartAt();
+            
             $interval = $startDate->diff($currentDate)->format('%r%a');
-//             if ($interval < 0) {
-//                 continue;
-//             }
             $item = array();
             $item['id'] = $contract->getId();
             $item['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());

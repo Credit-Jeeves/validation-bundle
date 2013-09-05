@@ -156,3 +156,12 @@
     margin: 0 !important;
     
 }
+
+.button-link {
+    margin-left: 135px !important;
+    width: 225px;
+}
+
+.ui-dialog {
+    position:absolute;
+}
