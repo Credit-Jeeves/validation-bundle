@@ -493,3 +493,8 @@ a.linkselect-link .linkselect-link-text {
 .ui-dialog {
     position:absolute;
 }
+
+.no-data-row {
+    padding: 35px;
+    text-align: center;
+}

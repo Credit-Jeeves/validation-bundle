@@ -113,13 +113,14 @@
               </tr>
               <!-- /ko -->
               <!-- /ko -->
-              <!-- ko ifnot: countActions -->
-                <tr>
-                    <td colspan="7">{{ 'donthavedata'|trans }}</td>
-                </tr>
-              <!-- /ko -->
             </tbody>
           </table>
+              <!-- ko if: notHaveResult()  -->
+              <div class="no-data-row">
+                    <h3 class="notHaveData">{{ 'donthavedata'|trans }}</h3>
+                    </div>
+              <!-- /ko -->
+
           <img src="/bundles/core/images/img_loading.gif" class="processPayment" data-bind="style: { display: processActions() ? 'block' : 'none' }">
         </div>
       </div>
