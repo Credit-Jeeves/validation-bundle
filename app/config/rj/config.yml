@@ -11,6 +11,7 @@ imports:
     - { resource: ../base/email.yml }
     - { resource: ../base/framework.yml }
     - { resource: ../base/twig.yml }
+    - { resource: ../rj/twig.yml }
     - { resource: ../base/apy_js_form_validation.yml }
 
 parameters:

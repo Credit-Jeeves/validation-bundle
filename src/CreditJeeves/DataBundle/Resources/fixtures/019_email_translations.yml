@@ -250,7 +250,7 @@ fixtures:
         {% if nameTenant %}
             Hi {{ nameTenant }}! <br />  <br />
         {% else %}
-            Hello!  <br /> <br /> 
+            Hello!  <br /> <br />
         {% endif %}
         Your landlord, {{ fullNameLandlord }}, would like you to use RentTrack to pay your rent for
         {{ address }} {{ unitName }}. RentTrack makes it easy to pay rent through secure electronic check transfers
@@ -259,7 +259,7 @@ fixtures:
         <br /> <br />
 
         Ready to get something out of your rent payments?<br /> <br />
-        <a id="payRentLink" 
+        <a id="payRentLink"
         {% if inviteCode %}
           href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode }) }}"
         {% else %}

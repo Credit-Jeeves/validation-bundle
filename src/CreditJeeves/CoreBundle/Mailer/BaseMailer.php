@@ -21,22 +21,18 @@ abstract class BaseMailer
 
     protected $manager;
 
-    protected $serverName;
-
     /**
      * @todo remove container and pass all required services
      *
      * @DI\InjectParams({
      *     "container"  = @DI\Inject("service_container"),
-     *     "serverName" = @DI\Inject("%server_name%"),
      *     "catcher"    = @DI\Inject("fp_badaboom.exception_catcher")
      * })
      *
      * {@inheritdoc}
      */
-    public function __construct(ContainerInterface $container, $serverName, ExceptionCatcher $catcher = null)
+    public function __construct(ContainerInterface $container, ExceptionCatcher $catcher = null)
     {
-        $this->serverName = $serverName;
         $this->catcher = $catcher;
         $this->container = $container;
         $this->manager = $this->container->get('rj_email.email_template_manager');
@@ -152,8 +148,6 @@ abstract class BaseMailer
     {
         $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
         $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
-
-        $vars['serverName'] = $this->serverName;
 
         if (empty($isPlain) && empty($isHtml)) {
             $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
