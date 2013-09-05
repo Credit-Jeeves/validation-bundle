@@ -7,7 +7,7 @@ function Email(field, params)
     }
 
     value = String(value);
-    var pattern = /^(\w+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/;
+    var pattern = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})$/;
 
     if ( pattern.test(value) ) {
         if (params && params.checkMX && field.nodeName) {
