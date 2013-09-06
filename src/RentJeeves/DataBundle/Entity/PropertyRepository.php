@@ -5,6 +5,12 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
+    /**
+     * 
+     * @param unknown_type $group
+     * @param string $searchBy
+     * @param string $search
+     */
     public function countProperties($group, $searchBy = 'street', $search = '')
     {
         $query = $this->createQueryBuilder('p');
@@ -12,7 +18,8 @@ class PropertyRepository extends EntityRepository
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
         if (!empty($search)) {
-            $query->andWhere('p.'.$searchBy.' LIKE :search');
+            $searchBy = $this->prepareSearch($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
             $query->setParameter('search', '%'.$search.'%');
         }
         $query = $query->getQuery();
@@ -34,7 +41,8 @@ class PropertyRepository extends EntityRepository
         $query->where('g.id = :group_id');
         $query->setParameter('group_id', $group->getId());
         if (!empty($search)) {
-            $query->andWhere('p.'.$searchBy.' LIKE :search');
+            $searchBy = $this->prepareSearch($searchBy);
+            $query->andWhere($searchBy.' LIKE :search');
             $query->setParameter('search', '%'.$search.'%');
         }
 
@@ -48,6 +56,18 @@ class PropertyRepository extends EntityRepository
         $query->setMaxResults($limit);
         $query = $query->getQuery();
         return $query->execute();
+    }
+
+    private function prepareSearch($searchBy)
+    {
+        switch ($searchBy) {
+            case 'street':
+                $searchBy = 'CONCAT(p.street, p.number)';
+                break;
+            default:
+                $searchBy = 'p.'.$searchBy;
+        }
+        return $searchBy;
     }
 
     public function countGroup($propertyId)

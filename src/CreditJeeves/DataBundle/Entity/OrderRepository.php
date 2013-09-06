@@ -53,7 +53,7 @@ class OrderRepository extends EntityRepository
                 $field = 'o.'.$field;
                 break;
             case 'property':
-                $field = 'prop.street';
+                $field = 'CONCAT(prop.street, prop.number)';
                 break;
             case 'tenant':
                 $field = 'CONCAT(ten.first_name, ten.last_name)';
