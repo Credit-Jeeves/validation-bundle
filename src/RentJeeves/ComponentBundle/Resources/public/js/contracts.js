@@ -136,11 +136,19 @@ function Contracts() {
     if(typeof searchCollum != 'string') {
        searchCollum = '';
     }
-    if(self.searchText().length <= 0) {
-      $('#searsh-field').css('border-color', 'red');
-      return;
+    if(searchCollum != 'status') {
+      if(self.searchText().length <= 0) {
+        $('#searsh-field-payments').css('border-color', 'red');
+        return;
+      } else {
+        $('#searsh-field-payments').css('border-color', '#bdbdbd');
+      }
     } else {
-      $('#searsh-field').css('border-color', '#bdbdbd');
+      var searchText = $('#searchPaymentsStatus').linkselect('val');
+      if(typeof searchText != 'string') {
+         searchText = '';
+      }
+      self.searchText(searchText);
     }
     self.isSearch(true);
     self.searchText(self.searchText());
@@ -295,7 +303,20 @@ $(document).ready(function(){
   
   ContractsViewModel.ajaxAction();
   $('#searchFilter').linkselect("destroy");
-  $('#searchFilter').linkselect();
+  $('#searchFilter').linkselect({
+    change: function(li, value, text){
+      ContractsViewModel.searchText('');
+      if(value == 'status') {
+        $('#searchSelect').show();
+        $('#searchInput').hide();
+      } else {
+        $('#searchSelect').hide();
+        $('#searchInput').show();
+      }
+    }
+  });
+  
+  
 
   var idProperty = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_property';
   var idUnit = '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit'; 

@@ -320,34 +320,52 @@
 </div>
 
 <div id="contracts-block">
-  <div class="landrord-box">
-    <div class="title-box clearfix">
-      <h2 data-bind="text: 'All (' + $root.total() + ')'"></h2>
-      <div class="fiter-box">
-        <label>{{'filter.by'|trans}}</label>
-        <select id="searchFilter" class="select custom-select blue-arrow selectBox" style="display: none;">
-          <option selected="selected" value="status">{{'filter.status'|trans}}</option>
-          <option value="email">{{ 'email'|trans }}</option>
-          <option value="phone">{{ 'phone'|trans }}</option>
-          <option value="street">{{ 'street'|trans }}</option>
-          <option value="rent">{{ 'amount'|trans }}</option>
-          <option value="tenant">{{ 'tenant'|trans }}</option>
-        </select>
-        <div class="finder-box">
-          <input type="text" id="searsh-field" name="searsh-field" data-bind="value: searchText" value="">
-          <a href="#" id="delete" class="pie-el"
-          data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }">x</a>
-          <button type="submit" id="search-submit" class="pie-el" data-bind="click: search">
-             {{ 'search'|trans }}
-          </button>
+    <div class="landrord-box">
+        <div class="title-box clearfix">
+            <h2 data-bind="text: 'All (' + $root.total() + ')'"></h2>
+            <div class="fiter-box">
+                <label>{{'filter.by'|trans}}</label>
+                <select id="searchFilter" class="select custom-select blue-arrow selectBox" style="display: none;">
+                    <option selected="selected" value="status">{{'filter.status'|trans}}</option>
+                    <option value="email">{{ 'email'|trans }}</option>
+                    <option value="phone">{{ 'phone'|trans }}</option>
+                    <option value="street">{{ 'street'|trans }}</option>
+                    <option value="rent">{{ 'amount'|trans }}</option>
+                    <option value="tenant">{{ 'tenant'|trans }}</option>
+                </select>
+                <div id="searchInput" style="display:none;" class="finder-box">
+                    <input 
+                        type="text"
+                        id="searsh-field"
+                        name="searsh-field"
+                        data-bind="value: searchText"
+                        value="">
+                    <a 
+                        href="#"
+                        id="delete"
+                        class="pie-el"
+                        data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }">x</a>
+                    <button type="submit" id="search-submit" class="pie-el" data-bind="click: search">
+                        {{ 'search'|trans }}
+                    </button>
+                </div>
+                <div id="searchSelect" class="finder-box" >
+                    <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
+                        <option value=''>- {{'select.status.all'|trans}} -</option>
+                        <option value='pending'>{{ 'contract.status.pending' | trans() }}</option>
+                        <option value='invite'>{{ 'contract.status.invite' | trans() }}</option>
+                        <option value='approved'>{{ 'contract.status.approved' | trans() }}</option>
+                        <option value='finished'>{{ 'contract.status.finished' | trans() }}</option>
+                    </select>
+                    <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+                </div>
+                <button class="button small" data-bind="click: $root.addTenant">
+                    <span>{{ 'add.tenant'|trans }}</span>
+                </button>
+            </div>
         </div>
-        <button class="button small" data-bind="click: $root.addTenant">
-            <span>{{ 'add.tenant'|trans }}</span>
-        </button>
-      </div>
-    </div>
-    <div class="content-box">
-      <div class="properties-table-block table-wrap">
+        <div class="content-box">
+            <div class="properties-table-block table-wrap">
         <div class="table-margin">
           <!-- ko if: countContracts() -->
           <table class="properties-table zebra-grid">

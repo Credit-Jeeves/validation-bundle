@@ -1171,6 +1171,23 @@
                 <source>select.status.all</source>
                 <target>  ALL  </target>
             </trans-unit>
+            <!-- Contract statuses -->
+            <trans-unit id="contract.status.pending">
+                <source>contract.status.pending</source>
+                <target>PENDING</target>
+            </trans-unit>
+            <trans-unit id="contract.status.invite">
+                <source>contract.status.invite</source>
+                <target>INVITE</target>
+            </trans-unit>
+            <trans-unit id="contract.status.approved">
+                <source>contract.status.approved</source>
+                <target>APPROVED</target>
+            </trans-unit>
+            <trans-unit id="contract.status.finished">
+                <source>contract.status.finished</source>
+                <target>FINISHED</target>
+            </trans-unit>
             
         </body>
     </file>

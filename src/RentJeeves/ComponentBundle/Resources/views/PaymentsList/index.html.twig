@@ -1,32 +1,31 @@
 <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
-      <div class="title-box clearfix">
+    <div class="title-box clearfix">
         <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')'"></h2>
         <div class="fiter-box">
-          <label>{{ 'filter.by'|trans }}</label>
-          <select id="searchPayments" class="select custom-select blue-arrow selectBox">
-            <option value="status">{{ 'filter.status'|trans }}</option>
-            <option value="property">{{ 'property'|trans }}</option>
-            <option value="tenant">{{ 'tenant'|trans }}</option>
-            <option value="amount">{{ 'amount'|trans }}</option>
-          </select>
-          <div id="searchInput" style="display:none;" class="finder-box">
-            <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
-            <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
-            <button type="submit" id="search-submit-payments" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
-          </div>
-          <div id="searchSelect" class="finder-box" >
-            <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
-              <option value=''>- {{'select.status.all'|trans}} -</option>
-             <option value='new'>{{'pending'|trans}}</option>
-             <option value='complete'>{{'paid'|trans}}</option>
-             <option value='error'>{{'error'|trans}}</option>
+            <label>{{ 'filter.by'|trans }}</label>
+            <select id="searchPayments" class="select custom-select blue-arrow selectBox">
+                <option value="status">{{ 'filter.status'|trans }}</option>
+                <option value="property">{{ 'property'|trans }}</option>
+                <option value="tenant">{{ 'tenant'|trans }}</option>
+                <option value="amount">{{ 'amount'|trans }}</option>
             </select>
-            <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
-          </div>
-
+            <div id="searchInput" style="display:none;" class="finder-box">
+                <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
+                <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
+                <button type="submit" id="search-submit-payments" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+            </div>
+            <div id="searchSelect" class="finder-box" >
+                <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
+                    <option value=''>- {{'select.status.all'|trans}} -</option>
+                    <option value='new'>{{'pending'|trans}}</option>
+                    <option value='complete'>{{'paid'|trans}}</option>
+                    <option value='error'>{{'error'|trans}}</option>
+                </select>
+                <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+            </div>
         </div>
-      </div>
-      <div class="content-box">
+    </div>
+    <div class="content-box">
         <div class="properties-table-block table-wrap">
           <div class="table-margin">
             <table class="properties-table zebra-grid" 
