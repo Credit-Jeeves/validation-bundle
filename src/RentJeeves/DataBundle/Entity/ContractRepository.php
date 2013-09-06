@@ -163,8 +163,8 @@ class ContractRepository extends EntityRepository
                 break;
             case 'phone':
             case 'email':
-                    $searchBy= 't.'.$searchBy;
-                    break;
+                $searchBy= 't.'.$searchBy;
+                break;
             default:
                 $searchBy = 'c.'.$searchBy;
                 break;
