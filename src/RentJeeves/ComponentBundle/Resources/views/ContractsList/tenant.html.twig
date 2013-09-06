@@ -104,8 +104,10 @@
 
 {{ render(controller('RjCheckoutBundle:Component:pay')) }}
 
-{% javascripts  '@RjCheckoutBundle/Resources/public/js/Pay.js'
-                '@TenantBundle/Resources/public/js/CurrentPayments.js'
+{% javascripts
+    '@TenantBundle/Resources/public/js/CurrentPayments.js'
+    '@RjCheckoutBundle/Resources/public/js/Pay.js'
+    '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
 %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}

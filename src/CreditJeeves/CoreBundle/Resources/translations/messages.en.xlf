@@ -212,6 +212,14 @@
                 <source>common.months</source>
                 <target>Months</target>
             </trans-unit>
+            <trans-unit id="common.year">
+                <source>common.year</source>
+                <target>Year</target>
+            </trans-unit>
+            <trans-unit id="common.month">
+                <source>common.month</source>
+                <target>Month</target>
+            </trans-unit>
             <trans-unit id="common.messages">
                 <source>common.messages</source>
                 <target>Messages</target>
@@ -1160,6 +1168,12 @@
 
             <trans-unit id="back.to.admin">
                 <source>back.to.admin</source>
+                <target>Back to Admin</target>
+            </trans-unit>
+
+
+            <trans-unit id="Street">
+                <source>Street</source>
                 <target>Back to Admin</target>
             </trans-unit>
         </body>

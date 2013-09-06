@@ -81,6 +81,14 @@ class PaymentAccountType extends AbstractType
             'text',
             array(
                 'label' => 'checkout.card_number',
+                'attr' => array(
+                    'html' => '<ul class="cc-box clearfix">' .
+                        '<li><span class="cc visa">visa</span></li>' .
+                        '<li><span class="cc mc">mastercard</span></li>' .
+                        '<li><span class="cc ae">american express</span></li>' .
+                        '<li><span class="cc discover">discover</span></li>' .
+                        '<li><span class="cc dc">diners club</span></li></ul>'
+                )
             )
         );
         $builder->add(
@@ -88,6 +96,10 @@ class PaymentAccountType extends AbstractType
             'text',
             array(
                 'label' => 'checkout.csc',
+                'attr' => array(
+                    'class' => 'phone-width',
+                    'help' => 'checkout.csc.help'
+                )
             )
         );
         $builder->add(
@@ -96,7 +108,7 @@ class PaymentAccountType extends AbstractType
             array(
                 'label' => 'checkout.expiration',
                 'choices' => range(1, 12, 1),
-                'empty_value'  => false,
+                'empty_value'  => 'common.month',
                 'attr' => array(
                     'class' => 'original',
                 ),
@@ -115,8 +127,8 @@ class PaymentAccountType extends AbstractType
             'choice',
             array(
                 'label' => false,
-                'choices' => range(date('Y'), 12, 1),
-                'empty_value'  => false,
+                'choices' => range(date('Y'), date('Y')+12, 1),
+                'empty_value'  => 'common.year',
                 'attr' => array(
                     'class' => 'original',
                 ),
@@ -127,17 +139,6 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.expiration.empty',
                         )
                     ),
-                )
-            )
-        );
-
-        $builder->add(
-            'save',
-            'checkbox',
-            array(
-                'label' => 'checkout.payment.save',
-                'attr' => array(
-                    'help' => 'checkout.payment.save.help'
                 )
             )
         );

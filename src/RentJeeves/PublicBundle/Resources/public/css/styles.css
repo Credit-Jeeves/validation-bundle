@@ -4221,6 +4221,9 @@ table.ui-datepicker-calendar tbody tr td a {
     clear: left;
 }
 
-#rentjeeves_checkoutbundle_paymentaccounttype_save_row i.help {
-    margin-top: 16px;
+#creditjeeves_applicantbundle_useraddresstype_city_box,
+#creditjeeves_applicantbundle_useraddresstype_area_box,
+#creditjeeves_applicantbundle_useraddresstype_zip_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box {
+    width: auto;
 }

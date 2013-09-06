@@ -25,6 +25,10 @@ class UserAddressType extends AbstractType
             array(
                 'label' => 'Address',
                 'error_bubbling' => true,
+                'attr' => array(
+                    'class' => 'all-width',
+                    'placeholder' => 'Street' // TODO it transalteble
+                )
             )
         );
         $builder->add(
@@ -38,7 +42,11 @@ class UserAddressType extends AbstractType
             'city',
             'text',
             array(
-                'label' => '',
+                'label' => false,
+                'attr' => array(
+                   'class' => 'city-width',
+                    'placeholder' => 'City' // TODO it transalteble
+                ),
                 'error_bubbling' => true,
             )
         );
@@ -46,17 +54,24 @@ class UserAddressType extends AbstractType
             'area',
             'choice',
             array(
-                'label' => '',
+                'label' => false,
                 'error_bubbling' => true,
                 'choice_list' =>  new StateChoiceList(),
                 'required' => true,
+                'attr' => array(
+                    'class' => 'original'
+                )
             )
         );
         $builder->add(
             'zip',
             'text',
             array(
-                'label' => '',
+                'label' => false,
+                'attr' => array(
+                    'class' => 'zc-width',
+                    'placeholder' => 'Zip Code' // TODO it transalteble
+                ),
                 'error_bubbling' => true,
             )
         );

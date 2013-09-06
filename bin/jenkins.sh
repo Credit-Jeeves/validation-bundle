@@ -23,7 +23,7 @@ php bin/environment.php --dev || exit 1
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
 #nice -n 5
-php -C -q -d memory_limit=1024M $PHPUNIT_PATH \
+php -C -q -d memory_limit=1024M $PHPUNIT_PATH -v \
   --log-junit=$BUILD_DIR/allTests.xml
 #  --coverage-clover=$BUILD_DIR/coverage/clover.xml \
 #  --coverage-html=$BUILD_DIR/coverage/html \

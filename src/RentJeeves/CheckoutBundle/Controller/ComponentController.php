@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CheckoutBundle\Controller;
 
+use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentDetailsType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
@@ -27,8 +28,10 @@ class ComponentController extends Controller
     public function sourceAction()
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType());
+        $userAddressType = $this->createForm(new UserAddressType());
         return array(
             'paymentAccountType' => $paymentAccountType->createView(),
+            'userAddressType' => $userAddressType->createView(),
         );
     }
 }

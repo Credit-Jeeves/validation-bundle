@@ -1,8 +1,19 @@
-function Pay(data, /*paretn,*/ contractId) {
+function Pay(parent, contractId) {
     ko.cleanNode($('#pay-popup').get(0));
+
+    /*  Form fields  */
+    this.amount = ko.observable(0);
+    this.startDate = ko.observable(null);
+    this.recurring = ko.observable(false);
+    this.type = ko.observable();
+    this.ends = ko.observable('cancelled');
+    this.endsOn = ko.observable(null);
+    /* /Form fields/ */
 
     var current = 0;
     var steps = ['details', 'source', 'verify', 'pay'];
+
+    this.paymentSource = new PaymentSource(this);
 
 //    steps.splice(2, 1);
     this.step = ko.observable('details');

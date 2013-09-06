@@ -140,7 +140,7 @@
             </trans-unit>
             <trans-unit id="checkout.payment.save.help">
                 <source>checkout.payment.save.help</source>
-                <target>Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
+                <target>checkout.payment.save.help Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
             </trans-unit>
             <trans-unit id="checkout.card_number">
                 <source>checkout.card_number</source>
@@ -150,9 +150,21 @@
                 <source>checkout.csc</source>
                 <target>CSC</target>
             </trans-unit>
+            <trans-unit id="checkout.csc.help">
+                <source>checkout.csc.help</source>
+                <target>checkout.csc.help Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
+            </trans-unit>
             <trans-unit id="checkout.expiration">
                 <source>checkout.expiration</source>
                 <target>Expiration</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.note">
+                <source>checkout.fee.note</source>
+                <target>NOTE: A %FEE% technology platform fee will be added to credit card payments.</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee.note.help">
+                <source>checkout.fee.note.help</source>
+                <target>checkout.fee.note.help Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
             </trans-unit>
         </body>
     </file>

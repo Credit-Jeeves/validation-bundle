@@ -9,7 +9,16 @@ class PaymentDetailsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('amount', 'text', array('attr' => array('class' => 'half-of-right')));
+        $builder->add(
+            'amount',
+            'text',
+            array(
+                'attr' => array(
+                    'class' => 'half-of-right',
+                    'data-bind' => 'value: amount'
+                )
+            )
+        );
         $builder->add(
             'start_date',
             'date',
@@ -23,12 +32,22 @@ class PaymentDetailsType extends AbstractType
                     'class' => 'datepicker-field',
                     'tooltip_title' => 'checkout.start_date.tooltip.title',
                     'tooltip_text' => 'checkout.start_date.tooltip.text',
+                    'data-bind' => 'value: startDate'
                 ),
 
                 'error_bubbling' => true,
             )
         );
-        $builder->add('recurring', 'checkbox', array('label' => 'checkout.set_up_recurring_payment'));
+        $builder->add(
+            'recurring',
+            'checkbox',
+            array(
+                'label' => 'checkout.set_up_recurring_payment',
+                'attr' => array(
+                    'data-bind' => 'checked: recurring'
+                )
+            )
+        );
         $builder->add(
             'type',
             'choice',
@@ -37,9 +56,11 @@ class PaymentDetailsType extends AbstractType
                 'empty_data' => 'checkout.select',
                 'choices' => array('monthly' => 'checkout.monthly'),
                 'attr' => array(
+                    'no_container' => true,
                     'class' => 'original',
                     'tooltip_title' => 'checkout.type.tooltip.title',
                     'tooltip_text' => 'checkout.type.tooltip.text',
+                    'data-bind' => 'checked: type'
                 )
             )
         );
@@ -51,6 +72,9 @@ class PaymentDetailsType extends AbstractType
                 'expanded' => true,
                 'choices' => array('cancelled' => 'checkout.when_cancelled', 'on' => 'checkout.on'),
                 'empty_value'  => false,
+                'attr' => array(
+                    'data-bind' => 'checked: ends'
+                )
             )
         );
         $builder->add(
@@ -65,6 +89,7 @@ class PaymentDetailsType extends AbstractType
                 'required'  => false,
                 'attr' => array(
                     'class' => 'datepicker-field',
+                    'data-bind' => 'value: endsOn'
                 )
             )
         );
