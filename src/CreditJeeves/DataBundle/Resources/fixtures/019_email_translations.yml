@@ -210,9 +210,9 @@ fixtures:
         Ready to get paid? <br /> <br />
         <a id="payRentLinkLandlord"
         {% if inviteCode %}
-          href="http://{{ app.request.host }}{{ path('landlord_invite', {'code': inviteCode }) }}"
+          href="http://{{ serverName }}{{ path('landlord_invite', {'code': inviteCode }) }}"
         {% else %}
-          href="http://{{ app.request.host }}/"
+          href="http://{{ serverName }}/"
         {% endif %}
                   style="border: none;
                   padding: 2px 7px;
@@ -250,7 +250,7 @@ fixtures:
         {% if nameTenant %}
             Hi {{ nameTenant }}! <br />  <br />
         {% else %}
-            Hello!  <br /> <br /> 
+            Hello!  <br /> <br />
         {% endif %}
         Your landlord, {{ fullNameLandlord }}, would like you to use RentTrack to pay your rent for
         {{ address }} {{ unitName }}. RentTrack makes it easy to pay rent through secure electronic check transfers
@@ -259,11 +259,11 @@ fixtures:
         <br /> <br />
 
         Ready to get something out of your rent payments?<br /> <br />
-        <a id="payRentLink" 
+        <a id="payRentLink"
         {% if inviteCode %}
-          href="http://{{ app.request.host }}{{ path('tenant_invite', {'code': inviteCode }) }}"
+          href="http://{{ serverName }}{{ path('tenant_invite', {'code': inviteCode }) }}"
         {% else %}
-          href="http://{{ app.request.host }}/"
+          href="http://{{ serverName }}/"
         {% endif %}
           style="
                         border: none;
@@ -312,5 +312,32 @@ fixtures:
         Better yet, you can set up automatic payments so you never miss one again. <a href="#">Learn More</a>
 
         Watching out for you,
+        The RentTrack Team
+      {% endblock %}
+
+# rjLandlordComeFromInvite.html
+  translation_126:
+    translatable: email_15
+    locale: %locale%
+    property: subject
+    value: Your Landlord Signed Up - Set up your Rent Payment
+  translation_127:
+    translatable: email_15
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% block email %}
+        Congratulations! {{ fullNameLandlord }} has signed up with RentTrack. 
+        <br />
+        To start paying rent for {{ address }} {{ unitName }}, 
+        <a href="http://my.renttrack.com/">log in and set up your payment</a> 
+        for {{ rentAmount }} due on {{ dueDate }}. 
+        <br />
+        You're ready to build credit buy paying rent securely online. 
+        <br />
+        <br />
+        Enjoy, <br />
         The RentTrack Team
       {% endblock %}

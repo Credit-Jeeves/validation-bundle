@@ -109,8 +109,6 @@ class Mailer extends BaseMailer implements MailerInterface
 
     public function sendRjLandLordInvite($landlord, $tenant, $contract, $sTemplate = 'rjLandLordInvite')
     {
-        $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
-        $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         $vars = array(
             'nameLandlord'          => $landlord->getFirstName(),
             'fullNameTenant'        => $tenant->getFullName(),
@@ -120,59 +118,12 @@ class Mailer extends BaseMailer implements MailerInterface
             'inviteCode'            => $landlord->getInviteCode(),
         );
 
-        //$subject = $tenant->getFullName().' wants to pay rent using RentTrack';
-
-        if (empty($isPlain) && empty($isHtml)) {
-            $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
-        }
-
-        if (!empty($isHtml)) {
-            $htmlContent = $this->manager->renderEmail(
-                $sTemplate.'.html',
-                $landlord->getCulture(),
-                $vars
-            );
-
-            $message = \Swift_Message::newInstance();
-            $message->setSubject($htmlContent['subject']);
-            $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
-            $message->setTo($landlord->getEmail());
-            $message->addPart($htmlContent['body'], 'text/html');
-            if (!empty($isPlain)) {
-                $plainContent = $this->manager->renderEmail(
-                    $sTemplate.'.text',
-                    $tenant->getCulture(),
-                    $vars
-                );
-                $message->addPart($plainContent['body'], 'text/plain');
-            }
-            $this->container->get('mailer')->send($message);
-            return true;
-        }
-
-        if (!empty($isPlain)) {
-            $plainContent = $this->manager->renderEmail(
-                $sTemplate.'.text',
-                $landlord->getCulture(),
-                $vars
-            );
-            $message = \Swift_Message::newInstance();
-            $message->setSubject($plainContent['subject']);
-            $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
-            $message->setTo($landlord->getEmail());
-            $message->addPart($plainContent['body'], 'text/plain');
-            $this->container->get('mailer')->send($message);
-            return true;
-        }
-
-        return false;
+        return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
 
     public function sendRjTenantInvite($tenant, $landlord, $contract, $sTemplate = 'rjTenantInvite')
     {
-        $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
-        $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         $vars = array(
             'fullNameLandlord'      => $landlord->getFullName(),
             'nameTenant'            => $tenant->getFirstName(),
@@ -181,57 +132,11 @@ class Mailer extends BaseMailer implements MailerInterface
             'inviteCode'            => $tenant->getInviteCode(),
         );
 
-        //$subject = 'Your landlord '.$landlord->getFullName().' request a rent payment using RentTrack';
-
-        if (empty($isPlain) && empty($isHtml)) {
-            $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
-        }
-
-        if (!empty($isHtml)) {
-            $htmlContent = $this->manager->renderEmail(
-                $sTemplate.'.html',
-                $tenant->getCulture(),
-                $vars
-            );
-
-            $message = \Swift_Message::newInstance();
-            $message->setSubject($htmlContent['subject']);
-            $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
-            $message->setTo($tenant->getEmail());
-            $message->addPart($htmlContent['body'], 'text/html');
-            if (!empty($isPlain)) {
-                $plainContent = $this->manager->renderEmail(
-                    $sTemplate.'.text',
-                    $tenant->getCulture(),
-                    $vars
-                );
-                $message->addPart($plainContent['body'], 'text/plain');
-            }
-            $this->container->get('mailer')->send($message);
-            return true;
-        }
-
-        if (!empty($isPlain)) {
-            $plainContent = $this->manager->renderEmail(
-                $sTemplate.'.text',
-                $tenant->getCulture(),
-                $vars
-            );
-            $message = \Swift_Message::newInstance();
-            $message->setSubject($plainContent['subject']);
-            $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
-            $message->setTo($tenant->getEmail());
-            $message->addPart($plainContent['body'], 'text/plain');
-            $this->container->get('mailer')->send($message);
-            return true;
-        }
-        return false;
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
     public function sendRjTenantLatePayment($tenant, $landlord, $contract, $sTemplate = 'rjTenantLatePayment')
     {
-        $isPlain = $this->manager->findTemplateByName($sTemplate.'.text');
-        $isHtml = $this->manager->findTemplateByName($sTemplate.'.html');
         $vars = array(
                 'fullNameLandlord'      => $landlord->getFullName(),
                 'nameTenant'            => $tenant->getFirstName(),
@@ -239,46 +144,21 @@ class Mailer extends BaseMailer implements MailerInterface
                 'unitName'              => $contract->getUnit()->getName(),
                 'inviteCode'            => $tenant->getInviteCode(),
         );
-        //$subject = 'Your landlord '.$landlord->getFullName().' request a rent payment using RentTrack';
-        if (empty($isPlain) && empty($isHtml)) {
-            $this->handleException(new RuntimeException("Template with key '{$sTemplate}' not found"));
-        }
-        if (!empty($isHtml)) {
-            $htmlContent = $this->manager->renderEmail(
-                $sTemplate.'.html',
-                $tenant->getCulture(),
-                $vars
-            );
-            $message = \Swift_Message::newInstance();
-            $message->setSubject($htmlContent['subject']);
-            $message->setFrom(array($htmlContent['fromEmail'] => $htmlContent['fromName']));
-            $message->setTo($tenant->getEmail());
-            $message->addPart($htmlContent['body'], 'text/html');
-            if (!empty($isPlain)) {
-                $plainContent = $this->manager->renderEmail(
-                    $sTemplate.'.text',
-                    $tenant->getCulture(),
-                    $vars
-                );
-                $message->addPart($plainContent['body'], 'text/plain');
-            }
-            $this->container->get('mailer')->send($message);
-            return true;
-        }
-        if (!empty($isPlain)) {
-            $plainContent = $this->manager->renderEmail(
-                $sTemplate.'.text',
-                $tenant->getCulture(),
-                $vars
-            );
-            $message = \Swift_Message::newInstance();
-            $message->setSubject($plainContent['subject']);
-            $message->setFrom(array($plainContent['fromEmail'] => $plainContent['fromName']));
-            $message->setTo($tenant->getEmail());
-            $message->addPart($plainContent['body'], 'text/plain');
-            $this->container->get('mailer')->send($message);
-            return true;
-        }
-        return false;
+
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendRjLandlordComeFromInvite($tenant, $landlord, $contract, $sTemplate = 'rjLandlordComeFromInvite')
+    {
+        $vars = array(
+                'nameTenant'            => $tenant->getFirstName(),
+                'fullNameLandlord'      => $landlord->getFullName(),
+                'address'               => $contract->getProperty()->getAddress(),
+                'unitName'              => $contract->getUnit()->getName(),
+                'rentAmount'            => $contract->getRent(),
+                'dueDate'               => $contract->getDueDay(),
+        );
+
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 }

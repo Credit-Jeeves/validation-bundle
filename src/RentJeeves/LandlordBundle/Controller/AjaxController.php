@@ -132,7 +132,7 @@ class AjaxController extends Controller
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
 
         $data = array(
-            'hasLandlord'   => ($countGroup > 0) ? true : false,
+            'hasLandlord'   => $property->hasLandlord(),
             'property'      => array(
                     'id'        => $property->getId(),
                     'city'      => $property->getCity(),

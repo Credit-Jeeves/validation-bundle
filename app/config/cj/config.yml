@@ -12,6 +12,7 @@ imports:
     - { resource: ../base/sonata.yml }
     - { resource: ../base/framework.yml }
     - { resource: ../base/twig.yml }
+    - { resource: ../cj/twig.yml }
     - { resource: ../base/apy_js_form_validation.yml }
 
 parameters:

@@ -13,12 +13,11 @@ class PasswordCase extends BaseTestCase
      */
     public function password()
     {
-        $this->setDefaultSession('goutte');
+        $this->setDefaultSession('symfony');
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('common.account');
-        $this->page->clickLink('settings.password');
-        $this->assertNotNull($form = $this->page->find('css', 'form'));
+        $this->assertNotNull($form = $this->page->find('css', '#resetting_password'));
         $this->fillForm(
             $form,
             array(
@@ -32,7 +31,6 @@ class PasswordCase extends BaseTestCase
         $this->logout();
         $this->login('landlord1@example.com', '1234');
         $this->page->clickLink('common.account');
-        $this->page->clickLink('settings.password');
-        $this->assertNotNull($form = $this->page->find('css', 'form'));
+        $this->assertNotNull($form = $this->page->find('css', '#resetting_password'));
     }
 }
