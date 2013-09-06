@@ -21,9 +21,10 @@ class DepositAccountCase extends BaseTestCase
      */
     public function prePersistTest()
     {
-        //@TODO if this load was enable it's broken all test, becouse email not sending, becouse have some error
-        // and it's error not catch and I am not found this error,
-        //$this->load(true);
+        $this->load(true);
+        //@TODO Its hack, becouse after use load function, for load fixtures, we have problem.
+        static::$kernel = null;
+        //end hack
         $container = static::getContainer();
         $inviteLandlordService = $container->get('invite.landord');
         $em = $container->get('doctrine.orm.entity_manager');
