@@ -1,0 +1,9 @@
+model: RentJeeves\DataBundle\Entity\DepositAccount
+fixtures:
+  DepositAccount_1:
+    merchantName: test
+    group:  RentGroup_1
+  DepositAccount_2:
+    merchantName: test2
+    group: RentGroup_2
+

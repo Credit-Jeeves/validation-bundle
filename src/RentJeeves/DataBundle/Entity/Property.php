@@ -213,7 +213,20 @@ class Property extends Base
 
     public function hasLandlord()
     {
-        return ($this->getPropertyGroups()->count() > 0)? true : false;
+        if ($this->getPropertyGroups()->count() <= 0) {
+            return false;
+        }
+
+        $groups = $this->getPropertyGroups();
+        $merchantExist = false;
+        foreach ($groups as $group) {
+            if ($group->getDepositAccounts()) {
+                $merchantExist = true;
+                break;
+            }
+        }
+
+        return $merchantExist;
     }
 
     public function __toString()

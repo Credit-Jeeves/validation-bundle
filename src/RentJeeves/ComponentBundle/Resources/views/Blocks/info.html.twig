@@ -6,7 +6,7 @@
         <a href="#">{{ 'common.help' | trans }} </a> &nbsp;|&nbsp;
         {% if accountType %}
             {% if accountType == 'landlord' %}
-                <a href="{{ path('landlord_edit_profile') }}">{{ 'common.account'|trans }}</a> &nbsp;|&nbsp;
+                <a href="{{ path('landlord_password') }}">{{ 'common.account'|trans }}</a> &nbsp;|&nbsp;
             {% else %}
                 <a href="{{ path('user_password') }}">{{ 'common.account'|trans }}</a> &nbsp;|&nbsp;
             {% endif %}

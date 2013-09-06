@@ -77,3 +77,8 @@ footer nav .copyright li {
   font-size:10px;
   padding-right:6px;
 }
+
+footer dd {
+  margin: 0;
+  padding: 0;
+}

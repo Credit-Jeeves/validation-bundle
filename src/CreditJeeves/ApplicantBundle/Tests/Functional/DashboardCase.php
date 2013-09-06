@@ -164,6 +164,7 @@ class DashboardCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('marion@example.com', 'pass');
+        $this->session->wait($this->timeout + 10000, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout + 10000, "jQuery('#action_plan_page .score-column').children().length > 0");
         $this->assertNotNull($score = $this->page->find('css', '#action_plan_page .score-column .score-current'));
         $this->assertEquals(535, $score->getText(), 'Wrong score');

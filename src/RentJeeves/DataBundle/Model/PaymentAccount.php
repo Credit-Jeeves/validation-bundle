@@ -20,19 +20,6 @@ abstract class PaymentAccount
     protected $id;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Tenant",
-     *     inversedBy="payment_accounts"
-     * )
-     * @ORM\JoinColumn(
-     *     name="user_id",
-     *     referencedColumnName="id"
-     * )
-     * @var \RentJeeves\DataBundle\Entity\Tenant
-     */
-    protected $user;
-
-    /**
      * @ORM\Column(
      *     name="name",
      *     type="string",
@@ -234,28 +221,5 @@ abstract class PaymentAccount
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-
-    /**
-     * Set user
-     *
-     * @param \RentJeeves\DataBundle\Entity\Tenant $user
-     * @return PaymentAccount
-     */
-    public function setUser(\RentJeeves\DataBundle\Entity\Tenant $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return \RentJeeves\DataBundle\Entity\Tenant
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 }

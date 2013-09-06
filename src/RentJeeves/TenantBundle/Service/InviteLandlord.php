@@ -56,7 +56,8 @@ class InviteLandlord
         if ($landlordInDb) {
             unset($landlord);
             $landlord = $landlordInDb;
-            if ($landlordInDb->getIsActive()) {
+            $groups = $landlord->getGroups();
+            if ($landlordInDb->getIsActive() && $landlord->hasMerchant()) {
                 $contract->setStatus(ContractStatus::PENDING);
             } else {
                 $contract->setStatus(ContractStatus::INVITE);
