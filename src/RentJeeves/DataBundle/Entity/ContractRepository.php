@@ -72,26 +72,6 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
-
-    private function applySearchFieldActionsRequered(&$searchBy)
-    {
-        switch ($searchBy) {
-            case 'property':
-                $sort = 'CONCAT(p.street, p.number)';
-                break;
-            case 'tenant':
-                $sort = 'CONCAT(t.first_name, t.last_name)';
-                break;
-            case 'amount':
-                $sort = 'c.rent';
-                break;
-            default:
-                $sort = 'p.street';
-                break;
-        }
-        $searchBy = $sort;
-    }
-
     public function countActionsRequired($group, $searchBy = 'address', $search = '')
     {
         $query = $this->createQueryBuilder('c');
@@ -104,9 +84,12 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search)) {
-            $this->applySearchFieldActionsRequered($searchBy);
-            $query->andWhere($searchBy.' LIKE :search');
-            $query->setParameter('search', '%'.$search.'%');
+            $searchBy = $this->applySearchField($searchBy);
+            $search = $this->prepareSearch($search);
+            foreach ($search as $item) {
+                $query->andWhere($searchBy.' LIKE :search');
+                $query->setParameter('search', '%'.$item.'%');
+            }
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
@@ -132,11 +115,13 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new \Datetime());
         $query->setParameter('status', ContractStatus::FINISHED);
         if (!empty($search) && !empty($searchBy)) {
-            $this->applySearchFieldActionsRequered($searchBy);
-            $query->andWhere($searchBy.' LIKE :search');
-            $query->setParameter('search', '%'.$search.'%');
+            $searchBy = $this->applySearchField($searchBy);
+            $search = $this->prepareSearch($search);
+            foreach ($search as $item) {
+                $query->andWhere($searchBy.' LIKE :search');
+                $query->setParameter('search', '%'.$item.'%');
+            }
         }
-
         switch ($sort) {
             case 'statusA':
                 $sort = 'c.status';
@@ -145,10 +130,10 @@ class ContractRepository extends EntityRepository
                 $sort = 'c.due_day';
                 break;
             case 'propertyA':
-                $sort = 'p.street';
+                $sort = 'CONCAT(p.street, p.number)';
                 break;
             case 'tenantA':
-                $sort = 't.first_name';
+                $sort = 'CONCAT(t.first_name, t.last_name)';
                 break;
             case 'amountA':
                 $sort = 'c.rent';
@@ -157,12 +142,45 @@ class ContractRepository extends EntityRepository
                 $sort = 'c.status';
                 break;
         }
-
         $query->orderBy($sort, $order);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
         return $query->execute();
+    }
+
+    private function applySearchField($searchBy)
+    {
+        switch ($searchBy) {
+            case 'property':
+                $searchBy = 'CONCAT(p.street, p.number)';
+                break;
+            case 'tenant':
+                $searchBy = 'CONCAT(t.first_name, t.last_name)';
+                break;
+            case 'amount':
+                $searchBy = 'c.rent';
+                break;
+            case 'phone':
+            case 'email':
+                    $searchBy= 't.'.$searchBy;
+                    break;
+            default:
+                $searchBy = 'c.'.$searchBy;
+                break;
+        }
+        return $searchBy;
+    }
+
+    /**
+     * @param string $search
+     * @return array
+     */
+    private function prepareSearch($search)
+    {
+        $search = preg_replace('/\s+/', ' ', trim($search));
+        $search = explode(' ', $search);
+        return $search;
     }
 
     public function getCountByStatus($tenant, $status = null)
@@ -176,7 +194,6 @@ class ContractRepository extends EntityRepository
             $query->setParameter('status', $status);
         }
         $query->setParameter('tenant', $tenant->getId());
-
         $query = $query->getQuery();
         return $query->getSingleScalarResult();
     }
@@ -199,15 +216,12 @@ class ContractRepository extends EntityRepository
     {
         $groups = $landlord->getGroups();
         $groupArray = array();
-        
         foreach ($groups as $value) {
             $groupArray[$value->getId()] = $value->getId();
         }
-
         if (empty($groupArray)) {
             return null;
         }
-        
         $groupsIds = implode("','", $groupArray);
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
@@ -215,7 +229,6 @@ class ContractRepository extends EntityRepository
         $query->where('c.group IN (:groups)');
         $query->setParameter('groups', $groupsIds);
         $query = $query->getQuery();
-
         return $query->execute();
     }
 }
