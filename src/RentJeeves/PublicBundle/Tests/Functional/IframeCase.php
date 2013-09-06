@@ -79,6 +79,12 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
         //end check search on the not found
+        $this->page->clickLink('Pricing Options');
+        $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
+        $this->assertNotNull($buttons = $this->page->findAll('css', '#pricing-popup button.button-close'));
+        $this->assertCount(2, $buttons, 'Wrong number of buttons');
+        $buttons[0]->click();
+        $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
 
         $this->assertNotNull($form = $this->page->find('css', '#inviteForm'));
         $this->fillForm(

@@ -1,0 +1,68 @@
+<div id="pricing-popup" class="pricing-popup">
+    <h1>{{ 'popup.landlord.title_1' | trans() }}</h1>
+    <div class="table-box">
+        <ul class="pricing-table one-info-cell">
+            <li>
+                <div class="table-cell">
+                    <p class="note big">{{ 'popup.landlord.title.note_1' | trans() }}</p>
+                </div>
+                <div class="table-cell info-cell">
+                    <div class="info-title pie-el">{{ 'popup.landlord.title.info' | trans() }}</div>
+                    <div class="info-content"><sup>$</sup>{{ landlord_payment_per_month_dollars }}<sup>{{ landlord_payment_per_month_cents }}/{{ 'popup.landlord.unit' | trans() }}*</sup></div>
+                </div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.monthly.minimum' | trans() }}</div>
+                <div class="table-cell th">{{ landlord_monthly_minimum }}</div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.electronic.check.online' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.credit.check.online' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.tenant.verification' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.easy.reporting' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.customer.support' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.safeguards' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.collect.payments' | trans() }}</div>
+                <div class="table-cell"><span class="checked">{{ 'popup.checked' | trans() }}</span></div>
+            </li>
+            <li>
+                <div class="table-cell title-cell">{{ 'popup.landlord.additional.service' | trans() }}</div>
+                <div class="table-cell title-cell"> </div>
+            </li>
+            <li>
+                <div class="table-cell th-cell">{{ 'popup.landlord.check' | trans() }}</div>
+                <div class="table-cell th">{{ 'popup.landlord.per_screen' | trans({'%landlord_per_screen%': landlord_per_screen}) }}</div>
+            </li>
+            <li class="table-footer big-padding">
+                <div class="table-cell">
+                    <div class="green-box plus pie-el">
+                        {{ 'popup.landlord.footer.note_1' | trans() }}<a href="#">{{ 'popup.landlord.footer.link' | trans() }}</a>.
+                    </div>
+                </div>
+                <div class="table-cell">
+                    <div class="buttons-box">
+                        <button class="button button-close" type="button"><span>{{ 'popup.sign.up.today' | trans() }}</span></button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
