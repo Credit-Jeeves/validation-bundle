@@ -6,6 +6,15 @@
         <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
     {% endstylesheets %}
 {% endblock %}
+{% block javascripts %}
+    {% javascripts
+    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    '@RjComponentBundle/Resources/public/js/tenant-contracts.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+
 
 {% block content %}
 
@@ -21,22 +30,4 @@
     {% else %}
         {{ render(controller('TenantBundle:Index:info')) }}
     {% endif %}
-{% endblock %}
-
-{% block javascripts %}
-    {% javascripts 
-        '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-        '@RjComponentBundle/Resources/public/js/tenant-contracts.js'
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets 
-        '@RjPublicBundle/Resources/public/css/styles.css'
-    %}
-      <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
 {% endblock %}

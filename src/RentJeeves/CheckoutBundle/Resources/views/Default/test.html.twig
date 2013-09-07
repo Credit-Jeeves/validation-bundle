@@ -1,3 +1,5 @@
 {% form_theme paymentDetailsType 'RjCoreBundle::form.html.twig' %}
-
-{{ form_widget(paymentDetailsType) }}
+<form method="post" novalidate>
+    {{ form_widget(paymentDetailsType) }}
+    <input type="submit" />
+</form>

@@ -1,19 +1,40 @@
 function Pay(parent, contractId) {
     ko.cleanNode($('#pay-popup').get(0));
 
-    /*  Form fields  */
-    this.amount = ko.observable(0);
-    this.startDate = ko.observable(null);
-    this.recurring = ko.observable(false);
-    this.type = ko.observable();
-    this.ends = ko.observable('cancelled');
-    this.endsOn = ko.observable(null);
-    /* /Form fields/ */
-
+    var contract = parent.getContractById(contractId);
     var current = 0;
     var steps = ['details', 'source', 'verify', 'pay'];
 
-    this.paymentSource = new PaymentSource(this);
+    /*  Form fields  */
+    this.amount = ko.observable(contract.amount);
+    var startDate = new Date(contract.start_at);
+    this.startDate = ko.observable(startDate.getMonth() + '/' + startDate.getDay() + '/' + startDate.getFullYear());
+    this.recurring = ko.observable(false);
+    this.type = ko.observable();
+    this.ends = ko.observable('cancelled');
+    var finishDate = new Date(contract.finish_at);
+    this.endsOn = ko.observable(finishDate.getMonth() + '/' + finishDate.getDay() + '/' + finishDate.getFullYear());
+    /* /Form fields/ */
+
+    this.address = ko.observable(contract.full_address);
+
+    this.paymentSource = new PaymentSource(this, false);
+
+    this.getAmount = ko.computed(function() {
+        return '$' + this.amount();
+    }, this);
+    this.isTodayPaymnet = ko.computed(function() {
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var startDate = new Date(this.startDate());
+        return today.getTime() == startDate.getTime();
+    }, this);
+    this.isForceSave = ko.computed(function() {
+        var result = this.recurring() || !this.isTodayPaymnet();
+        this.paymentSource.save(result);
+        this.paymentSource.isForceSave(result);
+        return result;
+    }, this);
 
 //    steps.splice(2, 1);
     this.step = ko.observable('details');
@@ -28,6 +49,7 @@ function Pay(parent, contractId) {
     };
 
     this.submit = function(step) {
+        alert('OK');
     };
 
     this.previous = function() {

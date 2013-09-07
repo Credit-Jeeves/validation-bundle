@@ -23,11 +23,12 @@ class UserAddressType extends AbstractType
             'street',
             'text',
             array(
-                'label' => 'Address',
+                'label' => 'common.address',
                 'error_bubbling' => true,
                 'attr' => array(
                     'class' => 'all-width',
-                    'placeholder' => 'Street' // TODO it transalteble
+                    'placeholder' => 'common.street',
+                    'data-bind' => 'value: paymentSource.address.street'
                 )
             )
         );
@@ -45,7 +46,8 @@ class UserAddressType extends AbstractType
                 'label' => false,
                 'attr' => array(
                    'class' => 'city-width',
-                    'placeholder' => 'City' // TODO it transalteble
+                    'placeholder' => 'common.city',
+                    'data-bind' => 'value: paymentSource.address.city'
                 ),
                 'error_bubbling' => true,
             )
@@ -59,7 +61,8 @@ class UserAddressType extends AbstractType
                 'choice_list' =>  new StateChoiceList(),
                 'required' => true,
                 'attr' => array(
-                    'class' => 'original'
+                    'class' => 'original',
+                    'data-bind' => 'value: paymentSource.address.area'
                 )
             )
         );
@@ -70,7 +73,8 @@ class UserAddressType extends AbstractType
                 'label' => false,
                 'attr' => array(
                     'class' => 'zc-width',
-                    'placeholder' => 'Zip Code' // TODO it transalteble
+                    'placeholder' => 'common.zip_code',
+                    'data-bind' => 'value: paymentSource.address.zip'
                 ),
                 'error_bubbling' => true,
             )

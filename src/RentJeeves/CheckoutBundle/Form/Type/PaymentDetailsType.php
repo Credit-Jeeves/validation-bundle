@@ -4,6 +4,8 @@ namespace RentJeeves\CheckoutBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Date;
 
 class PaymentDetailsType extends AbstractType
 {
@@ -16,6 +18,13 @@ class PaymentDetailsType extends AbstractType
                 'attr' => array(
                     'class' => 'half-of-right',
                     'data-bind' => 'value: amount'
+                ),
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'message' => 'checkout.error.amount.empty',
+                        )
+                    ),
                 )
             )
         );
@@ -36,6 +45,18 @@ class PaymentDetailsType extends AbstractType
                 ),
 
                 'error_bubbling' => true,
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'message' => 'checkout.error.start_date.empty',
+                        )
+                    ),
+                    new Date(
+                        array(
+                            'message' => 'checkout.error.start_date.valid',
+                        )
+                    ),
+                )
             )
         );
         $builder->add(
@@ -44,6 +65,7 @@ class PaymentDetailsType extends AbstractType
             array(
                 'label' => 'checkout.set_up_recurring_payment',
                 'attr' => array(
+                    'no_box' => true,
                     'data-bind' => 'checked: recurring'
                 )
             )
@@ -56,11 +78,13 @@ class PaymentDetailsType extends AbstractType
                 'empty_data' => 'checkout.select',
                 'choices' => array('monthly' => 'checkout.monthly'),
                 'attr' => array(
-                    'no_container' => true,
                     'class' => 'original',
                     'tooltip_title' => 'checkout.type.tooltip.title',
                     'tooltip_text' => 'checkout.type.tooltip.text',
-                    'data-bind' => 'checked: type'
+                    'data-bind' => 'value: type',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: recurring'
+                    )
                 )
             )
         );
@@ -73,7 +97,10 @@ class PaymentDetailsType extends AbstractType
                 'choices' => array('cancelled' => 'checkout.when_cancelled', 'on' => 'checkout.on'),
                 'empty_value'  => false,
                 'attr' => array(
-                    'data-bind' => 'checked: ends'
+                    'data-bind' => 'checked: ends',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: recurring'
+                    )
                 )
             )
         );
@@ -89,7 +116,10 @@ class PaymentDetailsType extends AbstractType
                 'required'  => false,
                 'attr' => array(
                     'class' => 'datepicker-field',
-                    'data-bind' => 'value: endsOn'
+                    'data-bind' => 'value: endsOn',
+                    'box_attr' => array(
+                        'data-bind' => 'visible: \'on\'==ends()'
+                    )
                 )
             )
         );

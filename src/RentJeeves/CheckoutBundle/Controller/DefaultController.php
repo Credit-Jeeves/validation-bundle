@@ -7,12 +7,14 @@ use Payum\Heartland\Soap\Base\ACHDepositType;
 use Payum\Heartland\Soap\Base\GetTokenRequest;
 use Payum\Heartland\Soap\Base\TokenPaymentMethod;
 use Payum\Request\CaptureRequest;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentDetailsType;
 use RentJeeves\DataBundle\Entity\Heartland;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use \DateTime;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -60,9 +62,17 @@ class DefaultController extends Controller
      * @Route("/checkout/test")
      * @Template()
      */
-    public function testAction()
+    public function testAction(Request $request)
     {
-        $paymentDetailsType = $this->createForm(new PaymentDetailsType());
+        $paymentDetailsType = $this->createForm(new PaymentAccountType());
+
+        if ($request->isMethod('POST')) {
+            $paymentDetailsType->handleRequest($request);
+            if ($paymentDetailsType->isValid()) {
+
+            }
+        }
+
         ini_set('memory_limit', -1);
         return array(
             'paymentDetailsType' => $paymentDetailsType->createView()

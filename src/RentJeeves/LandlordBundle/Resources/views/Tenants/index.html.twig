@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts  '@ComponentBundle/Resources/public/js/groups.js'
-                    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-                    '@RjComponentBundle/Resources/public/js/contracts.js'
-
+    {% javascripts
+        '@ComponentBundle/Resources/public/js/groups.js'
+        '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+        '@RjComponentBundle/Resources/public/js/contracts.js'
+        'bundles/bazingaexposetranslation/js/translator.min.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
     <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
 
     <!-- Call JsFormValidationBundle -->

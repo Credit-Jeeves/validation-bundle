@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -52,7 +53,7 @@ abstract class Address
      *
      * @ORM\Column(name="street", type="encrypt")
      * @Assert\NotBlank(
-     *     message="error.user.address.empty",
+     *     message="error.user.street.empty",
      *     groups={
      *         "user_address_new",
      *         "buy_report_new"
@@ -155,6 +156,27 @@ abstract class Address
      * @ORM\Column(name="updated_at", type="datetime")
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *     mappedBy="address",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $payment_accounts;
+
+    public function __construct()
+    {
+        $this->payment_accounts = new ArrayCollection();
+    }
 
     /**
      * Get id

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\ComponentBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -49,6 +50,7 @@ class ContractsListController extends Controller
         $contracts = $tenant->getActiveContracts();
         $em = $this->get('doctrine.orm.default_entity_manager');
         $data = array();
+        /** @var $contract Contract */
         foreach ($contracts as $contract) {
             $data[] = $contract->getDatagridRow($em);
         }

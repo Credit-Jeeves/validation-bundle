@@ -1,5 +1,6 @@
 {% form_theme paymentDetailsType 'RjCoreBundle::form.html.twig' %}
 
+
 <div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup">
     <h1>{{ 'pay_popup.title' | trans }}</h1>
     <div class="clearfix col-box">
@@ -23,13 +24,14 @@
             <div class="form-row clearfix">
                 <label>{{ 'checkout.property' | trans }}<b>*</b></label>
                 <div class="fields-box">
-                    <span class="value big left">908 Andante Rd., #1, Santa Barbara, CA 93105</span>
+                    <span class="value big left" data-bind="text: address"></span>
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
             </div>
-            {#<form data-bind="submit: submit.bind($data, 'details')">#}
+            <form {{ form_enctype(paymentDetailsType) }} method="post">
                 {{ form_widget(paymentDetailsType) }}
-            {#</form>#}
+                {{ JSFV(paymentDetailsType) }}
+            </form>
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()">
@@ -199,74 +201,74 @@
         </div>
 
         <div data-bind="visible: 'pay' == step()">
-            <h3 class="italic">Recurring rent payment for 960 Andante Rd., Unit 1, Santa Barbara, CA  93105</h3>
+            <h3 class="italic">
+                <span data-bind="visible: recurring">{{ 'checkout.recurring_for' | trans }}</span>
+                <span data-bind="text: address"></span>
+            </h3>
 
             <div class="clearfix halfs-box">
                 <div class="half-box left">
-                    <h4>Who's Getting Paid</h4>
+                    <h4>{{ 'checkout.who_paid' | trans }}</h4>
                     <div class="form-row clearfix">
-                        <label>Send To</label>
+                        <label>{{ 'checkout.send_to' | trans }}</label>
                         <div class="fields-box">
-                <span class="value">
-                  Seth McFarland 123 Mimosa Lane Santa Barbara, CA 93101
-                </span>
+                            <span class="value" data-bind="text: paymentSource.address.toString"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>Rent Amount</label>
+                        <label>{{ 'checkout.rent_amount' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">$2500.00</span>
+                            <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>Starts</label>
+                        <label>{{ 'checkout.starts' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">6/1/13</span>
+                            <span class="value" data-bind="text: startDate"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>Payment Sent</label>
+                        <label>{{ 'checkout.payment_sent' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">Day 1 of Each Month</span>
+                            <span class="value">{{ 'checkout.day_%DAY%_each_month' | trans }}</span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>Ends</label>
+                        <label>{{ 'checkout.ends' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">5/1/14</span>
+                            <span class="value" data-bind="text: endsOn"></span>
                         </div>
                     </div>
                 </div>
                 <div class="half-box right">
-                    <h4>How You're Paying</h4>
+                    <h4>{{ 'checkout.how_paying' | trans }}</h4>
                     <div class="form-row clearfix">
-                        <label>Method</label>
+                        <label>{{ 'checkout.method' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">E-Check</span>
+                            <span class="value" data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>Bank Name</label>
+                        <label>{{ 'checkout.routing_number' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">Citibank, N.A.</span>
+                            <span class="value" data-bind="text: paymentSource.RoutingNumber"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>Routing Number</label>
+                        <label>{{ 'checkout.account_number' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">32117189</span>
+                            <span class="value" data-bind="text: paymentSource.AccountNumber"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>Account Number</label>
+                        <label>{{ 'checkout.fee' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">4001789635467297</span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix">
-                        <label>Fee</label>
-                        <div class="fields-box">
-                            <span class="value">It’s Free!</span>
+                            <span class="value" data-bind="visible: 'bank' == paymentSource.type()">
+                                {{ 'checkout.free' | trans }}
+                            </span>
+                            <span class="value" data-bind="visible: 'card' == paymentSource.type()">
+                                {{ payment_fee }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -276,9 +278,15 @@
                 <label class="checkbox">
                     <input type="checkbox" checked="checked">
                     <i> </i>
-                    <span class="big">Track my score as I build credit for $1.95/month, paid using the method above.</span>
+                    <span class="big">
+                        {{ 'checkout.track_score-%AMOUNT%' | trans({'%AMOUNT%': tenant_payment_per_month }) }}
+                    </span>
                 </label>
-                <i class="help after-checkbox pie-el tooltip-link" title="We will get and display your latest credit score each month as part of our $1.95/mo Score Track service.">?</i>
+                <i class="help after-checkbox pie-el tooltip-link"
+                   title="{{ 'checkout.track_score-%AMOUNT%.help' | trans({'%AMOUNT%': tenant_payment_per_month}) }}"
+                >
+                    ?
+                </i>
             </div>
         </div>
     </div>

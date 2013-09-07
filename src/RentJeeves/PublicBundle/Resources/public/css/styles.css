@@ -2239,6 +2239,7 @@ label.checkbox input[type="radio"]:checked + i {
 .pricing-popup.dashboard-popup {
   position:relative;
   padding:0 0 70px;
+  min-height: 410px!important;
 }
 
 .verify-min {
@@ -4221,9 +4222,22 @@ table.ui-datepicker-calendar tbody tr td a {
     clear: left;
 }
 
-#creditjeeves_applicantbundle_useraddresstype_city_box,
-#creditjeeves_applicantbundle_useraddresstype_area_box,
-#creditjeeves_applicantbundle_useraddresstype_zip_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_address_city_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_address_area_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_address_zip_box,
 #rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box {
     width: auto;
+}
+
+#rentjeeves_checkoutbundle_paymentaccounttype_address_row {
+    padding-left: 0px;
+}
+
+form label {
+    /*    float: left;*/
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    width: inherit;
 }

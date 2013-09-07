@@ -51,6 +51,7 @@ ko.bindingHandlers.i18n = {
       // This will be called when the binding is first applied to an element
       // Set up any initial state, event handlers, etc. here
       var str = $(element).html();
+        console.log(str);
       var args = valueAccessor();
       for (var val in args) {
         if (!args.hasOwnProperty(val)) continue;

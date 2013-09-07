@@ -90,6 +90,10 @@
                 <source>checkout.payment_type</source>
                 <target>Payment Type</target>
             </trans-unit>
+            <trans-unit id="checkout.error.payment_type.empty">
+                <source>checkout.error.payment_type.empty</source>
+                <target>Please, select Payment Type.</target>
+            </trans-unit>
             <trans-unit id="checkout.bank">
                 <source>checkout.bank</source>
                 <target>E-Check</target>
@@ -102,13 +106,25 @@
                 <source>checkout.account_nickname</source>
                 <target>Account Nickname</target>
             </trans-unit>
+            <trans-unit id="checkout.error.account_nickname.empty">
+                <source>checkout.error.account_nickname.empty</source>
+                <target>Account Nickname couldn't be empty.</target>
+            </trans-unit>
             <trans-unit id="checkout.payor_name">
                 <source>checkout.payor_name</source>
                 <target>Name on Account</target>
             </trans-unit>
+            <trans-unit id="checkout.error.payor_name.empty">
+                <source>checkout.error.payor_name.empty</source>
+                <target>Name on Account field couldn't be empty.</target>
+            </trans-unit>
             <trans-unit id="checkout.routing_number">
                 <source>checkout.routing_number</source>
                 <target>Routing Number</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.routing_number.empty">
+                <source>checkout.error.routing_number.empty</source>
+                <target>Routing Number couldn't be empty.</target>
             </trans-unit>
             <trans-unit id="checkout.routing_number.tooltip.title">
                 <source>checkout.routing_number.tooltip.title</source>
@@ -118,6 +134,10 @@
                 <source>checkout.account_number</source>
                 <target>Account Number</target>
             </trans-unit>
+            <trans-unit id="checkout.error.account_number.empty">
+                <source>checkout.error.account_number.empty</source>
+                <target>Account Number couldn't be empty.</target>
+            </trans-unit>
             <trans-unit id="checkout.account_type">
                 <source>checkout.account_type</source>
                 <target>Account Type</target>
@@ -125,6 +145,10 @@
             <trans-unit id="checkout.account_type.checking">
                 <source>checkout.account_type.checking</source>
                 <target>Checking</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.account_type.empty">
+                <source>checkout.error.account_type.empty</source>
+                <target>Please, select Checking.</target>
             </trans-unit>
             <trans-unit id="checkout.account_type.savings">
                 <source>checkout.account_type.savings</source>
@@ -146,9 +170,17 @@
                 <source>checkout.card_number</source>
                 <target>Card Number</target>
             </trans-unit>
+            <trans-unit id="checkout.error.card_number.empty">
+                <source>checkout.error.card_number.empty</source>
+                <target>Card Number couldn't be empty.</target>
+            </trans-unit>
             <trans-unit id="checkout.csc">
                 <source>checkout.csc</source>
                 <target>CSC</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.csc.empty">
+                <source>checkout.error.csc.empty</source>
+                <target>CSC couldn't be empty.</target>
             </trans-unit>
             <trans-unit id="checkout.csc.help">
                 <source>checkout.csc.help</source>
@@ -158,6 +190,14 @@
                 <source>checkout.expiration</source>
                 <target>Expiration</target>
             </trans-unit>
+            <trans-unit id="checkout.error.expiration.month.empty">
+                <source>checkout.error.expiration.month.empty</source>
+                <target>Please, select Expiration Month.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.expiration.year.empty">
+                <source>checkout.error.expiration.year.empty</source>
+                <target>Please, select Expiration Year.</target>
+            </trans-unit>
             <trans-unit id="checkout.fee.note">
                 <source>checkout.fee.note</source>
                 <target>NOTE: A %FEE% technology platform fee will be added to credit card payments.</target>
@@ -165,6 +205,58 @@
             <trans-unit id="checkout.fee.note.help">
                 <source>checkout.fee.note.help</source>
                 <target>checkout.fee.note.help Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.</target>
+            </trans-unit>
+            <trans-unit id="checkout.recurring_for">
+                <source>checkout.recurring_for</source>
+                <target>Recurring rent payment for</target>
+            </trans-unit>
+            <trans-unit id="checkout.who_paid">
+                <source>checkout.who_paid</source>
+                <target>Who's Getting Paid</target>
+            </trans-unit>
+            <trans-unit id="checkout.send_to">
+                <source>checkout.send_to</source>
+                <target>Send To</target>
+            </trans-unit>
+            <trans-unit id="checkout.rent_amount">
+                <source>checkout.rent_amount</source>
+                <target>Rent Amount</target>
+            </trans-unit>
+            <trans-unit id="checkout.day_each_month">
+                <source>checkout.day_%DAY%_each_month</source>
+                <target>Day %DAY% of Each Month</target>
+            </trans-unit>
+            <trans-unit id="checkout.starts">
+                <source>checkout.starts</source>
+                <target>Starts</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment_sent">
+                <source>checkout.payment_sent</source>
+                <target>Payment Sent</target>
+            </trans-unit>
+            <trans-unit id="checkout.free">
+                <source>checkout.free</source>
+                <target>It’s Free!</target>
+            </trans-unit>
+            <trans-unit id="checkout.fee">
+                <source>checkout.fee</source>
+                <target>Fee</target>
+            </trans-unit>
+            <trans-unit id="checkout.track_score">
+                <source>checkout.track_score-%AMOUNT%</source>
+                <target>Track my score as I build credit for %AMOUNT%/month, paid using the method above.</target>
+            </trans-unit>
+            <trans-unit id="checkout.track_score.help">
+                <source>checkout.track_score-%AMOUNT%.help</source>
+                <target>We will get and display your latest credit score each month as part of our %AMOUNT%/mo Score Track service.</target>
+            </trans-unit>
+            <trans-unit id="checkout.how_paying">
+                <source>checkout.how_paying</source>
+                <target>How You're Paying</target>
+            </trans-unit>
+            <trans-unit id="checkout.method">
+                <source>checkout.method</source>
+                <target>Method</target>
             </trans-unit>
         </body>
     </file>

@@ -20,35 +20,75 @@ abstract class PaymentAccount
     protected $id;
 
     /**
-     * @ORM\Column(
-     *     name="name",
-     *     type="string",
-     *     length=255
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\Tenant",
+     *      inversedBy="payment_accounts"
      * )
+     * @ORM\JoinColumn(
+     *      name="user_id",
+     *      referencedColumnName="id"
+     * )
+     * @var \RentJeeves\DataBundle\Entity\Tenant
      */
-    protected $name;
+    protected $user;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
+     *      inversedBy="payment_accounts"
+     * )
+     * @ORM\JoinColumn(
+     *      name="address_id",
+     *      referencedColumnName="id"
+     * )
+     * @var \CreditJeeves\DataBundle\Entity\Address
+     */
+    protected $address;
 
     /**
      * @ORM\Column(
-     *     name="account_name",
-     *     type="string",
-     *     length=255
+     *      name="type",
+     *      type="PaymentAccountType"
      * )
-     */
-    protected $accountName;
-
-    /**
-     * @ORM\Column(
-     *     name="type",
-     *     type="PaymentAccountType"
+     * @Assert\NotBlank(
+     *      message="checkout.error.payment_type.empty",
+     *      groups={
+     *          "card",
+     *          "bank"
+     *      }
      * )
      */
     protected $type;
 
     /**
      * @ORM\Column(
-     *     name="cc_expiration",
-     *     type="date"
+     *      name="name",
+     *      type="string",
+     *      length=255
+     * )
+     * @Assert\NotBlank(
+     *      message="checkout.error.account_nickname.empty",
+     *      groups={
+     *          "save"
+     *      }
+     * )
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(
+     *      name="token",
+     *      type="string",
+     *      length=255
+     * )
+     */
+    protected $token;
+
+    /**
+     * @ORM\Column(
+     *      name="cc_expiration",
+     *      type="date",
+     *      nullable=true
      * )
      */
     protected $ccExpiration;
@@ -76,6 +116,52 @@ abstract class PaymentAccount
     }
 
     /**
+     * Set user
+     *
+     * @param \RentJeeves\DataBundle\Entity\Tenant $user
+     * @return PaymentAccount
+     */
+    public function setUser(\RentJeeves\DataBundle\Entity\Tenant $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \RentJeeves\DataBundle\Entity\Tenant
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Address $address
+     * @return PaymentAccount
+     */
+    public function setAddress(\CreditJeeves\DataBundle\Entity\Address $address = null)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \CreditJeeves\DataBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -83,6 +169,29 @@ abstract class PaymentAccount
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set type
+     *
+     * @param PaymentAccountType $type
+     * @return PaymentAccount
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return PaymentAccountType
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 
     /**
@@ -109,49 +218,26 @@ abstract class PaymentAccount
     }
 
     /**
-     * Set accountName
+     * Set token
      *
-     * @param string $accountName
+     * @param string $token
      * @return PaymentAccount
      */
-    public function setAccountName($accountName)
+    public function setToken($token)
     {
-        $this->accountName = $accountName;
+        $this->token = $token;
 
         return $this;
     }
 
     /**
-     * Get accountName
+     * Get token
      *
      * @return string
      */
-    public function getAccountName()
+    public function getToken()
     {
-        return $this->accountName;
-    }
-
-    /**
-     * Set type
-     *
-     * @param PaymentAccountType $type
-     * @return PaymentAccount
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type
-     *
-     * @return PaymentAccountType
-     */
-    public function getType()
-    {
-        return $this->type;
+        return $this->token;
     }
 
     /**

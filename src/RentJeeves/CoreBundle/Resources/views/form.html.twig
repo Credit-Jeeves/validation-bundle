@@ -4,14 +4,18 @@
 {% block form_rows %}
     {% for child in form %}
         {% set type = child.vars.block_prefixes[1]|default('text') %}
-        {% if child.vars.label or loop.first %}
+        {% if child.vars.label or loop.first or child.vars.attr.force_row is defined %}
             {% if loop.first != true %}
                 </div>
             {% endif %}
-            <div class="form-row clearfix type-{{ type }}
-                        {%- if child.attr.tooltip_title is defined -%} with-tooltip{%- endif -%}"
-                 id="{{ child.vars.id }}_row"
-            >
+            {% set attr = child.vars.attr.row_attr|default({}) %}
+            {% set row_class = attr.class|default('form-row clearfix type-' ~ type) %}
+            {% if child.attr.tooltip_title is defined %}
+                {% set row_class = row_class ~ ' with-tooltip' %}
+            {% endif%}
+            {% set attr = attr|merge({'class': row_class}) %}
+            {% set id = child.vars.id ~ '_row' %}
+            <div {{ block('widget_attributes') }}>
         {% endif %}
         {{ form_row(child) }}
     {% endfor %}
@@ -20,29 +24,32 @@
 
 {% block form_row %}
     {% spaceless %}
-        {% set params = attr %}
         {% set type = form.vars.block_prefixes[1]|default('text') %}
         {{ form_errors(form) }}
+
+        {% set _attrOr = attr %}
+        {% set attr = form.vars.attr.box_attr|default({}) %}
+        {% set attr = attr|merge({'class': 'fields-box'}) %}
+        {% set _orId = id %}
+        {% set id = id ~ '_box' %}
         {% if 'checkbox' == type %}
-            {% if attr.no_container is defined %}<div class="fields-box" id="{{ id }}_box">{% endif %}
-                <label class="checkbox">
+            {% if _attrOr.no_box is not defined %}<div {{ block('widget_attributes') }}>{% endif %}
+                {% set id = _orId %}
+                {% set attr = _attrOr %}
+                <label class="checkbox" for="{{ id }}">
                     {{ block('checkbox_widget') }}
                     <span>{{ label|trans({}, translation_domain) }}</span>
                 </label>
                 {{ block('aditional_attr_block') }}
-            {% if attr.no_container is defined %}</div>{% endif %}
-        {% elseif 'choice' == type and expanded %}
-            {{ form_label(form, label|default(null)) }}
-            <div class="fields-box" id="{{ id }}_box">
-                {{ form_widget(form) }}
-                {{ block('aditional_attr_block') }}
-            </div>
+            {% if _attrOr.no_box is not defined %}</div>{% endif %}
         {% else %}
             {{ form_label(form, label|default(null)) }}
-            <div class="fields-box" id="{{ id }}_box">
+            {% if _attrOr.no_box is not defined %}<div {{ block('widget_attributes') }}>{% endif %}
+                {% set id = _orId %}
+                {% set attr = _attrOr %}
                 {{ form_widget(form) }}
                 {{ block('aditional_attr_block') }}
-            </div>
+            {% if _attrOr.no_box is not defined %}</div>{% endif %}
         {% endif %}
     {% endspaceless %}
 {% endblock form_row %}
@@ -116,3 +123,21 @@
         {% endif %}
     {% endspaceless %}
 {% endblock form_label %}
+
+{% block widget_attributes %}
+    {% if attr.row_attr is defined %}
+        {% set attr = attr|merge({'row_attr': null}) %}
+    {% endif %}
+    {% if attr.box_attr is defined %}
+        {% set attr = attr|merge({'box_attr': null}) %}
+    {% endif %}
+    {{ parent() }}
+{% endblock widget_attributes %}
+
+
+{% block form_widget_compound %}
+    {% if form.vars.attr.row_attr is defined %}
+        {% set attr = form.vars.attr.row_attr %}
+    {% endif %}
+    {{ parent() }}
+{% endblock form_widget_compound %}

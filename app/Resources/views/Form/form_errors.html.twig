@@ -14,5 +14,6 @@
     {% spaceless %}
         {% if multipart %}enctype="multipart/form-data"{% endif %}
         {% if 'test' == app.environment %} novalidate{% endif %}
+        id="{{ form.vars.id }}"
     {% endspaceless %}
 {% endblock form_enctype %}

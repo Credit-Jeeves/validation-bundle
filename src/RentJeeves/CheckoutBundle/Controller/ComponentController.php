@@ -28,10 +28,8 @@ class ComponentController extends Controller
     public function sourceAction()
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType());
-        $userAddressType = $this->createForm(new UserAddressType());
         return array(
             'paymentAccountType' => $paymentAccountType->createView(),
-            'userAddressType' => $userAddressType->createView(),
         );
     }
 }
