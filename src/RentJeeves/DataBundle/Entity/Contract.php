@@ -301,6 +301,7 @@ class Contract extends Base
         $result['finish_at'] = $this->getFinishAt();
         $result['amount'] = $this->getRent();
         $result['due_day'] = $this->getDueDay();
+        $result['property'] = $this->getProperty()->getItem();
         return $result;
     }
 }

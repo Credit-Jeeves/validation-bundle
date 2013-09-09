@@ -6,9 +6,14 @@ use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentDetailsType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
+use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
+use RentJeeves\DataBundle\Entity\PaymentAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
+/**
+ * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
+ */
 class ComponentController extends Controller
 {
     /**
@@ -17,8 +22,10 @@ class ComponentController extends Controller
     public function payAction()
     {
         $paymentDetailsType = $this->createForm(new PaymentDetailsType());
+        $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()));
         return array(
-            'paymentDetailsType' => $paymentDetailsType->createView()
+            'paymentDetailsType' => $paymentDetailsType->createView(),
+            'userDetailsType' => $userDetailsType->createView()
         );
     }
 
@@ -27,9 +34,13 @@ class ComponentController extends Controller
      */
     public function sourceAction()
     {
-        $paymentAccountType = $this->createForm(new PaymentAccountType());
+        $paymentAccountEntity = new PaymentAccount();
+        $paymentAccountEntity->setAddressChoice($this->getUser()->getAddresses());
+        $paymentAccountType = $this->createForm(new PaymentAccountType($paymentAccountEntity));
         return array(
+            'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
             'paymentAccountType' => $paymentAccountType->createView(),
+            'addresses' => $this->getUser()->getAddresses(),
         );
     }
 }

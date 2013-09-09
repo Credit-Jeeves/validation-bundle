@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Model\Address as Base;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Address

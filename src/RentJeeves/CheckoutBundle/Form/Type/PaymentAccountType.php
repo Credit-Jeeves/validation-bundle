@@ -78,9 +78,10 @@ class PaymentAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'checkout.routing_number',
                 'attr' => array(
-                    'tooltip_title' => 'checkout.routing_number.tooltip.title',
-                    'tooltip_class' => 'tooltip-box type2 pie-el',
-                    'tooltip_text' => '',
+                    'html' => '<div class="tooltip-box type2 pie-el">' .
+                            '<h4 data-bind="i18n: {}">checkout.routing_number.tooltip.title</h4>' .
+                            '<p class="banking-numbers clearfix"></p>' .
+                        '</div>',
                     'tooltip_text_class' => 'banking-numbers clearfix',
                     'data-bind' => 'value: paymentSource.RoutingNumber',
                     'row_attr' => array(
@@ -178,7 +179,7 @@ class PaymentAccountType extends AbstractType
         );
         $builder->add(
             'VerificationCode',
-            'text',
+            'password',
             array(
                 'mapped' => false,
                 'label' => 'checkout.csc',
@@ -206,7 +207,7 @@ class PaymentAccountType extends AbstractType
             array(
                 'mapped' => false,
                 'label' => 'checkout.expiration',
-                'choices' => range(1, 12, 1),
+                'choices' => array_combine(range(1, 12, 1), range(1, 12, 1)),
                 'empty_value'  => 'common.month',
                 'attr' => array(
                     'class' => 'original',
@@ -225,13 +226,14 @@ class PaymentAccountType extends AbstractType
                 ),
             )
         );
+        $years = range(date('Y'), date('Y')+12, 1);
         $builder->add(
             'ExpirationYear',
             'choice',
             array(
                 'mapped' => false,
                 'label' => false,
-                'choices' => range(date('Y'), date('Y')+12, 1),
+                'choices' => array_combine($years, $years),
                 'empty_value'  => 'common.year',
                 'attr' => array(
                     'class' => 'original',
@@ -251,6 +253,25 @@ class PaymentAccountType extends AbstractType
             )
         );
 
+//        $builder->add(
+//            'address_choice',
+//            'collection',
+//            array(
+//                'type' => 'choice',
+//                'error_bubbling' => true,
+//                'mapped' => true,
+//                'label' => 'common.address',
+//                'options' => array(
+//                    'expanded' => true,
+//                ),
+//                'attr' => array(
+//                    'data-bind' => 'checked: paymentSource.addressChoice',
+//                    'row_attr' => array(
+//                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+//                    )
+//                )
+//            )
+//        );
         $builder->add(
             'address',
             new UserAddressType(),

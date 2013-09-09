@@ -37,6 +37,8 @@ class AppRjKernel extends AppKernel
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
+            new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
+            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
 
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
@@ -57,8 +59,6 @@ class AppRjKernel extends AppKernel
             new RentJeeves\PublicBundle\RjPublicBundle(),
             new RentJeeves\ComponentBundle\RjComponentBundle(),
             new RentJeeves\CoreBundle\RjCoreBundle(),
-            new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
-            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
             new RentJeeves\CheckoutBundle\RjCheckoutBundle(),
         );
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

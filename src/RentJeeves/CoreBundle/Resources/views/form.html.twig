@@ -32,6 +32,7 @@
         {% set attr = attr|merge({'class': 'fields-box'}) %}
         {% set _orId = id %}
         {% set id = id ~ '_box' %}
+
         {% if 'checkbox' == type %}
             {% if _attrOr.no_box is not defined %}<div {{ block('widget_attributes') }}>{% endif %}
                 {% set id = _orId %}
@@ -62,17 +63,6 @@
             ?
         </i>
     {%- endif -%}
-
-    {% if attr.tooltip_title is defined %}
-        <div class="{{ attr.tooltip_class | default('tooltip-box type1 pie-el') }}">
-            <h4>{{ attr.tooltip_title | trans({}, translation_domain) }}</h4>
-            {% if attr.tooltip_text is defined %}
-                <p class="{{ attr.tooltip_text_class | default('') }}">
-                    {{ attr.tooltip_text | trans({}, translation_domain) }}
-                </p>
-            {% endif %}
-        </div>
-    {% endif %}
 
     {% if attr.html is defined %}
         {{ attr.html|raw }}
@@ -141,3 +131,19 @@
     {% endif %}
     {{ parent() }}
 {% endblock form_widget_compound %}
+
+{% block date_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            <div {{ block('widget_container_attributes') }}>
+                {{ date_pattern|replace({
+                '{{ year }}':  form_widget(form.year, {'attr': attr}),
+                '{{ month }}': form_widget(form.month, {'attr': attr}),
+                '{{ day }}':   form_widget(form.day, {'attr': attr}),
+                })|raw }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock date_widget %}

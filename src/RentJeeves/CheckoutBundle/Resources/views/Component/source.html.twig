@@ -14,3 +14,18 @@
     <strong>{{ 'checkout.fee.note' | trans({'%FEE%': payment_fee}) }}</strong>
     <i title="{{ 'checkout.fee.note.help' | trans }}" class="help after-checkbox pie-el tooltip-link">?</i>
 </p>
+
+<script type="text/javascript">
+    window.paymentAccounts = [];
+{% for paymentAccount in paymentAccounts %}
+    window.paymentAccounts.push({{ paymentAccount | serialize('json') | raw }});
+{% endfor %}
+
+    window.addressesViewModels = [];
+{% for address in addresses%}
+    var address = Address(null);
+    ko.mapping.fromJS({{ address | serialize('json') | raw }}, address);
+    window.addressesViewModels.push(address);
+{% endfor %}
+
+</script>

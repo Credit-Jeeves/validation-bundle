@@ -1,4 +1,5 @@
 {% form_theme paymentDetailsType 'RjCoreBundle::form.html.twig' %}
+{% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
 
 
 <div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup">
@@ -12,7 +13,8 @@
             <li class="step2" data-bind="css: { 'active': 'source' == step() }">
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
-            <li class="step3" data-bind="css: { 'active': 'verify' == step() }, visible: stepExist('verify')">
+            <li class="step3"
+                data-bind="css: { 'active': 'verify' == step() || 'questions' == step() }, visible: stepExist('verify')">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
             <li class="step4" data-bind="css: { 'active': 'pay' == step() }">
@@ -44,33 +46,13 @@
                     <small><b>*</b>Required</small>
                 </div>
             </div>
-            <div class="form-row clearfix">
-                <label>Date of Birth<b>*</b></label>
-                <div class="fields-box">
-                    <input type="text" placeholder="MM" class="phone-width">
-                    <span class="dash">/</span>
-                    <input type="text" placeholder="DD" class="phone-width">
-                    <span class="dash">/</span>
-                    <input type="text" placeholder="YYYY" class="phone-width">
-                    <div class="tooltip-box type3 pie-el">
-                        <p class="verify">Federal law requires that payment processors verify and record the identity of anyone who schedules an online payment.</p>
-                        <p class="verify">This is not a formal credit report inquiry and will not be reflected as such on your credit report. This step helps the government fight money laundering and the funding of terrorism.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="form-row clearfix">
-                <label>Social Security Number<b>*</b></label>
-                <div class="fields-box">
-                    <input type="text" class="phone-width">
-                    <span class="dash">-</span>
-                    <input type="text" class="phone-width">
-                    <span class="dash">-</span>
-                    <input type="text" class="phone-width">
-                </div>
-            </div>
+            <form {{ form_enctype(paymentDetailsType) }} method="post">
+                {{ form_widget(userDetailsType) }}
+                {{ JSFV(userDetailsType) }}
+            </form>
         </div>
 
-        <div class="col long-label" data-bind="visible: 3 == step()">
+        <div class="col long-label" data-bind="visible: 'questions' == step()">
 
             <div class="scroll-box">
                 <div id="vi-questions" class="scroll">
@@ -162,10 +144,10 @@
                 </div>
                 <div class="tooltip-box type3 pie-el">
                     <p class="verify">
-                        Please answer the questions carefully – they contain information only you should know that relates to your credit history.
+                        {{ 'checkout.questions.tooltip.line1' | trans }}
                     </p>
                     <p class="verify">
-                        Please note that the correct answer may not be listed and some information information on your credit file may be from past addresses and employers.
+                        {{ 'checkout.questions.tooltip.line2' | trans }}
                     </p>
                 </div>
             </div>
@@ -221,19 +203,19 @@
                             <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: !isTodayPaymnet()">
                         <label>{{ 'checkout.starts' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: startDate"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: recurring">
                         <label>{{ 'checkout.payment_sent' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">{{ 'checkout.day_%DAY%_each_month' | trans }}</span>
+                            <span class="value" data-bind="i18n: {'DAY': dueDay()}">checkout.day_%DAY%_each_month</span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
+                    <div class="form-row clearfix" data-bind="visible: 'on' == ends()">
                         <label>{{ 'checkout.ends' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: endsOn"></span>
@@ -248,16 +230,58 @@
                             <span class="value" data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
-                        <label>{{ 'checkout.routing_number' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: paymentSource.RoutingNumber"></span>
+                    <div data-bind="visible: 'bank' == paymentSource.type()">
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.payor_name' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.PayorName"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.routing_number' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.RoutingNumber"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.account_number' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.AccountNumber"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.account_type' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="visible: 'Checking' == paymentSource.ACHDepositType()">
+                                    {{ 'checkout.account_type.checking' | trans }}
+                                </span>
+                                <span class="value" data-bind="visible: 'Savings' == paymentSource.ACHDepositType()">
+                                    {{ 'checkout.account_type.savings' | trans }}
+                                </span>
+                                <span class="value" data-bind="visible: 'Unassigned' == paymentSource.ACHDepositType()">
+                                    {{ 'checkout.account_type.business_checking' | trans }}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
-                        <label>{{ 'checkout.account_number' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: paymentSource.AccountNumber"></span>
+                    <div data-bind="visible: 'card' == paymentSource.type()">
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.card_number' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.CardNumber"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.expiration' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.ExpirationMonth() + '/' + paymentSource.ExpirationYear()"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix">
+                            <label>{{ 'common.address' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.address.toString"></span>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row clearfix">

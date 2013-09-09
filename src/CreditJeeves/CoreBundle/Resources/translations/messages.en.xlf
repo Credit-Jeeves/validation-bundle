@@ -276,6 +276,14 @@
                 <source>common.login_screen</source>
                 <target>Login Screen</target>
             </trans-unit>
+            <trans-unit id="common.date_of_birth">
+                <source>common.date_of_birth</source>
+                <target>Date of Birth</target>
+            </trans-unit>
+            <trans-unit id="common.ssn">
+                <source>common.ssn</source>
+                <target>SSN</target>
+            </trans-unit>
             
             
             
@@ -833,7 +841,11 @@
 
             <trans-unit id="error.user.date">
                 <source>error.user.date</source>
-                <target>This value is not a valid date.</target>
+                <target>Date of Birth is not a valid date.</target>
+            </trans-unit>
+            <trans-unit id="error.user.date.empty">
+                <source>error.user.date.empty</source>
+                <target>Date of Birth couldn't be empty.</target>
             </trans-unit>
 
             <trans-unit id="error.user.first_name.empty">

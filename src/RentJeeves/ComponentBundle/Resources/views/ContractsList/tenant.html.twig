@@ -109,12 +109,10 @@
     '@RjCheckoutBundle/Resources/public/js/Pay.js'
     '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
     '@CoreBundle/Resources/public/js/Address.js'
-    'bundles/bazingaexposetranslation/js/translator.min.js'
 %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
 
-<script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
 
 <script type="text/javascript">
     var CurrentPaymentsViewModel = new CurrentPayments({{ contracts | serialize('json') | raw }});

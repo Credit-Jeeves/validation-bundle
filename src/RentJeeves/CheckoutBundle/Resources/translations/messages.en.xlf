@@ -43,12 +43,12 @@
                 <target>Start Date</target>
             </trans-unit>
             <trans-unit id="checkout.start_date.tooltip.title">
-                <source>checkout.start_date.tooltip.title</source>
-                <target>Start On: 6/1/13 Settle By: 6/4/13</target>
+                <source>checkout.start_date.tooltip.title-%START%-%SETTLE%</source>
+                <target>Start On: %START% Settle By: %SETTLE%</target>
             </trans-unit>
             <trans-unit id="checkout.start_date.tooltip.text">
-                <source>checkout.start_date.tooltip.text</source>
-                <target>Initiate first payment and notify your landlord on 6/1/13. Allow 3 business days for delivery.</target>
+                <source>checkout.start_date.tooltip.text-%SETTLE%-%SETTLE_DAYS%</source>
+                <target>Initiate first payment and notify your landlord on %SETTLE%. Allow %SETTLE_DAYS% business days for delivery.</target>
             </trans-unit>
             <trans-unit id="checkout.set_up_recurring_payment">
                 <source>checkout.set_up_recurring_payment</source>
@@ -59,12 +59,12 @@
                 <target>Type</target>
             </trans-unit>
             <trans-unit id="checkout.type.tooltip.title">
-                <source>checkout.type.tooltip.title</source>
-                <target>Recur On: Day 1 of Each Month</target>
+                <source>checkout.type.tooltip.title-%DUE_DAY%</source>
+                <target>Recur On: Day %DUE_DAY% of Each Month</target>
             </trans-unit>
             <trans-unit id="checkout.type.tooltip.text">
-                <source>checkout.type.tooltip.text</source>
-                <target>Initiate subsequent payments of $2500 on day 1 of each month until the last payment on 5/1/14.</target>
+                <source>checkout.type.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%</source>
+                <target>Initiate subsequent payments of %AMOUNT% on day %DUE_DAY% of each month until the last payment on %ENDS_ON%.</target>
             </trans-unit>
             <trans-unit id="checkout.ends">
                 <source>checkout.ends</source>
@@ -257,6 +257,22 @@
             <trans-unit id="checkout.method">
                 <source>checkout.method</source>
                 <target>Method</target>
+            </trans-unit>
+            <trans-unit id="checkout.date_of_birth.tooltip.line1">
+                <source>checkout.date_of_birth.tooltip.line1</source>
+                <target>Federal law requires that payment processors verify and record the identity of anyone who schedules an online payment.</target>
+            </trans-unit>
+            <trans-unit id="checkout.date_of_birth.tooltip.line2">
+                <source>checkout.date_of_birth.tooltip.line2</source>
+                <target>This is not a formal credit report inquiry and will not be reflected as such on your credit report. This step helps the government fight money laundering and the funding of terrorism.</target>
+            </trans-unit>
+            <trans-unit id="checkout.questions.tooltip.line1">
+                <source>checkout.questions.tooltip.line1</source>
+                <target>Please answer the questions carefully – they contain information only you should know that relates to your credit history.</target>
+            </trans-unit>
+            <trans-unit id="checkout.questions.tooltip.line2">
+                <source>checkout.questions.tooltip.line2</source>
+                <target>Please note that the correct answer may not be listed and some information information on your credit file may be from past addresses and employers.</target>
             </trans-unit>
         </body>
     </file>

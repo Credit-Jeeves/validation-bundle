@@ -312,7 +312,7 @@ abstract class Contract
     /**
      * Get Property
      *
-     * @return Property
+     * @return \RentJeeves\DataBundle\Entity\Property
      */
     public function getProperty()
     {

@@ -38,9 +38,17 @@ class PaymentDetailsType extends AbstractType
                 'format' => 'dd/MM/yy',
                 'empty_data' => '',
                 'attr' => array(
+                    'row_attr' => array(
+                        'style' => 'display :none;', // TODO remove, it is temporary
+                    ),
                     'class' => 'datepicker-field',
-                    'tooltip_title' => 'checkout.start_date.tooltip.title',
-                    'tooltip_text' => 'checkout.start_date.tooltip.text',
+                    'html' => '<div class="tooltip-box type1 pie-el">' .
+                        '<h4 data-bind="i18n: {\'START\': startDate, \'SETTLE\': settle}">' .
+                            'checkout.start_date.tooltip.title-%START%-%SETTLE%' .
+                        '</h4>' .
+                        '<p data-bind="i18n: {\'SETTLE\': settle, \'SETTLE_DAYS\': settleDays}">' .
+                            'checkout.start_date.tooltip.text-%SETTLE%-%SETTLE_DAYS%' .
+                        '</p></div>',
                     'data-bind' => 'value: startDate'
                 ),
 
@@ -65,6 +73,9 @@ class PaymentDetailsType extends AbstractType
             array(
                 'label' => 'checkout.set_up_recurring_payment',
                 'attr' => array(
+                    'row_attr' => array(
+                        'style' => 'display :none;', // TODO remove, it is temporary
+                    ),
                     'no_box' => true,
                     'data-bind' => 'checked: recurring'
                 )
@@ -79,8 +90,15 @@ class PaymentDetailsType extends AbstractType
                 'choices' => array('monthly' => 'checkout.monthly'),
                 'attr' => array(
                     'class' => 'original',
-                    'tooltip_title' => 'checkout.type.tooltip.title',
-                    'tooltip_text' => 'checkout.type.tooltip.text',
+                    'html' => '<div class="tooltip-box type1 pie-el">' .
+                        '<h4 data-bind="i18n: {\'DUE_DAY\': dueDay}">' .
+                            'checkout.type.tooltip.title-%DUE_DAY%' .
+                        '</h4>' .
+                        '<p data-bind="' .
+                            'i18n: {\'AMOUNT\': getAmount, \'DUE_DAY\': dueDay, \'ENDS_ON\': getLastPaymentDay}' .
+                        '">' .
+                            'checkout.type.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%' .
+                        '</p></div>',
                     'data-bind' => 'value: type',
                     'row_attr' => array(
                         'data-bind' => 'visible: recurring'
@@ -130,9 +148,6 @@ class PaymentDetailsType extends AbstractType
         $resolver->setDefaults(
             array(
 //                'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
-                'validation_groups' => array(
-//                    'tenant_invite',
-                ),
             )
         );
     }
