@@ -13,7 +13,8 @@ class AccountCase extends BaseTestCase
      */
     public function accountInfo()
     {
-        $this->setDefaultSession('goutte');
+        $this->markTestIncomplete('FINISH');
+        $this->setDefaultSession('goutte'); //@TODO need change to symfony, becouse it will be faster
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('common.account');

@@ -77,7 +77,9 @@ class PublicController extends Controller
                 $tenant = $form->getData()['tenant'];
                 $invite = $form->getData()['invite'];
                 $aForm = $request->request->get($form->getName());
-                $tenant->setPassword(md5($aForm['tenant']['password']['Password']));
+                $password = $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($aForm['tenant']['password']['Password'], $tenant->getSalt());
+                $tenant->setPassword($password);
                 $invite->setTenant($tenant);
                 $invite->setProperty($property);
                 $tenant->setCulture($this->container->parameters['kernel.default_locale']);
@@ -141,7 +143,11 @@ class PublicController extends Controller
                 } elseif (!empty($unitNew) && $unitNew != 'none') {
                     $unitSearch = $unitNew;
                 }
-                $tenant->setPassword(md5($aForm['password']['Password']));
+
+                $password = $this->container->get('user.security.encoder.digest')
+                        ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
+
+                $tenant->setPassword($password);
                 $tenant->setCulture($this->container->parameters['kernel.default_locale']);
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($tenant);

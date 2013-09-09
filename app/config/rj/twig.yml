@@ -1,0 +1,3 @@
+twig:
+    globals:
+        serverName: '%server_name_rj%'

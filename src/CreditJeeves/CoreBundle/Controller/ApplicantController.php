@@ -2,6 +2,7 @@
 namespace CreditJeeves\CoreBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use CreditJeeves\DataBundle\Enum\UserType;
 
 class ApplicantController extends Controller
 {
