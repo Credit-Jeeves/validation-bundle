@@ -67,6 +67,39 @@ function ContractDetails() {
     self.clearDetails();
     self.contract(data);
     self.approve(true);
+    $('#contractApproveStart').datepicker({
+      showOn: "button",
+      buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
+      format:'m/d/Y',
+      date: $('#contractApproveStart').val(),
+      current: $('#contractApproveStart').val(),
+      starts: 1,
+      position: 'r',
+      onBeforeShow: function(){
+        $('#contractApproveStart').DatePickerSetDate($('#contract-approve-start').val(), true);
+      },
+      onChange: function(formated, dates){
+        $('#contractApproveStart').val(formated);
+        $('#contractApproveStart').DatePickerHide();
+      }
+    });
+    $('#contractApproveFinish').datepicker({
+      showOn: "button",
+      buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+      format:'m/d/Y',
+      date: $('#contractApproveFinish').val(),
+      current: $('#contractApproveFinish').val(),
+      starts: 1,
+      position: 'r',
+      onBeforeShow: function(){
+        $('#contractApproveFinish').DatePickerSetDate($('#contract-approve-finish').val(), true);
+      },
+      onChange: function(formated, dates){
+        $('#contractApproveFinish').val(formated);
+        $('#contractApproveFinish').DatePickerHide();
+      }
+    });
+    
   };
   this.reviewContract = function(data) {
     $('#tenant-review-property-popup').dialog('open');

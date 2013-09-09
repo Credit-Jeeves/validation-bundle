@@ -2,156 +2,141 @@
 {% form_theme form ':Form:form_errors.html.twig' %}
 
 <div id="contract-actions">
+
     <!-- Action Edit -->
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <h1>{{ 'edit.tenant.info'|trans }}</h1>
-      <div class="clearfix col-box" data-bind="with: contract">
-        <div class="information-box pie-el">
-          {{ 'are.you.sure.you.want.remove.property'|trans }}
+        <h1>{{ 'edit.tenant.info'|trans }}</h1>
+        <div class="clearfix col-box" data-bind="with: contract">
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'tenant.info'|trans }}</span>
+                    <small><b>*</b>{{ 'required'|trans }}</small>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{'name'|trans}}<b>*</b></label>
+                    <div class="fields-box">
+                        <span data-bind="text: first_name"></span>
+                        <span data-bind="text: last_name"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}<b>*</b></label>
+                    <div class="fields-box addressDiv"  data-bind="text: address"></div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'phone'|trans }}</label>
+                    <div class="fields-box">
+                        <span data-bind="text: phone"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'email'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <span data-bind="text: email"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'request.payments'|trans }}</span>
+                    <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}<b>*</b></label>
+                    <div class="fields-box addressDiv"  data-bind="text: address"></div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'amount'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" data-bind="value: amount" value="" class="half-of-right">
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'start'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
+                        <label class="fixed">{{ 'end'|trans }}</label>
+                        <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col">
-          <h4 class="clearfix">
-            <span>{{ 'tenant.info'|trans }}</span>
-            <small><b>*</b>{{ 'required'|trans }}</small>
-          </h4>
-          <div class="form-row clearfix">
-            <label>{{'name'|trans}}<b>*</b></label>
-            <div class="fields-box">
-              <span data-bind="text: first_name"></span>
-              <span data-bind="text: last_name"></span>
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'property'|trans }}<b>*</b></label>
-            <div class="fields-box addressDiv"  data-bind="text: address">
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'phone'|trans }}</label>
-            <div class="fields-box">
-                <span data-bind="text: phone"></span>
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'email'|trans }}<b>*</b></label>
-            <div class="fields-box">
-               <span data-bind="text: email"></span>
-            </div>
-          </div>
+        <div class="footer-button-box">
+            <button class="button" data-bind="click: saveContract"><span>{{'savechanges'|trans}}</span></button>
+            <button class="button grey"  data-bind="click: cancelEdit"><span>{{'cancel'|trans}}</span></button>
+            <a href="#" class="link" data-bind="click: removeTenant">{{'remove.tenant'|trans|raw}}</a>
         </div>
-        <div class="col">
-          <h4 class="clearfix">
-            <span>{{ 'request.payments'|trans }}</span>
-            <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
-          </h4>
-          <div class="form-row clearfix">
-            <label>{{ 'property'|trans }}<b>*</b></label>
-            <div class="fields-box addressDiv"  data-bind="text: address">
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'amount'|trans }}<b>*</b></label>
-            <div class="fields-box">
-              <input type="text" data-bind="value: amount" value="" class="half-of-right">
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'start'|trans }}<b>*</b></label>
-            <div class="fields-box">
-              <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
-              <label class="fixed">{{ 'end'|trans }}</label>
-              <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="footer-button-box">
-        <button class="button" data-bind="click: saveContract"><span>{{'savechanges'|trans}}</span></button>
-        <button class="button grey"  data-bind="click: cancelEdit"><span>{{'cancel'|trans}}</span></button>
-        <a href="#" class="link" data-bind="click: removeTenant">{{'remove.tenant'|trans|raw}}</a>
-      </div>
     </div>
-
+    <!-- End Action Edit -->
     <!-- Action Approve -->
     <div id="tenant-approve-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <h1>{{ 'approve.tenant.info'|trans }}</h1>
-      <div class="clearfix col-box"  data-bind="with: contract">
-        
-        <div class="information-box pie-el">
-          {{'pending.tenant.info'|trans}}
+        <h1>{{ 'approve.tenant.info'|trans }}</h1>
+        <div class="clearfix col-box"  data-bind="with: contract">
+            <div class="information-box pie-el">{{'pending.tenant.info'|trans}}</div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'tenant.info'|trans }}</span>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{'name'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: tenant"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: address"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'phone'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value"  data-bind="text: phone"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'email'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: email"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'request.payments'|trans }}</span>
+                    <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}<b>*</b></label>
+                    <div class="fields-box addressDiv"  data-bind="text: address"></div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'amount'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" data-bind="value: amount" value="" class="half-of-right">
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'start'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractApproveStart">
+                        <label class="fixed">{{ 'end'|trans }}</label>
+                        <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractApproveFinish">
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <div class="col">
-          <h4 class="clearfix">
-            <span>{{ 'tenant.info'|trans }}</span>
-          </h4>
-          <div class="form-row clearfix">
-            <label>{{'name'|trans }}</label>
-            <div class="fields-box">
-              <span class="value" data-bind="text: tenant"></span>
+        <div class="footer-button-box">
+            <button class="button" data-bind="click: approveSave"><span>{{ 'approve.tenant'|trans }}</span></button>
+            <div class="with-seperator-box">
+                <button class="button grey" onclick="$('#tenant-approve-property-popup').dialog( 'close' ); return false;">
+                    <span>{{ 'cancel'|trans }}</span>
+                </button>
             </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'property'|trans }}</label>
-            <div class="fields-box">
-              <span class="value" data-bind="text: address"></span>
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'phone'|trans }}</label>
-            <div class="fields-box">
-              <span class="value"  data-bind="text: phone"></span>
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'email'|trans }}</label>
-            <div class="fields-box">
-              <span class="value" data-bind="text: email"></span>
-            </div>
-          </div>
         </div>
-        
-        <div class="col">
-          <h4 class="clearfix">
-            <span>{{ 'request.payments'|trans }}</span>
-            <i class="help pie-el tooltip-link" title="Help text goes here to further explain any questionable content. This is what it looks like on 3 lines.">?</i>
-          </h4>
-          <div class="form-row clearfix">
-            <label>{{ 'property'|trans }}</label>
-            <div class="fields-box">
-              <span class="value left">{{ 'monthly'|trans }}</span>
-              <label class="fixed">{{ 'Due'|trans }}</label>
-              <span class="value left" data-bind="text: due_day"></span>
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'amount'|trans }}</label>
-            <div class="fields-box">
-              <span class="value left" id="amount-edit" data-bind="text: '$'+amount"></span>
-            </div>
-          </div>
-          <div class="form-row clearfix">
-            <label>{{ 'start'|trans }}</label>
-            <div class="fields-box">
-              <span class="value left" id="contract-edit-start" data-bind="text: start"></span>
-              <label class="fixed">{{ 'end'|trans }}</label>
-              <span class="value left" id="contract-edit-finish" data-bind="text: finish"></span>
-            </div>
-          </div>
-        </div>
-        
-      </div>
-      <div class="footer-button-box">
-        <button class="button" data-bind="click: approveSave"><span>{{ 'approve.tenant'|trans }}</span></button>
-        <button class="button" data-bind="click: editContract"><span>{{ 'edit.Info'|trans }}</span></button>
-        <div class="with-seperator-box">
-          <button class="button grey" onclick="$('#tenant-approve-property-popup').dialog( 'close' ); return false;">
-            <span>{{ 'cancel'|trans }}</span>
-          </button>
-        </div>
-      </div>
     </div>
-
+    <!-- End Action Approve -->
     <!-- Action Review -->
     <div id="tenant-review-property-popup" class="pricing-popup dashboard-popup properties-popup">
       <h1>{{ 'Information'|trans }}</h1>
