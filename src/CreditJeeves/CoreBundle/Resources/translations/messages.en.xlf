@@ -1211,6 +1211,11 @@
                 <source>common.zip_code</source>
                 <target>Zip Code</target>
             </trans-unit>
+
+            <trans-unit id="common.add_new">
+                <source>common.add_new</source>
+                <target>Add New</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

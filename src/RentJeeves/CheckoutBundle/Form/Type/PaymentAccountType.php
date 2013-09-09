@@ -3,8 +3,11 @@ namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use CreditJeeves\CoreBundle\Form\Widget\MonthYearType;
+use CreditJeeves\DataBundle\Model\User;
+use Doctrine\ORM\EntityRepository;
 use Payum\Heartland\Soap\Base\ACHAccountType;
 use Payum\Heartland\Soap\Base\ACHDepositType;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +18,16 @@ use Symfony\Component\Validator\Constraints\Valid;
 
 class PaymentAccountType extends AbstractType
 {
+    /**
+     * @var Tenant
+     */
+    protected $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -253,25 +266,26 @@ class PaymentAccountType extends AbstractType
             )
         );
 
-//        $builder->add(
-//            'address_choice',
-//            'collection',
-//            array(
-//                'type' => 'choice',
-//                'error_bubbling' => true,
-//                'mapped' => true,
-//                'label' => 'common.address',
-//                'options' => array(
-//                    'expanded' => true,
-//                ),
-//                'attr' => array(
-//                    'data-bind' => 'checked: paymentSource.addressChoice',
-//                    'row_attr' => array(
-//                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
-//                    )
-//                )
-//            )
-//        );
+        $builder->add(
+            'address_choice',
+            'entity',
+            array(
+                'error_bubbling' => true,
+                'class' => 'CreditJeeves\DataBundle\Entity\Address',
+                'mapped' => false,
+                'label' => 'common.address',
+                'expanded' => true,
+                'choices' => $this->user->getAddresses(),
+                'attr' => array(
+                    'data-bind' => 'checked: paymentSource.addressChoice',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() && !paymentSource.isAddNewAddress()'
+                    ),
+                    'html' => '<div class="fields-box">' .
+                        '<a href="#" data-bind="i18n: {}, click: paymentSource.addAddress">common.add_new</a></div>'
+                )
+            )
+        );
         $builder->add(
             'address',
             new UserAddressType(),
@@ -284,7 +298,7 @@ class PaymentAccountType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() && paymentSource.isAddNewAddress'
                     )
                 )
             )

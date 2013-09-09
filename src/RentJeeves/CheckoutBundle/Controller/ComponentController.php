@@ -34,9 +34,7 @@ class ComponentController extends Controller
      */
     public function sourceAction()
     {
-        $paymentAccountEntity = new PaymentAccount();
-        $paymentAccountEntity->setAddressChoice($this->getUser()->getAddresses());
-        $paymentAccountType = $this->createForm(new PaymentAccountType($paymentAccountEntity));
+        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
         return array(
             'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
             'paymentAccountType' => $paymentAccountType->createView(),

@@ -39,7 +39,7 @@ class PaymentDetailsType extends AbstractType
                 'empty_data' => '',
                 'attr' => array(
                     'row_attr' => array(
-                        'style' => 'display :none;', // TODO remove, it is temporary
+//                        'style' => 'display :none;', // TODO remove, it is temporary
                     ),
                     'class' => 'datepicker-field',
                     'html' => '<div class="tooltip-box type1 pie-el">' .
@@ -74,7 +74,7 @@ class PaymentDetailsType extends AbstractType
                 'label' => 'checkout.set_up_recurring_payment',
                 'attr' => array(
                     'row_attr' => array(
-                        'style' => 'display :none;', // TODO remove, it is temporary
+//                        'style' => 'display :none;', // TODO remove, it is temporary
                     ),
                     'no_box' => true,
                     'data-bind' => 'checked: recurring'

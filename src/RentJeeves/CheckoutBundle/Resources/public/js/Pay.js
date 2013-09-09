@@ -7,8 +7,8 @@ function Pay(parent, contractId) {
 
     /*  Form fields  */
     this.amount = ko.observable(contract.amount);
-//    var startDate = new Date(contract.start_at); //TODO implement
-    var startDate = new Date();
+    var startDate = new Date(contract.start_at); //TODO implement, it was commented for first step of integration
+//    var startDate = new Date();
     this.startDate = ko.observable(startDate.toString('MM/dd/yyyy'));
     this.recurring = ko.observable(false);
     this.type = ko.observable();

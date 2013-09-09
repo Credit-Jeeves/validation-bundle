@@ -107,7 +107,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/APYJsFormValidationBundle.git",
-                "reference": "dd814529b77290a67c7f3ec3af1a7933b5dd6784"
+                "reference": "8ec12dea404b174622f9fb68e9eeeeeb15161640"
             },
             "require": {
                 "php": ">=5.3.2",
@@ -157,7 +157,7 @@
                 "javascript",
                 "validation"
             ],
-            "time": "2013-09-09 03:09:46"
+            "time": "2013-09-09 08:43:06"
         },
         {
             "name": "ass/xmlsecurity",

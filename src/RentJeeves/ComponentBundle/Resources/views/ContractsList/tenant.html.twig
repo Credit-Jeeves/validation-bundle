@@ -1,3 +1,12 @@
+{% javascripts
+    '@TenantBundle/Resources/public/js/CurrentPayments.js'
+    '@RjCheckoutBundle/Resources/public/js/Pay.js'
+    '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
+    '@CoreBundle/Resources/public/js/Address.js'
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+
 <!-- Popup Delete Contract -->
 <div id="contract-delete" class="pricing-popup dashboard-popup properties-popup">
     <h1>{{ 'contract.delete' | trans() }}</h1>
@@ -104,20 +113,10 @@
 
 {{ render(controller('RjCheckoutBundle:Component:pay')) }}
 
-{% javascripts
-    '@TenantBundle/Resources/public/js/CurrentPayments.js'
-    '@RjCheckoutBundle/Resources/public/js/Pay.js'
-    '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
-    '@CoreBundle/Resources/public/js/Address.js'
-%}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
-
-
 <script type="text/javascript">
-    var CurrentPaymentsViewModel = new CurrentPayments({{ contracts | serialize('json') | raw }});
 
     $(document).ready(function(){
+        var CurrentPaymentsViewModel = new CurrentPayments({{ contracts | serialize('json') | raw }});
         ko.applyBindings(CurrentPaymentsViewModel, $('#current-payments').get(0));
     });
 </script>

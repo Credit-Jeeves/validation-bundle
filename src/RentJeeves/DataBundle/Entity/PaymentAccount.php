@@ -11,31 +11,4 @@ use RentJeeves\DataBundle\Model\PaymentAccount as Base;
  */
 class PaymentAccount extends Base
 {
-    /**
-     * @var ArrayCollection
-     */
-    protected $address_choice;
-
-    public function __construct()
-    {
-        $this->address_choice = new ArrayCollection();
-    }
-
-    /**
-     * @param ArrayCollection $addressChoice
-     * @return PaymentAccount
-     */
-    public function setAddressChoice($addressChoice)
-    {
-        $this->address_choice = $addressChoice;
-        return $this;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getAddressChoice()
-    {
-        return $this->address_choice;
-    }
 }
