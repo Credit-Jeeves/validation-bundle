@@ -85,7 +85,7 @@ class TenantCase extends BaseTestCase
             "$('.half-of-right').val(' ');"
         );
 
-        $this->assertNotNull($amount = $this->page->find('css', '.half-of-right'));
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
         $amount->setValue('200');
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
         $contractEditStart->setValue('08/01/2013');
@@ -94,7 +94,6 @@ class TenantCase extends BaseTestCase
         $contractEditStart->setValue('08/25/2013');
         
         $this->page->pressButton('savechanges');
-        
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));

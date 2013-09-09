@@ -76,7 +76,7 @@ function ContractDetails() {
       starts: 1,
       position: 'r',
       onBeforeShow: function(){
-        $('#contractApproveStart').DatePickerSetDate($('#contract-approve-start').val(), true);
+        $('#contractApproveStart').DatePickerSetDate($('#contract-edit-start').val(), true);
       },
       onChange: function(formated, dates){
         $('#contractApproveStart').val(formated);
@@ -92,7 +92,7 @@ function ContractDetails() {
       starts: 1,
       position: 'r',
       onBeforeShow: function(){
-        $('#contractApproveFinish').DatePickerSetDate($('#contract-approve-finish').val(), true);
+        $('#contractApproveFinish').DatePickerSetDate($('#contract-edit-finish').val(), true);
       },
       onChange: function(formated, dates){
         $('#contractApproveFinish').val(formated);
