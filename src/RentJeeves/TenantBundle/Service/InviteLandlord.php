@@ -82,10 +82,16 @@ class InviteLandlord
             $landlord->setAgentGroups($group);
             $em->persist($group);
             $em->persist($holding);
+            $em->flush();
         }
-
         $unit = new Unit();
-        $unit->setName($invite->getUnit());
+        $name = $invite->getUnit();
+        if (empty($name)) {
+            $name = '';
+        }
+        $group->addGroupProperty($invite->getProperty());
+        
+        $unit->setName($name);
         $unit->setProperty($invite->getProperty());
         $unit->setHolding($holding);
         $unit->setGroup($group);
@@ -96,9 +102,11 @@ class InviteLandlord
         $contract->setHolding($holding);
         $contract->setGroup($group);
 
+        $em->persist($group);
         $em->persist($unit);
         $em->persist($contract);
         $em->persist($landlord);
+        
         $em->flush();
 
         $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);

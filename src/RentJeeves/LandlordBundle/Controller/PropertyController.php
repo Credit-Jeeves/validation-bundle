@@ -18,7 +18,10 @@ class PropertyController extends Controller
      */
     public function newAction()
     {
-
-        return array();
+        $groups = $this->getGroups();
+        return array(
+                'nGroups'   => $groups->count(),
+                'Group'     => $this->get('core.session.landlord')->getGroup(),
+        );
     }
 }

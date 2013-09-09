@@ -85,7 +85,7 @@ class TenantCase extends BaseTestCase
             "$('.half-of-right').val(' ');"
         );
 
-        $this->assertNotNull($amount = $this->page->find('css', '.half-of-right'));
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
         $amount->setValue('200');
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
         $contractEditStart->setValue('08/01/2013');
@@ -94,19 +94,17 @@ class TenantCase extends BaseTestCase
         $contractEditStart->setValue('08/25/2013');
         
         $this->page->pressButton('savechanges');
-        
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
 
-        $this->assertNotNull($editStart = $this->page->find('css', '#contract-edit-start'));
-        $this->assertNotNull($editFinish = $this->page->find('css', '#contract-edit-finish'));
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
-
-        $this->assertEquals('08/01/2013', $editStart->getText(), 'Wrong edit start');
-        $this->assertEquals('08/25/2013', $editFinish->getText(), 'Wrong edit finish');
-        $this->assertEquals('$200', $amount->getText(), 'Wrong edit amount');
+        $this->assertNotNull($editStart = $this->page->find('css', '#contractApproveStart'));
+        $this->assertNotNull($editFinish = $this->page->find('css', '#contractApproveFinish'));
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $this->assertEquals('08/01/2013', $editStart->getValue(), 'Wrong edit start');
+        $this->assertEquals('08/25/2013', $editFinish->getValue(), 'Wrong edit finish');
+        $this->assertEquals('200', $amount->getValue(), 'Wrong edit amount');
         $this->logout();
     }
 
@@ -149,9 +147,9 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
-        $this->assertNotNull($searchField = $this->page->find('css', '#searsh-field'));
-        $searchField->setValue('PENDING');
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchField->setValue('contract.status.pending');
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -200,14 +198,14 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (15)', $allh2->getText(), 'Wrong count');
-        $this->assertNotNull($searchField = $this->page->find('css', '#searsh-field'));
-        $searchField->setValue('INVITE');
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchField->setValue('contract.status.invite');
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (1)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (2)', $allh2->getText(), 'Wrong count');
         $this->logout();
         // end
 
@@ -278,14 +276,14 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (15)', $allh2->getText(), 'Wrong count');
-        $this->assertNotNull($searchField = $this->page->find('css', '#searsh-field'));
-        $searchField->setValue('CURRENT');
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchField->setValue('contract.status.approved');
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (6)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (2)', $allh2->getText(), 'Wrong count');
         $this->logout();
         // end
 

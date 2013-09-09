@@ -13,7 +13,7 @@
       <div class="finder-box">
         <input type="text" id="search" name="searsh-field" 
         data-bind="value: searchText" value="">
-        <a style="display:block;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }"id="delete" class="pie-el">x</a>
+        <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }"id="delete" class="pie-el">x</a>
         <button type="submit" id="searchButton" data-bind="click: searchFunction" class="pie-el">{{ 'search'|trans }}</button>
         <ul class="list-search-result pie-el">
         </ul>

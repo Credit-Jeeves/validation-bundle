@@ -59,7 +59,15 @@
                         <td>{{ contract.payment_last }}</td>
                         <td>{{ contract.payment_next }}</td>
                         <td>{{ contract.recur | capitalize }}</td>
-                        <td>{{ contract.status | upper }}</td>
+                        {% if contract.status == 'pending' %}
+                        <td title="Waiting for your landlord to provide contract details.">
+                        {% elseif contract.status == 'invite' %}
+                        <td title="Waiting for your landlord to join RentTrack.">
+                        {% else %}
+                        <td>
+                        {% endif %}
+                        {{ contract.status | upper }}
+                        </td>
                         <td>
                             {% if contract.status == 'pending' or contract.status == 'invite' %}
                                 <div class="contract-potential">
