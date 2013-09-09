@@ -11,7 +11,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
- * @Service("data.event_listener.doctrine")
+ * @Service("rj.data.event_listener.doctrine")
  * @Tag("doctrine.event_listener", attributes = { "event" = "prePersist", "method" = "prePersist" })
  */
 class Doctrine
