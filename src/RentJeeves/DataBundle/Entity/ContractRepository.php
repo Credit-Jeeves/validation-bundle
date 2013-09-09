@@ -61,8 +61,14 @@ class ContractRepository extends EntityRepository
         $query->setParameter('group', $group);
         if (!empty($search) && !empty($searchBy)) {
             $this->applyCollum($searchBy);
-            $query->andWhere($searchBy.' LIKE :search');
-            $query->setParameter('search', '%'.$search.'%');
+            if ($searchBy == 'c.status') {
+                $query->andWhere($searchBy.' LIKE :search');
+                $query->setParameter('search', '%'.$search.'%');
+                
+            } else {
+                $query->andWhere($searchBy.' LIKE :search');
+                $query->setParameter('search', '%'.$search.'%');
+            }
         }
         $this->applyCollum($sort);
         $query->orderBy($sort, $order);
