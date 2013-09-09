@@ -99,13 +99,12 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
 
-        $this->assertNotNull($editStart = $this->page->find('css', '#contract-edit-start'));
-        $this->assertNotNull($editFinish = $this->page->find('css', '#contract-edit-finish'));
-        $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
-
-        $this->assertEquals('08/01/2013', $editStart->getText(), 'Wrong edit start');
-        $this->assertEquals('08/25/2013', $editFinish->getText(), 'Wrong edit finish');
-        $this->assertEquals('$200', $amount->getText(), 'Wrong edit amount');
+        $this->assertNotNull($editStart = $this->page->find('css', '#contractApproveStart'));
+        $this->assertNotNull($editFinish = $this->page->find('css', '#contractApproveFinish'));
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $this->assertEquals('08/01/2013', $editStart->getValue(), 'Wrong edit start');
+        $this->assertEquals('08/25/2013', $editFinish->getValue(), 'Wrong edit finish');
+        $this->assertEquals('200', $amount->getValue(), 'Wrong edit amount');
         $this->logout();
     }
 
