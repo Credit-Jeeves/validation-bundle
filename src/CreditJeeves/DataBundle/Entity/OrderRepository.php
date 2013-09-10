@@ -37,13 +37,57 @@ class OrderRepository extends EntityRepository
         $query->setParameter('group', $group);
         if (!empty($search) && !empty($searchBy)) {
             $this->applySearchField($searchBy);
-            $query->andWhere($searchBy.' LIKE :search');
-            $query->setParameter('search', '%'.$search.'%');
+            $search = $this->prepareSearch($search);
+            foreach ($search as $item) {
+                $query->andWhere($searchBy.' LIKE :search');
+                $query->setParameter('search', '%'.$item.'%');
+            }
         }
         $query = $query->getQuery();
         return $query->getScalarResult();
     }
 
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param integer $page
+     * @param integer $limit
+     * @param string $sort
+     * @param string $order
+     * @param string $searchBy
+     * @param string $search
+     */
+    public function getOrdersPage(
+        \CreditJeeves\DataBundle\Entity\Group $group,
+        $page = 1,
+        $limit = 100,
+        $sort = 'o.status',
+        $order = 'ASC',
+        $searchBy = 'p.street',
+        $search = ''
+    ) {
+        $offset = ($page - 1) * $limit;
+        $query = $this->createQueryBuilder('o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->innerJoin('t.property', 'prop');
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+        if (!empty($search) && !empty($searchBy)) {
+            $this->applySearchField($searchBy);
+            $search = $this->prepareSearch($search);
+            foreach ($search as $item) {
+                $query->andWhere($searchBy.' LIKE :search');
+                $query->setParameter('search', '%'.$item.'%');
+            }
+        }
+        $this->applySortField($sort);
+        $query->orderBy($sort, $order);
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query = $query->getQuery();
+        return $query->execute();
+    }
 
     private function applySearchField(&$field)
     {
@@ -53,7 +97,7 @@ class OrderRepository extends EntityRepository
                 $field = 'o.'.$field;
                 break;
             case 'property':
-                $field = 'prop.street';
+                $field = 'CONCAT(prop.street, prop.number)';
                 break;
             case 'tenant':
                 $field = 'CONCAT(ten.first_name, ten.last_name)';
@@ -64,8 +108,7 @@ class OrderRepository extends EntityRepository
         }
     }
 
-
-    private function applyField(&$field)
+    private function applySortField(&$field)
     {
         switch ($field) {
             case 'status':
@@ -94,46 +137,14 @@ class OrderRepository extends EntityRepository
     }
 
     /**
-     * 
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
-     * @param integer $page
-     * @param integer $limit
-     * @param string $sort
-     * @param string $order
-     * @param string $searchBy
      * @param string $search
+     * @return array
      */
-    public function getOrdersPage(
-        \CreditJeeves\DataBundle\Entity\Group $group,
-        $page = 1,
-        $limit = 100,
-        $sort = 'o.status',
-        $order = 'ASC',
-        $searchBy = 'p.street',
-        $search = ''
-    ) {
-        $offset = ($page - 1) * $limit;
-        $query = $this->createQueryBuilder('o');
-        $query->innerJoin('o.operations', 'p');
-        $query->innerJoin('p.contract', 't');
-        $query->innerJoin('t.tenant', 'ten');
-        $query->innerJoin('t.property', 'prop');
-        $query->where('t.group = :group');
-        //$query->andWhere('c.paid_to > :date OR c.paid_to IS NULL  OR c.status = :status');
-        $query->setParameter('group', $group);
-        //         $query->setParameter('date', new \Datetime());
-        //         $query->setParameter('status', ContractStatus::FINISHED);
-        if (!empty($search) && !empty($searchBy)) {
-            $this->applySearchField($searchBy);
-            $query->andWhere($searchBy.' LIKE :search');
-            $query->setParameter('search', '%'.$search.'%');
-        }
-        $this->applyField($sort);
-        $query->orderBy($sort, $order);
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-        $query = $query->getQuery();
-        return $query->execute();
+    private function prepareSearch($search)
+    {
+        $search = preg_replace('/\s+/', ' ', trim($search));
+        $search = explode(' ', $search);
+        return $search;
     }
 
     /**
@@ -150,6 +161,9 @@ class OrderRepository extends EntityRepository
         return $query->execute();
     }
 
+    /**
+     * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     */
     public function getLastContractPayment(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $query = $this->createQueryBuilder('o');
@@ -162,6 +176,5 @@ class OrderRepository extends EntityRepository
         $query->setMaxResults(1);
         $query = $query->getQuery();
         return $query->getOneOrNullResult();
-        
     }
 }

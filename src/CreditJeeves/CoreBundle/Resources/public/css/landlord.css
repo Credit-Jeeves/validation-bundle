@@ -421,9 +421,7 @@ table.properties-table th {
 #delete {
     display: none;
 }
-.fiter-box button  {
-    margin-left: 0px;
-}
+
 .buttonFixSearch {
     padding-left: 5px !important;
     margin-top: -5px !important;
@@ -490,4 +488,18 @@ a.linkselect-link .linkselect-link-text {
     font-size: 13px;
     height: 23px;
     margin-left: 10px;
+}
+
+.ui-dialog {
+    position:absolute;
+}
+
+.no-data-row {
+    padding: 35px;
+    text-align: center;
+}
+
+#searchPaymentsStatus_link, #searchSelect {
+    margin-left: 0;
+    margin-right: 0;
 }

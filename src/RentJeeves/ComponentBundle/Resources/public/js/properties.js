@@ -164,7 +164,7 @@ function Units() {
   {
     $('#edit-property-popup').dialog('close');
     removeProperty.show();
-  }
+  };
 
   this.deleteProperty = function() {
     $.ajax({
@@ -188,6 +188,7 @@ function Search() {
   var self = this;
 
   this.searchFunction = function() {
+    console.log('search', self.searchText().length);
     var searchCollum = $('#searchFilterSelect').linkselect('val');
 
     if(typeof searchCollum != 'string') {
@@ -200,11 +201,12 @@ function Search() {
       $('#search').css('border-color', '#bdbdbd');
     }
     self.isSearch(true);
+    console.log(self.isSearch());
     self.property().searchText(self.searchText());
     self.property().searchCollum(searchCollum);
     self.property().current(1);
     self.property().ajaxAction();
-  }
+  };
 
   this.clearSearch = function() {
     self.property().searchText('');
@@ -214,7 +216,7 @@ function Search() {
     self.searchCollum('');
     self.searchText('');
     self.isSearch(false);
-  }
+  };
 }
 
 function addProperties()
@@ -270,7 +272,7 @@ function addProperties()
         error: function(jqXHR, errorThrown, textStatus) {;
         },
         success: function(data, textStatus, jqXHR) {
-            var propertyId = data.property.id
+            var propertyId = data.property.id;
             if(propertyId) {
                 return self.saveUnits(propertyId);
             }
@@ -299,19 +301,19 @@ function removeProperty()
     self.aUnits(UnitsViewModel.aUnits());
     self.name(UnitsViewModel.name());
     self.countUnit(UnitsViewModel.aUnits().length);
-  }
+  };
 
   this.deleteProperty = function()
   {
     $('#remove-property-popup').dialog('close');
     UnitsViewModel.deleteProperty();
-  }
+  };
 
   this.cancel = function()
   {
     $('#remove-property-popup').dialog('close');
     $('#edit-property-popup').dialog('open');
-  }
+  };
 }
 
 var PropertiesViewModel = new Properties();
@@ -320,7 +322,7 @@ var search = new Search();
 var addProperties = new addProperties();
 var removeProperty = new removeProperty();
 search.property(PropertiesViewModel);
-addProperties.property(PropertiesViewModel)
+addProperties.property(PropertiesViewModel);
 
 $(document).ready(function(){
 
@@ -346,7 +348,7 @@ $(document).ready(function(){
     $('#delete').click(function(){
         $('#searsh-field').val(' ');
         markAsNotValid();
-        $(this).hide();
+        search.clearSearch();
         return false;
     });
 
@@ -354,9 +356,9 @@ $(document).ready(function(){
       $(this).addClass('notfound');
       markAsNotValid();
       if($(this).val() != '') {
-        $('#delete').show();
+        search.searchFunction();
       } else {
-        $('#delete').hide();
+        search.clearSearch();
       }
     });
 

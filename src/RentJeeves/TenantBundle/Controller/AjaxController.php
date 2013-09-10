@@ -27,38 +27,6 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *  "/bureau/start",
-     *  name="tenant_reporting_start",
-     *  defaults={"_format"="json"},
-     *  requirements={"_format"="html|json"},
-     *  options={"expose"=true}
-     * )
-     * @Method({"POST"})
-     *
-     * @return array
-     */
-    public function startBureauReporting()
-    {
-        $request = $this->getRequest();
-        $data = $request->request->all('action');
-        $action = $data['action'];
-        $user = $this->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $contracts = $user->getContracts();
-        foreach ($contracts as $contract) {
-            if ($action == 'start') {
-                $contract->setReporting(true);
-            } else {
-                $contract->setReporting(false);
-            }
-            $em->persist($contract);
-            $em->flush();
-        }
-        return new JsonResponse(array());
-    }
-
-    /**
-     * @Route(
      *  "/bureau/reporting",
      *  name="tenant_contract_reporting",
      *  defaults={"_format"="json"},
