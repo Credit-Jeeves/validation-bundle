@@ -41,7 +41,10 @@ class AlertController extends Controller
         if ($pending > 0) {
             $text = $this->get('translator.default')->trans('landlord.alert.pending-one');
             if ($pending > 1) {
-                $text = $this->get('translator.default')->trans('landlord.alert.pending-many', array('%COUNT%' => $pending));
+                $text = $this->get('translator.default')->trans(
+                    'landlord.alert.pending-many',
+                    array('%COUNT%' => $pending)
+                );
             }
             $alerts[] = $text;
         }

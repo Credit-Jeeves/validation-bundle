@@ -33,6 +33,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('t.unit', 'unit');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
         if (!empty($search) && !empty($searchBy)) {
@@ -71,6 +72,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('t.unit', 'unit');
         $query->where('t.group = :group');
         $query->setParameter('group', $group);
         if (!empty($search) && !empty($searchBy)) {
@@ -81,8 +83,29 @@ class OrderRepository extends EntityRepository
                 $query->setParameter('search', '%'.$item.'%');
             }
         }
+        switch ($sort) {
+            case 'first_name':
+                $query->orderBy('ten.first_name', $order);
+                $query->addOrderBy('ten.last_name', $order);
+                break;
+            case 'date-posted':
+                $query->orderBy('o.created_at', $order);
+                break;
+            case 'date-initiated':
+                $query->orderBy('o.updated_at', $order);
+                break;
+            case 'property':
+                $query->orderBy('prop.number', $order);
+                $query->addOrderBy('prop.street', $order);
+                $query->addOrderBy('unit.name', $order);
+                break;
+            default:
+                $sort = 'o.'.$sort;
+                $query->orderBy($sort, $order);
+                break;
+        }
         $this->applySortField($sort);
-        $query->orderBy($sort, $order);
+        
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query = $query->getQuery();
@@ -97,7 +120,7 @@ class OrderRepository extends EntityRepository
                 $field = 'o.'.$field;
                 break;
             case 'property':
-                $field = 'CONCAT(prop.street, prop.number)';
+                $field = 'CONCAT(prop.street, prop.number, unit.name)';
                 break;
             case 'tenant':
                 $field = 'CONCAT(ten.first_name, ten.last_name)';
