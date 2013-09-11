@@ -84,6 +84,6 @@ class DepositAccountCase extends BaseTestCase
         );
 
         $this->assertTrue($contract instanceof Contract);
-        $this->assertTrue($contract->getStatus() === ContractStatus::PENDING);
+        $this->assertTrue($contract->getStatus() === ContractStatus::INVITE);
     }
 }
