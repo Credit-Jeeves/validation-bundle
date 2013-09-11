@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\CheckoutBundle\Form\Type;
+namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,8 +11,24 @@ class UserAddressType extends Base
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
         parent::buildForm($builder, $options);
         $builder->remove('unit');
+//        $builder->remove('street');
+        $builder->add(
+            'street',
+            'text',
+            array(
+                'label' => false,
+                'error_bubbling' => true,
+                'attr' => array(
+                    'class' => 'all-width',
+                    'placeholder' => 'common.street',
+                    'data-bind' => 'value: address.street'
+                )
+            )
+        );
+
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

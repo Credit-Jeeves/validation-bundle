@@ -47,7 +47,7 @@ class IframeCase extends BaseTestCase
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
-        $this->session->wait($this->timeout, "$('#inviteForm').length > 0");
+        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
@@ -86,7 +86,7 @@ class IframeCase extends BaseTestCase
         $buttons[0]->click();
         $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
 
-        $this->assertNotNull($form = $this->page->find('css', '#inviteForm'));
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
         $this->fillForm(
             $form,
             array(
@@ -149,8 +149,8 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#landlordInviteRegister').is(':visible')");
-        $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
+        $this->session->wait($this->timeout, "$('#landlordType').is(':visible')");
+        $this->assertNotNull($form = $this->page->find('css', '#landlordType'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
         $this->assertCount(2, $errorList, 'Wrong number of pending');

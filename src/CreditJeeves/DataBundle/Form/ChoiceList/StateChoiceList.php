@@ -1,8 +1,8 @@
 <?php
 namespace CreditJeeves\DataBundle\Form\ChoiceList;
 
-use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 use Symfony\Component\Form\Extension\Core\ChoiceList\LazyChoiceList;
+use Symfony\Component\Form\Extension\Core\ChoiceList\SimpleChoiceList;
 
 class StateChoiceList extends LazyChoiceList
 {
@@ -64,7 +64,7 @@ class StateChoiceList extends LazyChoiceList
     public function loadChoiceList()
     {
         $labels = $this->getStates();
-        return new ChoiceList($labels, $labels);
+        return new SimpleChoiceList(array_combine($labels, $labels));
     }
 
     /**

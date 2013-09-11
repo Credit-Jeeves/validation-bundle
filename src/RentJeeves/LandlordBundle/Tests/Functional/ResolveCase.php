@@ -45,7 +45,7 @@ class ResolveCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#contract-resolve').is(':visible')");
         $this->assertNotNull($buttons = $this->page->findAll('css', '#blockPopupEditProperty button.button'));
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
-        $buttons[0]->click();
+        $this->page->pressButton('conflict.resolve.action');
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
@@ -76,7 +76,7 @@ class ResolveCase extends BaseTestCase
         $this->assertCount(1, $resolve, 'Wrong number of resolve contracts');
         $resolve[0]->click();
         $this->session->wait($this->timeout, "jQuery('#contract-resolve').is(':visible')");
-        $this->assertNotNull($checkboxes = $this->page->findAll('css', 'ul.checkboxes li label i'));
+        $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve .checkbox'));
         $this->assertCount(2, $checkboxes, 'Wrong number of checkboxes');
         $checkboxes[1]->click();
         $this->assertNotNull($buttons = $this->page->findAll('css', '#blockPopupEditProperty button.button'));

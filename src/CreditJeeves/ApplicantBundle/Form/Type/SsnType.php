@@ -21,8 +21,12 @@ class SsnType extends AbstractType
                 'ssn1',
                 'text',
                 array(
-                    'label' => '',
+                    'label' => false,
                     'error_bubbling' => true,
+                    'attr' => array(
+                        'class' => 'user-margin user-ssn1 user-ssn',
+                        'maxlength' => 3
+                    ),
                     'constraints' => array(
                         new NotBlank(),
                         new Length(
@@ -38,14 +42,22 @@ class SsnType extends AbstractType
                 'ssn2',
                 'text',
                 array(
-                    'label' => '',
+                    'attr' => array(
+                        'class' => 'user-margin user-ssn2 user-ssn',
+                        'maxlength' => 2
+                    ),
+                    'label' => false,
                     )
             )->
             add(
                 'ssn3',
                 'text',
                 array(
-                    'label' => '',
+                    'attr' => array(
+                        'class' => 'user-margin user-ssn3 user-ssn',
+                        'maxlength' => 4
+                    ),
+                    'label' => false,
                     )
             )->addModelTransformer(
                 new ReversedTransformer(
@@ -67,6 +79,6 @@ class SsnType extends AbstractType
 
     public function getName()
     {
-        return 'creditjeeves_applicantbundle_ssntype';
+        return 'ssn';
     }
 }

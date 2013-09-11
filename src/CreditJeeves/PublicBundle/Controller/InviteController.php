@@ -27,6 +27,9 @@ class InviteController extends Controller
      */
     public function indexAction($code)
     {
+        if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('applicant_homepage'));
+        }
         $isFullForm = true;
         $request = $this->get('request');
         /** @var User $User */

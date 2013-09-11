@@ -140,7 +140,7 @@
         },
         {
             "type": "git",
-            "url":"git@github.com:Abhoryo/APYJsFormValidationBundle.git"
+            "url":"git@github.com:66Ton99/APYJsFormValidationBundle.git"
         }
     ],
     "require": {

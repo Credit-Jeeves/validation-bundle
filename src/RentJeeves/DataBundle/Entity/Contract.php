@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use EntityManager522a848132d2c_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -264,6 +265,11 @@ class Contract extends Base
         return floor($paid * 30/ $rent);
     }
 
+    /**
+     * @param EntityManager $em
+     *
+     * @return array
+     */
     public function getDatagridRow($em)
     {
         $property = $this->getProperty();
@@ -291,6 +297,11 @@ class Contract extends Base
         if ($paidTo = $this->getPaidTo()) {
             $result['payment_next'] = $paidTo->format('m/d/Y');
         }
+        $result['start_at'] = $this->getStartAt();
+        $result['finish_at'] = $this->getFinishAt();
+        $result['amount'] = $this->getRent();
+        $result['due_day'] = $this->getDueDay();
+        $result['property'] = $this->getProperty()->getItem();
         return $result;
     }
 }

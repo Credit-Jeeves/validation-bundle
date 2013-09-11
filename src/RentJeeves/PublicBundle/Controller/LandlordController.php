@@ -54,6 +54,7 @@ class LandlordController extends Controller
                 $holding->addGroup($group);
                 $landlord->setAgentGroups($group);
                 $em = $this->getDoctrine()->getManager();
+
                 $property = $em->getRepository('RjDataBundle:Property')->find($aForm['property']);
                 if ($property) {
                     $units = (isset($aForm['units']))? $aForm['units'] : array();

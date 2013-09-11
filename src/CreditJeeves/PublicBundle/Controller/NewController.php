@@ -14,6 +14,7 @@ use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Group;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class NewController extends Controller
 {
@@ -26,6 +27,9 @@ class NewController extends Controller
      */
     public function indexAction($code = null)
     {
+        if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            return $this->redirect($this->generateUrl('applicant_homepage'));
+        }
         /** @var Request $request */
         $request = $this->get('request');
         $query = $request->query;

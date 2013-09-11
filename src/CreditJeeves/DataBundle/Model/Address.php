@@ -1,13 +1,16 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
+ * @Serializer\ExclusionPolicy("all")
  */
 abstract class Address
 {
@@ -17,6 +20,7 @@ abstract class Address
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Expose
      */
     protected $id;
 
@@ -37,6 +41,7 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="unit", type="encrypt", nullable=true)
+     * @Serializer\Expose
      */
     protected $unit;
 
@@ -44,6 +49,7 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="number", type="encrypt", nullable=true)
+     * @Serializer\Expose
      */
     protected $number;
 
@@ -52,7 +58,7 @@ abstract class Address
      *
      * @ORM\Column(name="street", type="encrypt")
      * @Assert\NotBlank(
-     *     message="error.user.address.empty",
+     *     message="error.user.street.empty",
      *     groups={
      *         "user_address_new",
      *         "buy_report_new"
@@ -66,6 +72,7 @@ abstract class Address
      *         "buy_report_new"
      *     }
      * )
+     * @Serializer\Expose
      */
     protected $street;
 
@@ -89,6 +96,7 @@ abstract class Address
      *         "buy_report_new"
      *     }
      * )
+     * @Serializer\Expose
      */
     protected $zip;
 
@@ -96,6 +104,7 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="district", type="string", length=255, nullable=true)
+     * @Serializer\Expose
      */
     protected $district;
 
@@ -109,6 +118,7 @@ abstract class Address
      *         "buy_report_new"
      *     }
      * )
+     * @Serializer\Expose
      */
     protected $city;
 
@@ -131,6 +141,7 @@ abstract class Address
      *         "buy_report_new"
      *     }
      * )
+     * @Serializer\Expose
      */
     protected $area;
 
@@ -138,6 +149,7 @@ abstract class Address
      * @var string
      *
      * @ORM\Column(name="country", type="string", length=3, options={"default"="US"})
+     * @Serializer\Expose
      */
     protected $country = 'US';
     /**
@@ -155,6 +167,27 @@ abstract class Address
      * @ORM\Column(name="updated_at", type="datetime")
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *     mappedBy="address",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $payment_accounts;
+
+    public function __construct()
+    {
+        $this->payment_accounts = new ArrayCollection();
+    }
 
     /**
      * Get id

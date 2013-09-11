@@ -1748,7 +1748,7 @@ label.error b {
   border-radius:8px;
 }
 
-.checkboxes.form-row {
+.checkboxes.form-row, .type-checkbox.form-row {
   padding:0 0 10px;
 }
 
@@ -1835,7 +1835,7 @@ label.checkbox input[type="radio"]:checked + i {
   margin:0;
 }
 
-.form-row.checkboxes .active {
+.form-row.checkboxes .active, .form-row.type-checkbox .active {
   font-weight:bold;
 }
 
@@ -2239,6 +2239,7 @@ label.checkbox input[type="radio"]:checked + i {
 .pricing-popup.dashboard-popup {
   position:relative;
   padding:0 0 70px;
+  min-height: 410px!important;
 }
 
 .verify-min {
@@ -2729,19 +2730,21 @@ label.checkbox input[type="radio"]:checked + i {
   line-height:18px;
 }
 
-.checkboxes.alone {
+.checkboxes.alone, .type-checkbox.alone {
   padding:0 20px;
 }
 
-.checkboxes.alone:last-child {
+.checkboxes.alone:last-child, .type-checkbox.alone:last-child {
   padding-bottom:10px;
 }
 
-.payments-popup .checkboxes.alone label.checkbox span.big {
+.payments-popup .checkboxes.alone label.checkbox span.big,
+.payments-popup .type-checkbox.alone label.checkbox span.big{
   font:bold 12px/18px 'ABeeZee', sans-serif;
 }
 
-.payments-popup .checkboxes.alone .help {
+.payments-popup .checkboxes.alone .help,
+.payments-popup .type-checkbox.alone .help{
   float:none;
   display:inline-block;
   margin-top:0;
@@ -2749,26 +2752,32 @@ label.checkbox input[type="radio"]:checked + i {
   vertical-align:top;
 }
 
-.half-box ul.checkboxes {
+.half-box ul.checkboxes, .half-box ul.type-checkbox {
   padding-top:15px;
 }
 
 .payments-popup .vi-questions-content ul.checkboxes li,
-.half-box ul.checkboxes li {
+.payments-popup .vi-questions-content ul.type-checkbox li,
+.half-box ul.checkboxes li,
+.half-box ul.type-checkbox li{
   padding-bottom:10px;
 }
 
-.half-box ul.checkboxes li:last-child {
+.half-box ul.checkboxes li:last-child,
+.half-box ul.type-checkbox li:last-child{
   padding:0;
 }
 
 .payments-popup .vi-questions-content ul.checkboxes li label span,
-.half-box ul.checkboxes li label span {
+.payments-popup .vi-questions-content ul.type-checkbox li label span,
+.half-box ul.checkboxes li label span,
+.half-box ul.type-checkbox li label span {
   color:#666;
   font:12px/15px 'ABeeZee', sans-serif;
 }
 
-.payments-popup .vi-questions-content ul.checkboxes li label.checkbox {
+.payments-popup .vi-questions-content ul.checkboxes li label.checkbox,
+.payments-popup .vi-questions-content ul.type-checkbox li label.checkbox{
   height:auto;
 }
 
@@ -3569,11 +3578,13 @@ label.checkbox input[type="radio"]:checked + i {
   margin-left:-130px;
 }
 
-.pricing-popup.properties-popup  .col-box .col .form-row.checkboxes label {
+.pricing-popup.properties-popup  .col-box .col .form-row.checkboxes label,
+.pricing-popup.properties-popup  .col-box .col .form-row.type-checkbox label {
   width:auto;
 }
 
-.pricing-popup.properties-popup  .col-box .col .form-row.checkboxes label.checkbox span.big {
+.pricing-popup.properties-popup  .col-box .col .form-row.checkboxes label.checkbox span.big,
+.pricing-popup.properties-popup  .col-box .col .form-row.type-checkbox label.checkbox span.big{
   font:bold 12px/15px 'ABeeZee',sans-serif;
   padding-top:3px;
 }
@@ -4204,4 +4215,48 @@ table.ui-datepicker-calendar tbody tr td a {
   position: absolute;
   margin-top: 10px;
   display: none;
+}
+
+/* Fixes */
+#rentjeeves_checkoutbundle_paymentdetailstype_ends_row .fields-box label {
+    clear: left;
+}
+
+#rentjeeves_checkoutbundle_paymentaccounttype_address_city_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_address_area_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_address_zip_box,
+#rentjeeves_checkoutbundle_userdetailstype_new_address_city_box,
+#rentjeeves_checkoutbundle_userdetailstype_new_address_area_box,
+#rentjeeves_checkoutbundle_userdetailstype_new_address_zip_box,
+#rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box,
+#rentjeeves_checkoutbundle_userdetailstype_ssn .fields-box {
+    width: auto;
+}
+
+#rentjeeves_checkoutbundle_paymentaccounttype_address_row,
+#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1_row,
+#rentjeeves_checkoutbundle_userdetailstype_new_address_row{
+    padding-left: 0px;
+}
+
+#rentjeeves_checkoutbundle_userdetailstype_ssn_box {
+    padding-top: 0px;
+}
+
+#rentjeeves_checkoutbundle_userdetailstype_ssn input {
+    width: 30px;
+}
+
+form label {
+    /*    float: left;*/
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    width: inherit;
+}
+
+.error_list li {
+    font-size: inherit;
+    font-weight:  inherit;
 }

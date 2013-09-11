@@ -4,7 +4,6 @@ parameters:
     email_admins:
         - alex.emelyanov.ua@gmail.com
         - darryl@creditjeeves.com
-
     experian.logging: false
 
 simulation:

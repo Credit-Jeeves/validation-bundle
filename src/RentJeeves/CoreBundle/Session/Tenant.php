@@ -21,7 +21,7 @@ class Tenant extends User
     }
 
     /**
-     * @return \CreditJeeves\DataBundle\Entity\User
+     * @return \RentJeeves\DataBundle\Entity\Tenant
      */
     public function getUser()
     {
