@@ -71,7 +71,6 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             case UserType::LANDLORD:
                 $this->container->get('core.session.landlord')->setUser($User);
                 $url = $this->generateLanlordUrl($User);
-                $this->inviteProcess($User);
                 break;
         }
         if (!$isDefense = $this->checkLogindefense($User)) {
@@ -117,87 +116,9 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
     {
         $url = $this->container->get('router')->generate('landlord_homepage');
         $contracts = $user->getHolding()->getContracts();
-        if (count($contracts) == 1  && ContractStatus::INVITE == $contracts->last()->getStatus()) {
+        if (count($contracts) == 1  && ContractStatus::PENDING == $contracts->last()->getStatus()) {
             $url = $this->container->get('router')->generate('landlord_tenants');
         }
         return $url;
-    }
-
-    private function inviteProcess($user)
-    {
-
-        if (!$user) {
-            return false;
-        }
-
-        $request = $this->container->get('request');
-        $session = $request->getSession();
-        $inviteCode = $session->get('inviteCode');
-
-        if (!$inviteCode) {
-            return false;
-        }
-
-        $session->remove('inviteCode');
-        $em = $this->container->get('doctrine.orm.entity_manager');
-        $landlord = $em->getRepository('RjDataBundle:Landlord')->findOneBy(
-            array(
-                'invite_code' => $inviteCode,
-                'is_active'   => 0,
-            )
-        );
-
-        if (!$landlord) {
-            return false;
-        }
-
-        $contractsLandlord = $em->getRepository('RjDataBundle:Contract')->getContractsLandlord($landlord);
-
-        if (empty($contractsLandlord)) {
-            return false;
-        }
-
-        $holding = $user->getHolding();
-        $group = $user->getCurrentGroup();
-
-        foreach ($contractsLandlord as $contract) {
-
-            if ($contract->getStatus() != ContractStatus::INVITE) {
-                continue;
-            }
-            if ($holding) {
-                $contract->setHolding($holding);
-            }
-
-            if ($group) {
-                $contract->setGroup($group);
-            }
-
-            if ($user->hasMerchant()) {
-                $contract->setStatus(ContractStatus::PENDING);
-            }
-
-            $tenant = $contract->getTenant();
-            if ($tenant->getIsActive()) {
-                $this->container->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
-                    $tenant,
-                    $user,
-                    $contract
-                );
-            }
-            $em->persist($contract);
-        }
-
-        $em->flush();
-
-        $contractsLandlord = $em->getRepository('RjDataBundle:Contract')->getContractsLandlord($landlord);
-        if (!empty($contractsLandlord)) {
-            return true;
-        }
-
-        $em->remove($landlord);
-        $em->flush();
-
-        return true;
     }
 }

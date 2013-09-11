@@ -126,29 +126,29 @@ class LandlordController extends Controller
                 $landlord->setPassword($password);
                 $landlord->setCulture($this->container->parameters['kernel.default_locale']);
 
-                $rep = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-                $contracts = $rep->findBy(
-                    array(
-                        'group' => $landlord->getCurrentGroup()->getId(),
-                    )
-                );
+//                 $rep = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+//                 $contracts = $rep->findBy(
+//                     array(
+//                         'group' => $landlord->getCurrentGroup()->getId(),
+//                     )
+//                 );
                 $em = $this->getDoctrine()->getManager();
 
-                if (!empty($contracts)) {
-                    foreach ($contracts as $contract) {
-                        if ($contract->getStatus() == ContractStatus::INVITE && $landlord->hasMerchant()) {
-                            $contract->setStatus(ContractStatus::PENDING);
-                            $em->persist($contract);
-                        }
+//                 if (!empty($contracts)) {
+//                     foreach ($contracts as $contract) {
+//                         if ($contract->getStatus() == ContractStatus::INVITE && $landlord->hasMerchant()) {
+//                             $contract->setStatus(ContractStatus::PENDING);
+//                             $em->persist($contract);
+//                         }
 
-                        $tenant = $contract->getTenant();
-                        $this->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
-                            $tenant,
-                            $landlord,
-                            $contract
-                        );
-                    }
-                }
+//                         $tenant = $contract->getTenant();
+//                         $this->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
+//                             $tenant,
+//                             $landlord,
+//                             $contract
+//                         );
+//                     }
+//                 }
 
                 $landlord->setInviteCode(null);
                 $em->persist($landlord);

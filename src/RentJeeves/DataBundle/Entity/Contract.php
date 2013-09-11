@@ -293,4 +293,13 @@ class Contract extends Base
         }
         return $result;
     }
+
+    public function setStatusApproved()
+    {
+        $startAt = $this->getStartAt();
+        $paidTo = clone $startAt;
+        $this->setPaidTo($paidTo);
+        $this->setStatus(ContractStatus::APPROVED);
+        return $this;
+    }
 }

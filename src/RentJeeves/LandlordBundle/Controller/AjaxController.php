@@ -445,9 +445,6 @@ class AjaxController extends Controller
         $tenant->setPhone($details['phone']);
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($details['property_id']);
         $unit = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
-        if (in_array($details['status'], array('approved'))) {
-            $contract->setStatus($details['status']);
-        }
         $contract->setRent($details['amount']);
         $contract->setDueDay($details['due_day']);
         $contract->setStartAt(new \Datetime($details['start']));
@@ -455,6 +452,9 @@ class AjaxController extends Controller
         $contract->setTenant($tenant);
         $contract->setProperty($property);
         $contract->setUnit($unit);
+        if (in_array($details['status'], array(ContractStatus::APPROVED))) {
+            $contract->setStatusApproved();
+        }
         $em = $this->getDoctrine()->getManager();
         if ($action == 'remove') {
             $em->remove($contract);
