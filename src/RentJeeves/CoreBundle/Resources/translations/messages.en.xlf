@@ -1188,6 +1188,27 @@
                 <source>contract.status.finished</source>
                 <target>FINISHED</target>
             </trans-unit>
+            <trans-unit id="landlord.alert.title">
+                <source>landlord.alert.title</source>
+                <target>You have incomplete tasks</target>
+            </trans-unit>
+            <trans-unit id="landlord.alert.invite-one">
+                <source>landlord.alert.invite-one</source>
+                <target>Approve your tenant by clicking on the checkmark.</target>
+            </trans-unit>
+            <trans-unit id="landlord.alert.invite-many">
+                <source>landlord.alert.invite-many</source>
+                <target>Approve your tenants by clicking on the checkmarks.</target>
+            </trans-unit>
+            <trans-unit id="landlord.alert.pending-one">
+                <source>landlord.alert.pending-one</source>
+                <target>There is one new tenant pending review.</target>
+            </trans-unit>
+            <trans-unit id="landlord.alert.pending-many">
+                <source>landlord.alert.pending-many</source>
+                <target>There are %COUNT% new tenants pending review.</target>
+            </trans-unit>
+            
             
         </body>
     </file>

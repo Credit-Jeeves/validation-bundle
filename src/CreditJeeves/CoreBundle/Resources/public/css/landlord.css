@@ -503,3 +503,47 @@ a.linkselect-link .linkselect-link-text {
     margin-left: 0;
     margin-right: 0;
 }
+
+.landlord-alert {
+    position: relative;
+    padding: 15px;
+    width: 940px;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, #F28130 0%, #E44018 100%) repeat scroll 0 0 transparent;
+    border: 1px solid #EB6024;
+    color: #ffffff;
+    font: bold 16px/20px "PT Sans",sans-serif;
+    text-shadow: 0 1px 0 #B13F16;
+    margin-bottom: 20px;
+}
+
+.landlord-alert-thumbnail {
+     background-image: url("/bundles/rjpublic/images/sprite-icons.png");
+    background-repeat: no-repeat;
+    border-radius: 4px 4px 4px 4px;
+    display: block;
+    height: 22px;
+    left: 0;
+    top: 0;
+    width: 22px;
+    background-position: -120px -240px;
+}
+
+.landlord-alert-left {
+    width: 250px;
+}
+
+.landlord-alert-right {
+    width: 500px;
+}
+
+.landlord-alert-number {
+    background-color: #ffffff;
+    color: #E44018;
+    -moz-border-radius: 24px;
+    -webkit-border-radius: 24px;
+    border-radius: 24px;
+    text-align: center;
+    width: 20px;
+    margin-bottom: 5px;
+}

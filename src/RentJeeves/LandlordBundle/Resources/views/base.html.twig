@@ -18,6 +18,11 @@
     <script src="{{ asset('bundles/core/js/datepicker.js') }}"></script>
 {% endblock %}
 
+{% block alert %}
+    {{ render(controller('RjComponentBundle:Alert:index')) }}
+{% endblock %}
+
+
 {% block google_api %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
 {% endblock %}
