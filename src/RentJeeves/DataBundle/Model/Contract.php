@@ -83,12 +83,6 @@ abstract class Contract
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
-     * @Assert\NotBlank(
-     *     message="error.unit.empty",
-     *     groups={
-     *         "tenant_invite"
-     *     }
-     * )
      */
     protected $unit;
 
