@@ -18,7 +18,7 @@ class ReportingCase extends BaseTestCase
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($button = $this->page->find('css', '#info-block div.infoBlock button.button'));
         $button->click();
-        $this->assertNotNull($button = $this->page->find('css', '#blockPopupEditProperty button.button'));
+        $this->assertNotNull($button = $this->page->find('css', '#blockPopupEditProperty a.button'));
         $button->click();
         $this->session->wait($this->timeout, "jQuery('#contracts-history').length > 0");
         $this->assertNotNull($link = $this->page->find('css', 'a span.reporting-action'));

@@ -70,7 +70,7 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
                 break;
             case UserType::LANDLORD:
                 $this->container->get('core.session.landlord')->setUser($User);
-                $url = $this->container->get('router')->generate('landlord_homepage');
+                $url = $this->generateLanlordUrl($User);
                 $this->inviteProcess($User);
                 break;
         }
@@ -111,6 +111,16 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
             }
         }
         return true;
+    }
+
+    private function generateLanlordUrl($user)
+    {
+        $url = $this->container->get('router')->generate('landlord_homepage');
+        $contracts = $user->getHolding()->getContracts();
+        if (count($contracts) == 1  && ContractStatus::INVITE == $contracts->last()->getStatus()) {
+            $url = $this->container->get('router')->generate('landlord_tenants');
+        }
+        return $url;
     }
 
     private function inviteProcess($user)

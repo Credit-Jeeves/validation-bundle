@@ -156,3 +156,24 @@
     margin: 0 !important;
     
 }
+
+.button-link {
+    margin-left: 135px !important;
+    width: 225px;
+}
+
+.ui-dialog {
+    position:absolute;
+}
+
+.font-abeezee {
+    font-family: 'ABeeZee', sans-serif !important;
+}
+
+.font-astoria {
+    font-family: astoria-medium !important;
+}
+
+.font-helvetica {
+    font-family: "Helvetica Neue",HelveticaNeue,helvetica !important;
+}

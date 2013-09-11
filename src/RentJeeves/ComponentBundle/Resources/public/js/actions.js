@@ -67,7 +67,8 @@ function Actions() {
   };
 
   this.ajaxAction = function() {
-	self.processActions(true);
+    self.processActions(true);
+    self.notHaveResult(false);
     self.aActions([]);
     $.ajax({
       url: Routing.generate('landlord_actions_list'),
@@ -90,6 +91,11 @@ function Actions() {
         self.aActions(response.actions);
         self.total(response.total);
         self.pages(response.pagination);
+        if(self.countActions() < 1) {
+          self.notHaveResult(true);
+        } else {
+          self.notHaveResult(false);
+        }
         if(self.sortColumn().length == 0) {
           return;
         }

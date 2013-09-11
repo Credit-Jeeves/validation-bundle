@@ -19,8 +19,8 @@ parameters:
     support_email: help@rentjeeves.com
     support_phone: (866)-976-6622
 
-    email_from: support@renttjeeves.com
-    email_name: Rent Jeeves
+    email_from: no-reply@renttjeeves.com
+    email_name: RentTrack
 
     external_urls:
         main_site: 'www.rentjeeves.com'

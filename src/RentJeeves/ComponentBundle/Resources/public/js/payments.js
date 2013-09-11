@@ -51,7 +51,7 @@ function Payments() {
         }
       }
     });
-  }
+  };
 
   this.search = function() {
     var searchCollum = $('#searchPayments').linkselect('val');
@@ -76,7 +76,7 @@ function Payments() {
     self.searchCollum(searchCollum);
     self.current(1);
     self.ajaxAction();
-  }
+  };
 
   this.clearSearch = function() {
     self.searchText('');
@@ -84,7 +84,7 @@ function Payments() {
     self.current(1);
     self.ajaxAction();
     self.isSearch(false);
-  }
+  };
 
   this.countPayments = ko.computed(function(){
     return parseInt(self.aPayments().length);
@@ -98,7 +98,7 @@ function Payments() {
       self.current(Math.ceil(self.total()/limit));
     }
     self.ajaxAction();
-  }
+  };
   this.sortIt = function(data, event) {
      field = event.target.id;
 
@@ -118,7 +118,7 @@ function Payments() {
      
      self.current(1);
      self.ajaxAction();
-  }
+  };
 }
 
 var PaymentsViewModel = new Payments();

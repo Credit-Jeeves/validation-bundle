@@ -46,10 +46,7 @@
 </div>
 <!-- End Resolve Popup -->
 
-<!-- End Resolve Popup -->
-<div id="actions-block" class="landrord-box contracts-block" style="display:none;"
-data-bind="style: { display: countActions() <= 0 ? 'none' : 'block' }"
->
+<div id="actions-block" class="landrord-box contracts-block">
     <div class="title-box clearfix">
       <h2 data-bind="text: '{{'action.required'|trans}} (' + $root.total() + ')'"></h2>
       <div class="fiter-box">
@@ -98,6 +95,7 @@ data-bind="style: { display: countActions() <= 0 ? 'none' : 'block' }"
               </tr>
             </thead>
             <tbody>
+            <!-- ko if: countActions -->
               <!-- ko foreach: { data: aActions() } -->
               <tr>
                 <td class="actions-status late" data-bind="text: status"></td>
@@ -106,7 +104,7 @@ data-bind="style: { display: countActions() <= 0 ? 'none' : 'block' }"
                     <i> </i>{{'resolve'|trans|upper}}
                   </a>
                 </td>
-                <td data-bind="text: due_day"></td>
+                <td data-bind="text: late_date"></td>
                 <td data-bind="text: address"></td>
                 <td data-bind="text: tenant"></td>
                 <td data-bind="text: amount"></td>
@@ -114,8 +112,15 @@ data-bind="style: { display: countActions() <= 0 ? 'none' : 'block' }"
                 </td>
               </tr>
               <!-- /ko -->
+              <!-- /ko -->
             </tbody>
           </table>
+              <!-- ko if: notHaveResult()  -->
+              <div class="no-data-row">
+                    <h3 class="notHaveData">{{ 'donthavedata'|trans }}</h3>
+                    </div>
+              <!-- /ko -->
+
           <img src="/bundles/core/images/img_loading.gif" class="processPayment" data-bind="style: { display: processActions() ? 'block' : 'none' }">
         </div>
       </div>
