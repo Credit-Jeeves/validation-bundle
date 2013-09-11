@@ -95,7 +95,7 @@ $(document).ready(function(){
               type: 'POST',
               dataType: 'json',
               data: {'data': JSON.stringify(data, null)},
-              error: function(jqXHR, errorThrown, textStatus) {;
+              error: function(jqXHR, errorThrown, textStatus) {
               },
               success: function(data, textStatus, jqXHR) {
                 location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id});

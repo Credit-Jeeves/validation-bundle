@@ -66,7 +66,7 @@ class DefaultController extends Controller
      */
     public function testAction(Request $request)
     {
-        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
+        $paymentAccountType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
 
         if ($request->isMethod('POST')) {
             $paymentAccountType->handleRequest($request);

@@ -26,7 +26,7 @@
             <div class="form-row clearfix">
                 <label>{{ 'checkout.property' | trans }}<b>*</b></label>
                 <div class="fields-box">
-                    <span class="value big left" data-bind="text: address"></span>
+                    <span class="value big left" data-bind="text: propertyAddress"></span>
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
             </div>
@@ -185,7 +185,7 @@
         <div data-bind="visible: 'pay' == step()">
             <h3 class="italic">
                 <span data-bind="visible: recurring">{{ 'checkout.recurring_for' | trans }}</span>
-                <span data-bind="text: address"></span>
+                <span data-bind="text: propertyAddress"></span>
             </h3>
 
             <div class="clearfix halfs-box">
@@ -194,7 +194,7 @@
                     <div class="form-row clearfix">
                         <label>{{ 'checkout.send_to' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: paymentSource.address.toString"></span>
+                            <span class="value" data-bind="text: address.toString()"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
@@ -280,7 +280,7 @@
                         <div class="form-row clearfix">
                             <label>{{ 'common.address' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.address.toString"></span>
+                                <span class="value" data-bind="text: address.toString()"></span>
                             </div>
                         </div>
                     </div>

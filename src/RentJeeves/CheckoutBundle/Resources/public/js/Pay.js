@@ -17,7 +17,7 @@ function Pay(parent, contractId) {
     this.endsOn = ko.observable(finishDate.toString('MM/dd/yyyy'));
     /* /Form fields/ */
 
-    this.address = ko.observable(contract.full_address);
+    this.propertyAddress = ko.observable(contract.full_address);
     this.dueDay = ko.observable(contract.due_day);
     this.settleDays = 3; // All logic logic in "settle" method depends on this value
     this.settle = ko.computed(function() {
@@ -44,10 +44,11 @@ function Pay(parent, contractId) {
     }, this);
 
     this.paymentSource = new PaymentSource(this, false);
-    this.paymentSource.address.street(contract.property.address);
-    this.paymentSource.address.zip(contract.property.zip);
-    this.paymentSource.address.area(contract.property.area);
-    this.paymentSource.address.city(contract.property.city);
+
+    var propertyAddress = contract.property;
+    propertyAddress.street = propertyAddress.address;
+
+    this.address = new Address(this, window.addressesViewModels, propertyAddress);
 
     this.getAmount = ko.computed(function() {
         return '$' + this.amount();

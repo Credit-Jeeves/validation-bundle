@@ -28,7 +28,7 @@ class UserAddressType extends AbstractType
                 'attr' => array(
                     'class' => 'all-width',
                     'placeholder' => 'common.street',
-                    'data-bind' => 'value: paymentSource.address.street'
+                    'data-bind' => 'value: address.street'
                 )
             )
         );
@@ -47,7 +47,7 @@ class UserAddressType extends AbstractType
                 'attr' => array(
                    'class' => 'city-width',
                     'placeholder' => 'common.city',
-                    'data-bind' => 'value: paymentSource.address.city'
+                    'data-bind' => 'value: address.city'
                 ),
                 'error_bubbling' => true,
             )
@@ -62,7 +62,7 @@ class UserAddressType extends AbstractType
                 'required' => true,
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: paymentSource.address.area'
+                    'data-bind' => 'value: address.area'
                 )
             )
         );
@@ -74,7 +74,7 @@ class UserAddressType extends AbstractType
                 'attr' => array(
                     'class' => 'zc-width',
                     'placeholder' => 'common.zip_code',
-                    'data-bind' => 'value: paymentSource.address.zip'
+                    'data-bind' => 'value: address.zip'
                 ),
                 'error_bubbling' => true,
             )

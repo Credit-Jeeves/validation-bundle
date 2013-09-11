@@ -55,53 +55,43 @@ class UserDetailsType extends AbstractType
             )
         );
 
-//        $builder->add(
-//            'address_choice',
-//            'entity',
-//            array(
-//                'error_bubbling' => true,
-//                'class' => 'CreditJeeves\DataBundle\Entity\Address',
-//                'mapped' => false,
-//                'label' => 'common.address',
-//                'expanded' => true,
-//                'choices' => $this->user->getAddresses(),
-//                'attr' => array(
-//                    'data-bind' => 'checked: paymentSource.addressChoice',
-//                    'row_attr' => array(
-//                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
-//                    ),
-//                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.isAddNewAddress()">' .
-//                    '<a href="#" data-bind="i18n: {}, click: paymentSource.addAddress">common.add_new</a></div>'
-//                )
-//            )
-//        );
-//        $builder->add(
-//            'addresses',
-//            'collection',
-//            array(
-//                'label' => false,
-//                'type' => new UserAddressType(),
-//                'by_reference' => true,
-//                'allow_add' => true,
-//                'error_bubbling' => true,
-//                'empty_data' => true,
-//                'constraints' => array(
-//                    new NotBlank(
-//                        array(
-//                            'groups' => array('user_address_new'),
-//                            'message' => 'error.user.address.empty',
-//                        )
-//                    ),
-//                ),
-//                'attr' => array(
-//                    'no_box' => true,
-//                    'force_row' => true,
-//                    'row_attr' => array(
-//                        'data-bind' => 'visible: \'card\' == paymentSource.type() && paymentSource.isAddNewAddress'
-//                    )
-//                )
-//            )
-//        );
+        $builder->add(
+            'addresses',
+            'entity',
+            array(
+                'error_bubbling' => true,
+                'class' => 'CreditJeeves\DataBundle\Entity\Address',
+                'mapped' => true,
+                'label' => 'common.address',
+                'expanded' => true,
+                'choices' => $this->user->getAddresses(),
+                'attr' => array(
+                    'data-bind' => 'checked: address.addressChoice',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                    ),
+                    'html' => '<div class="fields-box" data-bind="visible: !address.isAddNewAddress()">' .
+                    '<a href="#" data-bind="i18n: {}, click: address.addAddress">common.add_new</a></div>'
+                )
+            )
+        );
+        $builder->add(
+            'new_address',
+            new UserAddressType(),
+            array(
+                'mapped' => false,
+                'label' => false,
+                'by_reference' => true,
+                'error_bubbling' => true,
+                'attr' => array(
+                    'no_box' => true,
+                    'force_row' => true,
+                    'row_attr' => array(
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() && address.isAddNewAddress'
+                    )
+                )
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

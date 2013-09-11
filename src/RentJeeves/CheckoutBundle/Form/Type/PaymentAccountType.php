@@ -277,12 +277,12 @@ class PaymentAccountType extends AbstractType
                 'expanded' => true,
                 'choices' => $this->user->getAddresses(),
                 'attr' => array(
-                    'data-bind' => 'checked: paymentSource.addressChoice',
+                    'data-bind' => 'checked: address.addressChoice',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     ),
-                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.isAddNewAddress()">' .
-                        '<a href="#" data-bind="i18n: {}, click: paymentSource.addAddress">common.add_new</a></div>'
+                    'html' => '<div class="fields-box" data-bind="visible: !address.isAddNewAddress()">' .
+                        '<a href="#" data-bind="i18n: {}, click: address.addAddress">common.add_new</a></div>'
                 )
             )
         );
@@ -298,7 +298,7 @@ class PaymentAccountType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && paymentSource.isAddNewAddress'
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() && address.isAddNewAddress'
                     )
                 )
             )

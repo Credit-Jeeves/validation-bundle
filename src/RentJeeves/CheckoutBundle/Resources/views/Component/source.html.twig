@@ -22,9 +22,9 @@
 {% endfor %}
 
     window.addressesViewModels = [];
-{% for address in addresses%}
+{% for address in addresses %}
     var address = new Address(null);
-    ko.mapping.fromJS({{ address | serialize('json') | raw }}, address);
+    ko.mapping.fromJS({{ address | serialize('json') | raw }}, {}, address);
     window.addressesViewModels.push(address);
 {% endfor %}
 

@@ -9,7 +9,7 @@ function CurrentPayments(contracts) {
             }
         });
         return contract;
-    }
+    };
 
     this.openPayPopup = function(contractId) {
         new Pay(this, contractId);

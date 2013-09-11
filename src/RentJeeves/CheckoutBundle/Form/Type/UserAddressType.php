@@ -23,7 +23,7 @@ class UserAddressType extends Base
                 'attr' => array(
                     'class' => 'all-width',
                     'placeholder' => 'common.street',
-                    'data-bind' => 'value: paymentSource.address.street'
+                    'data-bind' => 'value: address.street'
                 )
             )
         );
