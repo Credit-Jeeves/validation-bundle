@@ -218,7 +218,7 @@ class TenantCase extends BaseTestCase
         $this->page->clickLink('text/html');
         $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
         $link->click();
-        $this->assertNotNull($form = $this->page->find('css', '#tenantInviteRegister'));
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_tenanttype'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
         $this->assertCount(2, $errorList, 'Wrong number of pending');
