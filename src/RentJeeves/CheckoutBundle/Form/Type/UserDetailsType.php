@@ -2,6 +2,8 @@
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
+use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -10,6 +12,16 @@ use Symfony\Component\Validator\Constraints\Date;
 
 class UserDetailsType extends AbstractType
 {
+    /**
+     * @var Tenant
+     */
+    protected $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -42,6 +54,54 @@ class UserDetailsType extends AbstractType
                 'label' => 'common.ssn',
             )
         );
+
+//        $builder->add(
+//            'address_choice',
+//            'entity',
+//            array(
+//                'error_bubbling' => true,
+//                'class' => 'CreditJeeves\DataBundle\Entity\Address',
+//                'mapped' => false,
+//                'label' => 'common.address',
+//                'expanded' => true,
+//                'choices' => $this->user->getAddresses(),
+//                'attr' => array(
+//                    'data-bind' => 'checked: paymentSource.addressChoice',
+//                    'row_attr' => array(
+//                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+//                    ),
+//                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.isAddNewAddress()">' .
+//                    '<a href="#" data-bind="i18n: {}, click: paymentSource.addAddress">common.add_new</a></div>'
+//                )
+//            )
+//        );
+//        $builder->add(
+//            'addresses',
+//            'collection',
+//            array(
+//                'label' => false,
+//                'type' => new UserAddressType(),
+//                'by_reference' => true,
+//                'allow_add' => true,
+//                'error_bubbling' => true,
+//                'empty_data' => true,
+//                'constraints' => array(
+//                    new NotBlank(
+//                        array(
+//                            'groups' => array('user_address_new'),
+//                            'message' => 'error.user.address.empty',
+//                        )
+//                    ),
+//                ),
+//                'attr' => array(
+//                    'no_box' => true,
+//                    'force_row' => true,
+//                    'row_attr' => array(
+//                        'data-bind' => 'visible: \'card\' == paymentSource.type() && paymentSource.isAddNewAddress'
+//                    )
+//                )
+//            )
+//        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

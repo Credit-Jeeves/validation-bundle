@@ -19,10 +19,24 @@ function Pay(parent, contractId) {
 
     this.address = ko.observable(contract.full_address);
     this.dueDay = ko.observable(contract.due_day);
-    this.settleDays = 3;
+    this.settleDays = 3; // All logic logic in "settle" method depends on this value
     this.settle = ko.computed(function() {
         var settleDate = new Date(this.startDate());
-        settleDate.add(this.settleDays).days();
+        var startDayOfWeek = (0 == settleDate.getDay()?7:settleDate.getDay()); // Move Sunday from 0 to 7
+        /* logic: skip weekends */
+        var daysAdd = (4 == startDayOfWeek || 6 == startDayOfWeek ? 1 : 0);
+        if (0 == daysAdd) {
+            daysAdd = (5 == startDayOfWeek ? 2 : 0);
+        }
+        /* end of logic: skip weekends */
+
+        settleDate.add(/*this.settleDays*/3).days();// see comment of this.settleDays
+        var dayOfWeek = (0 == settleDate.getDay()?7:settleDate.getDay()); // Move Sunday from 0 to 7
+        var daysShift = 8 - dayOfWeek; // Settle day can't be weekend
+        if (2 < daysShift) {
+            daysShift = 0;
+        }
+        settleDate.add(daysShift + daysAdd).days();
         return settleDate.toString('MM/dd/yyyy');
     }, this);
     this.getLastPaymentDay = ko.computed(function() {

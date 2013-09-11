@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
-use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
+use RentJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use CreditJeeves\CoreBundle\Form\Widget\MonthYearType;
 use CreditJeeves\DataBundle\Model\User;
 use Doctrine\ORM\EntityRepository;
@@ -279,9 +279,9 @@ class PaymentAccountType extends AbstractType
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.addressChoice',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && !paymentSource.isAddNewAddress()'
+                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     ),
-                    'html' => '<div class="fields-box">' .
+                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.isAddNewAddress()">' .
                         '<a href="#" data-bind="i18n: {}, click: paymentSource.addAddress">common.add_new</a></div>'
                 )
             )

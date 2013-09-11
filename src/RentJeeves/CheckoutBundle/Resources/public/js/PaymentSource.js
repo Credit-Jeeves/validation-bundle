@@ -17,9 +17,25 @@ function PaymentSource(parent, isForceSave) {
     this.save = ko.observable(isForceSave);
     this.isForceSave = ko.observable(isForceSave);
 
+    this.getCardNumber = ko.computed(function() {
+        var card = self.CardNumber().toString().split('');
+        for(var i = 0; i < card.length; i++) {
+            if (i > 6 && (card.length - 5) >= i) {
+                card[i] = 'X';
+            }
+        }
+        return card.join('');
+    });
+
     this.isAddNewAddress = ko.observable(!this.addresses().length);
     this.addAddress = function() {
         self.isAddNewAddress(true);
-        console.log(self.isAddNewAddress());
+        self.addressChoice(null);
     };
+
+    this.addressChoice.subscribe(function(newValue) {
+        if (null != newValue) {
+            self.isAddNewAddress(false);
+        }
+    });
 }

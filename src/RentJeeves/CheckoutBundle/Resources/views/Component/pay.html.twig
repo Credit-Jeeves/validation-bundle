@@ -268,7 +268,7 @@
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.card_number' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.CardNumber"></span>
+                                <span class="value" data-bind="text: paymentSource.getCardNumber"></span>
                             </div>
                         </div>
                         <div class="form-row clearfix">
@@ -298,7 +298,7 @@
                 </div>
             </div>
 
-            <div class="form-row type_checkbox alone clearfix">
+            <div class="form-row checkboxes alone clearfix">
                 <label class="checkbox">
                     <input type="checkbox" checked="checked">
                     <i> </i>
