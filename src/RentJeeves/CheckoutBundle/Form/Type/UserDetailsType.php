@@ -67,9 +67,6 @@ class UserDetailsType extends AbstractType
                 'choices' => $this->user->getAddresses(),
                 'attr' => array(
                     'data-bind' => 'checked: address.addressChoice',
-                    'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
-                    ),
                     'html' => '<div class="fields-box" data-bind="visible: !address.isAddNewAddress()">' .
                     '<a href="#" data-bind="i18n: {}, click: address.addAddress">common.add_new</a></div>'
                 )
@@ -87,7 +84,7 @@ class UserDetailsType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && address.isAddNewAddress'
+                        'data-bind' => 'visible: address.isAddNewAddress()'
                     )
                 )
             )

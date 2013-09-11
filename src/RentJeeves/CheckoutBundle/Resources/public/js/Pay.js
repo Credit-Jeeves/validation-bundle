@@ -103,6 +103,12 @@ function Pay(parent, contractId) {
         selectOtherMonths: true
     });
 
+    $('#vi-questions').slimScroll({
+        alwaysVisible:true,
+        width:330,
+        height:260
+    });
+
     $('.user-ssn').ssn();
 
     ko.applyBindings(this, $('#pay-popup').get(0));

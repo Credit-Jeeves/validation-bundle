@@ -11,9 +11,10 @@ class UserAddressType extends Base
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
         parent::buildForm($builder, $options);
         $builder->remove('unit');
-        $builder->remove('street');
+//        $builder->remove('street');
         $builder->add(
             'street',
             'text',
@@ -27,6 +28,7 @@ class UserAddressType extends Base
                 )
             )
         );
+
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

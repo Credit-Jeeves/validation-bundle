@@ -59,7 +59,7 @@
                     <div class="vi-questions-content">
                         <div class="box">
                             <h4>Question with a fairly short description:</h4>
-                            <ul class="type_checkbox">
+                            <ul class="checkboxes">
                                 <li class="clearfix">
                                     <label class="checkbox radio">
                                         <input type="radio" name="shortDescription">
@@ -101,7 +101,7 @@
 
                         <div class="box">
                             <h4>Question with a fairly long description that wraps to many lines:</h4>
-                            <ul class="type_checkbox">
+                            <ul class="checkboxes">
                                 <li class="clearfix">
                                     <label class="checkbox radio">
                                         <input type="radio" name="longDescription">
@@ -204,19 +204,19 @@
                         </div>
                     </div>
                     <div class="form-row clearfix" data-bind="visible: !isTodayPaymnet()">
-                        <label>{{ 'checkout.starts' | trans }}</label>
+                        <label>{{ 'checkout.starts_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: startDate"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix" data-bind="visible: recurring">
-                        <label>{{ 'checkout.payment_sent' | trans }}</label>
+                        <label>{{ 'checkout.recurs_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="i18n: {'DAY': dueDay()}">checkout.day_%DAY%_each_month</span>
                         </div>
                     </div>
                     <div class="form-row clearfix" data-bind="visible: 'on' == ends()">
-                        <label>{{ 'checkout.ends' | trans }}</label>
+                        <label>{{ 'checkout.last_payment_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: endsOn"></span>
                         </div>

@@ -226,13 +226,13 @@
                 <source>checkout.day_%DAY%_each_month</source>
                 <target>Day %DAY% of Each Month</target>
             </trans-unit>
-            <trans-unit id="checkout.starts">
-                <source>checkout.starts</source>
-                <target>Starts</target>
+            <trans-unit id="checkout.starts_on">
+                <source>checkout.starts_on</source>
+                <target>Starts On</target>
             </trans-unit>
-            <trans-unit id="checkout.payment_sent">
-                <source>checkout.payment_sent</source>
-                <target>Payment Sent</target>
+            <trans-unit id="checkout.recurs_on">
+                <source>checkout.recurs_on</source>
+                <target>Recurs On</target>
             </trans-unit>
             <trans-unit id="checkout.free">
                 <source>checkout.free</source>
@@ -273,6 +273,10 @@
             <trans-unit id="checkout.questions.tooltip.line2">
                 <source>checkout.questions.tooltip.line2</source>
                 <target>Please note that the correct answer may not be listed and some information information on your credit file may be from past addresses and employers.</target>
+            </trans-unit>
+            <trans-unit id="checkout.last_payment_on">
+                <source>checkout.last_payment_on</source>
+                <target>LastPayment On</target>
             </trans-unit>
         </body>
     </file>
