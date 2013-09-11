@@ -1,9 +1,0 @@
-{% if alertMessages %}
-    <div class="alert-body">
-        <span class="titleAlert">{{ 'rj.alert.title' | trans }}: </span>
-        {% for key, message in alertMessages %}
-            {{ key }}) {{ message }}
-        {% endfor %}
-    </div>
-{% endif %}
-
