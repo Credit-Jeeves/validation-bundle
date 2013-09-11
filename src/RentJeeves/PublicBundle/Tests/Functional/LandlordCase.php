@@ -10,7 +10,7 @@ class LandlordCase extends BaseTestCase
 {
     protected function fillGoogleAddress($fillAddress)
     {
-        $this->assertNotNull($form = $this->page->find('css', '#landlordRegister'));
+        $this->assertNotNull($form = $this->page->find('css', '#LandlordAddressType'));
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
         $this->fillForm(
@@ -48,7 +48,7 @@ class LandlordCase extends BaseTestCase
         $buttons[0]->click();
         $this->session->wait($this->timeout, "!$('#pricing-popup').is(':visible')");
         
-        $this->assertNotNull($form = $this->page->find('css', '#landlordRegister'));
+        $this->assertNotNull($form = $this->page->find('css', '#LandlordAddressType'));
         $this->fillForm(
             $form,
             array(

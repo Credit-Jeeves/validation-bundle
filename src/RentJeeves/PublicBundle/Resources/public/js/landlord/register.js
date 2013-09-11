@@ -144,7 +144,7 @@ $(document).ready(function(){
             });
         }
 
-        $('#landlordRegister').submit(function() {
+        $('#LandlordAddressType').submit(function() {
             $('#submitForm').hide();
             $('.loader').show();
             if (ERROR == $('#property-search').attr('class')) {
