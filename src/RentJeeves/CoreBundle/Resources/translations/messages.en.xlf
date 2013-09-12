@@ -1208,6 +1208,10 @@
                 <source>landlord.alert.pending-many</source>
                 <target>There are %COUNT% new tenants pending review.</target>
             </trans-unit>
+            <trans-unit id="deposit.merchant.setup">
+                <source>deposit.merchant.setup</source>
+                <target>You need to set up merchant name.</target>
+            </trans-unit>
             
             
         </body>
