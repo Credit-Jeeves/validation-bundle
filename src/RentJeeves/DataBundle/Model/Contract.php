@@ -213,12 +213,25 @@ abstract class Contract
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
+     * @var ArrayCollection
      */
     protected $operations;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
+     *     mappedBy="contract",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     * @var ArrayCollection
+     */
+    protected $payments;
 
     public function __construct()
     {
         $this->operations = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
     
     /**
