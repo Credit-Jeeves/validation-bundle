@@ -3,6 +3,7 @@ namespace CreditJeeves\CoreBundle\Mailer;
 
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 use JMS\DiExtraBundle\Annotation as DI;
+use Rj\EmailBundle\Entity\EmailTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use \Exception;
 use \RuntimeException;
@@ -19,6 +20,9 @@ abstract class BaseMailer
      */
     private $catcher;
 
+    /**
+     * @var EmailTemplateManager
+     */
     protected $manager;
 
     /**

@@ -25,6 +25,9 @@ doctrine:
     dbal:
         dbname:   '%database_name%_test'
 
+twig:
+    strict_variables: true
+
 mink:
     goutte: ~
 #    sahi: ~

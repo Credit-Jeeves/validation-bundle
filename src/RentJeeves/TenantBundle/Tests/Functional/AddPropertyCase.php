@@ -105,8 +105,8 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.inviteLandlord').length > 0");
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
-        $this->session->wait($this->timeout, "$('#inviteForm').length > 0");
-        $this->assertNotNull($inviteForm = $this->page->find('css', '#inviteForm'));
+        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetype').length > 0");
+        $this->assertNotNull($inviteForm = $this->page->find('css', '#rentjeeves_publicbundle_invitetype'));
         $this->fillForm(
             $inviteForm,
             array(
@@ -141,8 +141,8 @@ class AddPropertyCase extends BaseTestCase
         $this->clearEmail();
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
-        $this->session->wait($this->timeout, '$("#landlordInviteRegister").length > 0');
-        $this->assertNotNull($form = $this->page->find('css', '#landlordInviteRegister'));
+        $this->session->wait($this->timeout, '$("#landlordType").length > 0');
+        $this->assertNotNull($form = $this->page->find('css', '#landlordType'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
         $this->assertCount(2, $errorList, 'Wrong number of pending');
@@ -189,8 +189,8 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
 
-        $this->session->wait($this->timeout, "$('#inviteForm').length > 0");
-        $this->assertNotNull($inviteForm = $this->page->find('css', '#inviteForm'));
+        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetype').length > 0");
+        $this->assertNotNull($inviteForm = $this->page->find('css', '#rentjeeves_publicbundle_invitetype'));
         $this->fillForm(
             $inviteForm,
             array(

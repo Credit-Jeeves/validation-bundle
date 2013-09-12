@@ -212,6 +212,14 @@
                 <source>common.months</source>
                 <target>Months</target>
             </trans-unit>
+            <trans-unit id="common.year">
+                <source>common.year</source>
+                <target>Year</target>
+            </trans-unit>
+            <trans-unit id="common.month">
+                <source>common.month</source>
+                <target>Month</target>
+            </trans-unit>
             <trans-unit id="common.messages">
                 <source>common.messages</source>
                 <target>Messages</target>
@@ -267,6 +275,14 @@
             <trans-unit id="common.login_screen">
                 <source>common.login_screen</source>
                 <target>Login Screen</target>
+            </trans-unit>
+            <trans-unit id="common.date_of_birth">
+                <source>common.date_of_birth</source>
+                <target>Date of Birth</target>
+            </trans-unit>
+            <trans-unit id="common.ssn">
+                <source>common.ssn</source>
+                <target>SSN</target>
             </trans-unit>
             
             
@@ -825,7 +841,11 @@
 
             <trans-unit id="error.user.date">
                 <source>error.user.date</source>
-                <target>This value is not a valid date.</target>
+                <target>Date of Birth is not a valid date.</target>
+            </trans-unit>
+            <trans-unit id="error.user.date.empty">
+                <source>error.user.date.empty</source>
+                <target>Date of Birth couldn't be empty.</target>
             </trans-unit>
 
             <trans-unit id="error.user.first_name.empty">
@@ -879,6 +899,10 @@
             <trans-unit id="error.user.address.empty">
                 <source>error.user.address.empty</source>
                 <target>Address couldn't be empty</target>
+            </trans-unit>
+            <trans-unit id="error.user.street.empty">
+                <source>error.user.street.empty</source>
+                <target>Street couldn't be empty</target>
             </trans-unit>
             <trans-unit id="error.user.unit.empty">
                 <source>error.user.unit.empty</source>
@@ -1161,6 +1185,36 @@
             <trans-unit id="back.to.admin">
                 <source>back.to.admin</source>
                 <target>Back to Admin</target>
+            </trans-unit>
+
+            <trans-unit id="common.empty">
+                <source>common.empty</source>
+                <target></target>
+            </trans-unit>
+
+            <trans-unit id="common.address">
+                <source>common.address</source>
+                <target>Address</target>
+            </trans-unit>
+
+            <trans-unit id="common.street">
+                <source>common.street</source>
+                <target>Street</target>
+            </trans-unit>
+
+            <trans-unit id="common.city">
+                <source>common.city</source>
+                <target>City</target>
+            </trans-unit>
+
+            <trans-unit id="common.zip_code">
+                <source>common.zip_code</source>
+                <target>Zip Code</target>
+            </trans-unit>
+
+            <trans-unit id="common.add_new">
+                <source>common.add_new</source>
+                <target>Add New</target>
             </trans-unit>
         </body>
     </file>

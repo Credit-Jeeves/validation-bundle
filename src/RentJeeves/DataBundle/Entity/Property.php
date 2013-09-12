@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use CreditJeeves\DataBundle\Traits\AddressTrait;
 
 /**
  * Property
@@ -14,6 +15,8 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
  */
 class Property extends Base
 {
+    use AddressTrait;
+
     public function parseGoogleAddress($data)
     {
         $property = array();
@@ -101,28 +104,6 @@ class Property extends Base
         return $result;
     }
 
-    public function getAddress()
-    {
-        $address = array();
-        $result = array();
-        if ($number = $this->getNumber()) {
-            $address[] = $number;
-        }
-        if ($street = $this->getStreet()) {
-            $address[] = $street;
-        }
-
-        if ($address) {
-            $result[] = implode(' ', $address);
-        }
-
-        if ($district = $this->getDistrict()) {
-            $result[] = $district;
-        }
-
-        return implode(', ', $result);
-    }
-
     public function getUnitsArray()
     {
         $result = array();
@@ -172,31 +153,6 @@ class Property extends Base
         }
         $em->flush();
         return true;
-    }
-
-    public function getFullAddress()
-    {
-        $address = array();
-        $result = array();
-        if ($number = $this->getNumber()) {
-            $address[] = $number;
-        }
-        if ($street = $this->getStreet()) {
-            $address[] = $street;
-        }
-        if ($address) {
-            $result[] = implode(' ', $address);
-        }
-        if ($district = $this->getDistrict()) {
-            $result[] = $district;
-        }
-        if ($city = $this->getCity()) {
-            $result[] = $city;
-        }
-        if ($area = $this->getArea()) {
-            $result[] = $area;
-        }
-        return implode(', ', $result).' '.$this->getZip();
     }
 
     public function getLocationAddress()

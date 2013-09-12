@@ -210,7 +210,7 @@
     </div>
     <!-- Action Add Tenant-->
    <div id="tenant-add-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <form novalidate id="{{ form.vars.id }}" action="{{ path('landlord_invite_save') }}" method="post" {{ form_enctype(form) }}>
+      <form novalidate action="{{ path('landlord_invite_save') }}" method="post" {{ form_enctype(form) }}>
       <h1>{{'add.tenant'|trans}}</h1>
       {{ form_errors(form) }}
       <div class="clearfix col-box">

@@ -38,6 +38,12 @@
     <link href="{{ asset('bundles/tenant/css/home.page.css') }}" rel="stylesheet" type="text/css" /-->
 {% endblock %}
 
+{% block head_javascripts %}
+{% javascripts '@RjCoreBundle/Resources/public/js/jquery.slimscroll.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
 {% block google_api %}
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">

@@ -23,8 +23,13 @@ class UserAddressType extends AbstractType
             'street',
             'text',
             array(
-                'label' => 'Address',
+                'label' => 'common.address',
                 'error_bubbling' => true,
+                'attr' => array(
+                    'class' => 'all-width',
+                    'placeholder' => 'common.street',
+                    'data-bind' => 'value: address.street'
+                )
             )
         );
         $builder->add(
@@ -38,7 +43,12 @@ class UserAddressType extends AbstractType
             'city',
             'text',
             array(
-                'label' => '',
+                'label' => false,
+                'attr' => array(
+                   'class' => 'city-width',
+                    'placeholder' => 'common.city',
+                    'data-bind' => 'value: address.city'
+                ),
                 'error_bubbling' => true,
             )
         );
@@ -46,17 +56,26 @@ class UserAddressType extends AbstractType
             'area',
             'choice',
             array(
-                'label' => '',
+                'label' => false,
                 'error_bubbling' => true,
                 'choice_list' =>  new StateChoiceList(),
                 'required' => true,
+                'attr' => array(
+                    'class' => 'original',
+                    'data-bind' => 'value: address.area'
+                )
             )
         );
         $builder->add(
             'zip',
             'text',
             array(
-                'label' => '',
+                'label' => false,
+                'attr' => array(
+                    'class' => 'zc-width',
+                    'placeholder' => 'common.zip_code',
+                    'data-bind' => 'value: address.zip'
+                ),
                 'error_bubbling' => true,
             )
         );
@@ -66,8 +85,9 @@ class UserAddressType extends AbstractType
     {
         $resolver->setDefaults(
             array(
+                'cascade_validation' => true,
                 'data_class' => 'CreditJeeves\DataBundle\Entity\Address',
-                'validation_groups' => array(),
+                'validation_groups' => array('user_address_new'),
             )
         );
     }

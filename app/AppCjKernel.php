@@ -37,6 +37,8 @@ class AppCjKernel extends AppKernel
             new Sonata\BlockBundle\SonataBlockBundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
+            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
 
             // Must be last in the list
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
@@ -58,8 +60,6 @@ class AppCjKernel extends AppKernel
             new RentJeeves\CheckoutBundle\RjCheckoutBundle(),
             new RentJeeves\ComponentBundle\RjComponentBundle(),
             new RentJeeves\CoreBundle\RjCoreBundle(),
-            new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
-            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

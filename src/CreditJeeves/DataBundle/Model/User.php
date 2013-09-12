@@ -220,7 +220,8 @@ abstract class User extends BaseUser
      *     message="error.user.date.empty",
      *     groups={
      *         "user_profile",
-     *         "invite_short"
+     *         "invite_short",
+     *         "birth_and_ssn"
      *     }
      * )
      */
@@ -238,7 +239,8 @@ abstract class User extends BaseUser
      *     min=9,
      *     max=9,
      *     groups={
-     *         "user_profile"
+     *         "user_profile",
+     *         "birth_and_ssn"
      *     }
      * )
      */

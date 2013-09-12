@@ -1,28 +1,97 @@
 {% use "form_div_layout.html.twig" %}
 {% use ':Form:form_errors.html.twig' %}
 
+{% block form_rows %}
+    {% for child in form %}
+        {% set type = child.vars.block_prefixes[1]|default('text') %}
+        {% if child.vars.label or loop.first or child.vars.attr.force_row is defined %}
+            {% if loop.first != true %}
+                </div>
+            {% endif %}
+            {% set attr = child.vars.attr.row_attr|default({}) %}
+            {% set row_class = attr.class|default('form-row clearfix type-' ~ type) %}
+            {% if child.attr.tooltip_title is defined %}
+                {% set row_class = row_class ~ ' with-tooltip' %}
+            {% endif%}
+            {% set attr = attr|merge({'class': row_class}) %}
+            {% set id = child.vars.id ~ '_row' %}
+            <div {{ block('widget_attributes') }}>
+        {% endif %}
+        {{ form_row(child) }}
+    {% endfor %}
+    </div>
+{% endblock form_rows %}
+
 {% block form_row %}
     {% spaceless %}
-        <div class="form-row clearfix">
-            {{ form_errors(form) }}
+        {% set type = form.vars.block_prefixes[1]|default('text') %}
+        {{ form_errors(form) }}
+
+        {% set _attrOr = attr %}
+        {% set attr = form.vars.attr.box_attr|default({}) %}
+        {% set attr = attr|merge({'class': 'fields-box'}) %}
+        {% set _orId = id %}
+        {% set id = id ~ '_box' %}
+
+        {% if 'checkbox' == type %}
+            {% if _attrOr.no_box is not defined %}<div {{ block('widget_attributes') }}>{% endif %}
+                {% set id = _orId %}
+                {% set attr = _attrOr %}
+                <label class="checkbox" for="{{ id }}">
+                    {{ block('checkbox_widget') }}
+                    <span>{{ label|trans({}, translation_domain) }}</span>
+                </label>
+                {{ block('aditional_attr_block') }}
+            {% if _attrOr.no_box is not defined %}</div>{% endif %}
+        {% else %}
             {{ form_label(form, label|default(null)) }}
-            <div class="fields-box">
+            {% if _attrOr.no_box is not defined %}<div {{ block('widget_attributes') }}>{% endif %}
+                {% set id = _orId %}
+                {% set attr = _attrOr %}
                 {{ form_widget(form) }}
-            </div>
-        </div>
+                {{ block('aditional_attr_block') }}
+            {% if _attrOr.no_box is not defined %}</div>{% endif %}
+        {% endif %}
     {% endspaceless %}
 {% endblock form_row %}
 
+{% block aditional_attr_block %}
+    {%- if attr.help is defined -%}
+        <i title="{{ attr.help | trans({}, translation_domain) }}"
+           class="help after-checkbox pie-el tooltip-link"
+        >
+            ?
+        </i>
+    {%- endif -%}
+
+    {% if attr.html is defined %}
+        {{ attr.html|raw }}
+    {% endif %}
+{% endblock aditional_attr_block %}
+
+{% block radio_widget %}
+    {% set attr = form.parent.vars.attr %}
+    {% spaceless %}
+        {{ parent() }}
+        <i> </i>
+    {% endspaceless %}
+{% endblock radio_widget %}
+
+{% block checkbox_widget %}
+    {% spaceless %}
+        {{ parent() }}
+        <i> </i>
+    {% endspaceless %}
+{% endblock checkbox_widget %}
+
 {% block choice_widget_expanded %}
     {% spaceless %}
-        <div class="children" {{ block('widget_container_attributes') }}>
-            {% for child in form %}
-                <div class="field">
-                    {{ form_widget(child) }}
-                    {{ form_label(child) }}
-                </div>
-            {% endfor %}
-        </div>
+        {% for child in form %}
+            <label class="checkbox radio">
+                {{ form_widget(child) }}
+                <span>{{ child.vars.label|trans({}, translation_domain) }}</span>
+            </label>
+        {% endfor %}
     {% endspaceless %}
 {% endblock choice_widget_expanded %}
 
@@ -39,12 +108,42 @@
                 {% set label = name|humanize %}
             {% endif %}
             <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
-                {{ label|trans({}, translation_domain) }}
-
-                {% if required %}
-                    <b>*</b>
-                {% endif %}
+                {{ label|trans({}, translation_domain) }}{% if required %}<b>*</b>{% endif %}
             </label>
         {% endif %}
     {% endspaceless %}
 {% endblock form_label %}
+
+{% block widget_attributes %}
+    {% if attr.row_attr is defined %}
+        {% set attr = attr|merge({'row_attr': null}) %}
+    {% endif %}
+    {% if attr.box_attr is defined %}
+        {% set attr = attr|merge({'box_attr': null}) %}
+    {% endif %}
+    {{ parent() }}
+{% endblock widget_attributes %}
+
+
+{% block form_widget_compound %}
+    {% if form.vars.attr.row_attr is defined %}
+        {% set attr = form.vars.attr.row_attr %}
+    {% endif %}
+    {{ parent() }}
+{% endblock form_widget_compound %}
+
+{% block date_widget %}
+    {% spaceless %}
+        {% if widget == 'single_text' %}
+            {{ block('form_widget_simple') }}
+        {% else %}
+            <div {{ block('widget_container_attributes') }}>
+                {{ date_pattern|replace({
+                '{{ year }}':  form_widget(form.year, {'attr': attr}),
+                '{{ month }}': form_widget(form.month, {'attr': attr}),
+                '{{ day }}':   form_widget(form.day, {'attr': attr}),
+                })|raw }}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock date_widget %}

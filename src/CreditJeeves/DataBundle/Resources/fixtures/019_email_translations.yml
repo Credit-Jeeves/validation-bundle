@@ -316,12 +316,12 @@ fixtures:
       {% endblock %}
 
 # rjLandlordComeFromInvite.html
-  translation_126:
+  translation_128:
     translatable: email_15
     locale: %locale%
     property: subject
     value: Your Landlord Signed Up - Set up your Rent Payment
-  translation_127:
+  translation_129:
     translatable: email_15
     locale: %locale%
     property: body
