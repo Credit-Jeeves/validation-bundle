@@ -75,11 +75,6 @@ abstract class Invite
      *         "invite",
      *     }
      * )
-     * @InviteEmail(
-     *     groups={
-     *         "invite",
-     *     }
-     * )
      */
     protected $email;
 

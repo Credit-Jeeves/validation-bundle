@@ -122,8 +122,9 @@ class Contract extends Base
 
     public function getStatusArray()
     {
-        $result = array('status' => strtoupper(ContractStatus::PENDING), 'class' => 'contract-pending');
+        $result = array('status' => strtoupper($this->getStatus()), 'class' => '');
         if (ContractStatus::PENDING == $this->getStatus()) {
+            $result['class'] = 'contract-pending';
             return $result;
         }
         if (ContractStatus::FINISHED == $this->getStatus()) {
@@ -140,8 +141,6 @@ class Contract extends Base
                 $result['class'] = 'contract-late';
                 return $result;
             }
-            $result['status'] = strtoupper(ContractStatus::CURRENT);
-            $result['class'] = '';
             return $result;
         }
         $result['status'] = strtoupper($this->getStatus());
@@ -303,5 +302,14 @@ class Contract extends Base
         $result['due_day'] = $this->getDueDay();
         $result['property'] = $this->getProperty()->getItem();
         return $result;
+    }
+
+    public function setStatusApproved()
+    {
+        $startAt = $this->getStartAt();
+        $paidTo = clone $startAt;
+        $this->setPaidTo($paidTo);
+        $this->setStatus(ContractStatus::APPROVED);
+        return $this;
     }
 }

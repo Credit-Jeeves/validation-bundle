@@ -67,7 +67,7 @@ class DepositAccountCase extends BaseTestCase
         );
 
         $this->assertTrue($contract instanceof Contract);
-        $this->assertTrue($contract->getStatus() === ContractStatus::INVITE);
+        $this->assertTrue($contract->getStatus() === ContractStatus::PENDING);
 
         $depositAccount = new DepositAccount();
         $depositAccount->setMerchantName('My First merchantName');

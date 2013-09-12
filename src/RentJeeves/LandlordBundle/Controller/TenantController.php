@@ -59,12 +59,10 @@ class TenantController extends Controller
                 if ($tenantInDb) {
                     unset($tenant);
                     $tenant = $tenantInDb;
-                    $contract->setStatus(ContractStatus::CURRENT);
                 } else {
-                    $contract->setStatus(ContractStatus::INVITE);
                     $tenant->setPassword(md5(md5(1)));
                 }
-
+                $contract->setStatus(ContractStatus::INVITE);
                 $contract->setTenant($tenant);
                 $tenant->addContract($contract);
                 $user = $this->getUser();

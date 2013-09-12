@@ -17,26 +17,20 @@ class AlertController extends Controller
     {
         $user = $this->getUser();
         $alerts = array();
-        $contracts = $this->get('core.session.landlord')->getGroup()->getContracts();
-        $invite = 0;
+        $group = $this->getUser()->getCurrentGroup();
+        $contracts = $group->getContracts();
+        $deposit = $group->getDepositAccounts();
         $pending = 0;
         foreach ($contracts as $contract) {
             $status = $contract->getStatus();
             switch ($status) {
-                case ContractStatus::INVITE:
-                    $invite++;
-                    break;
                 case ContractStatus::PENDING:
                     $pending++;
                     break;
             }
         }
-        if ($invite > 0) {
-            $text = $this->get('translator.default')->trans('landlord.alert.invite-one');
-            if ($invite > 1) {
-                $text = $this->get('translator.default')->trans('landlord.alert.invite-many');
-            }
-            $alerts[] = $text;
+        if (empty($deposit)) {
+            $alerts[] = $this->get('translator.default')->trans('deposit.merchant.setup');
         }
         if ($pending > 0) {
             $text = $this->get('translator.default')->trans('landlord.alert.pending-one');
