@@ -121,7 +121,7 @@ class Contract extends Base
 
     public function getStatusArray()
     {
-        $result = array('status' => strtoupper(ContractStatus::PENDING), 'class' => 'contract-pending');
+        $result = array('status' => strtoupper($this->getStatus()), 'class' => '');
         if (ContractStatus::PENDING == $this->getStatus()) {
             return $result;
         }
@@ -139,8 +139,6 @@ class Contract extends Base
                 $result['class'] = 'contract-late';
                 return $result;
             }
-            $result['status'] = strtoupper(ContractStatus::CURRENT);
-            $result['class'] = '';
             return $result;
         }
         $result['status'] = strtoupper($this->getStatus());

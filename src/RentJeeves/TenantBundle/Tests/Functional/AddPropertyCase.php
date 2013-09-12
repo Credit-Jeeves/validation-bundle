@@ -113,7 +113,7 @@ class AddPropertyCase extends BaseTestCase
                 'rentjeeves_publicbundle_invitetype_unit'                      => 'e3',
                 'rentjeeves_publicbundle_invitetype_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetype_last_name'                 => 'Sharamko',
-                'rentjeeves_publicbundle_invitetype_email'                     => 'newtenant@yandex.ru',
+                'rentjeeves_publicbundle_invitetype_email'                     => 'newlandlord@test.com',
             )
         );
         $this->assertNotNull($register = $this->page->find('css', '#register'));
@@ -158,10 +158,8 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        
-        $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table tbody tr'));
         $this->assertCount(1, $contract, 'Wrong number of contract');
-
         //Check notify tenant about landlord come
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
@@ -199,7 +197,7 @@ class AddPropertyCase extends BaseTestCase
                 'rentjeeves_publicbundle_invitetype_unit'                      => 'e3',
                 'rentjeeves_publicbundle_invitetype_first_name'                => 'Alex',
                 'rentjeeves_publicbundle_invitetype_last_name'                 => 'Sharamko',
-                'rentjeeves_publicbundle_invitetype_email'                     => 'landlord@yandex.ru',
+                'rentjeeves_publicbundle_invitetype_email'                     => 'landlord2@example.com',
             )
         );
         $this->page->pressButton('add.property');
@@ -214,36 +212,12 @@ class AddPropertyCase extends BaseTestCase
      */
     public function checkEmailInviteLandlordAlreadyExist()
     {
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
-        $email = array_pop($email);
-        $email->click();
-        $this->page->clickLink('text/html');
-        $this->assertNotNull($link = $this->page->find('css', '#payRentLinkLandlord'));
-        $url = $link->getAttribute('href');
-        $this->clearEmail();
-        $this->setDefaultSession('selenium2');
-        $this->session->visit($url);
-        $this->session->wait($this->timeout, '$(".haveAccount a").length > 0');
-        $this->assertNotNull($link = $this->page->find('css', '.haveAccount a'));
-        $link->click();
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->login('landlord2@example.com', 'pass');
-        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        
-        $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table tbody tr'));
         $this->assertCount(1, $contract, 'Wrong number of pending');
         $this->logout();
-
-        //Check notify tenant about landlord come
-        $this->setDefaultSession('goutte');
-        $this->visitEmailsPage();
-        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
     }
 }
