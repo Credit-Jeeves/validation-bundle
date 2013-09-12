@@ -14,6 +14,7 @@ class ContractRepository extends EntityRepository
      * u - Units
      * h - Holdings
      * g - Group
+     * d - deposit account
      */
     private function applySearchFilter($query, $searchField = '', $searchString = '')
     {
@@ -249,6 +250,28 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group IN (:groups)');
         $query->setParameter('groups', $groupsIds);
+        $query = $query->getQuery();
+        return $query->execute();
+    }
+
+    /**
+     * 
+     */
+    public function getContractsForPayment()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->add(
+            'where',
+            $query->expr()->in(
+                'c.status',
+                array(
+                    ContractStatus::CURRENT,
+                    ContractStatus::APPROVED
+                )
+            )
+        );
+        $query->andWhere('c.paid_to < :date');
+        $query->setParameter('date', new \Datetime('+3 days'));
         $query = $query->getQuery();
         return $query->execute();
     }
