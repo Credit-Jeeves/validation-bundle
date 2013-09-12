@@ -6,8 +6,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
+use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
+use RentJeeves\DataBundle\Enum\PaymentStatus as PaymentStatusEnum;
 
-class PaymentDetailsType extends AbstractType
+class PaymentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -25,6 +27,56 @@ class PaymentDetailsType extends AbstractType
                             'message' => 'checkout.error.amount.empty',
                         )
                     ),
+                )
+            )
+        );
+        $builder->add(
+            'type',
+            'choice',
+            array(
+                'label' => 'checkout.type',
+                'empty_data' => PaymentTypeEnum::RECURRING,
+                'choices' => array(
+                    PaymentTypeEnum::RECURRING => 'checkout.recurring',
+                    PaymentTypeEnum::IMMEDIATE => 'checkout.recurring',
+                    PaymentTypeEnum::ONE_TIME => 'checkout.recurring',
+                ),
+                'attr' => array(
+                    'class' => 'original',
+                    'html' => '<div class="tooltip-box type1 pie-el">' .
+                    '<h4 data-bind="i18n: {\'DUE_DAY\': dueDay}">' .
+                    'checkout.type.tooltip.title-%DUE_DAY%' .
+                    '</h4>' .
+                    '<p data-bind="' .
+                    'i18n: {\'AMOUNT\': getAmount, \'DUE_DAY\': dueDay, \'ENDS_ON\': getLastPaymentDay}' .
+                    '">' .
+                    'checkout.type.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%' .
+                    '</p></div>',
+                    'data-bind' => 'value: type',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: recurring'
+                    )
+                )
+            )
+        );
+        $builder->add(
+            'frequency',
+            'choice',
+            array(
+                'mapped' => false,
+                'label' => 'checkout.frequency',
+                'empty_data' => 'checkout.recurring',
+                'attr' => array(
+                    'choices' => array(
+                       'monthly' => 'checkout.monthly',
+                       'month_last_date' => 'checkout.monthly',
+                       'onetime' => 'checkout.monthly',
+                    ),
+                    'class' => 'original',
+                    'data-bind' => 'value: type',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: recurring'
+                    )
                 )
             )
         );
@@ -147,13 +199,13 @@ class PaymentDetailsType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-//                'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
+                'data_class' => 'RentJeeves\DataBundle\Entity\Payment',
             )
         );
     }
 
     public function getName()
     {
-        return 'rentjeeves_checkoutbundle_paymentdetailstype';
+        return 'rentjeeves_checkoutbundle_paymenttype';
     }
 }

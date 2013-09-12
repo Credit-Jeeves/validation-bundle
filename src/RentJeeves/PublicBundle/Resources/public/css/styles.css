@@ -4218,7 +4218,7 @@ table.ui-datepicker-calendar tbody tr td a {
 }
 
 /* Fixes */
-#rentjeeves_checkoutbundle_paymentdetailstype_ends_row .fields-box label {
+#rentjeeves_checkoutbundle_paymenttype_ends_row .fields-box label {
     clear: left;
 }
 

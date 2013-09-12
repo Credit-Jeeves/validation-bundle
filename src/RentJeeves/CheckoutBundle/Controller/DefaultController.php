@@ -8,7 +8,7 @@ use Payum\Heartland\Soap\Base\GetTokenRequest;
 use Payum\Heartland\Soap\Base\TokenPaymentMethod;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
-use RentJeeves\CheckoutBundle\Form\Type\PaymentDetailsType;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
