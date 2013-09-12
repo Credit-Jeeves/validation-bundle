@@ -26,8 +26,8 @@ class ContractRepository extends EntityRepository
                     foreach ($search as $item) {
                         $query->andWhere('CONCAT(p.number, p.street) LIKE :search');
                         $query->setParameter('search', '%'.$item.'%');
-                        $query->andWhere('u.name LIKE :search');
-                        $query->setParameter('search', '%'.$item.'%');
+//                         $query->andWhere('u.name LIKE :search');
+//                         $query->setParameter('search', '%'.$item.'%');
                     }
                     break;
                 case 'tenant':
@@ -83,7 +83,8 @@ class ContractRepository extends EntityRepository
                 case 'property':
                     $query->orderBy('p.number', $sortOrder);
                     $query->addOrderBy('p.street', $sortOrder);
-                    $query->addOrderBy('u.name', $sortOrder);
+                    //$query->innerJoin('c.unit', 'u');
+                    //$query->addOrderBy('u.name', $sortOrder);
                     break;
                 case 'amountA':
                 case 'amount':
@@ -92,7 +93,8 @@ class ContractRepository extends EntityRepository
                 case 'tenantA':
                 case 'tenant':
                 case 'first_name':
-                    $query->orderBy('CONCAT(t.first_name, t.last_name)', $sortOrder);
+                    $query->orderBy('t.first_name', $sortOrder);
+                    $query->orderBy('t.last_name', $sortOrder);
                     break;
                 case 'statusA':
                     $query->orderBy('c.status', $sortOrder);
@@ -117,7 +119,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.tenant', 't');
         $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.unit', 'u');
+        //$query->innerJoin('c.unit', 'u');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
@@ -148,7 +150,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
-        $query->innerJoin('c.unit', 'u');
+        //$query->innerJoin('c.unit', 'u');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
@@ -179,10 +181,10 @@ class ContractRepository extends EntityRepository
         $group,
         $page = 1,
         $limit = 100,
-        $sort = 'p.street',
-        $order = 'ASC',
-        $searchBy = 'p.street',
-        $search = ''
+        $sortField = 'p.street',
+        $sortOrder = 'ASC',
+        $searchField = 'p.street',
+        $searchString = ''
     ) {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('c');

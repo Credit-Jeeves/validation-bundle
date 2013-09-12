@@ -204,10 +204,10 @@ class PublicController extends Controller
                 'signinUrl' => $this->get('router')->generate('fos_user_security_login')
             );
         }
-        $alert = new Alert();
-        $alert->setMessage('rj.task.firstRent');
-        $alert->setUser($user);
-        $em->persist($alert);
+//         $alert = new Alert();
+//         $alert->setMessage('rj.task.firstRent');
+//         $alert->setUser($user);
+//         $em->persist($alert);
 
         if ($user->getInvite()) {
             $invite = $user->getInvite();

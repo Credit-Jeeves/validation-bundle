@@ -123,6 +123,7 @@ class Contract extends Base
     {
         $result = array('status' => strtoupper($this->getStatus()), 'class' => '');
         if (ContractStatus::PENDING == $this->getStatus()) {
+            $result['class'] = 'contract-pending';
             return $result;
         }
         if (ContractStatus::FINISHED == $this->getStatus()) {

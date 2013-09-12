@@ -55,14 +55,14 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
-        $this->assertEquals('William Johnson', $td[1]->getText(), 'Wrong text in field');
+        $this->assertEquals('Connie Webster', $td[1]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($tenant = $this->page->find('css', '#first_name'));
         $tenant->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
-        $this->assertEquals('Alex Jordan', $td[1]->getText(), 'Wrong text in field');
+        $this->assertEquals('Timothy Applegate', $td[1]->getText(), 'Wrong text in field');
         $this->logout();
     }
 
@@ -219,6 +219,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($link = $this->page->find('css', '#payRentLink'));
         $link->click();
         $this->assertNotNull($form = $this->page->find('css', '#tenantInviteRegister'));
+        $this->assertNotNull($button = $this->page->find('css', '#submitForm'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
         $this->assertCount(2, $errorList, 'Wrong number of pending');
