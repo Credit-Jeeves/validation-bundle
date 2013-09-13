@@ -11,29 +11,6 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class UnitAdmin extends Admin
 {
-//     /**
-//      * {@inheritdoc}
-//      */
-//     public function createQuery($context = 'list')
-//     {
-//         $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-//         $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
-//         $query = parent::createQuery($context);
-//         $alias = $query->getRootAlias();
-//         if (!empty($nUserId)) {
-//             $this->request->getSession()->set('user_id', $nUserId);
-//             $query->andWhere($alias.'.cj_applicant_id = :user_id');
-//             $query->setParameter('user_id', $nUserId);
-//         }
-//         if (!empty($nContractId)) {
-//             $contract =  $this->getModelManager()->find('RjDataBundle:Contract', $nContractId);
-//             $this->request->getSession()->set('contract_id', $nContractId);
-//             $query->innerJoin($alias.'.operations', $alias.'_o');
-//             $query->andWhere($alias.'_o.contract = :contract');
-//             $query->setParameter('contract', $contract);
-//         }
-//         return $query;
-//     }
 
 //     public function configureRoutes(RouteCollection $collection)
 //     {
