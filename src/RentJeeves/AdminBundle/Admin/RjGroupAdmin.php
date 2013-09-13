@@ -82,6 +82,9 @@ class RjGroupAdmin extends Admin
                         'landlords' => array(
                             'template' => 'AdminBundle:CRUD:list__action_landlords.html.twig'
                         ),
+//                         'properties' => array(
+//                              'template' => 'AdminBundle:CRUD:list__action_properties.html.twig'
+//                         ),
                     )
                 )
             );
