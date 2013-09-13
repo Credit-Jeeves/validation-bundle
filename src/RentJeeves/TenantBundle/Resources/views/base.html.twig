@@ -11,6 +11,7 @@
                     '@CheckoutBundle/Resources/public/css/checkout.css'
                     '@TenantBundle/Resources/public/css/alert.css'
                     '@TenantBundle/Resources/public/css/home.page.css'
+                    '@RjPublicBundle/Resources/public/css/base-font.css'
     %}
         <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
     {% endstylesheets %}
@@ -42,10 +43,6 @@
 {% javascripts '@RjCoreBundle/Resources/public/js/jquery.slimscroll.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
-{% endblock %}
-
-{% block alert %}
-    {{ render(controller('TenantBundle:Alert:index')) }}
 {% endblock %}
 
 {% block google_api %}

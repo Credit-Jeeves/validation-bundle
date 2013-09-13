@@ -124,11 +124,12 @@ class Mailer extends BaseMailer implements MailerInterface
 
     public function sendRjTenantInvite($tenant, $landlord, $contract, $sTemplate = 'rjTenantInvite')
     {
+        $unit = $contract->getUnit();
         $vars = array(
             'fullNameLandlord'      => $landlord->getFullName(),
             'nameTenant'            => $tenant->getFirstName(),
             'address'               => $contract->getProperty()->getAddress(),
-            'unitName'              => $contract->getUnit()->getName(),
+            'unitName'              => $unit ? $unit->getName() : '',
             'inviteCode'            => $tenant->getInviteCode(),
         );
 

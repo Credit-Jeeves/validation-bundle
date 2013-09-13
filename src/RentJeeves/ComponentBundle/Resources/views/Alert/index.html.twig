@@ -1,0 +1,16 @@
+{% if alerts | length > 0 %}
+    <div class="landlord-alert">
+        <div class="landlord-alert-left floatleft">
+            <div class="landlord-alert-thumbnail floatleft"></div>
+            <span class="floatleft">{{ 'landlord.alert.title' | trans() }}:</span>
+        </div>
+        <div class="landlord-alert-right floatleft">
+            {% for key, alert in alerts %}
+            <div class="landlord-alert-number floatleft">{{ key + 1 }}</div><div class="floatleft">{{ alert }}</div>
+            <div class="clearboth"></div>
+            {% endfor %}
+        </div>
+        <div class="clearboth"></div>
+    </div>
+    <div class="clearboth"></div>
+{% endif %}

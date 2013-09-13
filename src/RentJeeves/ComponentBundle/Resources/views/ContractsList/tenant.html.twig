@@ -47,37 +47,37 @@
             <table class="properties-table zebra-grid contracts-table">
                 <thead>
                     <tr class="contracts">
-                        <th>{{ 'address' | trans() }}</th>
-                        <th>{{ 'pay_to' | trans() }}</th>
-                        <th>{{ 'amount' | trans() }}</th>
-                        <th>{{ 'contract.pay.source' | trans() }}</th>
-                        <th>{{ 'contract.payment.last' | trans() }}</th>
-                        <th>{{ 'contract.payment.next' | trans() }}</th>
-                        <th>{{ 'contract.payment.recurring' | trans() }}</th>
-                        <th>{{ 'contract.status' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'address' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'pay_to' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'amount' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'contract.pay.source' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'contract.payment.last' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'contract.payment.next' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'contract.payment.recurring' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'contract.status' | trans() }}</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for contract in contracts %}
                     <tr class="contracts">
-                        <td title="{{ contract.full_address }}">{{ contract.row_address }}</td>
-                        <td title="{{ contract.full_pay_to }}">{{ contract.row_pay_to }}</td>
-                        <td>{{ contract.rent }}</td>
-                        <td title="{{ contract.full_payment_source }}">{{ contract.row_payment_source }}</td>
-                        <td>{{ contract.payment_last }}</td>
-                        <td>{{ contract.payment_next }}</td>
-                        <td>{{ contract.recur | capitalize }}</td>
+                        <td class="font-helvetica" title="{{ contract.full_address }}">{{ contract.row_address }}</td>
+                        <td class="font-helvetica" title="{{ contract.full_pay_to }}">{{ contract.row_pay_to }}</td>
+                        <td class="font-helvetica">{{ contract.rent }}</td>
+                        <td class="font-helvetica" title="{{ contract.full_payment_source }}">{{ contract.row_payment_source }}</td>
+                        <td class="font-helvetica">{{ contract.payment_last }}</td>
+                        <td class="font-helvetica">{{ contract.payment_next }}</td>
+                        <td class="font-helvetica">{{ contract.recur | capitalize }}</td>
                         {% if contract.status == 'pending' %}
-                        <td title="Waiting for your landlord to provide contract details.">
+                        <td class="font-helvetica" title="Waiting for your landlord to provide contract details.">
                         {% elseif contract.status == 'invite' %}
-                        <td title="Waiting for your landlord to join RentTrack.">
+                        <td class="font-helvetica" title="Waiting for your landlord to join RentTrack.">
                         {% else %}
-                        <td>
+                        <td class="font-helvetica">
                         {% endif %}
                         {{ contract.status | upper }}
                         </td>
-                        <td>
+                        <td class="font-helvetica">
                             {% if contract.status == 'pending' or contract.status == 'invite' %}
                                 <div class="contract-potential">
                                     <button class="button small button-contract-pay grey floatleft">

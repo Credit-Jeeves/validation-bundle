@@ -11,12 +11,18 @@
                    '@RjPublicBundle/Resources/public/css/styles.css'
                    '@RjPublicBundle/Resources/public/css/footer.css'
                    '@CoreBundle/Resources/public/css/landlord.css'
+                   '@RjPublicBundle/Resources/public/css/base-font.css'
      %}
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
     <script src="{{ asset('bundles/core/js/less.min.js') }}"></script>
     <script src="{{ asset('bundles/core/js/datepicker.js') }}"></script>
 {% endblock %}
+
+{% block alert %}
+    {{ render(controller('RjComponentBundle:Alert:index')) }}
+{% endblock %}
+
 
 {% block google_api %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}

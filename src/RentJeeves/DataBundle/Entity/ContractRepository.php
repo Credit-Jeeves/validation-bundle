@@ -6,176 +6,60 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class ContractRepository extends EntityRepository
 {
-    public function countContracts($group, $searchBy = '', $search = '')
+    /**
+     * We'll use following aliases in this class
+     * c - Contracts
+     * t - Tenants
+     * p - Properties
+     * u - Units
+     * h - Holdings
+     * g - Group
+     */
+    private function applySearchFilter($query, $searchField = '', $searchString = '')
     {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.tenant', 't');
-        $query->where('c.group = :group');
-        $query->setParameter('group', $group);
-        if (!empty($search)) {
-            $this->applyCollum($searchBy);
-            $query->andWhere($searchBy.' LIKE :search');
-            $query->setParameter('search', '%'.$search.'%');
-        }
-        $query = $query->getQuery();
-        return $query->getScalarResult();
-    }
-
-    private function applyCollum(&$field)
-    {
-        switch ($field) {
-            case 'phone':
-            case 'email':
-                $field= 't.'.$field;
-                break;
-            case 'tenant':
-                $field = 'CONCAT(t.first_name, t.last_name)';
-                break;
-            case 'first_name':
-                $field = 't.first_name';
-                break;
-            case 'street':
-                $field = 'p.street';
-                break;
-            default:
-                $field = 'c.'.$field;
-                break;
-        }
-    }
-
-    public function getContractsPage(
-        $group,
-        $page = 1,
-        $limit = 100,
-        $sort = 'c.status',
-        $order = 'ASC',
-        $searchBy = '',
-        $search = ''
-    ) {
-        $offset = ($page - 1) * $limit;
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.tenant', 't');
-        $query->where('c.group = :group');
-        $query->setParameter('group', $group);
-        if (!empty($search) && !empty($searchBy)) {
-            $this->applyCollum($searchBy);
-            if ($searchBy == 'c.status') {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$search.'%');
-                
-            } else {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$search.'%');
+        if (!empty($searchField) && !empty($searchString)) {
+            $search = $this->prepareSearch($searchString);
+            switch ($searchField) {
+                case 'street':
+                case 'address':
+                case 'property':
+                    foreach ($search as $item) {
+                        $query->andWhere('CONCAT(p.number, p.street) LIKE :search');
+                        $query->setParameter('search', '%'.$item.'%');
+//                         $query->andWhere('u.name LIKE :search');
+//                         $query->setParameter('search', '%'.$item.'%');
+                    }
+                    break;
+                case 'tenant':
+                case 'tenantA':
+                    foreach ($search as $item) {
+                        $query->andWhere('CONCAT(t.first_name, t.last_name) LIKE :search');
+                        $query->setParameter('search', '%'.$item.'%');
+                    }
+                    break;
+                case 'phone':
+                case 'email':
+                    $query->setParameter('t.'.$searchField, '%'.$searchString.'%');
+                    break;
+                case 'amount':
+                case 'amountA':
+                    $query->andWhere('c.rent LIKE :rent');
+                    $query->setParameter('rent', '%'.$searchString.'%');
+                    break;
+                case 'status':
+                case 'statusA':
+                    $query->andWhere('c.status = :status');
+                    $query->setparameter('status', $searchString);
+                    break;
+                default:
+                    foreach ($search as $item) {
+                        $query->andWhere('c'.$searchField.' LIKE :search');
+                        $query->setParameter('search', '%'.$item.'%');
+                    }
+                    break;
             }
         }
-        $this->applyCollum($sort);
-        $query->orderBy($sort, $order);
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-        $query = $query->getQuery();
-        return $query->execute();
-    }
-
-    public function countActionsRequired($group, $searchBy = 'address', $search = '')
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.tenant', 't');
-        $query->where('c.group = :group');
-        $query->andWhere('c.paid_to < :date');
-        $query->andWhere('c.status <> :status');
-        $query->setParameter('group', $group);
-        $query->setParameter('date', new \Datetime());
-        $query->setParameter('status', ContractStatus::FINISHED);
-        if (!empty($search)) {
-            $searchBy = $this->applySearchField($searchBy);
-            $search = $this->prepareSearch($search);
-            foreach ($search as $item) {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$item.'%');
-            }
-        }
-        $query = $query->getQuery();
-        return $query->getScalarResult();
-    }
-
-    public function getActionsRequiredPage(
-        $group,
-        $page = 1,
-        $limit = 100,
-        $sort = 'p.street',
-        $order = 'ASC',
-        $searchBy = 'p.street',
-        $search = ''
-    ) {
-        $offset = ($page - 1) * $limit;
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.tenant', 't');
-        $query->where('c.group = :group');
-        $query->andWhere('c.paid_to < :date');
-        $query->andWhere('c.status <> :status');
-        $query->setParameter('group', $group);
-        $query->setParameter('date', new \Datetime());
-        $query->setParameter('status', ContractStatus::FINISHED);
-        if (!empty($search) && !empty($searchBy)) {
-            $searchBy = $this->applySearchField($searchBy);
-            $search = $this->prepareSearch($search);
-            foreach ($search as $item) {
-                $query->andWhere($searchBy.' LIKE :search');
-                $query->setParameter('search', '%'.$item.'%');
-            }
-        }
-        switch ($sort) {
-            case 'statusA':
-                $sort = 'c.status';
-                break;
-            case 'due_dateA':
-                $sort = 'c.due_day';
-                break;
-            case 'propertyA':
-                $sort = 'CONCAT(p.street, p.number)';
-                break;
-            case 'tenantA':
-                $sort = 'CONCAT(t.first_name, t.last_name)';
-                break;
-            case 'amountA':
-                $sort = 'c.rent';
-                break;
-            default:
-                $sort = 'c.status';
-                break;
-        }
-        $query->orderBy($sort, $order);
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-        $query = $query->getQuery();
-        return $query->execute();
-    }
-
-    private function applySearchField($searchBy)
-    {
-        switch ($searchBy) {
-            case 'property':
-                $searchBy = 'CONCAT(p.street, p.number)';
-                break;
-            case 'tenant':
-                $searchBy = 'CONCAT(t.first_name, t.last_name)';
-                break;
-            case 'amount':
-                $searchBy = 'c.rent';
-                break;
-            case 'phone':
-            case 'email':
-                $searchBy= 't.'.$searchBy;
-                break;
-            default:
-                $searchBy = 'c.'.$searchBy;
-                break;
-        }
-        return $searchBy;
+        return $query;
     }
 
     /**
@@ -187,6 +71,137 @@ class ContractRepository extends EntityRepository
         $search = preg_replace('/\s+/', ' ', trim($search));
         $search = explode(' ', $search);
         return $search;
+    }
+
+    private function applySortOrder($query, $sortField = '', $sortOrder = 'ASC')
+    {
+        if (!empty($sortField)) {
+            switch ($sortField) {
+                case 'street':
+                case 'propertyA':
+                case 'address':
+                case 'property':
+                    $query->orderBy('p.number', $sortOrder);
+                    $query->addOrderBy('p.street', $sortOrder);
+                    //$query->innerJoin('c.unit', 'u');
+                    //$query->addOrderBy('u.name', $sortOrder);
+                    break;
+                case 'amountA':
+                case 'amount':
+                    $query->orderBy('c.rent', $sortOrder);
+                    break;
+                case 'tenantA':
+                case 'tenant':
+                case 'first_name':
+                    $query->orderBy('t.first_name', $sortOrder);
+                    $query->orderBy('t.last_name', $sortOrder);
+                    break;
+                case 'statusA':
+                    $query->orderBy('c.status', $sortOrder);
+                    break;
+                default:
+                    $sortField = 'c.'.$sortField;
+                    $query->orderBy($sortField, $sortOrder);
+                    break;
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Count records for Tenant Tab
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param string $searchBy
+     * @param string $search
+     */
+    public function countContracts(\CreditJeeves\DataBundle\Entity\Group $group, $searchField = '', $searchString = '')
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.tenant', 't');
+        $query->innerJoin('c.property', 'p');
+        //$query->innerJoin('c.unit', 'u');
+        $query->where('c.group = :group');
+        $query->setParameter('group', $group);
+        $query = $this->applySearchFilter($query, $searchField, $searchString);
+        $query = $query->getQuery();
+        return $query->getScalarResult();
+    }
+
+    /**
+     * 
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param integer $page
+     * @param integer $limit
+     * @param string $sortField
+     * @param string $sortOrder
+     * @param string $searchField
+     * @param string $searchString
+     */
+    public function getContractsPage(
+        $group,
+        $page = 1,
+        $limit = 100,
+        $sortField = 'c.status',
+        $sortOrder = 'ASC',
+        $searchField = '',
+        $searchString = ''
+    ) {
+        $offset = ($page - 1) * $limit;
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.property', 'p');
+        $query->innerJoin('c.tenant', 't');
+        //$query->innerJoin('c.unit', 'u');
+        $query->where('c.group = :group');
+        $query->setParameter('group', $group);
+        $query = $this->applySearchFilter($query, $searchField, $searchString);
+        $query = $this->applySortOrder($query, $sortField, $sortOrder);
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query = $query->getQuery();
+        return $query->execute();
+    }
+
+    public function countActionsRequired($group, $searchField = 'address', $searchString = '')
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.property', 'p');
+        $query->innerJoin('c.tenant', 't');
+        $query->where('c.group = :group');
+        $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.status <> :status');
+        $query->setParameter('group', $group);
+        $query->setParameter('date', new \Datetime());
+        $query->setParameter('status', ContractStatus::FINISHED);
+        $query = $this->applySearchFilter($query, $searchField, $searchString);
+        $query = $query->getQuery();
+        return $query->getScalarResult();
+    }
+
+    public function getActionsRequiredPage(
+        $group,
+        $page = 1,
+        $limit = 100,
+        $sortField = 'p.street',
+        $sortOrder = 'ASC',
+        $searchField = 'p.street',
+        $searchString = ''
+    ) {
+        $offset = ($page - 1) * $limit;
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.property', 'p');
+        $query->innerJoin('c.tenant', 't');
+        $query->where('c.group = :group');
+        $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.status <> :status');
+        $query->setParameter('group', $group);
+        $query->setParameter('date', new \Datetime());
+        $query->setParameter('status', ContractStatus::FINISHED);
+        $query = $this->applySearchFilter($query, $searchField, $searchString);
+        $query = $this->applySortOrder($query, $sortField, $sortOrder);
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query = $query->getQuery();
+        return $query->execute();
     }
 
     public function getCountByStatus($tenant, $status = null)

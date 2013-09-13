@@ -52,20 +52,14 @@ class InviteLandlord
                 'email' => $invite->getEmail(),
             )
         );
-
+        $contract->setStatus(ContractStatus::PENDING);
         if ($landlordInDb) {
             unset($landlord);
             $landlord = $landlordInDb;
             $groups = $landlord->getGroups();
-            if ($landlordInDb->getIsActive() && $landlord->hasMerchant()) {
-                $contract->setStatus(ContractStatus::PENDING);
-            } else {
-                $contract->setStatus(ContractStatus::INVITE);
-            }
             $holding = $landlord->getHolding();
             $group = $landlord->getCurrentGroup();
         } else {
-            $contract->setStatus(ContractStatus::INVITE);
             $landlord->setPassword(md5(md5(1)));
             $landlord->setFirstName($invite->getFirstName());
             $landlord->setLastName($invite->getLastName());
