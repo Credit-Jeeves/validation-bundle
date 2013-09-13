@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Entity\DepositAccount;
 
 /**
  * @ORM\MappedSuperclass
@@ -992,12 +993,16 @@ abstract class Group
 
     public function setMerchantName($name)
     {
+        if (!$this->deposit_account) {
+            $this->deposit_account = new DepositAccount();
+            $this->deposit_account->setGroup($this);
+        }
         $this->deposit_account->setMerchantName($name);
         return $this;
     }
 
     public function getMerchantName()
     {
-        return $this->deposit_account->getMerchantName();
+        return ($this->deposit_account) ? $this->deposit_account->getMerchantName() : '';
     }
 }
