@@ -98,10 +98,12 @@ class RjGroupAdmin extends Admin
                 'affiliate',
                 'sonata_type_model',
                 array(
-                    'empty_value' => 'None'
+                    'empty_value' => 'None',
+                    'required' => false
                 )
             )
-            ->add('name');
+            ->add('name')
+            ->add('merchant_name', 'text');
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
