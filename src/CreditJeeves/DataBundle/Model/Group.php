@@ -313,7 +313,7 @@ abstract class Group
      *     orphanRemoval=true
      * )
      */
-    protected $deposit_accounts;
+    protected $deposit_account;
 
     public function __construct()
     {
@@ -974,6 +974,12 @@ abstract class Group
         return $this->contracts;
     }
 
+    public function setDepositAccount($account)
+    {
+        $this->deposit_account = $account;
+        return $this;
+    }
+
     /**
      * Get DepositAccounts
      *
@@ -981,6 +987,17 @@ abstract class Group
      */
     public function getDepositAccounts()
     {
-        return $this->deposit_accounts;
+        return $this->deposit_account;
+    }
+
+    public function setMerchantName($name)
+    {
+        $this->deposit_account->setMerchantName($name);
+        return $this;
+    }
+
+    public function getMerchantName()
+    {
+        return $this->deposit_account->getMerchantName();
     }
 }

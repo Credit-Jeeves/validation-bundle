@@ -21,7 +21,7 @@ abstract class DepositAccount
     /**
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="deposit_accounts"
+     *     inversedBy="deposit_account"
      * )
      * @ORM\JoinColumn(
      *     name="group_id",
