@@ -19,14 +19,10 @@ class RjDataBundle extends Bundle
     {
         if (!static::$isLoaded) { // TODO find better way
             static::$isLoaded = true;
-            Type::addType(
-                'ContractStatus',
-                'RentJeeves\DataBundle\Enum\ContractStatus'
-            );
-            Type::addType(
-                'PaymentAccountType',
-                'RentJeeves\DataBundle\Enum\PaymentAccountType'
-            );
+            Type::addType('ContractStatus', 'RentJeeves\DataBundle\Enum\ContractStatus');
+            Type::addType('PaymentAccountType', 'RentJeeves\DataBundle\Enum\PaymentAccountType');
+            Type::addType('PaymentStatus', 'RentJeeves\DataBundle\Enum\PaymentStatus');
+            Type::addType('PaymentType', 'RentJeeves\DataBundle\Enum\PaymentType');
             $this->container->get('doctrine.orm.default_entity_manager')
                 ->getConnection()
                 ->getDatabasePlatform()
