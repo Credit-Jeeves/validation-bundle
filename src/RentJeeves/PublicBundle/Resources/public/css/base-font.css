@@ -1,0 +1,9 @@
+body, p {
+    font-family: "Helvetica Neue", HelveticaNeue, helvetica-neue, helvetica, arial, sans-serif;
+}
+th, td, .button>span {
+    font-family: "Helvetica Neue", HelveticaNeue, helvetica-neue, helvetica, arial, sans-serif !important;
+}
+.info-block a {
+    font-family: ABeeZee, sans-serif !important;
+}
