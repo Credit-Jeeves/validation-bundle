@@ -376,7 +376,7 @@
                     <span class="sort" id="rent" data-bind="click: sortFunction">{{'amount'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
-                    <span class="sort" style="width: 50px;" id="due_day" data-bind="click: sortFunction">{{'due_date'|trans}}<i> </i></span>
+                    <span class="pie-el">{{'contract.payment.last'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el">
                     <span class="sort" id="paid_to" data-bind="click: sortFunction">{{'paid_to'|trans}}<i> </i></span>
@@ -397,7 +397,7 @@
                 <td class="property-box ellipsis-box" 
                 data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
                 <td data-bind="text: '$'+amount"></td>
-                <td data-bind="text: due_day"></td>
+                <td data-bind="text: last_payment"></td>
                 <td class="type-box" data-bind="text: paid_to"></td>
                 <td></td>
                 <td class="type-box">
