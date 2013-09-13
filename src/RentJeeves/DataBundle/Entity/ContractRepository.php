@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use Doctrine\ORM\Query;
 
 class ContractRepository extends EntityRepository
 {
@@ -273,6 +274,6 @@ class ContractRepository extends EntityRepository
         $query->andWhere('c.paid_to < :date');
         $query->setParameter('date', new \Datetime('+3 days'));
         $query = $query->getQuery();
-        return $query->execute();
+        return $query->execute();//getResult(Query::HYDRATE_SIMPLEOBJECT);
     }
 }
