@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use Doctrine\ORM\Query;
 
 class ContractRepository extends EntityRepository
 {
@@ -14,6 +15,7 @@ class ContractRepository extends EntityRepository
      * u - Units
      * h - Holdings
      * g - Group
+     * d - deposit account
      */
     private function applySearchFilter($query, $searchField = '', $searchString = '')
     {
@@ -98,6 +100,9 @@ class ContractRepository extends EntityRepository
                     break;
                 case 'statusA':
                     $query->orderBy('c.status', $sortOrder);
+                    break;
+                case 'due_dateA':
+                    $query->orderBy('c.paid_to', $sortOrder);
                     break;
                 default:
                     $sortField = 'c.'.$sortField;
@@ -251,5 +256,27 @@ class ContractRepository extends EntityRepository
         $query->setParameter('groups', $groupsIds);
         $query = $query->getQuery();
         return $query->execute();
+    }
+
+    /**
+     * 
+     */
+    public function getContractsForPayment()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->add(
+            'where',
+            $query->expr()->in(
+                'c.status',
+                array(
+                    ContractStatus::CURRENT,
+                    ContractStatus::APPROVED
+                )
+            )
+        );
+        $query->andWhere('c.paid_to < :date');
+        $query->setParameter('date', new \Datetime('+3 days'));
+        $query = $query->getQuery();
+        return $query->execute();//getResult(Query::HYDRATE_SIMPLEOBJECT);
     }
 }

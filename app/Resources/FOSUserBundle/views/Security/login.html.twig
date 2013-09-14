@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block fos_user_content %}
-    <div class="form-login pod-border shadow floatleft">
+    <div class="form-login pod-border shadow floatleft" {% if 'rj' == application %} style="width: 690px"{% endif %}>
         <h1>{{ 'login.title' | trans }}</h1>
             {% for flashMessage in app.session.flashbag.get('notice') %}
             <div class="row-20"></div>
@@ -79,10 +79,12 @@
             </table>
         </form>
     </div>
+    {% if 'cj' == application %}
     <div class="business-logins floatleft">
         <h2>Business Logins:</h2>
         <a href="/dealer.php">» {{ 'login.dealership' | trans }} </a>
     </div>
+    {% endif %}
     <div class="clearboth"></div>
     <p class="login-pod-footer">
         {{ 'resetting.title' | trans }}

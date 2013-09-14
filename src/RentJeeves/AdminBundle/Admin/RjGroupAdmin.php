@@ -82,6 +82,9 @@ class RjGroupAdmin extends Admin
                         'landlords' => array(
                             'template' => 'AdminBundle:CRUD:list__action_landlords.html.twig'
                         ),
+//                         'properties' => array(
+//                              'template' => 'AdminBundle:CRUD:list__action_properties.html.twig'
+//                         ),
                     )
                 )
             );
@@ -98,10 +101,12 @@ class RjGroupAdmin extends Admin
                 'affiliate',
                 'sonata_type_model',
                 array(
-                    'empty_value' => 'None'
+                    'empty_value' => 'None',
+                    'required' => false
                 )
             )
-            ->add('name');
+            ->add('name')
+            ->add('merchant_name', 'text');
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
