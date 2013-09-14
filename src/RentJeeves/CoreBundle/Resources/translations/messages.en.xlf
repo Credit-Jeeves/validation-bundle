@@ -835,6 +835,10 @@
                 <source>contract.payment.last</source>
                 <target>Last Payment</target>
             </trans-unit>
+            <trans-unit id="contract.payment.through">
+                <source>contract.payment.through</source>
+                <target>Paid Through</target>
+            </trans-unit>
             <trans-unit id="contract.payment.next">
                 <source>contract.payment.next</source>
                 <target>Next Due Date</target>

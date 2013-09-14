@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-use EntityManager522a848132d2c_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager;
+//use EntityManager522a848132d2c_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -91,6 +91,7 @@ class Contract extends Base
         $result['late'] = $this->getLateDays();
         $result['paid_to'] = '';
         $result['late_date'] = '';
+        $result['last_payment'] = $this->getLastPayment();
         if ($date = $this->getPaidTo()) {
             $result['paid_to'] = $date->format('M d, Y');
             $result['late_date'] = $date->format('n/j/Y');
@@ -118,6 +119,28 @@ class Contract extends Base
             }
         }
         return $result;
+    }
+
+    public function getLastPayment()
+    {
+        $result = 'N/A';
+        $payments = array();
+        $operations = $this->getOperations();
+        if (count($operations) == 0) {
+            return $result;
+        }
+        if (count($operations) > 0) {
+            foreach ($operations as $operation) {
+                $orders = $operation->getOrders();
+                foreach ($orders as $order) {
+                    if (OrderStatus::COMPLETE == $order->getStatus()) {
+                        $payments[] = $order->getCreatedAt()->format('M d, Y');
+                    }
+                }
+            }
+            arsort($payments);
+            return isset($payments[0]) ? $payments[0] : $result;
+        }
     }
 
     public function getStatusArray()
@@ -311,5 +334,12 @@ class Contract extends Base
         $this->setPaidTo($paidTo);
         $this->setStatus(ContractStatus::APPROVED);
         return $this;
+    }
+
+    public function checkForPayment()
+    {
+        $result = false;
+        // here will be logic
+        return $result;
     }
 }

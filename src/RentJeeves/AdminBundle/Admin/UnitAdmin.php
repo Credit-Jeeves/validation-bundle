@@ -8,69 +8,43 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Knp\Menu\ItemInterface as MenuItemInterface;
-use RentJeeves\AdminBundle\Admin\TenantAdmin;
 
-class ContractAdmin extends Admin
+class UnitAdmin extends Admin
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function createQuery($context = 'list')
-    {
-        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-        $query = parent::createQuery($context);
-        $alias = $query->getRootAlias();
-        if (!empty($nUserId)) {
-            $this->request->getSession()->set('user_id', $nUserId);
-            $tenant = $this->getModelManager()->find('RjDataBundle:Tenant', $nUserId);
-            $query->andWhere($alias.'.tenant = :tenant');
-            $query->setParameter('tenant', $tenant);
-        }
-        return $query;
-    }
 
-    public function configureRoutes(RouteCollection $collection)
-    {
-        $collection->remove('delete');
-        $collection->remove('create');
-    }
+//     public function configureRoutes(RouteCollection $collection)
+//     {
+//         $collection->remove('delete');
+//         $collection->remove('create');
+//     }
 
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('holding.name')
-            ->add('group.name')
-            ->add('unit.name')
-            ->add('status')
-            ->add('rent')
-            ->add('paid_to', null, array('label' => 'Paid Through'))
-            ->add(
-                '_action',
-                'actions',
-                array(
-                    'actions' => array(
-                        'payments' => array(
-                            'template' => 'AdminBundle:CRUD:list__contract_orders.html.twig'
-                        )
-                    )
-                )
-            );
+            ->add('name');
     }
 
-    public function configureDatagridFilters(DatagridMapper $datagridMapper)
-    {
-        $datagridMapper
-            ->add('status')
-            ->add('holding.name')
-            ->add('group.name')
-            ->add('unit.name')
-            ->add('rent');
-    }
+//     public function configureDatagridFilters(DatagridMapper $datagridMapper)
+//     {
+//         $datagridMapper
+//             ->add('user.email')
+//             ->add('type')
+//             ->add('amount')
+//             ->add('status')
+//             ->add(
+//                 'created_at',
+//                 'doctrine_orm_date'
+//             )
+//             ->add(
+//                 'updated_at',
+//                 'doctrine_orm_date'
+//             );
+//     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
     {
         $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
+        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
         $menu = $this->menuFactory->createItem('root');
         $menu = $menu->addChild(
             $this->trans(
@@ -102,10 +76,26 @@ class ContractAdmin extends Admin
                 )
             );
         }
+        if ('list' == $action & !empty($nContractId)) {
+            $menu = $menu->addChild(
+                $this->trans(
+                    $this->getLabelTranslatorStrategy()->getLabel(
+                        'Contracts List',
+                        'breadcrumb',
+                        'link'
+                    ),
+                    array(),
+                    'SonataAdminBundle'
+                ),
+                array(
+                    'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
+                )
+            );
+        }
         $menu = $menu->addChild(
             $this->trans(
                 $this->getLabelTranslatorStrategy()->getLabel(
-                    'Contract List',
+                    'Payments List',
                     'breadcrumb',
                     'link'
                 ),
@@ -113,7 +103,7 @@ class ContractAdmin extends Admin
                 'SonataAdminBundle'
             ),
             array(
-                'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
+                'uri' => $this->routeGenerator->generate('admin_creditjeeves_data_order_list')
             )
         );
         return $this->breadcrumbs[$action] = $menu;
