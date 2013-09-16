@@ -1,0 +1,162 @@
+model: CreditJeeves\DataBundle\Entity\Address
+fixtures:
+  rjAddress_1:
+    user: Tenant_1
+    street: '1900 Avenue of Stars'
+    unit: 'apt 8'
+    city: 'Minsk'
+    area: 'KY'
+    zip: '22007'
+
+  rjAddress_2:
+    user: Tenant_2
+    street: 'PO BOX 445'
+    unit: 'apt 1'
+    city: APO
+    area: AE
+    zip: '09061'
+
+  rjAddress_3:
+    user: Tenant_3
+    street: 'JCT RR 133 140 B'
+    unit: ''
+    city: MIDDLETOWN
+    area: NJ
+    zip: '05717'
+
+  rjAddress_4:
+    user: Tenant_4
+    street: '702 N LINCOLN AVE # 1'
+    unit: ''
+    city: URBANA
+    area: IL
+    zip: '61801'
+
+  rjAddress_5:
+    user: Tenant_5
+    street: 'SAINT NAZAIRE 2010'
+    unit: '116TH 1'
+    city: HOMESTEAD
+    area: FL
+    zip: '33039'
+
+  rjAddress_6:
+    user: Tenant_6
+    street: 'PO BOX 1563'
+    unit: '116TH 1'
+    city: BELTSVILLE
+    area: MD
+    zip: '207041563'
+
+  rjAddress_7:
+    user: Tenant_7
+    street: 'LANEY 2505'
+    unit: ''
+    city: DENTON
+    area: TX
+    zip: '762086621'
+
+  rjAddress_8:
+    user: Tenant_8
+    street: 'LEHIGH 350'
+    unit: ''
+    city: PITTSBURGH
+    area: PA
+    zip: '152322008'
+
+  rjAddress_9:
+    user: Tenant_9
+    street: 'INGLEWOOD 934 S'
+    unit: ''
+    city: INGLEWOOD
+    area: CA
+    zip: '903013646'
+
+  rjAddress_10:
+    user: Tenant_10
+    street: 'PO BOX 121'
+    unit: ''
+    city: 'BOX ELDER'
+    area: MT
+    zip: '595210121'
+
+  rjAddress_11:
+    user: Tenant_11
+    street: '331 RAMSEY HL'
+    unit: ''
+    city: 'WEST CHESTER'
+    area: PA
+    zip: '19383'
+
+  rjAddress_12:
+    user: Tenant_12
+    street: '331 RAMSEY HL'
+    unit: ''
+    city: EMPORIA
+    area: KS
+    zip: '669016102'
+
+  rjAddress_13:
+    user: Tenant_13
+    street: 'PO BOX 1563'
+    unit: ''
+    city: BELTSVILLE
+    area: MD
+    zip: '20704'
+
+  rjAddress_14:
+    user: Tenant_14
+    street: '10046 COLONNADE DR'
+    unit: ''
+    city: TAMPA
+    area: FL
+    zip: '33647'
+
+  rjAddress_15:
+    user: Tenant_15
+    street: '308-1 CHESTER RIVER HTS'
+    unit: ''
+    city: MILLINGTON
+    area: MD
+    zip: '20704'
+
+  rjAddress_16:
+    user: Tenant_16
+    street: '7635 LANKERSHIM BLVD APT 16'
+    unit: ''
+    city: NORTH HOLLYWOOD
+    area: CA
+    zip: '916056557'
+
+  rjAddress_17:
+    user: Tenant_17
+    street: 'CMR 408 BX 1502'
+    unit: ''
+    city: APO
+    area: AE
+    zip: '09182'
+
+  rjAddress_18:
+    user: Tenant_18
+    street: '270 25 H GRAND CENTRA'
+    unit: ''
+    city: FLORAL PARK
+    area: NY
+    zip: '11005'
+
+  rjAddress_19:
+    user: Tenant_19
+    street: '3010 FURMAN LN APT 402'
+    unit: ''
+    city: ALEXANDRIA
+    area: VA
+    zip: '22306'
+
+  rjAddress_20:
+    user: Tenant_20
+    street: '3507 WOODLEA AVE'
+    unit: ''
+    city: BALTIMORE
+    area: MO
+    zip: '26214'
+
