@@ -6,6 +6,7 @@ use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\TenantType;
+use RentJeeves\PublicBundle\Form\ReturnedType;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -86,5 +87,37 @@ class TenantController extends Controller
                 );
 
         return $response;
+    }
+
+    /**
+     * @Route("/rj_returned", name="tenant_returned")
+     * @Template()
+     *
+     * @return array
+     */
+    public function returnedAction()
+    {
+        
+        $tenant = $this->getUser();
+        $form = $this->createForm(
+            new ReturnedType(),
+            $tenant
+        );
+        $request = $this->get('request');
+        if ($request->getMethod() == 'POST') {
+            $form->bind($request);
+            if ($form->isValid()) {
+                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+                $em = $this->getDoctrine()->getManager();
+                $tenant->setInviteCode(null);
+                $tenant->setHasData(true);
+                $em->persist($tenant);
+                $em->flush();
+                return $this->login($tenant);
+            }
+        }
+        return array(
+            'form' => $form->createView(),
+        );
     }
 }

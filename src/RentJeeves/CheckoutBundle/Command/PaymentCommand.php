@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use RentJeeves\DataBundle\Enum\PaymentType;
 
 class PaymentCommand extends ContainerAwareCommand
 {
@@ -19,12 +20,19 @@ class PaymentCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $repo = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Contract');
-        $contracts = $repo->getContractsForPayment();
-        foreach ($contracts as $contract) {
-            if ($payment = $contract->checkForPayment()) {
+        $repo = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment');
+        $payments = $repo->getActivePayments();
+        foreach ($payments as $payment) {
+            $type = $payment->getType();
+            switch ($type) {
+                case PaymentType::RECURRING:
+                    break;
+                case PaymentType::ONE_TIME:
+                    break;
+            }
+            if ($processing = $payment->checkForPayment()) {
                 // here will be payment process
-                $output->writeln($contract->getStatus());
+                $output->writeln($payment->getStatus());
             }
         }
     }

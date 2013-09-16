@@ -257,26 +257,4 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->execute();
     }
-
-    /**
-     * 
-     */
-    public function getContractsForPayment()
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->add(
-            'where',
-            $query->expr()->in(
-                'c.status',
-                array(
-                    ContractStatus::CURRENT,
-                    ContractStatus::APPROVED
-                )
-            )
-        );
-        $query->andWhere('c.paid_to < :date');
-        $query->setParameter('date', new \Datetime('+3 days'));
-        $query = $query->getQuery();
-        return $query->execute();//getResult(Query::HYDRATE_SIMPLEOBJECT);
-    }
 }

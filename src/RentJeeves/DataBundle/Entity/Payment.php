@@ -9,8 +9,14 @@ use RentJeeves\DataBundle\Model\Payment as Base;
 
 /**
  * @ORM\Table(name="rj_payment")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
  */
 class Payment extends Base
 {
+    public function checkForPayment()
+    {
+        $processing = true;
+        
+        return $processing;
+    }
 }

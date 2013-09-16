@@ -1,0 +1,25 @@
+model: RentJeeves\DataBundle\Entity\Payment
+fixtures:
+  Payment_1:
+    contract: Contract_11
+    type: recurring
+    status: active
+    amount: 2100
+    startMonth: 2
+    startYear: 2013
+    endMonth: 10
+    endYear: 2015
+    createdAt: '-50 days'
+    updatedAt: '-50 days'
+  Payment_2:
+    contract: Contract_4
+    type: recurring
+    status: active
+    amount: 1700
+    startMonth: 2
+    startYear: 2013
+    endMonth: 10
+    endYear: 2015
+    createdAt: '-5 days'
+    updatedAt: '-5 days'
+

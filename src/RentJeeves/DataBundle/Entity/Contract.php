@@ -335,11 +335,4 @@ class Contract extends Base
         $this->setStatus(ContractStatus::APPROVED);
         return $this;
     }
-
-    public function checkForPayment()
-    {
-        $result = false;
-        // here will be logic
-        return $result;
-    }
 }
