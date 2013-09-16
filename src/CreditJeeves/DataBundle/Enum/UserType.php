@@ -8,9 +8,28 @@ use CreditJeeves\CoreBundle\Enum;
  */
 class UserType extends Enum
 {
-    const APPLICANT = 'applicant';
+    /**
+     * @var string
+     */
     const ADMIN = 'admin';
+
+    /**
+     * @var string
+     */
+    const APPLICANT = 'applicant';
+
+    /**
+     * @var string
+     */
     const DEALER = 'dealer';
+
+    /**
+     * @var string
+     */
     const TETNANT = 'tenant';
+
+    /**
+     * @var string
+     */
     const LANDLORD = 'landlord';
 }
