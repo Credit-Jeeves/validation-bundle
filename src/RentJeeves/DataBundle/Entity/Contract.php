@@ -346,7 +346,7 @@ class Contract extends Base
         $paidTo = $this->getPaidTo();
         $finish = $this->getFinishAt();
         $interval = $finish->diff($paidTo)->format('%r%a');
-        if ($interval < 0 ) {
+        if ($interval < 0) {
             $result = true;
         }
         return $result;

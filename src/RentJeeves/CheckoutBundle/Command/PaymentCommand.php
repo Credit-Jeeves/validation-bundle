@@ -40,7 +40,7 @@ class PaymentCommand extends ContainerAwareCommand
         $date = new \DateTime();
         $total = $date->format('t');
         $day = $date->format('d');
-        if ($day > 27 ) {
+        if ($day > 27) {
             switch ($total) {
                 case 28:
                     return array(28, 29, 30, 31);
