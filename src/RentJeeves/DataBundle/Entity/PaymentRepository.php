@@ -20,6 +20,8 @@ class PaymentRepository extends EntityRepository
     public function getActivePayments($days = array(), $month = 1, $year = 2000, $type = PaymentType::RECURRING)
     {
         $query = $this->createQueryBuilder('p');
+        $query->select('p, c');
+        $query->innerJoin('p.contract', 'c');
         $query->where('p.status = :status');
         $query->andWhere('p.type = :type');
         $query->andWhere('p.dueDate IN (:days)');
