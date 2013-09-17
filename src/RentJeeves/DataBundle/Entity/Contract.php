@@ -335,4 +335,20 @@ class Contract extends Base
         $this->setStatus(ContractStatus::APPROVED);
         return $this;
     }
+
+    /**
+     * Tenant could do mistake with payment periods or contract could de changed
+     * For this case we'll check paid to period
+     */
+    public function checkPaidTo()
+    {
+        $result = false;
+        $paidTo = $this->getPaidTo();
+        $finish = $this->getFinishAt();
+        $interval = $finish->diff($paidTo)->format('%r%a');
+        if ($interval < 0 ) {
+            $result = true;
+        }
+        return $result;
+    }
 }
