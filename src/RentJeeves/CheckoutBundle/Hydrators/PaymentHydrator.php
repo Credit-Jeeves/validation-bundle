@@ -1,5 +1,6 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Hydrators;
+
 use Doctrine\ORM\Internal\Hydration\AbstractHydrator;
 use PDO;
 
@@ -9,7 +10,7 @@ class PaymentHydrator extends AbstractHydrator
     {
         $result = array();
         $cache  = array();
-        foreach($this->_stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($this->_stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $this->hydrateRowData($row, $cache, $result);
         }
         return $result;
