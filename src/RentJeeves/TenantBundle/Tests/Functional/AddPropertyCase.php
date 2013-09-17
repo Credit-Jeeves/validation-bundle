@@ -23,9 +23,9 @@ class AddPropertyCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
-        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').parent().is(':visible')");
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item-refresh'));
         $item->click();
     }
 

@@ -14,26 +14,49 @@ class PaymentCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-        ->setName('Payment:process')
-        ->setDescription('Start auto payments');
+            ->setName('Payment:process')
+            ->setDescription('Start auto payments');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $date = new \DateTime();
+        $days = $this->getDueDays();
         $repo = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment');
-        $payments = $repo->getActivePayments();
+        $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
         foreach ($payments as $payment) {
-            $type = $payment->getType();
-            switch ($type) {
-                case PaymentType::RECURRING:
+            //here will be payment process
+            $contract = $payment->getContract();
+            if ($processing = $contract->checkPaidTo()) {
+                $tenant = $contract->getTenant();
+                //dummy output he will be payment method
+                $output->writeln($tenant->getFullname());
+            }
+        }
+    }
+
+    private function getDueDays()
+    {
+        $date = new \DateTime();
+        $total = $date->format('t');
+        $day = $date->format('d');
+        if ($day > 27) {
+            switch ($total) {
+                case 28:
+                    return array(28, 29, 30, 31);
                     break;
-                case PaymentType::ONE_TIME:
+                case 29:
+                    return array(29, 30, 31);
+                    break;
+                case 30:
+                    return array(30, 31);
+                    break;
+                default:
+                    return array($day);
                     break;
             }
-            if ($processing = $payment->checkForPayment()) {
-                // here will be payment process
-                $output->writeln($payment->getStatus());
-            }
+        } else {
+            return array($day);
         }
     }
 }

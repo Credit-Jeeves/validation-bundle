@@ -23,9 +23,9 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
-        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').parent().is(':visible')");
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item-refresh'));
         $item->click();
         $propertySearch->click();
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
@@ -68,9 +68,9 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
-        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').parent().is(':visible')");
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item-refresh'));
         $item->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $url = $this->session->getCurrentUrl();
@@ -262,9 +262,9 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
         $propertySearch->setValue($fillAddress);
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
-        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').parent().is(':visible')");
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item-refresh'));
         $item->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit>span'));
         $searchSubmit->click();
