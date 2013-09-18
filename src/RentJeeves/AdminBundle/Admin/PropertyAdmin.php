@@ -23,43 +23,85 @@ class PropertyAdmin extends Admin
      */
     public function getBaseRoutePattern()
     {
-        return '/rj/group/properties/';
+        return '/rj/group/properties';
     }
     
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
+        $nLandlordId = $this->getRequest()->get('landlord_id', $this->request->getSession()->get('landlord_id', null));
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        if (!empty($nGroupId)) {
+            $query->innerJoin($alias.'.property_groups', $alias.'_g');
+            $this->request->getSession()->set('group_id', $nGroupId);
+            $query->andWhere($alias.'_g.id = :group_id');
+            $query->setParameter('group_id', $nGroupId);
+        }
+        if (!empty($nLandlordId)) {
+            $this->request->getSession()->set('landlord_id', $nLandlordId);
+            $landlord = $this->getModelManager()->find('RjDataBundle:Landlord', $nLandlordId);
+            $holding = $landlord->getHolding();
+            if ($isSuper = $landlord->getIsSuperAdmin()) {
+                
+                 $query->innerJoin($alias.'.property_groups', $alias.'_g');
+                 $query->andWhere($alias.'_g.holding = :holding');
+                 $query->setParameter('holding', $holding);
+            } else {
+                $query->innerJoin($alias.'.property_groups', $alias.'_g');
+                $query->innerJoin($alias.'_g.group_agents', $alias.'_l');
+                $query->andWhere($alias.'_l.id = :landlord_id');
+                $query->setParameter('landlord_id', $nLandlordId);
+            }
+        }
+        return $query;
+    }
 
-//     public function configureRoutes(RouteCollection $collection)
-//     {
-//         $collection->remove('delete');
-//         $collection->remove('create');
-//     }
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection->remove('delete');
+        $collection->remove('create');
+    }
 
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('name');
+            ->add('number')
+            ->add('street')
+            ->add('zip')
+            ->add('city')
+            ->add('area')
+            ->add('country')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                        'delete' => array(),
+                     )
+                )
+            );
     }
 
-//     public function configureDatagridFilters(DatagridMapper $datagridMapper)
-//     {
-//         $datagridMapper
-//             ->add('user.email')
-//             ->add('type')
-//             ->add('amount')
-//             ->add('status')
-//             ->add(
-//                 'created_at',
-//                 'doctrine_orm_date'
-//             )
-//             ->add(
-//                 'updated_at',
-//                 'doctrine_orm_date'
-//             );
-//     }
+    public function configureDatagridFilters(DatagridMapper $datagridMapper)
+    {
+        $datagridMapper
+            ->add('number')
+            ->add('street')
+            ->add('city')
+            ->add('zip')
+            ->add('area')
+            ->add('country');
+    }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
     {
-        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
+        $nLandlordId = $this->getRequest()->get('landlord_id', $this->request->getSession()->get('landlord_id', null));
+        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
         $menu = $this->menuFactory->createItem('root');
         $menu = $menu->addChild(
             $this->trans(
@@ -75,11 +117,11 @@ class PropertyAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
             )
         );
-        if ('list' == $action & !empty($nUserId)) {
+        if ('list' == $action & !empty($nLandlordId)) {
             $menu = $menu->addChild(
                 $this->trans(
                     $this->getLabelTranslatorStrategy()->getLabel(
-                        'Tenant List',
+                        'Landlord List',
                         'breadcrumb',
                         'link'
                     ),
@@ -87,15 +129,15 @@ class PropertyAdmin extends Admin
                     'SonataAdminBundle'
                 ),
                 array(
-                    'uri' => $this->routeGenerator->generate('admin_tenant_list')
+                    'uri' => $this->routeGenerator->generate('admin_landlord_list')
                 )
             );
         }
-        if ('list' == $action & !empty($nContractId)) {
+        if ('list' == $action & !empty($nGroupId)) {
             $menu = $menu->addChild(
                 $this->trans(
                     $this->getLabelTranslatorStrategy()->getLabel(
-                        'Contracts List',
+                        'Group List',
                         'breadcrumb',
                         'link'
                     ),
@@ -103,14 +145,14 @@ class PropertyAdmin extends Admin
                     'SonataAdminBundle'
                 ),
                 array(
-                    'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
+                    'uri' => $this->routeGenerator->generate('admin_rj_group_list')
                 )
             );
         }
         $menu = $menu->addChild(
             $this->trans(
                 $this->getLabelTranslatorStrategy()->getLabel(
-                    'Payments List',
+                    'Property List',
                     'breadcrumb',
                     'link'
                 ),
