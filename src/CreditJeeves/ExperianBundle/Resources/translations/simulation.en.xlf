@@ -36,7 +36,7 @@
             </trans-unit>
             <trans-unit id="score-not-reach-title-message">
                 <source>score-not-reach-title-message</source>
-                <target>We were unable to meaningfully affect your score in the short term.</target>
+                <target>Let's tackle items we found on your credit profile first.</target>
             </trans-unit>
             <trans-unit id="score-not-reach-title-sub-message">
                 <source>score-not-reach-title-sub-message</source>

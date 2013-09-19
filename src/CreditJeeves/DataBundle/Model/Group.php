@@ -120,7 +120,7 @@ abstract class Group
     protected $target_score;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", unique=true, nullable=true)
      */
     protected $code;
 
