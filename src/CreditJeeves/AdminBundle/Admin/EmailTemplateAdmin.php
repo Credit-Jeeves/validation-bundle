@@ -15,68 +15,15 @@ use Rj\EmailBundle\Admin\EmailTemplateAdmin as BaseAdmin;
 
 class EmailTemplateAdmin extends BaseAdmin
 {
-    //list
-    protected function configureListFields(ListMapper $listMapper)
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
     {
-        $listMapper
-            ->addIdentifier('name')
-            ->addIdentifier('createdAt')
-            ->addIdentifier('updatedAt')
-            ->add(
-                '_action',
-                'actions',
-                array(
-                    'actions' => array(
-                        'edit' => array(),
-                        'delete' => array(),
-                    )
-                )
-            );
-    }
-
-    // edit
-    protected function configureFormFields(FormMapper $formMapper)
-    {
-        $formMapper
-            ->with('Email Templates')
-            ->add('name')
-            ->end();
-
-        $locales = $this->locales;
-
-        foreach ($locales as $locale) {
-            $formMapper
-                ->with(sprintf("Subject", $locale))
-                ->add(
-                    sprintf("translationProxies_%s_subject", $locale),
-                    'text',
-                    array(
-                        'label' => $locale,
-                        'property_path' => sprintf('translationProxies[%s].subject', $locale),
-                    )
-                )
-                ->end();
-        }
-
-        foreach ($locales as $locale) {
-            $formMapper
-                ->with(sprintf("Body", $locale))
-                ->add(
-                    sprintf("translationProxies_%s_body", $locale),
-                    'textarea',
-                    array(
-                        'label' => $locale,
-                        'property_path' => sprintf('translationProxies[%s].body', $locale),
-                    )
-                )
-                ->end();
-        }
-    }
-
-    // filter
-    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
-    {
-        $datagridMapper
-            ->add('name');
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        $query->andWhere($alias.'.name NOT LIKE :prefix');
+        $query->setParameter('prefix', 'rj%');
+        return $query;
     }
 }
