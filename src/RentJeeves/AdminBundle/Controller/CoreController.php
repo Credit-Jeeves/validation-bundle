@@ -22,6 +22,9 @@ class CoreController extends BaseController
         $request->getSession()->set('contract_id', null);
         $request->getSession()->set('user_id', null);
         $request->getSession()->set('holding_id', null);
+        $request->getSession()->set('landlord_id', null);
+        $request->getSession()->set('group_id', null);
+        $request->getSession()->set('property_id', null);
         return parent::dashboardAction();
     }
 }

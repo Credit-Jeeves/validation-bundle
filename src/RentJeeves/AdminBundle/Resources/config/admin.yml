@@ -65,13 +65,24 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
-    sonata.admin.properties:
+    sonata.admin.property:
         class: RentJeeves\AdminBundle\Admin\PropertyAdmin
         tags:
             - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Properties" }
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\Property
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.unit:
+        class: RentJeeves\AdminBundle\Admin\UnitAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Units" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\Unit
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
