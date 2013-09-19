@@ -35,8 +35,8 @@ class PropertyAdmin extends Admin
         $nLandlordId = $this->getRequest()->get('landlord_id', $this->request->getSession()->get('landlord_id', null));
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
+        $query->innerJoin($alias.'.property_groups', $alias.'_g');
         if (!empty($nGroupId)) {
-            $query->innerJoin($alias.'.property_groups', $alias.'_g');
             $this->request->getSession()->set('group_id', $nGroupId);
             $query->andWhere($alias.'_g.id = :group_id');
             $query->setParameter('group_id', $nGroupId);
@@ -46,12 +46,9 @@ class PropertyAdmin extends Admin
             $landlord = $this->getModelManager()->find('RjDataBundle:Landlord', $nLandlordId);
             $holding = $landlord->getHolding();
             if ($isSuper = $landlord->getIsSuperAdmin()) {
-                
-                 $query->innerJoin($alias.'.property_groups', $alias.'_g');
                  $query->andWhere($alias.'_g.holding = :holding');
                  $query->setParameter('holding', $holding);
             } else {
-                $query->innerJoin($alias.'.property_groups', $alias.'_g');
                 $query->innerJoin($alias.'_g.group_agents', $alias.'_l');
                 $query->andWhere($alias.'_l.id = :landlord_id');
                 $query->setParameter('landlord_id', $nLandlordId);
@@ -80,8 +77,9 @@ class PropertyAdmin extends Admin
                 'actions',
                 array(
                     'actions' => array(
-                        'edit' => array(),
-                        'delete' => array(),
+                        'units' => array(
+                            'template' => 'AdminBundle:CRUD:list__property_units.html.twig'
+                        ),
                      )
                 )
             );

@@ -11,40 +11,87 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class UnitAdmin extends Admin
 {
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection->remove('delete');
+        $collection->remove('create');
+    }
 
-//     public function configureRoutes(RouteCollection $collection)
-//     {
-//         $collection->remove('delete');
-//         $collection->remove('create');
-//     }
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $nLandlordId = $this->getRequest()->get('landlord_id', $this->request->getSession()->get('landlord_id', null));
+        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
+        $nPropertyId = $this->getRequest()->get('property_id', $this->request->getSession()->get('property_id', null));
+
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        $query->innerJoin($alias.'.property', $alias.'_p');
+        $query->innerJoin($alias.'_p.property_groups', $alias.'_g');
+        if (!empty($nPropertyId)) {
+            $this->request->getSession()->set('property_id', $nPropertyId);
+            $property = $this->getModelManager()->find('RjDataBundle:Property', $nPropertyId);
+            $query->andWhere($alias.'.property = :property');
+            $query->setParameter('property', $property);
+        }
+        if (!empty($nLandlordId)) {
+            $this->request->getSession()->set('landlord_id', $nLandlordId);
+            $landlord = $this->getModelManager()->find('RjDataBundle:Landlord', $nLandlordId);
+            $holding = $landlord->getHolding();
+            if ($isSuper = $landlord->getIsSuperAdmin()) {
+                $query->andWhere($alias.'_g.holding = :holding');
+                $query->setParameter('holding', $holding);
+            } else {
+                $query->innerJoin($alias.'_g.group_agents', $alias.'_l');
+                $query->andWhere($alias.'_l.id = :landlord_id');
+                $query->setParameter('landlord_id', $nLandlordId);
+            }
+        }
+        return $query;
+    }
 
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('name');
+            ->add('name')
+            ->add('rent')
+            ->add('beds')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                    )
+                )
+            );
     }
 
-//     public function configureDatagridFilters(DatagridMapper $datagridMapper)
-//     {
-//         $datagridMapper
-//             ->add('user.email')
-//             ->add('type')
-//             ->add('amount')
-//             ->add('status')
-//             ->add(
-//                 'created_at',
-//                 'doctrine_orm_date'
-//             )
-//             ->add(
-//                 'updated_at',
-//                 'doctrine_orm_date'
-//             );
-//     }
+    public function configureDatagridFilters(DatagridMapper $datagridMapper)
+    {
+        $datagridMapper
+            ->add('name')
+            ->add('rent');
+    }
+
+    public function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->with('Profile')
+                ->add('name')
+                ->add('rent')
+                ->add('beds')
+            ->end();
+    }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
     {
-        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
+        $nLandlordId = $this->getRequest()->get('landlord_id', $this->request->getSession()->get('landlord_id', null));
+        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
+        $nPropertyId = $this->getRequest()->get('property_id', $this->request->getSession()->get('property_id', null));
+
         $menu = $this->menuFactory->createItem('root');
         $menu = $menu->addChild(
             $this->trans(
@@ -60,11 +107,11 @@ class UnitAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
             )
         );
-        if ('list' == $action & !empty($nUserId)) {
+        if ('list' == $action & !empty($nLandlordId)) {
             $menu = $menu->addChild(
                 $this->trans(
                     $this->getLabelTranslatorStrategy()->getLabel(
-                        'Tenant List',
+                        'Landlord List',
                         'breadcrumb',
                         'link'
                     ),
@@ -72,15 +119,15 @@ class UnitAdmin extends Admin
                     'SonataAdminBundle'
                 ),
                 array(
-                    'uri' => $this->routeGenerator->generate('admin_tenant_list')
+                    'uri' => $this->routeGenerator->generate('admin_landlord_list')
                 )
             );
         }
-        if ('list' == $action & !empty($nContractId)) {
+        if ('list' == $action & !empty($nGroupId)) {
             $menu = $menu->addChild(
                 $this->trans(
                     $this->getLabelTranslatorStrategy()->getLabel(
-                        'Contracts List',
+                        'Group List',
                         'breadcrumb',
                         'link'
                     ),
@@ -88,14 +135,35 @@ class UnitAdmin extends Admin
                     'SonataAdminBundle'
                 ),
                 array(
-                    'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
+                    'uri' => $this->routeGenerator->generate('admin_rj_group_list')
                 )
             );
+        }
+        if ('list' == $action & !empty($nPropertyId)) {
+            $menu = $menu->addChild(
+                $this->trans(
+                    $this->getLabelTranslatorStrategy()->getLabel(
+                        'Property List',
+                        'breadcrumb',
+                        'link'
+                    ),
+                    array(),
+                    'SonataAdminBundle'
+                ),
+                array(
+                    'uri' => $this->routeGenerator->generate('admin_group_properties_list')
+                )
+            );
+        }
+        $title = 'Units List';
+        if (!empty($nPropertyId)) {
+            $property = $this->getModelManager()->find('RjDataBundle:Property', $nPropertyId);
+            $title = $property->getFullAddress();
         }
         $menu = $menu->addChild(
             $this->trans(
                 $this->getLabelTranslatorStrategy()->getLabel(
-                    'Payments List',
+                    $title,
                     'breadcrumb',
                     'link'
                 ),

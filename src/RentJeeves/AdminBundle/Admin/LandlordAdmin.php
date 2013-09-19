@@ -43,6 +43,8 @@ class LandlordAdmin extends Admin
 
     public function configureListFields(ListMapper $listMapper)
     {
+        $request = $this->getRequest();
+        $request->getSession()->set('group_id', null);
         $listMapper
             ->add('full_name')
             ->add('holding')
