@@ -2,6 +2,7 @@
 
 namespace RentJeeves\AdminBundle\Admin;
 
+use Sonata\AdminBundle\Datagrid\ListMapper;
 use Rj\EmailBundle\Admin\EmailTemplateAdmin as BaseAdmin;
 
 class EmailTemplateAdmin extends BaseAdmin
