@@ -162,3 +162,17 @@ fixtures:
     culture: %locale%
     created_at: '2012-11-29 14:36:16'
     updated_at: '2012-11-29 14:36:40'
+  cjDealerAccount700credit:
+    holding: cjHolding700Credit
+    first_name: 700Credit
+    last_name: 700Credit
+    email: 700credit@700credit.com
+    password: pass
+    is_active: true
+    is_holding_admin: true
+    is_super_admin: true
+    type: dealer
+    culture: %locale%
+    created_at: '2012-11-29 14:36:16'
+    updated_at: '2012-11-29 14:36:40'
+
