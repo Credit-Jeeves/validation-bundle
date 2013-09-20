@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "0bff35800e724b074865e1d3180b690bd7054f38"
+                "reference": "e1275263a0e6fe47df5ebe6aff60c801289cb64e"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-09-20 07:30:29"
+            "time": "2013-09-20 12:49:35"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -1398,7 +1398,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2013-09-19 05:00:36"
+            "time": "2013-09-03 10:58:43"
         },
         {
             "name": "friendsofsymfony/user-bundle",
