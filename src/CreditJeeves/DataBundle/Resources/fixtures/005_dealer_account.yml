@@ -167,6 +167,7 @@ fixtures:
     first_name: 700Credit
     last_name: 700Credit
     email: 700credit@700credit.com
+    invite_code: 1111111
     password: pass
     is_active: true
     is_holding_admin: true
