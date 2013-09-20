@@ -1332,12 +1332,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "ea7ee0ddf9bf609bd0910469ee9c75c8592de723"
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/ea7ee0ddf9bf609bd0910469ee9c75c8592de723",
-                "reference": "ea7ee0ddf9bf609bd0910469ee9c75c8592de723",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/8a908b627d7f3d25478a89b8307a9fb9843a8293",
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293",
                 "shasum": ""
             },
             "require": {
