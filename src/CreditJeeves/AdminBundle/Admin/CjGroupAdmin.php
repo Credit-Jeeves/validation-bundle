@@ -80,6 +80,7 @@ class CjGroupAdmin extends Admin
         $formMapper
             ->add('holding', 'sonata_type_model')
             ->add('name')
+            ->add('code')
             ->add('affiliate', 'sonata_type_model')
             ->add('type', 'choice', array('choices' => GroupType::getTypeList()));
     }
