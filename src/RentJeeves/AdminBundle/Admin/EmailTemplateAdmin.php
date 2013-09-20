@@ -17,4 +17,22 @@ class EmailTemplateAdmin extends BaseAdmin
         $query->setParameter('prefix', 'rj%');
         return $query;
     }
+
+    protected function configureListFields(ListMapper $listMapper)
+    {
+        $listMapper
+        ->addIdentifier('name')
+        ->addIdentifier('createdAt')
+        ->addIdentifier('updatedAt')
+        ->add(
+            '_action',
+            'actions',
+            array(
+                'actions' => array(
+                    'edit' => array(),
+                    'delete' => array(),
+                )
+            )
+        );
+    }
 }
