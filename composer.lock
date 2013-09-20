@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "8aa3d43fb2365d52daf978a84dac13b7934b44b5"
+                "reference": "0bff35800e724b074865e1d3180b690bd7054f38"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-09-19 09:33:11"
+            "time": "2013-09-20 07:30:29"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -419,7 +419,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/SimulationBundle.git",
-                "reference": "0af09daeebc57a29d20accffb2567d0438b85c38"
+                "reference": "3a88ebf56f5adf1b2281fc52cabbe81abd177f60"
             },
             "require": {
                 "credit-jeeves/arf-bundle": "dev-master",
@@ -449,7 +449,7 @@
                 }
             ],
             "description": "CreditJeeves Simulation Bundle",
-            "time": "2013-09-11 14:59:29"
+            "time": "2013-09-16 15:45:23"
         },
         {
             "name": "dflydev/markdown",
