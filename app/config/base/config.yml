@@ -7,5 +7,5 @@ parameters:
     experian.logging: false
 
 simulation:
-    entity_name: '\\CreditJeeves\\DataBundle\\Entity\\Atb'
+    entity_name: '\CreditJeeves\DataBundle\Entity\Atb'
     atb: ~
