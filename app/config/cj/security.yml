@@ -42,7 +42,7 @@ security:
         - { path: ^/invite,         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/public/*,       role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/documentation/api, role: IS_AUTHENTICATED_ANONYMOUSLY  }
+        - { path: ^/documentation/api, role: ROLE_ADMIN  }
         - { path: ^/api/*,          role: IS_AUTHENTICATED_ANONYMOUSLY  }
         - { path: ^/admin/,         role: ROLE_ADMIN }
         - { path: ^/dealer/,        role: ROLE_DEALER }
