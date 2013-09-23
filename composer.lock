@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "17cdb035098e5c01337ea353a4111cc48096608c"
+                "reference": "dd77afe7af6726e26d8bbb11566c67528f7aa813"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-09-23 11:44:46"
+            "time": "2013-09-23 12:53:11"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -376,7 +376,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "9a6c7e50eec84914ce605158381322f5a87bcbca"
+                "reference": "b5e5de7443fbfe6a0b569a496a39b28b901e905d"
             },
             "require": {
                 "ext-mcrypt": "*",
@@ -398,7 +398,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-08-28 00:36:45"
+            "time": "2013-09-23 12:57:35"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
