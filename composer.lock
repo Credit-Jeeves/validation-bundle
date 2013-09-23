@@ -376,7 +376,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "b5e5de7443fbfe6a0b569a496a39b28b901e905d"
+                "reference": "17b1a148017a68ffff5fd2d523cc86e76c028c61"
             },
             "require": {
                 "ext-mcrypt": "*",
@@ -398,7 +398,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-09-23 12:57:35"
+            "time": "2013-09-23 15:25:01"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
