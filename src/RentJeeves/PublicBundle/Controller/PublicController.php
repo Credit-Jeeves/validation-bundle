@@ -153,7 +153,7 @@ class PublicController extends Controller
                 $em->persist($tenant);
                 $em->flush();
                 $Property->createContract($em, $tenant, $unitSearch);
-                $this->get('mailer')->sendRjCheckEmail($tenant);
+                $this->get('project.mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
             }
         }
