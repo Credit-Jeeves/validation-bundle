@@ -30,7 +30,7 @@ class InviteLandlord
     /**
      * @InjectParams({
      *     "em"     = @Inject("doctrine.orm.entity_manager"),
-     *     "mailer" = @Inject("mailer"),
+     *     "mailer" = @Inject("project.mailer"),
      *     "locale" = @Inject("%kernel.default_locale%"),
      * })
      */
