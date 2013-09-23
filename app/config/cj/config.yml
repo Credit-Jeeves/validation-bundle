@@ -15,6 +15,10 @@ imports:
     - { resource: ../cj/twig.yml }
     - { resource: ../base/apy_js_form_validation.yml }
 
+sensio_framework_extra:
+    view:
+        annotations: false
+
 parameters:
     server_name: '%server_name_cj%'
     support_email: help@creditjeeves.com
@@ -34,6 +38,7 @@ framework:
         name: cj
 
 twig:
+    exception_controller: 'CreditJeeves\ApiBundle\Controller\ExceptionController::showAction'
     globals:
         application: cj
 
@@ -49,3 +54,34 @@ sonata_admin:
                     - sonata.admin.cj_group
                     - sonata.admin.dealer
                     - sonata.admin.applicant
+
+api:
+    admin_dealer_email: %api_admin_dealer_email%
+
+fos_rest:
+    format_listener:
+        default_priorities: [html,xml,json]
+    view:
+        view_response_listener: force
+        formats:
+            json: true
+            xml: true
+    body_listener: true
+    #param_fetcher_listener: force
+    allowed_methods_listener: true
+    access_denied_listener:
+        json: true
+    routing_loader:
+        default_format: ~
+    exception:
+        codes:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+            'Doctrine\ORM\OptimisticLockException': HTTP_CONFLICT
+            'Symfony\Component\Routing\Exception\MethodNotAllowedException': 405
+            'Symfony\Component\HttpKernel\Exception\HttpException': 400
+        messages:
+            'Symfony\Component\Routing\Exception\ResourceNotFoundException': true
+            'Symfony\Component\HttpKernel\Exception\HttpException': true
+            'Symfony\Component\Routing\Exception\MethodNotAllowedException': true
+    serializer:
+        groups: [CreditJeeves]

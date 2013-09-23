@@ -308,4 +308,3 @@ fixtures:
     type:           generic
     created_at:     '-60 days'
     updated_at:     '-8 days'
-
