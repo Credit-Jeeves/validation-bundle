@@ -28,7 +28,7 @@ class SendController extends Controller
         $active = (is_null($user->getInviteCode())) ? true : false;
 
         if ($request->getMethod() == 'POST' && $user->getInviteCode()) {
-            $this->get('creditjeeves.mailer')->sendRjCheckEmail($user);
+            $this->get('mailer')->sendRjCheckEmail($user);
         }
 
         if ($user->getType() != UserType::LANDLORD) {

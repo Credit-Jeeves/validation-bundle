@@ -493,7 +493,7 @@ class AjaxController extends Controller
         $action = $data['action'];
         switch ($action) {
             case Contract::RESOLVE_EMAIL:
-                $this->get('creditjeeves.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
+                $this->get('mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();

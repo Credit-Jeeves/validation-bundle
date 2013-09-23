@@ -25,7 +25,7 @@ class SendController extends Controller
         }
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
-            $this->get('creditjeeves.mailer')->sendCheckEmail($user);
+            $this->get('mailer')->sendCheckEmail($user);
         }
         return array(
             'email' => $user->getEmail()

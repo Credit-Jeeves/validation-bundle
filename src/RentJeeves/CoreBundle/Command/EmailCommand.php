@@ -107,7 +107,7 @@ class EmailCommand extends ContainerAwareCommand
         $type = $input->getOption('type');
         $days = $input->getOption('days');
         $auto = $input->getOption('auto');
-        $mailer = $this->getContainer()->get('creditjeeves.mailer');
+        $mailer = $this->getContainer()->get('renttrack.mailer');
         $doctrine = $repo = $this->getContainer()->get('doctrine');
         switch ($user) {
             case UserType::TENANT:

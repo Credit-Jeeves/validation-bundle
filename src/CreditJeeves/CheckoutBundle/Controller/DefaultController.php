@@ -95,7 +95,7 @@ class DefaultController extends Controller
                     $em->persist($report);
                     $em->persist($this->order);
                     $em->flush();
-                    $this->get('creditjeeves.mailer')->sendReceipt($this->order);
+                    $this->get('mailer')->sendReceipt($this->order);
                     return $this->redirect($this->generateUrl('user_report'));
                 }
             }

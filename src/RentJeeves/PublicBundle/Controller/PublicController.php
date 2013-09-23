@@ -88,7 +88,7 @@ class PublicController extends Controller
                 $em->persist($tenant);
                 $em->flush();
 
-                $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
+                $this->get('mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
             }
         }
@@ -153,7 +153,7 @@ class PublicController extends Controller
                 $em->persist($tenant);
                 $em->flush();
                 $Property->createContract($em, $tenant, $unitSearch);
-                $this->get('creditjeeves.mailer')->sendRjCheckEmail($tenant);
+                $this->get('mailer')->sendRjCheckEmail($tenant);
                 return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
             }
         }
