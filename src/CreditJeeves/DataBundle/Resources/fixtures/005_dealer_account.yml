@@ -163,6 +163,8 @@ fixtures:
     created_at: '2012-11-29 14:36:16'
     updated_at: '2012-11-29 14:36:40'
   cjDealerAccount700credit:
+    dealer_groups:
+      - 700CreditGroup
     holding: cjHolding700Credit
     first_name: 700Credit
     last_name: 700Credit
