@@ -27,11 +27,9 @@ class PaymentCommand extends ContainerAwareCommand
         foreach ($payments as $payment) {
             //here will be payment process
             $contract = $payment->getContract();
-            if ($processing = $contract->checkPaidTo()) {
-                $tenant = $contract->getTenant();
-                //dummy output he will be payment method
-                $output->writeln($tenant->getFullname());
-            }
+            $tenant = $contract->getTenant();
+            //dummy output he will be payment method
+            $output->writeln($tenant->getFullname());
         }
     }
 

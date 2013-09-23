@@ -108,18 +108,18 @@ class EmailCommand extends ContainerAwareCommand
         $days = $input->getOption('days');
         $auto = $input->getOption('auto');
         $mailer = $this->getContainer()->get('creditjeeves.mailer');
-        $doctrine = $repo = $this->getContainer()->get('doctrine');//->getRepository('RjDataBundle:Payment');
+        $doctrine = $repo = $this->getContainer()->get('doctrine');
         switch ($user) {
             case UserType::TENANT:
                 switch ($type) {
-                    case self::OPTION_TYPE_DEFAULT: 
+                    case self::OPTION_TYPE_DEFAULT:
                         if ($auto) { //Email:start --auto
-                            // Story-1544 Scheduled Rent will be Paid on (query: "select tenants with autopay with rent being paid in 5 days"...)
+                            // Story-1544
                             $repo = $doctrine->getRepository('RjDataBundle:Payment');
                             
                             $output->writeln('Story-1544');
                         } else { //Email:start
-                            // Story-1542 Rent Payment Due (query: "select tenants with no autopay but who have rent due in 5 days"...)
+                            // Story-1542
                             $output->writeln('Story-1542');
                         }
                         break;
@@ -128,7 +128,7 @@ class EmailCommand extends ContainerAwareCommand
             case UserType::LANDLORD:
                 switch ($type) {
                     case self::OPTION_TYPE_INVITED: //Email:start --user=landlord --type=invited
-                        // Story-1553 Reminder: sign up for Rent Jeeves to receive payment (query: "select landlords who received invite 2 days ago, but who have not joined"...)
+                        // Story-1553
                         $output->writeln('Story-1553');
                         break;
                     case self::OPTION_TYPE_PENDING: //Email:start --user=landlord --type=pending
