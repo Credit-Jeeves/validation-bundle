@@ -8,9 +8,12 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use RentJeeves\DataBundle\Enum\PaymentType;
+use RentJeeves\CoreBundle\Traits\DateCommon;
 
 class PaymentCommand extends ContainerAwareCommand
 {
+    use DateCommon;
+
     protected function configure()
     {
         $this
@@ -30,31 +33,6 @@ class PaymentCommand extends ContainerAwareCommand
             $tenant = $contract->getTenant();
             //dummy output he will be payment method
             $output->writeln($tenant->getFullname());
-        }
-    }
-
-    private function getDueDays()
-    {
-        $date = new \DateTime();
-        $total = $date->format('t');
-        $day = $date->format('d');
-        if ($day > 27) {
-            switch ($total) {
-                case 28:
-                    return array(28, 29, 30, 31);
-                    break;
-                case 29:
-                    return array(29, 30, 31);
-                    break;
-                case 30:
-                    return array(30, 31);
-                    break;
-                default:
-                    return array($day);
-                    break;
-            }
-        } else {
-            return array($day);
         }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\CoreBundle\Mailer;
 
-use CreditJeeves\CoreBundle\Mailer\BaseMailer;
+use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -14,48 +14,8 @@ use \RuntimeException;
 /**
  * @DI\Service("project.mailer")
  */
-class Mailer extends BaseMailer implements MailerInterface
+class Mailer extends BaseMailer
 {
-//     public function sendWelcomeEmailToApplicant($user, $sTemplate = 'welcome')
-//     {
-//         return $this->sendEmail($user, $sTemplate);
-//     }
-    
-
-    public function sendConfirmationEmailMessage(UserInterface $user)
-    {
-        $url = $this->container->get('router')->generate(
-            'fos_user_registration_confirm',
-            array('token' => $user->getConfirmationToken()),
-            true
-        );
-
-        return $this->sendEmail(
-            $user,
-            'confirmation',
-            array(
-                'confirmationUrl' => $url
-            )
-        );
-    }
-
-    public function sendResettingEmailMessage(UserInterface $user)
-    {
-        $url = $this->container->get('router')->generate(
-            'fos_user_resetting_reset',
-            array('token' => $user->getConfirmationToken()),
-            true
-        );
-
-        return $this->sendEmail(
-            $user,
-            'resetting',
-            array(
-                'confirmationUrl' => $url
-            )
-        );
-    }
-
     public function sendRjCheckEmail($user, $sTemplate = 'rjCheck')
     {
         $url = $this->container->get('router')->generate(
@@ -127,5 +87,10 @@ class Mailer extends BaseMailer implements MailerInterface
         );
 
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendRjPaymentDue($tenant, $landlord, $contract, $sTemplate = 'rjPaymentDue')
+    {
+        echo __METHOD__;
     }
 }

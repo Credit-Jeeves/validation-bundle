@@ -8,11 +8,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use RentJeeves\DataBundle\Enum\PaymentType;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
+use RentJeeves\CoreBundle\Traits\DateCommon;
 
 class EmailCommand extends ContainerAwareCommand
 {
-    /**
+     use DateCommon;
+
+     /**
      * @var string
      */
     const OPTION_USER = 'user';
@@ -107,7 +111,8 @@ class EmailCommand extends ContainerAwareCommand
         $type = $input->getOption('type');
         $days = $input->getOption('days');
         $auto = $input->getOption('auto');
-        $mailer = $this->getContainer()->get('renttrack.mailer');
+        $date = new \DateTime();
+        $mailer = $this->getContainer()->get('project.mailer');
         $doctrine = $repo = $this->getContainer()->get('doctrine');
         switch ($user) {
             case UserType::TENANT:
@@ -120,6 +125,8 @@ class EmailCommand extends ContainerAwareCommand
                             $output->writeln('Story-1544');
                         } else { //Email:start
                             // Story-1542
+                            $repo = $doctrine->getRepository('RjDataBundle:Payment');
+                            $days = $this->getDueDays($days);
                             $output->writeln('Story-1542');
                         }
                         break;

@@ -53,47 +53,6 @@ abstract class BaseMailer
         }
     }
 
-    public function sendInviteToUser($user, $sTemplate = 'invite')
-    {
-        return $this->sendEmail($user, $sTemplate);
-    }
-
-    public function sendWelcomeEmailToUser($user, $sTemplate = 'welcome')
-    {
-        return $this->sendEmail($user, $sTemplate);
-    }
-
-    public function sendCheckEmail($user, $sTemplate = 'check')
-    {
-        $url = $this->container->get('router')->generate(
-            'applicant_new_check',
-            array('code' => $user->getInviteCode()),
-            true
-        );
-    
-        return $this->sendEmail(
-            $user,
-            $sTemplate,
-            array(
-                'checkUrl' => $url
-            )
-        );
-    }
-
-    public function sendReceipt(Order $order)
-    {
-        $dateShortFormat = $this->container->getParameter('date_short');
-        return $this->sendEmail(
-            $order->getUser(),
-            'receipt',
-            array(
-                'date' => $order->getCreatedAt()->format($dateShortFormat),
-                'amout' => '$9.00', // TODO move to config file and add correct currency formatting
-                'number' => $order->getAuthorizes()->last()->getTransactionId(),
-            )
-        );
-    }
-
     public function sendEmail($user, $sTemplate, array $vars = array())
     {
         if (empty($user) || empty($sTemplate)) {
