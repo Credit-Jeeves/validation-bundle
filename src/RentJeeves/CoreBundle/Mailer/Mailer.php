@@ -12,7 +12,7 @@ use \Exception;
 use \RuntimeException;
 
 /**
- * @DI\Service("project.mailer")
+ * 
  */
 class Mailer extends BaseMailer
 {

@@ -113,6 +113,8 @@ class EmailCommand extends ContainerAwareCommand
         $auto = $input->getOption('auto');
         $date = new \DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
+        echo get_class($mailer);
+        exit;
         $doctrine = $repo = $this->getContainer()->get('doctrine');
         switch ($user) {
             case UserType::TENANT:
