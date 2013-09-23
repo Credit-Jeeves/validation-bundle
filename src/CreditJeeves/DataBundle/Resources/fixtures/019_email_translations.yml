@@ -10,7 +10,41 @@ fixtures:
     translatable: email_1
     locale: %locale%
     property: body
-    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Welcome to Credit Jeeves{% endblock %}'
+    value: |
+      {% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Welcome to Credit Jeeves{% endblock %}
+      {% block email %}
+            <p>
+                <?php echo $groupName; ?> has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
+                The Credit Jeeves program shows you your current credit score, a summary of your credit profile, and a customized action plan to help
+                you reach your target score. We then monitor your progress over the next few months to let you know when you are likely qualified for a loan.
+            </p>
+            <p>
+                Enrollment is free, simple, and takes less than a minute. Credit Jeeves will not negatively impact your credit and does not post a
+                'hard inquiry.'
+            </p>
+            <p>
+                Set up your Credit Jeeves Account now at {{ inviteLink }} and take the first step towards better financing.
+            </p>
+            <p>
+                You will be able to:
+                * See and monitor your current credit score.
+                * Follow easy-to-understand actions to optimize your score for your goals.
+                * See a summary of your credit file and learn more about how this information affects your score.
+                * Receive alerts when you reach your target score.
+            </p>
+            <br />
+            <p>
+              Tip: Do not shop around for a loan right now. This will create multiple 'hard inquiries' on your credit file which can negatively
+              impact your score. Credit Jeeves makes a 'soft inquiry' and will allow you to view your score and action plan without hurting your
+              chances to requalify for a loan in the future.
+            </p>
+            <p>
+                Again, <?php echo $groupName; ?> is providing you this service for free.
+            </p>
+            <p>
+            Sign Up Now at {{ inviteLink }}
+            </p>
+      {% endblock %}
 # welcome.html email
   translation_21:
     translatable: email_2
@@ -340,4 +374,26 @@ fixtures:
         <br />
         Enjoy, <br />
         The RentTrack Team
+      {% endblock %}
+
+#ApiEnroll.html
+  translation_130:
+    translatable: email_16
+    locale: %locale%
+    property: subject
+    value: Your have new dealer!
+  translation_131:
+    translatable: email_16
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Your have new dealer!{% endblock %}
+      {% block email %}
+          <p>
+              <?php echo $groupName; ?> has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
+          </p>
+          <p>
+              Again, <?php echo $groupName; ?> is providing you this service for free.
+          </p>
       {% endblock %}
