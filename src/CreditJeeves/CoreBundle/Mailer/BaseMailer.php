@@ -64,17 +64,17 @@ abstract class BaseMailer
     public function sendCheckEmail($user, $sTemplate = 'check')
     {
         $url = $this->container->get('router')->generate(
-                'applicant_new_check',
-                array('code' => $user->getInviteCode()),
-                true
+            'applicant_new_check',
+            array('code' => $user->getInviteCode()),
+            true
         );
     
         return $this->sendEmail(
-                $user,
-                $sTemplate,
-                array(
-                        'checkUrl' => $url
-                )
+            $user,
+            $sTemplate,
+            array(
+                'checkUrl' => $url
+            )
         );
     }
 
