@@ -23,7 +23,7 @@ fixtures:
                 'hard inquiry.'
             </p>
             <p>
-                Set up your Credit Jeeves Account now at {{ inviteLink }} and take the first step towards better financing.
+                Set up your Credit Jeeves Account now at <a href="{{ inviteLink }}">{{ inviteLink }}</a> and take the first step towards better financing.
             </p>
             <p>
                 You will be able to:
@@ -42,7 +42,7 @@ fixtures:
                 Again, <?php echo $groupName; ?> is providing you this service for free.
             </p>
             <p>
-            Sign Up Now at {{ inviteLink }}
+            Sign Up Now at <a href="{{ inviteLink }}">{{ inviteLink }}</a>
             </p>
       {% endblock %}
 # welcome.html email
