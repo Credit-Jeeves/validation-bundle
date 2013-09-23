@@ -1216,6 +1216,10 @@
                 <source>common.add_new</source>
                 <target>Add New</target>
             </trans-unit>
+            <trans-unit id="common.last">
+                <source>common.last</source>
+                <target>last</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

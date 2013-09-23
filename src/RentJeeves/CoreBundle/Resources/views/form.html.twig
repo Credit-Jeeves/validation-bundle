@@ -135,6 +135,7 @@
 {% block date_widget %}
     {% spaceless %}
         {% if widget == 'single_text' %}
+            {#% set type = type|default('date') %#}
             {{ block('form_widget_simple') }}
         {% else %}
             <div {{ block('widget_container_attributes') }}>
@@ -147,3 +148,14 @@
         {% endif %}
     {% endspaceless %}
 {% endblock date_widget %}
+
+{% block number_widget %}
+    {% spaceless %}
+        {% set type = type|default('number') %}
+        {% if attr.step is not defined and form.vars.block_prefixes[1]|default(null) != 'integer' %}
+            {% set attr = attr|merge({'step': 'any'}) %}
+        {% endif %}
+
+        {{ block('form_widget_simple') }}
+    {% endspaceless %}
+{% endblock number_widget %}

@@ -42,7 +42,6 @@ class PaymentAccountType extends AbstractType
                 ),
                 'empty_value'  => false,
                 'data'  => PaymentAccountTypeEnum::BANK,
-                'error_bubbling' => true,
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.type'
                 )
@@ -53,7 +52,6 @@ class PaymentAccountType extends AbstractType
             'text',
             array(
                 'label' => 'checkout.account_nickname',
-                'error_bubbling' => true,
                 'attr' => array(
                     'data-bind' => 'value: paymentSource.name',
                     'row_attr' => array(
@@ -270,7 +268,6 @@ class PaymentAccountType extends AbstractType
             'address_choice',
             'entity',
             array(
-                'error_bubbling' => true,
                 'class' => 'CreditJeeves\DataBundle\Entity\Address',
                 'mapped' => false,
                 'label' => 'common.address',
@@ -293,7 +290,6 @@ class PaymentAccountType extends AbstractType
                 'mapped' => true,
                 'label' => false,
                 'by_reference' => true,
-                'error_bubbling' => true,
                 'attr' => array(
                     'no_box' => true,
                     'force_row' => true,

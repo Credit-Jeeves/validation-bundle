@@ -23,10 +23,10 @@ class ComponentController extends Controller
      */
     public function payAction()
     {
-        $paymentDetailsType = $this->createForm(new PaymentType());
+        $paymentType = $this->createForm(new PaymentType());
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
         return array(
-            'paymentDetailsType' => $paymentDetailsType->createView(),
+            'paymentType' => $paymentType->createView(),
             'userDetailsType' => $userDetailsType->createView()
         );
     }

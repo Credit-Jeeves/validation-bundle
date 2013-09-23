@@ -17,9 +17,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use \DateTime;
 use Symfony\Component\HttpFoundation\Request;
+use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 
 class DefaultController extends Controller
 {
+    use FormErrors;
+
     /**
      * @Route("/checkout/get_token")
      */
@@ -66,12 +69,34 @@ class DefaultController extends Controller
      */
     public function testAction(Request $request)
     {
-        $paymentAccountType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
+        $paymentAccountType = $this->createForm(new PaymentType());
 
         if ($request->isMethod('POST')) {
             $paymentAccountType->handleRequest($request);
             if ($paymentAccountType->isValid()) {
 
+            }
+        }
+
+        ini_set('memory_limit', -1);
+        return array(
+            'paymentDetailsType' => $paymentAccountType->createView()
+        );
+    }
+    /**
+     * @Route("/checkout/test2")
+     * @Template("RjCheckoutBundle:Default:test.html.twig")
+     */
+    public function test2Action(Request $request)
+    {
+        $paymentAccountType = $this->createForm(new PaymentType($this->getUser()));
+
+        if ($request->isMethod('POST')) {
+            $paymentAccountType->handleRequest($request);
+            if ($paymentAccountType->isValid()) {
+
+            } else {
+                return $this->renderErrors($paymentAccountType);
             }
         }
 

@@ -178,7 +178,7 @@ abstract class User extends BaseUser
      */
     public function getLastCompleteOperation($type)
     {
-        $orders = reverseIterator($this->getOrders());
+        $orders = array_reverse((array)$this->getOrders()->getIterator());
 
         /** @var Order $order */
         foreach ($orders as $order) {

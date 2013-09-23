@@ -1,4 +1,4 @@
-{% form_theme paymentDetailsType 'RjCoreBundle::form.html.twig' %}
+{% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
 {% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
 
 
@@ -22,6 +22,12 @@
             </li>
         </ul>
 
+        <div class="attention-box pie-el" style="display: none">
+            <h3>{{ 'pay_popup.errors.title' | trans }}</h3>
+            <ul class="default">
+            </ul>
+        </div>
+
         <div class="col" data-bind="visible: 'details' == step()">
             <div class="form-row clearfix">
                 <label>{{ 'checkout.property' | trans }}<b>*</b></label>
@@ -30,9 +36,9 @@
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
             </div>
-            <form {{ form_enctype(paymentDetailsType) }} method="post">
-                {{ form_widget(paymentDetailsType) }}
-                {{ JSFV(paymentDetailsType) }}
+            <form {{ form_enctype(paymentType) }} method="post">
+                {{ form_widget(paymentType) }}
+                {{ JSFV(paymentType) }}
             </form>
         </div>
 
@@ -46,7 +52,7 @@
                     <small><b>*</b>Required</small>
                 </div>
             </div>
-            <form {{ form_enctype(paymentDetailsType) }} method="post">
+            <form {{ form_enctype(userDetailsType) }} method="post">
                 {{ form_widget(userDetailsType) }}
                 {{ JSFV(userDetailsType) }}
             </form>
@@ -154,7 +160,7 @@
 
         </div>
 
-        <div class="atansion-box pie-el" data-bind="visible: 31 == step()" style="display: none;">
+        <div class="attention-box3 pie-el" data-bind="visible: 31 == step()" style="display: none;">
             <h3>Sorry, there was a problem verifying your identity – try again in an hour.</h3>
             <p>
                 Your answers do not match the information the credit bureau has on file for you.
@@ -184,7 +190,7 @@
 
         <div data-bind="visible: 'pay' == step()">
             <h3 class="italic">
-                <span data-bind="visible: recurring">{{ 'checkout.recurring_for' | trans }}</span>
+                <span data-bind="visible: 'recurring' == type()">{{ 'checkout.recurring_for' | trans }}</span>
                 <span data-bind="text: propertyAddress"></span>
             </h3>
 
@@ -194,7 +200,7 @@
                     <div class="form-row clearfix">
                         <label>{{ 'checkout.send_to' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: address.toString()"></span>
+                            <span class="value" data-bind="text: fullPayTo"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix">
@@ -203,22 +209,23 @@
                             <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix" data-bind="visible: !isTodayPaymnet()">
+                    <div class="form-row clearfix" data-bind="visible: 'immediate' != type()">
                         <label>{{ 'checkout.starts_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: startDate"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix" data-bind="visible: recurring">
+                    <div class="form-row clearfix" data-bind="visible: 'recurring' == type()">
                         <label>{{ 'checkout.recurs_on' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="i18n: {'DAY': dueDay()}">checkout.day_%DAY%_each_month</span>
+                            <span class="value"
+                                  data-bind="text: 'checkout.day.' + frequency() +'.each_month-%DAY%', i18n: {'DAY': dueDate}"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix" data-bind="visible: 'on' == ends()">
                         <label>{{ 'checkout.last_payment_on' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: endsOn"></span>
+                            <span class="value" data-bind="text: getLastPaymentDay"></span>
                         </div>
                     </div>
                 </div>

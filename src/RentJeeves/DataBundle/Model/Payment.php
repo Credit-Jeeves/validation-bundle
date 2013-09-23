@@ -18,6 +18,8 @@ class Payment
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     protected $id;
 
@@ -30,73 +32,111 @@ class Payment
      *     name="contract_id",
      *     referencedColumnName="id"
      * )
+     *
      * @var Contract
      */
     protected $contract;
 
     /**
      * @ORM\Column(type="PaymentType")
+     * @Assert\NotBlank(
+     *      message="checkout.error.type.empty"
+     * )
+     *
      * @var PaymentType
      */
     protected $type;
 
     /**
      * @ORM\Column(type="PaymentStatus")
+     * @Assert\NotBlank(
+     *      message="checkout.error.status.empty"
+     * )
+     *
      * @var PaymentStatus
      */
-    protected $status;
+    protected $status = PaymentStatus::ACTIVE;
 
     /**
      * @ORM\Column(type="decimal")
+     * @Assert\NotBlank(
+     *      message="checkout.error.amount.empty"
+     * )
+     * @Assert\Range(
+     *      min=1,
+     *      minMessage="checkout.error.amount.min",
+     *      invalidMessage="checkout.error.amount.valid"
+     * )
+     *
      * @var double
      */
     protected $amount;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer")
+     * @Assert\NotBlank(
+     *      message="checkout.error.dueDate.empty"
+     * )
+     *
      * @var int
      */
-    protected $dueDate = null;
+    protected $dueDate;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(
+     *      message="checkout.error.startMonth.empty"
+     * )
+     *
      * @var int
      */
     protected $startMonth;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank(
+     *      message="checkout.error.startYear.empty"
+     * )
+     *
      * @var int
      */
     protected $startYear;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\NotBlank(
+     *      message="checkout.error.endMonth.empty",
+     *      groups={"cancelled_on"}
+     * )
+     *
      * @var int
      */
     protected $endMonth = null;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\NotBlank(
+     *      message="checkout.error.endYear.empty",
+     *      groups={"cancelled_on"}
+     * )
+     *
      * @var int
      */
     protected $endYear = null;
 
     /**
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(
-     *     name="created_at",
-     *     type="datetime"
-     * )
+     * @ORM\Column(name="created_at", type="datetime")
+     *
+     * @var DateTime
      */
     protected $createdAt;
 
     /**
      * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(
-     *     name="updated_at",
-     *     type="datetime"
-     * )
+     * @ORM\Column(name="updated_at", type="datetime")
+     *
+     * @var DateTime
      */
     protected $updatedAt;
 

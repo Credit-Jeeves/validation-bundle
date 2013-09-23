@@ -4,16 +4,7 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
-use Symfony\Component\Validator\Constraints\True;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Email;
-
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
-use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
-use CreditJeeves\ApplicantBundle\Form\DataTransformer\SsnToPartsTransformer;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserAddressType extends AbstractType
 {
@@ -24,7 +15,6 @@ class UserAddressType extends AbstractType
             'text',
             array(
                 'label' => 'common.address',
-                'error_bubbling' => true,
                 'attr' => array(
                     'class' => 'all-width',
                     'placeholder' => 'common.street',
@@ -49,7 +39,6 @@ class UserAddressType extends AbstractType
                     'placeholder' => 'common.city',
                     'data-bind' => 'value: address.city'
                 ),
-                'error_bubbling' => true,
             )
         );
         $builder->add(
@@ -57,7 +46,6 @@ class UserAddressType extends AbstractType
             'choice',
             array(
                 'label' => false,
-                'error_bubbling' => true,
                 'choice_list' =>  new StateChoiceList(),
                 'required' => true,
                 'attr' => array(
@@ -76,7 +64,6 @@ class UserAddressType extends AbstractType
                     'placeholder' => 'common.zip_code',
                     'data-bind' => 'value: address.zip'
                 ),
-                'error_bubbling' => true,
             )
         );
     }
