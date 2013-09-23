@@ -79,7 +79,7 @@ class TenantController extends Controller
                 $em->persist($tenant);
                 $em->flush();
 
-                $this->get('mailer')->sendRjTenantInvite($tenant, $user, $contract);
+                $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
             }
         }
 

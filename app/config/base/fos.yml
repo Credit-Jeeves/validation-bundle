@@ -4,7 +4,7 @@ fos_user:
     firewall_name: main
     user_class: CreditJeeves\DataBundle\Entity\User
     service:
-        mailer: mailer
+        mailer: project.mailer
     from_email:
         address:        support@creditjeeves.com
         sender_name:    CreditJeeves

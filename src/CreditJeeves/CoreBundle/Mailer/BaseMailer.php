@@ -51,6 +51,17 @@ abstract class BaseMailer
         }
     }
 
+    public function sendInviteToUser($user, $sTemplate = 'invite')
+    {
+        return $this->sendEmail($user, $sTemplate);
+    }
+    
+    public function sendWelcomeEmailToUser($user, $sTemplate = 'welcome')
+    {
+        return $this->sendEmail($user, $sTemplate);
+    }
+    
+
     public function sendEmail($user, $sTemplate, array $vars = array())
     {
         if (empty($user) || empty($sTemplate)) {

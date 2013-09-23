@@ -12,10 +12,16 @@ use \Exception;
 use \RuntimeException;
 
 /**
- * @DI\Service("mailer")
+ * @DI\Service("project.mailer")
  */
 class Mailer extends BaseMailer implements MailerInterface
 {
+    public function sendWelcomeEmailToApplicant($user, $sTemplate = 'welcome')
+    {
+        return $this->sendEmail($user, $sTemplate);
+    }
+    
+
     public function sendConfirmationEmailMessage(UserInterface $user)
     {
         $url = $this->container->get('router')->generate(

@@ -28,7 +28,7 @@ class EmailTemplateController extends Controller
                 $sType = 'text/html';
             }
         }
-        $this->get('mailer')->sendTestEmail($sTemplate, $sType);
+        $this->get('project.mailer')->sendTestEmail($sTemplate, $sType);
         return new JsonResponse(array());
     }
 }
