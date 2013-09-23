@@ -376,7 +376,7 @@ fixtures:
         The RentTrack Team
       {% endblock %}
 
-#ApiEnroll.html
+#exist_invite.html
   translation_130:
     translatable: email_16
     locale: %locale%
