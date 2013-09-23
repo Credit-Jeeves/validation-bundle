@@ -20,9 +20,9 @@ class LandlordCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('.pac-item').length > 0");
-        $this->session->wait($this->timeout, "$('.pac-item').parent().is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').length > 0");
+        $this->session->wait($this->timeout, "$('.pac-item-refresh').parent().is(':visible')");
+        $this->assertNotNull($item = $this->page->find('css', '.pac-item-refresh'));
         $item->click();
     }
 
@@ -41,7 +41,7 @@ class LandlordCase extends BaseTestCase
         $this->assertCount(7, $errorList, 'Error list');
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
-        $this->page->clickLink('Pricing Options');
+        $this->page->clickLink('Pricing');
         $this->session->wait($this->timeout, "$('#pricing-popup').is(':visible')");
         $this->assertNotNull($buttons = $this->page->findAll('css', '#pricing-popup button.button-close'));
         $this->assertCount(1, $buttons, 'Wrong number of buttons');

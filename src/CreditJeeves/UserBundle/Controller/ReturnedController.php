@@ -12,7 +12,7 @@ use CreditJeeves\DataBundle\Entity\Lead;
 class ReturnedController extends Controller
 {
     /**
-     * @Route("/returned", name="user_returned")
+     * @Route("/returned", name="applicant_returned")
      * @Template()
      *
      * @return array

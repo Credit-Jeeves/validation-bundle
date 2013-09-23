@@ -43,6 +43,8 @@ class LandlordAdmin extends Admin
 
     public function configureListFields(ListMapper $listMapper)
     {
+        $request = $this->getRequest();
+        $request->getSession()->set('group_id', null);
         $listMapper
             ->add('full_name')
             ->add('holding')
@@ -62,6 +64,9 @@ class LandlordAdmin extends Admin
                         ),
                         'groups' => array(
                             'template' => 'AdminBundle:CRUD:list__landlord_groups.html.twig'
+                        ),
+                        'properties' => array(
+                                'template' => 'AdminBundle:CRUD:list__landlord_properties.html.twig'
                         )
                     )
                 )

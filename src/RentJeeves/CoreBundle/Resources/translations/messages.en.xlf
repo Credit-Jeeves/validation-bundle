@@ -409,7 +409,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text3">
                 <source>landlord.register.text3</source>
-                <target>We'll reach out to your landlord to see if we can invite them to RentTrack. You'll be notified via email when you can sent up rent for this property and start benefiting from positive bureau reporting.</target>
+                <target>Only your tenants will be able to see your name, phone number, or email. This helps your tenants contact you in case they have questions about their payments.</target>
             </trans-unit>
             <trans-unit id="landlord.register.text4">
                 <source>landlord.register.text4</source>
@@ -626,7 +626,17 @@
            </trans-unit>
            <trans-unit id="bureau.reporting.text">
                 <source>bureau.reporting.text</source>
-                <target>We can report your payments to credit bureaus. This optional activity helps establish a history of on-time payments in your credit profile. You can stop reporting at any time.</target>
+                <target><![CDATA[RentTrack can report your payments to a credit reporting agency.
+                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br />
+                                 Within a few months after signing up, you will notice a new entry on your credit report titled "RentTrack."
+                                 This entry will reflect your payment status on a particular property and is updated monthly.
+                                 Once this entry exists, it will begin to affect any credit score models that take rent payments into account.<br /><br />
+                                 You can stop reporting at any time. However, once eligible payments have been reported to the credit reporting agency,
+                                 they cannot be erased. Furthermore, stopping and subsequently starting reporting again
+                                 may have a negative on your credit history.<br /><br />
+                                 Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>. Please review the terms, then click on the button below
+                                 to begin building credit.]]>
+                                 </target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -634,15 +644,11 @@
            </trans-unit>
            <trans-unit id="info.reporting.see">
                 <source>info.reporting.see</source>
-                <target>See Your Payment Reporting</target>
+                <target>Get Credit for your Rent Payments</target>
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>You'll be able to see your your credit score once
-                you've set up your first rent payment and verified 
-                your identity. Then, put RentTrack to work by opting in to
-                report your on-time payments to credit bureaus.
-                You can turn off reporting at any time. </target>
+                <target>Put RentTrack to work by choosing to report your payments to a major credit bureau. This optional activity helps establish good credit when you make your rent payments on-time.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
@@ -1087,7 +1093,7 @@
             </trans-unit>
             <trans-unit id="paybox.landlord.title_3">
                 <source>paybox.landlord.title_3</source>
-                <target>RentTrack lets you know the moment your tenants have paid. Funds typically are in your account within 24-48 hours, without you having to go to the bank.</target>
+                <target>RentTrack lets you know the moment your tenants have paid. Funds typically are in your account within 24-72 hours, without you having to go to the bank.</target>
             </trans-unit>
             <trans-unit id="paybox.landlord.title_4">
                 <source>paybox.landlord.title_4</source>
@@ -1095,7 +1101,7 @@
             </trans-unit>
             <trans-unit id="paybox.landlord.title_5">
                 <source>paybox.landlord.title_5</source>
-                <target>Through RentTrack, your tenants have an incentive to pay on time. If they opt-in, we report tenant payment history to the credit bureau Experian.</target>
+                <target>Through RentTrack, your tenants have an incentive to pay on time. If they opt-in, we report tenant payment history to a credit reporting agency.</target>
             </trans-unit>
             <trans-unit id="paybox.landlord.title_6">
                 <source>paybox.landlord.title_6</source>
@@ -1103,11 +1109,11 @@
             </trans-unit>
             <trans-unit id="paybox.landlord.title_7">
                 <source>paybox.landlord.title_7</source>
-                <target>RentTrack works for landlords with 1–1000’s of properties. You can manage thousands of payments without the hassle of paper checks, insufficient funds or lost mail.</target>
+                <target>RentTrack works equally well for landlords with just one or with thousands of properties. You can easily manage multiple payments without the hassle of paper checks, manual entry, or delayed mail.</target>
             </trans-unit>
             <trans-unit id="paybox.landlord.quote_1">
                 <source>paybox.landlord.quote_1</source>
-                <target>RentTrack reduced the time I spent chasing down my tenants - it’s invaluable!</target>
+                <target>RentTrack eliminated the annoying trip to the bank each month - it’s invaluable!</target>
             </trans-unit>
             <trans-unit id="paybox.landlord.quote_2">
                 <source>paybox.landlord.quote_2</source>
@@ -1116,7 +1122,7 @@
             <!-- Benefit -->
             <trans-unit id="benefit.landlord.pricing.options">
                 <source>benefit.landlord.pricing.options</source>
-                <target>Pricing Options</target>
+                <target>Pricing</target>
             </trans-unit>
             <trans-unit id="benefit.landlord.text">
                 <source>benefit.landlord.text</source>
@@ -1157,7 +1163,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_4">
                 <source>public.base.pay.title_4</source>
-                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit by reporting your on-time payments to credit bureaus.</target>
+                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit by reporting your on-time payments to credit reporting agencies.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_5">
                 <source>public.base.pay.title_5</source>

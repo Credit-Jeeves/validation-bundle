@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation as DI;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use CreditJeeves\DataBundle\Enum\UserType;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -77,11 +78,23 @@ class Filter implements ContainerAwareInterface
         // First check data
         if (!$this->getUser()->getHasData()) {
             $event->stopPropagation();
-            return $event->getResponseEvent()->setResponse(
-                new RedirectResponse(
-                    $this->getRoute()->generate('user_returned')
-                )
-            );
+            $type = $this->getUser()->getType();
+            switch ($type) {
+                case UserType::APPLICANT:
+                    return $event->getResponseEvent()->setResponse(
+                        new RedirectResponse(
+                            $this->getRoute()->generate('applicant_returned')
+                        )
+                    );
+                    break;
+                case UserType::TETNANT:
+                    return $event->getResponseEvent()->setResponse(
+                        new RedirectResponse(
+                            $this->getRoute()->generate('tenant_returned')
+                        )
+                    );
+                    break;
+            }
         }
     }
 

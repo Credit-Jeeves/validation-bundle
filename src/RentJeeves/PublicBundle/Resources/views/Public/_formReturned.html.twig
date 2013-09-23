@@ -1,0 +1,47 @@
+<div class="box type1">
+    <h3 class="clearfix">
+        <span>{{ 'account.information'|trans }}</span>
+    </h3>
+    {{ form_errors(form) }}
+        <div class="col-box clearfix">
+            <div class="col">
+                <h4>{{ 'setup.your.rent'|trans }}
+                {% if inviteCodeLandlord is defined %}
+                    <span class="haveAccount">
+                        {{ 'have.an.account'|trans }}? <a href="{{ path('fos_user_security_login_invite', {'inviteCode':inviteCodeLandlord})}}">{{ 'log_in'|trans }}</a>
+                    </span>
+                {% endif %}
+                </h4>
+                <div class="form-row clearfix">
+                    {{ form_label(form.first_name) }}
+                    <div class="fields-box">
+                        {{ form_widget(form.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first"} }) }}
+                        {{ form_widget(form.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
+                        {{ form_errors(form.first_name) }}
+                        {{ form_errors(form.last_name) }}
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(form.phone) }}
+                    <div class="fields-box">
+                        {{ form_widget(form.phone) }}
+                        {{ form_errors(form.phone) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+<div class="accept-terms-box pie-el">
+  <div class="form-row checkboxes clearfix">
+    <label id="checkboxterms"class="checkbox">
+      {{ form_widget(form.tos, {'attr': {'class': 'tos-input-field'}}) }}
+      <i class="tos-label"> </i>
+      <span class="big">{{'terms.service.pre-link'|trans }}<a href="#" type="Terms of Service">{{'terms.service.link.text'|trans }}</a></span>
+    </label>
+  </div>
+  {{ form_errors(form.tos) }}
+  <p>
+    {{ 'terms.service'|trans }}
+  </p>
+</div>
