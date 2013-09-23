@@ -32,7 +32,7 @@ class LastLogin implements EventSubscriberInterface
     /**
      * @DI\InjectParams({
      *      "em"     = @DI\Inject("doctrine.orm.entity_manager"),
-     *      "mailer" = @DI\Inject("mailer")
+     *      "mailer" = @DI\Inject("project.mailer")
      * })
      *
      * {@inheritdoc}

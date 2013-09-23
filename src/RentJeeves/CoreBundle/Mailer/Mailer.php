@@ -16,10 +16,10 @@ use \RuntimeException;
  */
 class Mailer extends BaseMailer implements MailerInterface
 {
-    public function sendWelcomeEmailToApplicant($user, $sTemplate = 'welcome')
-    {
-        return $this->sendEmail($user, $sTemplate);
-    }
+//     public function sendWelcomeEmailToApplicant($user, $sTemplate = 'welcome')
+//     {
+//         return $this->sendEmail($user, $sTemplate);
+//     }
     
 
     public function sendConfirmationEmailMessage(UserInterface $user)
