@@ -87,7 +87,6 @@ class Contract extends Base
         if ($rent = $this->getRent()) {
             $result['amount'] = $this->getRent();
         }
-        $result['due_day'] = $this->getDueDay().'th';
         $result['late'] = $this->getLateDays();
         $result['paid_to'] = '';
         $result['late_date'] = '';
@@ -322,7 +321,6 @@ class Contract extends Base
         $result['start_at'] = $this->getStartAt();
         $result['finish_at'] = $this->getFinishAt();
         $result['amount'] = $this->getRent();
-        $result['due_day'] = $this->getDueDay();
         $result['property'] = $this->getProperty()->getItem();
         return $result;
     }
