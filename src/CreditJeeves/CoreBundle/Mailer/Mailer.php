@@ -47,17 +47,16 @@ class Mailer extends BaseMailer implements MailerInterface
         );
     }
 
-    
     public function sendInviteToUser($user, $sTemplate = 'invite')
     {
         return $this->sendEmail($user, $sTemplate);
     }
-    
+
     public function sendWelcomeEmailToUser($user, $sTemplate = 'welcome')
     {
         return $this->sendEmail($user, $sTemplate);
     }
-    
+
     public function sendCheckEmail($user, $sTemplate = 'check')
     {
         $url = $this->container->get('router')->generate(
@@ -74,7 +73,7 @@ class Mailer extends BaseMailer implements MailerInterface
             )
         );
     }
-    
+
     public function sendReceipt(Order $order)
     {
         $dateShortFormat = $this->container->getParameter('date_short');
