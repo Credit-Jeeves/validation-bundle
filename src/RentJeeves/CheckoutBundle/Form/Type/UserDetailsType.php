@@ -28,7 +28,6 @@ class UserDetailsType extends AbstractType
             'date_of_birth',
             'date',
             array(
-                'error_bubbling' => true,
                 'label' => 'common.date_of_birth',
                 'format' => 'MMddyyyy',
                 'years' => range(date('Y') - 110, date('Y')),
@@ -50,7 +49,6 @@ class UserDetailsType extends AbstractType
             'ssn',
             new SsnType(),
             array(
-                'error_bubbling' => true,
                 'label' => 'common.ssn',
             )
         );
@@ -59,7 +57,6 @@ class UserDetailsType extends AbstractType
             'addresses',
             'entity',
             array(
-                'error_bubbling' => true,
                 'class' => 'CreditJeeves\DataBundle\Entity\Address',
                 'mapped' => true,
                 'label' => 'common.address',
@@ -79,7 +76,6 @@ class UserDetailsType extends AbstractType
                 'mapped' => false,
                 'label' => false,
                 'by_reference' => true,
-                'error_bubbling' => true,
                 'attr' => array(
                     'no_box' => true,
                     'force_row' => true,
@@ -89,6 +85,8 @@ class UserDetailsType extends AbstractType
                 )
             )
         );
+
+        $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

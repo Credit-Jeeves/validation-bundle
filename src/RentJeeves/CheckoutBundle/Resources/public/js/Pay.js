@@ -4,11 +4,11 @@ function Pay(parent, contractId) {
     var self = this;
     var contract = parent.getContractById(contractId);
     var current = 0;
-    var steps = ['details', 'source', 'verify', 'questions', 'pay'];
+    var steps = ['details', 'source', 'user', 'questions', 'pay'];
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
         'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
-        'verify': 'rentjeeves_checkoutbundle_userdetailstype'/*,
+        'user': 'rentjeeves_checkoutbundle_userdetailstype'/*,
         'questions': ''*/
     };
     var startDate = new Date(contract.start_at);
@@ -104,6 +104,17 @@ function Pay(parent, contractId) {
 
         var formValidator = jsfv[formId];
 
+        // HTML5 validation // TODO fix for hidden fields
+//        try {
+//            jQuery('#' + formId + '_submit').click();
+//            if (!jQuery('#' + formId)[0].checkValidity()) {
+//                return false;
+//            }
+//        } catch (e) {
+//            alert(e);
+//            // form have invalid but hidden fields
+//        }
+
 //        if (!formValidator.submit()) {// TODO implement after bug fixes
 //            console.log('submit fail');
 //            return false;
@@ -176,16 +187,16 @@ function Pay(parent, contractId) {
             case 'source':
                 sendData(Routing.generate('checkout_pay_source'), forms[currentStep]);
                 break;
+            case 'user':
+                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
+                break;
         }
 
     };
 
-    this.submit = function(step) {
-        alert('OK');
-    };
-
     this.previous = function() {
         current--;
+        removeAllErrors();
         this.step(steps[current]);
     };
 
@@ -227,6 +238,10 @@ function Pay(parent, contractId) {
             $('#pay-popup .attention-box ul').append('<li>'+errorMessage+'</li>');
         };
         jsfv[formName].removeErrors = function(field) {};
+        jQuery('#' + formName).submit(function() {
+            self.next();
+            return false;
+        });
     });
 
 }

@@ -135,6 +135,8 @@ textarea {
 }
 
 input[type="text"],
+input[type="date"],
+input[type="number"],
 input[type="password"],
 input[type="email"],
 textarea,
@@ -161,6 +163,8 @@ select {
 }
 
 input[type="text"],
+input[type="date"],
+input[type="number"],
 input[type="password"],
 input[type="email"] {
   height:16px;
@@ -171,6 +175,8 @@ select {
   padding:3px 2px 2px 5px;
 }
 
+input[type="date"].error,
+input[type="number"].error,
 input[type="text"].error,
 input[type="password"].error,
 textarea.error,
@@ -4263,4 +4269,9 @@ form label {
 .error_list li {
     font-size: inherit;
     font-weight:  inherit;
+}
+
+.hide_submit {
+    visibility: hidden;
+    position: absolute;
 }

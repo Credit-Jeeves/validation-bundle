@@ -290,12 +290,12 @@
                 <source>checkout.expiration</source>
                 <target>Expiration</target>
             </trans-unit>
-            <trans-unit id="checkout.error.expiration.month.empty">
-                <source>checkout.error.expiration.month.empty</source>
+            <trans-unit id="checkout.error.ExpirationMonth.empty">
+                <source>checkout.error.ExpirationMonth.empty</source>
                 <target>Please, select Expiration Month.</target>
             </trans-unit>
-            <trans-unit id="checkout.error.expiration.year.empty">
-                <source>checkout.error.expiration.year.empty</source>
+            <trans-unit id="checkout.error.ExpirationYear.empty">
+                <source>checkout.error.ExpirationYear.empty</source>
                 <target>Please, select Expiration Year.</target>
             </trans-unit>
             <trans-unit id="checkout.fee.note">
@@ -381,6 +381,10 @@
             <trans-unit id="checkout.last_payment_on">
                 <source>checkout.last_payment_on</source>
                 <target>LastPayment On</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.address_choice.empty">
+                <source>checkout.error.address_choice.empty</source>
+                <target>Please select address or add new one.</target>
             </trans-unit>
         </body>
     </file>

@@ -1530,7 +1530,7 @@ abstract class User extends BaseUser
      *
      * @return Address
      */
-    public function setAddresses(ArrayCollection $addresses)
+    public function setAddresses(ArrayCollection $addresses = null)
     {
         $this->addresses = $addresses;
 

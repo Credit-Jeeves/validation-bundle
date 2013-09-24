@@ -64,4 +64,30 @@ class PayController extends Controller
             )
         );
     }
+
+    /**
+     * @Route("/user", name="checkout_pay_user", options={"expose"=true})
+     * @Method({"POST"})
+     */
+    public function userAction(Request $request)
+    {
+        $userType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
+
+        $userType->handleRequest($request);
+        if (!$userType->isValid()) {
+            return $this->renderErrors($userType);
+        }
+
+
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $data = $userType->getData();
+        $em->persist($data);
+        $em->flush($data);
+
+        return new JsonResponse(
+            array(
+                'success' => true
+            )
+        );
+    }
 }

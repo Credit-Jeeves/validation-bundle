@@ -14,7 +14,7 @@
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: { 'active': 'verify' == step() || 'questions' == step() }, visible: stepExist('verify')">
+                data-bind="css: { 'active': 'user' == step() || 'questions' == step() }, visible: stepExist('questions')">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
             <li class="step4" data-bind="css: { 'active': 'pay' == step() }">
@@ -36,7 +36,7 @@
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
             </div>
-            <form {{ form_enctype(paymentType) }} method="post">
+            <form {{ form_enctype(paymentType) }} novalidate method="post">
                 {{ form_widget(paymentType) }}
                 {{ JSFV(paymentType) }}
             </form>
@@ -46,13 +46,13 @@
             {{ render(controller('RjCheckoutBundle:Component:source')) }}
         </div>
 
-        <div class="col" data-bind="visible: 'verify' == step()">
+        <div class="col" data-bind="visible: 'user' == step()">
             <div class="form-row clearfix">
                 <div class="fields-box">
-                    <small><b>*</b>Required</small>
+                    <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
             </div>
-            <form {{ form_enctype(userDetailsType) }} method="post">
+            <form {{ form_enctype(userDetailsType) }} method="post" novalidate>
                 {{ form_widget(userDetailsType) }}
                 {{ JSFV(userDetailsType) }}
             </form>

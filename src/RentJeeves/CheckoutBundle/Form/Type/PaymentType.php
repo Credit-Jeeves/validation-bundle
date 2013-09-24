@@ -156,7 +156,7 @@ class PaymentType extends AbstractType
                 'label' => 'checkout.date',
                 'input' => 'string',
                 'widget' => 'single_text',
-                'format' => 'dd/MM/yy',
+                'format' => 'MM/dd/yyyyy',
                 'empty_data' => '',
                 'attr' => array(
                     'class' => 'datepicker-field',
@@ -246,6 +246,8 @@ class PaymentType extends AbstractType
                 'invalid_message' => 'checkout.error.endYear.invalid',
             )
         );
+
+        $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
