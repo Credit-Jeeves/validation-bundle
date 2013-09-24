@@ -1005,9 +1005,4 @@ abstract class Group
     {
         return ($this->deposit_account) ? $this->deposit_account->getMerchantName() : '';
     }
-
-    public function setParentId($id)
-    {
-        $this->parent_id = $id;
-    }
 }
