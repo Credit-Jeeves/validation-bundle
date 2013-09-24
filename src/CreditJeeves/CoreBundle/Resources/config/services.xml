@@ -4,8 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+
     <parameters>
-        <parameter key="project.mailer.class">RentJeeves\CoreBundle\Mailer\Mailer</parameter>
+        <parameter key="project.mailer.class">CreditJeeves\CoreBundle\Mailer\Mailer</parameter>
     </parameters>
     <services>
         <service id="project.mailer" class="%project.mailer.class%">
@@ -13,4 +14,5 @@
             <argument type="service" id="fp_badaboom.exception_catcher" />
         </service>
     </services>
+
 </container>

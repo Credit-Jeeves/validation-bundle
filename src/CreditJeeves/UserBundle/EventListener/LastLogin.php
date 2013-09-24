@@ -32,7 +32,7 @@ class LastLogin implements EventSubscriberInterface
     /**
      * @DI\InjectParams({
      *      "em"     = @DI\Inject("doctrine.orm.entity_manager"),
-     *      "mailer" = @DI\Inject("creditjeeves.mailer")
+     *      "mailer" = @DI\Inject("project.mailer")
      * })
      *
      * {@inheritdoc}
@@ -57,7 +57,7 @@ class LastLogin implements EventSubscriberInterface
         if ($user instanceof UserInterface) {
             $lastLogin = $user->getLastLogin();
             if (empty($lastLogin) & 'applicant' == $user->getType()) {
-                $this->mailer->sendWelcomeEmailToApplicant($user);
+                $this->mailer->sendWelcomeEmailToUser($user);
             }
 
             $user->setLastLogin(new \DateTime());

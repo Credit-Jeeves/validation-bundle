@@ -19,7 +19,6 @@ class Version20130723174053 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_contract
-                ADD due_day INT DEFAULT 1 NOT NULL,
                 ADD paid_to DATETIME DEFAULT NULL"
         );
     }
@@ -33,7 +32,6 @@ class Version20130723174053 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_contract
-                DROP due_day,
                 DROP paid_to"
         );
     }

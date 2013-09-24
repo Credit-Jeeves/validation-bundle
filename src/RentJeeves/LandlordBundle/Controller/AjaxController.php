@@ -446,7 +446,6 @@ class AjaxController extends Controller
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($details['property_id']);
         $unit = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
-        $contract->setDueDay($details['due_day']);
         $contract->setStartAt(new \Datetime($details['start']));
         $contract->setFinishAt(new \Datetime($details['finish']));
         $contract->setTenant($tenant);
@@ -493,7 +492,7 @@ class AjaxController extends Controller
         $action = $data['action'];
         switch ($action) {
             case Contract::RESOLVE_EMAIL:
-                $this->get('creditjeeves.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
+                $this->get('project.mailer')->sendRjTenantLatePayment($tenant, $this->getUser(), $contract);
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
