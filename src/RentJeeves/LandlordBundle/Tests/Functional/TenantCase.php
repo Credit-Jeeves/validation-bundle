@@ -31,7 +31,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
-        $this->assertCount(1, $contractPendings, 'Wrong number of pending');
+        $this->assertCount(2, $contractPendings, 'Wrong number of pending');
         $this->logout();
     }
 
@@ -129,7 +129,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
         $this->logout();
     }
 

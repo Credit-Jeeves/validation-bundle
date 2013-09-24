@@ -7,6 +7,8 @@ use Rj\EmailBundle\Entity\EmailTemplateManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use \Exception;
 use \RuntimeException;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
 
 abstract class BaseMailer
 {

@@ -17,8 +17,13 @@ use RentJeeves\DataBundle\Enum\PaymentType;
  */
 class PaymentRepository extends EntityRepository
 {
-    public function getActivePayments($days = array(), $month = 1, $year = 2000, $type = PaymentType::RECURRING)
-    {
+    public function getActivePayments(
+        $days = array(),
+        $month = 1,
+        $year = 2000,
+        $type = PaymentType::RECURRING,
+        $status = PaymentStatus::ACTIVE
+    ) {
         $query = $this->createQueryBuilder('p');
         $query->select('p, c');
         $query->innerJoin('p.contract', 'c');
@@ -30,13 +35,13 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.startYear <= :year');
         $query->andWhere('p.endYear >= :year');
 
-        $query->setParameter('status', PaymentStatus::ACTIVE);
+        $query->setParameter('status', $status);
         $query->setParameter('type', $type);
         $query->setParameter('days', $days);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
 
         $query = $query->getQuery();
-        return $query->execute();//getResult('PaymentHydrator');
+        return $query->execute();
     }
 }
