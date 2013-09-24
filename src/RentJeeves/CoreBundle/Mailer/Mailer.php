@@ -83,7 +83,6 @@ class Mailer extends BaseMailer
                 'address'               => $contract->getProperty()->getAddress(),
                 'unitName'              => $contract->getUnit()->getName(),
                 'rentAmount'            => $contract->getRent(),
-                'dueDate'               => $contract->getDueDay(),
         );
 
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -91,6 +90,6 @@ class Mailer extends BaseMailer
 
     public function sendRjPaymentDue($tenant, $landlord, $contract, $sTemplate = 'rjPaymentDue')
     {
-        echo __METHOD__;
+        //echo __METHOD__;
     }
 }
