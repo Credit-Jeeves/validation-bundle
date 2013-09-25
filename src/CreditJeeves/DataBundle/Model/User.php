@@ -10,7 +10,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -50,7 +49,7 @@ abstract class User extends BaseUser
      *         "tenant_invite"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeeves"})
+     *
      */
     protected $first_name;
 
@@ -84,7 +83,7 @@ abstract class User extends BaseUser
      *         "tenant_invite"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeeves"})
+     *
      */
     protected $last_name;
 
