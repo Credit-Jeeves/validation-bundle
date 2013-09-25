@@ -354,10 +354,10 @@ class PaymentAccountType extends AbstractType
                     $type = $data->getType();
                     $groups = array();
                     if (PaymentAccountTypeEnum::CARD == $type) {
-                        if ('false' == $form->get('new_address')->getData()) {
+                        if ('false' == $form->get('is_new_address')->getData()) {
                             $groups[] = 'address_choice';
                         }
-                        if ('true' == $form->get('new_address')->getData()) {
+                        if ('true' == $form->get('is_new_address')->getData()) {
                             $groups[] = 'user_address_new';
                         }
                     }

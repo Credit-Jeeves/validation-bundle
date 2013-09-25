@@ -194,6 +194,12 @@
                 <span data-bind="text: propertyAddress"></span>
             </h3>
 
+            <div class="information-box pie-el"
+                 data-bind="visible: 'one_time' == type(), i18n: {'DAY': startMonth, 'YEAR': startYear}"
+            >
+                checkout.one_time_payment.note
+            </div>
+
             <div class="clearfix halfs-box">
                 <div class="half-box left">
                     <h4>{{ 'checkout.who_paid' | trans }}</h4>
@@ -327,6 +333,9 @@
         </button>
         <button class="button fixed" data-bind="visible: 'pay' != step(), click: next">
             <span>{{ 'pay_popup.step.next' | trans }}</span>
+        </button>
+        <button class="button" data-bind="visible: 'pay' == step(), click: next">
+            <span>{{ 'checkout.make_payment' | trans }}</span>
         </button>
         {{ include('RjCoreBundle::nortonSecured.html.twig') }}
     </div>

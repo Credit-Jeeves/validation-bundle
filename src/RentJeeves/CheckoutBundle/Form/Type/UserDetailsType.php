@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
@@ -54,11 +55,11 @@ class UserDetailsType extends AbstractType
         );
 
         $builder->add(
-            'addresses',
+            'address_choice',
             'entity',
             array(
                 'class' => 'CreditJeeves\DataBundle\Entity\Address',
-                'mapped' => true,
+                'mapped' => false,
                 'label' => 'common.address',
                 'expanded' => true,
                 'choices' => $this->user->getAddresses(),
@@ -66,6 +67,25 @@ class UserDetailsType extends AbstractType
                     'data-bind' => 'checked: address.addressChoice',
                     'html' => '<div class="fields-box" data-bind="visible: !address.isAddNewAddress()">' .
                     '<a href="#" data-bind="i18n: {}, click: address.addAddress">common.add_new</a></div>'
+                ),
+                'invalid_message' => 'checkout.error.address_choice.invalid',
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => array('address_choice'),
+                            'message' => 'checkout.error.address_choice.empty',
+                        )
+                    ),
+                )
+            )
+        );
+        $builder->add(
+            'is_new_address',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: address.isAddNewAddress',
                 )
             )
         );
@@ -95,9 +115,18 @@ class UserDetailsType extends AbstractType
             array(
                 'cascade_validation' => true,
                 'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
-                'validation_groups' => array(
-                    'birth_and_ssn',
-                ),
+                'validation_groups' => function (FormInterface $form) {
+                    $groups = array('birth_and_ssn');
+                    if ('false' == $form->get('is_new_address')->getData()) {
+                        $groups[] = 'address_choice';
+                    }
+                    if ('true' == $form->get('is_new_address')->getData()) {
+                        $groups[] = 'user_address_new';
+                    }
+
+
+                    return $groups;
+                }
             )
         );
     }

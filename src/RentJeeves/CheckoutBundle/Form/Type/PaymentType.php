@@ -38,8 +38,8 @@ class PaymentType extends AbstractType
                 'empty_data' => PaymentTypeEnum::RECURRING,
                 'choices' => array(
                     PaymentTypeEnum::RECURRING => 'checkout.type.recurring',
-                    PaymentTypeEnum::IMMEDIATE => 'checkout.type.immediate',
-                    PaymentTypeEnum::ONE_TIME => 'checkout.type.one_time',
+//                    PaymentTypeEnum::IMMEDIATE => 'checkout.type.immediate', // TODO Implement
+//                    PaymentTypeEnum::ONE_TIME => 'checkout.type.one_time',
                 ),
                 'attr' => array(
                     'class' => 'original',

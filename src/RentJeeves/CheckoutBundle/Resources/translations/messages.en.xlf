@@ -386,6 +386,14 @@
                 <source>checkout.error.address_choice.empty</source>
                 <target>Please select address or add new one.</target>
             </trans-unit>
+            <trans-unit id="checkout.make_payment">
+                <source>checkout.make_payment</source>
+                <target>Make Payment</target>
+            </trans-unit>
+            <trans-unit id="checkout.one_time_payment.note">
+                <source>checkout.one_time_payment.note</source>
+                <target>Please note that this is a one time payment for %MONTH% %YEAR%. Any future due dates still require you to create a new rent payment. You can save time by creating a recurring payment.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

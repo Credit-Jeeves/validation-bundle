@@ -11,6 +11,10 @@ function Pay(parent, contractId) {
         'user': 'rentjeeves_checkoutbundle_userdetailstype'/*,
         'questions': ''*/
     };
+
+//    steps.splice(2, 2);
+    this.step = ko.observable('details');
+
     var startDate = new Date(contract.start_at);
     startDate.setDate(startDate.getDate() + 1);
 
@@ -93,8 +97,6 @@ function Pay(parent, contractId) {
         return result;
     }, this);
 
-//    steps.splice(2, 2);
-    this.step = ko.observable('details');
 
     this.stepExist = function(step) {
         return -1 != steps.indexOf(step);
@@ -189,6 +191,15 @@ function Pay(parent, contractId) {
                 break;
             case 'user':
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
+                break;
+            case 'questions':
+
+                self.step(steps[++current]);
+//                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
+                break;
+            case 'pay':
+//                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
+                $('#pay-popup').dialog('close');
                 break;
         }
 
