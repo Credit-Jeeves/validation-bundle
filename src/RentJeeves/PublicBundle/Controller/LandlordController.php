@@ -81,7 +81,7 @@ class LandlordController extends Controller
                 $em->persist($landlord);
                 $em->flush();
 
-                $this->get('creditjeeves.mailer')->sendRjCheckEmail($landlord);
+                $this->get('project.mailer')->sendRjCheckEmail($landlord);
                 return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$landlord->getId())));
             }
         }
@@ -132,7 +132,7 @@ class LandlordController extends Controller
                 if (!empty($contracts)) {
                     foreach ($contracts as $contract) {
                         $tenant = $contract->getTenant();
-                        $this->get('creditjeeves.mailer')->sendRjLandlordComeFromInvite(
+                        $this->get('project.mailer')->sendRjLandlordComeFromInvite(
                             $tenant,
                             $landlord,
                             $contract

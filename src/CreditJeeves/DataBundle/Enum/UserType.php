@@ -29,6 +29,12 @@ class UserType extends Enum
     const TETNANT = 'tenant';
 
     /**
+     * There was a mistake in the name, i added right name, later we'll remove wrong
+     * @var string
+     */
+    const TENANT = 'tenant';
+
+    /**
      * @var string
      */
     const LANDLORD = 'landlord';

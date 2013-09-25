@@ -1,4 +1,15 @@
 services:
+    sonata.admin.rj_email:
+        class: RentJeeves\AdminBundle\Admin\EmailTemplateAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Holdings" }
+        arguments:
+            - ~
+            - Rj\EmailBundle\Entity\EmailTemplate
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setLocales, [%rj_email.locales%]]
+
     sonata.admin.rj_holding:
         class: RentJeeves\AdminBundle\Admin\RjHoldingAdmin
         tags:

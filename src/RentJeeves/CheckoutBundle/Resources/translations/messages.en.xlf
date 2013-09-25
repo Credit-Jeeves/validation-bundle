@@ -22,6 +22,10 @@
                 <source>pay_popup.step.4</source>
                 <target>Review &amp; Pay</target>
             </trans-unit>
+            <trans-unit id="pay_popup.errors.title">
+                <source>pay_popup.errors.title</source>
+                <target>Oops! It looks like there are some errors – please see details below.</target>
+            </trans-unit>
             <trans-unit id="pay_popup.step.previous">
                 <source>pay_popup.step.previous</source>
                 <target>Previous</target>
@@ -38,41 +42,137 @@
                 <source>checkout.amount</source>
                 <target>Amount</target>
             </trans-unit>
-            <trans-unit id="checkout.start_date">
-                <source>checkout.start_date</source>
-                <target>Start Date</target>
+            <trans-unit id="checkout.error.amount.empty">
+                <source>checkout.error.amount.empty</source>
+                <target>Amount couldn't be empty.</target>
             </trans-unit>
-            <trans-unit id="checkout.start_date.tooltip.title">
-                <source>checkout.start_date.tooltip.title-%START%-%SETTLE%</source>
-                <target>Start On: %START% Settle By: %SETTLE%</target>
+            <trans-unit id="checkout.error.amount.min">
+                <source>checkout.error.amount.min</source>
+                <target>Amount should be 1 or more.</target>
             </trans-unit>
-            <trans-unit id="checkout.start_date.tooltip.text">
-                <source>checkout.start_date.tooltip.text-%SETTLE%-%SETTLE_DAYS%</source>
-                <target>Initiate first payment and notify your landlord on %SETTLE%. Allow %SETTLE_DAYS% business days for delivery.</target>
+            <trans-unit id="checkout.error.amount.valid">
+                <source>checkout.error.amount.valid</source>
+                <target>Amount should be a valid number.</target>
             </trans-unit>
-            <trans-unit id="checkout.set_up_recurring_payment">
-                <source>checkout.set_up_recurring_payment</source>
-                <target>Set up a recurring payment</target>
+            <trans-unit id="checkout.date">
+                <source>checkout.date</source>
+                <target>Date</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.date.empty">
+                <source>checkout.error.date.empty</source>
+                <target>Date couldn't be empty.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.date.valid">
+                <source>checkout.error.date.valid</source>
+                <target>Date is invalid.</target>
             </trans-unit>
             <trans-unit id="checkout.type">
                 <source>checkout.type</source>
                 <target>Type</target>
             </trans-unit>
-            <trans-unit id="checkout.type.tooltip.title">
-                <source>checkout.type.tooltip.title-%DUE_DAY%</source>
+            <trans-unit id="checkout.type.recurring">
+                <source>checkout.type.recurring</source>
+                <target>Recurring</target>
+            </trans-unit>
+            <trans-unit id="checkout.type.immediate">
+                <source>checkout.type.immediate</source>
+                <target>Immediate</target>
+            </trans-unit>
+            <trans-unit id="checkout.type.one_time">
+                <source>checkout.type.one_time</source>
+                <target>One time</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.type.empty">
+                <source>checkout.error.type.empty</source>
+                <target>Type couldn't be empty.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.type.invalid">
+                <source>checkout.error.type.invalid</source>
+                <target>Type is invalid.</target>
+            </trans-unit>
+            <trans-unit id="checkout.first_day">
+                <source>checkout.first_day</source>
+                <target>Fist Month</target>
+            </trans-unit>
+            <trans-unit id="checkout.frequency">
+                <source>checkout.frequency</source>
+                <target>Frequency</target>
+            </trans-unit>
+            <trans-unit id="checkout.frequency.monthly">
+                <source>checkout.frequency.monthly</source>
+                <target>Monthly on Day</target>
+            </trans-unit>
+            <trans-unit id="checkout.frequency.month_last_date">
+                <source>checkout.frequency.month_last_date</source>
+                <target>Last Day of Month</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.dueDate.empty">
+                <source>checkout.error.dueDate.empty</source>
+                <target>Type couldn't be empty.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.dueDate.invalid">
+                <source>checkout.error.dueDate.invalid</source>
+                <target>Type is invalid.</target>
+            </trans-unit>
+            <trans-unit id="checkout.recurring.monthly.tooltip.title">
+                <source>checkout.recurring.monthly.tooltip.title-%DUE_DAY%</source>
                 <target>Recur On: Day %DUE_DAY% of Each Month</target>
             </trans-unit>
-            <trans-unit id="checkout.type.tooltip.text">
-                <source>checkout.type.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%</source>
-                <target>Initiate subsequent payments of %AMOUNT% on day %DUE_DAY% of each month until the last payment on %ENDS_ON%.</target>
+            <trans-unit id="checkout.recurring.month_last_date.tooltip.title">
+                <source>checkout.recurring.month_last_date.tooltip.title-%DUE_DAY%</source>
+                <target>Recur On: Last Day of Each Month</target>
+            </trans-unit>
+            <trans-unit id="checkout.recurring.monthly.on.tooltip.text">
+                <source>checkout.recurring.monthly.on.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%</source>
+                <target>Initiate subsequent payments of %AMOUNT% on day %DUE_DAY% of each month until the last payment on %ENDS_ON%. Allow %SETTLE_DAYS% business days for delivery.</target>
+            </trans-unit>
+            <trans-unit id="checkout.recurring.month_last_date.on.tooltip.text">
+                <source>checkout.recurring.month_last_date.on.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%</source>
+                <target>Initiate subsequent payments of %AMOUNT% on last day of each month until the last payment on %ENDS_ON%. Allow %SETTLE_DAYS% business days for delivery.</target>
+            </trans-unit>
+            <trans-unit id="checkout.recurring.monthly.cancelled.tooltip.text">
+                <source>checkout.recurring.monthly.cancelled.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%</source>
+                <target>Initiate subsequent payments of %AMOUNT% on day %DUE_DAY% of each month until cancelled. Allow %SETTLE_DAYS% business days for delivery.</target>
+            </trans-unit>
+            <trans-unit id="checkout.recurring.month_last_date.cancelled.tooltip.text">
+                <source>checkout.recurring.month_last_date.cancelled.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%</source>
+                <target>Initiate subsequent payments of %AMOUNT% on last day of each month until cancelled. Allow %SETTLE_DAYS% business days for delivery.</target>
+            </trans-unit>
+            <trans-unit id="checkout.one_time.tooltip.title">
+                <source>checkout.one_time.tooltip.title-%START%-%SETTLE%</source>
+                <target>Pay on: %START% Settle By: %SETTLE%</target>
+            </trans-unit>
+            <trans-unit id="checkout.one_time.tooltip.text">
+                <source>checkout.one_time.tooltip.text-%AMOUNT%-%START%</source>
+                <target>Make a %AMOUNT% payment on %START% and notify your landlord.</target>
             </trans-unit>
             <trans-unit id="checkout.ends">
                 <source>checkout.ends</source>
                 <target>Ends</target>
             </trans-unit>
+            <trans-unit id="checkout.error.ends.empty">
+                <source>checkout.error.ends.empty</source>
+                <target>Ends couldn't be empty.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.ends.invalid">
+                <source>checkout.error.ends.invalid</source>
+                <target>Ends is invalid.</target>
+            </trans-unit>
             <trans-unit id="checkout.monthly">
                 <source>checkout.monthly</source>
                 <target>Monthly</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.endMonth.empty">
+                <source>checkout.error.endMonth.empty</source>
+                <target>End month couldn't be empty.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.endYear.empty">
+                <source>checkout.error.endYear.empty</source>
+                <target>End year couldn't be empty.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.endYear.invalid">
+                <source>checkout.error.endYear.invalid</source>
+                <target>End year is invalid.</target>
             </trans-unit>
             <trans-unit id="checkout.select">
                 <source>checkout.select</source>
@@ -148,7 +248,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.account_type.empty">
                 <source>checkout.error.account_type.empty</source>
-                <target>Please, select Checking.</target>
+                <target>Please, select Account Type.</target>
             </trans-unit>
             <trans-unit id="checkout.account_type.savings">
                 <source>checkout.account_type.savings</source>
@@ -190,12 +290,12 @@
                 <source>checkout.expiration</source>
                 <target>Expiration</target>
             </trans-unit>
-            <trans-unit id="checkout.error.expiration.month.empty">
-                <source>checkout.error.expiration.month.empty</source>
+            <trans-unit id="checkout.error.ExpirationMonth.empty">
+                <source>checkout.error.ExpirationMonth.empty</source>
                 <target>Please, select Expiration Month.</target>
             </trans-unit>
-            <trans-unit id="checkout.error.expiration.year.empty">
-                <source>checkout.error.expiration.year.empty</source>
+            <trans-unit id="checkout.error.ExpirationYear.empty">
+                <source>checkout.error.ExpirationYear.empty</source>
                 <target>Please, select Expiration Year.</target>
             </trans-unit>
             <trans-unit id="checkout.fee.note">
@@ -222,9 +322,13 @@
                 <source>checkout.rent_amount</source>
                 <target>Rent Amount</target>
             </trans-unit>
-            <trans-unit id="checkout.day_each_month">
-                <source>checkout.day_%DAY%_each_month</source>
+            <trans-unit id="checkout.day.monthly.each_month">
+                <source>checkout.day.monthly.each_month-%DAY%</source>
                 <target>Day %DAY% of Each Month</target>
+            </trans-unit>
+            <trans-unit id="checkout.day.month_last_date.each_month">
+                <source>checkout.day.month_last_date.each_month-%DAY%</source>
+                <target>Last Day of Each Month</target>
             </trans-unit>
             <trans-unit id="checkout.starts_on">
                 <source>checkout.starts_on</source>
@@ -277,6 +381,18 @@
             <trans-unit id="checkout.last_payment_on">
                 <source>checkout.last_payment_on</source>
                 <target>LastPayment On</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.address_choice.empty">
+                <source>checkout.error.address_choice.empty</source>
+                <target>Please select address or add new one.</target>
+            </trans-unit>
+            <trans-unit id="checkout.make_payment">
+                <source>checkout.make_payment</source>
+                <target>Make Payment</target>
+            </trans-unit>
+            <trans-unit id="checkout.one_time_payment.note">
+                <source>checkout.one_time_payment.note</source>
+                <target>Please note that this is a one time payment for %MONTH% %YEAR%. Any future due dates still require you to create a new rent payment. You can save time by creating a recurring payment.</target>
             </trans-unit>
         </body>
     </file>

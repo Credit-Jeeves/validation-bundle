@@ -882,7 +882,11 @@
             </trans-unit>
             <trans-unit id="error.user.ssn.empty">
                 <source>error.user.ssn.empty</source>
-                <target>SSN couldn't be empty</target>
+                <target>SSN couldn't be empty.</target>
+            </trans-unit>
+            <trans-unit id="error.user.ssn.exact">
+                <source>error.user.ssn.exact</source>
+                <target>SSN should have exactly 9 characters.</target>
             </trans-unit>
             <trans-unit id="error.user.city.empty">
                 <source>error.user.city.empty</source>
@@ -1215,6 +1219,10 @@
             <trans-unit id="common.add_new">
                 <source>common.add_new</source>
                 <target>Add New</target>
+            </trans-unit>
+            <trans-unit id="common.last">
+                <source>common.last</source>
+                <target>last</target>
             </trans-unit>
         </body>
     </file>

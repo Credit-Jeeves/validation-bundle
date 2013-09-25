@@ -4,17 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
     <parameters>
-        <parameter key="rj_core.example.class">RentJeeves\CoreBundle\Example</parameter>
+        <parameter key="project.mailer.class">RentJeeves\CoreBundle\Mailer\Mailer</parameter>
     </parameters>
-
     <services>
-        <service id="rj_core.example" class="%rj_core.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="project.mailer" class="%project.mailer.class%">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="fp_badaboom.exception_catcher" />
         </service>
     </services>
-    -->
 </container>

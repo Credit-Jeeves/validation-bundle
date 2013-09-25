@@ -90,7 +90,7 @@ class NewController extends Controller
 
                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
                     $this->get('core.session.applicant')->setUser($User);
-                    $this->get('creditjeeves.mailer')->sendCheckEmail($User);
+                    $this->get('project.mailer')->sendCheckEmail($User);
                     return $this->redirect($this->generateUrl('applicant_new_send'));
 
                 } else {

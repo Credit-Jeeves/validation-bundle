@@ -60,6 +60,7 @@ class AppRjKernel extends AppKernel
             new RentJeeves\ComponentBundle\RjComponentBundle(),
             new RentJeeves\CoreBundle\RjCoreBundle(),
             new RentJeeves\CheckoutBundle\RjCheckoutBundle(),
+            new RentJeeves\ExperianBundle\RjExperianBundle(),
         );
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();

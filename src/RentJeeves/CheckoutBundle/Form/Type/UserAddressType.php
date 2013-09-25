@@ -14,13 +14,11 @@ class UserAddressType extends Base
 
         parent::buildForm($builder, $options);
         $builder->remove('unit');
-//        $builder->remove('street');
         $builder->add(
             'street',
             'text',
             array(
                 'label' => false,
-                'error_bubbling' => true,
                 'attr' => array(
                     'class' => 'all-width',
                     'placeholder' => 'common.street',

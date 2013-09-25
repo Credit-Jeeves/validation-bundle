@@ -127,13 +127,6 @@ abstract class Contract
 
     /**
      * @ORM\Column(
-     *     type="integer"
-     * )
-     */
-    protected $due_day = 1;
-
-    /**
-     * @ORM\Column(
      *     type="datetime",
      *     nullable=true
      * )
@@ -412,28 +405,6 @@ abstract class Contract
     public function getRent()
     {
         return $this->rent;
-    }
-
-    /**
-     * Set Due day
-     *
-     * @param integer $dueDay
-     * @return Unit
-     */
-    public function setDueDay($dueDay)
-    {
-        $this->due_day = $dueDay;
-        return $this;
-    }
-
-    /**
-     * Get Due Day
-     *
-     * @return integer
-     */
-    public function getDueDay()
-    {
-        return $this->due_day;
     }
 
     /**

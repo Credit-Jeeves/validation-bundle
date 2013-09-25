@@ -16,8 +16,8 @@ class SsnType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->
-            add(
+        $builder
+            ->add(
                 'ssn1',
                 'text',
                 array(
@@ -37,29 +37,32 @@ class SsnType extends AbstractType
                         ),
                     ),
                 )
-            )->
-            add(
+            )
+            ->add(
                 'ssn2',
                 'text',
                 array(
+                    'error_bubbling' => true,
                     'attr' => array(
                         'class' => 'user-margin user-ssn2 user-ssn',
                         'maxlength' => 2
                     ),
                     'label' => false,
-                    )
-            )->
-            add(
+                )
+            )
+            ->add(
                 'ssn3',
                 'text',
                 array(
+                    'error_bubbling' => true,
                     'attr' => array(
                         'class' => 'user-margin user-ssn3 user-ssn',
                         'maxlength' => 4
                     ),
                     'label' => false,
-                    )
-            )->addModelTransformer(
+                )
+            )
+            ->addModelTransformer(
                 new ReversedTransformer(
                     new SsnToPartsTransformer()
                 )

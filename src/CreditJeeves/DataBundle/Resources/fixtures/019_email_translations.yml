@@ -367,7 +367,7 @@ fixtures:
         <br />
         To start paying rent for {{ address }} {{ unitName }}, 
         <a href="http://my.renttrack.com/">log in and set up your payment</a> 
-        for {{ rentAmount }} due on {{ dueDate }}. 
+        for {{ rentAmount }}. 
         <br />
         You're ready to build credit buy paying rent securely online. 
         <br />
