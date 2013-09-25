@@ -135,6 +135,8 @@ textarea {
 }
 
 input[type="text"],
+input[type="date"],
+input[type="number"],
 input[type="password"],
 input[type="email"],
 textarea,
@@ -161,6 +163,8 @@ select {
 }
 
 input[type="text"],
+input[type="date"],
+input[type="number"],
 input[type="password"],
 input[type="email"] {
   height:16px;
@@ -171,6 +175,8 @@ select {
   padding:3px 2px 2px 5px;
 }
 
+input[type="date"].error,
+input[type="number"].error,
 input[type="text"].error,
 input[type="password"].error,
 textarea.error,
@@ -3809,7 +3815,7 @@ label.checkbox input[type="radio"]:checked + i {
   background-position:-250px -300px;
 }
 
-.atansion-box {
+.attention-box {
   position:relative;
   display:block;
   padding: 13px 20px 14px 50px;
@@ -3822,21 +3828,21 @@ label.checkbox input[type="radio"]:checked + i {
   border-radius:6px;
 }
 
-.payments-popup .atansion-box p {
+.payments-popup .attention-box p {
   padding:10px 0;
   color:#ef543e;
   font:12px/18px 'ABeeZee',sans-serif
 }
 
-.payments-popup .atansion-box p a {
+.payments-popup .attention-box p a {
   font-weight:normal;
 }
 
-.payments-popup .atansion-box p:last-child {
+.payments-popup .attention-box p:last-child {
   padding-bottom:0;
 }
 
-.payments-popup .atansion-box h3 {
+.payments-popup .attention-box h3 {
   padding:0;
   color:#ef543e;
   text-align:left;
@@ -3865,7 +3871,7 @@ label.checkbox input[type="radio"]:checked + i {
   border-radius:6px;
 }
 
-.atansion-box:after {
+.attention-box:after {
   position:absolute;
   top:50%;
   left:13px;
@@ -3876,7 +3882,7 @@ label.checkbox input[type="radio"]:checked + i {
   background:url(/bundles/rjpublic/images/sprite-icons.png) -300px -50px no-repeat;
 }
 
-.payments-popup .atansion-box:after {
+.payments-popup .attention-box:after {
   top:15px;
   margin-top:0;
 }
@@ -4218,7 +4224,7 @@ table.ui-datepicker-calendar tbody tr td a {
 }
 
 /* Fixes */
-#rentjeeves_checkoutbundle_paymentdetailstype_ends_row .fields-box label {
+#rentjeeves_checkoutbundle_paymenttype_ends_row .fields-box label {
     clear: left;
 }
 
@@ -4228,7 +4234,11 @@ table.ui-datepicker-calendar tbody tr td a {
 #rentjeeves_checkoutbundle_userdetailstype_new_address_city_box,
 #rentjeeves_checkoutbundle_userdetailstype_new_address_area_box,
 #rentjeeves_checkoutbundle_userdetailstype_new_address_zip_box,
+#rentjeeves_checkoutbundle_paymenttype_frequency_row .fields-box,
+#rentjeeves_checkoutbundle_paymenttype_startMonth_row .fields-box,
 #rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box,
+#rentjeeves_checkoutbundle_paymenttype_endMonth_box,
+#rentjeeves_checkoutbundle_paymenttype_endYear_box,
 #rentjeeves_checkoutbundle_userdetailstype_ssn .fields-box {
     width: auto;
 }
@@ -4259,4 +4269,9 @@ form label {
 .error_list li {
     font-size: inherit;
     font-weight:  inherit;
+}
+
+.hide_submit {
+    visibility: hidden;
+    position: absolute;
 }

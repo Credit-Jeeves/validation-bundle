@@ -31,10 +31,10 @@ class SsnToPartsTransformer implements DataTransformerInterface
         }
         //var_dump('reverse', $sSsn);
         $aSsn = array(
-                    'ssn1' => substr($sSsn, 0, 3),
-                    'ssn2' => substr($sSsn, 2, 2),
-                    'ssn3' => substr($sSsn, 4)
-                );
+            'ssn1' => substr($sSsn, 0, 3),
+            'ssn2' => substr($sSsn, 3, 2),
+            'ssn3' => substr($sSsn, 5)
+        );
         return $aSsn;
     }
 }

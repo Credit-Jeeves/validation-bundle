@@ -6,7 +6,7 @@ use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use CreditJeeves\DataBundle\Entity\Address;
 use Doctrine\Common\Collections\ArrayCollection;
 use Payum\Request\CaptureRequest;
-use RentJeeves\CheckoutBundle\Form\Type\PaymentDetailsType;
+use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
@@ -23,10 +23,10 @@ class ComponentController extends Controller
      */
     public function payAction()
     {
-        $paymentDetailsType = $this->createForm(new PaymentDetailsType());
+        $paymentType = $this->createForm(new PaymentType());
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
         return array(
-            'paymentDetailsType' => $paymentDetailsType->createView(),
+            'paymentType' => $paymentType->createView(),
             'userDetailsType' => $userDetailsType->createView()
         );
     }
