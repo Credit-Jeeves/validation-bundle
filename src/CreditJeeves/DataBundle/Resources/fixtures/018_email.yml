@@ -30,3 +30,5 @@ fixtures:
     name: rjTenantLatePayment.html
   email_15:
     name: rjLandlordComeFromInvite.html
+  email_16:
+    name: rjPendingContract.html

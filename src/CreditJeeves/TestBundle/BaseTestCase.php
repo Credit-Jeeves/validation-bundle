@@ -4,6 +4,7 @@ namespace CreditJeeves\TestBundle;
 use Behat\MinkBundle\Test\MinkTestCase;
 use Doctrine\ORM\Tools\SchemaTool;
 use \ReflectionClass;
+use CreditJeeves\TestBundle\EventListener\EmailListener;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -56,5 +57,17 @@ abstract class BaseTestCase extends MinkTestCase
         $method = $class->getMethod($methodName);
         $method->setAccessible(true);
         return $method->invokeArgs($obj, $args);
+    }
+
+    /**
+     * @todo check multiple initialization
+     */
+    protected function registerEmailListener()
+    {
+        $container = $this->getContainer();
+        $mailer = $container->get('mailer');
+        $plugin = new EmailListener();
+        $mailer->registerPlugin($plugin);
+        return $plugin;
     }
 }

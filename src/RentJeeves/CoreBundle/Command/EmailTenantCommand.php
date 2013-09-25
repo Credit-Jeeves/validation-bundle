@@ -1,0 +1,127 @@
+<?php
+namespace RentJeeves\CoreBundle\Command;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use RentJeeves\DataBundle\Enum\PaymentType;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use CreditJeeves\DataBundle\Enum\UserType;
+use RentJeeves\CoreBundle\Traits\DateCommon;
+
+class EmailTenantCommand extends ContainerAwareCommand
+{
+     use DateCommon;
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE = 'type';
+
+    /**
+     * @var string
+     */
+    const OPTION_DAYS = 'days';
+
+    /**
+     * @var string
+     */
+    const OPTION_AUTO = 'auto';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_DEFAULT = 'due';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_INVITED = 'invited';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_PENDING = 'pending';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_REFUND = 'refund';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_PAID = 'paid';
+
+    /**
+     * @var integer
+     */
+    const OPTION_DAYS_DEFAULT = 5;
+
+    /**
+     * @var boolean
+     */
+    const OPTION_AUTO_DEFAULT = true;
+
+    protected function configure()
+    {
+        $this
+            ->setName('Email:tenant')
+            ->setDescription('Send emails by request to tenants')
+            ->addOption(
+                self::OPTION_TYPE,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Select email/query type',
+                self::OPTION_TYPE_DEFAULT
+            )
+            ->addOption(
+                self::OPTION_DAYS,
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Days before due date',
+                self::OPTION_DAYS_DEFAULT
+            )
+            ->addOption(
+                self::OPTION_AUTO,
+                null,
+                InputOption::VALUE_NONE,
+                'Autopay true/false'
+            );
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $type = $input->getOption('type');
+        $days = $input->getOption('days');
+        $auto = $input->getOption('auto');
+        $date = new \DateTime();
+        $mailer = $this->getContainer()->get('project.mailer');
+        $doctrine = $repo = $this->getContainer()->get('doctrine');
+        switch ($type) {
+            case self::OPTION_TYPE_DEFAULT:
+                if ($auto) {//Email:tenant --auto=true
+                    // Story-1544
+                    $repo = $doctrine->getRepository('RjDataBundle:Payment');
+                    $days = $this->getDueDays($days);
+                    $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
+                    foreach ($payments as $payment) {
+                        $contract = $payment->getContract();
+                        $tenant = $contract->getTenant();
+                        $group = $contract->getGroup();
+                        $mailer->sendInviteToUser($tenant);
+                    }
+                    $output->write('Finished command "Email:tenant --auto"');
+                } else {//Email:tenant
+                    // Story-1542
+                    $repo = $doctrine->getRepository('RjDataBundle:Payment');
+                    $days = $this->getDueDays($days);
+                    $output->writeln('Story-1542');
+                }
+                break;
+        }
+    }
+}
