@@ -151,6 +151,9 @@ class Version20130925051040 extends AbstractMigration
             "ALTER TABLE rj_property
                 CHANGE street street VARCHAR(255) DEFAULT NULL"
         );
+        $this->addSql(
+            "UPDATE cj_user SET roles='a:0:{}'"
+        );
     }
 
     public function down(Schema $schema)
