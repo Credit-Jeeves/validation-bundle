@@ -84,4 +84,5 @@ fos_rest:
             'Symfony\Component\HttpKernel\Exception\HttpException': true
             'Symfony\Component\Routing\Exception\MethodNotAllowedException': true
     serializer:
+        serialize_null: true
         groups: [CreditJeeves]
