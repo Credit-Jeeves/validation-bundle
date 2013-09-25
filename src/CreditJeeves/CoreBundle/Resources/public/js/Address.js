@@ -57,7 +57,6 @@ function Address(parent, addresses, newAddress) {
         if (null != newValue) {
             self.isAddNewAddress(false);
             if (address = findAddressById(newValue)) {
-                console.log(address);
                 bindAddress(address, self);
             }
         }

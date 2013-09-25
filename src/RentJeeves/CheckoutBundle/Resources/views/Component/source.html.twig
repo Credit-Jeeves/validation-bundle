@@ -6,7 +6,7 @@
     </div>
 </div>
 
-<form {{ form_enctype(paymentAccountType) }} method="post">
+<form {{ form_enctype(paymentAccountType) }} novalidate method="post">
     {{ form_widget(paymentAccountType) }}
     {{ JSFV(paymentAccountType) }}
 </form>

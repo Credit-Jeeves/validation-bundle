@@ -42,10 +42,10 @@ class PaymentAccountType extends AbstractType
                 ),
                 'empty_value'  => false,
                 'data'  => PaymentAccountTypeEnum::BANK,
-                'error_bubbling' => true,
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.type'
-                )
+                ),
+                'invalid_message' => 'checkout.error.payment_type.invalid',
             )
         );
         $builder->add(
@@ -53,7 +53,6 @@ class PaymentAccountType extends AbstractType
             'text',
             array(
                 'label' => 'checkout.account_nickname',
-                'error_bubbling' => true,
                 'attr' => array(
                     'data-bind' => 'value: paymentSource.name',
                     'row_attr' => array(
@@ -146,6 +145,7 @@ class PaymentAccountType extends AbstractType
                     ACHDepositType::UNASSIGNED => 'checkout.account_type.business_checking'
                 ),
                 'empty_value'  => false,
+                'invalid_message' => 'checkout.error.account_type.invalid',
                 'constraints' => array(
                     new NotBlank(
                         array(
@@ -229,6 +229,7 @@ class PaymentAccountType extends AbstractType
                         'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     )
                 ),
+                'invalid_message' => 'checkout.error.ExpirationMonth.invalid',
                 'constraints' => array(
                     new NotBlank(
                         array(
@@ -255,11 +256,12 @@ class PaymentAccountType extends AbstractType
                         'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     )
                 ),
+                'invalid_message' => 'checkout.error.ExpirationYear.invalid',
                 'constraints' => array(
                     new NotBlank(
                         array(
                             'groups' => array('card'),
-                            'message' => 'checkout.error.expiration.year.empty',
+                            'message' => 'checkout.error.ExpirationYear.empty',
                         )
                     ),
                 )
@@ -270,7 +272,6 @@ class PaymentAccountType extends AbstractType
             'address_choice',
             'entity',
             array(
-                'error_bubbling' => true,
                 'class' => 'CreditJeeves\DataBundle\Entity\Address',
                 'mapped' => false,
                 'label' => 'common.address',
@@ -283,6 +284,25 @@ class PaymentAccountType extends AbstractType
                     ),
                     'html' => '<div class="fields-box" data-bind="visible: !address.isAddNewAddress()">' .
                         '<a href="#" data-bind="i18n: {}, click: address.addAddress">common.add_new</a></div>'
+                ),
+                'invalid_message' => 'checkout.error.address_choice.invalid',
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => array('address_choice'),
+                            'message' => 'checkout.error.address_choice.empty',
+                        )
+                    ),
+                )
+            )
+        );
+        $builder->add(
+            'new_address',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: address.isAddNewAddress',
                 )
             )
         );
@@ -293,7 +313,6 @@ class PaymentAccountType extends AbstractType
                 'mapped' => true,
                 'label' => false,
                 'by_reference' => true,
-                'error_bubbling' => true,
                 'attr' => array(
                     'no_box' => true,
                     'force_row' => true,
@@ -320,6 +339,8 @@ class PaymentAccountType extends AbstractType
                 )
             )
         );
+
+        $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -333,7 +354,12 @@ class PaymentAccountType extends AbstractType
                     $type = $data->getType();
                     $groups = array();
                     if (PaymentAccountTypeEnum::CARD == $type) {
-                        $groups[] = 'user_address_new';
+                        if ('false' == $form->get('is_new_address')->getData()) {
+                            $groups[] = 'address_choice';
+                        }
+                        if ('true' == $form->get('is_new_address')->getData()) {
+                            $groups[] = 'user_address_new';
+                        }
                     }
                     if ($form->get('save')->getData()) {
                         $groups[] = 'save';

@@ -186,8 +186,8 @@ class PidkiqController extends Controller
         } elseif ($this->questionsData = $this->getPidkiq()->getQuestions()) {
             $this->form = $this->createForm(new QuestionsType($this->questionsData));
             if ($request->isMethod('POST')) {
-                if (($response = $this->processForm()) instanceof Response) {
-                    return $response;
+                if ($this->processForm()) {
+                    return $this->redirect($this->generateUrl('applicant_homepage'));
                 }
             }
             $this->form = $this->form->createView();
@@ -226,7 +226,7 @@ class PidkiqController extends Controller
                 $this->getUser()->setIsVerified(UserIsVerified::PASSED);
                 $em->persist($this->getUser());
                 $em->flush();
-                return $this->redirect($this->generateUrl('applicant_homepage'));
+                return true;
             } else {
                 if (UserIsVerified::NONE == $this->getUser()->getIsVerified()) {
                     $this->getUser()->setIsVerified(UserIsVerified::FAILED);

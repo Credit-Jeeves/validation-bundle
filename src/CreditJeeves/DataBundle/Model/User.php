@@ -232,12 +232,14 @@ abstract class User extends BaseUser
      * @Assert\NotBlank(
      *     message="error.user.ssn.empty",
      *     groups={
-     *         "user_profile"
+     *         "user_profile",
+     *         "birth_and_ssn"
      *     }
      * )
      * @Assert\Length(
      *     min=9,
      *     max=9,
+     *     exactMessage="error.user.ssn.exact",
      *     groups={
      *         "user_profile",
      *         "birth_and_ssn"
@@ -1530,7 +1532,7 @@ abstract class User extends BaseUser
      *
      * @return Address
      */
-    public function setAddresses(ArrayCollection $addresses)
+    public function setAddresses(ArrayCollection $addresses = null)
     {
         $this->addresses = $addresses;
 
