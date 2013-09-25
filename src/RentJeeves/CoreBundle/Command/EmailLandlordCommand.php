@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {
@@ -101,8 +102,19 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 // Story-1553
                 $output->writeln('Story-1553');
                 break;
-            case self::OPTION_TYPE_PENDING: //Email:landlord
-                // Story-2042
+            case self::OPTION_TYPE_PENDING: //Email:landlord --type=pending
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $contracts = $repo->findByStatus(ContractStatus::PENDING);
+                foreach ($contracts as $contract) {
+                    $holding = $contract->getHolding();
+                    $landlords = $doctrine->getRepository('DataBundle:User')->findBy(array('holding' => $holding));
+                    foreach ($landlords as $landlord) {
+                        if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
+                            $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
+                        }
+                    }
+                    
+                }
                 $output->writeln('Story-2042');
                 break;
             case self::OPTION_TYPE_REFUND: //Email:landlord
