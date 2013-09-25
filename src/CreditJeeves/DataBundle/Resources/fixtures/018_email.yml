@@ -31,4 +31,6 @@ fixtures:
   email_15:
     name: rjLandlordComeFromInvite.html
   email_16:
+    name: rjPendingContract.html
+  email_17:
     name: exist_invite.html

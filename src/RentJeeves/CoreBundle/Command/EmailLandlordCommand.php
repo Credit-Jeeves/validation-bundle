@@ -11,15 +11,11 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
-class EmailCommand extends ContainerAwareCommand
+class EmailLandlordCommand extends ContainerAwareCommand
 {
      use DateCommon;
-
-     /**
-     * @var string
-     */
-    const OPTION_USER = 'user';
 
     /**
      * @var string
@@ -39,7 +35,7 @@ class EmailCommand extends ContainerAwareCommand
     /**
      * @var string
      */
-    const OPTION_TYPE_DEFAULT = 'due';
+    const OPTION_TYPE_DEFAULT = 'pay';
 
     /**
      * @var string
@@ -57,11 +53,6 @@ class EmailCommand extends ContainerAwareCommand
     const OPTION_TYPE_REFUND = 'refund';
 
     /**
-     * @var string
-     */
-    const OPTION_TYPE_PAID = 'paid';
-
-    /**
      * @var integer
      */
     const OPTION_DAYS_DEFAULT = 5;
@@ -74,15 +65,8 @@ class EmailCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('Email:start')
-            ->setDescription('Send emails by request')
-            ->addOption(
-                self::OPTION_USER,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Select user type',
-                UserType::TENANT
-            )
+            ->setName('Email:landlord')
+            ->setDescription('Send emails by request to landlords')
             ->addOption(
                 self::OPTION_TYPE,
                 null,
@@ -107,52 +91,39 @@ class EmailCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = $input->getOption('user');
         $type = $input->getOption('type');
         $days = $input->getOption('days');
         $auto = $input->getOption('auto');
         $date = new \DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
-        echo get_class($mailer);
-        exit;
         $doctrine = $repo = $this->getContainer()->get('doctrine');
-        switch ($user) {
-            case UserType::TENANT:
-                switch ($type) {
-                    case self::OPTION_TYPE_DEFAULT:
-                        if ($auto) { //Email:start --auto
-                            // Story-1544
-                            $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                            
-                            $output->writeln('Story-1544');
-                        } else { //Email:start
-                            // Story-1542
-                            $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                            $days = $this->getDueDays($days);
-                            $output->writeln('Story-1542');
-                        }
-                        break;
-                }
+        switch ($type) {
+            case self::OPTION_TYPE_INVITED: //Email:landlord
+                // Story-1553
+                $output->writeln('Story-1553');
                 break;
-            case UserType::LANDLORD:
-                switch ($type) {
-                    case self::OPTION_TYPE_INVITED: //Email:start --user=landlord --type=invited
-                        // Story-1553
-                        $output->writeln('Story-1553');
-                        break;
-                    case self::OPTION_TYPE_PENDING: //Email:start --user=landlord --type=pending
-                        // Story-2042
-                        $output->writeln('Story-2042');
-                        break;
-                    case self::OPTION_TYPE_REFUND: //Email:start --user=landlord --type=refund
-                        // Story-1560
-                        $output->writeln('Story-1560');
-                        break;
-                    case self::OPTION_TYPE_PAID: //Email:start --user=landlord --type=paid
-                        // Story-1555
-                        $output->writeln('Story-1555');
-                        break;
+            case self::OPTION_TYPE_PENDING: //Email:landlord --type=pending
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $contracts = $repo->findByStatus(ContractStatus::PENDING);
+                foreach ($contracts as $contract) {
+                    $holding = $contract->getHolding();
+                    $landlords = $doctrine->getRepository('DataBundle:User')->findBy(array('holding' => $holding));
+                    foreach ($landlords as $landlord) {
+                        if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
+                            $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
+                        }
+                    }
+                    
                 }
+                $output->writeln('Story-2042');
+                break;
+            case self::OPTION_TYPE_REFUND: //Email:landlord
+                // Story-1560
+                $output->writeln('Story-1560');
+                break;
+            case self::OPTION_TYPE_DEFAULT: //Email:landlord
+                // Story-1555
+                $output->writeln('Story-1555');
                 break;
         }
     }

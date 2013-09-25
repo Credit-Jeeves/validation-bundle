@@ -376,14 +376,36 @@ fixtures:
         The RentTrack Team
       {% endblock %}
 
-#exist_invite.html
+# rjPendingContract.html
   translation_130:
     translatable: email_16
     locale: %locale%
     property: subject
-    value: Your have new dealer!
+    value: Add contract details and approve this tenant.
   translation_131:
     translatable: email_16
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block email %}
+        {{ nameTenant }} added {{ address }} as a property they would like to pay rent on.
+        <br />
+        <a href="http://my.renttrack.com/">Click here to add contract details and approve this tenant</a> 
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
+      {% endblock %}
+
+#exist_invite.html
+  translation_130:
+    translatable: email_17
+    locale: %locale%
+    property: subject
+    value: Your have new dealer!
+  translation_131:
+    translatable: email_17
     locale: %locale%
     property: body
     value: |

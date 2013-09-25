@@ -92,4 +92,14 @@ class Mailer extends BaseMailer
     {
         //echo __METHOD__;
     }
+
+    public function sendPendingContractToLandlord($landlord, $tenant, $contract, $sTemplate = 'rjPendingContract')
+    {
+        $vars = array(
+            'nameLandlord' => $landlord->getFullName(),
+            'nameTenant' => $tenant->getFullName(),
+            'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
 }

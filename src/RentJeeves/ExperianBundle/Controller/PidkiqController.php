@@ -25,5 +25,4 @@ class PidkiqController extends Base
     {
         $result = parent::indexAction();
     }
-
 }

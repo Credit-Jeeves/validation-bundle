@@ -1220,7 +1220,7 @@
             </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
-                <target>You need to set up merchant name.</target>
+                <target>You need to set up your RentTrack Merchant Account. Call 866-841-9090.</target>
             </trans-unit>
             
             
