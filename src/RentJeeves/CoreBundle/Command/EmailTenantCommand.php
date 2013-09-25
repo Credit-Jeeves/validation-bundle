@@ -12,14 +12,9 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 
-class EmailCommand extends ContainerAwareCommand
+class EmailTenantCommand extends ContainerAwareCommand
 {
      use DateCommon;
-
-     /**
-     * @var string
-     */
-    const OPTION_USER = 'user';
 
     /**
      * @var string
@@ -74,15 +69,8 @@ class EmailCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('Email:start')
-            ->setDescription('Send emails by request')
-            ->addOption(
-                self::OPTION_USER,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Select user type',
-                UserType::TENANT
-            )
+            ->setName('Email:tenant')
+            ->setDescription('Send emails by request to tenants')
             ->addOption(
                 self::OPTION_TYPE,
                 null,
@@ -107,51 +95,31 @@ class EmailCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = $input->getOption('user');
         $type = $input->getOption('type');
         $days = $input->getOption('days');
         $auto = $input->getOption('auto');
         $date = new \DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
-        echo get_class($mailer);
-        exit;
         $doctrine = $repo = $this->getContainer()->get('doctrine');
-        switch ($user) {
-            case UserType::TENANT:
-                switch ($type) {
-                    case self::OPTION_TYPE_DEFAULT:
-                        if ($auto) { //Email:start --auto
-                            // Story-1544
-                            $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                            
-                            $output->writeln('Story-1544');
-                        } else { //Email:start
-                            // Story-1542
-                            $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                            $days = $this->getDueDays($days);
-                            $output->writeln('Story-1542');
-                        }
-                        break;
-                }
-                break;
-            case UserType::LANDLORD:
-                switch ($type) {
-                    case self::OPTION_TYPE_INVITED: //Email:start --user=landlord --type=invited
-                        // Story-1553
-                        $output->writeln('Story-1553');
-                        break;
-                    case self::OPTION_TYPE_PENDING: //Email:start --user=landlord --type=pending
-                        // Story-2042
-                        $output->writeln('Story-2042');
-                        break;
-                    case self::OPTION_TYPE_REFUND: //Email:start --user=landlord --type=refund
-                        // Story-1560
-                        $output->writeln('Story-1560');
-                        break;
-                    case self::OPTION_TYPE_PAID: //Email:start --user=landlord --type=paid
-                        // Story-1555
-                        $output->writeln('Story-1555');
-                        break;
+        switch ($type) {
+            case self::OPTION_TYPE_DEFAULT:
+                if ($auto) {//Email:tenant --auto=true
+                    // Story-1544
+                    $repo = $doctrine->getRepository('RjDataBundle:Payment');
+                    $days = $this->getDueDays($days);
+                    $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
+                    foreach ($payments as $payment) {
+                        $contract = $payment->getContract();
+                        $tenant = $contract->getTenant();
+                        $group = $contract->getGroup();
+                        $mailer->sendInviteToUser($tenant);
+                    }
+                    $output->write('Finished command "Email:tenant --auto"');
+                } else {//Email:tenant
+                    // Story-1542
+                    $repo = $doctrine->getRepository('RjDataBundle:Payment');
+                    $days = $this->getDueDays($days);
+                    $output->writeln('Story-1542');
                 }
                 break;
         }

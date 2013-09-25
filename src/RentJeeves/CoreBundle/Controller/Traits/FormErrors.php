@@ -20,9 +20,7 @@ trait FormErrors
         if (!$child->isValid()) {
             foreach ($child->getErrors() as $error) {
                 $errorMessages[] = $this->get('translator.default')->trans(
-                    $error->getMessage()/*,
-                    array(),
-                    $child->getViewData()*/ // TODO implement
+                    $error->getMessage()
                 );
             }
         }
