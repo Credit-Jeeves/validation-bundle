@@ -41,7 +41,6 @@ class UserDetailsType extends AbstractType
                     'class' => 'original',
                     'html' => '<div class="tooltip-box type3 pie-el">' .
                         '<p class="verify" data-bind="i18n: {}">checkout.date_of_birth.tooltip.line1</p>' .
-                        '<p class="verify" data-bind="i18n: {}">checkout.date_of_birth.tooltip.line2</p>' .
                     '</div>'
                 )
             )

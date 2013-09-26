@@ -3,7 +3,7 @@
         {% if isAdmin %}
             <a href="{{ path('public_back_to_admin') }}">{{ 'back.to.admin'|trans }}</a> &nbsp;|&nbsp;
         {% endif %}
-        <a href="#">{{ 'common.help' | trans }} </a> &nbsp;|&nbsp;
+        <a href="http://renttrack.uservoice.com/">{{ 'common.help' | trans }}</a> &nbsp;|&nbsp;
         {% if accountType %}
             {% if accountType == 'landlord' %}
                 <a href="{{ path('landlord_password') }}">{{ 'common.account'|trans }}</a> &nbsp;|&nbsp;
