@@ -308,3 +308,9 @@ fixtures:
     type:           generic
     created_at:     '-60 days'
     updated_at:     '-8 days'
+  700CreditGroup:
+    name:           700Credit
+    target_score:   900
+    type:           generic
+    created_at:     '-60 days'
+    updated_at:     '-8 days'

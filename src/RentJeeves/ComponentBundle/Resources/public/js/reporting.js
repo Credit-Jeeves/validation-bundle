@@ -12,7 +12,7 @@ $(document).ready(function(){
       $('#reporting-agreement').html(text);
       $('#reporting-start').dialog('open');
     } else {
-      var text = 'Rent payment fo ' + address + ' are currently being reported to the credit bureau, Experian.';
+      var text = 'Rent payments for ' + address + ' are currently being reported to major credit service agencies. Once eligible payments have been reported to the credit reporting agencies, they cannot be erased. Furthermore, stopping and subsequently starting reporting again may have a negative on your credit history.';
       $('#reporting-alert').html(text);
       $('#reporting-stop').dialog('open');
     }

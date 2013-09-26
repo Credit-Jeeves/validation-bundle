@@ -56,7 +56,7 @@ sonata_admin:
                     - sonata.admin.applicant
 
 api:
-    admin_dealer_email: %api_admin_dealer_email%
+    admin_dealer_code: %api_admin_dealer_code%
 
 fos_rest:
     format_listener:
@@ -84,4 +84,5 @@ fos_rest:
             'Symfony\Component\HttpKernel\Exception\HttpException': true
             'Symfony\Component\Routing\Exception\MethodNotAllowedException': true
     serializer:
+        serialize_null: true
         groups: [CreditJeeves]

@@ -506,7 +506,7 @@ a.linkselect-link .linkselect-link-text {
 
 .landlord-alert {
     position: relative;
-    padding: 15px;
+    padding: 5px;
     width: 940px;
     margin: 0 auto;
     background: linear-gradient(to bottom, #F28130 0%, #E44018 100%) repeat scroll 0 0 transparent;

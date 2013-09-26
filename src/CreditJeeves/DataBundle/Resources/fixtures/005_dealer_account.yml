@@ -6,7 +6,7 @@ fixtures:
     first_name:     Bill
     last_name:      Gates
     email:  honda-admin
-    #password: pass    
+    #password: 1a1dc91c907325c69271ddf0c944bc72    
     password: 1a1dc91c907325c69271ddf0c944bc72 
     salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
     is_active:      true
@@ -42,7 +42,7 @@ fixtures:
     first_name: Darryl
     last_name: Eaton
     email: darryl@cars.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: true
     is_holding_admin: true
@@ -57,7 +57,7 @@ fixtures:
     first_name: Ton
     last_name: Sharp
     email: ton@cars.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: false
     type: dealer
@@ -69,7 +69,7 @@ fixtures:
     first_name: Alex
     last_name: Emelyanov
     email: alex@cars.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: false
     type: dealer
@@ -83,7 +83,7 @@ fixtures:
     first_name: Zane
     last_name: Stagg
     email: zane@cars.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: false
     type: dealer
@@ -99,7 +99,7 @@ fixtures:
     first_name: Darryl
     last_name: Eaton
     email: darryl@autotrader.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: true
     is_holding_admin: true
@@ -114,7 +114,7 @@ fixtures:
     first_name: Ton
     last_name: Sharp
     email: 'ton@autotrader.com  '
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: false
     type: dealer
@@ -128,7 +128,7 @@ fixtures:
     first_name: Zane
     last_name: Stagg
     email: zane@autotrader.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: false
     type: dealer
@@ -141,7 +141,7 @@ fixtures:
     first_name: Darryl
     last_name: Eaton
     email: darryl@autonation.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_super_admin: true
     type: dealer
@@ -156,18 +156,21 @@ fixtures:
     first_name: AUDI
     last_name: Dealer
     email: audi@example.com
-    password: pass
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     type: dealer
     culture: %locale%
     created_at: '2012-11-29 14:36:16'
     updated_at: '2012-11-29 14:36:40'
   cjDealerAccount700credit:
+    dealer_groups:
+      - 700CreditGroup
     holding: cjHolding700Credit
     first_name: 700Credit
     last_name: 700Credit
     email: 700credit@700credit.com
-    password: pass
+    invite_code: 1111111
+    password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_holding_admin: true
     is_super_admin: true
