@@ -3,17 +3,42 @@ function Pay(parent, contractId) {
 
     var self = this;
     var contract = parent.getContractById(contractId);
-    var current = 0;
+    var current = 2;
     var steps = ['details', 'source', 'user', 'questions', 'pay'];
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
         'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
-        'user': 'rentjeeves_checkoutbundle_userdetailstype'/*,
-        'questions': ''*/
+        'user': 'rentjeeves_checkoutbundle_userdetailstype'
     };
 
 //    steps.splice(2, 2);
-    this.step = ko.observable('details');
+    this.step = ko.observable('user');
+    this.step.subscribe(function(newValue) {
+        switch (newValue) {
+            case 'details':
+                break;
+            case 'source':
+                break;
+            case 'user':
+                break;
+            case 'questions':
+                jQuery('#pay-popup').showOverlay();
+                jQuery.get(Routing.generate('experian_pidkiq_get'), '', function(data, textStatus, jqXHR) {
+                    console.log(data);
+                    if (data['status'] && 'error' == data['status']) {
+                        var formName = forms['questions'];
+                        var formValidator = jsfv[formName];
+                        formValidator.addError(formValidator.id(formName), data['error']);
+                    }
+                    jQuery('#vi-questions .vi-questions-content').html(data);// TODO fix it!!!
+
+                    jQuery('#pay-popup').hideOverlay();
+                });
+                break;
+            case 'pay':
+                break;
+        }
+    });
 
     var startDate = new Date(contract.start_at);
     startDate.setDate(startDate.getDate() + 1);
@@ -193,9 +218,8 @@ function Pay(parent, contractId) {
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 break;
             case 'questions':
-
                 self.step(steps[++current]);
-//                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
+                sendData(Routing.generate('experian_pidkiq_execute'), 'questions');
                 break;
             case 'pay':
 //                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);

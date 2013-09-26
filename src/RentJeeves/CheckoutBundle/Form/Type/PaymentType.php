@@ -20,6 +20,7 @@ class PaymentType extends AbstractType
             'amount',
             null,
             array(
+                'label' => 'checkout.amount',
                 'attr' => array(
                     'min' => 1,
                     'step' => '0.01',

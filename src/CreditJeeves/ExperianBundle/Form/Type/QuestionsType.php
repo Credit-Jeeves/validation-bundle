@@ -19,21 +19,6 @@ class QuestionsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-//        $builder->add(
-//            'phone_type',
-//            'choice',
-//            array(
-//                'choices' => array(
-//                    'Mobile',
-//                    'Home',
-//                    'Work'
-//                )
-//            )
-//        );
-//        $builder->add(
-//            'phone',
-//            'text'
-//        );
 
         $i = 1;
         foreach ($this->questions as $question => $answers) {
@@ -48,16 +33,6 @@ class QuestionsType extends AbstractType
                     'label' => $question
                 )
             );
-//            $this->setValidator(
-//                'OutWalletAnswer' . $i,
-//                new sfValidatorChoice(
-//                    array(
-//                        'choices' => array_keys($answers),
-//                        'required' => true
-//                    )
-//                )
-//            );
-
             $i++;
         }
     }

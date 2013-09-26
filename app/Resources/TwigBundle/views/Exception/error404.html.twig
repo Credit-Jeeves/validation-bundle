@@ -1,1 +1,17 @@
-{% extends "CoreBundle::base.html.twig" %}
+{% if application == 'rj' %}
+    {% extends "CoreBundle::rj_base.html.twig" %}
+{% else %}
+    {% extends "CoreBundle::base.html.twig" %}
+{% endif %}
+
+
+{% block title '404 Error' %}
+
+{% block content %}
+
+    <div class="column-large">
+        <h1>404 Error</h1>
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}
+
