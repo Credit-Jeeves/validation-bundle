@@ -186,7 +186,7 @@
             </trans-unit>
             <trans-unit id="common.log_out">
                 <source>common.log_out</source>
-                <target>Log out</target>
+                <target>Log Out</target>
             </trans-unit>
             <trans-unit id="common.date">
                 <source>common.date</source>
@@ -238,7 +238,7 @@
             </trans-unit>
             <trans-unit id="common.loading.text">
                 <source>common.loading.text</source>
-                <target>Please wait while we retrieve your credit information and build your custom action plan.</target>
+                <target>Please wait while we retrieve your credit profile.</target>
             </trans-unit>
             <trans-unit id="common.applicant.tos">
                 <source>common.applicant.tos</source>
@@ -693,7 +693,7 @@
             </trans-unit>
             <trans-unit id="tabs.summary">
                 <source>tabs.summary</source>
-                <target>Summary</target>
+                <target>Credit Summary</target>
             </trans-unit>
             <trans-unit id="tabs.report">
                 <source>tabs.report</source>
@@ -727,7 +727,7 @@
 
             <trans-unit id="rent.properties">
                 <source>rent.properties</source>
-                <target>Properties</target>
+                <target>Payments</target>
             </trans-unit>
             <trans-unit id="rent.history">
                 <source>rent.history</source>
@@ -845,12 +845,12 @@
             </trans-unit>
             <trans-unit id="error.user.date.empty">
                 <source>error.user.date.empty</source>
-                <target>Date of Birth couldn't be empty.</target>
+                <target>Date of Birth is required.</target>
             </trans-unit>
 
             <trans-unit id="error.user.first_name.empty">
                 <source>error.user.first_name.empty</source>
-                <target>First couldn't be empty</target>
+                <target>First name is required.</target>
             </trans-unit>
             <trans-unit id="error.user.first_name.short">
                 <source>error.user.first_name.short</source>
@@ -862,7 +862,7 @@
             </trans-unit>
             <trans-unit id="error.user.last_name.empty">
                 <source>error.user.last_name.empty</source>
-                <target>Last couldn't be empty</target>
+                <target>Last name is required.</target>
             </trans-unit>
             <trans-unit id="error.user.last_name.short">
                 <source>error.user.last_name.short</source>
@@ -874,47 +874,47 @@
             </trans-unit>
             <trans-unit id="error.user.email.empty">
                 <source>error.user.email.empty</source>
-                <target>Email couldn't be empty</target>
+                <target>Email is required.</target>
             </trans-unit>
             <trans-unit id="error.user.zip.empty">
                 <source>error.user.zip.empty</source>
-                <target>ZIP couldn't be empty</target>
+                <target>ZIP is required.</target>
             </trans-unit>
             <trans-unit id="error.user.ssn.empty">
                 <source>error.user.ssn.empty</source>
-                <target>SSN couldn't be empty.</target>
+                <target>SSN is required.</target>
             </trans-unit>
             <trans-unit id="error.user.ssn.exact">
                 <source>error.user.ssn.exact</source>
-                <target>SSN should have exactly 9 characters.</target>
+                <target>SSN should be exactly 9 characters.</target>
             </trans-unit>
             <trans-unit id="error.user.city.empty">
                 <source>error.user.city.empty</source>
-                <target>City couldn't be empty</target>
+                <target>City is required.</target>
             </trans-unit>
             <trans-unit id="error.user.password.empty">
                 <source>error.user.password.empty</source>
-                <target>Password couldn't be empty</target>
+                <target>Password is required.</target>
             </trans-unit>
             <trans-unit id="error.group.code.empty">
                 <source>error.group.code.empty</source>
-                <target>Group code couldn't be empty</target>
+                <target>Group code is required.</target>
             </trans-unit>
             <trans-unit id="error.user.address.empty">
                 <source>error.user.address.empty</source>
-                <target>Address couldn't be empty</target>
+                <target>Address is required.</target>
             </trans-unit>
             <trans-unit id="error.user.street.empty">
                 <source>error.user.street.empty</source>
-                <target>Street couldn't be empty</target>
+                <target>Street is required.</target>
             </trans-unit>
             <trans-unit id="error.user.unit.empty">
                 <source>error.user.unit.empty</source>
-                <target>Unit No couldn't be empty</target>
+                <target>Unit No. is required.</target>
             </trans-unit>
             <trans-unit id="error.user.state.empty">
                 <source>error.user.state.empty</source>
-                <target>Please, select state</target>
+                <target>Please select a State.</target>
             </trans-unit>
             <trans-unit id="error.user.email.error">
                 <source>error.user.email.error</source>
@@ -922,7 +922,7 @@
             </trans-unit>
             <trans-unit id="error.user.absent.title">
                 <source>error.user.absent.title</source>
-                <target>Such user doesn't exist</target>
+                <target>This user doesn't exist.</target>
             </trans-unit>
             <trans-unit id="error.user.absent.text">
                 <source>error.user.absent.text</source>
@@ -930,7 +930,7 @@
             </trans-unit>
             <trans-unit id="error.user.tos">
                 <source>error.user.tos</source>
-                <target>Please accept the Terms and conditions in order to register.</target>
+                <target>Please accept the Terms and Conditions to register.</target>
             </trans-unit>
 
             <trans-unit id="user.welcome">

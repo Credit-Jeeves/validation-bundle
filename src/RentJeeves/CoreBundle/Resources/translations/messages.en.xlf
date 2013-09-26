@@ -12,15 +12,15 @@
             </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
-                <target>%nYear% RentTrack, LLC.All rights reserved.</target>
+                <target>%nYear% RentTrack, LLC. All rights reserved.</target>
             </trans-unit>
             <trans-unit id="rj.footer.comment">
                 <source>rj.footer.comment</source>
-                <target>RentTrack provides unique credit benefits and helps tenants and landlords the reduce friction with the current rent payment processes.</target>
+                <target>RentTrack helps tenants learn about and build creditworthiness, while providing landlords with a effortless way to accept rent payments online.</target>
             </trans-unit>
             <trans-unit id="rj.footer.title.learn">
                 <source>rj.footer.title.learn</source>
-                <target>Learn About RentRrack</target>
+                <target>Learn About RentTrack</target>
             </trans-unit>
             <trans-unit id="rj.footer.about_us">
                 <source>rj.footer.about_us</source>
@@ -593,7 +593,7 @@
            <trans-unit id="ach.fee">
                 <source>ach.fee</source>
                 <target>
-                  ACH fee waived
+                  Unit Fee Waived
                 </target>
             </trans-unit>
            <trans-unit id="invite.tenant">
@@ -1220,7 +1220,7 @@
             </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
-                <target>You need to set up merchant name.</target>
+                <target>You need to set up your RentTrack Merchant Account. Call 866-841-9090.</target>
             </trans-unit>
             
             
