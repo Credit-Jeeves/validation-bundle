@@ -65,7 +65,7 @@ class TenantCase extends BaseTestCase
         sleep(3);
         $tenants[0]->click();
         sleep(10);
-        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('common.account');
         $this->page->clickLink('back.to.admin');
         $this->logout();
     }

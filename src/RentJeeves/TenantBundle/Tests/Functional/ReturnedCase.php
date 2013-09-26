@@ -15,7 +15,7 @@ class ReturnedCase extends BaseTestCase
     {
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('common.account');
         $this->page->clickLink('settings.remove');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->fillForm(
@@ -43,7 +43,7 @@ class ReturnedCase extends BaseTestCase
             )
         );
         $form->pressButton('continue');
-        $this->page->clickLink('tabs.settings');
+        $this->page->clickLink('common.account');
         $this->logout();
     }
 }
