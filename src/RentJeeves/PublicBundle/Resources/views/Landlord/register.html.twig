@@ -116,7 +116,7 @@
             <label class="checkbox">
                 {{ form_widget(form.landlord.tos) }}
                 <i></i>
-                <span class="big">{{ 'landlord.register.terms'|trans({'%link%': '#'})|raw }}</span>
+                <span class="big">{{ 'landlord.register.terms'|trans({'%link%': 'http://www.renttrack.com/terms-of-service'})|raw }}</span>
             </label>
         </div>
         {{ form_errors(form.landlord.tos) }}

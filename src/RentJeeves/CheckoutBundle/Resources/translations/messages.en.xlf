@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.amount.empty">
                 <source>checkout.error.amount.empty</source>
-                <target>Amount couldn't be empty.</target>
+                <target>Amount is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amount.min">
                 <source>checkout.error.amount.min</source>
@@ -60,7 +60,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.date.empty">
                 <source>checkout.error.date.empty</source>
-                <target>Date couldn't be empty.</target>
+                <target>Date is required..</target>
             </trans-unit>
             <trans-unit id="checkout.error.date.valid">
                 <source>checkout.error.date.valid</source>
@@ -80,11 +80,11 @@
             </trans-unit>
             <trans-unit id="checkout.type.one_time">
                 <source>checkout.type.one_time</source>
-                <target>One time</target>
+                <target>One-Time</target>
             </trans-unit>
             <trans-unit id="checkout.error.type.empty">
                 <source>checkout.error.type.empty</source>
-                <target>Type couldn't be empty.</target>
+                <target>Type is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.type.invalid">
                 <source>checkout.error.type.invalid</source>
@@ -92,7 +92,7 @@
             </trans-unit>
             <trans-unit id="checkout.first_day">
                 <source>checkout.first_day</source>
-                <target>Fist Month</target>
+                <target>First Month</target>
             </trans-unit>
             <trans-unit id="checkout.frequency">
                 <source>checkout.frequency</source>
@@ -108,7 +108,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.dueDate.empty">
                 <source>checkout.error.dueDate.empty</source>
-                <target>Type couldn't be empty.</target>
+                <target>Type is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.dueDate.invalid">
                 <source>checkout.error.dueDate.invalid</source>
@@ -152,7 +152,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.ends.empty">
                 <source>checkout.error.ends.empty</source>
-                <target>Ends couldn't be empty.</target>
+                <target>Ends is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.ends.invalid">
                 <source>checkout.error.ends.invalid</source>
@@ -164,11 +164,11 @@
             </trans-unit>
             <trans-unit id="checkout.error.endMonth.empty">
                 <source>checkout.error.endMonth.empty</source>
-                <target>End month couldn't be empty.</target>
+                <target>End month is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.endYear.empty">
                 <source>checkout.error.endYear.empty</source>
-                <target>End year couldn't be empty.</target>
+                <target>End year is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.endYear.invalid">
                 <source>checkout.error.endYear.invalid</source>
@@ -208,7 +208,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.account_nickname.empty">
                 <source>checkout.error.account_nickname.empty</source>
-                <target>Account Nickname couldn't be empty.</target>
+                <target>Account Nickname is required.</target>
             </trans-unit>
             <trans-unit id="checkout.payor_name">
                 <source>checkout.payor_name</source>
@@ -216,7 +216,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.payor_name.empty">
                 <source>checkout.error.payor_name.empty</source>
-                <target>Name on Account field couldn't be empty.</target>
+                <target>Name on Account field is required.</target>
             </trans-unit>
             <trans-unit id="checkout.routing_number">
                 <source>checkout.routing_number</source>
@@ -224,7 +224,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.routing_number.empty">
                 <source>checkout.error.routing_number.empty</source>
-                <target>Routing Number couldn't be empty.</target>
+                <target>Routing Number is required.</target>
             </trans-unit>
             <trans-unit id="checkout.routing_number.tooltip.title">
                 <source>checkout.routing_number.tooltip.title</source>
@@ -236,7 +236,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.account_number.empty">
                 <source>checkout.error.account_number.empty</source>
-                <target>Account Number couldn't be empty.</target>
+                <target>Account Number is required.</target>
             </trans-unit>
             <trans-unit id="checkout.account_type">
                 <source>checkout.account_type</source>
@@ -272,7 +272,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.card_number.empty">
                 <source>checkout.error.card_number.empty</source>
-                <target>Card Number couldn't be empty.</target>
+                <target>Card Number is required.</target>
             </trans-unit>
             <trans-unit id="checkout.csc">
                 <source>checkout.csc</source>
@@ -280,7 +280,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.csc.empty">
                 <source>checkout.error.csc.empty</source>
-                <target>CSC couldn't be empty.</target>
+                <target>CSC is required.</target>
             </trans-unit>
             <trans-unit id="checkout.csc.help">
                 <source>checkout.csc.help</source>
@@ -364,7 +364,7 @@
             </trans-unit>
             <trans-unit id="checkout.date_of_birth.tooltip.line1">
                 <source>checkout.date_of_birth.tooltip.line1</source>
-                <target>Federal law requires that payment processors verify and record the identity of anyone who schedules an online payment.</target>
+                <target>Federal law requires that we verify your identity. This soft inquiry will not affect your credit.</target>
             </trans-unit>
             <trans-unit id="checkout.date_of_birth.tooltip.line2">
                 <source>checkout.date_of_birth.tooltip.line2</source>
@@ -384,7 +384,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.address_choice.empty">
                 <source>checkout.error.address_choice.empty</source>
-                <target>Please select address or add new one.</target>
+                <target>Please select an address or add new one.</target>
             </trans-unit>
             <trans-unit id="checkout.make_payment">
                 <source>checkout.make_payment</source>
