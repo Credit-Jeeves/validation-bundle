@@ -107,12 +107,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/APYJsFormValidationBundle.git",
-                "reference": "d1c2ff7892b8c7437d9257dcee6c27b225f52c87"
+                "reference": "8ec12dea404b174622f9fb68e9eeeeeb15161640"
             },
             "require": {
-                "php": ">=5.3.3",
-                "symfony/form": "~2.1",
-                "symfony/framework-bundle": "~2.1",
+                "php": ">=5.3.2",
+                "symfony/symfony": ">=2.1,<2.4-dev",
                 "willdurand/expose-translation-bundle": ">=0.2.1"
             },
             "require-dev": {
@@ -123,8 +122,8 @@
                 "jms/di-extra-bundle": "*",
                 "liip/functional-test-bundle": "*",
                 "sensio/framework-extra-bundle": "*",
-                "symfony/assetic-bundle": "~2.1",
-                "symfony/symfony": "~2.1"
+                "symfony/assetic-bundle": "2.*",
+                "symfony/framework-bundle": ">=2.1,<2.4-dev"
             },
             "type": "symfony-bundle",
             "extra": {
@@ -137,9 +136,6 @@
                     "APY\\JsFormValidationBundle": ""
                 }
             },
-            "license": [
-                "MIT"
-            ],
             "authors": [
                 {
                     "name": "Yoann Petit",
@@ -161,7 +157,7 @@
                 "javascript",
                 "validation"
             ],
-            "time": "2013-09-18 07:22:09"
+            "time": "2013-09-09 08:43:06"
         },
         {
             "name": "ass/xmlsecurity",
@@ -307,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "7c5b760adfcc239d8b82e0c4c5b8e93164de46d1"
+                "reference": "a5036dbb3abc81a08971b4e42edd5e4ed4bc40de"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -341,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-09-20 12:59:41"
+            "time": "2013-09-25 15:26:22"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -380,7 +376,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "17a57cc557c6afabf0246b94ec0535b2e664b4af"
+                "reference": "17b1a148017a68ffff5fd2d523cc86e76c028c61"
             },
             "require": {
                 "ext-mcrypt": "*",
@@ -402,7 +398,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-09-22 20:58:03"
+            "time": "2013-09-23 15:25:01"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -565,7 +561,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -614,7 +610,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -937,9 +933,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1041,7 +1037,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan Wage",
+                    "name": "Jonathan H. Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -1924,7 +1920,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2386,7 +2382,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "KnpLabs",
+                    "name": "Knplabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -2739,7 +2735,7 @@
             ],
             "authors": [
                 {
-                    "name": "Kotlyar Maksim",
+                    "name": "Maksim Kotlyar",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -2968,7 +2964,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -4752,7 +4748,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "Fork Maintainer"
+                    "role": "developer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",

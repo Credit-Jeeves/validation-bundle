@@ -8,6 +8,7 @@ use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use \Exception;
 use \RuntimeException;
+use CreditJeeves\CoreBundle\Mailer\BaseMailer;
 
 /**
  */

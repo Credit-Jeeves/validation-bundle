@@ -49,6 +49,7 @@ abstract class User extends BaseUser
      *         "tenant_invite"
      *     }
      * )
+     *
      */
     protected $first_name;
 
@@ -82,6 +83,7 @@ abstract class User extends BaseUser
      *         "tenant_invite"
      *     }
      * )
+     *
      */
     protected $last_name;
 
