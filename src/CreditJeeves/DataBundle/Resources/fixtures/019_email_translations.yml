@@ -14,7 +14,7 @@ fixtures:
       {% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Welcome to Credit Jeeves{% endblock %}
       {% block email %}
             <p>
-                <?php echo $groupName; ?> has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
+                {{ groupName }} has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
                 The Credit Jeeves program shows you your current credit score, a summary of your credit profile, and a customized action plan to help
                 you reach your target score. We then monitor your progress over the next few months to let you know when you are likely qualified for a loan.
             </p>
@@ -39,7 +39,7 @@ fixtures:
               chances to requalify for a loan in the future.
             </p>
             <p>
-                Again, <?php echo $groupName; ?> is providing you this service for free.
+                Again, {{ groupName }} is providing you this service for free.
             </p>
             <p>
             Sign Up Now at <a href="{{ inviteLink }}">{{ inviteLink }}</a>
@@ -399,12 +399,12 @@ fixtures:
       {% endblock %}
 
 #exist_invite.html
-  translation_130:
+  translation_132:
     translatable: email_17
     locale: %locale%
     property: subject
     value: Your have new dealer!
-  translation_131:
+  translation_133:
     translatable: email_17
     locale: %locale%
     property: body
@@ -413,9 +413,9 @@ fixtures:
       {% block h1 %}Your have new dealer!{% endblock %}
       {% block email %}
           <p>
-              <?php echo $groupName; ?> has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
+              {{ groupName }} has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
           </p>
           <p>
-              Again, <?php echo $groupName; ?> is providing you this service for free.
+              Again, {{ $groupName }} is providing you this service for free.
           </p>
       {% endblock %}

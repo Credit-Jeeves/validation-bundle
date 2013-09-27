@@ -7,7 +7,7 @@ parameters:
     mailer_user: null
     mailer_password: null
 
-    api_admin_dealer_code: 1111111
+    api_admin_dealer_code: 1a1dc91c9073
     mink.browser_name: 'firefox'
     mink.base_url: 'http://%server_name%/_test.php'
     mink.coverage_script_url: 'http://%server_name%/bundles/mink/phpunit_coverage.php'
