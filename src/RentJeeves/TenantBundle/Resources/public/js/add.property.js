@@ -47,9 +47,34 @@ $(document).ready(function(){
               '</div>';
     }
 
+    function destroySlimscroll(objectId) {
+        $("#"+objectId).parent().replaceWith($("#"+objectId));
+    }
+
+    function hideError()
+    {
+        $('#errorSearch').hide();
+        destroySlimscroll('search-result-text');
+        $('#search-result-text').slimscroll("destroy");
+        $('#search-result-text').slimScroll({
+            alwaysVisible:true,
+            width:307,
+            height:295
+        });
+        return;
+    }
+
     function showError(message)
     {
-        return alert(message);
+        $('#errorSearch').show();
+        $('#errorSearch').html('<h3 id="errorMessage">'+message+'</h3>');
+        destroySlimscroll('search-result-text');
+        $('#search-result-text').slimScroll({
+            alwaysVisible:true,
+            width:307,
+            height:255
+        });
+        return;
     }
 
 
@@ -144,25 +169,27 @@ $(document).ready(function(){
         }
         
         $('#property-search').change(function(){
+          hideError();
           $(this).addClass('notfound');
           checkDeleteButton();
         });
 
         $('#search-submit').click(function(){
+            hideError();
             var place = autocomplete.getPlace();
             $('#propertyId').val('');
             $('#register').addClass('greyButton');
             $('#register').addClass('disabled');
             if (ERROR == $('#property-search').attr('class')) {
-                return showError('Such address doesn\'t exist!');
+                return showError(Translator.get('address.not.valid'));
             }
 
             if ('' == $('#property-search').val()) {
-                return showError('Property Address empty');
+                return showError(Translator.get('address.is.empty'));
             }
 
             if (typeof place.geometry == 'undefined') {
-                return showError('Such address doesn\'t exist!');
+                return showError(Translator.get('address.not.valid'));
             }
 
             if($('#search-submit').hasClass('grey')) {
@@ -231,12 +258,13 @@ $(document).ready(function(){
     $('#register').click(function(){
       var propertyId = $('#propertyId').val();
       if(propertyId == '') {
-        showError('Please select your rental');
+        showError(Translator.get('select.rental'));
         return false;
       }
     });
 
     $('.thisIsMyRental').click(function(){
+        hideError();
         if($(this).hasClass('match')) {
           $(this).addClass('greyTenant');
           propertyId = $(this).attr('data');

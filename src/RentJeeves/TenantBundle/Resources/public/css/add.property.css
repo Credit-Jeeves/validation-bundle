@@ -134,3 +134,15 @@ a.linkselect-link .linkselect-link-text {
     margin-top: 29px;
   }
 }
+
+#errorSearch {
+    display: none;
+    padding-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+#errorMessage {
+    color: red;
+    font-size: 15px;
+    border-bottom: 1px solid grey;
+}
