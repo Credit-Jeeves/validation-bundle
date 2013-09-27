@@ -49,7 +49,8 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
-        $this->acceptAlert();
+        $this->assertNotNull($errorMessage = $this->page->find('css', '#errorMessage'));
+        $this->assertEquals('select.rental', $errorMessage->getText());
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
         $thisIsMyRental->click();
         $this->assertNotNull($register = $this->page->find('css', '#register'));

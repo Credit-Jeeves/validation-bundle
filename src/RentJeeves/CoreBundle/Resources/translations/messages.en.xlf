@@ -1222,8 +1222,18 @@
                 <source>deposit.merchant.setup</source>
                 <target>You need to set up your RentTrack Merchant Account. Call 866-841-9090.</target>
             </trans-unit>
-            
-            
+            <trans-unit id="address.not.valid">
+                <source>address.not.valid</source>
+                <target>Aww shucks - your rental isn't valid. Please select address from drop down list.</target>
+            </trans-unit>
+            <trans-unit id="address.is.empty">
+                <source>address.is.empty</source>
+                <target>Aww shucks - you forgot put rent into search.</target>
+            </trans-unit>
+            <trans-unit id="select.rental">
+                <source>select.rental</source>
+                <target>Please select your rental.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
