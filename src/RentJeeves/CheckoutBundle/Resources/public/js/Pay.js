@@ -3,16 +3,19 @@ function Pay(parent, contractId) {
 
     var self = this;
     var contract = parent.getContractById(contractId);
-    var current = 2;
+    var current = 0;
     var steps = ['details', 'source', 'user', 'questions', 'pay'];
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
         'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
-        'user': 'rentjeeves_checkoutbundle_userdetailstype'
+        'user': 'rentjeeves_checkoutbundle_userdetailstype',
+        'questions': 'questions'
     };
 
-//    steps.splice(2, 2);
-    this.step = ko.observable('user');
+    if ('passed' == parent.verification) {
+        steps.splice(2, 2);
+    }
+    this.step = ko.observable('details');
     this.step.subscribe(function(newValue) {
         switch (newValue) {
             case 'details':
@@ -22,15 +25,20 @@ function Pay(parent, contractId) {
             case 'user':
                 break;
             case 'questions':
+                if (parent.questions) {
+                    break;
+                }
+
+                console.log('showOverlay');
                 jQuery('#pay-popup').showOverlay();
                 jQuery.get(Routing.generate('experian_pidkiq_get'), '', function(data, textStatus, jqXHR) {
-                    console.log(data);
                     if (data['status'] && 'error' == data['status']) {
-                        var formName = forms['questions'];
-                        var formValidator = jsfv[formName];
-                        formValidator.addError(formValidator.id(formName), data['error']);
+                        console.log(data);
+                        addFormError(null, data['error']);
+                        return;
                     }
-                    jQuery('#vi-questions .vi-questions-content').html(data);// TODO fix it!!!
+                    parent.questions = data; //TODO add identity check
+                    self.questions(data);
 
                     jQuery('#pay-popup').hideOverlay();
                 });
@@ -110,6 +118,9 @@ function Pay(parent, contractId) {
     this.paymentSource = new PaymentSource(this, false);
 
 
+    this.questions = ko.observable(parent.questions);
+
+
 
 
     this.getAmount = ko.computed(function() {
@@ -125,6 +136,28 @@ function Pay(parent, contractId) {
 
     this.stepExist = function(step) {
         return -1 != steps.indexOf(step);
+    };
+
+    var onSuccessStep = function(data) {
+        console.log(data);
+        var currentStep = steps[current];
+        switch (currentStep) {
+            case 'details':
+                break;
+            case 'source':
+                break;
+            case 'user':
+                break;
+            case 'questions':
+                parent.verification = data.verification;
+                steps.splice(2, 2);
+                current -= 2;
+                break;
+            case 'pay':
+                break;
+        }
+
+        self.step(steps[++current]);
     };
 
     var sendData = function(url, formId) {
@@ -159,6 +192,14 @@ function Pay(parent, contractId) {
             complete: function(jqXHR, textStatus) {
                 jQuery('#pay-popup').hideOverlay();
             },
+            error: function(jqXHR, textStatus, errorThrown) {
+                removeAllErrors();
+                if ('parsererror SyntaxError: Unexpected token <' == textStatus + ' ' + errorThrown) {
+                    jQuery('body').showOverlay();
+                    window.location.reload();
+                }
+                addFormError(null, errorThrown);
+            },
             success: function(data, textStatus, jqXHR) {
                 removeAllErrors();
                 jQuery.each(forms, function(key, formName) {
@@ -170,8 +211,7 @@ function Pay(parent, contractId) {
                     applyErrors(data);
                     return;
                 }
-
-                self.step(steps[++current]);
+                onSuccessStep(data);
             }
         });
     };
@@ -218,12 +258,13 @@ function Pay(parent, contractId) {
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 break;
             case 'questions':
-                self.step(steps[++current]);
-                sendData(Routing.generate('experian_pidkiq_execute'), 'questions');
+                sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
                 break;
             case 'pay':
 //                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 $('#pay-popup').dialog('close');
+                jQuery('body').showOverlay();
+                window.location.reload();
                 break;
         }
 
@@ -251,27 +292,31 @@ function Pay(parent, contractId) {
         selectOtherMonths: true
     });
 
-    $('#vi-questions').slimScroll({
-        alwaysVisible:true,
-        width:330,
-        height:260
-    });
+//    $("#vi-questions").parent().replaceWith($("#vi-questions"));
+//    $('#vi-questions').slimScroll({
+//        alwaysVisible:true,
+//        width:330,
+//        height:260
+//    });
 
     $('.user-ssn').ssn();
 
     ko.applyBindings(this, $('#pay-popup').get(0));
 
+    var addFormError = function(field, errorMessage) {
+        $('#pay-popup .attention-box').show();
+        // Add errors block
+        $(field).parents('.form-row').addClass('error');
+        $(field).addClass('error');
+
+        console.log(errorMessage);
+        // Add error
+        $('#pay-popup .attention-box ul').append('<li>'+errorMessage+'</li>');
+    };
+
     jQuery.each(forms, function(key, formName) {
-        jsfv[formName].addError = function(field, errorMessage) {
-            $('#pay-popup .attention-box').show();
-            // Add errors block
-            $(field).parents('.form-row').addClass('error');
-            $(field).addClass('error');
-
-
-            // Add error
-            $('#pay-popup .attention-box ul').append('<li>'+errorMessage+'</li>');
-        };
+        console.log(formName);
+        jsfv[formName].addError = addFormError;
         jsfv[formName].removeErrors = function(field) {};
         jQuery('#' + formName).submit(function() {
             self.next();
@@ -279,4 +324,5 @@ function Pay(parent, contractId) {
         });
     });
 
+    removeAllErrors();
 }

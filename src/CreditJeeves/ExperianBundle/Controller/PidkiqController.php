@@ -13,11 +13,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use \ExperianException;
+use \Exception;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  *
- * @method User getUser()
+ * @method \CreditJeeves\DataBundle\Entity\User getUser()
  *
  * @Route("/")
  */
@@ -111,7 +113,7 @@ class PidkiqController extends Controller
             $em->persist($pidiqModel);
             $em->flush();
         }
-        return $pidiqModel->getQuestions();
+        return $this->questionsData = $pidiqModel->getQuestions();
     }
 
     protected function processQuestions()
@@ -129,7 +131,7 @@ class PidkiqController extends Controller
                 } else {
                     return true;
                 }
-            } catch (\ExperianException $e) {
+            } catch (ExperianException $e) {
                 $this->get('fp_badaboom.exception_catcher')->handleException($e);
                 switch ($e->getCode()) {
                     case E_USER_ERROR:
@@ -160,7 +162,7 @@ class PidkiqController extends Controller
                         break;
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
         }
         return false;

@@ -1,5 +1,7 @@
-function CurrentPayments(contracts) {
+function CurrentPayments(contracts, verification) {
 
+    this.verification = verification;
+    this.questions = '';
     this.getContractById = function(id) {
         var contract = null;
         jQuery.each(contracts, function(key, val) {

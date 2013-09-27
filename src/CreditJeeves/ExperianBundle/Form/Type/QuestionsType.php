@@ -19,7 +19,6 @@ class QuestionsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
         $i = 1;
         foreach ($this->questions as $question => $answers) {
             $builder->add(

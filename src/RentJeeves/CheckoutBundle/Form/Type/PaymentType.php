@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Range;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use RentJeeves\DataBundle\Enum\PaymentStatus as PaymentStatusEnum;
 
 class PaymentType extends AbstractType
 {

@@ -31,7 +31,7 @@
         <div class="col" data-bind="visible: 'details' == step()">
             <div class="form-row clearfix">
                 <label>{{ 'checkout.property' | trans }}<b>*</b></label>
-                <div class="fields-box">
+                <div class="fields-box" id="rentjeeves_checkoutbundle_paymenttype_property_address">
                     <span class="value big left" data-bind="text: propertyAddress"></span>
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
@@ -39,6 +39,7 @@
             <form {{ form_enctype(paymentType) }} novalidate method="post">
                 {{ form_widget(paymentType) }}
                 {{ JSFV(paymentType) }}
+
             </form>
         </div>
 
@@ -60,10 +61,12 @@
 
         <div class="col long-label" data-bind="visible: 'questions' == step()">
 
-            <div class="scroll-box">
-                <div id="vi-questions" class="scroll">
-                    <div class="vi-questions-content">
-
+            <div class="scroll-box" style="padding-top: 0px;">
+                <div id="vi-questions" class="scroll" style="padding-top: 0px;">
+                    <div class="vi-questions-content"
+                         data-bind="html: questions"
+                         style="width:300px; height:235px; overflow-y:scroll; padding-top: 10px;"
+                    >
                     </div>
                 </div>
                 <div class="tooltip-box type3 pie-el">
@@ -75,7 +78,7 @@
                     </p>
                 </div>
             </div>
-
+            {{ JSFV(questionsType) }}
         </div>
 
         <div class="attention-box3 pie-el" data-bind="visible: 31 == step()" style="display: none;">
@@ -158,7 +161,12 @@
                     <div class="form-row clearfix">
                         <label>{{ 'checkout.method' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"></span>
+                            <span class="value"
+                                  data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"
+                                  id="checkout-payment-source"
+                            >
+
+                            </span>
                         </div>
                     </div>
                     <div data-bind="visible: 'bank' == paymentSource.type()">

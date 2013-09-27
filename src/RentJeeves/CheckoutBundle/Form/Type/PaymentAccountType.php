@@ -297,7 +297,7 @@ class PaymentAccountType extends AbstractType
             )
         );
         $builder->add(
-            'new_address',
+            'is_new_address',
             'hidden',
             array(
                 'mapped' => false,

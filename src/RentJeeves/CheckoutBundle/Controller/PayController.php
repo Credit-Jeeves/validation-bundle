@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Controller;
 
 use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use Doctrine\Common\Collections\ArrayCollection;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
@@ -89,5 +90,16 @@ class PayController extends Controller
                 'success' => true
             )
         );
+    }
+
+    /**
+     * @Route("/exec", name="checkout_pay_exec", options={"expose"=true})
+     * @Method({"POST"})
+     */
+    public function execAction(Request $request)
+    {
+        if (UserIsVerified::PASSED != $this->getUser()) {
+            return $this->createNotFoundException('Verification not passed');
+        }
     }
 }

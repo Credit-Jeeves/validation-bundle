@@ -27,6 +27,11 @@ checkout:
     type:     annotation
     prefix:   /
 
+ExperianBundle:
+    resource: "@ExperianBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 RjExperianBundle:
     resource: "@RjExperianBundle/Controller/"
     type:     annotation

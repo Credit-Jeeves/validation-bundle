@@ -140,7 +140,11 @@ abstract class BaseTestCase extends Base
                     } else {
                         /* @var $selectList \Behat\Mink\Element\NodeElement */
                         $this->assertNotNull($radioLabel = $form->find('css', '#' . $field));
-                        $radioLabel->click();
+                        if ($radioLabel->isVisible()) {
+                            $radioLabel->click();
+                        } else {
+                            $radioLabel->getParent()->click();
+                        }
                     }
                 } elseif ('checkbox' == $fieldElement->getAttribute('type')) {
                     if ($value) {
@@ -153,7 +157,20 @@ abstract class BaseTestCase extends Base
                 ) {
                     $fieldElement->selectOption($value);
                 } else {
-                    $form->fillField($field, $value);
+                    $i = 6;
+                    while(true) {
+                        try {
+                            $form->fillField($field, $value);
+                            $this->assertEquals($value, $fieldElement->getValue());
+                            break;
+                        } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
+                            if ($i--) {
+                                sleep(1);
+                            } else {
+                                $this->fail("Value '{$value}' did not set to field '{$field}'");
+                            }
+                        }
+                    }
                 }
             } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
                 $this->assertNotNull(
@@ -167,7 +184,7 @@ abstract class BaseTestCase extends Base
                 /* @var $valueElement \Behat\Mink\Element\NodeElement */
                 $this->assertNotNull(
                     $valueElement = $selectList->find('xpath', "/li/span[text()='{$value}']"),
-                    "Value '{$value}' hase not been found in select '{$field}'"
+                    "Value '{$value}' has not been found in select '{$field}'"
                 );
                 $valueElement->click();
             }
