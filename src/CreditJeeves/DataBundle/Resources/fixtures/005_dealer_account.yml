@@ -168,8 +168,8 @@ fixtures:
     holding: cjHolding700Credit
     first_name: 700Credit
     last_name: 700Credit
-    email: 700credit@700credit.com
-    invite_code: 1111111
+    email: support@700credit.com
+    invite_code: 1a1dc91c9073
     password: 1a1dc91c907325c69271ddf0c944bc72
     is_active: true
     is_holding_admin: true

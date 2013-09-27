@@ -9,7 +9,7 @@ parameters:
     mailer_host: 127.0.0.1
     mailer_user: null
     mailer_password: null
-    api_admin_dealer_code: 1111111
+    api_admin_dealer_code: 1a1dc91c9073
 
     server: live
     server_name_cj: my.creditjeeves.com
