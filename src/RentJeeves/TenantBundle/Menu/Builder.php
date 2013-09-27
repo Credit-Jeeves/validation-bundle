@@ -39,12 +39,12 @@ class Builder extends ContainerAware
                 )
             );
         }
-        $menu->addChild(
-            'tabs.settings',
-            array(
-                'route' => 'user_password'
-            )
-        );
+//         $menu->addChild(
+//             'tabs.settings',
+//             array(
+//                 'route' => 'user_password'
+//             )
+//         );
         switch ($sRoute) {
             case 'tenant_homepage':
             case 'tenant_payment_history':
@@ -66,7 +66,7 @@ class Builder extends ContainerAware
             case 'user_contact':
             case 'user_email':
             case 'user_remove':
-                $menu['tabs.settings']->setAttribute('class', 'active');
+//                $menu['tabs.settings']->setAttribute('class', 'active');
                 break;
         }
         return $menu;
