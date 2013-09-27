@@ -34,7 +34,7 @@ class AtbController extends Controller
 
         /* @var $report Report */
         $report = $this->get('core.session.applicant')->getUser()->getReportsPrequal()->last();
-
+        $this->getDoctrine()->getManager()->persist($report);
         /** @var $lead Lead */
         $lead = $this->get('core.session.applicant')->getLead();
 
