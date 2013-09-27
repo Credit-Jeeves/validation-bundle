@@ -399,12 +399,12 @@ fixtures:
       {% endblock %}
 
 #exist_invite.html
-  translation_130:
+  translation_132:
     translatable: email_17
     locale: %locale%
     property: subject
     value: Your have new dealer!
-  translation_131:
+  translation_133:
     translatable: email_17
     locale: %locale%
     property: body
@@ -413,9 +413,9 @@ fixtures:
       {% block h1 %}Your have new dealer!{% endblock %}
       {% block email %}
           <p>
-              <?php echo $groupName; ?> has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
+              {{ groupName }} has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
           </p>
           <p>
-              Again, <?php echo $groupName; ?> is providing you this service for free.
+              Again, {{ $groupName }} is providing you this service for free.
           </p>
       {% endblock %}
