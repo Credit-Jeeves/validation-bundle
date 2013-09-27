@@ -1,14 +1,10 @@
 <?php
 namespace RentJeeves\CoreBundle\Tests\Controller\Traits;
 
+use RentJeeves\CoreBundle\Tests\Fixtures\TestType;
 use RentJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\TestBundle\Mocks;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
@@ -20,7 +16,7 @@ class FormErrorsCase extends BaseTestCase
     protected function getFormTypeErrors($formType)
     {
         $controller = $this->getMock(
-            'RentJeeves\CoreBundle\Tests\Controller\Traits\TestController',
+            'RentJeeves\CoreBundle\Tests\Fixtures\TestController',
             array('get')
         );
         $controller->expects($this->any())
@@ -67,127 +63,5 @@ class FormErrorsCase extends BaseTestCase
             ),
             $testTypeErrors['form']
         );
-    }
-}
-
-class TestController
-{
-    use \RentJeeves\CoreBundle\Controller\Traits\FormErrors;
-}
-
-/**
- * @author Ton Sharp <66Ton99@gmail.com>
- *
- * @ORM\Table(name="test")
- * @ORM\Entity()
- */
-class TestEntity
-{
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id", type="bigint")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    public $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string")
-     * @Assert\NotBlank(
-     *     message="name.empty"
-     * )
-     */
-    public $name;
-}
-
-class SubTestType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add(
-            'field1',
-            'text',
-            array(
-                'mapped' => false,
-                'constraints' => array(
-                    new NotBlank(
-                        array(
-                            'message' => 'field1.empty',
-                        )
-                    ),
-                ),
-            )
-        );
-        $builder->add('name');
-
-    }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(
-            array(
-                'cascade_validation' => true,
-                'data_class' => 'RentJeeves\CoreBundle\Tests\Controller\Traits\TestEntity'
-            )
-        );
-    }
-
-    public function getName()
-    {
-        return 'sub';
-    }
-}
-
-class TestType extends AbstractType
-{
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add(
-            'field1',
-            'text',
-            array(
-                'constraints' => array(
-                    new NotBlank(
-                        array(
-                            'message' => 'field1.empty',
-                        )
-                    ),
-                ),
-            )
-        );
-        $builder->add(
-            'field2',
-            'text',
-            array(
-                'constraints' => array(
-                    new NotBlank(
-                        array(
-                            'message' => 'field2.empty1',
-                        )
-                    ),
-                    new NotBlank(
-                        array(
-                            'message' => 'field2.empty2',
-                        )
-                    ),
-                ),
-            )
-        );
-
-        $builder->add(
-            'child',
-            new SubTestType(),
-            array(
-                'error_bubbling' => true,
-            )
-        );
-    }
-
-    public function getName()
-    {
-        return 'form';
     }
 }
