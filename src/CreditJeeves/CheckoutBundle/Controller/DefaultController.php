@@ -183,16 +183,16 @@ class DefaultController extends Controller
         $report = $this->getUser()
             ->getReportsD2c()
             ->last();
-
-        if (!empty($report)) {
-            $now = new DateTime();
-            if ($now->modify('-1 month') > $report->getCreatedAt()) {
-                $boxMessage = 'box-message-expired';
-                $boxNote = 'box-note-expired';
-            } else {
-                return $this->render('CoreBundle::empty.html.twig');
-            }
-        }
+// 
+//         if (!empty($report)) {
+//             $now = new DateTime();
+//             if ($now->modify('-1 month') > $report->getCreatedAt()) {
+//                 $boxMessage = 'box-message-expired';
+//                 $boxNote = 'box-note-expired';
+//             } else {
+//                 return $this->render('CoreBundle::empty.html.twig');
+//             }
+//         }
 
         return array(
             'boxMessage' => $boxMessage,
