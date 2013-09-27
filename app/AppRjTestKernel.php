@@ -5,5 +5,5 @@
  */
 class AppRjTestKernel extends AppRjKernel
 {
-    const IS_TEST = false; //FIXME change to true
+    const IS_TEST = true;
 }
