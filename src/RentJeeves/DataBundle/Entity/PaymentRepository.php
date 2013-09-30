@@ -42,6 +42,6 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('year', $year);
 
         $query = $query->getQuery();
-        return $query->execute();
+        return $query->iterate();
     }
 }
