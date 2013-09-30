@@ -283,7 +283,9 @@ class PaymentAccountType extends AbstractType
                         'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     ),
                     'html' => '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
-                        '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">common.add_new</a></div>'
+                        '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
+                            'common.add_new' .
+                        '</a></div>'
                 ),
                 'invalid_message' => 'checkout.error.address_choice.invalid',
                 'constraints' => array(
@@ -318,7 +320,7 @@ class PaymentAccountType extends AbstractType
                     'force_row' => true,
                     'row_attr' => array(
                         'data-bind' => 'visible: \'card\' == paymentSource.type() ' .
-                            '&& \'true\' == paymentSource.address.isAddNewAddress()'
+                            '&& paymentSource.address.isAddNewAddress()'
                     )
                 )
             )
@@ -342,6 +344,16 @@ class PaymentAccountType extends AbstractType
         );
 
         $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
+        $builder->add(
+            'groupId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: groupId',
+                )
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -99,7 +99,7 @@ class UserDetailsType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'true\' == address.isAddNewAddress()'
+                        'data-bind' => 'visible: address.isAddNewAddress'
                     )
                 )
             )

@@ -1,4 +1,5 @@
 function CurrentPayments(contracts, verification) {
+    var self = this;
 
     this.verification = verification;
     this.questions = '';
@@ -14,6 +15,6 @@ function CurrentPayments(contracts, verification) {
     };
 
     this.openPayPopup = function(contractId) {
-        new Pay(this, contractId);
+        self.pay = new Pay(this, contractId);
     };
 }

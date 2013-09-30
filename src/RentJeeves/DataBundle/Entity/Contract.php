@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 //use EntityManager522a848132d2c_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -294,7 +295,6 @@ class Contract extends Base
     public function getDatagridRow($em)
     {
         $property = $this->getProperty();
-        $tenant = $this->getTenant();
         $unit = $this->getUnit();
         $repo = $em->getRepository('DataBundle:Order');
         $result = array();
@@ -322,6 +322,7 @@ class Contract extends Base
         $result['finish_at'] = $this->getFinishAt();
         $result['amount'] = $this->getRent();
         $result['property'] = $this->getProperty()->getItem();
+        $result['group_id'] = $this->getGroup()->getId();
         return $result;
     }
 

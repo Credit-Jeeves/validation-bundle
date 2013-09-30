@@ -248,6 +248,26 @@ class PaymentType extends AbstractType
         );
 
         $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
+        $builder->add(
+            'paymentAccountId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: paymentAccountId',
+                )
+            )
+        );
+        $builder->add(
+            'contractId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: contractId',
+                )
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

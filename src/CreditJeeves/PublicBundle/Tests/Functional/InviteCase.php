@@ -50,7 +50,7 @@ class InviteCase extends BaseTestCase
         $form->pressButton('common.i_agree');
 
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list li'));
-        $this->assertCount(8, $errors, 'Wrong number of errors');
+        $this->assertCount(9, $errors, 'Wrong number of errors');
 
         $this->fillForm(
             $form,

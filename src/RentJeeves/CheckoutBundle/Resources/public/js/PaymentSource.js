@@ -1,4 +1,4 @@
-function PaymentSource(parent, isForceSave) {
+function PaymentSource(parent, isForceSave, newAddress) {
     var self = this;
     this.paymentAccounts = ko.observableArray(window.paymentAccounts);
     this.type = ko.observable('bank');
@@ -12,7 +12,7 @@ function PaymentSource(parent, isForceSave) {
     this.ExpirationMonth = ko.observable(null);
     this.ExpirationYear = ko.observable(null);
 
-    this.address = new Address(this, window.addressesViewModels, parent.propertyFullAddress);
+    this.address = new Address(this, window.addressesViewModels, newAddress);
     this.save = ko.observable(isForceSave);
     this.isForceSave = ko.observable(isForceSave);
 

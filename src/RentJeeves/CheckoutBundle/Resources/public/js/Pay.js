@@ -3,7 +3,7 @@ function Pay(parent, contractId) {
 
     var self = this;
     var contract = parent.getContractById(contractId);
-    var current = 1;
+    var current = 0;
     var steps = ['details', 'source', 'user', 'questions', 'pay'];
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
@@ -15,7 +15,7 @@ function Pay(parent, contractId) {
     if ('passed' == parent.verification) {
         steps.splice(2, 2);
     }
-    this.step = ko.observable('source');
+    this.step = ko.observable('details');
     this.step.subscribe(function(newValue) {
         switch (newValue) {
             case 'details':
@@ -51,7 +51,13 @@ function Pay(parent, contractId) {
 
     var finishDate = new Date(contract.finish_at);
 
+    this.propertyFullAddress = new Address(this, window.addressesViewModels);
+    this.propertyFullAddress.street(contract.property.address);
+    this.propertyFullAddress.city(contract.property.city);
+    this.propertyFullAddress.zip(contract.property.zip);
+    this.propertyFullAddress.area(contract.property.area);
 
+    this.propertyAddress = ko.observable(contract.full_address);
 
     /*  Form fields  */
     this.amount = ko.observable(contract.amount);
@@ -72,15 +78,13 @@ function Pay(parent, contractId) {
     this.endMonth = ko.observable(finishDate.getMonth() + 1);
     this.endYear = ko.observable(finishDate.getYear());
 
-    this.propertyFullAddress = new Address(this, window.addressesViewModels);
-    this.propertyFullAddress.street(contract.address);
-    this.propertyFullAddress.city(contract.city);
-    this.propertyFullAddress.zip(contract.zip);
-    this.propertyFullAddress.area(contract.area);
+    this.contractId = contract.id;
+    this.paymentAccountId = ko.observable(null);
+
+    this.groupId = ko.observable(contract.group_id);
     /* /Form fields/ */
 
 
-    this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
     this.fullPayTo = contract.full_pay_to;
     this.settleDays = 3; // All logic logic in "settle" method depends on this value
     this.settle = ko.computed(function() {
@@ -116,7 +120,7 @@ function Pay(parent, contractId) {
         return finishDate.toString('MM/dd/yyyy');
     }, this);
 
-    this.paymentSource = new PaymentSource(this, false);
+    this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
     this.questions = ko.observable(parent.questions);
@@ -145,6 +149,7 @@ function Pay(parent, contractId) {
             case 'details':
                 break;
             case 'source':
+                self.paymentAccountId(data.paymentAccountId);
                 break;
             case 'user':
                 break;
@@ -154,6 +159,10 @@ function Pay(parent, contractId) {
                 current -= 2;
                 break;
             case 'pay':
+                $('#pay-popup').dialog('close');
+                jQuery('body').showOverlay();
+                window.location.reload();
+                return;
                 break;
         }
 
@@ -194,7 +203,9 @@ function Pay(parent, contractId) {
             error: function(jqXHR, textStatus, errorThrown) {
                 removeAllErrors();
                 jQuery('#pay-popup').hideOverlay();
-                if ('<!DOCTYPE' == jqXHR.responseText.substr(0, 9)) {
+                if ('SyntaxError: Unexpected token <' == errorThrown &&
+                    '<!DOCTYPE' == jqXHR.responseText.substr(0, 9)
+                ) {
                     jQuery('body').showOverlay();
                     window.location.reload();
                 }
@@ -261,10 +272,7 @@ function Pay(parent, contractId) {
                 sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
                 break;
             case 'pay':
-//                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
-                $('#pay-popup').dialog('close');
-                jQuery('body').showOverlay();
-                window.location.reload();
+                sendData(Routing.generate('checkout_pay_exec'), forms['details']);
                 break;
         }
 

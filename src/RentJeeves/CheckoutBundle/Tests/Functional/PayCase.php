@@ -78,7 +78,7 @@ class PayCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test Paymnet',
                 'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => '????????',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
-                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber' => '5473500000000014',
+                'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber' => '123245678',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,
             )
         );
@@ -176,6 +176,12 @@ class PayCase extends BaseTestCase
 
 
         $payPopup->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout,
+            "false" // FIXME
+        );
+
         $this->page->clickLink('tabs.summary');
 
         $this->session->wait(
