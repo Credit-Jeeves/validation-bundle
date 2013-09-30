@@ -57,7 +57,7 @@ php -C -q -d memory_limit=1024M $PHPUNIT_PATH -v \
 #cat $BUILD_DIR/migration.res
 
 echo "##### CHECKS CODING STANDARDS #####"
-if ./bin/cs.sh "--report=checkstyle --report-file=$BUILD_DIR/phpcs.xml -vvv ./" ; then
+if ./bin/cs.sh "--report=checkstyle --report-file=$BUILD_DIR/phpcs.xml ./" ; then
   echo 'OK' > $BUILD_DIR/phpcs.res
 else
   echo 'FAIL' > $BUILD_DIR/phpcs.res
