@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\ExperianBundle\NetConnect;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -83,6 +82,9 @@ class ReportController extends Controller
 
     protected function getArf()
     {
+        if (null == $this->netConnect) {
+            $this->netConnect = $this->get('experian.net_connect');
+        }
         $this->netConnect->execute($this->container);
         return $this->netConnect->getResponseOnUserData($this->get('core.session.applicant')->getUser());
     }
@@ -166,15 +168,5 @@ class ReportController extends Controller
 
 
         return new JsonResponse('processing');
-    }
-
-    /**
-     * @DI\InjectParams({
-     *     "netConnect" = @DI\Inject("experian.net_connect")
-     * })
-     */
-    public function setNetConnect(NetConnect $netConnect)
-    {
-        $this->netConnect = $netConnect;
     }
 }

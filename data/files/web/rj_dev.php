@@ -2,7 +2,7 @@
 use Symfony\Component\ClassLoader\ApcClassLoader;
 use Symfony\Component\HttpFoundation\Request;
 
-if (function_exists('xdebug_disable')) {
+if (function_exists('xdebug_disable') && empty($_COOKIE['XDEBUG_SESSION'])) {
     xdebug_disable();
 }
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';

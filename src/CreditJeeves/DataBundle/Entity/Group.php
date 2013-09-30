@@ -65,4 +65,19 @@ class Group extends BaseGroup
         $properties = $this->getGroupProperties();
         return $properties ? count($properties) : 0;
     }
+
+    public function setMerchantName($name)
+    {
+        if (!$this->deposit_account) {
+            $this->deposit_account = new DepositAccount();
+            $this->deposit_account->setGroup($this);
+        }
+        $this->deposit_account->setMerchantName($name);
+        return $this;
+    }
+
+    public function getMerchantName()
+    {
+        return ($this->deposit_account) ? $this->deposit_account->getMerchantName() : '';
+    }
 }
