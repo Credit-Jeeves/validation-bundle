@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {
@@ -35,7 +36,12 @@ class EmailLandlordCommand extends ContainerAwareCommand
     /**
      * @var string
      */
-    const OPTION_TYPE_DEFAULT = 'pay';
+    const OPTION_TYPE_DEFAULT = 'paid';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_NFS = 'nsf';
 
     /**
      * @var string
@@ -96,7 +102,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
         $auto = $input->getOption('auto');
         $date = new \DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
-        $doctrine = $repo = $this->getContainer()->get('doctrine');
+        $doctrine = $this->getContainer()->get('doctrine');
         switch ($type) {
             case self::OPTION_TYPE_INVITED: //Email:landlord
                 // Story-1553
@@ -107,24 +113,61 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 $contracts = $repo->findByStatus(ContractStatus::PENDING);
                 foreach ($contracts as $contract) {
                     $holding = $contract->getHolding();
-                    $landlords = $doctrine->getRepository('DataBundle:User')->findBy(array('holding' => $holding));
+                    $landlords = $this->getHoldingAdmins($holding);
                     foreach ($landlords as $landlord) {
-                        if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
-                            $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
-                        }
+                        $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
                     }
-                    
                 }
                 $output->writeln('Story-2042');
                 break;
-            case self::OPTION_TYPE_REFUND: //Email:landlord
+            case self::OPTION_TYPE_NFS: //Email:landlord --type=nsf
                 // Story-1560
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $payments = $repo->getPaymentsToLandlord(
+                    array(
+                        OrderStatus::NEWONE,
+                        OrderStatus::ERROR,
+                        OrderStatus::CANCELLED,
+                        OrderStatus::REFUNDED
+                    )
+                );
+                foreach ($payments as $payment) {
+                    $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
+                    $landlords = $this->getHoldingAdmins($holding);
+                    foreach ($landlords as $landlord) {
+                        $mailer->sendTodayPayments($landlord, $payment['amount'], 'rjTodayNotPaid');
+                    }
+                }
                 $output->writeln('Story-1560');
                 break;
-            case self::OPTION_TYPE_DEFAULT: //Email:landlord
+            case self::OPTION_TYPE_DEFAULT: //Email:landlord --type=paid
                 // Story-1555
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $payments = $repo->getPaymentsToLandlord();
+                foreach ($payments as $payment) {
+                    $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
+                    $landlords = $this->getHoldingAdmins($holding);
+                    foreach ($landlords as $landlord) {
+                        $mailer->sendTodayPayments($landlord, $payment['amount']);
+                    }
+                }
                 $output->writeln('Story-1555');
                 break;
         }
+    }
+
+    private function getHoldingAdmins($holding)
+    {
+        $result = array();
+        $landlords = $this->getContainer()
+            ->get('doctrine')
+            ->getRepository('DataBundle:User')
+            ->findBy(array('holding' => $holding));
+        foreach ($landlords as $landlord) {
+            if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
+                $result[] = $landlord;
+            }
+        }
+        return $result;
     }
 }
