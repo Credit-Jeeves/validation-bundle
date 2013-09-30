@@ -1,12 +1,12 @@
 model: Rj\EmailBundle\Entity\EmailTemplateTranslation
 fixtures:
 # invite.html email
-  translation_11:
+  translation_1_subject:
     translatable: email_1
     locale: %locale%
     property: subject
     value: Welcome to Credit Jeeves
-  translation_12:
+  translation_1_body:
     translatable: email_1
     locale: %locale%
     property: body
@@ -46,84 +46,84 @@ fixtures:
             </p>
       {% endblock %}
 # welcome.html email
-  translation_21:
+  translation_2_subject:
     translatable: email_2
     locale: %locale%
     property: subject
     value: Welcome to Credit Jeeves
-  translation_22:
+  translation_2_body:
     translatable: email_2
     locale: %locale%
     property: body
     value: '{% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Welcome to CreditJeeves{% endblock %}{% block email %}<p>You have taken the first step towards your new car.</p><p>To see your customized action plan, sign in at <a href="http://my.creditjeeves.com/">cj</a> anytime.</p><strong>Get started today:</strong><ul>  <li>Understand<a href="http://www.creditjeeves.com/educate/understand-your-credit-score">how your credit score is determined</a></li><li>Review your <a href="http://cj/_dev.php/?">action plan</a> and decide what step you will take first.</li><li>Click on the "learn more" link next to that step to find out what to do.</li></ul><i>Trouble answering the verification questions?</i><p>It is a good idea to get a <a href="https://www.annualcreditreport.com/"> free copy of your credit report </a> to see if contains something you do not recognize. You can also contact <a href="mailto:help@creditjeeves.com">help@creditjeeves.com</a> if your account becomes locked. </p><i>We want to hear from you!</i><p>Please <a href="http://creditjeeves.uservoice.com/">send us your feedback</a> on how we can make the product better for you.</p>{% endblock %}'
 
 # score.html email
-  translation_31:
+  translation_3_subject:
     translatable: email_3
     locale: %locale%
     property: subject
     value: Your Credit Score has Changed - Log Into Credit Jeeves
-  translation_32:
+  translation_3_body:
     translatable: email_3
     locale: %locale%
     property: body
     value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
 
 # target.html email
-  translation_41:
+  translation_4_subject:
     translatable: email_4
     locale: %locale%
     property: subject
     value: Your New Car Awaits - Log into Credit Jeeves
-  translation_42:
+  translation_4_body:
     translatable: email_4
     locale: %locale%
     property: body
     value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
 
 # finished.html email
-  translation_51:
+  translation_5_subject:
     translatable: email_5
     locale: %locale%
     property: subject
     value: One of your leads has reached the Target Score
-  translation_52:
+  translation_5_body:
     translatable: email_5
     locale: %locale%
     property: body
     value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
 
 # password.html email
-  translation_61:
+  translation_6_subject:
     translatable: email_6
     locale: %locale%
     property: subject
     value: One of your leads has reached the Target Score
-  translation_62:
+  translation_6_body:
     translatable: email_6
     locale: %locale%
     property: body
     value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
 
 # example.html email
-  translation_71:
+  translation_7_subject:
     translatable: email_7
     locale: %locale%
     property: subject
     value: Example email with all avaliable fields
-  translation_72:
+  translation_7_body:
     translatable: email_7
     locale: %locale%
     property: body
     value: '{% extends "CoreBundle:Mailer:base.html.twig" %}{% block h1 %}Heading 1{% endblock %}{% block h2 %}Heading 2{% endblock %}{% block h3 %}Heading 3{% endblock %}{% block h4 %}Heading 4{% endblock %}{% block email %}{% set button = {"text": "Hmm, we could add more than one button in the email body!","value": "Test","link": "#"} %}{% include "CoreBundle:Mailer:button.html.twig" with button %}<p>Lorem ipsum...</p>{% set button = {"text": "Some text above button", "value": "Click It", "link": "#"} %}{% include "CoreBundle:Mailer:button.html.twig" with button %}{% endblock %}'
 
 # resetting.html email
-  translation_81:
+  translation_8_subject:
     translatable: email_8
     locale: %locale%
     property: subject
     value: Reset Password
-  translation_82:
+  translation_8_body:
     translatable: email_8
     locale: %locale%
     property: body
@@ -143,12 +143,12 @@ fixtures:
       {% endblock %}
 
 # check.html email
-  translation_91:
+  translation_9_subject:
     translatable: email_9
     locale: %locale%
     property: subject
     value: Check Email
-  translation_92:
+  translation_9_body:
     translatable: email_9
     locale: %locale%
     property: body
@@ -164,12 +164,12 @@ fixtures:
       {% endblock %}
 
 # check.html email
-  translation_101:
+  translation_10_subject:
     translatable: email_10
     locale: %locale%
     property: subject
     value: Receipt from Credit Jeeves
-  translation_102:
+  translation_10_body:
     translatable: email_10
     locale: %locale%
     property: body
@@ -190,12 +190,12 @@ fixtures:
       </div>
 
 # check.html email
-  translation_120:
+  translation_11_subject:
     translatable: email_11
     locale: %locale%
     property: subject
     value: Get Started with RentTrack
-  translation_121:
+  translation_11_body:
     translatable: email_11
     locale: %locale%
     property: body
@@ -212,12 +212,12 @@ fixtures:
       {% endblock %}
 
 # rjLandLordInvite.html email
-  translation_122:
+  translation_12_subject:
     translatable: email_12
     locale: %locale%
     property: subject
     value: Your Tenant is Ready to Pay Rent through RentTrack
-  translation_123:
+  translation_12_body:
     translatable: email_12
     locale: %locale%
     property: body
@@ -268,12 +268,12 @@ fixtures:
       {% endblock %}
 
 # rjTenantInvite.html email
-  translation_124:
+  translation_13_subject:
     translatable: email_13
     locale: %locale%
     property: subject
     value: Your Landlord is Requesting Rent Payment through RentTrack
-  translation_125:
+  translation_13_body:
     translatable: email_13
     locale: %locale%
     property: body
@@ -320,12 +320,12 @@ fixtures:
       {% endblock %}
 
 # rjTenantLatePayment.html email
-  translation_126:
+  translation_14_subject:
     translatable: email_14
     locale: %locale%
     property: subject
     value: Your Rent Payment is Late
-  translation_127:
+  translation_14_body:
     translatable: email_14
     locale: %locale%
     property: body
@@ -350,12 +350,12 @@ fixtures:
       {% endblock %}
 
 # rjLandlordComeFromInvite.html
-  translation_128:
+  translation_15_subject:
     translatable: email_15
     locale: %locale%
     property: subject
     value: Your Landlord Signed Up - Set up your Rent Payment
-  translation_129:
+  translation_15_body:
     translatable: email_15
     locale: %locale%
     property: body
@@ -377,12 +377,12 @@ fixtures:
       {% endblock %}
 
 # rjPendingContract.html
-  translation_130:
+  translation_16_subject:
     translatable: email_16
     locale: %locale%
     property: subject
     value: Add contract details and approve this tenant.
-  translation_131:
+  translation_16_body:
     translatable: email_16
     locale: %locale%
     property: body
@@ -399,12 +399,12 @@ fixtures:
       {% endblock %}
 
 #exist_invite.html
-  translation_132:
+  translation_17_subject:
     translatable: email_17
     locale: %locale%
     property: subject
     value: Your have new dealer!
-  translation_133:
+  translation_17_body:
     translatable: email_17
     locale: %locale%
     property: body
@@ -418,4 +418,25 @@ fixtures:
           <p>
               Again, {{ $groupName }} is providing you this service for free.
           </p>
+      {% endblock %}
+
+# rjTodayPayments.html
+  translation_18_subject:
+    translatable: email_18
+    locale: %locale%
+    property: subject
+    value: Add contract details and approve this tenant.
+  translation_18_body:
+    translatable: email_18
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block email %}
+        Today payments is {{ amount }}
+        <br />
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
       {% endblock %}

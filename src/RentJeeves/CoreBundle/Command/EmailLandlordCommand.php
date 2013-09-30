@@ -96,7 +96,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
         $auto = $input->getOption('auto');
         $date = new \DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
-        $doctrine = $repo = $this->getContainer()->get('doctrine');
+        $doctrine = $this->getContainer()->get('doctrine');
         switch ($type) {
             case self::OPTION_TYPE_INVITED: //Email:landlord
                 // Story-1553
@@ -107,11 +107,9 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 $contracts = $repo->findByStatus(ContractStatus::PENDING);
                 foreach ($contracts as $contract) {
                     $holding = $contract->getHolding();
-                    $landlords = $doctrine->getRepository('DataBundle:User')->findBy(array('holding' => $holding));
+                    $landlords = $this->getHoldingAdmins($holding);
                     foreach ($landlords as $landlord) {
-                        if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
-                            $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
-                        }
+                        $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
                     }
                 }
                 $output->writeln('Story-2042');
@@ -123,12 +121,28 @@ class EmailLandlordCommand extends ContainerAwareCommand
             case self::OPTION_TYPE_DEFAULT: //Email:landlord --type=paid
                 // Story-1555
                 $repo = $doctrine->getRepository('RjDataBundle:Contract');
-                $amounts = $repo->getPaymentsToLandlord();
-                foreach ($amounts as $amount) {
-                    print_r($amount);
+                $payments = $repo->getPaymentsToLandlord();
+                foreach ($payments as $payment) {
+                    $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
+                    $landlords = $this->getHoldingAdmins($holding);
+                    foreach ($landlords as $landlord) {
+                        $mailer->sendTodayPayments($landlord, $payment['amount']);
+                    }
                     $output->writeln('Story-1555');
                 }
                 break;
         }
+    }
+
+    private function getHoldingAdmins($holding)
+    {
+        $result = array();
+        $landlords = $this->getContainer()->get('doctrine')->getRepository('DataBundle:User')->findBy(array('holding' => $holding));
+        foreach ($landlords as $landlord) {
+            if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
+                $result[] = $landlord;
+            }
+        }
+        return $result;
     }
 }

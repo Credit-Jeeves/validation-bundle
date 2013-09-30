@@ -256,18 +256,18 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getPaymentsToLandlord()
+    public function getPaymentsToLandlord($status = array(OrderStatus::COMPLETE))
     {
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.amount), h.id');
+        $query->select('SUM(o.amount) AS amount, h.id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operations');
         $query->innerJoin('operations.orders', 'o');
         $query->groupBy('h.id');
-         $query->where('o.status = :status');
+         $query->where('o.status IN (:status)');
 //         //$query->andWhere('o.updated_at = :date');
-         $query->setParameter('status', OrderStatus::COMPLETE);
+         $query->setParameter('status', $status);
         
         $query = $query->getQuery();
         //print_r($query->getArrayResult());

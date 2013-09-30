@@ -34,3 +34,5 @@ fixtures:
     name: rjPendingContract.html
   email_17:
     name: exist_invite.html
+  email_18:
+    name: rjTodayPayments.html
