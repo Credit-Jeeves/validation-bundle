@@ -44,15 +44,15 @@
             </trans-unit>
             <trans-unit id="rj.footer.process">
                 <source>rj.footer.process</source>
-                <target>The Process</target>
+                <target>How It Works</target>
             </trans-unit>
             <trans-unit id="rj.footer.renters">
                 <source>rj.footer.renters</source>
-                <target>Renters</target>
+                <target>Tenants</target>
             </trans-unit>
             <trans-unit id="rj.footer.landlord">
                 <source>rj.footer.landlord</source>
-                <target>Landlords</target>
+                <target>Property Managers</target>
             </trans-unit>
             <trans-unit id="rj.footer.faq">
                 <source>rj.footer.faq</source>
@@ -155,7 +155,7 @@
             <trans-unit id="iframe.haveProperty">
                 <source>iframe.haveProperty</source>
                 <target>
-                       Have a property to rent?
+                       Do you manage properties?
                 </target>
             </trans-unit>
             <trans-unit id="iframe.findOut">
@@ -1175,7 +1175,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_7">
                 <source>public.base.pay.title_7</source>
-                <target>To make this easy, paying rent by e-check is absolutely free. Oh, the opt-in bureau reporting is also free. Did we say free?</target>
+                <target>To make this easy, paying rent by e-check is absolutely free. Oh, the opt-in credit reporting is also free. Did we say free?</target>
             </trans-unit>
             <trans-unit id="select.status.all">
                 <source>select.status.all</source>
@@ -1222,8 +1222,18 @@
                 <source>deposit.merchant.setup</source>
                 <target>You need to set up your RentTrack Merchant Account. Call 866-841-9090.</target>
             </trans-unit>
-            
-            
+            <trans-unit id="address.not.valid">
+                <source>address.not.valid</source>
+                <target>Aww shucks - your rental isn't valid. Please select address from drop down list.</target>
+            </trans-unit>
+            <trans-unit id="address.is.empty">
+                <source>address.is.empty</source>
+                <target>Aww shucks - you forgot put rent into search.</target>
+            </trans-unit>
+            <trans-unit id="select.rental">
+                <source>select.rental</source>
+                <target>Please select your rental.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

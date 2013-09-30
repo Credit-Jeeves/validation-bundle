@@ -33,7 +33,7 @@ $(document).ready(function(){
               '<div id="siteNotice">'+
               '</div>'+
               '<h1 id="firstHeading" class="firstHeading">'+title+'</h1>'+
-              '<div id="bodyContent" style="width:150px;">'+content 
+              '<div id="bodyContent" style="width:150px;">'+content +
               '<p></div>'+
               '</div>';
     }
@@ -318,5 +318,20 @@ $(document).ready(function(){
           //$(this).hide();
         }
         return false;
+    });
+    
+    $(function() {
+      $("#pricing-popup").dialog({
+        width:660,
+        autoOpen: false,
+        modal:true
+      });
+    });
+    
+    $('#popup-pricing').click(function(){
+      $("#pricing-popup").dialog('open');
+    });
+    $('#pricing-popup button.button-close').click(function(){
+      $("#pricing-popup").dialog('close');
     });
 });
