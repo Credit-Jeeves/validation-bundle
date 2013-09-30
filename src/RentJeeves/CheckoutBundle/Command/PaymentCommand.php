@@ -27,12 +27,14 @@ class PaymentCommand extends ContainerAwareCommand
         $days = $this->getDueDays();
         $repo = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment');
         $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
-        foreach ($payments as $payment) {
+        $output->write('Start payment process');
+        foreach ($payments as $row) {
+            $payment = $row[0];
             //here will be payment process
             $contract = $payment->getContract();
             $tenant = $contract->getTenant();
-            //dummy output he will be payment method
-            $output->writeln($tenant->getFullname());
+            $output->write('.');
         }
+        $output->writeln('OK');
     }
 }

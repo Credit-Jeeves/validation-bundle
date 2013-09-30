@@ -35,7 +35,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
     /**
      * @var string
      */
-    const OPTION_TYPE_DEFAULT = 'pay';
+    const OPTION_TYPE_DEFAULT = 'paid';
 
     /**
      * @var string
@@ -113,7 +113,6 @@ class EmailLandlordCommand extends ContainerAwareCommand
                             $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
                         }
                     }
-                    
                 }
                 $output->writeln('Story-2042');
                 break;
@@ -121,9 +120,14 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 // Story-1560
                 $output->writeln('Story-1560');
                 break;
-            case self::OPTION_TYPE_DEFAULT: //Email:landlord
+            case self::OPTION_TYPE_DEFAULT: //Email:landlord --type=paid
                 // Story-1555
-                $output->writeln('Story-1555');
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $amounts = $repo->getPaymentsToLandlord();
+                foreach ($amounts as $amount) {
+                    print_r($amount);
+                    $output->writeln('Story-1555');
+                }
                 break;
         }
     }

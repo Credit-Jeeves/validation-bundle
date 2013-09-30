@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
 
 class ContractRepository extends EntityRepository
@@ -16,6 +17,9 @@ class ContractRepository extends EntityRepository
      * h - Holdings
      * g - Group
      * d - deposit account
+     * o - Orders
+     * 
+     * In other cases, please use native names
      */
     private function applySearchFilter($query, $searchField = '', $searchString = '')
     {
@@ -28,8 +32,6 @@ class ContractRepository extends EntityRepository
                     foreach ($search as $item) {
                         $query->andWhere('CONCAT(p.number, p.street) LIKE :search');
                         $query->setParameter('search', '%'.$item.'%');
-//                         $query->andWhere('u.name LIKE :search');
-//                         $query->setParameter('search', '%'.$item.'%');
                     }
                     break;
                 case 'tenant':
@@ -85,8 +87,6 @@ class ContractRepository extends EntityRepository
                 case 'property':
                     $query->orderBy('p.number', $sortOrder);
                     $query->addOrderBy('p.street', $sortOrder);
-                    //$query->innerJoin('c.unit', 'u');
-                    //$query->addOrderBy('u.name', $sortOrder);
                     break;
                 case 'amountA':
                 case 'amount':
@@ -124,7 +124,6 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.tenant', 't');
         $query->innerJoin('c.property', 'p');
-        //$query->innerJoin('c.unit', 'u');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
@@ -155,7 +154,6 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
-        //$query->innerJoin('c.unit', 'u');
         $query->where('c.group = :group');
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
@@ -255,6 +253,24 @@ class ContractRepository extends EntityRepository
         $query->where('c.group IN (:groups)');
         $query->setParameter('groups', $groupsIds);
         $query = $query->getQuery();
+        return $query->execute();
+    }
+
+    public function getPaymentsToLandlord()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('SUM(o.amount), h.id');
+        $query->innerJoin('c.holding', 'h');
+        $query->innerJoin('c.group', 'g');
+        $query->innerJoin('c.operations', 'operations');
+        $query->innerJoin('operations.orders', 'o');
+        $query->groupBy('h.id');
+         $query->where('o.status = :status');
+//         //$query->andWhere('o.updated_at = :date');
+         $query->setParameter('status', OrderStatus::COMPLETE);
+        
+        $query = $query->getQuery();
+        //print_r($query->getArrayResult());
         return $query->execute();
     }
 }
