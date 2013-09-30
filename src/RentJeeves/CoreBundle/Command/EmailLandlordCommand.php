@@ -137,7 +137,10 @@ class EmailLandlordCommand extends ContainerAwareCommand
     private function getHoldingAdmins($holding)
     {
         $result = array();
-        $landlords = $this->getContainer()->get('doctrine')->getRepository('DataBundle:User')->findBy(array('holding' => $holding));
+        $landlords = $this->getContainer()
+            ->get('doctrine')
+            ->getRepository('DataBundle:User')
+            ->findBy(array('holding' => $holding));
         foreach ($landlords as $landlord) {
             if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
                 $result[] = $landlord;
