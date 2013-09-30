@@ -14,7 +14,7 @@
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: { 'active': 'user' == step() || 'questions' == step() }, visible: stepExist('questions')">
+                data-bind="css: {'active': 'user' == step() || 'questions' == step() }, visible: stepExist('questions')">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
             <li class="step4" data-bind="css: { 'active': 'pay' == step() }">
@@ -61,8 +61,8 @@
 
         <div class="col long-label" data-bind="visible: 'questions' == step()">
 
-            <div class="scroll-box" style="padding-top: 0px;">
-                <div id="vi-questions" class="scroll" style="padding-top: 0px;">
+            <div class="scroll-box" style="padding-top: 0;">
+                <div id="vi-questions" class="scroll" style="padding-top: 0;">
                     <div class="vi-questions-content"
                          data-bind="html: questions"
                          style="width:300px; height:235px; overflow-y:scroll; padding-top: 10px;"
@@ -219,7 +219,7 @@
                         <div class="form-row clearfix">
                             <label>{{ 'common.address' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: address.toString()"></span>
+                                <span class="value" data-bind="text: paymentSource.address.current()"></span>
                             </div>
                         </div>
                     </div>

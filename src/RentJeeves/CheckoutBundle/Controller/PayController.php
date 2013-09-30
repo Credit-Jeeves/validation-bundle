@@ -78,12 +78,30 @@ class PayController extends Controller
         if (!$userType->isValid()) {
             return $this->renderErrors($userType);
         }
-
-
         $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var Address $address */
+        $address = null;
+        $em->getRepository('DataBundle:Address')->resetDefaults($this->getUser()->getId());
+        if ($addressId = $userType->get('address_choice')->getData()) {
+            $address = $this->getUser()->getAddresses()->filter(
+                function (Address $entry) use ($addressId) {
+                    if ($entry->getId() == $addressId) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+        } elseif ($newAddress = $userType->get('new_address')->getData()) {
+            $address = $newAddress;
+            $address->setUser($this->getUser());
+            $address->setIsDefault(1);
+        }
+
         $data = $userType->getData();
+        $em->persist($address);
         $em->persist($data);
-        $em->flush($data);
+        $em->flush();
 
         return new JsonResponse(
             array(
@@ -101,5 +119,6 @@ class PayController extends Controller
         if (UserIsVerified::PASSED != $this->getUser()) {
             return $this->createNotFoundException('Verification not passed');
         }
+        return new JsonResponse(array());
     }
 }

@@ -15,50 +15,64 @@ function Address(parent, addresses, newAddress) {
     this.zip = ko.observable('');
 
     this.toString = ko.computed(function() {
-        var address = this.street() + ' ' + this.city() + ', ' + this.area() + ' ' + this.zip();
-
-        return address;
+        return this.street() + ' ' + this.city() + ', ' + this.area() + ' ' + this.zip();
     }, this);
 
-
-    var bindAddress = function(address, model) {
-        model.street(ko.unwrap(address.street));
-        model.zip(ko.unwrap(address.zip));
-        model.area(ko.unwrap(address.area));
-        model.city(ko.unwrap(address.city));
-    };
-
     if (newAddress) {
-        bindAddress(newAddress, this);
+        var isUnique = true;
+        jQuery.each(addresses, function(key, val) {
+            if (self.toString() == newAddress.toString()) {
+                isUnique = false;
+                return true;
+            }
+            return false;
+        });
+        if (isUnique) {
+            self.street(ko.unwrap(newAddress.street));
+            self.zip(ko.unwrap(newAddress.zip));
+            self.area(ko.unwrap(newAddress.area));
+            self.city(ko.unwrap(newAddress.city));
+        }
     }
 
-
-
     this.addressChoice = ko.observable(null);
+    this.addressChoice.subscribe(function(newValue) {
+        if (null != newValue) {
+            console.log('addressChoice');
+            self.isAddNewAddress(false);
+        }
+    });
+
     this.isAddNewAddress = ko.observable(!addresses.length);
     this.addAddress = function() {
+        console.log('addAddress');
         self.isAddNewAddress(true);
         self.addressChoice(null);
-        bindAddress(newAddress, self);
+        console.log(self.isAddNewAddress());
+        console.log(self.addressChoice());
     };
 
     var findAddressById = function(id) {
         var address = null;
         jQuery.each(addresses, function(key, val) {
-            if (id == val.id()) {
+            console.log(val.id() + ' == ' + id);
+            if (val.id() == id) {
                 address = val;
-                return true;
+                return false;
             }
+            return true;
         });
         return address;
     };
 
-    this.addressChoice.subscribe(function(newValue) {
-        if (null != newValue) {
-            self.isAddNewAddress(false);
-            if (address = findAddressById(newValue)) {
-                bindAddress(address, self);
+    this.current = ko.computed(function() {
+        if (self.isAddNewAddress()) {
+            return self.toString();
+        } else if (selected = self.addressChoice()) {
+            if (address = findAddressById(selected)) {
+                return address.toString()
             }
         }
-    });
+        return '';
+    }, this);
 }

@@ -22,7 +22,7 @@ class UserAddressType extends Base
                 'attr' => array(
                     'class' => 'all-width',
                     'placeholder' => 'common.street',
-                    'data-bind' => 'value: address.street'
+                    'data-bind' => "value: {$this->koPrefix}address.street"
                 )
             )
         );
@@ -34,8 +34,7 @@ class UserAddressType extends Base
         $resolver->setDefaults(
             array(
                 'cascade_validation' => true,
-                'data_class' => 'CreditJeeves\DataBundle\Entity\Address',
-                'validation_groups' => array('buy_report_new'),
+                'data_class' => 'CreditJeeves\DataBundle\Entity\Address'
             )
         );
     }

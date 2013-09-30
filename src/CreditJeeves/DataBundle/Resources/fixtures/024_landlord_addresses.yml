@@ -8,6 +8,7 @@ fixtures:
         city: LAWRENCE
         area: KS
         zip: 660491614
+        is_default: 1
         
     LandlordAddress_2:
         user: Landlord_2
@@ -17,6 +18,7 @@ fixtures:
         city: APO
         area: AE
         zip: 09061
+        is_default: 1
         
     LandlordAddress_3:
         user: Landlord_3
@@ -26,6 +28,7 @@ fixtures:
         city: MIDDLETOWN
         area: NJ
         zip: '05717'
+        is_default: 1
         
     LandlordAddress_4:
         user: Landlord_4
@@ -35,6 +38,7 @@ fixtures:
         city: URBANA
         area: IL
         zip: '61801'
+        is_default: 1
         
     LandlordAddress_5:
         user: Landlord_5
@@ -44,6 +48,7 @@ fixtures:
         city: HOMESTEAD
         area: FL
         zip: '33039'
+        is_default: 1
         
     LandlordAddress_6:
         user: Landlord_6
@@ -53,3 +58,4 @@ fixtures:
         city: APO
         area: AE
         zip: 09061
+        is_default: 1

@@ -12,6 +12,7 @@ function PaymentSource(parent, isForceSave) {
     this.ExpirationMonth = ko.observable(null);
     this.ExpirationYear = ko.observable(null);
 
+    this.address = new Address(this, window.addressesViewModels, parent.propertyFullAddress);
     this.save = ko.observable(isForceSave);
     this.isForceSave = ko.observable(isForceSave);
 

@@ -26,7 +26,8 @@ class ComponentController extends Controller
     {
         $paymentType = $this->createForm(new PaymentType());
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
-        $questionsType = $this->createForm(new QuestionsType(
+        $questionsType = $this->createForm(
+            new QuestionsType(
                 array(
                     array(),
                     array(),

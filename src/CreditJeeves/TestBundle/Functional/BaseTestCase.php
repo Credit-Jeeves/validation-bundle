@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\TestBundle\Functional;
 
+use Behat\Mink\Driver\Selenium2Driver;
 use CreditJeeves\TestBundle\BaseTestCase as Base;
 
 /**
@@ -158,7 +159,7 @@ abstract class BaseTestCase extends Base
                     $fieldElement->selectOption($value);
                 } else {
                     $i = 6;
-                    while(true) {
+                    while (true) {
                         try {
                             $form->fillField($field, $value);
                             $this->assertEquals($value, $fieldElement->getValue());
@@ -268,7 +269,9 @@ abstract class BaseTestCase extends Base
     protected function acceptAlert()
     {
         if ('selenium2' == $this->getMink()->getDefaultSessionName()) {
-            static::getMink()->getSession()->getDriver()->getWebDriverSession()->accept_alert();
+            /** @var Selenium2Driver $driver */
+            $driver = static::getMink()->getSession()->getDriver();
+            $driver->getWebDriverSession()->accept_alert();
         }
     }
 }

@@ -3,7 +3,7 @@ function Pay(parent, contractId) {
 
     var self = this;
     var contract = parent.getContractById(contractId);
-    var current = 0;
+    var current = 1;
     var steps = ['details', 'source', 'user', 'questions', 'pay'];
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
@@ -15,7 +15,7 @@ function Pay(parent, contractId) {
     if ('passed' == parent.verification) {
         steps.splice(2, 2);
     }
-    this.step = ko.observable('details');
+    this.step = ko.observable('source');
     this.step.subscribe(function(newValue) {
         switch (newValue) {
             case 'details':
@@ -29,11 +29,9 @@ function Pay(parent, contractId) {
                     break;
                 }
 
-                console.log('showOverlay');
                 jQuery('#pay-popup').showOverlay();
                 jQuery.get(Routing.generate('experian_pidkiq_get'), '', function(data, textStatus, jqXHR) {
                     if (data['status'] && 'error' == data['status']) {
-                        console.log(data);
                         addFormError(null, data['error']);
                         return;
                     }
@@ -74,12 +72,15 @@ function Pay(parent, contractId) {
     this.endMonth = ko.observable(finishDate.getMonth() + 1);
     this.endYear = ko.observable(finishDate.getYear());
 
-    var propertyAddress = contract.property;
-    propertyAddress.street = propertyAddress.address;
-    this.address = new Address(this, window.addressesViewModels, propertyAddress);
+    this.propertyFullAddress = new Address(this, window.addressesViewModels);
+    this.propertyFullAddress.street(contract.address);
+    this.propertyFullAddress.city(contract.city);
+    this.propertyFullAddress.zip(contract.zip);
+    this.propertyFullAddress.area(contract.area);
     /* /Form fields/ */
 
-    this.propertyAddress = ko.observable(contract.full_address);
+
+    this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
     this.fullPayTo = contract.full_pay_to;
     this.settleDays = 3; // All logic logic in "settle" method depends on this value
     this.settle = ko.computed(function() {
@@ -117,7 +118,7 @@ function Pay(parent, contractId) {
 
     this.paymentSource = new PaymentSource(this, false);
 
-
+    this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
     this.questions = ko.observable(parent.questions);
 
 
@@ -139,7 +140,6 @@ function Pay(parent, contractId) {
     };
 
     var onSuccessStep = function(data) {
-        console.log(data);
         var currentStep = steps[current];
         switch (currentStep) {
             case 'details':
@@ -162,7 +162,6 @@ function Pay(parent, contractId) {
 
     var sendData = function(url, formId) {
 
-        var formValidator = jsfv[formId];
 
         // HTML5 validation // TODO fix for hidden fields
 //        try {
@@ -189,12 +188,13 @@ function Pay(parent, contractId) {
             timeout: 30000, // 30 secs
             dataType: 'json',
             data: jQuery.param(data, false),
-            complete: function(jqXHR, textStatus) {
-                jQuery('#pay-popup').hideOverlay();
-            },
+//            complete: function(jqXHR, textStatus) {
+//                jQuery('#pay-popup').hideOverlay();
+//            },
             error: function(jqXHR, textStatus, errorThrown) {
                 removeAllErrors();
-                if ('parsererror SyntaxError: Unexpected token <' == textStatus + ' ' + errorThrown) {
+                jQuery('#pay-popup').hideOverlay();
+                if ('<!DOCTYPE' == jqXHR.responseText.substr(0, 9)) {
                     jQuery('body').showOverlay();
                     window.location.reload();
                 }
@@ -309,13 +309,12 @@ function Pay(parent, contractId) {
         $(field).parents('.form-row').addClass('error');
         $(field).addClass('error');
 
-        console.log(errorMessage);
+
         // Add error
         $('#pay-popup .attention-box ul').append('<li>'+errorMessage+'</li>');
     };
 
     jQuery.each(forms, function(key, formName) {
-        console.log(formName);
         jsfv[formName].addError = addFormError;
         jsfv[formName].removeErrors = function(field) {};
         jQuery('#' + formName).submit(function() {
