@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {
@@ -36,6 +37,11 @@ class EmailLandlordCommand extends ContainerAwareCommand
      * @var string
      */
     const OPTION_TYPE_DEFAULT = 'paid';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_NFS = 'nsf';
 
     /**
      * @var string
@@ -114,8 +120,24 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 }
                 $output->writeln('Story-2042');
                 break;
-            case self::OPTION_TYPE_REFUND: //Email:landlord
+            case self::OPTION_TYPE_NFS: //Email:landlord --type=nsf
                 // Story-1560
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $payments = $repo->getPaymentsToLandlord(
+                    array(
+                        OrderStatus::NEWONE,
+                        OrderStatus::ERROR,
+                        OrderStatus::CANCELLED,
+                        OrderStatus::REFUNDED
+                    )
+                );
+                foreach ($payments as $payment) {
+                    $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
+                    $landlords = $this->getHoldingAdmins($holding);
+                    foreach ($landlords as $landlord) {
+                        $mailer->sendTodayPayments($landlord, $payment['amount'], 'rjTodayNotPaid');
+                    }
+                }
                 $output->writeln('Story-1560');
                 break;
             case self::OPTION_TYPE_DEFAULT: //Email:landlord --type=paid
@@ -128,8 +150,8 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     foreach ($landlords as $landlord) {
                         $mailer->sendTodayPayments($landlord, $payment['amount']);
                     }
-                    $output->writeln('Story-1555');
                 }
+                $output->writeln('Story-1555');
                 break;
         }
     }

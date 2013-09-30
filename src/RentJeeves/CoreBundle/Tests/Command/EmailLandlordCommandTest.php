@@ -27,10 +27,7 @@ class EmailLandlordCommandTest extends BaseTestCase
                 'command' => $command->getName(),
             )
         );
-        //$this->assertEquals('Story-1555', $commandTester->getDisplay());
         $this->assertRegExp('/Story-1555/', $commandTester->getDisplay());
-//         $this->assertNotNull($count = $plugin->getPreSendMessages());
-//         $this->assertCount(1, $count);
     }
 
     /**
@@ -43,7 +40,6 @@ class EmailLandlordCommandTest extends BaseTestCase
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
-        
         $plugin = $this->registerEmailListener();
         $plugin->clean();
         $command = $application->find('Email:landlord');
@@ -68,7 +64,6 @@ class EmailLandlordCommandTest extends BaseTestCase
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
-        
         $plugin = $this->registerEmailListener();
         $plugin->clean();
         $command = $application->find('Email:landlord');
@@ -82,6 +77,29 @@ class EmailLandlordCommandTest extends BaseTestCase
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(1, $count);
         $this->assertRegExp('/Story-1555/', $commandTester->getDisplay());
-        
+    }
+
+    /**
+     * Story-1560
+     * @test
+     */
+    public function testExecuteNotPaid()
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new EmailLandlordCommand());
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        $command = $application->find('Email:landlord');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--type' => 'nsf'
+            )
+        );
+        $this->assertNotNull($count = $plugin->getPreSendMessages());
+        $this->assertCount(1, $count);
+        $this->assertRegExp('/Story-1560/', $commandTester->getDisplay());
     }
 }

@@ -106,8 +106,8 @@ class Mailer extends BaseMailer
     public function sendTodayPayments($landlord, $amount, $sTemplate = 'rjTodayPayments')
     {
         $vars = array(
-                'nameLandlord' => $landlord->getFullName(),
-                'amount' => $amount,
+            'nameLandlord' => $landlord->getFullName(),
+            'amount' => $amount,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }

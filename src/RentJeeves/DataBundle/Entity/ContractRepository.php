@@ -258,19 +258,21 @@ class ContractRepository extends EntityRepository
 
     public function getPaymentsToLandlord($status = array(OrderStatus::COMPLETE))
     {
+        $start = new \Datetime();
+        $end = new \Datetime('+1 day');
         $query = $this->createQueryBuilder('c');
         $query->select('SUM(o.amount) AS amount, h.id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operations');
         $query->innerJoin('operations.orders', 'o');
+        $query->where('o.status IN (:status)');
+        $query->andWhere('o.updated_at BETWEEN :start AND :end');
         $query->groupBy('h.id');
-         $query->where('o.status IN (:status)');
-//         //$query->andWhere('o.updated_at = :date');
-         $query->setParameter('status', $status);
-        
+        $query->setParameter('status', $status);
+        $query->setParameter('start', $start->format('Y-m-d'));
+        $query->setParameter('end', $end->format('Y-m-d'));
         $query = $query->getQuery();
-        //print_r($query->getArrayResult());
         return $query->execute();
     }
 }
