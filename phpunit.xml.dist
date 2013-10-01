@@ -19,7 +19,9 @@
             <directory suffix="Case.php">src/*/*Bundle/Tests/Functional</directory>
             <directory suffix="Case.php">src/*/Bundle/*Bundle/Tests</directory>
             <directory suffix="Case.php">src/*/Bundle/*Bundle/Tests/Functional</directory>
-            <directory suffix="Case.php">vendor/credit-jeeves/*/CreditJeeves/*/Tests</directory>
+            <directory suffix="Case.php">vendor/credit-jeeves/arf-bundle/CreditJeeves/*/Tests</directory>
+            <directory suffix="Case.php">vendor/credit-jeeves/core-bundle/CreditJeeves/*/Tests</directory>
+            <directory suffix="Case.php">vendor/credit-jeeves/simulation-bundle/CreditJeeves/*/Tests</directory>
             <!--directory suffix="Case.php">vendor/credit-jeeves/*/CreditJeeves/*/Tests/Functional</directory-->
         </testsuite>
     </testsuites>
