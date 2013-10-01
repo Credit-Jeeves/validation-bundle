@@ -38,3 +38,5 @@ fixtures:
     name: rjTodayPayments.html
   email_19:
     name: rjTodayNotPaid.html
+  email_20:
+    name: rjDailyReport.html

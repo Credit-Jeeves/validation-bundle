@@ -13,6 +13,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Entity\Order;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {
@@ -42,6 +43,11 @@ class EmailLandlordCommand extends ContainerAwareCommand
      * @var string
      */
     const OPTION_TYPE_NFS = 'nsf';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_REPORT = 'report';
 
     /**
      * @var string
@@ -152,6 +158,28 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     }
                 }
                 $output->writeln('Story-1555');
+                break;
+            case self::OPTION_TYPE_REPORT:
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $contracts = $repo->getRentHoldings();
+                foreach ($contracts as $row) {
+                    $contract = $row[0];
+                    $holding = $contract->getHolding();
+                    $report = array(
+                        Order::STATUS_NEWONE    => $repo->getPaymentsByStatus(OrderStatus::NEWONE),
+                        Order::STATUS_COMPLETE  => $repo->getPaymentsByStatus(OrderStatus::COMPLETE),
+                        Order::STATUS_ERROR     => $repo->getPaymentsByStatus(OrderStatus::ERROR),
+                        Order::STATUS_CANCELLED => $repo->getPaymentsByStatus(OrderStatus::CANCELLED),
+                        Order::STATUS_REFUNDED  => $repo->getPaymentsByStatus(OrderStatus::REFUNDED),
+                        Order::STATUS_RETURNED  => $repo->getPaymentsByStatus(OrderStatus::RETURNED),
+                    );
+                    $landlords = $this->getHoldingAdmins($holding);
+                    foreach ($landlords as $landlord) {
+                        $mailer->sendRjDailyReport($landlord, $report);
+                    }
+                    $doctrine->getManager()->detach($row[0]);
+                }
+                $output->writeln('daily report');
                 break;
         }
     }

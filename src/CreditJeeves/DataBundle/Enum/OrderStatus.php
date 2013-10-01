@@ -11,6 +11,7 @@ use CreditJeeves\CoreBundle\Enum;
  * 2. NEWONE -> ERROR
  * 3. NEWONE -> CANCELLED
  * 4. NEWONE -> COMPLETE -> REFUNDED
+ * 5. NEWONE -> COMPLETE -> RETURNED
  * @author Ton Sharp <66ton99@gmail.com>
  */
 class OrderStatus extends Enum
@@ -44,4 +45,10 @@ class OrderStatus extends Enum
      * @var string
      */
     const REFUNDED = 'refunded';
+
+    /**
+     * 
+     * @var string
+     */
+    const RETURNED = 'returned';
 }

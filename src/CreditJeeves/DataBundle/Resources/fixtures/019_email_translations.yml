@@ -461,3 +461,39 @@ fixtures:
         Enjoy, <br />
         The RentTrack Team
       {% endblock %}
+
+# rjDailyReport.html
+  translation_20_subject:
+    translatable: email_20
+    locale: %locale%
+    property: subject
+    value: Daily Report.
+  translation_20_body:
+    translatable: email_20
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block email %}
+      <table width="100%">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, value in report %}
+          <tr>
+            <td>{{ key }}</td>
+            <td>${{ value }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
+      {% endblock %}

@@ -26,7 +26,7 @@ class EmailTenantCommandTest extends BaseTestCase
             array(
                 'command' => $command->getName(),
                 '--auto' => true,
-                '--days' => 6
+                '--days' => 5
             )
         );
         //$this->assertEquals('Finished command "Email:tenant --auto"', $commandTester->getDisplay());

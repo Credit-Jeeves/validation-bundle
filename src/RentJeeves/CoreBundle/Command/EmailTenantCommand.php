@@ -108,11 +108,15 @@ class EmailTenantCommand extends ContainerAwareCommand
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
                     $days = $this->getDueDays($days);
                     $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
-                    foreach ($payments as $payment) {
+                    //echo count($payments);
+                    foreach ($payments as $row) {
+                        $payment = $row[0];
                         $contract = $payment->getContract();
+                        
                         $tenant = $contract->getTenant();
+                        //echo $tenant->getFullName();
                         $group = $contract->getGroup();
-                        $mailer->sendInviteToUser($tenant);
+                        //$mailer->sendRjPaymentDue($tenant, $landlord, $contract);
                     }
                     $output->write('Finished command "Email:tenant --auto"');
                 } else {//Email:tenant

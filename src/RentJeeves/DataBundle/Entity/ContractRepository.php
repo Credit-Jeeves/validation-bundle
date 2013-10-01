@@ -275,4 +275,34 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->execute();
     }
+
+    public function getRentHoldings()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('h, c');
+        $query->innerJoin('c.holding', 'h');
+        $query->groupBy('h.id');
+        $query = $query->getQuery();
+        return $query->iterate();
+    }
+
+    public function getPaymentsByStatus($status = OrderStatus::COMPLETE)
+    {
+        $start = new \Datetime();
+        $end = new \Datetime('+1 day');
+        $query = $this->createQueryBuilder('c');
+        $query->select('SUM(o.amount)');
+        $query->innerJoin('c.holding', 'h');
+        $query->innerJoin('c.group', 'g');
+        $query->innerJoin('c.operations', 'operations');
+        $query->innerJoin('operations.orders', 'o');
+        $query->where('o.status =:status');
+        $query->andWhere('o.updated_at BETWEEN :start AND :end');
+        $query->setParameter('status', $status);
+        $query->setParameter('start', $start->format('Y-m-d'));
+        $query->setParameter('end', $end->format('Y-m-d'));
+        $query = $query->getQuery();
+        $result = $query->getOneOrNullResult();
+        return !empty($result) ? $result[1] : 0;
+    }
 }

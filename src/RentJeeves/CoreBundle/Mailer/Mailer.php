@@ -65,11 +65,11 @@ class Mailer extends BaseMailer
     public function sendRjTenantLatePayment($tenant, $landlord, $contract, $sTemplate = 'rjTenantLatePayment')
     {
         $vars = array(
-                'fullNameLandlord'      => $landlord->getFullName(),
-                'nameTenant'            => $tenant->getFirstName(),
-                'address'               => $contract->getProperty()->getAddress(),
-                'unitName'              => $contract->getUnit()->getName(),
-                'inviteCode'            => $tenant->getInviteCode(),
+            'fullNameLandlord'      => $landlord->getFullName(),
+            'nameTenant'            => $tenant->getFirstName(),
+            'address'               => $contract->getProperty()->getAddress(),
+            'unitName'              => $contract->getUnit()->getName(),
+            'inviteCode'            => $tenant->getInviteCode(),
         );
 
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -78,11 +78,11 @@ class Mailer extends BaseMailer
     public function sendRjLandlordComeFromInvite($tenant, $landlord, $contract, $sTemplate = 'rjLandlordComeFromInvite')
     {
         $vars = array(
-                'nameTenant'            => $tenant->getFirstName(),
-                'fullNameLandlord'      => $landlord->getFullName(),
-                'address'               => $contract->getProperty()->getAddress(),
-                'unitName'              => $contract->getUnit()->getName(),
-                'rentAmount'            => $contract->getRent(),
+            'nameTenant'            => $tenant->getFirstName(),
+            'fullNameLandlord'      => $landlord->getFullName(),
+            'address'               => $contract->getProperty()->getAddress(),
+            'unitName'              => $contract->getUnit()->getName(),
+            'rentAmount'            => $contract->getRent(),
         );
 
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
@@ -108,6 +108,15 @@ class Mailer extends BaseMailer
         $vars = array(
             'nameLandlord' => $landlord->getFullName(),
             'amount' => $amount,
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
+
+    public function sendRjDailyReport($landlord, $report, $sTemplate = 'rjDailyReport')
+    {
+        $vars = array(
+            'nameLandlord' => $landlord->getFullName(),
+            'report' => $report,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }

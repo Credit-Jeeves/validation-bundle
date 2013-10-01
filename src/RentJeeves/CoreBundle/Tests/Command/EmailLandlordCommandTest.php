@@ -102,4 +102,24 @@ class EmailLandlordCommandTest extends BaseTestCase
         $this->assertCount(1, $count);
         $this->assertRegExp('/Story-1560/', $commandTester->getDisplay());
     }
+
+    public function testExecureReport()
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new EmailLandlordCommand());
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        $command = $application->find('Email:landlord');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--type' => 'report'
+            )
+        );
+        $this->assertNotNull($count = $plugin->getPreSendMessages());
+        $this->assertCount(3, $count);
+        $this->assertRegExp('/daily report/', $commandTester->getDisplay());
+    }
 }

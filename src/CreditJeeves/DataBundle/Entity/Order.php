@@ -38,6 +38,11 @@ class Order extends BaseOrder
     const STATUS_REFUNDED = 'REFUNDED';
 
     /**
+     * @var string
+     */
+    const STATUS_RETURNED = 'RETURNED';
+
+    /**
      * @ORM\PrePersist
      */
     public function prePersist()
