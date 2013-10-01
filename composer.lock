@@ -214,7 +214,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git",
-                "reference": "653e1f23c49dd8bbf7cd7226697dce6dffa68663"
+                "reference": "e9a8384121e4db63ebcbf791df8c177c64f4bc4a"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -2894,7 +2894,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/Heartland.git",
-                "reference": "9bc67361470214cd6b52f3ca93341c185d54896f"
+                "reference": "800673c86a866d972d04d345c887c86bcb510942"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -2934,7 +2934,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2013-08-26 19:41:43"
+            "time": "2013-10-01 14:40:32"
         },
         {
             "name": "payum/payum",
