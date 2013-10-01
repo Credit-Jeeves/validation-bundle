@@ -38,7 +38,7 @@ class LandlordCase extends BaseTestCase
         $submit->click();
         $this->session->wait($this->timeout, "$('.error_list').length > 0");
         $errorList = $this->page->findAll('css', '.error_list');
-        $this->assertCount(7, $errorList, 'Error list');
+        $this->assertCount(8, $errorList, 'Error list');
         $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->page->clickLink('Pricing');

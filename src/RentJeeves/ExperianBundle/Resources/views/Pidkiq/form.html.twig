@@ -1,0 +1,43 @@
+{% use 'RjCoreBundle::formElements.html.twig' %}
+
+{% block form_rows %}
+    {% for child in form %}
+        <div class="box">
+            {{ form_row(child) }}
+        </div>
+    {% endfor %}
+{% endblock form_rows %}
+
+{% block form_label %}
+    {% spaceless %}
+        {% if label is not sameas(false) %}
+            {% if not compound %}
+                {% set label_attr = label_attr|merge({'for': id}) %}
+            {% endif %}
+            {% if required %}
+                {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+            {% endif %}
+            {% if label is empty %}
+                {% set label = name|humanize %}
+            {% endif %}
+            <h4{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+            {{ label|trans({}, translation_domain) }}
+            </h4>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_label %}
+
+{% block choice_widget_expanded %}
+    {% spaceless %}
+        <ul class="checkboxes">
+            {% for child in form %}
+                <li class="clearfix">
+                    <label class="checkbox radio">
+                        {{ form_widget(child) }}
+                        <span>{{ child.vars.label|trans({}, translation_domain) }}</span>
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endspaceless %}
+{% endblock choice_widget_expanded %}

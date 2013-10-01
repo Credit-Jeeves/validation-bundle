@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\CoreBundle\Type\Encrypt;
 use CreditJeeves\DataBundle\Enum\UserType;
 use FOS\UserBundle\Entity\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
@@ -128,6 +129,8 @@ abstract class User extends BaseUser
      *         "buy_report"
      *     }
      * )
+     *
+     * @deprecated would be removed in 2.2
      */
     protected $street_address1;
 
@@ -144,6 +147,8 @@ abstract class User extends BaseUser
      *         "user_address"
      *     }
      * )
+     *
+     * @deprecated would be removed in 2.2
      */
     protected $unit_no;
 
@@ -155,6 +160,8 @@ abstract class User extends BaseUser
      *         "buy_report"
      *     }
      * )
+     *
+     * @deprecated would be removed in 2.2
      */
     protected $city;
 
@@ -175,6 +182,8 @@ abstract class User extends BaseUser
      *         "buy_report"
      *     }
      * )
+     *
+     * @deprecated would be removed in 2.2
      */
     protected $state;
 
@@ -196,6 +205,8 @@ abstract class User extends BaseUser
      *         "buy_report"
      *     }
      * )
+     *
+     * @deprecated would be removed in 2.2
      */
     protected $zip;
 
@@ -497,6 +508,8 @@ abstract class User extends BaseUser
 
     /**
      * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="user")
+     *
+     * @var ArrayCollection
      */
     protected $group_affilate;
 
@@ -514,6 +527,7 @@ abstract class User extends BaseUser
         $this->incentives = new ArrayCollection();
         $this->tradelines = new ArrayCollection();
         $this->addresses = new ArrayCollection();
+        $this->group_affilate = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
 
@@ -635,6 +649,9 @@ abstract class User extends BaseUser
      * Set street_address1
      *
      * @param encrypt $streetAddress1
+     *
+     * @deprecated would be removed in 2.2
+     *
      * @return User
      */
     public function setStreetAddress1($streetAddress1)
@@ -647,6 +664,8 @@ abstract class User extends BaseUser
     /**
      * Get street_address1
      *
+     * @deprecated would be removed in 2.2
+     *
      * @return encrypt
      */
     public function getStreetAddress1()
@@ -658,6 +677,9 @@ abstract class User extends BaseUser
      * Set street_address2
      *
      * @param encrypt $streetAddress2
+     *
+     * @deprecated would be removed in 2.2
+     *
      * @return User
      */
     public function setStreetAddress2($streetAddress2)
@@ -670,6 +692,8 @@ abstract class User extends BaseUser
     /**
      * Get street_address2
      *
+     * @deprecated would be removed in 2.2
+     *
      * @return encrypt
      */
     public function getStreetAddress2()
@@ -681,6 +705,9 @@ abstract class User extends BaseUser
      * Set unit_no
      *
      * @param string $unitNo
+     *
+     * @deprecated would be removed in 2.2
+     *
      * @return User
      */
     public function setUnitNo($unitNo)
@@ -693,6 +720,8 @@ abstract class User extends BaseUser
     /**
      * Get unit_no
      *
+     * @deprecated would be removed in 2.2
+     *
      * @return string
      */
     public function getUnitNo()
@@ -704,6 +733,9 @@ abstract class User extends BaseUser
      * Set city
      *
      * @param string $city
+     *
+     * @deprecated would be removed in 2.2
+     *
      * @return User
      */
     public function setCity($city)
@@ -716,6 +748,8 @@ abstract class User extends BaseUser
     /**
      * Get city
      *
+     * @deprecated would be removed in 2.2
+     *
      * @return string
      */
     public function getCity()
@@ -727,6 +761,9 @@ abstract class User extends BaseUser
      * Set state
      *
      * @param string $state
+     *
+     * @deprecated would be removed in 2.2
+     *
      * @return User
      */
     public function setState($state)
@@ -739,6 +776,8 @@ abstract class User extends BaseUser
     /**
      * Get state
      *
+     * @deprecated would be removed in 2.2
+     *
      * @return string
      */
     public function getState()
@@ -750,6 +789,9 @@ abstract class User extends BaseUser
      * Set zip
      *
      * @param string $zip
+     *
+     * @deprecated would be removed in 2.2
+     *
      * @return User
      */
     public function setZip($zip)
@@ -761,6 +803,8 @@ abstract class User extends BaseUser
 
     /**
      * Get zip
+     *
+     * @deprecated would be removed in 2.2
      *
      * @return string
      */
@@ -1499,6 +1543,9 @@ abstract class User extends BaseUser
         return $this;
     }
 
+    /**
+     * @return Holding
+     */
     public function getHolding()
     {
         return $this->holding;

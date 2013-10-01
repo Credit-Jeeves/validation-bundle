@@ -12,4 +12,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class AddressRepository extends EntityRepository
 {
+    /**
+     * @param $userId
+     * @return mixed
+     */
+    public function resetDefaults($userId)
+    {
+        return $this->createQueryBuilder('a')
+            ->update()
+            ->set('a.isDefault', '?1')
+            ->where('a.userId = ?2')
+            ->setParameter(1, 0)
+            ->setParameter(2, $userId)
+            ->getQuery()
+            ->execute();
+    }
 }

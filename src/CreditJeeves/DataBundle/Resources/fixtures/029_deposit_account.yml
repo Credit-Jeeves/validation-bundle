@@ -1,9 +1,9 @@
 model: RentJeeves\DataBundle\Entity\DepositAccount
 fixtures:
   DepositAccount_1:
-    merchantName: test
+    merchantName: Monticeto_Percent
     group:  RentGroup_1
   DepositAccount_2:
-    merchantName: test2
+    merchantName: Monticeto_Percent123
     group: RentGroup_2
 

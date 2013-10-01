@@ -25,17 +25,34 @@ class Payment
 
     /**
      * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
-     *     inversedBy="payments"
+     *      targetEntity="RentJeeves\DataBundle\Entity\Contract",
+     *      inversedBy="payments"
      * )
      * @ORM\JoinColumn(
-     *     name="contract_id",
-     *     referencedColumnName="id"
+     *      name="contract_id",
+     *      referencedColumnName="id",
+     *      nullable=false
      * )
      *
      * @var Contract
      */
     protected $contract;
+
+    /**
+     * @ORM\ManyToOne(
+     *      targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *      inversedBy="payments",
+     *      cascade={"all"}
+     * )
+     * @ORM\JoinColumn(
+     *      name="payment_account_id",
+     *      referencedColumnName="id",
+     *      nullable=false
+     * )
+     *
+     * @var PaymentAccount
+     */
+    protected $paymentAccount;
 
     /**
      * @ORM\Column(type="PaymentType")
@@ -401,5 +418,28 @@ class Payment
     public function getContract()
     {
         return $this->contract;
+    }
+
+    /**
+     * Set PaymentAccount
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
+     * @return Payment
+     */
+    public function setPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount = null)
+    {
+        $this->paymentAccount = $paymentAccount;
+
+        return $this;
+    }
+
+    /**
+     * Get PaymentAccount
+     *
+     * @return \RentJeeves\DataBundle\Entity\PaymentAccount
+     */
+    public function getPaymentAccount()
+    {
+        return $this->paymentAccount;
     }
 }

@@ -278,12 +278,14 @@ class PaymentAccountType extends AbstractType
                 'expanded' => true,
                 'choices' => $this->user->getAddresses(),
                 'attr' => array(
-                    'data-bind' => 'checked: address.addressChoice',
+                    'data-bind' => 'checked: paymentSource.address.addressChoice',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     ),
-                    'html' => '<div class="fields-box" data-bind="visible: !address.isAddNewAddress()">' .
-                        '<a href="#" data-bind="i18n: {}, click: address.addAddress">common.add_new</a></div>'
+                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
+                        '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
+                            'common.add_new' .
+                        '</a></div>'
                 ),
                 'invalid_message' => 'checkout.error.address_choice.invalid',
                 'constraints' => array(
@@ -297,18 +299,18 @@ class PaymentAccountType extends AbstractType
             )
         );
         $builder->add(
-            'new_address',
+            'is_new_address',
             'hidden',
             array(
                 'mapped' => false,
                 'attr' => array(
-                    'data-bind' => 'value: address.isAddNewAddress',
+                    'data-bind' => 'value: paymentSource.address.isAddNewAddress',
                 )
             )
         );
         $builder->add(
             'address',
-            new UserAddressType(),
+            new UserAddressType('paymentSource.'),
             array(
                 'mapped' => true,
                 'label' => false,
@@ -317,7 +319,8 @@ class PaymentAccountType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && address.isAddNewAddress'
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() ' .
+                            '&& paymentSource.address.isAddNewAddress()'
                     )
                 )
             )
@@ -341,6 +344,16 @@ class PaymentAccountType extends AbstractType
         );
 
         $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
+        $builder->add(
+            'groupId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: groupId',
+                )
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -366,7 +379,6 @@ class PaymentAccountType extends AbstractType
                     }
 
                     $groups[] = $type;
-
                     return $groups;
                 }
             )

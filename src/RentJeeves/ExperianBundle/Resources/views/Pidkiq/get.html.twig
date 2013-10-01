@@ -1,0 +1,11 @@
+{% form_theme form 'RjExperianBundle:Pidkiq:form.html.twig' %}
+<form {{ form_enctype(form) }} novalidate method="post">
+    {{ form_widget(form) }}
+    <button type="submit"
+            id="rentjeeves_checkoutbundle_userdetailstype_submit"
+            name="rentjeeves_checkoutbundle_userdetailstype[submit]"
+            class="hide_submit"
+    >
+        Submit
+    </button>
+</form>

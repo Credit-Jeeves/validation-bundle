@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Range;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
-use RentJeeves\DataBundle\Enum\PaymentStatus as PaymentStatusEnum;
 
 class PaymentType extends AbstractType
 {
@@ -20,6 +19,7 @@ class PaymentType extends AbstractType
             'amount',
             null,
             array(
+                'label' => 'checkout.amount',
                 'attr' => array(
                     'min' => 1,
                     'step' => '0.01',
@@ -248,6 +248,26 @@ class PaymentType extends AbstractType
         );
 
         $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
+        $builder->add(
+            'paymentAccountId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: paymentAccountId',
+                )
+            )
+        );
+        $builder->add(
+            'contractId',
+            'hidden',
+            array(
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'value: contractId',
+                )
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -8,6 +8,16 @@ use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 
 class UserAddressType extends AbstractType
 {
+    /**
+     * @var string
+     */
+    protected $koPrefix;
+
+    public function __construct($koPrefix = '')
+    {
+        $this->koPrefix = $koPrefix;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -18,7 +28,7 @@ class UserAddressType extends AbstractType
                 'attr' => array(
                     'class' => 'all-width',
                     'placeholder' => 'common.street',
-                    'data-bind' => 'value: address.street'
+                    'data-bind' => "value: {$this->koPrefix}address.street"
                 )
             )
         );
@@ -37,7 +47,7 @@ class UserAddressType extends AbstractType
                 'attr' => array(
                    'class' => 'city-width',
                     'placeholder' => 'common.city',
-                    'data-bind' => 'value: address.city'
+                    'data-bind' => "value: {$this->koPrefix}address.city"
                 ),
             )
         );
@@ -50,7 +60,7 @@ class UserAddressType extends AbstractType
                 'required' => true,
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: address.area'
+                    'data-bind' => "value: {$this->koPrefix}address.area"
                 )
             )
         );
@@ -62,7 +72,7 @@ class UserAddressType extends AbstractType
                 'attr' => array(
                     'class' => 'zc-width',
                     'placeholder' => 'common.zip_code',
-                    'data-bind' => 'value: address.zip'
+                    'data-bind' => "value: {$this->koPrefix}address.zip"
                 ),
             )
         );

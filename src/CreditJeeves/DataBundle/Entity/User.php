@@ -160,6 +160,7 @@ abstract class User extends BaseUser
     {
         $return = null;
         $orders = $this->getOrders();
+        /** @var Order $order */
         foreach ($orders as $order) {
             if (OrderStatus::COMPLETE == $order->getStatus()) {
                 $return = $order;
@@ -310,7 +311,15 @@ abstract class User extends BaseUser
      */
     public function getDefaultAddress()
     {
-        return $this->getAddresses()->first(); // FIXME add field default
+        $return = null;
+        /** @var Address $address */
+        foreach ($this->getAddresses() as $address) { // TODO find faster way
+            $return = $address;
+            if ($return->getIsDefault()) { // TODO add check if default not find
+                break;
+            }
+        }
+        return $return;
     }
 
     /**

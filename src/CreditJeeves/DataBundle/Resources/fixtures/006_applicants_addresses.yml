@@ -7,6 +7,7 @@ fixtures:
     city: 'Minsk'
     area: 'KY'
     zip: '22007'
+    is_default: 1
 
   Address_2:
     user: cjApplicant_2
@@ -15,6 +16,7 @@ fixtures:
     city: APO
     area: AE
     zip: '09061'
+    is_default: 1
 
   Address_3:
     user: cjApplicant_3
@@ -23,6 +25,7 @@ fixtures:
     city: MIDDLETOWN
     area: NJ
     zip: '05717'
+    is_default: 1
 
   Address_4:
     user: cjApplicant_4
@@ -31,6 +34,7 @@ fixtures:
     city: URBANA
     area: IL
     zip: '61801'
+    is_default: 1
 
   Address_5:
     user: cjApplicant_5
@@ -39,6 +43,7 @@ fixtures:
     city: HOMESTEAD
     area: FL
     zip: '33039'
+    is_default: 1
 
   Address_6:
     user: cjApplicant_6
@@ -47,6 +52,7 @@ fixtures:
     city: BELTSVILLE
     area: MD
     zip: '207041563'
+    is_default: 1
 
   Address_7:
     user: cjApplicant_7
@@ -55,6 +61,7 @@ fixtures:
     city: DENTON
     area: TX
     zip: '762086621'
+    is_default: 1
 
   Address_8:
     user: cjApplicant_8
@@ -63,6 +70,7 @@ fixtures:
     city: PITTSBURGH
     area: PA
     zip: '152322008'
+    is_default: 1
 
   Address_9:
     user: cjApplicant_9
@@ -71,6 +79,7 @@ fixtures:
     city: INGLEWOOD
     area: CA
     zip: '903013646'
+    is_default: 1
 
   Address_10:
     user: cjApplicant_10
@@ -79,6 +88,7 @@ fixtures:
     city: 'BOX ELDER'
     area: MT
     zip: '595210121'
+    is_default: 1
 
   Address_11:
     user: cjApplicant_11
@@ -87,6 +97,7 @@ fixtures:
     city: 'WEST CHESTER'
     area: PA
     zip: '19383'
+    is_default: 1
 
   Address_12:
     user: cjApplicant_12
@@ -95,6 +106,7 @@ fixtures:
     city: EMPORIA
     area: KS
     zip: '669016102'
+    is_default: 1
 
   Address_13:
     user: cjApplicant_13
@@ -103,6 +115,7 @@ fixtures:
     city: BELTSVILLE
     area: MD
     zip: '20704'
+    is_default: 1
 
   Address_14:
     user: cjApplicant_14
@@ -111,6 +124,7 @@ fixtures:
     city: TAMPA
     area: FL
     zip: '33647'
+    is_default: 1
 
   Address_15:
     user: cjApplicant_15
@@ -119,6 +133,7 @@ fixtures:
     city: MILLINGTON
     area: MD
     zip: '20704'
+    is_default: 1
 
   Address_16:
     user: cjApplicant_16
@@ -127,6 +142,7 @@ fixtures:
     city: NORTH HOLLYWOOD
     area: CA
     zip: '916056557'
+    is_default: 1
 
   Address_17:
     user: cjApplicant_17
@@ -135,6 +151,7 @@ fixtures:
     city: APO
     area: AE
     zip: '09182'
+    is_default: 1
 
   Address_18:
     user: cjApplicant_18
@@ -143,6 +160,7 @@ fixtures:
     city: FLORAL PARK
     area: NY
     zip: '11005'
+    is_default: 1
 
   Address_19:
     user: cjApplicant_19
@@ -151,6 +169,7 @@ fixtures:
     city: ALEXANDRIA
     area: VA
     zip: '22306'
+    is_default: 1
 
   Address_20:
     user: cjApplicant_20
@@ -159,6 +178,7 @@ fixtures:
     city: BALTIMORE
     area: MO
     zip: '26214'
+    is_default: 1
 
   Address_22:
     user: cjApplicant_22
@@ -167,6 +187,7 @@ fixtures:
     city: GRAND RAPIDS
     area: MI
     zip: '49548'
+    is_default: 1
 
   Address_23:
     user: cjApplicant_23
@@ -175,6 +196,7 @@ fixtures:
     city: NORTH HOLLYWOOD
     area: CA
     zip: '916056801'
+    is_default: 1
 
   Address_24:
     user: cjApplicant_24
@@ -183,3 +205,4 @@ fixtures:
     city: LAWRENCE
     area: KS
     zip: '660491614'
+    is_default: 1

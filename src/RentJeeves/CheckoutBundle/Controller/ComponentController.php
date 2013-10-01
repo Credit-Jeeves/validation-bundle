@@ -4,6 +4,7 @@ namespace RentJeeves\CheckoutBundle\Controller;
 
 use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
@@ -25,9 +26,22 @@ class ComponentController extends Controller
     {
         $paymentType = $this->createForm(new PaymentType());
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
+        $questionsType = $this->createForm(
+            new QuestionsType(
+                array(
+                    array(),
+                    array(),
+                    array(),
+                    array(),
+                    array(),
+                    array(),
+                )
+            )
+        );
         return array(
             'paymentType' => $paymentType->createView(),
-            'userDetailsType' => $userDetailsType->createView()
+            'userDetailsType' => $userDetailsType->createView(),
+            'questionsType' => $questionsType->createView(),
         );
     }
 

@@ -99,7 +99,7 @@ class UserDetailsType extends AbstractType
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => array(
-                        'data-bind' => 'visible: address.isAddNewAddress()'
+                        'data-bind' => 'visible: address.isAddNewAddress'
                     )
                 )
             )
@@ -122,7 +122,6 @@ class UserDetailsType extends AbstractType
                     if ('true' == $form->get('is_new_address')->getData()) {
                         $groups[] = 'user_address_new';
                     }
-
 
                     return $groups;
                 }
