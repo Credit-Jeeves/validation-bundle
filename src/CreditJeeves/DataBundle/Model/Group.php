@@ -316,6 +316,14 @@ abstract class Group
      */
     protected $deposit_account;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
+     *     mappedBy="group"
+     * )
+     */
+    protected $paymentAccounts;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -323,9 +331,12 @@ abstract class Group
         $this->group_agents = new ArrayCollection();
         $this->incentives = new ArrayCollection();
         $this->children = new ArrayCollection();
+
+        // TODO move to RentJeeves
         $this->group_properties = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
+        $this->paymentAccounts = new ArrayCollection();
     }
 
     /**
@@ -504,7 +515,7 @@ abstract class Group
      * Set description
      *
      * @param string $description
-     * @return Group
+     * @return GroupP
      */
     public function setDescription($description)
     {
@@ -991,18 +1002,35 @@ abstract class Group
         return $this->deposit_account;
     }
 
-    public function setMerchantName($name)
+    /**
+     * Add PaymentAccount
+     *
+     * @param \RentJeeves\DataBundle\Entity\Contract $paymentAccount
+     * @return Group
+     */
+    public function addPaymentAccounts(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
     {
-        if (!$this->deposit_account) {
-            $this->deposit_account = new DepositAccount();
-            $this->deposit_account->setGroup($this);
-        }
-        $this->deposit_account->setMerchantName($name);
+        $this->paymentAccounts[] = $paymentAccount;
         return $this;
     }
 
-    public function getMerchantName()
+    /**
+     * Remove PaymentAccount
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
+     */
+    public function removePaymentAccounts(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
     {
-        return ($this->deposit_account) ? $this->deposit_account->getMerchantName() : '';
+        $this->paymentAccounts->removeElement($paymentAccount);
+    }
+
+    /**
+     * Get PaymentAccounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPaymentAccounts()
+    {
+        return $this->paymentAccounts;
     }
 }

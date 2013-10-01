@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+use CreditJeeves\CoreBundle\Type\Encrypt;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -115,6 +116,7 @@ abstract class Address
      * @Assert\NotBlank(
      *     message="error.user.city.empty",
      *     groups={
+     *         "user_address_new",
      *         "buy_report_new"
      *     }
      * )
@@ -152,6 +154,14 @@ abstract class Address
      * @Serializer\Expose
      */
     protected $country = 'US';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="is_default", type="boolean", options={"default"="0"})
+     * @Serializer\Expose
+     */
+    protected $isDefault = false;
     /**
      * @var \DateTime
      *
@@ -404,6 +414,29 @@ abstract class Address
     public function getCountry()
     {
         return $this->country;
+    }
+
+    /**
+     * Set is_default
+     *
+     * @param bool $isDefault
+     * @return Address
+     */
+    public function setIsDefault($isDefault)
+    {
+        $this->isDefault = $isDefault;
+
+        return $this;
+    }
+
+    /**
+     * Get is_default
+     *
+     * @return bool
+     */
+    public function getIsDefault()
+    {
+        return $this->isDefault;
     }
 
     /**

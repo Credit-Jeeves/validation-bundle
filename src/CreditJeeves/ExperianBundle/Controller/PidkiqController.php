@@ -11,12 +11,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use \ExperianException;
+use \Exception;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  *
- * @method User getUser()
+ * @method \CreditJeeves\DataBundle\Entity\User getUser()
  *
  * @Route("/")
  */
@@ -35,7 +38,7 @@ class PidkiqController extends Controller
     /**
      * @var \Symfony\Component\Form\Form
      */
-    protected $form = '';
+    protected $form;
 
     /**
      * @var array
@@ -48,6 +51,16 @@ class PidkiqController extends Controller
     protected function getSession()
     {
         return $this->container->get('session');
+    }
+
+    /**
+     * @DI\InjectParams({
+     *     "pidkiqApi" = @DI\Inject("experian.pidkiq")
+     * })
+     */
+    public function setPidkiqApi($pidkiqApi)
+    {
+        $this->pidkiqApi = $pidkiqApi;
     }
 
     /**
@@ -100,17 +113,59 @@ class PidkiqController extends Controller
             $em->persist($pidiqModel);
             $em->flush();
         }
-        return $pidiqModel->getQuestions();
+        return $this->questionsData = $pidiqModel->getQuestions();
     }
 
-    /**
-     * @DI\InjectParams({
-     *     "pidkiqApi" = @DI\Inject("experian.pidkiq")
-     * })
-     */
-    public function setPidkiqApi($pidkiqApi)
+    protected function processQuestions()
     {
-        $this->pidkiqApi = $pidkiqApi;
+        $i18n = $this->get('translator');
+        $supportEmail = $this->container->getParameter('support_email');
+        $supportEmailTag = "<a href=\"mailto:{$supportEmail}\">{$supportEmail}</a>";
+        try {
+            try {
+                if (false === $this->retrieveQuestions()) {
+                    $this->error = $i18n->trans(
+                        'pidkiq.error.timeout-%SUPPORT_EMAIL%',
+                        array('%SUPPORT_EMAIL%' => $supportEmailTag)
+                    );
+                } else {
+                    return true;
+                }
+            } catch (ExperianException $e) {
+                $this->get('fp_badaboom.exception_catcher')->handleException($e);
+                switch ($e->getCode()) {
+                    case E_USER_ERROR:
+                        $this->error = $i18n->trans('pidkiq.error.attempts');
+                        break;
+                    case E_ERROR:
+                        $this->error = $i18n->trans(
+                            'pidkiq.error.connection-%SUPPORT_EMAIL%',
+                            array('%SUPPORT_EMAIL%' => $supportEmailTag)
+                        );
+                        break;
+                    default:
+                    case E_NOTICE:
+                        if ('Cannot formulate questions for this consumer.' == $e->getMessage()) {
+                            $this->error = $i18n->trans(
+                                'pidkiq.error.questions-%SUPPORT_EMAIL%',
+                                array('%SUPPORT_EMAIL%' => $supportEmailTag)
+                            );
+                            break;
+                        }
+                        $this->error = $i18n->trans(
+                            "pidkiq.error.generic-%SUPPORT_EMAIL%",
+                            array(
+                                '%SUPPORT_EMAIL%' => $supportEmailTag,
+                                '%ERROR%' => $e->getMessage()
+                            )
+                        );
+                        break;
+                }
+            }
+        } catch (Exception $e) {
+            $this->get('fp_badaboom.exception_catcher')->handleException($e);
+        }
+        return false;
     }
 
     /**
@@ -119,75 +174,33 @@ class PidkiqController extends Controller
      *
      * @return array
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        $account = $this->getUser();
-        if (empty($account)) {
+        $user = $this->getUser();
+        if (empty($user)) {
             throw $this->createNotFoundException('Account does not found');
         }
         if (UserIsVerified::PASSED == $this->getUser()->getIsVerified()) {
             $this->redirect($this->generateUrl('applicant_homepage'));
         }
 
-        $supportEmail = $this->container->getParameter('support_email');
-        $supportEmailTag = "<a href=\"mailto:{$supportEmail}\">{$supportEmail}</a>";
-
         $i18n = $this->get('translator');
 
-        $request = $this->getRequest();
-
         if ($request->isXmlHttpRequest()) {
-            try {
-                try {
-                    if (false === $this->retrieveQuestions()) {
-                        $this->error = $i18n->trans(
-                            'pidkiq.error.timeout-%SUPPORT_EMAIL%',
-                            array('%SUPPORT_EMAIL%' => $supportEmailTag)
-                        );
-                    } else {
-                        return new JsonResponse('finished');
-                    }
-                } catch (\ExperianException $e) {
-                    $this->get('fp_badaboom.exception_catcher')->handleException($e);
-                    switch ($e->getCode()) {
-                        case E_USER_ERROR:
-                            $this->error = $i18n->trans('pidkiq.error.attempts');
-                            break;
-                        case E_ERROR:
-                            $this->error = $i18n->trans(
-                                'pidkiq.error.connection-%SUPPORT_EMAIL%',
-                                array('%SUPPORT_EMAIL%' => $supportEmailTag)
-                            );
-                            break;
-                        default:
-                        case E_NOTICE:
-                            if ('Cannot formulate questions for this consumer.' == $e->getMessage()) {
-                                $this->error = $i18n->trans(
-                                    'pidkiq.error.questions-%SUPPORT_EMAIL%',
-                                    array('%SUPPORT_EMAIL%' => $supportEmailTag)
-                                );
-                                break;
-                            }
-                            $this->error = $i18n->trans(
-                                "pidkiq.error.generic-%SUPPORT_EMAIL%",
-                                array(
-                                    '%SUPPORT_EMAIL%' => $supportEmailTag,
-                                    '%ERROR%' => $e->getMessage()
-                                )
-                            );
-                            break;
-
-                    }
-                }
-            } catch (\Exception $e) {
-                $this->get('fp_badaboom.exception_catcher')->handleException($e);
+            if ($this->processQuestions()) {
+                return new JsonResponse('finished');
+            } else {
                 return new JsonResponse('error');
             }
+
         } elseif ($this->questionsData = $this->getPidkiq()->getQuestions()) {
             $this->form = $this->createForm(new QuestionsType($this->questionsData));
             if ($request->isMethod('POST')) {
-                if ($this->processForm()) {
-                    return $this->redirect($this->generateUrl('applicant_homepage'));
+                $this->form->bind($request);
+                if ($this->form->isValid()) {
+                    if ($this->processForm()) {
+                        return $this->redirect($this->generateUrl('applicant_homepage'));
+                    }
                 }
             }
             $this->form = $this->form->createView();
@@ -214,32 +227,29 @@ class PidkiqController extends Controller
      */
     public function processForm()
     {
-        $request = $this->getRequest();
-        $this->form->bind($request);
-        if ($this->form->isValid()) {
-            $this->pidkiqApi->execute($this->container);
-            $em = $this->getDoctrine()->getManager();
-            if ($this->pidkiqApi->getResult(
-                $this->getUser()->getPidkiqs()->last()->getSessionId(),
-                $this->form->getData()
-            )) {
-                $this->getUser()->setIsVerified(UserIsVerified::PASSED);
-                $em->persist($this->getUser());
-                $em->flush();
-                return true;
+        $this->pidkiqApi->execute($this->container);
+        $em = $this->getDoctrine()->getManager();
+        if ($this->pidkiqApi->getResult(
+            $this->getUser()->getPidkiqs()->last()->getSessionId(),
+            $this->form->getData()
+        )) {
+            $this->getUser()->setIsVerified(UserIsVerified::PASSED);
+            $em->persist($this->getUser());
+            $em->flush();
+            return true;
+        } else {
+            if (UserIsVerified::NONE == $this->getUser()->getIsVerified()) {
+                $this->getUser()->setIsVerified(UserIsVerified::FAILED);
             } else {
-                if (UserIsVerified::NONE == $this->getUser()->getIsVerified()) {
-                    $this->getUser()->setIsVerified(UserIsVerified::FAILED);
-                } else {
-                    $this->getUser()->setIsVerified(UserIsVerified::LOCKED);
-                }
-                $em->persist($this->getUser());
-                $em->flush();
-                $this->error = $this->get('translator')->trans(
-                    'pidkiq.error.answers-%SUPPORT_EMAIL%',
-                    array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
-                );
+                $this->getUser()->setIsVerified(UserIsVerified::LOCKED);
             }
+            $em->persist($this->getUser());
+            $em->flush();
+            $this->error = $this->get('translator')->trans(
+                'pidkiq.error.answers-%SUPPORT_EMAIL%',
+                array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+            );
         }
+        return false;
     }
 }

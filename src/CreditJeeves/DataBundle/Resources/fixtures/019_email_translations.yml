@@ -416,7 +416,7 @@ fixtures:
               {{ groupName }} has teamed up with Credit Jeeves to help you understand your credit score and achieve your financing goals.
           </p>
           <p>
-              Again, {{ $groupName }} is providing you this service for free.
+              Again, {{ groupName }} is providing you this service for free.
           </p>
       {% endblock %}
 

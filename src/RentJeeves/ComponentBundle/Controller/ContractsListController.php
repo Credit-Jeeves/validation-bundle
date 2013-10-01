@@ -2,6 +2,7 @@
 namespace RentJeeves\ComponentBundle\Controller;
 
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -46,7 +47,8 @@ class ContractsListController extends Controller
      */
     public function tenantAction()
     {
-        $tenant = $this->get('core.session.tenant')->getUser();
+        /** @var Tenant $tenant */
+        $tenant = $this->getUser();
         $contracts = $tenant->getActiveContracts();
         $em = $this->get('doctrine.orm.default_entity_manager');
         $data = array();
@@ -56,6 +58,7 @@ class ContractsListController extends Controller
         }
         return array(
             'contracts' => $data,
+            'user' => $tenant,
         );
     }
 }

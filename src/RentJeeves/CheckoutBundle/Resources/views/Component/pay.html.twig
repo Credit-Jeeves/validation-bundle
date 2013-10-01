@@ -14,7 +14,7 @@
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: { 'active': 'user' == step() || 'questions' == step() }, visible: stepExist('questions')">
+                data-bind="css: {'active': 'user' == step() || 'questions' == step() }, visible: stepExist('questions')">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
             <li class="step4" data-bind="css: { 'active': 'pay' == step() }">
@@ -31,7 +31,7 @@
         <div class="col" data-bind="visible: 'details' == step()">
             <div class="form-row clearfix">
                 <label>{{ 'checkout.property' | trans }}<b>*</b></label>
-                <div class="fields-box">
+                <div class="fields-box" id="rentjeeves_checkoutbundle_paymenttype_property_address">
                     <span class="value big left" data-bind="text: propertyAddress"></span>
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
@@ -39,6 +39,7 @@
             <form {{ form_enctype(paymentType) }} novalidate method="post">
                 {{ form_widget(paymentType) }}
                 {{ JSFV(paymentType) }}
+
             </form>
         </div>
 
@@ -60,92 +61,12 @@
 
         <div class="col long-label" data-bind="visible: 'questions' == step()">
 
-            <div class="scroll-box">
-                <div id="vi-questions" class="scroll">
-                    <div class="vi-questions-content">
-                        <div class="box">
-                            <h4>Question with a fairly short description:</h4>
-                            <ul class="checkboxes">
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="shortDescription">
-                                        <i> </i>
-                                        <span>
-                                          Very short answer
-                                        </span>
-                                    </label>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="shortDescription">
-                                        <i> </i>
-                                        <span>
-                                          Somewhat longer answer
-                                        </span>
-                                    </label>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="shortDescription">
-                                        <i> </i>
-                                        <span>
-                                          Fairly long answer wrapping to two lines so it looks just like this
-                                        </span>
-                                    </label>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="shortDescription">
-                                        <i> </i>
-                                        <span>
-                                          None of the above
-                                        </span>
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="box">
-                            <h4>Question with a fairly long description that wraps to many lines:</h4>
-                            <ul class="checkboxes">
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="longDescription">
-                                        <i> </i>
-                                        <span>
-                                          Very short answer
-                                        </span>
-                                    </label>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="longDescription">
-                                        <i> </i>
-                                        <span>
-                                          Somewhat longer answer
-                                        </span>
-                                    </label>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="longDescription">
-                                        <i> </i>
-                                        <span>
-                                          Fairly long answer wrapping to two lines so it looks just like this
-                                        </span>
-                                    </label>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="checkbox radio">
-                                        <input type="radio" name="longDescription">
-                                        <i> </i>
-                                        <span>
-                                          None of the above
-                                        </span>
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
+            <div class="scroll-box" style="padding-top: 0;">
+                <div id="vi-questions" class="scroll" style="padding-top: 0;">
+                    <div class="vi-questions-content"
+                         data-bind="html: questions"
+                         style="width:300px; height:235px; overflow-y:scroll; padding-top: 10px;"
+                    >
                     </div>
                 </div>
                 <div class="tooltip-box type3 pie-el">
@@ -157,7 +78,7 @@
                     </p>
                 </div>
             </div>
-
+            {{ JSFV(questionsType) }}
         </div>
 
         <div class="attention-box3 pie-el" data-bind="visible: 31 == step()" style="display: none;">
@@ -240,7 +161,12 @@
                     <div class="form-row clearfix">
                         <label>{{ 'checkout.method' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"></span>
+                            <span class="value"
+                                  data-bind="text: 'checkout.' + paymentSource.type(), i18n: {}"
+                                  id="checkout-payment-source"
+                            >
+
+                            </span>
                         </div>
                     </div>
                     <div data-bind="visible: 'bank' == paymentSource.type()">
@@ -293,7 +219,7 @@
                         <div class="form-row clearfix">
                             <label>{{ 'common.address' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: address.toString()"></span>
+                                <span class="value" data-bind="text: paymentSource.address.current()"></span>
                             </div>
                         </div>
                     </div>

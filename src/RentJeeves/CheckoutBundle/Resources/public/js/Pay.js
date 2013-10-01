@@ -8,19 +8,56 @@ function Pay(parent, contractId) {
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
         'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
-        'user': 'rentjeeves_checkoutbundle_userdetailstype'/*,
-        'questions': ''*/
+        'user': 'rentjeeves_checkoutbundle_userdetailstype',
+        'questions': 'questions'
     };
 
-//    steps.splice(2, 2);
+    if ('passed' == parent.verification) {
+        steps.splice(2, 2);
+    }
     this.step = ko.observable('details');
+    this.step.subscribe(function(newValue) {
+        switch (newValue) {
+            case 'details':
+                break;
+            case 'source':
+                break;
+            case 'user':
+                break;
+            case 'questions':
+                if (parent.questions) {
+                    break;
+                }
+
+                jQuery('#pay-popup').showOverlay();
+                jQuery.get(Routing.generate('experian_pidkiq_get'), '', function(data, textStatus, jqXHR) {
+                    if (data['status'] && 'error' == data['status']) {
+                        addFormError(null, data['error']);
+                        return;
+                    }
+                    parent.questions = data; //TODO add identity check
+                    self.questions(data);
+
+                    jQuery('#pay-popup').hideOverlay();
+                });
+                break;
+            case 'pay':
+                break;
+        }
+    });
 
     var startDate = new Date(contract.start_at);
     startDate.setDate(startDate.getDate() + 1);
 
     var finishDate = new Date(contract.finish_at);
 
+    this.propertyFullAddress = new Address(this, window.addressesViewModels);
+    this.propertyFullAddress.street(contract.property.address);
+    this.propertyFullAddress.city(contract.property.city);
+    this.propertyFullAddress.zip(contract.property.zip);
+    this.propertyFullAddress.area(contract.property.area);
 
+    this.propertyAddress = ko.observable(contract.full_address);
 
     /*  Form fields  */
     this.amount = ko.observable(contract.amount);
@@ -41,12 +78,13 @@ function Pay(parent, contractId) {
     this.endMonth = ko.observable(finishDate.getMonth() + 1);
     this.endYear = ko.observable(finishDate.getYear());
 
-    var propertyAddress = contract.property;
-    propertyAddress.street = propertyAddress.address;
-    this.address = new Address(this, window.addressesViewModels, propertyAddress);
+    this.contractId = contract.id;
+    this.paymentAccountId = ko.observable(null);
+
+    this.groupId = ko.observable(contract.group_id);
     /* /Form fields/ */
 
-    this.propertyAddress = ko.observable(contract.full_address);
+
     this.fullPayTo = contract.full_pay_to;
     this.settleDays = 3; // All logic logic in "settle" method depends on this value
     this.settle = ko.computed(function() {
@@ -82,7 +120,10 @@ function Pay(parent, contractId) {
         return finishDate.toString('MM/dd/yyyy');
     }, this);
 
-    this.paymentSource = new PaymentSource(this, false);
+    this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
+
+    this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
+    this.questions = ko.observable(parent.questions);
 
 
 
@@ -102,9 +143,34 @@ function Pay(parent, contractId) {
         return -1 != steps.indexOf(step);
     };
 
+    var onSuccessStep = function(data) {
+        var currentStep = steps[current];
+        switch (currentStep) {
+            case 'details':
+                break;
+            case 'source':
+                self.paymentAccountId(data.paymentAccountId);
+                break;
+            case 'user':
+                break;
+            case 'questions':
+                parent.verification = data.verification;
+                steps.splice(2, 2);
+                current -= 2;
+                break;
+            case 'pay':
+                $('#pay-popup').dialog('close');
+                jQuery('body').showOverlay();
+                window.location.reload();
+                return;
+                break;
+        }
+
+        self.step(steps[++current]);
+    };
+
     var sendData = function(url, formId) {
 
-        var formValidator = jsfv[formId];
 
         // HTML5 validation // TODO fix for hidden fields
 //        try {
@@ -131,8 +197,19 @@ function Pay(parent, contractId) {
             timeout: 30000, // 30 secs
             dataType: 'json',
             data: jQuery.param(data, false),
-            complete: function(jqXHR, textStatus) {
+//            complete: function(jqXHR, textStatus) {
+//                jQuery('#pay-popup').hideOverlay();
+//            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                removeAllErrors();
                 jQuery('#pay-popup').hideOverlay();
+                if ('SyntaxError: Unexpected token <' == errorThrown &&
+                    '<!DOCTYPE' == jqXHR.responseText.substr(0, 9)
+                ) {
+                    jQuery('body').showOverlay();
+                    window.location.reload();
+                }
+                addFormError(null, errorThrown);
             },
             success: function(data, textStatus, jqXHR) {
                 removeAllErrors();
@@ -145,8 +222,7 @@ function Pay(parent, contractId) {
                     applyErrors(data);
                     return;
                 }
-
-                self.step(steps[++current]);
+                onSuccessStep(data);
             }
         });
     };
@@ -193,13 +269,10 @@ function Pay(parent, contractId) {
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 break;
             case 'questions':
-
-                self.step(steps[++current]);
-//                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
+                sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
                 break;
             case 'pay':
-//                sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
-                $('#pay-popup').dialog('close');
+                sendData(Routing.generate('checkout_pay_exec'), forms['details']);
                 break;
         }
 
@@ -227,27 +300,30 @@ function Pay(parent, contractId) {
         selectOtherMonths: true
     });
 
-    $('#vi-questions').slimScroll({
-        alwaysVisible:true,
-        width:330,
-        height:260
-    });
+//    $("#vi-questions").parent().replaceWith($("#vi-questions"));
+//    $('#vi-questions').slimScroll({
+//        alwaysVisible:true,
+//        width:330,
+//        height:260
+//    });
 
     $('.user-ssn').ssn();
 
     ko.applyBindings(this, $('#pay-popup').get(0));
 
+    var addFormError = function(field, errorMessage) {
+        $('#pay-popup .attention-box').show();
+        // Add errors block
+        $(field).parents('.form-row').addClass('error');
+        $(field).addClass('error');
+
+
+        // Add error
+        $('#pay-popup .attention-box ul').append('<li>'+errorMessage+'</li>');
+    };
+
     jQuery.each(forms, function(key, formName) {
-        jsfv[formName].addError = function(field, errorMessage) {
-            $('#pay-popup .attention-box').show();
-            // Add errors block
-            $(field).parents('.form-row').addClass('error');
-            $(field).addClass('error');
-
-
-            // Add error
-            $('#pay-popup .attention-box ul').append('<li>'+errorMessage+'</li>');
-        };
+        jsfv[formName].addError = addFormError;
         jsfv[formName].removeErrors = function(field) {};
         jQuery('#' + formName).submit(function() {
             self.next();
@@ -255,4 +331,5 @@ function Pay(parent, contractId) {
         });
     });
 
+    removeAllErrors();
 }

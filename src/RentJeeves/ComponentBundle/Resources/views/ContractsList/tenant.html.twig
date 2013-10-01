@@ -55,7 +55,7 @@
                         <th class="font-helvetica">{{ 'contract.payment.next' | trans() }}</th>
                         <th class="font-helvetica">{{ 'contract.payment.recurring' | trans() }}</th>
                         <th class="font-helvetica">{{ 'contract.status' | trans() }}</th>
-                        <th></th>
+                        <th style="width: 85px;"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,6 +91,7 @@
                                 <div class="contract-potential">
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
+                                            id="contract-pay-{{ loop.revindex }}"
                                     >
                                         <span>{{ 'contract.pay' | trans() }}</span>
                                     </button>
@@ -102,7 +103,8 @@
                                 <div class="contract-potential">
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
-                                    >
+                                            id="contract-pay-{{ loop.revindex }}"
+                                            >
                                         <span>{{ 'contract.pay' | trans() }}</span>
                                     </button>
                                     <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
@@ -123,8 +125,11 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function(){
-        var CurrentPaymentsViewModel = new CurrentPayments({{ contracts | serialize('json') | raw }});
+    $(document).ready(function() {
+        var CurrentPaymentsViewModel = new CurrentPayments(
+            {{ contracts | serialize('json') | raw }},
+            '{{ user.getIsVerified }}'
+        );
         ko.applyBindings(CurrentPaymentsViewModel, $('#current-payments').get(0));
     });
 </script>

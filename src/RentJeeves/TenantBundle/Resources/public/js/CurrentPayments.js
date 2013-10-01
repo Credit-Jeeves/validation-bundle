@@ -1,5 +1,8 @@
-function CurrentPayments(contracts) {
+function CurrentPayments(contracts, verification) {
+    var self = this;
 
+    this.verification = verification;
+    this.questions = '';
     this.getContractById = function(id) {
         var contract = null;
         jQuery.each(contracts, function(key, val) {
@@ -12,6 +15,6 @@ function CurrentPayments(contracts) {
     };
 
     this.openPayPopup = function(contractId) {
-        new Pay(this, contractId);
+        self.pay = new Pay(this, contractId);
     };
 }
