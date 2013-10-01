@@ -71,7 +71,6 @@ class PayController extends Controller
         }
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var  $payment */
         $payment = $this->get('payum')->getPayment('heartland');
         $request = new GetTokenRequest();
 
