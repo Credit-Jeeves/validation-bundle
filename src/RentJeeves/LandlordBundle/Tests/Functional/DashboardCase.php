@@ -27,7 +27,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
-        $this->assertEquals('PAID', $td[0]->getText(), 'Wrong text in field');
+        $this->assertEquals('PENDING', $td[0]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
@@ -58,7 +58,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (36)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (40)', $allh2->getText(), 'Wrong count');
 
         $this->assertNotNull($searchPayments_link = $this->page->find('css', '#searchPayments_link'));
         $searchPayments_link->click();
@@ -79,7 +79,7 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (36)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (40)', $allh2->getText(), 'Wrong count');
 
         $this->logout();
     }
