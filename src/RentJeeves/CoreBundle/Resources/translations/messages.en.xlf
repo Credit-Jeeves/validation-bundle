@@ -34,6 +34,10 @@
                 <source>rj.footer.managment</source>
                 <target>Management Team</target>
             </trans-unit>
+            <trans-unit id="rj.footer.feedback">
+                <source>rj.footer.feedback</source>
+                <target>Send Us Feedback!</target>
+            </trans-unit>
             <trans-unit id="rj.footer.offers">
                 <source>rj.footer.offers</source>
                 <target>Offers</target>
