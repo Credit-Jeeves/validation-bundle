@@ -17,7 +17,7 @@ class Atb extends BaseAtb
     protected $cj_applicant_report_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", inversedBy="atbs", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\ReportPrequal", inversedBy="atbs", cascade={"all"})
      * @ORM\JoinColumn(name="cj_applicant_report_id", referencedColumnName="id")
      */
     protected $report;
