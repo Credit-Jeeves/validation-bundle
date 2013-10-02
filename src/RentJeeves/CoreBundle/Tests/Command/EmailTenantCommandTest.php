@@ -29,8 +29,33 @@ class EmailTenantCommandTest extends BaseTestCase
                 '--days' => 5
             )
         );
-        //$this->assertEquals('Finished command "Email:tenant --auto"', $commandTester->getDisplay());
         $this->assertRegExp('/Finished command/', $commandTester->getDisplay());
+//         $this->assertNotNull($count = $plugin->getPreSendMessages());
+//         $this->assertCount(1, $count);
+    }
+
+    /**
+     * Late payment
+     * @test
+     */
+    public function textExecuteLate()
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new EmailTenantCommand());
+        
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        
+        $command = $application->find('Email:tenant');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--type' => 'late',
+            )
+        );
+        $this->assertRegExp('/Start processing late contracts/', $commandTester->getDisplay());
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(1, $count);
     }

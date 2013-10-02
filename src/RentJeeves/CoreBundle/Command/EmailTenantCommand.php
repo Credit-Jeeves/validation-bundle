@@ -39,6 +39,11 @@ class EmailTenantCommand extends ContainerAwareCommand
     /**
      * @var string
      */
+    const OPTION_TYPE_LATE = 'late';
+
+    /**
+     * @var string
+     */
     const OPTION_TYPE_INVITED = 'invited';
 
     /**
@@ -100,7 +105,7 @@ class EmailTenantCommand extends ContainerAwareCommand
         $auto = $input->getOption('auto');
         $date = new \DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
-        $doctrine = $repo = $this->getContainer()->get('doctrine');
+        $doctrine = $this->getContainer()->get('doctrine');
         switch ($type) {
             case self::OPTION_TYPE_DEFAULT:
                 if ($auto) {//Email:tenant --auto=true
@@ -108,15 +113,12 @@ class EmailTenantCommand extends ContainerAwareCommand
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
                     $days = $this->getDueDays($days);
                     $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
-                    //echo count($payments);
                     foreach ($payments as $row) {
                         $payment = $row[0];
                         $contract = $payment->getContract();
-                        
                         $tenant = $contract->getTenant();
-                        //echo $tenant->getFullName();
                         $group = $contract->getGroup();
-                        //$mailer->sendRjPaymentDue($tenant, $landlord, $contract);
+                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract);
                     }
                     $output->write('Finished command "Email:tenant --auto"');
                 } else {//Email:tenant
@@ -125,6 +127,21 @@ class EmailTenantCommand extends ContainerAwareCommand
                     $days = $this->getDueDays($days);
                     $output->writeln('Story-1542');
                 }
+                break;
+            case self::OPTION_TYPE_LATE:
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $contracts = $repo->getLateContracts();
+                $output->write('Start processing late contracts');
+                foreach ($contracts as $row) {
+                    $contract = $row[0];
+                    $tenant = $contract->getTenant();
+                    $paidTo = $contract->getPaidTo();
+                    $diff = $paidTo->diff($date);
+                    $mailer->sendRjTenantLateContract($tenant, $contract, $diff->format('%d'));
+                    $doctrine->getManager()->detach($row[0]);
+                    $output->write('.');
+                }
+                $output->writeln('OK');
                 break;
         }
     }

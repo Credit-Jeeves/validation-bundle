@@ -88,9 +88,14 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
-    public function sendRjPaymentDue($tenant, $landlord, $contract, $sTemplate = 'rjPaymentDue')
+    public function sendRjPaymentDue($tenant, $holding, $contract, $sTemplate = 'rjPaymentDue')
     {
-        //echo __METHOD__;
+        $vars = array(
+            'nameHolding' => $holding->getName(),
+            'nameTenant' => $tenant->getFullName(),
+            'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
     public function sendPendingContractToLandlord($landlord, $tenant, $contract, $sTemplate = 'rjPendingContract')
@@ -119,5 +124,15 @@ class Mailer extends BaseMailer
             'report' => $report,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
+
+    public function sendRjTenantLateContract($tenant, $contract, $diff, $sTemplate = 'rjTenantLateContract')
+    {
+        $vars = array(
+                'nameTenant' => $tenant->getFullName(),
+                'diff' => $diff,
+                'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 }

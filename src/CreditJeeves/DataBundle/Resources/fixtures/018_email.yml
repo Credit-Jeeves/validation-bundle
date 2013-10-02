@@ -40,3 +40,7 @@ fixtures:
     name: rjTodayNotPaid.html
   email_20:
     name: rjDailyReport.html
+  email_21:
+    name: rjTenantLateContract.html
+  email_22:
+    name: rjPaymentDue.html
