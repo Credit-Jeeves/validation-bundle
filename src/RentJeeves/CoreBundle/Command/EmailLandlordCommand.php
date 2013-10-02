@@ -166,12 +166,13 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     $contract = $row[0];
                     $holding = $contract->getHolding();
                     $report = array(
-                        Order::STATUS_NEWONE    => $repo->getPaymentsByStatus(OrderStatus::NEWONE),
-                        Order::STATUS_COMPLETE  => $repo->getPaymentsByStatus(OrderStatus::COMPLETE),
-                        Order::STATUS_ERROR     => $repo->getPaymentsByStatus(OrderStatus::ERROR),
-                        Order::STATUS_CANCELLED => $repo->getPaymentsByStatus(OrderStatus::CANCELLED),
-                        Order::STATUS_REFUNDED  => $repo->getPaymentsByStatus(OrderStatus::REFUNDED),
-                        Order::STATUS_RETURNED  => $repo->getPaymentsByStatus(OrderStatus::RETURNED),
+                        Order::STATUS_NEWONE    => $repo->getPaymentsByStatus($holding, OrderStatus::NEWONE),
+                        Order::STATUS_COMPLETE  => $repo->getPaymentsByStatus($holding, OrderStatus::COMPLETE),
+                        Order::STATUS_ERROR     => $repo->getPaymentsByStatus($holding, OrderStatus::ERROR),
+                        Order::STATUS_CANCELLED => $repo->getPaymentsByStatus($holding, OrderStatus::CANCELLED),
+                        Order::STATUS_REFUNDED  => $repo->getPaymentsByStatus($holding, OrderStatus::REFUNDED),
+                        Order::STATUS_RETURNED  => $repo->getPaymentsByStatus($holding, OrderStatus::RETURNED),
+                        'LATE' => $repo->getLateAmount($holding),
                     );
                     $landlords = $this->getHoldingAdmins($holding);
                     foreach ($landlords as $landlord) {

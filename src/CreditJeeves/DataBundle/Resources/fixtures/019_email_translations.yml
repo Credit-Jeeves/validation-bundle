@@ -476,18 +476,32 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
       {% block email %}
-      <table width="100%">
+      <table 
+        width="100%"
+        style="
+          border: 1px solid #C8C8C8;
+          border-collapse: collapse;
+       "
+      >
         <thead>
-          <tr>
-            <th>Status</th>
-            <th>Amount</th>
+          <tr
+            style="background-color: #F5F5F5; border: 1px solid #C8C8C8;"
+          >
+            <th style="padding:5px;">Status</th>
+            <th style="padding:5px;">Amount</th>
           </tr>
         </thead>
         <tbody>
           {% for key, value in report %}
-          <tr>
-            <td>{{ key }}</td>
-            <td>${{ value }}</td>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ key }}</td>
+            <td style="padding:5px;">
+            {% if value > 0 %}
+              ${{ value }}
+            {% else %}
+            ---
+            {% endif %}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
