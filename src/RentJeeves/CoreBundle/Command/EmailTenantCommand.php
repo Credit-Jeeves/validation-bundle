@@ -113,19 +113,32 @@ class EmailTenantCommand extends ContainerAwareCommand
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
                     $days = $this->getDueDays($days);
                     $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
+                    $output->write('Start processing auto payment contracts');
                     foreach ($payments as $row) {
                         $payment = $row[0];
                         $contract = $payment->getContract();
                         $tenant = $contract->getTenant();
                         $group = $contract->getGroup();
                         $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract);
+                        $doctrine->getManager()->detach($row[0]);
+                        $output->write('.');
                     }
                     $output->write('Finished command "Email:tenant --auto"');
                 } else {//Email:tenant
                     // Story-1542
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
                     $days = $this->getDueDays($days);
-                    $output->writeln('Story-1542');
+                    $payments = $repo->getNonAutoPayments($days, $date->format('n'), $date->format('Y'));
+                    $output->write('Start processing non auto contracts');
+                    foreach ($payments as $row) {
+                        $payment = $row[0];
+                        $contract = $payment->getContract();
+                        $tenant = $contract->getTenant();
+                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract);
+                        $doctrine->getManager()->detach($row[0]);
+                        $output->write('.');
+                    }
+                    $output->writeln('OK');
                 }
                 break;
             case self::OPTION_TYPE_LATE:
