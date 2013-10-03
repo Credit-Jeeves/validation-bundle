@@ -1,8 +1,90 @@
 {% extends "TenantBundle::base.html.twig" %}
 
 {% block content %}
-    <div id="rent-menu">
-    {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'TenantBundle:Sources:menu.html.twig' }) }}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+
+    <!-- Popup Delete Contract -->
+    <div id="payment-account-delete" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'payment_account.delete.title' | trans() }}</h1>
+        <div class="clearfix col-box">
+            <div class="attention-box pie-el">
+                {{ 'payment_account.delete.text' | trans() }}
+            </div>
+            <h2></h2>
+            <div class="footer-button-box">
+                <a class="button buttonFix" data-bind="attr: { href: delUrl }">
+                    <span>{{ 'payment_account.delete.yes' | trans() }}</span>
+                </a>
+                <button data-bind="click: delClose" class="button grey buttonFix">
+                    <span>{{ 'payment_account.delete.no' | trans() }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- end Delete Contract -->
+    <div id="payment-account-edit" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'payment_account.delete.title' | trans() }}</h1>
+        {{ render(controller('RjCheckoutBundle:Component:source')) }}
     </div>
 
+
+    <div id="rent-menu">
+        {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'TenantBundle:Sources:menu.html.twig' }) }}
+    </div>
+    <div class="row-20"></div>
+    <div class="pod-large pod-border pod-padding shadow" id="payment-accounts">
+        <h1>{{ 'current_payment_sources.title' | trans() }}</h1>
+        <div class="row-20"></div>
+        <div class="properties-table-block table-wrap">
+            <div class="table-margin">
+                <table class="properties-table zebra-grid contracts-table">
+                    <thead>
+                    <tr class="contracts">
+                        <th class="font-helvetica">{{ 'payment_source' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'type' | trans() }}</th>
+                        <th class="font-helvetica">{{ 'expiration' | trans() }}</th>
+                        <th style="width: 85px;"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for paymentAccount in paymentAccounts %}
+                        <tr class="contracts">
+                            <td class="font-helvetica">{{ paymentAccount.getName }}</td>
+                            <td class="font-helvetica">{{ ('payment_account_' ~ paymentAccount.getType) | trans }}</td>
+                            <td class="font-helvetica">
+                                {{ paymentAccount.getCcExpiration.format('M Y') | default('N/A') }}
+                            </td>
+                            <td class="font-helvetica">
+                                <a title="{{ 'edit' | trans }}"
+                                   class="type-ico pie-el edit"
+                                   href="#"
+                                   data-bind="click: edit.bind($data, {{ paymentAccount.getId }})"
+                                >
+                                    &nbsp;
+                                </a>
+                                <a id="payment-account-delete-{{ loop.revindex }}"
+                                        class="type-ico pie-el delete"
+                                        data-bind="click: delDialog.bind($data, {{ paymentAccount.getId }})"
+                                        href="#"
+                                        title="{{ 'delete' | trans }}"
+                                >
+                                    &nbsp;
+                                </a>
+                            </td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var paymentSources = new PaymentSources();
+            ko.applyBindings(paymentSources, $('#payment-accounts').get(0));
+        });
+    </script>
 {% endblock %}

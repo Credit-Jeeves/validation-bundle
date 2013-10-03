@@ -126,8 +126,9 @@
     cursor: pointer;
 }
 
-.contract-delete:hover {
-    
+button.contract-delete {
+    height: 24px;
+    width: 24px;
 }
 
 .contract-delete-grey {

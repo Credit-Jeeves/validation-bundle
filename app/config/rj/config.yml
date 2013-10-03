@@ -26,7 +26,8 @@ parameters:
         main_site: 'www.rentjeeves.com'
         user_voice: 'rentjeeves.uservoice.com'
 # parameters for twig
-    payment_fee: 2.95%
+    payment_bank_fee: 0.10
+    payment_card_fee: 2.95%
     payment_dollars: $20
     tenant_payment_per_month_curence: $
     tenant_payment_per_month_dollars: 1
@@ -66,7 +67,7 @@ twig:
     globals:
         application: rj
         google_maps_key: %google_maps_key%
-        payment_fee: %payment_fee%
+        payment_card_fee: %payment_card_fee%
         payment_dollars: %payment_dollars%
         tenant_payment_per_month: %tenant_payment_per_month_curence%%tenant_payment_per_month_dollars%.%tenant_payment_per_month_cents%
         tenant_payment_per_month_dollars: %tenant_payment_per_month_dollars%

@@ -2246,7 +2246,6 @@ label.checkbox input[type="radio"]:checked + i {
 .pricing-popup.dashboard-popup {
   position:relative;
   padding:0 0 70px;
-  min-height: 410px!important;
 }
 
 .verify-min {
@@ -3154,6 +3153,10 @@ label.checkbox input[type="radio"]:checked + i {
   border-radius:4px;
 }
 
+.type-ico:hover {
+  text-decoration: none;
+}
+
 .type-ico:first-child {
   margin-left:0;
 }
@@ -3804,6 +3807,13 @@ label.checkbox input[type="radio"]:checked + i {
 .type-ico.edit {
   background-color:#00aeef;
   background-position:-250px -50px;
+}
+
+.type-ico.delete {
+  background-color: transparent;
+  border: 1px solid red;
+  border-radius: 4px 4px 4px 4px;
+  background-position:4px -236px;
 }
 
 .type-ico.review {
