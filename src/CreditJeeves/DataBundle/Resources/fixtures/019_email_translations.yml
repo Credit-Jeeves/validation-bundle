@@ -331,19 +331,19 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Your Rent is Late. Pay Today!{% endblock %}
+      {% block h1 %}Your Rent is Late. Pay Now!{% endblock %}
       {% block email %}
         {% if nameTenant %}
-            Hi {{ nameTenant }}! <br />  <br />
+            Dear {{ nameTenant }}, <br />  <br />
         {% else %}
-            Hello!  <br /> <br /> 
+            Heads Up!<br /> <br />
         {% endif %}
-        It looks like you have not paid in full for {{ address }} {{ unitName }} this month. Your landlord,
-        {{ fullNameLandlord }}, expected payment already.
+        It looks like {{ fullNameLandlord }} expected your rent payment for {{ address }} {{ unitName }} already.
 
-        <a href="http://my.renttrack.com/">Log in today</a> and set up a payment.
+        <a href="http://my.renttrack.com/">Log in to RentTrack today</a> and and make an immediate payment. We'll
+        let {{ fullNameLandlord }} that rent is on its way once the payment goes through.
 
-        Better yet, you can set up automatic payments so you never miss one again. <a href="#">Learn More</a>
+        Better yet, you can set up automatic payments so you never miss one again. <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">Learn More</a>
 
         Watching out for you,
         The RentTrack Team
@@ -354,7 +354,7 @@ fixtures:
     translatable: email_15
     locale: %locale%
     property: subject
-    value: Your Landlord Signed Up - Set up your Rent Payment
+    value: Set up your Rent Payment
   translation_15_body:
     translatable: email_15
     locale: %locale%
@@ -363,11 +363,11 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
       {% block email %}
-        Congratulations! {{ fullNameLandlord }} has signed up with RentTrack. 
+        Congratulations! {{ fullNameLandlord }} has teamed up with RentTrack.
         <br />
         To start paying rent for {{ address }} {{ unitName }}, 
         <a href="http://my.renttrack.com/">log in and set up your payment</a> 
-        for {{ rentAmount }}. 
+        for {{ rentAmount }}. We'd recommend setting up <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a> so you have one less thing to worry about.
         <br />
         You're ready to build credit buy paying rent securely online. 
         <br />
@@ -381,7 +381,7 @@ fixtures:
     translatable: email_16
     locale: %locale%
     property: subject
-    value: Add contract details and approve this tenant.
+    value: Your Tenant Needs Approval
   translation_16_body:
     translatable: email_16
     locale: %locale%
@@ -390,11 +390,12 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
       {% block email %}
-        {{ nameTenant }} added {{ address }} as a property they would like to pay rent on.
+        {{ nameTenant }} is ready to pay rent for {{ address }}.
         <br />
-        <a href="http://my.renttrack.com/">Click here to add contract details and approve this tenant</a> 
+        <a href="http://my.renttrack.com/">Log in to RentTrack</a> to add contract details and approve this tenant.
+        After that, your tenant will be able to set up their rent payment.
         <br />
-        Enjoy, <br />
+        Thank you, <br />
         The RentTrack Team
       {% endblock %}
 
