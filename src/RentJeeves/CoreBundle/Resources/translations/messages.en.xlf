@@ -1238,6 +1238,31 @@
                 <source>select.rental</source>
                 <target>Please select your rental.</target>
             </trans-unit>
+            <trans-unit id="order.status.text.new">
+                <source>order.status.text.new</source>
+                <target>PENDING</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.complete">
+                <source>order.status.text.complete</source>
+                <target>PAID</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.error">
+                <source>order.status.text.error</source>
+                <target>ERROR</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.cancelled">
+                <source>order.status.text.cancelled</source>
+                <target>CANCELLED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.refunded">
+                <source>order.status.text.refunded</source>
+                <target>REFUNDED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.returned">
+                <source>order.status.text.returned</source>
+                <target>RETURNED</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
