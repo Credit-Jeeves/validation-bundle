@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__.'/../app/AppKernel.php';
-
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
