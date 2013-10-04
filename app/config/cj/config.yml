@@ -58,14 +58,15 @@ sonata_admin:
 api:
     admin_dealer_code: %api.admin_dealer_code%
 
+
 fos_rest:
-    format_listener: true
+    format_listener:
+        default_priorities: [html,xml,json]
     view:
         view_response_listener: force
         formats:
             json: true
             xml: true
-            html: true
     body_listener: true
     #param_fetcher_listener: force
     allowed_methods_listener: true
