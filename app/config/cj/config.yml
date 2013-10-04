@@ -56,7 +56,7 @@ sonata_admin:
                     - sonata.admin.applicant
 
 api:
-    admin_dealer_code: %api_admin_dealer_code%
+    admin_dealer_code: %api.admin_dealer_code%
 
 fos_rest:
     format_listener:

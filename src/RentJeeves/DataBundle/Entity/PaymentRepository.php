@@ -17,6 +17,17 @@ use RentJeeves\DataBundle\Enum\PaymentType;
  */
 class PaymentRepository extends EntityRepository
 {
+    /**
+     * @param array $days
+     * @param int $month
+     * @param int $year
+     * @param PaymentType $type
+     * @param PaymentStatus $status
+     *
+     * @fixme add joins
+     *
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     */
     public function getActivePayments(
         $days = array(),
         $month = 1,

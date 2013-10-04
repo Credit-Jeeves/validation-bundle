@@ -2,7 +2,7 @@
 {% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
 
 
-<div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup">
+<div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
     <h1>{{ 'pay_popup.title' | trans }}</h1>
     <div class="clearfix col-box">
 
@@ -79,34 +79,6 @@
                 </div>
             </div>
             {{ JSFV(questionsType) }}
-        </div>
-
-        <div class="attention-box3 pie-el" data-bind="visible: 31 == step()" style="display: none;">
-            <h3>Sorry, there was a problem verifying your identity – try again in an hour.</h3>
-            <p>
-                Your answers do not match the information the credit bureau has on file for you.
-                You can try setting up your payment and
-                answering a new set of questions again in an hour.
-            </p>
-            <p>
-                Your rent payment process is incomplete though the account information
-                you provided is being held on file to expedite the rest of the process. If you have
-                questions you can call us at (866) 976-6622 or email us at
-                <a href="mailto:help@renttrack.com">help@renttrack.com</a>.
-            </p>
-
-            <h3>Sorry, there was a problem verifying your identity – try again in 24 hours.</h3>
-            <p>
-                Your answers do not match the information the credit bureau has on file for you. You can try
-                answering a new set of questions again in 24 hours – we'll send you an email to try
-                again.
-            </p>
-            <p>
-                Your rent payment process is incomplete though the account information
-                you provided is being held on file to expedite the rest of the process. If you have
-                questions you can call us at (866) 976-6622 or email us at
-                <a href="mailto:help@renttrack.com">help@renttrack.com</a>.
-            </p>
         </div>
 
         <div data-bind="visible: 'pay' == step()">
@@ -230,7 +202,7 @@
                                 {{ 'checkout.free' | trans }}
                             </span>
                             <span class="value" data-bind="visible: 'card' == paymentSource.type()">
-                                {{ payment_fee }}
+                                {{ payment_card_fee }}
                             </span>
                         </div>
                     </div>

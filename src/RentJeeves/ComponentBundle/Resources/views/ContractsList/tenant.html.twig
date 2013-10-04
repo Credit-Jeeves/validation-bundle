@@ -1,12 +1,3 @@
-{% javascripts
-    '@TenantBundle/Resources/public/js/CurrentPayments.js'
-    '@RjCheckoutBundle/Resources/public/js/Pay.js'
-    '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
-    '@CoreBundle/Resources/public/js/Address.js'
-%}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
-
 <!-- Popup Delete Contract -->
 <div id="contract-delete" class="pricing-popup dashboard-popup properties-popup">
     <h1>{{ 'contract.delete' | trans() }}</h1>
@@ -124,13 +115,12 @@
 {{ render(controller('RjCheckoutBundle:Component:pay')) }}
 
 <script type="text/javascript">
-
     $(document).ready(function() {
-        var CurrentPaymentsViewModel = new CurrentPayments(
+        var currentPaymentsViewModel = new CurrentPayments(
             {{ contracts | serialize('json') | raw }},
             '{{ user.getIsVerified }}'
         );
-        ko.applyBindings(CurrentPaymentsViewModel, $('#current-payments').get(0));
+        ko.applyBindings(currentPaymentsViewModel, $('#current-payments').get(0));
     });
 </script>
 

@@ -438,8 +438,8 @@
             <trans-unit id="are.you.sure.you.want.remove.property">
                 <source>are.you.sure.you.want.remove.property</source>
                 <target>
-                    Are you sure you want to remove this property? Any payments 
-          scheduled for this property will be cancelled. 
+                    Are you sure you want to remove this property? Any payments
+                    scheduled for this property will be cancelled.
                 </target>
             </trans-unit>
             <trans-unit id="tenant.info">
@@ -1262,7 +1262,46 @@
                 <source>order.status.text.returned</source>
                 <target>RETURNED</target>
             </trans-unit>
-
+            <trans-unit id="current_payment_sources.title">
+                <source>current_payment_sources.title</source>
+                <target>Current Payment Sources</target>
+            </trans-unit>
+            <trans-unit id="payment_source">
+                <source>payment_source</source>
+                <target>Payment Source</target>
+            </trans-unit>
+            <trans-unit id="expiration">
+                <source>expiration</source>
+                <target>Expiration</target>
+            </trans-unit>
+            <trans-unit id="payment_account_bank">
+                <source>payment_account_bank</source>
+                <target>Checking</target>
+            </trans-unit>
+            <trans-unit id="payment_account_card">
+                <source>payment_account_card</source>
+                <target>Credit Card</target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.title">
+                <source>payment_account.delete.title</source>
+                <target>Remove Payment Source</target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.text">
+                <source>payment_account.delete.text</source>
+                <target>
+                    Are you sure want to remove this payment source?
+                    Any recurring payments will br cancelled.
+                    Please visit the "Payments" page to set up new payments for any affect properties.
+                </target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.yes">
+                <source>payment_account.delete.yes</source>
+                <target>Yes, Remove Source</target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.no">
+                <source>payment_account.delete.no</source>
+                <target>No, Cancel</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

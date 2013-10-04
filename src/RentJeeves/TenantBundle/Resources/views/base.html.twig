@@ -40,7 +40,15 @@
 {% endblock %}
 
 {% block head_javascripts %}
-{% javascripts '@RjCoreBundle/Resources/public/js/jquery.slimscroll.js' %}
+{% javascripts '@RjCoreBundle/Resources/public/js/jquery.slimscroll.js'
+    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    '@RjComponentBundle/Resources/public/js/tenant-contracts.js'
+    '@TenantBundle/Resources/public/js/CurrentPayments.js'
+    '@RjCheckoutBundle/Resources/public/js/Pay.js'
+    '@RjCheckoutBundle/Resources/public/js/PaymentSource.js'
+    '@CoreBundle/Resources/public/js/Address.js'
+    '@TenantBundle/Resources/public/js/PaymentSources.js'
+%}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
 {% endblock %}
