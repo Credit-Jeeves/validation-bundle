@@ -214,7 +214,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git",
-                "reference": "653e1f23c49dd8bbf7cd7226697dce6dffa68663"
+                "reference": "e9a8384121e4db63ebcbf791df8c177c64f4bc4a"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
