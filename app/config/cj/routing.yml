@@ -95,6 +95,8 @@ ApiBundle:
     resource: "@ApiBundle/Controller/CreditJeeves"
     type:     annotation
     prefix:   /api
+    defaults:
+        _format:     xml
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
