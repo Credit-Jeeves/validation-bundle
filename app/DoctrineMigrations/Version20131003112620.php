@@ -23,7 +23,7 @@ class Version20131003112620 extends AbstractMigration
                 CHANGE COLUMN `status` `status` ENUM('pending','invite','approved','current','finished', 'deleted') 
                 CHARACTER SET 'utf8' 
                 COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT 'pending' 
-                COMMENT '(DC2Type:ContractStatus)"
+                COMMENT '(DC2Type:ContractStatus)'"
         );
     }
 
@@ -39,7 +39,7 @@ class Version20131003112620 extends AbstractMigration
                 CHANGE COLUMN `status` `status` ENUM('pending','approved','finished')
                 CHARACTER SET 'utf8'
                 COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT 'pending'
-                COMMENT '(DC2Type:ContractStatus)"
+                COMMENT '(DC2Type:ContractStatus)'"
         );
     }
 }
