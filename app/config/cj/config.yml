@@ -56,16 +56,16 @@ sonata_admin:
                     - sonata.admin.applicant
 
 api:
-    admin_dealer_code: %api_admin_dealer_code%
+    admin_dealer_code: %api.admin_dealer_code%
 
 fos_rest:
-    format_listener:
-        default_priorities: [html,xml,json]
+    format_listener: true
     view:
         view_response_listener: force
         formats:
             json: true
             xml: true
+            html: true
     body_listener: true
     #param_fetcher_listener: force
     allowed_methods_listener: true
