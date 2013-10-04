@@ -88,3 +88,8 @@ Tests
 -----
 
 Selenium server (RC) version 2.33.0 and it does not work with Firefox 23.x
+
+
+STG
+---
+Last DB 20130924_credit_jeeves_2_before_RT.sql

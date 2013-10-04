@@ -90,9 +90,6 @@ class Version20130925051040 extends AbstractMigration
                 REFERENCES cj_address (id)"
         );
         $this->addSql(
-            "DROP TABLE migration_version"
-        );
-        $this->addSql(
             "ALTER TABLE cj_account_group_affiliate
                 ADD CONSTRAINT FK_1096A96612867DD
                 FOREIGN KEY (cj_account_group_id)
@@ -163,10 +160,7 @@ class Version20130925051040 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
-        $this->addSql(
-            "CREATE TABLE migration_version (version INT DEFAULT NULL) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
-        );
+
         $this->addSql(
             "DROP TABLE rj_checkout_heartland"
         );

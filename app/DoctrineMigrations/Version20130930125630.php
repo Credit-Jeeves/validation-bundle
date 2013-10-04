@@ -20,7 +20,7 @@ class Version20130930125630 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_payment
-                ADD payment_account_id BIGINT DEFAULT NULL"
+                ADD payment_account_id BIGINT NOT NULL"
         );
         $this->addSql(
             "ALTER TABLE rj_payment
@@ -29,7 +29,7 @@ class Version20130930125630 extends AbstractMigration
                 REFERENCES rj_payment_account (id)"
         );
         $this->addSql(
-            "CREATE INDEX FK_A4398CF0AE9DDE6F ON rj_payment (payment_account_id)"
+            "CREATE INDEX IDX_A4398CF0AE9DDE6F ON rj_payment (payment_account_id)"
         );
     }
 
@@ -47,7 +47,7 @@ class Version20130930125630 extends AbstractMigration
                 FOREIGN KEY FK_A4398CF0AE9DDE6F"
         );
         $this->addSql(
-            "DROP INDEX FK_A4398CF0AE9DDE6F ON rj_payment"
+            "DROP INDEX IDX_A4398CF0AE9DDE6F ON rj_payment"
         );
         $this->addSql(
             "ALTER TABLE rj_payment
