@@ -24,6 +24,38 @@ fixtures:
     days_late: 0
     created_at: '-30 days'
     updated_at: '-30 days'
+  rjOrder_3_error:
+    user: Tenant_1
+    status: error
+    type: heartland_card
+    amount: 1500
+    days_late: 0
+    created_at: '-30 days'
+    updated_at: '-30 days'
+  rjOrder_3_cancelled:
+    user: Tenant_1
+    status: cancelled
+    type: heartland_card
+    amount: 1500
+    days_late: 0
+    created_at: '-30 days'
+    updated_at: '-30 days'
+  rjOrder_3_refunded:
+    user: Tenant_1
+    status: refunded
+    type: heartland_card
+    amount: 700
+    days_late: 0
+    created_at: '-30 days'
+    updated_at: '-30 days'
+  rjOrder_3_returned:
+    user: Tenant_1
+    status: returned
+    type: heartland_card
+    amount: 750
+    days_late: 0
+    created_at: '-30 days'
+    updated_at: '-30 days'
   rjOrder_4:
     user: Tenant_1
     status: complete

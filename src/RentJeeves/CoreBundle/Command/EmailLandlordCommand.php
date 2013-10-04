@@ -13,6 +13,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Entity\Order;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {
@@ -42,6 +43,16 @@ class EmailLandlordCommand extends ContainerAwareCommand
      * @var string
      */
     const OPTION_TYPE_NFS = 'nsf';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_REPORT = 'report';
+
+    /**
+     * @var string
+     */
+    const OPTION_TYPE_LATE = 'late';
 
     /**
      * @var string
@@ -103,6 +114,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
         $date = new \DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
         $doctrine = $this->getContainer()->get('doctrine');
+        $translator = $this->getContainer()->get('translator.default');
         switch ($type) {
             case self::OPTION_TYPE_INVITED: //Email:landlord
                 // Story-1553
@@ -152,6 +164,68 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     }
                 }
                 $output->writeln('Story-1555');
+                break;
+            case self::OPTION_TYPE_REPORT:
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $contracts = $repo->getRentHoldings();
+                foreach ($contracts as $row) {
+                    $contract = $row[0];
+                    $holding = $contract->getHolding();
+                    $report = array(
+                        $translator->trans('order.status.text.'.OrderStatus::NEWONE) =>
+                            $repo->getPaymentsByStatus($holding, OrderStatus::NEWONE),
+                        $translator->trans('order.status.text.'.OrderStatus::COMPLETE) =>
+                            $repo->getPaymentsByStatus($holding, OrderStatus::COMPLETE),
+                        $translator->trans('order.status.text.'.OrderStatus::ERROR) =>
+                            $repo->getPaymentsByStatus($holding, OrderStatus::ERROR),
+                        $translator->trans('order.status.text.'.OrderStatus::CANCELLED) =>
+                            $repo->getPaymentsByStatus($holding, OrderStatus::CANCELLED),
+                        $translator->trans('order.status.text.'.OrderStatus::REFUNDED) =>
+                            $repo->getPaymentsByStatus($holding, OrderStatus::REFUNDED),
+                        $translator->trans('order.status.text.'.OrderStatus::RETURNED) =>
+                            $repo->getPaymentsByStatus($holding, OrderStatus::RETURNED),
+                        'LATE' => $repo->getLateAmount($holding),
+                    );
+                    $landlords = $this->getHoldingAdmins($holding);
+                    foreach ($landlords as $landlord) {
+                        $mailer->sendRjDailyReport($landlord, $report);
+                    }
+                    $doctrine->getManager()->detach($row[0]);
+                }
+                $output->writeln('daily report');
+                break;
+            case self::OPTION_TYPE_LATE:
+                $repo = $doctrine->getRepository('RjDataBundle:Contract');
+                $contracts = $repo->getRentHoldings();
+                $output->write('Late contracts');
+                foreach ($contracts as $row) {
+                    $contract = $row[0];
+                    $holding = $contract->getHolding();
+                    $landlords = $this->getHoldingAdmins($holding);
+                    $late = $repo->getAllLateContracts($holding);
+                    $tenants = array();
+                    foreach ($late as $object) {
+                        $item = array();
+                        $object = $object[0];
+                        $tenant = $object->getTenant();
+                        $paidTo = $object->getPaidTo();
+                        $diff = $paidTo->diff($date);
+                        $item['name'] = $tenant->getFullName();
+                        $item['email'] = $tenant->getEmail();
+                        $item['address'] = $object->getRentAddress($object->getProperty(), $object->getUnit());
+                        $item['late'] = $diff->format('%d');
+                        $tenants[] = $item;
+                    }
+                    $doctrine->getManager()->detach($object);
+                    if (count($tenants) > 0) {
+                        foreach ($landlords as $landlord) {
+                            $mailer->sendListLateContracts($landlord, $tenants);
+                        }
+                    }
+                    $doctrine->getManager()->detach($row[0]);
+                    $output->write('.');
+                }
+                $output->writeln('OK');
                 break;
         }
     }

@@ -594,41 +594,41 @@
                   Credit Service Member
                 </target>
             </trans-unit>
-            <trans-unit id="ach.fee">
+           <trans-unit id="ach.fee">
                 <source>ach.fee</source>
                 <target>
                   Unit Fee Waived
                 </target>
             </trans-unit>
-            <trans-unit id="invite.tenant">
+           <trans-unit id="invite.tenant">
                 <source>invite.tenant</source>
                 <target>Invite Tenant</target>
             </trans-unit>
-            <trans-unit id="donthavedata">
+           <trans-unit id="donthavedata">
                 <source>donthavedata</source>
                 <target>No results found.</target>
             </trans-unit>
-            <trans-unit id="bureau.reporting.title">
+           <trans-unit id="bureau.reporting.title">
                 <source>bureau.reporting.title</source>
                 <target>Start Bureau Reporting</target>
-            </trans-unit>
-            <trans-unit id="bureau.reporting.title.stop">
+           </trans-unit>
+           <trans-unit id="bureau.reporting.title.stop">
                 <source>bureau.reporting.title.stop</source>
                 <target>Stop Bureau Reporting</target>
-            </trans-unit>
-            <trans-unit id="bureau.reporting.start">
+           </trans-unit>
+           <trans-unit id="bureau.reporting.start">
                 <source>bureau.reporting.start</source>
                 <target>Start Reporting to Bureaus</target>
-            </trans-unit>
-            <trans-unit id="bureau.reporting.stop">
+           </trans-unit>
+           <trans-unit id="bureau.reporting.stop">
                 <source>bureau.reporting.stop</source>
                 <target>Stop Reporting to Bureaus</target>
-            </trans-unit>
-            <trans-unit id="bureau.reporting.setup">
+           </trans-unit>
+           <trans-unit id="bureau.reporting.setup">
                 <source>bureau.reporting.setup</source>
                 <target>Set Up Bureau Reporting</target>
-            </trans-unit>
-            <trans-unit id="bureau.reporting.text">
+           </trans-unit>
+           <trans-unit id="bureau.reporting.text">
                 <source>bureau.reporting.text</source>
                 <target><![CDATA[RentTrack can report your payments to a credit reporting agency.
                                  This optional activity helps establish a history of on-time payments in your credit profile.<br /><br />
@@ -641,103 +641,103 @@
                                  Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>. Please review the terms, then click on the button below
                                  to begin building credit.]]>
                                  </target>
-            </trans-unit>
-            <trans-unit id="info.reporting.title">
+           </trans-unit>
+           <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
                 <target>Payment Reporting</target>
-            </trans-unit>
-            <trans-unit id="info.reporting.see">
+           </trans-unit>
+           <trans-unit id="info.reporting.see">
                 <source>info.reporting.see</source>
                 <target>Get Credit for your Rent Payments</target>
-            </trans-unit>
-            <trans-unit id="info.reporting.text">
+           </trans-unit>
+           <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
                 <target>Put RentTrack to work by choosing to report your payments to a major credit bureau. This optional activity helps establish good credit when you make your rent payments on-time.</target>
-            </trans-unit>
-            <trans-unit id="error.property.empty">
+           </trans-unit>
+           <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
                 <target>Property can't be empty.</target>
             </trans-unit>
-            <trans-unit id="error.unit.empty">
+           <trans-unit id="error.unit.empty">
                 <source>error.unit.empty</source>
                 <target>Unit can't be empty.</target>
             </trans-unit>
-            <trans-unit id="error.rent.empty">
+           <trans-unit id="error.rent.empty">
                 <source>error.rent.empty</source>
                 <target>Please specify the rent amount.</target>
             </trans-unit>
-            <trans-unit id="legend.close">
+           <trans-unit id="legend.close">
                 <source>legend.close</source>
                 <target>close</target>
             </trans-unit>
-            <trans-unit id="legend.ok">
+           <trans-unit id="legend.ok">
                 <source>legend.ok</source>
                 <target>Paid OK</target>
             </trans-unit>
-            <trans-unit id="legend.delinquent">
+           <trans-unit id="legend.delinquent">
                 <source>legend.delinquent</source>
                 <target>N days delinquent</target>
             </trans-unit>
-            <trans-unit id="legend.pay">
+           <trans-unit id="legend.pay">
                 <source>legend.pay</source>
                 <target>Month to pay</target>
             </trans-unit>
-            <trans-unit id="legend.auto">
+           <trans-unit id="legend.auto">
                 <source>legend.auto</source>
                 <target>Monthly auto payment</target>
             </trans-unit>
 
-            <trans-unit id="conflict.resolve.uppercase">
+           <trans-unit id="conflict.resolve.uppercase">
                 <source>conflict.resolve.uppercase</source>
                 <target>RESOLVE</target>
             </trans-unit>
 
-            <trans-unit id="conflict.resolve.action">
+           <trans-unit id="conflict.resolve.action">
                 <source>conflict.resolve.action</source>
                 <target>Resolve</target>
             </trans-unit>
-            <trans-unit id="conflict.resolve.title">
+           <trans-unit id="conflict.resolve.title">
                 <source>conflict.resolve.title</source>
                 <target>Resolve this late payment</target>
             </trans-unit>
-            <trans-unit id="conflict.tenant">
+           <trans-unit id="conflict.tenant">
                 <source>conflict.resolve.title</source>
                 <target>Resolve this late payment</target>
             </trans-unit>
-            <trans-unit id="conflict.due.date">
+           <trans-unit id="conflict.due.date">
                 <source>conflict.due.date</source>
                 <target>Original Due Date</target>
             </trans-unit>
-            <trans-unit id="conflict.resolve.options">
+           <trans-unit id="conflict.resolve.options">
                 <source>conflict.resolve.options</source>
                 <target>Resolution options</target>
             </trans-unit>
-            <trans-unit id="conflict.resolve.email">
+           <trans-unit id="conflict.resolve.email">
                 <source>conflict.resolve.email</source>
                 <target>Send email reminder to tenant</target>
             </trans-unit>
-            <trans-unit id="conflict.resolve.paid">
+           <trans-unit id="conflict.resolve.paid">
                 <source>conflict.resolve.paid</source>
                 <target>Mark as “Paid” (tenant paid by paper check, cash, etc.)</target>
             </trans-unit>
-            <trans-unit id="conflict.resolve.unpaid">
+           <trans-unit id="conflict.resolve.unpaid">
                 <source>conflict.resolve.unpaid</source>
                 <target>Mark as “Unpaid” (this will report to credit bureau as an unpaid account - this cannot be undone)</target>
             </trans-unit>
             
-            <trans-unit id="error.email.already.use">
+           <trans-unit id="error.email.already.use">
                 <source>error.email.already.use</source>
                 <target>Email already use in the system.</target>
             </trans-unit>
-            <trans-unit id="error.start.empty">
+           <trans-unit id="error.start.empty">
                 <source>error.start.empty</source>
                 <target>Specify a start date.</target>
             </trans-unit>
-            <trans-unit id="error.finish.empty">
+           <trans-unit id="error.finish.empty">
                 <source>error.finish.empty</source>
                 <target>Specify an end date.</target>
             </trans-unit>
-            <trans-unit id="user.alredy.in.system">
+           <trans-unit id="user.alredy.in.system">
                 <source>user.alredy.in.system</source>
                 <target>User is a current member of RentTrack.</target>
             </trans-unit>
@@ -1224,7 +1224,7 @@
             </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
-                <target>You need to set up your RentTrack Merchant Account. Call 866-841-9090.</target>
+                <target>You need to set up your merchant account. Call 866-841-9090.</target>
             </trans-unit>
             <trans-unit id="address.not.valid">
                 <source>address.not.valid</source>
@@ -1237,6 +1237,30 @@
             <trans-unit id="select.rental">
                 <source>select.rental</source>
                 <target>Please select your rental.</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.new">
+                <source>order.status.text.new</source>
+                <target>PENDING</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.complete">
+                <source>order.status.text.complete</source>
+                <target>PAID</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.error">
+                <source>order.status.text.error</source>
+                <target>ERROR</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.cancelled">
+                <source>order.status.text.cancelled</source>
+                <target>CANCELLED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.refunded">
+                <source>order.status.text.refunded</source>
+                <target>REFUNDED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.returned">
+                <source>order.status.text.returned</source>
+                <target>RETURNED</target>
             </trans-unit>
             <trans-unit id="current_payment_sources.title">
                 <source>current_payment_sources.title</source>

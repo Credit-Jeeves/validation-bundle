@@ -66,7 +66,7 @@ fixtures:
         unit:     Unit_1_6
         rent:     1700
         status:   approved
-        paid_to:  'now'
+        paid_to:  '-1 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -165,6 +165,19 @@ fixtures:
         tenant:   Tenant_12
         holding:  rjHolding_1
         group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_2
+        rent:     1400
+        status:   finished
+        paid_to:  '-120 days'
+        startAt:   '-360 days'
+        finishAt: '-120 days'
+        createdAt: '-50 days'
+        updatedAt: '-50 days'
+    Contract_15:
+        tenant:   Tenant_12
+        holding:  rjHolding_2
+        group:    RentGroup_6
         property: Property_1
         unit:     Unit_1_2
         rent:     1400
