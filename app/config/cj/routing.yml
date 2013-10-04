@@ -96,7 +96,7 @@ ApiBundle:
     type:     annotation
     prefix:   /api
     defaults:
-        _format:     xml
+        _format: xml
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
