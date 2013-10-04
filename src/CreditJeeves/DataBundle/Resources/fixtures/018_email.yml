@@ -44,3 +44,5 @@ fixtures:
     name: rjTenantLateContract.html
   email_22:
     name: rjPaymentDue.html
+  email_23:
+    name: rjListLateContracts.html

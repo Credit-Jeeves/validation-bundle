@@ -135,4 +135,13 @@ class Mailer extends BaseMailer
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
+
+    public function sendListLateContracts($landlord, $tenants, $sTemplate = 'rjListLateContracts')
+    {
+        $vars = array(
+            'nameLandlord' => $landlord->getFullName(),
+            'tenants' => $tenants,
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
 }

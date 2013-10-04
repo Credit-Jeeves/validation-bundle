@@ -332,4 +332,17 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->iterate();
     }
+
+    public function getAllLateContracts($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.holding = :holding');
+        $query->andWhere('c.status IN (:status)');
+        $query->andWhere('c.paid_to < :date');
+        $query->setParameter('holding', $holding);
+        $query->setParameter('status', $status);
+        $query->setParameter('date', new \Datetime());
+        $query = $query->getQuery();
+        return $query->iterate();
+    }
 }
