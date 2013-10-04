@@ -11,7 +11,7 @@ class EmailTenantCommandTest extends BaseTestCase
     /**
      * @test
      */
-    public function testExecute()
+    public function testExecuteAutoPayment()
     {
         $kernel = $this->getKernel();
         $application = new Application($kernel);
@@ -26,11 +26,56 @@ class EmailTenantCommandTest extends BaseTestCase
             array(
                 'command' => $command->getName(),
                 '--auto' => true,
-                '--days' => 6
+                '--days' => 5
             )
         );
-        //$this->assertEquals('Finished command "Email:tenant --auto"', $commandTester->getDisplay());
-        $this->assertRegExp('/Finished command/', $commandTester->getDisplay());
+        $this->assertRegExp('/Start processing auto payment contracts/', $commandTester->getDisplay());
+    }
+
+    /**
+     * @test
+     */
+    public function testExecuteNonAutoPayment()
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new EmailTenantCommand());
+    
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+    
+        $command = $application->find('Email:tenant');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+            )
+        );
+        $this->assertRegExp('/Start processing non auto contracts/', $commandTester->getDisplay());
+    }
+
+    /**
+     * Late payment
+     * @test
+     */
+    public function textExecuteLate()
+    {
+        $kernel = $this->getKernel();
+        $application = new Application($kernel);
+        $application->add(new EmailTenantCommand());
+        
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        
+        $command = $application->find('Email:tenant');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--type' => 'late',
+            )
+        );
+        $this->assertRegExp('/Start processing late contracts/', $commandTester->getDisplay());
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(1, $count);
     }

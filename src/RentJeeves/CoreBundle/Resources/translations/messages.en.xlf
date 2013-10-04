@@ -438,8 +438,8 @@
             <trans-unit id="are.you.sure.you.want.remove.property">
                 <source>are.you.sure.you.want.remove.property</source>
                 <target>
-                    Are you sure you want to remove this property? Any payments 
-          scheduled for this property will be cancelled. 
+                    Are you sure you want to remove this property? Any payments
+                    scheduled for this property will be cancelled.
                 </target>
             </trans-unit>
             <trans-unit id="tenant.info">
@@ -1224,7 +1224,7 @@
             </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
-                <target>You need to set up your RentTrack Merchant Account. Call 866-841-9090.</target>
+                <target>You need to set up your merchant account. Call 866-841-9090.</target>
             </trans-unit>
             <trans-unit id="address.not.valid">
                 <source>address.not.valid</source>
@@ -1237,6 +1237,70 @@
             <trans-unit id="select.rental">
                 <source>select.rental</source>
                 <target>Please select your rental.</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.new">
+                <source>order.status.text.new</source>
+                <target>PENDING</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.complete">
+                <source>order.status.text.complete</source>
+                <target>PAID</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.error">
+                <source>order.status.text.error</source>
+                <target>ERROR</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.cancelled">
+                <source>order.status.text.cancelled</source>
+                <target>CANCELLED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.refunded">
+                <source>order.status.text.refunded</source>
+                <target>REFUNDED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.returned">
+                <source>order.status.text.returned</source>
+                <target>RETURNED</target>
+            </trans-unit>
+            <trans-unit id="current_payment_sources.title">
+                <source>current_payment_sources.title</source>
+                <target>Current Payment Sources</target>
+            </trans-unit>
+            <trans-unit id="payment_source">
+                <source>payment_source</source>
+                <target>Payment Source</target>
+            </trans-unit>
+            <trans-unit id="expiration">
+                <source>expiration</source>
+                <target>Expiration</target>
+            </trans-unit>
+            <trans-unit id="payment_account_bank">
+                <source>payment_account_bank</source>
+                <target>Checking</target>
+            </trans-unit>
+            <trans-unit id="payment_account_card">
+                <source>payment_account_card</source>
+                <target>Credit Card</target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.title">
+                <source>payment_account.delete.title</source>
+                <target>Remove Payment Source</target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.text">
+                <source>payment_account.delete.text</source>
+                <target>
+                    Are you sure want to remove this payment source?
+                    Any recurring payments will br cancelled.
+                    Please visit the "Payments" page to set up new payments for any affect properties.
+                </target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.yes">
+                <source>payment_account.delete.yes</source>
+                <target>Yes, Remove Source</target>
+            </trans-unit>
+            <trans-unit id="payment_account.delete.no">
+                <source>payment_account.delete.no</source>
+                <target>No, Cancel</target>
             </trans-unit>
         </body>
     </file>

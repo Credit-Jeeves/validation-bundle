@@ -11,7 +11,7 @@
     {{ JSFV(paymentAccountType) }}
 </form>
 <p class="note" data-bind="visible: 'card' == paymentSource.type()">
-    <strong>{{ 'checkout.fee.note' | trans({'%FEE%': payment_fee}) }}</strong>
+    <strong>{{ 'checkout.fee.note' | trans({'%FEE%': payment_card_fee}) }}</strong>
     <i title="{{ 'checkout.fee.note.help' | trans }}" class="help after-checkbox pie-el tooltip-link">?</i>
 </p>
 

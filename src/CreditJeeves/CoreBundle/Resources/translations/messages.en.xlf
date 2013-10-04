@@ -6,6 +6,10 @@
                 <source>project_name</source>
                 <target>CreditJeeves</target>
             </trans-unit>
+            <trans-unit id="project.renttrack">
+                <source>project.renttrack</source>
+                <target>RentTrack</target>
+            </trans-unit>
             <trans-unit id="action_observe">
                 <source>action_observe</source>
                 <target>Observe</target>

@@ -275,4 +275,74 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->execute();
     }
+
+    public function getRentHoldings()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('h, c');
+        $query->innerJoin('c.holding', 'h');
+        $query->groupBy('h.id');
+        $query = $query->getQuery();
+        return $query->iterate();
+    }
+
+    public function getPaymentsByStatus($holding, $status = OrderStatus::COMPLETE)
+    {
+        $start = new \Datetime();
+        $end = new \Datetime('+1 day');
+        $query = $this->createQueryBuilder('c');
+        $query->select('SUM(o.amount)');
+        $query->innerJoin('c.holding', 'h');
+        $query->innerJoin('c.group', 'g');
+        $query->innerJoin('c.operations', 'operations');
+        $query->innerJoin('operations.orders', 'o');
+        $query->where('c.holding = :holding');
+        $query->andWhere('o.status =:status');
+        $query->andWhere('o.updated_at BETWEEN :start AND :end');
+        $query->setParameter('holding', $holding);
+        $query->setParameter('status', $status);
+        $query->setParameter('start', $start->format('Y-m-d'));
+        $query->setParameter('end', $end->format('Y-m-d'));
+        $query = $query->getQuery();
+        $result = $query->getOneOrNullResult();
+        return !empty($result) ? $result[1] : 0;
+    }
+
+    public function getLateAmount($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('SUM(c.rent)');
+        $query->where('c.holding = :holding');
+        $query->andWhere('c.status IN (:status)');
+        $query->andWhere('c.paid_to < :date');
+        $query->setParameter('holding', $holding);
+        $query->setParameter('status', $status);
+        $query->setParameter('date', new \Datetime());
+        $query = $query->getQuery();
+        $result = $query->getOneOrNullResult();
+        return !empty($result) ? $result[1] : 0;
+    }
+
+    public function getLateContracts($days = 5)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.paid_to BETWEEN :start AND :now');
+        $query->setParameter('start', new \Datetime('-'.$days.' days'));
+        $query->setParameter('now', new \Datetime());
+        $query = $query->getQuery();
+        return $query->iterate();
+    }
+
+    public function getAllLateContracts($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.holding = :holding');
+        $query->andWhere('c.status IN (:status)');
+        $query->andWhere('c.paid_to < :date');
+        $query->setParameter('holding', $holding);
+        $query->setParameter('status', $status);
+        $query->setParameter('date', new \Datetime());
+        $query = $query->getQuery();
+        return $query->iterate();
+    }
 }

@@ -214,11 +214,12 @@ class AddPropertyCase extends BaseTestCase
     public function checkEmailInviteLandlordAlreadyExist()
     {
         $this->login('landlord2@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(1, $contract, 'Wrong number of pending');
+        $this->assertCount(2, $contract, 'Wrong number of contracts');
         $this->logout();
     }
 }
