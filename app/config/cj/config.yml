@@ -58,9 +58,10 @@ sonata_admin:
 api:
     admin_dealer_code: %api.admin_dealer_code%
 
+
 fos_rest:
-#    format_listener:
-#        default_priorities: [html,xml,json]
+    format_listener:
+        default_priorities: [html,xml,json]
     view:
         view_response_listener: force
         formats:
