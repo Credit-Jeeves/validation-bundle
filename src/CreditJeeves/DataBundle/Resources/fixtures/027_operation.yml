@@ -13,6 +13,10 @@ fixtures:
   rjOperation_3:
     orders:
       - rjOrder_3
+      - rjOrder_3_error
+      - rjOrder_3_cancelled
+      - rjOrder_3_refunded
+      - rjOrder_3_returned
     contract: Contract_7
     type: rent
   rjOperation_4:

@@ -462,3 +462,142 @@ fixtures:
         Enjoy, <br />
         The RentTrack Team
       {% endblock %}
+
+# rjDailyReport.html
+  translation_20_subject:
+    translatable: email_20
+    locale: %locale%
+    property: subject
+    value: Daily Report.
+  translation_20_body:
+    translatable: email_20
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block email %}
+      <table 
+        width="100%"
+        style="
+          border: 1px solid #C8C8C8;
+          border-collapse: collapse;
+       "
+      >
+        <thead>
+          <tr
+            style="background-color: #F5F5F5; border: 1px solid #C8C8C8;"
+          >
+            <th style="padding:5px;">Status</th>
+            <th style="padding:5px;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, value in report %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ key }}</td>
+            <td style="padding:5px;">
+            {% if value > 0 %}
+              ${{ value }}
+            {% else %}
+            ---
+            {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
+      {% endblock %}
+
+# rjTenantLateContract.html
+  translation_21_subject:
+    translatable: email_21
+    locale: %locale%
+    property: subject
+    value: Late payment by Contract.
+  translation_21_body:
+    translatable: email_21
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% block email %}
+        You are late with payment for {{ diff }} day(s)
+        for address {{ address }}
+        <br />
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
+      {% endblock %}
+
+  translation_22_subject:
+    translatable: email_22
+    locale: %locale%
+    property: subject
+    value: Payment Due
+  translation_22_body:
+    translatable: email_22
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% block email %}
+        You need to pay for rent to {{ nameHolding }}
+        for address {{ address }}
+        <br />
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
+      {% endblock %}
+
+# rjDailyReport.html
+  translation_23_subject:
+    translatable: email_23
+    locale: %locale%
+    property: subject
+    value: List Late Contracts
+  translation_23_body:
+    translatable: email_23
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block email %}
+      <table 
+        width="100%"
+        style="
+          border: 1px solid #C8C8C8;
+          border-collapse: collapse;
+       "
+      >
+        <thead>
+          <tr
+            style="background-color: #F5F5F5; border: 1px solid #C8C8C8;"
+          >
+            <th style="padding:5px;">Tenant</th>
+            <th style="padding:5px;">Email</th>
+            <th style="padding:5px;">Address</th>
+            <th style="padding:5px;">Days Late</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tenant in tenants %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ tenant.name }}</td>
+            <td style="padding:5px;">{{ tenant.email }}</td>
+            <td style="padding:5px;">{{ tenant.address }}</td>
+            <td style="padding:5px;">{{ tenant.late }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        <br />
+        Enjoy, <br />
+        The RentTrack Team
+      {% endblock %}
