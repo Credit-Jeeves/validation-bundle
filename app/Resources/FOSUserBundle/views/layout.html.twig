@@ -1,5 +1,11 @@
 {% extends 'CoreBundle::base.html.twig' %}
 
+{% if application == 'rj'%}
+    {% block title %}
+        {{ 'project.renttrack'|trans }}
+    {% endblock %}
+{% endif %}
+
 {% block content %}
     <div>
       {% block fos_user_content %}

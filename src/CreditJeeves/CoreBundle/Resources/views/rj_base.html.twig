@@ -1,5 +1,9 @@
 {% extends "::base.html.twig" %}
 
+{% block title %}
+    {{ 'project.renttrack'|trans }}
+{% endblock %}
+
 {% block info %}
      {{ render(controller('RjComponentBundle:Blocks:info' )) }}
 {% endblock %}
