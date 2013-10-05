@@ -50,6 +50,10 @@ a.button {
     display: block;
 }
 
+a.button:hover {
+    text-decoration: none;
+}
+
 a.button.small {
     padding-left: 20px;
     width: 113px;

@@ -24,7 +24,7 @@ abstract class PaymentAccount
      * @ORM\ManyToOne(
      *      targetEntity="RentJeeves\DataBundle\Entity\Tenant",
      *      inversedBy="payment_accounts",
-     *      cascade={"all"}
+     *      cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *      name="user_id",
@@ -39,11 +39,15 @@ abstract class PaymentAccount
     protected $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Group", inversedBy="paymentAccounts")
+     * @ORM\ManyToOne(
+     *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *      inversedBy="paymentAccounts"
+     * )
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
      * @Assert\Type(type="CreditJeeves\DataBundle\Entity\Group")
      *
-     * @Serializer\Exclude
+     * @Serializer\SerializedName("groupId")
+     * @Serializer\Accessor(getter="getGroupId")
      */
     protected $group;
 
@@ -51,14 +55,15 @@ abstract class PaymentAccount
      * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
      *      inversedBy="payment_accounts",
-     *      cascade={"all"}
+     *      cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *      name="address_id",
      *      referencedColumnName="id"
      * )
      *
-     * @Serializer\Exclude
+     * @Serializer\SerializedName("addressId")
+     * @Serializer\Accessor(getter="getAddressId")
      *
      * @var \CreditJeeves\DataBundle\Entity\Address
      */
@@ -196,6 +201,16 @@ abstract class PaymentAccount
     }
 
     /**
+     * Get Group Id
+     *
+     * @return int
+     */
+    public function getGroupId()
+    {
+        return $this->group->getId();
+    }
+
+    /**
      * Set address
      *
      * @param \CreditJeeves\DataBundle\Entity\Address $address
@@ -216,6 +231,16 @@ abstract class PaymentAccount
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Get address Id
+     *
+     * @return int
+     */
+    public function getAddressId()
+    {
+        return empty($this->address) ? null : $this->address->getId();
     }
 
     /**

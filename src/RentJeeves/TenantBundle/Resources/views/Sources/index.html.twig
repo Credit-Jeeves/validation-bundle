@@ -5,36 +5,55 @@
         <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
     {% endstylesheets %}
 
-    <!-- Popup Delete Contract -->
-    <div id="payment-account-delete" class="pricing-popup dashboard-popup properties-popup">
-        <h1>{{ 'payment_account.delete.title' | trans() }}</h1>
-        <div class="clearfix col-box">
-            <div class="attention-box pie-el">
-                {{ 'payment_account.delete.text' | trans() }}
-            </div>
-            <h2></h2>
-            <div class="footer-button-box">
-                <a class="button buttonFix" data-bind="attr: { href: delUrl }">
-                    <span>{{ 'payment_account.delete.yes' | trans() }}</span>
-                </a>
-                <button data-bind="click: delClose" class="button grey buttonFix">
-                    <span>{{ 'payment_account.delete.no' | trans() }}</span>
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- end Delete Contract -->
-    <div id="payment-account-edit" class="pricing-popup dashboard-popup properties-popup">
-        <h1>{{ 'payment_account.delete.title' | trans() }}</h1>
-        {{ render(controller('RjCheckoutBundle:Component:source')) }}
-    </div>
-
-
     <div id="rent-menu">
         {{ knp_menu_render('TenantBundle:Builder:rentMenu', { 'template': 'TenantBundle:Sources:menu.html.twig' }) }}
     </div>
     <div class="row-20"></div>
     <div class="pod-large pod-border pod-padding shadow" id="payment-accounts">
+
+        <!-- Popups -->
+        <div id="payment-account-delete" class="pricing-popup dashboard-popup properties-popup">
+            <h1>{{ 'payment_account.delete.title' | trans() }}</h1>
+            <div class="clearfix col-box">
+                <div class="attention-box pie-el">
+                    {{ 'payment_account.delete.text' | trans() }}
+                </div>
+                <div class="row-20"></div>
+                <p data-bind="text: paymentSource.name"></p>
+                <div class="footer-button-box">
+                    <a class="button" data-bind="attr: { href: delUrl }" style="display: inline-block;">
+                        <span>{{ 'payment_account.delete.yes' | trans() }}</span>
+                    </a>
+                    <button data-bind="click: delClose" class="button grey buttonFix">
+                        <span>{{ 'payment_account.delete.no' | trans() }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="payment-account-edit" class="pricing-popup dashboard-popup properties-popup payments-popup">
+            <h1>{{ 'payment_account.edit.title' | trans() }}</h1>
+            <div class="clearfix col-box attention-container">
+                <div class="attention-box pie-el" style="display: none">
+                    <h3>{{ 'pay_popup.errors.title' | trans }}</h3>
+                    <ul class="default">
+                    </ul>
+                </div>
+                <div class="col long-label">
+                    {{ render(controller('RjCheckoutBundle:Component:source')) }}
+                </div>
+
+                <div class="footer-button-box">
+                    <button class="button buttonFix" data-bind="click: editSave">
+                        <span>{{ 'payment_account.edit.save' | trans() }}</span>
+                    </button>
+                    <button data-bind="click: editClose" class="button grey buttonFix">
+                        <span>{{ 'payment_account.edit.cancel' | trans() }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- end Popups -->
+
         <h1>{{ 'current_payment_sources.title' | trans() }}</h1>
         <div class="row-20"></div>
         <div class="properties-table-block table-wrap">
@@ -64,11 +83,11 @@
                                 >
                                     &nbsp;
                                 </a>
-                                <a id="payment-account-delete-{{ loop.revindex }}"
-                                        class="type-ico pie-el delete"
-                                        data-bind="click: delDialog.bind($data, {{ paymentAccount.getId }})"
-                                        href="#"
-                                        title="{{ 'delete' | trans }}"
+                                <a title="{{ 'delete' | trans }}"
+                                    id="payment-account-delete-{{ loop.revindex }}"
+                                    class="type-ico pie-el delete"
+                                    data-bind="click: delDialog.bind($data, {{ paymentAccount.getId }})"
+                                    href="#"
                                 >
                                     &nbsp;
                                 </a>

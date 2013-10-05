@@ -13,7 +13,6 @@ fixtures:
     PaymentAccount_2:
         user: Tenant_1
         group: RentGroup_2
-        address: TenantAddres_1
         type: bank
         name: Bank
         token: dfgh345653y23ty
@@ -22,7 +21,6 @@ fixtures:
     PaymentAccount_3:
         user: Tenant_2
         group: RentGroup_1
-        address: TenantAddres_2
         type: bank
         name: Bank
         token: dfgh34gfdhsty

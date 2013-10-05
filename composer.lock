@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ec0d3dff9456552da65db1438797a808",
+    "hash": "6123e69d5f8f87b797b09d8b9b03125e",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "80b777ebad06931c7f8ae8efbdaae297f9289295"
+                "reference": "72d11569f66917e3282e768fc81e5ea658de909d"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-10-04 13:43:36"
+            "time": "2013-09-26 13:03:26"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -406,11 +406,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "aa77f447e41cc02a60a91b7b37ce0cd6dabef159"
+                "reference": "e4407aa5537c42aadee66591221237987b796b3f"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-10-02 13:06:31"
+            "time": "2013-10-03 02:53:21"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -566,7 +566,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -1079,9 +1079,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1183,7 +1183,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -1478,12 +1478,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "09b63b2e18779b7ff62efbc34ac7303ba2cb1f98"
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/09b63b2e18779b7ff62efbc34ac7303ba2cb1f98",
-                "reference": "09b63b2e18779b7ff62efbc34ac7303ba2cb1f98",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/8a908b627d7f3d25478a89b8307a9fb9843a8293",
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293",
                 "shasum": ""
             },
             "require": {
@@ -1502,8 +1502,6 @@
                 "sensio/framework-extra-bundle": "~2.1",
                 "symfony/form": "~2.1",
                 "symfony/security": "~2.1",
-                "symfony/serializer": "~2.1",
-                "symfony/validator": "~2.1",
                 "symfony/yaml": "~2.1"
             },
             "suggest": {
@@ -1546,7 +1544,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2013-10-03 11:31:51"
+            "time": "2013-09-03 10:58:43"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -2068,7 +2066,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2419,12 +2417,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSSerializerBundle.git",
-                "reference": "07b6b6a2ba6566fd25d3db3177ef7e82255a2757"
+                "reference": "0c98dc74502b729ce473d387cf72fd294dae5b0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/07b6b6a2ba6566fd25d3db3177ef7e82255a2757",
-                "reference": "07b6b6a2ba6566fd25d3db3177ef7e82255a2757",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/0c98dc74502b729ce473d387cf72fd294dae5b0e",
+                "reference": "0c98dc74502b729ce473d387cf72fd294dae5b0e",
                 "shasum": ""
             },
             "require": {
@@ -2480,7 +2478,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-08-17 18:18:35"
+            "time": "2013-09-09 07:25:33"
         },
         {
             "name": "knplabs/knp-menu",
@@ -2530,7 +2528,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "Knplabs",
+                    "name": "KnpLabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -2883,7 +2881,7 @@
             ],
             "authors": [
                 {
-                    "name": "Maksim Kotlyar",
+                    "name": "Kotlyar Maksim",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -2901,7 +2899,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/Heartland.git",
-                "reference": "9bc67361470214cd6b52f3ca93341c185d54896f"
+                "reference": "800673c86a866d972d04d345c887c86bcb510942"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -2941,7 +2939,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2013-08-26 19:41:43"
+            "time": "2013-10-01 14:40:32"
         },
         {
             "name": "payum/payum",
@@ -3112,7 +3110,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -3699,16 +3697,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stof/StofDoctrineExtensionsBundle.git",
-                "reference": "6e8dc798687963ffc4e4e0dfa687b361699855a9"
+                "reference": "6577f2388abeac4896aa0aef37fc1b6f2c6923e9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/6e8dc798687963ffc4e4e0dfa687b361699855a9",
-                "reference": "6e8dc798687963ffc4e4e0dfa687b361699855a9",
+                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/6577f2388abeac4896aa0aef37fc1b6f2c6923e9",
+                "reference": "6577f2388abeac4896aa0aef37fc1b6f2c6923e9",
                 "shasum": ""
             },
             "require": {
-                "gedmo/doctrine-extensions": "~2.3.1",
+                "gedmo/doctrine-extensions": "2.3.*",
                 "php": ">=5.3.2",
                 "symfony/framework-bundle": "~2.1"
             },
@@ -3752,7 +3750,7 @@
                 "translatable",
                 "tree"
             ],
-            "time": "2013-09-16 09:35:16"
+            "time": "2013-06-25 08:05:01"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4184,16 +4182,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.13.2",
+            "version": "v1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "v1.13.2"
+                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.13.2",
-                "reference": "v1.13.2",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/224fc55635d544a2ec8edb3592be18db5a093f59",
+                "reference": "224fc55635d544a2ec8edb3592be18db5a093f59",
                 "shasum": ""
             },
             "require": {
@@ -4202,7 +4200,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.13-dev"
+                    "dev-master": "1.14-dev"
                 }
             },
             "autoload": {
@@ -4229,7 +4227,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-08-03 15:35:31"
+            "time": "2013-10-03 06:41:20"
         },
         {
             "name": "willdurand/expose-translation-bundle",
@@ -4896,7 +4894,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",

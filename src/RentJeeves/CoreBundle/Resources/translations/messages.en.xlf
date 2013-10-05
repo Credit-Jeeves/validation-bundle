@@ -1286,6 +1286,10 @@
                 <source>payment_account.delete.title</source>
                 <target>Remove Payment Source</target>
             </trans-unit>
+            <trans-unit id="payment_account.edit.title">
+                <source>payment_account.edit.title</source>
+                <target>Edit Payment Source</target>
+            </trans-unit>
             <trans-unit id="payment_account.delete.text">
                 <source>payment_account.delete.text</source>
                 <target>
@@ -1301,6 +1305,14 @@
             <trans-unit id="payment_account.delete.no">
                 <source>payment_account.delete.no</source>
                 <target>No, Cancel</target>
+            </trans-unit>
+            <trans-unit id="payment_account.edit.save">
+                <source>payment_account.edit.save</source>
+                <target>Save Changes</target>
+            </trans-unit>
+            <trans-unit id="payment_account.edit.cancel">
+                <source>payment_account.edit.cancel</source>
+                <target>Cancel</target>
             </trans-unit>
         </body>
     </file>

@@ -32,7 +32,7 @@ function Pay(parent, contractId) {
                 jQuery('#pay-popup').showOverlay();
                 jQuery.get(Routing.generate('experian_pidkiq_get'), '', function(data, textStatus, jqXHR) {
                     if (data['status'] && 'error' == data['status']) {
-                        addFormError(null, data['error']);
+                        window.formProcess.addFormError(forms[newValue], data['error']);
                         return;
                     }
                     parent.questions = data; //TODO add identity check
@@ -80,8 +80,6 @@ function Pay(parent, contractId) {
 
     this.contractId = contract.id;
     this.paymentAccountId = ko.observable(null);
-
-    this.groupId = ko.observable(contract.group_id);
     /* /Form fields/ */
 
 
@@ -121,6 +119,7 @@ function Pay(parent, contractId) {
     }, this);
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
+    this.paymentSource.groupId(contract.group_id);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
     this.questions = ko.observable(parent.questions);
@@ -201,57 +200,24 @@ function Pay(parent, contractId) {
 //                jQuery('#pay-popup').hideOverlay();
 //            },
             error: function(jqXHR, textStatus, errorThrown) {
-                removeAllErrors();
+                window.formProcess.removeAllErrors('#pay-popup ');
                 jQuery('#pay-popup').hideOverlay();
-                if ('SyntaxError: Unexpected token <' == errorThrown &&
-                    '<!DOCTYPE' == jqXHR.responseText.substr(0, 9)
-                ) {
-                    jQuery('body').showOverlay();
-                    window.location.reload();
-                }
-                addFormError(null, errorThrown);
+                window.formProcess.reLogin(jqXHR, errorThrown);
+                window.formProcess.addFormError('#' + formId, errorThrown);
             },
             success: function(data, textStatus, jqXHR) {
-                removeAllErrors();
+                window.formProcess.removeAllErrors('#pay-popup ');
                 jQuery.each(forms, function(key, formName) {
                     $('#' + formName + ' .error').removeClass('error');
                 });
 
                 jQuery('#pay-popup').hideOverlay();
                 if (!data.success) {
-                    applyErrors(data);
+                    window.formProcess.applyErrors(data);
                     return;
                 }
                 onSuccessStep(data);
             }
-        });
-    };
-
-    var applyErrorsToField = function(formName, fieldName, errors) {
-        var formValidator = jsfv[formName];
-        jQuery.each(errors, function(key, error) {
-            if ('[object Array]' === Object.prototype.toString.call(error)) {
-                applyErrorsToField(formName, key, error);
-            } else {
-                if (field = formValidator.id(fieldName)) {
-                    formValidator.addError(field, error);
-                } else {
-                    formValidator.addError(formValidator.id(formName), error);
-                }
-            }
-        });
-    };
-
-    var removeAllErrors = function() {
-        $('#pay-popup .attention-box').hide();
-        $('#pay-popup .attention-box ul li').remove();
-    };
-
-    var applyErrors = function(data) {
-        jQuery.each(data, function(formName, fields) {
-            jQuery.each(fields, function(fieldName, errors) {
-                applyErrorsToField(formName, fieldName, errors);
-            });
         });
     };
 
@@ -280,7 +246,7 @@ function Pay(parent, contractId) {
 
     this.previous = function() {
         current--;
-        removeAllErrors();
+        window.formProcess.removeAllErrors('#pay-popup ');
         this.step(steps[current]);
     };
 
@@ -311,19 +277,8 @@ function Pay(parent, contractId) {
 
     ko.applyBindings(this, $('#pay-popup').get(0));
 
-    var addFormError = function(field, errorMessage) {
-        $('#pay-popup .attention-box').show();
-        // Add errors block
-        $(field).parents('.form-row').addClass('error');
-        $(field).addClass('error');
-
-
-        // Add error
-        $('#pay-popup .attention-box ul').append('<li>'+errorMessage+'</li>');
-    };
-
     jQuery.each(forms, function(key, formName) {
-        jsfv[formName].addError = addFormError;
+        jsfv[formName].addError = window.formProcess.addFormError;
         jsfv[formName].removeErrors = function(field) {};
         jQuery('#' + formName).submit(function() {
             self.next();
@@ -331,5 +286,5 @@ function Pay(parent, contractId) {
         });
     });
 
-    removeAllErrors();
+    window.formProcess.removeAllErrors('#pay-popup ');
 }
