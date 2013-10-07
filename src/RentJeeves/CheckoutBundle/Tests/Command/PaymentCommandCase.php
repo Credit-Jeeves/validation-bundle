@@ -6,13 +6,14 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CheckoutBundle\Command\PaymentCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
-class PaymentCommandTest extends BaseTestCase
+class PaymentCommandCase extends BaseTestCase
 {
     /**
      * @test
      */
     public function testExecute()
     {
+        $this->load(true);
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new PaymentCommand());

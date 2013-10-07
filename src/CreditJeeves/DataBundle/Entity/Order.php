@@ -92,4 +92,10 @@ class Order extends BaseOrder
         }
         return $result;
     }
+
+    public function checkDelay()
+    {
+        $operation = $this->getOperation();
+        $contract = $operation->getContract;
+    }
 }

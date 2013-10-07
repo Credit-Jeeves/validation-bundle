@@ -131,7 +131,7 @@ fixtures:
         unit:     Unit_1_11
         rent:     2100
         status:   current
-        paid_to:  '30 days'
+        paid_to:  '-1 days'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'

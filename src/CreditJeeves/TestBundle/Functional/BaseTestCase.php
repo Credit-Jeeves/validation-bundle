@@ -26,7 +26,7 @@ abstract class BaseTestCase extends Base
      */
     protected $envPath = '/_test.php/';
     protected $timeout = 15000;
-    protected static $isFixturesLoaded = false;
+    
 
     protected function getUrl()
     {
@@ -71,14 +71,7 @@ abstract class BaseTestCase extends Base
      */
     protected function load($reload = false)
     {
-        if (self::$isFixturesLoaded && !$reload) {
-            return;
-        }
-       
-        $khepin = $this->getContainer()->get('khepin.yaml_loader');
-        $khepin->purgeDatabase('orm');
-        $khepin->loadFixtures();
-        self::$isFixturesLoaded = true;
+        parent::load($reload);
         $this->clearEmail();
     }
 
