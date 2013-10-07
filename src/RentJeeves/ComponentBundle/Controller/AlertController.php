@@ -19,7 +19,7 @@ class AlertController extends Controller
         $alerts = array();
         $group = $this->getUser()->getCurrentGroup();
         $contracts = $group->getContracts();
-        $deposit = $group->getDepositAccounts();
+        $deposit = $group->getDepositAccount();
         $pending = 0;
         foreach ($contracts as $contract) {
             $status = $contract->getStatus();
