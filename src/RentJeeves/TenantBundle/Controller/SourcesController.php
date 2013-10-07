@@ -41,7 +41,7 @@ class SourcesController extends Controller
      */
     public function delAction(Request $request, $id)
     {
-        $em = $this->getDoctrine()->getManager();;
+        $em = $this->getDoctrine()->getManager();
         /** @var PaymentAccount $paymentAccount */
         $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($id);
         if (empty($paymentAccount) || $this->getUser()->getId() != $paymentAccount->getUser()->getId()) {
