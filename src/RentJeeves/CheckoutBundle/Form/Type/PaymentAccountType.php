@@ -276,7 +276,7 @@ class PaymentAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'common.address',
                 'expanded' => true,
-                'choices' => $this->user->getAddresses(),
+                'choices' => clone $this->user->getAddresses(),
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.address.addressChoice',
                     'row_attr' => array(
@@ -344,13 +344,14 @@ class PaymentAccountType extends AbstractType
         );
 
         $builder->add('submit', 'submit', array('attr' => array('force_row' => true, 'class' => 'hide_submit')));
+        $builder->add('id', 'hidden', array('attr' => array('data-bind' => 'value: paymentSource.id')));
         $builder->add(
             'groupId',
             'hidden',
             array(
                 'mapped' => false,
                 'attr' => array(
-                    'data-bind' => 'value: groupId',
+                    'data-bind' => 'value: paymentSource.groupId',
                 )
             )
         );

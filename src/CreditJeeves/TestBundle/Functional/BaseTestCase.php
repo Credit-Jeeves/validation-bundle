@@ -159,6 +159,8 @@ abstract class BaseTestCase extends Base
                             break;
                         } catch (\PHPUnit_Framework_ExpectationFailedException $e) {
                             if ($i--) {
+                                $form->setValue($field, '');
+                                $form->fillField($field, '');
                                 sleep(1);
                             } else {
                                 $this->fail("Value '{$value}' did not set to field '{$field}'");
