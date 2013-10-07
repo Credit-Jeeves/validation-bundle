@@ -57,11 +57,22 @@ trait PaymentProcess
             $ccMonth = $paymentAccountType->get('ExpirationMonth')->getData();
             $ccYear = $paymentAccountType->get('ExpirationYear')->getData();
             $paymentAccountEntity->setCcExpiration(new DateTime("last day of {$ccYear}-{$ccMonth}"));
-            $paymentAccountEntity->getAddress()->setUser($this->getUser());
+
             /** @var Address $address */
             if ($address = $paymentAccountType->get('address_choice')->getData()) {
+//                /** @var Address $ad */
+//                foreach ($this->getUser()->getAddresses() as $ad) { // TODO find a problem and remove
+//                    if ($address->getId() == $ad->getId()) {
+//                        $address = $ad;
+//                        var_dump($ad->getZip());
+//                        break;
+//                    }
+//                }
                 $paymentAccountEntity->setAddress($address);
             }
+            $paymentAccountEntity->getAddress()->setUser($this->getUser());
+
+
             $request->getAccountHolderData()->setAddress($paymentAccountEntity->getAddress()->getAddress());
             $request->getAccountHolderData()->setCity($paymentAccountEntity->getAddress()->getCity());
             $request->getAccountHolderData()->setState($paymentAccountEntity->getAddress()->getArea());
@@ -86,12 +97,16 @@ trait PaymentProcess
         }
 
         $merchantName = null;
-        $group = null;
-        /** @var Group $group */
-        if ($group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData())) {
+        $group = $paymentAccountEntity->getGroup();
+        if (empty($group)) {
+            /** @var Group $group */
+            if ($group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData())) {
+                $merchantName = $group->getMerchantName();
+            }
+            $paymentAccountEntity->setGroup($group);
+        } else {
             $merchantName = $group->getMerchantName();
         }
-        $paymentAccountEntity->setGroup($group);
 
         if (empty($merchantName)) {
             return new JsonResponse(

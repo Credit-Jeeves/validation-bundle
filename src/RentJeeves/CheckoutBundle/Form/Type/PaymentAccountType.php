@@ -276,7 +276,7 @@ class PaymentAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'common.address',
                 'expanded' => true,
-                'choices' => $this->user->getAddresses(),
+                'choices' => clone $this->user->getAddresses(),
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.address.addressChoice',
                     'row_attr' => array(

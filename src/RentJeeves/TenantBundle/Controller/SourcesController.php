@@ -41,25 +41,15 @@ class SourcesController extends Controller
      */
     public function delAction(Request $request, $id)
     {
-        $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
-
-        $paymentAccountType->handleRequest($request);
-        if (!$paymentAccountType->isValid()) {
-            return $this->renderErrors($paymentAccountType);
+        $em = $this->getDoctrine()->getManager();;
+        /** @var PaymentAccount $paymentAccount */
+        $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($id);
+        if (empty($paymentAccount) || $this->getUser()->getId() != $paymentAccount->getUser()->getId()) {
+            return $this->createNotFoundException("Payment Account with ID '{$id}' not found");
         }
-        $em = $this->getDoctrine()->getManager();
-        /** @var PaymentAccount $paymentAccountEntity */
-        $paymentAccountEntity = $paymentAccountType->getData();
-
-        $em->persist($paymentAccountEntity);
+        $em->remove($paymentAccount);
         $em->flush();
-
-        return new JsonResponse(
-            array(
-                'success' => true,
-                'paymentAccountId' => $paymentAccountEntity->getId()
-            )
-        );
+        return $this->redirect($request->headers->get('referer'));
     }
 
     /**
@@ -74,15 +64,15 @@ class SourcesController extends Controller
         $id = null;
         $formData = $request->get($form->getName());
 
+        /** @var PaymentAccount $paymentAccount */
         if (!empty($formData['id'])) {
             $id = $formData['id'];
-            $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($id);
+            $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->findOneWithGroupAddress($id);
         }
 
         if (empty($paymentAccount)) {
             return $this->createNotFoundException("Payment Account with ID '{$id}' not found");
         }
-
 
         $paymentAccountType = $this->createForm($form, $paymentAccount);
 
