@@ -1,10 +1,14 @@
 {% extends 'CoreBundle::base.html.twig' %}
 
-{% if application == 'rj'%}
+
     {% block title %}
+        {% if application == 'rj'%}
         {{ 'project.renttrack'|trans }}
+        {% else %}
+        {{ 'project_name'|trans }}
+        {% endif %}
     {% endblock %}
-{% endif %}
+
 
 {% block content %}
     <div>
