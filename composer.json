@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "aa77f447e41cc02a60a91b7b37ce0cd6dabef159"
+                    "reference": "e4407aa5537c42aadee66591221237987b796b3f"
                 }
             }
         },
@@ -148,7 +148,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.12",
+        "php": ">=5.4.12,<5.5.0",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-mcrypt": "*",

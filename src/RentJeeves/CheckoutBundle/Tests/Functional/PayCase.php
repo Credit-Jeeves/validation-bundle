@@ -190,6 +190,6 @@ class PayCase extends BaseTestCase
         );
         $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));
 
-
+        $this->logout();
     }
 }

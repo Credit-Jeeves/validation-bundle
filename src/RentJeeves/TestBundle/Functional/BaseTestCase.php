@@ -22,9 +22,7 @@ abstract class BaseTestCase extends Base
         $container = $this->getContainer();
         $khepin = $container->get('khepin.yaml_loader');
 
-        if ($reload) {
-            $khepin->purgeDatabase('orm');
-        }
+        $khepin->purgeDatabase('orm');
         $khepin->loadFixtures();
         self::$isFixturesLoaded = true;
 
