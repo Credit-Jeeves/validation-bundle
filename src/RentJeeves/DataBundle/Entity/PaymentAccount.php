@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Model\PaymentAccount as Base;
 
 /**
  * @ORM\Table(name="rj_payment_account")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentAccountRepository")
  */
 class PaymentAccount extends Base
 {

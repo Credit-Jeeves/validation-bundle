@@ -1,5 +1,5 @@
-Credit-Jeeves Symfony 2.2
-========================
+Credit-Jeeves & Rent-Track
+============================
 
 http://symfony.com/doc/2.2/contributing/code/standards.html - Default coding standard for this project
 
@@ -19,7 +19,6 @@ php bin/environment.php --prod
 
 Possible params for environment.php --help or in the file /data/environment/profiles.ini
 
-
 Manual Installation
 ------------
 
@@ -36,14 +35,6 @@ cd vendor/credit-jeeves/credit-jeeves
 
 Additional required configuration
 http://symfony.com/doc/current/book/installation.html#configuration-and-setup
-
-RentJeeves
-==========
-
-Installation
-------------
-
-To be done.
 
 Manual Installation for dev env
 -------------------------------
@@ -87,7 +78,7 @@ php app/console assetic:dump --app=rj --watch
 Tests
 -----
 
-Selenium server (RC) version 2.33.0 and it does not work with Firefox 23.x
+Selenium server (RC) version 2.33.0 does not work with Firefox 23.x
 
 
 STG
