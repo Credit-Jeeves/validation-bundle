@@ -223,7 +223,7 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Get Paid On-Time Using RentTrack{% endblock %}
+      {% block h1 %}Get Paid Fast Using RentTrack{% endblock %}
       {% block email %}
         {% if nameLandlord %}
             Hi {{ nameLandlord }}! <br />  <br />
@@ -238,7 +238,7 @@ fixtures:
         check transfers and credit cards - payments are deposited faster and directly to your account.
         Reminders are sent automatically to your tenants before rent is due and late notices are sent
         to you immediately. If you have multiple properties, you can see the status of your payments
-        all in one place. Top top it off, your tenant has an additional incentive to pay
+        all in one place. To top it off, your tenant has an additional incentive to pay
         on time each month.<br /> <br />
 
         Ready to get paid? <br /> <br />
@@ -264,7 +264,7 @@ fixtures:
                   -moz-border-radius: 4px;
                   -webkit-border-radius: 4px;
                   border-radius: 4px;"
-      >Sign up</a> Still have some questions? <a href="#">Learn More</a>
+      >Sign up</a> Still have some questions? <a href="#">Read More</a> or call 866.841.9090
       {% endblock %}
 
 # rjTenantInvite.html email
@@ -364,16 +364,12 @@ fixtures:
       {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
       {% block email %}
         Congratulations! {{ fullNameLandlord }} has teamed up with RentTrack.
-        <br />
-        To start paying rent for {{ address }} {{ unitName }}, 
-        <a href="http://my.renttrack.com/">log in and set up your payment</a> 
-        for {{ rentAmount }}. We'd recommend setting up <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a> so you have one less thing to worry about.
-        <br />
+        <br /><br />
+        <a href="http://my.renttrack.com/">Log in now</a> to set up your rent payment for {{ address }} {{ unitName }}
+        <br /><br />
+        We'd recommend setting up <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a> so you have one less thing to worry about.
+        <br /><br />
         You're ready to build credit buy paying rent securely online. 
-        <br />
-        <br />
-        Enjoy, <br />
-        The RentTrack Team
       {% endblock %}
 
 # rjPendingContract.html

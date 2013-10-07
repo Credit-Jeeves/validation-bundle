@@ -16,15 +16,15 @@ imports:
 
 parameters:
     server_name: '%server_name_rj%'
-    support_email: help@rentjeeves.com
-    support_phone: (866)-976-6622
+    support_email: help@renttrack.com
+    support_phone: (866) 841-9090
 
-    email_from: no-reply@renttjeeves.com
+    email_from: no-reply@renttrack.com
     email_name: RentTrack
 
     external_urls:
-        main_site: 'www.rentjeeves.com'
-        user_voice: 'rentjeeves.uservoice.com'
+        main_site: 'www.renttrack.com'
+        user_voice: 'renttrack.uservoice.com'
 # parameters for twig
     payment_bank_fee: 0.10
     payment_card_fee: 2.95%
