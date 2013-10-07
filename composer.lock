@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "6123e69d5f8f87b797b09d8b9b03125e",
+    "hash": "d1c91c4e38f35a73b0192bc73dc637b2",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -376,7 +376,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "c074ebf8c0cfd891037c77c967630aa2d0cbcba1"
+                "reference": "3c98a2468fdfee512e2d16b722a07033addc9533"
             },
             "require": {
                 "ext-mcrypt": "*",
@@ -398,7 +398,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-09-29 22:41:01"
+            "time": "2013-10-07 07:41:34"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -5027,7 +5027,7 @@
         "khepin/yaml-fixtures-bundle": 20
     },
     "platform": {
-        "php": ">=5.4.12",
+        "php": ">=5.4.12,<5.5.0",
         "ext-curl": "*",
         "ext-date": "*",
         "ext-mcrypt": "*",
