@@ -3,7 +3,7 @@ namespace CreditJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-//use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 
@@ -21,8 +21,8 @@ use JMS\DiExtraBundle\Annotation\Tag;
  * @Tag(
  *     "doctrine.event_listener",
  *     attributes = {
- *         "event"="postUpdate",
- *         "method"="postUpdate"
+ *         "event"="postPersist",
+ *         "method"="postPersist" 
  *     }
  * )
  */
@@ -36,26 +36,20 @@ class OrderListener
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
+        
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            //echo __METHOD__;
-            //$this->setScore($entity, $em);
+            $entity->checkOrderProperties();
         }
     }
 
-    /**
-     * This method for emails
-     * @param LifecycleEventArgs $eventArgs
-     */
-    public function postUpdate(LifecycleEventArgs $eventArgs)
+    public function postPersist(LifecycleEventArgs $eventArgs)
     {
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            //echo __METHOD__;
-            //$this->checkCompleted($entity, $em);
+            // here will be email call
         }
-        
     }
 }

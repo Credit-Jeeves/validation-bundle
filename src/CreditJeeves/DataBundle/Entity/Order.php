@@ -93,9 +93,8 @@ class Order extends BaseOrder
         return $result;
     }
 
-    public function checkDelay()
+    public function checkOrderProperties()
     {
-        $operation = $this->getOperation();
-        $contract = $operation->getContract;
+        echo __METHOD__."\n";
     }
 }
