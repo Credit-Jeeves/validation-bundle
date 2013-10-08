@@ -8,9 +8,9 @@ fixtures:
     cjHolding_3:
         name: Test Holding
     cjHolding700Credit:
-      name:           700Credit
-      createdAt:     '-60 days'
-      updatedAt:     '-8 days'
+        name:           700Credit
+        createdAt:     '-60 days'
+        updatedAt:     '-8 days'
 # RentJeeves Holdings
     rjHolding_1:
         name:           Rent Holding
