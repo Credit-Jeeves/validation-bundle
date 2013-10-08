@@ -24,7 +24,7 @@ class PaymentCommandCase extends BaseTestCase
                 'command' => $command->getName(),
             )
         );
-        $this->assertRegExp('/Start payment process(.+)OK/', $commandTester->getDisplay());
+        $this->assertRegExp('/Start payment process(.*)OK/', $commandTester->getDisplay());
         $this->markTestIncomplete('Add checks');
     }
 }

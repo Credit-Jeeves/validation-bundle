@@ -95,6 +95,19 @@ class Order extends BaseOrder
 
     public function checkOrderProperties()
     {
-        echo __METHOD__."\n";
+//         $type = $this->getType();
+//         $operation = $this->getOperations();
+//         echo get_class($operation);
+//         echo count($operation);
+       //$operation = $orderOperation->getOperation();
+//         $status = $this->getStatus();
+//         $operation = $this->getOperations()->last();
+//         $operationType = $operation->getType();
+//         echo $operation->getType();
+//         echo $this->getUser()->getFullName()."\n";
+//         echo $this->getType()."\n";
+//         echo $this->getStatus()."\n";
+//         echo $this->getAmount()."\n";
+//         echo "*************\n";
     }
 }

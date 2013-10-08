@@ -2,6 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+//use CreditJeeves\DataBundle\Entity\OrderOperation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -61,9 +62,6 @@ class PaymentCommand extends ContainerAwareCommand
             $contract = $payment->getContract();
 //            $tenant = $contract->getTenant();
 
-
-
-
             $amount = $payment->getAmount();
             $fee = 0;
 
@@ -81,10 +79,9 @@ class PaymentCommand extends ContainerAwareCommand
                 $order->setType(OrderType::HEARTLAND_BANK);
             }
 
-
             $order->setUser($paymentAccount->getUser());
             $order->setAmount($amount); // TODO findout about fee
-            $order->getStatus(OrderStatus::NEWONE);
+            $order->setStatus(OrderStatus::NEWONE);
             $order->setDaysLate(0); //FIXME Alex please put her correct value!
 
 
@@ -98,10 +95,7 @@ class PaymentCommand extends ContainerAwareCommand
             $tokenToCharge->setAmount($amount);
             $tokenToCharge->setExpectedFeeAmount($fee);
             $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
-
-
             $tokenToCharge->setToken($paymentAccount->getToken());
-
 
             $request->getTokensToCharge()->setTokenToCharge(array($tokenToCharge));
 
@@ -109,7 +103,6 @@ class PaymentCommand extends ContainerAwareCommand
             $transaction->setAmount($amount);
             $transaction->setFeeAmount($fee);
             $request->setTransaction($transaction);
-
 
             $paymentDetails = new PaymentDetails();
             $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());
