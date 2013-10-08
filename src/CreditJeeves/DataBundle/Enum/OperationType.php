@@ -8,6 +8,13 @@ use CreditJeeves\CoreBundle\Enum;
  */
 class OperationType extends Enum
 {
+    /**
+     * @var string
+     */
     const REPORT = 'report';
+
+    /**
+     * @var string
+     */
     const RENT = 'rent';
 }

@@ -68,7 +68,6 @@ class PaymentCommand extends ContainerAwareCommand
             $order = new Order();
             $operation = new Operation();
             $operation->setType(OperationType::RENT);
-            $operation->addOrder($order);
             $operation->setContract($contract);
 
             if (PaymentAccountType::CARD == $paymentAccount->getType()) {
@@ -83,7 +82,7 @@ class PaymentCommand extends ContainerAwareCommand
             $order->setUser($paymentAccount->getUser());
             $order->setAmount($amount); // TODO findout about fee
             $order->setStatus(OrderStatus::NEWONE);
-            $order->setDaysLate(0); //FIXME Alex please put her correct value!
+//            $order->setDaysLate(0); //FIXME Alex please put her correct value!
 
 
             $request = new MakePaymentRequest();
