@@ -1,6 +1,7 @@
 function PaymentSources() {
     var self = this;
     var formName = 'rentjeeves_checkoutbundle_paymentaccounttype';
+    this.newUserAddress = ko.observableArray([]);
 
     this.paymentSource = new PaymentSource(this, true, null);
 

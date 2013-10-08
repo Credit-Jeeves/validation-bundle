@@ -15,6 +15,7 @@ function Pay(parent, contractId) {
     if ('passed' == parent.verification) {
         steps.splice(2, 2);
     }
+    this.newUserAddress = ko.observableArray([]);
     this.step = ko.observable('details');
     this.step.subscribe(function(newValue) {
         switch (newValue) {

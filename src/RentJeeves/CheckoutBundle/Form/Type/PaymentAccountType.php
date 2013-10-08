@@ -282,10 +282,25 @@ class PaymentAccountType extends AbstractType
                     'row_attr' => array(
                         'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     ),
-                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
-                        '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
-                            'common.add_new' .
-                        '</a></div>'
+                    'html' =>
+                        '<!-- ko foreach: newUserAddress -->' .
+                            '<label class="checkbox radio">' .
+                                '<input type="radio" name="' . $this->getName() . '[address_choice]"' .
+                                    'required="required"' .
+                                    'data-bind="' .
+                                        'checked: paymentSource.address.addressChoice, ' .
+                                        'attr: {id: ' . $this->getName() . '_address_choice + $data.id() }' .
+                                        'value: $data.id()' .
+                                    '" />' .
+                                '<i></i>' .
+                                '<span data-bind="text: $data.toString()"></span>' .
+                            '</label>' .
+                        '<!-- /ko -->' .
+                        '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
+                            '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
+                                'common.add_new' .
+                            '</a>' .
+                        '</div>'
                 ),
                 'invalid_message' => 'checkout.error.address_choice.invalid',
                 'constraints' => array(

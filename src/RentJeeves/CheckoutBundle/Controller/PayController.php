@@ -74,6 +74,7 @@ class PayController extends Controller
 
         /** @var Address $address */
         $address = null;
+        $isNewAddress = false;
         $em->getRepository('DataBundle:Address')->resetDefaults($this->getUser()->getId());
         /** @var Address $addressChose */
         /** @var Address $newAddress */
@@ -83,6 +84,7 @@ class PayController extends Controller
             $address = $newAddress;
             $address->setUser($this->getUser());
             $address->setIsDefault(1);
+            $isNewAddress = true;
         }
 
         $data = $userType->getData();
@@ -92,7 +94,12 @@ class PayController extends Controller
 
         return new JsonResponse(
             array(
-                'success' => true
+                'success' => true,
+                'newAddress' => $isNewAddress ?
+                    $this->get('jms_serializer')->serialize(
+                        $address,
+                        'array'
+                    ) : null
             )
         );
     }
@@ -127,6 +134,11 @@ class PayController extends Controller
         ) {
             $paymentEntity->setPaymentAccount($paymentAccount);
         }
+        if ('on' != $paymentType->get('ends')->getData()) {
+            $paymentEntity->setEndMonth(null);
+            $paymentEntity->setEndYear(null);
+        }
+
 
         $em->persist($paymentEntity);
         $em->flush($paymentEntity);
