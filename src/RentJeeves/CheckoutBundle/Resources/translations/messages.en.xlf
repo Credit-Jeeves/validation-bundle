@@ -380,7 +380,7 @@
             </trans-unit>
             <trans-unit id="checkout.last_payment_on">
                 <source>checkout.last_payment_on</source>
-                <target>LastPayment On</target>
+                <target>Last Payment On</target>
             </trans-unit>
             <trans-unit id="checkout.error.address_choice.empty">
                 <source>checkout.error.address_choice.empty</source>
