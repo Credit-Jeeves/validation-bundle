@@ -806,7 +806,7 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.answers">
                 <source>pidkiq.error.answers-%SUPPORT_EMAIL%</source>
-                <target>Some of the answers you provided to the questions are incorrect. We're sorry but we cannot authenticate you at this time. Please try again in one hour, or contact %SUPPORT_EMAIL% if you feel this is an error.</target>
+                <target>Some of the answers you provided to the questions are incorrect. We're sorry but we cannot verify your identity at this time. Please try again in one hour, or contact %SUPPORT_EMAIL% if you feel this is an error.</target>
             </trans-unit>
             <trans-unit id="pidkiq.error.lock">
                 <source>pidkiq.error.lock-%SUPPORT_EMAIL%</source>

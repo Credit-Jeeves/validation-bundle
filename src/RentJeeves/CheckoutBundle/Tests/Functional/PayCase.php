@@ -142,7 +142,7 @@ class PayCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(1, $errors);
-        $this->assertEquals('pidkiq.error.answers-help@rentjeeves.com', $errors[0]->getText());
+        $this->assertEquals('pidkiq.error.answers-help@renttrack.com', $errors[0]->getText());
 
 
         $this->fillForm(
