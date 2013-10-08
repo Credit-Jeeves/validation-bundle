@@ -98,16 +98,16 @@ class Order extends BaseOrder
 //         $type = $this->getType();
 //         $operation = $this->getOperations();
 //         echo get_class($operation);
-//         echo count($operation);
+//         echo ' = '.count($operation)."\n";
        //$operation = $orderOperation->getOperation();
 //         $status = $this->getStatus();
 //         $operation = $this->getOperations()->last();
 //         $operationType = $operation->getType();
 //         echo $operation->getType();
-//         echo $this->getUser()->getFullName()."\n";
-//         echo $this->getType()."\n";
-//         echo $this->getStatus()."\n";
-//         echo $this->getAmount()."\n";
-//         echo "*************\n";
+//          echo $this->getUser()->getFullName()."\n";
+//          echo $this->getType()."\n";
+//          echo $this->getStatus()."\n";
+//          echo $this->getAmount()."\n";
+//          echo "*************\n";
     }
 }

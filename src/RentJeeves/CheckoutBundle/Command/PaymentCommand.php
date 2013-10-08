@@ -79,6 +79,7 @@ class PaymentCommand extends ContainerAwareCommand
                 $order->setType(OrderType::HEARTLAND_BANK);
             }
 
+            $order->addOperation($operation);
             $order->setUser($paymentAccount->getUser());
             $order->setAmount($amount); // TODO findout about fee
             $order->setStatus(OrderStatus::NEWONE);

@@ -205,9 +205,7 @@ abstract class Operation
      */
     public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
     {
-        $this->orders[] = $orders;
-
-        return $this;
+        throw new \RuntimeException('Don\'t use this method, jackass! Use only order::addOperation!');
     }
 
     /**
