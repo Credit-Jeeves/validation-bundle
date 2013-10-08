@@ -13,7 +13,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\PublicBundle\Form\LandlordType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use CreditJeeves\DataBundle\Enum\GroupType;
+use CreditJeeves\DataBundle\Enum\Grouptype;
 
 class LandlordController extends Controller
 {
@@ -50,9 +50,9 @@ class LandlordController extends Controller
                 $holding->setName($landlord->getUsername());
                 $landlord->setHolding($holding);
                 $group = new Group();
+                $group->setType(GroupType::RENT);
                 $group->setName($landlord->getUsername());
                 $group->setHolding($holding);
-                $group->setType(GroupType::RENT);
                 $holding->addGroup($group);
                 $landlord->setAgentGroups($group);
                 $em = $this->getDoctrine()->getManager();

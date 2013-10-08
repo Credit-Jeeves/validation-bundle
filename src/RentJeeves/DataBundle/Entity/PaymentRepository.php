@@ -36,8 +36,10 @@ class PaymentRepository extends EntityRepository
         $status = PaymentStatus::ACTIVE
     ) {
         $query = $this->createQueryBuilder('p');
-        $query->select('p, c');
+        $query->select('p, c, g, d');
         $query->innerJoin('p.contract', 'c');
+        $query->innerJoin('c.group', 'g');
+        $query->innerJoin('g.deposit_account', 'd');
         $query->where('p.status = :status');
         $query->andWhere('p.type = :type');
         $query->andWhere('p.dueDate IN (:days)');

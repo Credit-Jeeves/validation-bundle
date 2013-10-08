@@ -11,7 +11,16 @@ use CreditJeeves\TestBundle\EventListener\EmailListener;
  */
 abstract class BaseTestCase extends MinkTestCase
 {
+    /**
+     * @var string
+     */
     const APP = 'AppCj';
+
+    /**
+     * 
+     * @var boolean
+     */
+    protected static $isFixturesLoaded = false;
 
     /**
      * {@inheritdoc}
@@ -69,5 +78,22 @@ abstract class BaseTestCase extends MinkTestCase
         $plugin = new EmailListener();
         $mailer->registerPlugin($plugin);
         return $plugin;
+    }
+
+    /**
+     * Load fixtures
+     *
+     * @param bool $reload
+     * @return void
+     */
+    protected function load($reload = false)
+    {
+        if (self::$isFixturesLoaded && !$reload) {
+            return;
+        }
+        $khepin = $this->getContainer()->get('khepin.yaml_loader');
+        $khepin->purgeDatabase('orm');
+        $khepin->loadFixtures();
+        self::$isFixturesLoaded = true;
     }
 }

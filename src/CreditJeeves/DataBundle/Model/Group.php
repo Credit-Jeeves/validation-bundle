@@ -993,11 +993,11 @@ abstract class Group
     }
 
     /**
-     * Get DepositAccounts
+     * Get DepositAccount
      *
      * @return DepositAccount
      */
-    public function getDepositAccounts()
+    public function getDepositAccount()
     {
         return $this->deposit_account;
     }

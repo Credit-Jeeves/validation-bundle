@@ -30,6 +30,15 @@ abstract class Operation
     protected $type = OperationType::REPORT;
 
     /**
+     * @var float
+     * @ORM\Column(
+     *     type="integer",
+     *     nullable=true
+     * )
+     */
+    protected $amount;
+
+    /**
      * @var integer
      *
      * @ORM\Column(
@@ -114,7 +123,6 @@ abstract class Operation
     public function setType($type)
     {
         $this->type = $type;
-    
         return $this;
     }
 
@@ -129,6 +137,28 @@ abstract class Operation
     }
 
     /**
+     * Set amount
+     *
+     * @param double $amount
+     * @return Operation
+     */
+    public function setAmount($amount)
+    {
+        $this->amount = $amount;
+        return $this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return double
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
      * Set cjApplicantReportId
      *
      * @param integer $cjApplicantReportId
@@ -137,7 +167,6 @@ abstract class Operation
     public function setCjApplicantReportId($cjApplicantReportId)
     {
         $this->cjApplicantReportId = $cjApplicantReportId;
-    
         return $this;
     }
 
@@ -205,9 +234,7 @@ abstract class Operation
      */
     public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
     {
-        $this->orders[] = $orders;
-
-        return $this;
+        throw new \RuntimeException('Don\'t use this method, jackass! Use only order::addOperation!');
     }
 
     /**
