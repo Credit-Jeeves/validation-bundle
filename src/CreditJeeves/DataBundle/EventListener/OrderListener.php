@@ -10,7 +10,7 @@ use JMS\DiExtraBundle\Annotation\Tag;
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  *
- * @Service("data.event_listener.doctrine")
+ * @Service("order.event_listener.doctrine")
  * @Tag(
  *     "doctrine.event_listener",
  *     attributes = {
@@ -36,7 +36,6 @@ class OrderListener
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
-        
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
