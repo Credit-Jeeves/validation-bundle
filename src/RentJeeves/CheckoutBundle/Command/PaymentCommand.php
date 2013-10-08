@@ -2,6 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Command;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+//use CreditJeeves\DataBundle\Entity\OrderOperation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -61,16 +62,12 @@ class PaymentCommand extends ContainerAwareCommand
             $contract = $payment->getContract();
 //            $tenant = $contract->getTenant();
 
-
-
-
             $amount = $payment->getAmount();
             $fee = 0;
 
             $order = new Order();
             $operation = new Operation();
             $operation->setType(OperationType::RENT);
-            $operation->addOrder($order);
             $operation->setContract($contract);
 
             if (PaymentAccountType::CARD == $paymentAccount->getType()) {
@@ -81,11 +78,11 @@ class PaymentCommand extends ContainerAwareCommand
                 $order->setType(OrderType::HEARTLAND_BANK);
             }
 
-
+            $order->addOperation($operation);
             $order->setUser($paymentAccount->getUser());
             $order->setAmount($amount); // TODO findout about fee
-            $order->getStatus(OrderStatus::NEWONE);
-            $order->setDaysLate(0); //FIXME Alex please put her correct value!
+            $order->setStatus(OrderStatus::NEWONE);
+//            $order->setDaysLate(0); //FIXME Alex please put her correct value!
 
 
             $request = new MakePaymentRequest();
@@ -98,10 +95,7 @@ class PaymentCommand extends ContainerAwareCommand
             $tokenToCharge->setAmount($amount);
             $tokenToCharge->setExpectedFeeAmount($fee);
             $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
-
-
             $tokenToCharge->setToken($paymentAccount->getToken());
-
 
             $request->getTokensToCharge()->setTokenToCharge(array($tokenToCharge));
 
@@ -109,7 +103,6 @@ class PaymentCommand extends ContainerAwareCommand
             $transaction->setAmount($amount);
             $transaction->setFeeAmount($fee);
             $request->setTransaction($transaction);
-
 
             $paymentDetails = new PaymentDetails();
             $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());

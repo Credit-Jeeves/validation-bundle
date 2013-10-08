@@ -17,6 +17,16 @@ class IndexController extends Controller
     public function indexAction()
     {
         $tenant = $this->getUser();
+//         $contracts = $tenant->getContracts();
+//         foreach ($contracts as $contract) {
+//             $operations = $contract->getOperations();
+//             foreach ($operations as $operation) {
+//                 $orders = $operation->getOrders();
+//                 foreach ($orders as $order) {
+//                     echo $order->getOperations()->last()->getType();
+//                 }
+//             }
+//         }
         $em = $this->get('doctrine')->getManager();
         $isReporting = $em->getRepository('RjDataBundle:Contract')
                                 ->countReporting($tenant);

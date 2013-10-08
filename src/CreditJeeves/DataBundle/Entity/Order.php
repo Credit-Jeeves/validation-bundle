@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OperationType;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -12,6 +13,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
  */
 class Order extends BaseOrder
 {
+    use \RentJeeves\CoreBundle\Traits\DateCommon;
     /**
      * @ORM\PrePersist
      */
@@ -91,5 +93,31 @@ class Order extends BaseOrder
             $result = $heartlands->last()->getTransactionId();
         }
         return $result;
+    }
+
+    public function checkOrderProperties()
+    {
+        $operation = $this->getOperations()->last();
+        $type = $operation->getType();
+        switch ($type) {
+            case OperationType::RENT:
+                //echo $this->getStatus();
+                $contract = $operation->getContract();
+                
+                $paidTo = $contract->getPaidTo();
+                $interval = $this->getDiffDays($paidTo);
+                $this->setDaysLate(0);//$interval);
+                //echo $paidTo->format('Y-m-d').'->'.$interval."\n";
+                break;
+        }
+//         $status = $this->getStatus();
+//         $operation = $this->getOperations()->last();
+//         $operationType = $operation->getType();
+//         echo $operation->getType();
+//          echo $this->getUser()->getFullName()."\n";
+//          echo $this->getType()."\n";
+//          echo $this->getStatus()."\n";
+//          echo $this->getAmount()."\n";
+//          echo "*************\n";
     }
 }

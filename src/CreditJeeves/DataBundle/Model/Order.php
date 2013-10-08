@@ -112,11 +112,24 @@ abstract class Order
     protected $heartlands;
 
     /**
-     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Operation", inversedBy="orders")
+     * @ORM\ManyToMany(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
+     *     inversedBy="orders"
+     * )
      * @ORM\JoinTable(
      *      name="cj_order_operation",
-     *      joinColumns={@ORM\JoinColumn(name="cj_order_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="cj_operation_id", referencedColumnName="id")}
+     *      joinColumns={
+     *          @ORM\JoinColumn(
+     *              name="cj_order_id",
+     *              referencedColumnName="id"
+     *          )
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(
+     *              name="cj_operation_id",
+     *              referencedColumnName="id"
+     *          )
+     *      }
      * )
      * @var ArrayCollection
      */
@@ -375,7 +388,7 @@ abstract class Order
     /**
      * Add order's operation
      *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $orderOperations
+     * @param \CreditJeeves\DataBundle\Entity\Operation $operations
      * @return Order
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
@@ -388,9 +401,9 @@ abstract class Order
     /**
      * Remove scores
      *
-     * @param \CreditJeeves\DataBundle\Entity\OrderOperation $operation
+     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
      */
-    public function removeOperation(\CreditJeeves\DataBundle\Entity\OrderOperation $operation)
+    public function removeOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
         $this->operations->removeElement($operation);
     }
