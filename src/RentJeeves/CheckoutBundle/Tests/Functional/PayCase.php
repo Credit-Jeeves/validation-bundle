@@ -179,7 +179,8 @@ class PayCase extends BaseTestCase
             )
         );
 
-        $this->assertNotNull($addresses = $form->findAll(
+        $this->assertNotNull(
+            $addresses = $form->findAll(
                 'css',
                 '#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_box label span'
             )
