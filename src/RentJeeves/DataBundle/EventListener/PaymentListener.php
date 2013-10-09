@@ -28,7 +28,7 @@ class PaymentListener
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Payment) {
-            $this->checkContract();
+            $entity->checkContract();
         }
     }
 }
