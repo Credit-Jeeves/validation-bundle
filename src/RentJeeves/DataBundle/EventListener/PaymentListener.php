@@ -9,7 +9,7 @@ use JMS\DiExtraBundle\Annotation\Tag;
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  *
- * @Service("contract.event_listener.doctrine")
+ * @Service("payment.event_listener.doctrine")
  * @Tag(
  *     "doctrine.event_listener",
  *     attributes = {

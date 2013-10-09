@@ -45,17 +45,17 @@ class TenantController extends Controller
                 $tenant->setPassword($password);
                 $tenant->setCulture($this->container->parameters['kernel.default_locale']);
 
-                $contracts = $tenant->getContracts();
+//                 $contracts = $tenant->getContracts();
                 $em = $this->getDoctrine()->getManager();
 
-                if (!empty($contracts)) {
-                    foreach ($contracts as $contract) {
-                        if ($contract->getStatus() == ContractStatus::INVITE) {
-                            $contract->setStatus(ContractStatus::CURRENT);
-                            $em->persist($contract);
-                        }
-                    }
-                }
+//                 if (!empty($contracts)) {
+//                     foreach ($contracts as $contract) {
+//                         if ($contract->getStatus() == ContractStatus::INVITE) {
+//                             $contract->setStatus(ContractStatus::CURRENT);
+//                             $em->persist($contract);
+//                         }
+//                     }
+//                 }
 
                 $tenant->setInviteCode(null);
                 $em->persist($tenant);
