@@ -78,6 +78,7 @@ class Group extends BaseGroup
 
     public function getMerchantName()
     {
-        return ($this->deposit_account) ? $this->deposit_account->getMerchantName() : '';
+        $depositAccount = $this->getDepositAccount();
+        return !empty($depositAccount) ? $depositAccount->getMerchantName() : '';
     }
 }

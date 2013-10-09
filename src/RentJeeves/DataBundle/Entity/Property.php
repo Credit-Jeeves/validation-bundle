@@ -176,7 +176,7 @@ class Property extends Base
         $groups = $this->getPropertyGroups();
         $merchantExist = false;
         foreach ($groups as $group) {
-            if ($group->getDepositAccounts()) {
+            if ($group->getDepositAccount()) {
                 $merchantExist = true;
                 break;
             }
