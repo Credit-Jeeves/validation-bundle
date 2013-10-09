@@ -10,4 +10,10 @@ use RentJeeves\DataBundle\Model\Payment as Base;
  */
 class Payment extends Base
 {
+    public function checkContract()
+    {
+        $contract = $this->getContract()->initiatePaidTo();
+        $this->setContract($contract);
+        return $this;
+    }
 }

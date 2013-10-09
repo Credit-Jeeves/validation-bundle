@@ -350,4 +350,15 @@ class Contract extends Base
         }
         return $result;
     }
+
+    public function initiatePaidTo()
+    {
+        $paidTo = $this->getPaidTo();
+        if (empty($paidTo)) {
+            $startAt = $this->getStartAt();
+            $paidTo = clone $startAt;
+            $this->setPaidTo($paidTo);
+        }
+        return $this;
+    }
 }
