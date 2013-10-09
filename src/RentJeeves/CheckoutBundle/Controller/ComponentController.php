@@ -52,9 +52,9 @@ class ComponentController extends Controller
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
         return array(
-            'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
             'paymentAccountType' => $paymentAccountType->createView(),
             'addresses' => $this->getUser()->getAddresses(),
+            'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
         );
     }
 }

@@ -26,7 +26,7 @@ class AtbController extends Controller
     public function simulateAction()
     {
         if (!$this->getRequest()->isMethod('POST')) {
-            return $this->createNotFoundException('Method must be POST');
+            throw $this->createNotFoundException('Method must be POST');
         }
         ignore_user_abort();
         set_time_limit(90);

@@ -16,11 +16,6 @@
 </p>
 
 <script type="text/javascript">
-    window.paymentAccounts = [];
-{% for paymentAccount in paymentAccounts %}
-    window.paymentAccounts.push({{ paymentAccount | serialize('json') | raw }});
-{% endfor %}
-
     window.addressesViewModels = [];
 {% for address in addresses %}
     var address = new Address(null);
@@ -28,4 +23,8 @@
     window.addressesViewModels.push(address);
 {% endfor %}
 
+    window.paymentAccounts = [];
+{% for paymentAccount in paymentAccounts %}
+    window.paymentAccounts.push({{ paymentAccount | serialize('json') | raw }});
+{% endfor %}
 </script>

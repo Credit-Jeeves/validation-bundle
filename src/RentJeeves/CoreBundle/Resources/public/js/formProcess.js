@@ -32,6 +32,7 @@ window.formProcess = {
     addFormError: function(field, errorMessage) {
         var attentionBox = $(field).parents('.attention-container').find('.attention-box');
         attentionBox.show();
+
         // Add errors block
         $(field).parents('.form-row').addClass('error');
         $(field).addClass('error');

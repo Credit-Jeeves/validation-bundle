@@ -47,6 +47,8 @@ trait PaymentProcess
         $payment = $this->get('payum')->getPayment('heartland');
         $request = new GetTokenRequest();
 
+        $isNewAddress = false;
+
         /** @var PaymentAccount $paymentAccountEntity */
         $paymentAccountEntity = $paymentAccountType->getData();
         $request->getAccountHolderData()->setEmail($this->getUser()->getEmail());
@@ -69,6 +71,8 @@ trait PaymentProcess
 //                    }
 //                }
                 $paymentAccountEntity->setAddress($address);
+            } else {
+                $isNewAddress = true;
             }
             $paymentAccountEntity->getAddress()->setUser($this->getUser());
 
@@ -152,7 +156,13 @@ trait PaymentProcess
         return new JsonResponse(
             array(
                 'success' => true,
-                'paymentAccountId' => $paymentAccountEntity->getId()
+                'paymentAccountId' => $paymentAccountEntity->getId(),
+                'paymentAccountName' => $paymentAccountEntity->getName(),
+                'newAddress' => $isNewAddress ?
+                    $this->get('jms_serializer')->serialize(
+                        $paymentAccountEntity->getAddress(),
+                        'array'
+                    ) : null
             )
         );
     }

@@ -83,7 +83,7 @@ class HomepageController extends Controller
     {
         $aResult = array('id' => 0, 'incentive' => '');
         $request = $this->get('request');
-        $this->createNotFoundException();
+//        $this->createNotFoundException(); // TODO implement!
         $nTradelineId = $request->get('tradeline');
         $sAction      = $request->get('do_action');
         if (empty($nTradelineId) || empty($sAction)) {

@@ -74,6 +74,7 @@ class PayController extends Controller
 
         /** @var Address $address */
         $address = null;
+        $isNewAddress = false;
         $em->getRepository('DataBundle:Address')->resetDefaults($this->getUser()->getId());
         /** @var Address $addressChose */
         /** @var Address $newAddress */
@@ -82,9 +83,9 @@ class PayController extends Controller
         } elseif ($newAddress = $userType->get('new_address')->getData()) {
             $address = $newAddress;
             $address->setUser($this->getUser());
-            $address->setIsDefault(1);
+            $isNewAddress = true;
         }
-
+        $address->setIsDefault(1);
         $data = $userType->getData();
         $em->persist($address);
         $em->persist($data);
@@ -92,7 +93,12 @@ class PayController extends Controller
 
         return new JsonResponse(
             array(
-                'success' => true
+                'success' => true,
+                'newAddress' => $isNewAddress ?
+                    $this->get('jms_serializer')->serialize(
+                        $address,
+                        'array'
+                    ) : null
             )
         );
     }
@@ -104,7 +110,7 @@ class PayController extends Controller
     public function execAction(Request $request)
     {
         if (UserIsVerified::PASSED != $this->getUser()->getIsVerified()) {
-            return $this->createNotFoundException('Verification not passed');
+            throw $this->createNotFoundException('Verification not passed');
         }
         $paymentType = $this->createForm(new PaymentType());
         $paymentType->handleRequest($request);
@@ -127,6 +133,11 @@ class PayController extends Controller
         ) {
             $paymentEntity->setPaymentAccount($paymentAccount);
         }
+        if ('on' != $paymentType->get('ends')->getData()) {
+            $paymentEntity->setEndMonth(null);
+            $paymentEntity->setEndYear(null);
+        }
+
 
         $em->persist($paymentEntity);
         $em->flush($paymentEntity);
