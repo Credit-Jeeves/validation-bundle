@@ -14,6 +14,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
+
     /**
      * @ORM\PrePersist
      */
