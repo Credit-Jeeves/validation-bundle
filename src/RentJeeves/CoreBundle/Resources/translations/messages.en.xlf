@@ -1318,6 +1318,10 @@
                 <source>payment_account.edit.cancel</source>
                 <target>Cancel</target>
             </trans-unit>
+            <trans-unit id="payment_account.error.choice.empty">
+                <source>payment_account.error.choice.empty</source>
+                <target>Please select a Payment Source from the list or add new one.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -288,8 +288,8 @@ class PaymentAccountType extends AbstractType
                                 '<input type="radio" name="' . $this->getName() . '[address_choice]"' .
                                     'required="required"' .
                                     'data-bind="' .
-                                        'checked: paymentSource.address.addressChoice, ' .
-                                        'attr: {id: ' . $this->getName() . '_address_choice + $data.id() }' .
+                                        'checked: $parent.paymentSource.address.addressChoice, ' .
+                                        'attr: {\'id\': \'' . $this->getName() . '_address_choice_\' + $data.id() }, ' .
                                         'value: $data.id()' .
                                     '" />' .
                                 '<i></i>' .

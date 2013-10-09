@@ -157,6 +157,7 @@ trait PaymentProcess
             array(
                 'success' => true,
                 'paymentAccountId' => $paymentAccountEntity->getId(),
+                'paymentAccountName' => $paymentAccountEntity->getName(),
                 'newAddress' => $isNewAddress ?
                     $this->get('jms_serializer')->serialize(
                         $paymentAccountEntity->getAddress(),

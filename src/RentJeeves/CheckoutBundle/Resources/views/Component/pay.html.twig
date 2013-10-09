@@ -43,8 +43,29 @@
             </form>
         </div>
 
-        <div class="col long-label" data-bind="visible: 'source' == step()">
-            {{ render(controller('RjCheckoutBundle:Component:source')) }}
+        <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
+            <div class="form-row clearfix">
+                <div class="fields-box">
+                    <!-- ko foreach: paymentAccounts -->
+                        <label class="checkbox radio" style="clear: left;">
+                            <input type="radio"
+                                required="required"
+                                data-bind="
+                                    checked: $parent.paymentAccountId,
+                                    value: $data.id
+                                " />
+                            <i></i>
+                            <span data-bind="text: $data.name"></span>
+                        </label>
+                    <!-- /ko -->
+                    <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
+                        <a href="#" data-bind="click: addNewPaymentAccount">{{ 'common.add_new' | trans }}</a>
+                    </div>
+                </div>
+            </div>
+            <div data-bind="visible: isNewPaymentAccount">
+                {{ render(controller('RjCheckoutBundle:Component:source')) }}
+            </div>
         </div>
 
         <div class="col" data-bind="visible: 'user' == step()">

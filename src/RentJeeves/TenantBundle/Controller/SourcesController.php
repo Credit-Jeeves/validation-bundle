@@ -45,7 +45,7 @@ class SourcesController extends Controller
         /** @var PaymentAccount $paymentAccount */
         $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($id);
         if (empty($paymentAccount) || $this->getUser()->getId() != $paymentAccount->getUser()->getId()) {
-            return $this->createNotFoundException("Payment Account with ID '{$id}' not found");
+            throw $this->createNotFoundException("Payment Account with ID '{$id}' not found");
         }
         $em->remove($paymentAccount);
         $em->flush();
@@ -71,7 +71,7 @@ class SourcesController extends Controller
         }
 
         if (empty($paymentAccount)) {
-            return $this->createNotFoundException("Payment Account with ID '{$id}' not found");
+            throw $this->createNotFoundException("Payment Account with ID '{$id}' not found");
         }
 
         $paymentAccountType = $this->createForm($form, $paymentAccount);

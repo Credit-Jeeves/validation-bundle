@@ -83,10 +83,9 @@ class PayController extends Controller
         } elseif ($newAddress = $userType->get('new_address')->getData()) {
             $address = $newAddress;
             $address->setUser($this->getUser());
-            $address->setIsDefault(1);
             $isNewAddress = true;
         }
-
+        $address->setIsDefault(1);
         $data = $userType->getData();
         $em->persist($address);
         $em->persist($data);
@@ -111,7 +110,7 @@ class PayController extends Controller
     public function execAction(Request $request)
     {
         if (UserIsVerified::PASSED != $this->getUser()->getIsVerified()) {
-            return $this->createNotFoundException('Verification not passed');
+            throw $this->createNotFoundException('Verification not passed');
         }
         $paymentType = $this->createForm(new PaymentType());
         $paymentType->handleRequest($request);

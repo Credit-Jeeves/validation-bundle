@@ -12,7 +12,7 @@ function PaymentSources() {
     var fillPaymentSource = function(id) {
         jQuery.each(window.paymentAccounts, function(key, val) {
             if (val.id == id) {
-                ko.mapping.fromJS(val, {}, {});
+                self.paymentSource.clear();
                 ko.mapping.fromJS(val, {}, self.paymentSource);
                 self.paymentSource.address.addressChoice(val.addressId);
                 if (exp = val.cc_expiration) {

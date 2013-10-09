@@ -140,7 +140,7 @@ class SourcesCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
         $this->page->clickLink('payment_account.delete.yes');
 
-        $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table'));
+        $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
         $this->assertCount(1, $rows);
         $this->logout();
     }
