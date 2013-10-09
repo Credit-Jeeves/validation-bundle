@@ -1478,12 +1478,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293"
+                "reference": "dcc0c135acd72e3ebab7146806292f884ba7f125"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/8a908b627d7f3d25478a89b8307a9fb9843a8293",
-                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/dcc0c135acd72e3ebab7146806292f884ba7f125",
+                "reference": "dcc0c135acd72e3ebab7146806292f884ba7f125",
                 "shasum": ""
             },
             "require": {
@@ -1502,6 +1502,8 @@
                 "sensio/framework-extra-bundle": "~2.1",
                 "symfony/form": "~2.1",
                 "symfony/security": "~2.1",
+                "symfony/serializer": "~2.1",
+                "symfony/validator": "~2.1",
                 "symfony/yaml": "~2.1"
             },
             "suggest": {
@@ -1544,7 +1546,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2013-09-03 10:58:43"
+            "time": "2013-10-09 08:01:12"
         },
         {
             "name": "friendsofsymfony/user-bundle",
