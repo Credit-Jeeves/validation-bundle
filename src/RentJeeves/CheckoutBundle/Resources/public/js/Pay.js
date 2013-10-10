@@ -62,6 +62,16 @@ function Pay(parent, contractId) {
     this.paymentAccountId.subscribe(function(newValue) {
         if (null != newValue) {
             self.newPaymentAccount(false);
+            jQuery.each(self.paymentAccounts(), function(key, val) {
+                if (newValue == val.id) {
+                    self.paymentSource.type(val.type);
+                    self.paymentSource.name(val.name);
+                    self.paymentSource.address.addressChoice(val.addressId);
+                    var exp = new Date(val.cc_expiration);
+                    self.paymentSource.ExpirationMonth(exp.getMonth());
+                    self.paymentSource.ExpirationYear(exp.getFullYear());
+                }
+            });
         }
     });
     this.paymentAccounts = ko.observableArray([]);
@@ -79,6 +89,7 @@ function Pay(parent, contractId) {
     this.addNewPaymentAccount = function() {
         self.paymentAccountId(null); // Do not change order!
         self.newPaymentAccount(true);
+        self.paymentSource.clear();
     };
 
     var startDate = new Date(contract.start_at);
@@ -108,11 +119,14 @@ function Pay(parent, contractId) {
     this.dueDate = ko.observable(startDate.getDate());
     this.startMonth = ko.observable(startDate.getMonth());
     this.startYear = ko.observable(startDate.getYear());
-    this.startDate = ko.observable(startDate.toString('MM/dd/yyyy'));
+    this.startDate = ko.computed(function() {
+        return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
+    }, self);
     this.ends = ko.observable('cancelled');
     this.endMonth = ko.observable(finishDate.getMonth() + 1);
     this.endYear = ko.observable(finishDate.getYear());
 
+    this.id = null;
     this.contractId = contract.id;
     /* /Form fields/ */
 
@@ -192,12 +206,13 @@ function Pay(parent, contractId) {
             case 'details':
                 break;
             case 'source':
-                self.paymentAccountId(data.paymentAccountId);
                 if (data.newAddress) {
                     addNewAddress(data.newAddress);
                 }
-                self.paymentAccounts.push({id: data.paymentAccountId, name: data.paymentAccountName});
-                self.paymentSource.clear();
+                // Do not change order of next calls:
+                self.paymentAccounts.push(data.paymentAccount);
+                self.paymentAccountId(data.paymentAccount.id);
+                // End
                 break;
             case 'user':
                 if (data.newAddress) {

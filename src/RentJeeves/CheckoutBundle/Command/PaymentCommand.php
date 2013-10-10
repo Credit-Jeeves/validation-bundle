@@ -7,6 +7,8 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use Payum\Heartland\Soap\Base\BillTransaction;
@@ -108,6 +110,13 @@ class PaymentCommand extends ContainerAwareCommand
             $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());
             $paymentDetails->setRequest($request);
             $paymentDetails->setOrder($order);
+
+            if (PaymentTypeEnum::ONE_TIME == $payment->getType() ||
+                date('j') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()
+            ) {
+                $payment->setStatus(PaymentStatus::CLOSE);
+                $em->persist($payment);
+            }
 
             $em->persist($order);
             $em->persist($operation);
