@@ -38,6 +38,7 @@ class OrderListener
     {
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
+        var_dump(get_class($entity));
         if ($entity instanceof Order) {
             $entity->checkOrderProperties();
         }

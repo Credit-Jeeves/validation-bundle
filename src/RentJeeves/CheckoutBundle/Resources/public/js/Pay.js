@@ -126,7 +126,7 @@ function Pay(parent, contractId) {
     this.endMonth = ko.observable(finishDate.getMonth() + 1);
     this.endYear = ko.observable(finishDate.getYear());
 
-    this.id = null;
+    this.id = ko.observable(null);
     this.contractId = contract.id;
     /* /Form fields/ */
 
@@ -328,9 +328,13 @@ function Pay(parent, contractId) {
         this.step(steps[current]);
     };
 
+    this.cancelDialog = function() {
+        new Cancel(self.id());
+    };
+
     // Constructor
 
-    $("#pay-popup").dialog({
+    $('#pay-popup').dialog({
         width: 650,
         modal: true,
         beforeClose: function( event, ui ) {

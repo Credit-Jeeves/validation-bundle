@@ -1,6 +1,23 @@
 {% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
 {% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
 
+<div id="payment-account-cancel" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'checkout.payment.cancel.title' | trans() }}</h1>
+    <div class="clearfix col-box">
+        <div class="attention-box pie-el">
+            {{ 'checkout.payment.cancel.text' | trans() }}
+        </div>
+        <div class="row-20"></div>
+        <div class="footer-button-box">
+            <a class="button" data-bind="attr: { href: cancelUrl }" style="display: inline-block;">
+                <span>{{ 'checkout.payment.cancel.yes' | trans() }}</span>
+            </a>
+            <button data-bind="click: cancelClose" class="button grey buttonFix">
+                <span>{{ 'checkout.payment.cancel.no' | trans() }}</span>
+            </button>
+        </div>
+    </div>
+</div>
 
 <div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
     <h1>{{ 'pay_popup.title' | trans }}</h1>
@@ -264,6 +281,9 @@
         <button class="button" data-bind="visible: 'pay' == step(), click: next">
             <span>{{ 'checkout.make_payment' | trans }}</span>
         </button>
+        <a href="#" class="link removePropertyConfirm" data-bind="visible: 'details' == step() && id(), click: cancelDialog">
+            {{ 'checkout.payment.cancel' | trans | raw }}
+        </a>
         {{ include('RjCoreBundle::nortonSecured.html.twig') }}
     </div>
 </div>

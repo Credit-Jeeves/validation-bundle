@@ -148,4 +148,13 @@ class PayController extends Controller
             )
         );
     }
+
+    /**
+     * @Route("/cancel/{id}", name="checkout_pay_cancel", options={"expose"=true})
+     * @Method({"GET"})
+     */
+    public function cancelAction($id)
+    {
+        $payment = $this->getDoctrine()->getRepository('');
+    }
 }
