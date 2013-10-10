@@ -5,6 +5,8 @@ parameters:
         - alex.emelyanov.ua@gmail.com
         - darryl@creditjeeves.com
     experian.logging: false
+    login.attempts: 5
+    login.delay: 30
 
 simulation:
     entity_name: '\CreditJeeves\DataBundle\Entity\Atb'

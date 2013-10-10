@@ -62,7 +62,7 @@ class SourcesCase extends BaseTestCase
 
         $this->page->pressButton('payment_account.edit.save');
 
-        $this->session->wait($this->timeout, "jQuery('#payment-account-row-1 td:first').text() == 'New Card'");
+        $this->session->wait($this->timeout + 15000, "jQuery('#payment-account-row-1 td:first').text() == 'New Card'");
 
         $this->assertNotNull($cols = $this->page->findAll('css', '#payment-account-row-1 td'));
         $this->assertEquals('New Card', $cols[0]->getText());
@@ -140,7 +140,8 @@ class SourcesCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#payment-account-delete:visible').length");
         $this->page->clickLink('payment_account.delete.yes');
 
-        $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table'));
+        $this->session->wait($this->timeout, "1 == jQuery('#payment-account-table tbody tr').length");
+        $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
         $this->assertCount(1, $rows);
         $this->logout();
     }

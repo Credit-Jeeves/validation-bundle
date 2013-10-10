@@ -14,7 +14,7 @@ function Address(parent, addresses, newAddress) {
     this.zip = ko.observable('');
 
     this.toString = ko.computed(function() {
-        return this.street() + ' ' + this.city() + ', ' + this.area() + ' ' + this.zip();
+        return this.street() + ', ' + this.city() + ', ' + this.area() + ' ' + this.zip();
     }, this);
 
     if (newAddress) {
@@ -69,4 +69,12 @@ function Address(parent, addresses, newAddress) {
         }
         return '';
     }, this);
+
+    this.clear = function() {
+        self.street('');
+        self.city('');
+        self.area(null);
+        self.zip('');
+        self.addressChoice(null);
+    };
 }

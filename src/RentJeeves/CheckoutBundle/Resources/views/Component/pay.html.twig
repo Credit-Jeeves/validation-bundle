@@ -43,8 +43,29 @@
             </form>
         </div>
 
-        <div class="col long-label" data-bind="visible: 'source' == step()">
-            {{ render(controller('RjCheckoutBundle:Component:source')) }}
+        <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
+            <div class="form-row clearfix">
+                <div class="fields-box">
+                    <!-- ko foreach: paymentAccounts -->
+                        <label class="checkbox radio" style="clear: left;">
+                            <input type="radio"
+                                required="required"
+                                data-bind="
+                                    checked: $parent.paymentAccountId,
+                                    value: $data.id
+                                " />
+                            <i></i>
+                            <span data-bind="text: $data.name"></span>
+                        </label>
+                    <!-- /ko -->
+                    <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
+                        <a href="#" data-bind="click: addNewPaymentAccount">{{ 'common.add_new' | trans }}</a>
+                    </div>
+                </div>
+            </div>
+            <div data-bind="visible: isNewPaymentAccount">
+                {{ render(controller('RjCheckoutBundle:Component:source')) }}
+            </div>
         </div>
 
         <div class="col" data-bind="visible: 'user' == step()">
@@ -141,7 +162,15 @@
                             </span>
                         </div>
                     </div>
-                    <div data-bind="visible: 'bank' == paymentSource.type()">
+                    <div data-bind="visible: !newPaymentAccount()">
+                        <div class="form-row clearfix">
+                            <label>{{ 'checkout.account_nickname' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.name"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-bind="visible: 'bank' == paymentSource.type() && newPaymentAccount()">
                         <div class="form-row clearfix">
                             <label>{{ 'checkout.payor_name' | trans }}</label>
                             <div class="fields-box">
@@ -176,7 +205,7 @@
                         </div>
                     </div>
                     <div data-bind="visible: 'card' == paymentSource.type()">
-                        <div class="form-row clearfix">
+                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
                             <label>{{ 'checkout.card_number' | trans }}</label>
                             <div class="fields-box">
                                 <span class="value" data-bind="text: paymentSource.getCardNumber"></span>

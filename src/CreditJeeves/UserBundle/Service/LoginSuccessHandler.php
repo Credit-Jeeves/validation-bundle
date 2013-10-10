@@ -81,17 +81,18 @@ class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 
     private function checkLogindefense($user)
     {
+        $delay = $this->container->getParameter('login.delay');
         $defense = $user->getDefense();
         if ($defense) {
             $now = new \DateTime('now');
             $attempts = $defense->getAttempts();
             $last = $defense->getUpdatedAt();
             $interval = $now->diff($last, true)->format('%i');
-            if ($attempts > 5) {
-                if ($interval < 30) {
+            if ($attempts > $this->container->getParameter('login.attempts')) {
+                if ($interval < $delay) {
                     $this->container->get('session')->getFlashBag()->add(
                         'defense',
-                        sprintf('Please, try "%s" minutes later.', (30- $interval))
+                        sprintf('Please, try "%s" minutes later.', ($delay- $interval))
                     );
                     return false;
                 } else {

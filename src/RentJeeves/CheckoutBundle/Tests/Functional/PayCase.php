@@ -60,16 +60,20 @@ class PayCase extends BaseTestCase
 
 
         $this->page->pressButton('pay_popup.step.next');
+
         $this->session->wait(
             $this->timeout,
-            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length"
+            "jQuery('#id-source-step:visible').length"
         );
+
+        $this->page->clickLink('common.add_new');
+
+
 
         $this->page->pressButton('pay_popup.step.next');
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(5, $errors);
-
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
         $this->fillForm(
@@ -85,7 +89,7 @@ class PayCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout,
+            $this->timeout + 15000,
             "jQuery('#rentjeeves_checkoutbundle_userdetailstype_date_of_birth_month:visible').length"
         );
 
@@ -164,9 +168,29 @@ class PayCase extends BaseTestCase
         $payPopup->pressButton('pay_popup.step.previous');
         $this->session->wait(
             $this->timeout,
-            "jQuery('#rentjeeves_checkoutbundle_paymentaccounttype_name:visible').length"
+            "jQuery('#id-source-step:visible').length"
         );
-        $this->assertTrue($this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype_name')->isVisible());
+        $this->page->clickLink('common.add_new');
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_paymentaccounttype_type_1' => true,
+            )
+        );
+
+        $this->assertNotNull(
+            $addresses = $form->findAll(
+                'css',
+                '#rentjeeves_checkoutbundle_paymentaccounttype_address_choice_box label span'
+            )
+        );
+        $this->assertCount(3, $addresses);
+        $this->assertEquals('New street, New city, NY 99999', $addresses[2]->getText());
+
+        $this->assertNotNull($existPaymentSource = $this->page->findField('ko_unique_2'));
+        $existPaymentSource->getParent()->click();
+
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(

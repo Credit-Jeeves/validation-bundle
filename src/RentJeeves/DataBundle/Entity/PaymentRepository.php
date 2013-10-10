@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * 
@@ -32,8 +33,7 @@ class PaymentRepository extends EntityRepository
         $days = array(),
         $month = 1,
         $year = 2000,
-        $type = PaymentType::RECURRING,
-        $status = PaymentStatus::ACTIVE
+        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
     ) {
         $query = $this->createQueryBuilder('p');
         $query->select('p, c, g, d');
@@ -41,16 +41,16 @@ class PaymentRepository extends EntityRepository
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('g.deposit_account', 'd');
         $query->where('p.status = :status');
-        $query->andWhere('p.type = :type');
         $query->andWhere('p.dueDate IN (:days)');
+        $query->andWhere('c.status IN (:contract)');
         $query->andWhere('p.startMonth <= :month');
         $query->andWhere('p.endMonth >= :month');
         $query->andWhere('p.startYear <= :year');
         $query->andWhere('p.endYear >= :year');
 
-        $query->setParameter('status', $status);
-        $query->setParameter('type', $type);
+        $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
+        $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
 
@@ -63,7 +63,8 @@ class PaymentRepository extends EntityRepository
         $month = 1,
         $year = 2000,
         $types = array(PaymentType::ONE_TIME, PaymentType::IMMEDIATE),
-        $statuses = array(PaymentStatus::PAUSE, PaymentStatus::CLOSE)
+        $statuses = array(PaymentStatus::PAUSE, PaymentStatus::CLOSE),
+        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
     ) {
         $query = $this->createQueryBuilder('p');
         $query->select('p, c');
@@ -71,6 +72,7 @@ class PaymentRepository extends EntityRepository
         $query->where('p.status IN (:status)');
         $query->andWhere('p.type IN (:type)');
         $query->andWhere('p.dueDate IN (:days)');
+        $query->andWhere('c.status IN (:contract)');
         $query->andWhere('p.startMonth <= :month');
         $query->andWhere('p.endMonth >= :month');
         $query->andWhere('p.startYear <= :year');
@@ -79,6 +81,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('status', $statuses);
         $query->setParameter('type', $types);
         $query->setParameter('days', $days);
+        $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
     

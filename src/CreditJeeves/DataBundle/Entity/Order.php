@@ -14,6 +14,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
+
     /**
      * @ORM\PrePersist
      */
@@ -98,17 +99,19 @@ class Order extends BaseOrder
     public function checkOrderProperties()
     {
         $operation = $this->getOperations()->last();
-        $type = $operation->getType();
-        switch ($type) {
-            case OperationType::RENT:
-                //echo $this->getStatus();
-                $contract = $operation->getContract();
-                
-                $paidTo = $contract->getPaidTo();
-                $interval = $this->getDiffDays($paidTo);
-                $this->setDaysLate(0);//$interval);
-                //echo $paidTo->format('Y-m-d').'->'.$interval."\n";
-                break;
+        if ($operation) {
+            $type = $operation->getType();
+            switch ($type) {
+                case OperationType::RENT:
+                    //echo $this->getStatus();
+                    $contract = $operation->getContract();
+
+                    $paidTo = $contract->getPaidTo();
+                    $interval = $this->getDiffDays($paidTo);
+                    $this->setDaysLate(0);//$interval);
+                    //echo $paidTo->format('Y-m-d').'->'.$interval."\n";
+                    break;
+            }
         }
 //         $status = $this->getStatus();
 //         $operation = $this->getOperations()->last();

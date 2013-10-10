@@ -170,7 +170,7 @@
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
         "braincrafted/validation-bundle": "dev-master",
-        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "doctrine/orm": ">=2.2.3,<2.4",
         "doctrine/doctrine-bundle": "dev-master",
         "twig/extensions": "1.0.*",
         "kriswallsmith/assetic": "1.1.*",

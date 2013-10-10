@@ -1,6 +1,5 @@
 function PaymentSource(parent, isForceSave, newAddress) {
     var self = this;
-    this.paymentAccounts = ko.observableArray(window.paymentAccounts);
     this.id = ko.observable(null);
     this.type = ko.observable('bank');
     this.name = ko.observable('');
@@ -27,4 +26,23 @@ function PaymentSource(parent, isForceSave, newAddress) {
         }
         return card.join('');
     });
+
+
+
+    this.clear = function() {
+        self.type('bank');
+        self.name('');
+        self.PayorName('');
+        self.RoutingNumber('');
+        self.AccountNumber('');
+        self.ACHDepositType(null);
+        self.CardNumber('');
+        self.VerificationCode('');
+        self.ExpirationMonth(null);
+        self.ExpirationYear(null);
+//        self.save(isForceSave);
+//        self.isForceSave(isForceSave);
+
+        self.address.clear();
+    };
 }
