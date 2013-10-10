@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\DataBundle\EventListener;
+namespace RentJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -25,6 +25,13 @@ use JMS\DiExtraBundle\Annotation\Tag;
  *         "method"="postPersist" 
  *     }
  * )
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="preUpdate",
+ *         "method"="preUpdate" 
+ *     }
+ * )
  */
 class OrderListener
 {
@@ -39,16 +46,36 @@ class OrderListener
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            // nothing to do now
+//             $status = $entity->getStatus();
+//             echo '========='.$status."========\n";
+//             $entity->countDaysLate();
         }
     }
+
+    /**
+     * Why we need to use preUpdate event?
+     * Because Order always(!!!) is created with status "NEWONE"
+     * It will be changed after attempt of payment
+     * 
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function preUpdate(LifecycleEventArgs $eventArgs)
+    {
+        $em = $eventArgs->getEntityManager();
+        $entity = $eventArgs->getEntity();
+        if ($entity instanceof Order) {
+//             $status = $entity->getStatus();
+//             $entity->checkOrderProperties();
+        }
+    }
+    
 
     public function postPersist(LifecycleEventArgs $eventArgs)
     {
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            // nothing to do now
+            // here will be email call
         }
     }
 }

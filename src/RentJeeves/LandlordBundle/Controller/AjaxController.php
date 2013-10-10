@@ -497,10 +497,8 @@ class AjaxController extends Controller
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
                 // Check operations
-                $operations = $contract->getOperations();
-                if (count($operations) > 0) {
-                    $operation = $operations->last();
-                } else {
+                $operation = $contract->getOperation();
+                if (empty($operation)) {
                     $operation = new Operation();
                     $operation->setType(OperationType::RENT);
                     $operation->setContract($contract);

@@ -125,17 +125,14 @@ class Contract extends Base
     {
         $result = 'N/A';
         $payments = array();
-        $operations = $this->getOperations();
-        if (count($operations) == 0) {
+        $operation = $this->getOperation();
+        if (empty($operation)) {
             return $result;
-        }
-        if (count($operations) > 0) {
-            foreach ($operations as $operation) {
-                $orders = $operation->getOrders();
-                foreach ($orders as $order) {
-                    if (OrderStatus::COMPLETE == $order->getStatus()) {
-                        $payments[] = $order->getCreatedAt()->format('M d, Y');
-                    }
+        } else {
+            $orders = $operation->getOrders();
+            foreach ($orders as $order) {
+                if (OrderStatus::COMPLETE == $order->getStatus()) {
+                    $payments[] = $order->getCreatedAt()->format('M d, Y');
                 }
             }
             arsort($payments);
@@ -279,6 +276,7 @@ class Contract extends Base
         } else {
             $newDate->modify('+1 months');
         }
+        echo $newDate->format('Y-m-d')."\n";
         return $this->setPaidTo($newDate);
     }
 

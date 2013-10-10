@@ -195,15 +195,15 @@ abstract class Contract
     protected $updatedAt;
 
     /**
-     * @ORM\OneToMany(
+     * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
      *     mappedBy="contract",
-     *     cascade={"persist", "remove", "merge"},
+     *     cascade={"all"},
      *     orphanRemoval=true
      * )
-     * @var ArrayCollection
+     * @var \CreditJeeves\DataBundle\Entity\Operation
      */
-    protected $operations;
+    protected $operation;
 
     /**
      * @ORM\OneToMany(
@@ -541,25 +541,15 @@ abstract class Contract
     }
 
     /**
-     * Add operation
+     * Set operation
      *
      * @param \CreditJeeves\DataBundle\Entity\Operation $operation
      * @return Contract
      */
-    public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    public function setOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
-        $this->operations[] = $operation;
+        $this->operation = $operation;
         return $this;
-    }
-
-    /**
-     * Remove operation
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $opeartion
-     */
-    public function removeScore(\CreditJeeves\DataBundle\Entity\Operation $operation)
-    {
-        $this->opeartions->removeElement($operation);
     }
 
     /**
@@ -567,8 +557,8 @@ abstract class Contract
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getOperations()
+    public function getOperation()
     {
-        return $this->operations;
+        return $this->operation;
     }
 }

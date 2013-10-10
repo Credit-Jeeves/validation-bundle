@@ -86,9 +86,10 @@ abstract class Operation
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
      * 
-     * @ORM\ManyToOne(
+     * @ORM\OneToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
-     *     inversedBy="operations"
+     *     inversedBy="operation",
+     *     cascade={"all"}
      * )
      * @ORM\JoinColumn(
      *     name="contract_id",
