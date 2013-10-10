@@ -39,7 +39,7 @@ class PaymentType extends AbstractType
                 'choices' => array(
                     PaymentTypeEnum::RECURRING => 'checkout.type.recurring',
 //                    PaymentTypeEnum::IMMEDIATE => 'checkout.type.immediate', // TODO Implement
-//                    PaymentTypeEnum::ONE_TIME => 'checkout.type.one_time',
+                    PaymentTypeEnum::ONE_TIME => 'checkout.type.one_time',
                 ),
                 'attr' => array(
                     'class' => 'original',
@@ -265,6 +265,15 @@ class PaymentType extends AbstractType
                 'mapped' => false,
                 'attr' => array(
                     'data-bind' => 'value: contractId',
+                )
+            )
+        );
+        $builder->add(
+            'id',
+            'hidden',
+            array(
+                'attr' => array(
+                    'data-bind' => 'value: id',
                 )
             )
         );

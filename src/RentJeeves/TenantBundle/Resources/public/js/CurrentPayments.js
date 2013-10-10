@@ -8,8 +8,9 @@ function CurrentPayments(contracts, verification) {
         jQuery.each(contracts, function(key, val) {
             if (id == val.id) {
                 contract = val;
-                return true;
+                return false;
             }
+            return true;
         });
         return contract;
     };

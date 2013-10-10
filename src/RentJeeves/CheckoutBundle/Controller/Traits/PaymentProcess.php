@@ -156,8 +156,10 @@ trait PaymentProcess
         return new JsonResponse(
             array(
                 'success' => true,
-                'paymentAccountId' => $paymentAccountEntity->getId(),
-                'paymentAccountName' => $paymentAccountEntity->getName(),
+                'paymentAccount' => $this->get('jms_serializer')->serialize(
+                    $paymentAccountEntity,
+                    'array'
+                ),
                 'newAddress' => $isNewAddress ?
                     $this->get('jms_serializer')->serialize(
                         $paymentAccountEntity->getAddress(),
