@@ -79,3 +79,12 @@ fos_rest:
     serializer:
         serialize_null: true
         groups: [CreditJeeves]
+
+fos_oauth_server:
+    db_driver: orm
+    client_class:        CreditJeeves\DataBundle\Entity\Client
+    access_token_class:  CreditJeeves\DataBundle\Entity\AccessToken
+    refresh_token_class: CreditJeeves\DataBundle\Entity\RefreshToken
+    auth_code_class:     CreditJeeves\DataBundle\Entity\AuthCode
+#    service:
+#        user_provider: security.authentication.manager
