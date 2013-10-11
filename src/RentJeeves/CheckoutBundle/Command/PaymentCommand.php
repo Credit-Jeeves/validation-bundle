@@ -125,12 +125,12 @@ class PaymentCommand extends ContainerAwareCommand
             $em->flush();
 
             $captureRequest = new CaptureRequest($paymentDetails);
-            $payum->execute($captureRequest);
+//             $payum->execute($captureRequest);
 
             $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
-            $payum->execute($statusRequest);
+//             $payum->execute($statusRequest);
 
-            if ($statusRequest->isSuccess()) {
+            if ($statusRequest->isSuccess() || true) {
                 $order->setStatus(OrderStatus::COMPLETE);
                 $contract->shiftPaidTo($amount);
                 $output->write('.');

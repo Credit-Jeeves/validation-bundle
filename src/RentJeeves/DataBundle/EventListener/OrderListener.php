@@ -2,39 +2,27 @@
 namespace RentJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Tag;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- *
- * @Service("order.event_listener.doctrine")
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="prePersist",
- *         "method"="prePersist" 
- *     }
- * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="postPersist",
- *         "method"="postPersist" 
- *     }
- * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="preUpdate",
- *         "method"="preUpdate" 
- *     }
- * )
- */
 class OrderListener
 {
+    /**
+     * 
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * Two main goals for this method:
      * 1. Set paidTo for contract
@@ -43,12 +31,9 @@ class OrderListener
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
-        $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-//             $status = $entity->getStatus();
-//             echo '========='.$status."========\n";
-//             $entity->countDaysLate();
+            $entity->countDaysLate();
         }
     }
 
@@ -61,7 +46,6 @@ class OrderListener
      */
     public function preUpdate(LifecycleEventArgs $eventArgs)
     {
-        $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
             $status = $entity->getStatus();
@@ -70,12 +54,20 @@ class OrderListener
     }
     
 
-    public function postPersist(LifecycleEventArgs $eventArgs)
+    public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            // here will be email call
+            $status = $entity->getStatus();
+            switch ($status) {
+                case OrderStatus::COMPLETE:
+                    $this->container->get('project.mailer')->sendOrderReceipt($entity);
+                    break;
+                case OrderStatus::ERROR:
+                    $this->container->get('project.mailer')->sendOrderError($entity);
+                    break;
+            }
+            
         }
     }
 }

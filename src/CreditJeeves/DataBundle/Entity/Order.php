@@ -141,4 +141,24 @@ class Order extends BaseOrder
             }
         }
     }
+
+    public function getContract()
+    {
+        return $this->getOperations()->last()->getContract();
+    }
+    
+    public function getTenant()
+    {
+        return $this->getContract()->getTenant();
+    }
+
+    public function getGroup()
+    {
+        return $this->getContract()->getGroup();
+    }
+
+    public function getHolding()
+    {
+        return $this->getContract()->getHolding();
+    }
 }

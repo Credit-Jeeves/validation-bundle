@@ -77,6 +77,6 @@ class EmailTenantCommandTest extends BaseTestCase
         );
         $this->assertRegExp('/Start processing late contracts/', $commandTester->getDisplay());
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(1, $count);
+        $this->assertCount(2, $count);
     }
 }

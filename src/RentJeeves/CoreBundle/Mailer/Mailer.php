@@ -144,4 +144,11 @@ class Mailer extends BaseMailer
         );
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
+
+    public function sendOrderReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'target')
+    {
+        $tenant = $order->getTenant();
+        $vars = array();
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
 }

@@ -17,6 +17,9 @@ class PaymentCommandCase extends BaseTestCase
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new PaymentCommand());
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+        
         $command = $application->find('Payment:process');
         $commandTester = new CommandTester($command);
         $commandTester->execute(
@@ -24,6 +27,8 @@ class PaymentCommandCase extends BaseTestCase
                 'command' => $command->getName(),
             )
         );
+         $this->assertNotNull($count = $plugin->getPreSendMessages());
+        
         $this->assertRegExp('/Start payment process(.*)OK/', $commandTester->getDisplay());
         $this->markTestIncomplete('Add checks');
     }

@@ -43,7 +43,7 @@ class PaymentRepository extends EntityRepository
         $query->innerJoin('g.deposit_account', 'd');
         $query->where('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
-        $query->andWhere('c.status IN (:contract)');
+//         $query->andWhere('c.status IN (:contract)');
         $query->andWhere('p.startMonth <= :month');
         $query->andWhere('p.endMonth >= :month');
         $query->andWhere('p.startYear <= :year');
@@ -51,7 +51,7 @@ class PaymentRepository extends EntityRepository
 
         $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
-        $query->setParameter('contract', $contract);
+//         $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
 
