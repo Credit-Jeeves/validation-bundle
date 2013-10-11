@@ -120,10 +120,10 @@ class Order extends BaseOrder
             switch ($type) {
                 case OperationType::RENT:
                     $status = $this->getStatus();
-                    echo $status."\n";
+//                     echo $status."\n";
                     if ($status == OrderStatus::COMPLETE) {
                         $contract = $operation->getContract();
-                        echo 'Amount='.$orderAmount."\n";
+//                         echo 'Amount='.$orderAmount."\n";
                         $contract->shiftPaidTo($orderAmount);
                         $status = $contract->getStatus();
                         if ($status == ContractStatus::INVITE) {
@@ -131,7 +131,7 @@ class Order extends BaseOrder
                         }
                         $paidTo = $contract->getPaidTo();
                         $interval = $this->getDiffDays($paidTo);
-                        echo $interval."\n";
+//                         echo $interval."\n";
                         $this->setDaysLate($interval);
                     }
                     break;

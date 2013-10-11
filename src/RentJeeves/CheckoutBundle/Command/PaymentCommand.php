@@ -121,7 +121,7 @@ class PaymentCommand extends ContainerAwareCommand
 
             $em->persist($order);
             $em->persist($operation);
-            $em->persist($contract);
+            //$em->persist($contract);
             $em->flush();
 
             $captureRequest = new CaptureRequest($paymentDetails);
@@ -132,6 +132,7 @@ class PaymentCommand extends ContainerAwareCommand
 
             if ($statusRequest->isSuccess()) {
                 $order->setStatus(OrderStatus::COMPLETE);
+                $contract->shiftPaidTo($amount);
                 $output->write('.');
             } else {
                 $order->setStatus(OrderStatus::ERROR);

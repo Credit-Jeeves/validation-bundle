@@ -64,8 +64,8 @@ class OrderListener
         $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-//             $status = $entity->getStatus();
-//             $entity->checkOrderProperties();
+            $status = $entity->getStatus();
+            $entity->checkOrderProperties();
         }
     }
     
