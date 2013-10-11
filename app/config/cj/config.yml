@@ -86,5 +86,5 @@ fos_oauth_server:
     access_token_class:  CreditJeeves\DataBundle\Entity\AccessToken
     refresh_token_class: CreditJeeves\DataBundle\Entity\RefreshToken
     auth_code_class:     CreditJeeves\DataBundle\Entity\AuthCode
-#    service:
-#        user_provider: security.authentication.manager
+    service:
+        user_provider: user.user_provider

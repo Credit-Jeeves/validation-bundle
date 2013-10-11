@@ -91,6 +91,11 @@ _apy_jsformvalidation:
 _bazinga_exposetranslation:
     resource: "@BazingaExposeTranslationBundle/Resources/config/routing/routing.yml"
 
+fos_oauth_server_token:
+    resource: "@ApiBundle/Controller/TokenController.php"
+    type: annotation
+
+
 ApiBundle:
     resource: "@ApiBundle/Controller/CreditJeeves"
     type:     annotation

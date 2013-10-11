@@ -173,8 +173,8 @@ class Version20131011115836 extends AbstractMigration implements ContainerAwareI
         $client = $clientManager->createClient();
         $client->setRedirectUris(array());
         $client->setAllowedGrantTypes(array('token', 'authorization_code', 'password','client_credentials','refresh_token'));
-        $client->setRandomId('32y9a51by1m25ocogswc480w80oowg8c00s0gcc00os4ckgg08');
-        $client->setSecret('k8ekvv1dxb4kk0w4ckw8gw13osccoggwcksog0so4ocg0kc8w');
+        $client->setRandomId('qvxzb7ge734ko4ogwcskwksogoc0wskws40gg8oocokwg404s');
+        $client->setSecret('39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo');
         $clientManager->updateClient($client);
     }
 }
