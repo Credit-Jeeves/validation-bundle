@@ -20,6 +20,22 @@ use Symfony\Component\Validator\Constraints\True;
  */
 abstract class User extends BaseUser
 {
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\AccessToken", mappedBy="user", cascade={"all"})
+     */
+    protected $accessToken;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\AuthCode", mappedBy="user", cascade={"all"})
+     */
+    protected $authCode;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\RefreshToken", mappedBy="user", cascade={"all"})
+     */
+    protected $refreshToken;
+
     /**
      * @ORM\PreRemove
      */

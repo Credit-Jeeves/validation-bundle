@@ -169,6 +169,7 @@
         "credit-jeeves/api-bundle": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
+        "friendsofsymfony/oauth-server-bundle": "dev-master",
         "braincrafted/validation-bundle": "dev-master",
         "doctrine/orm": ">=2.2.3,<2.4",
         "doctrine/doctrine-bundle": "dev-master",
