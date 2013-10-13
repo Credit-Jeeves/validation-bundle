@@ -31,6 +31,7 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use Payum\Payment as Payum;
 use \DateTime;
+use \RuntimeException;
 
 class PaymentCommand extends ContainerAwareCommand
 {
@@ -56,7 +57,6 @@ class PaymentCommand extends ContainerAwareCommand
 
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-
         foreach ($payments as $row) {
             /** @var Payment $payment */
             $payment = $row[0];
@@ -134,6 +134,16 @@ class PaymentCommand extends ContainerAwareCommand
             } else {
                 $order->setStatus(OrderStatus::ERROR);
                 $output->writeln("\n" . $paymentDetails->getMessages());
+
+                $e = new RuntimeException(
+                    sprintf(
+                        "Payment FAIL!!!\nGroup ID: %s\nPayment ID: %s\nOrder ID: %s",
+                        $contract->getGroup()->getId(),
+                        $payment->getId(),
+                        $order->getId()
+                    )
+                );
+                $this->get('fp_badaboom.exception_catcher')->handleException($e);
             }
             $paymentDetails->setAmount($amount + $fee);
             $paymentDetails->setIsSuccessful($statusRequest->isSuccess());

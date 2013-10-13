@@ -82,9 +82,9 @@ function Pay(parent, contractId) {
     });
 
 
-    this.newPaymentAccount = ko.observable(false);
+    this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
     this.isNewPaymentAccount = ko.computed(function() {
-        return 0 < this.paymentAccounts().length && this.newPaymentAccount() && !this.paymentAccountId();
+        return this.newPaymentAccount() && !this.paymentAccountId();
     }, self);
     this.addNewPaymentAccount = function() {
         self.paymentAccountId(null); // Do not change order!
@@ -108,6 +108,11 @@ function Pay(parent, contractId) {
     /*  Form fields  */
     this.amount = ko.observable(contract.amount);
     this.type = ko.observable('recurring');
+    this.type.subscribe(function(newValue) {
+        if ('one_time' == newValue) {
+            self.ends('cancelled');
+        }
+    });
     this.frequency = ko.observable('monthly');
     this.frequency.subscribe(function(newValue) {
         if ('month_last_date' == newValue) {
