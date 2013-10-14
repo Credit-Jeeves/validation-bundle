@@ -57,9 +57,36 @@ function Pay(parent, contractId) {
         }
     });
 
+    var startDate = new Date(contract.startAt);
+    startDate.setDate(startDate.getDate() + 1);
+
+    var finishDate = new Date(contract.finishAt);
+
+    this.propertyFullAddress = new Address(this, window.addressesViewModels);
+    this.propertyFullAddress.number(contract.property.number);
+    this.propertyFullAddress.street(contract.property.street);
+    this.propertyFullAddress.city(contract.property.city);
+    this.propertyFullAddress.zip(contract.property.zip);
+    this.propertyFullAddress.district(contract.property.district);
+    this.propertyFullAddress.area(contract.property.area);
+    this.propertyFullAddress.unit(contract.unit.name);
+
+    this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
+
+
+
+    this.payment = new Payment(this, startDate);
+    this.payment.contractId = contract.id;
+    this.payment.amount(contract.rent);
+    this.payment.endMonth(finishDate.getMonth() + 1);
+    this.payment.endYear(finishDate.getYear());
+
+    if (contract.payment) {
+        ko.mapping.fromJS(contract.payment, {}, this.payment);
+    }
+
     this.newUserAddress = ko.observableArray([]);
-    this.paymentAccountId = ko.observable(null);
-    this.paymentAccountId.subscribe(function(newValue) {
+    this.payment.paymentAccountId.subscribe(function(newValue) {
         if (null != newValue) {
             self.newPaymentAccount(false);
             jQuery.each(self.paymentAccounts(), function(key, val) {
@@ -76,7 +103,7 @@ function Pay(parent, contractId) {
     });
     this.paymentAccounts = ko.observableArray([]);
     jQuery.each(window.paymentAccounts, function (key, val) {
-        if (contract.group_id == val.groupId) {
+        if (contract.groupId == val.groupId) {
             self.paymentAccounts.push(val);
         }
     });
@@ -84,62 +111,18 @@ function Pay(parent, contractId) {
 
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
     this.isNewPaymentAccount = ko.computed(function() {
-        return this.newPaymentAccount() && !this.paymentAccountId();
+        return this.newPaymentAccount() && !this.payment.paymentAccountId();
     }, self);
     this.addNewPaymentAccount = function() {
-        self.paymentAccountId(null); // Do not change order!
+        self.payment.paymentAccountId(null); // Do not change order!
         self.newPaymentAccount(true);
         self.paymentSource.clear();
     };
 
-    var startDate = new Date(contract.start_at);
-    startDate.setDate(startDate.getDate() + 1);
-
-    var finishDate = new Date(contract.finish_at);
-
-    this.propertyFullAddress = new Address(this, window.addressesViewModels);
-    this.propertyFullAddress.street(contract.property.address);
-    this.propertyFullAddress.city(contract.property.city);
-    this.propertyFullAddress.zip(contract.property.zip);
-    this.propertyFullAddress.area(contract.property.area);
-
-    this.propertyAddress = ko.observable(contract.full_address);
-
-    /*  Form fields  */
-    this.amount = ko.observable(contract.amount);
-    this.type = ko.observable('recurring');
-    this.type.subscribe(function(newValue) {
-        if ('one_time' == newValue) {
-            self.ends('cancelled');
-        }
-    });
-    this.frequency = ko.observable('monthly');
-    this.frequency.subscribe(function(newValue) {
-        if ('month_last_date' == newValue) {
-            this.dueDate(31);
-        } else {
-            this.dueDate(startDate.getDate());
-        }
-    }, this);
-    this.dueDate = ko.observable(startDate.getDate());
-    this.startMonth = ko.observable(startDate.getMonth());
-    this.startYear = ko.observable(startDate.getYear());
-    this.startDate = ko.computed(function() {
-        return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
-    }, self);
-    this.ends = ko.observable('cancelled');
-    this.endMonth = ko.observable(finishDate.getMonth() + 1);
-    this.endYear = ko.observable(finishDate.getYear());
-
-    this.id = ko.observable(null);
-    this.contractId = contract.id;
-    /* /Form fields/ */
-
-
-    this.fullPayTo = contract.full_pay_to;
+    this.fullPayTo = contract.payToName;
     this.settleDays = 3; // All logic logic in "settle" method depends on this value
     this.settle = ko.computed(function() {
-        var settleDate = new Date(this.startDate());
+        var settleDate = new Date(this.payment.startDate());
         var startDayOfWeek = (0 == settleDate.getDay()?7:settleDate.getDay()); // Move Sunday from 0 to 7
         /* logic: skip weekends */
         var daysAdd = (4 == startDayOfWeek || 6 == startDayOfWeek ? 1 : 0);
@@ -158,33 +141,30 @@ function Pay(parent, contractId) {
         return settleDate.toString('MM/dd/yyyy');
     }, this);
     this.getLastPaymentDay = ko.computed(function() {
-        var finishDate = new Date(contract.finish_at);
-        if ('on' == this.ends()) {
-            finishDate.setMonth(this.endMonth() - 1);
-            finishDate.setYear(this.endYear());
+        var finishDate = new Date(contract.finishAt);
+        if ('on' == this.payment.ends()) {
+            finishDate.setMonth(this.payment.endMonth() - 1);
+            finishDate.setYear(this.payment.endYear());
             finishDate.setDate(
-                this.dueDate() > finishDate.getDaysInMonth() ?
+                this.payment.dueDate() > finishDate.getDaysInMonth() ?
                     finishDate.getDaysInMonth() :
-                    this.dueDate()
+                    this.payment.dueDate()
             );
         }
         return finishDate.toString('MM/dd/yyyy');
     }, this);
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
-    this.paymentSource.groupId(contract.group_id);
+    this.paymentSource.groupId(contract.groupId);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
     this.questions = ko.observable(parent.questions);
 
-
-
-
     this.getAmount = ko.computed(function() {
-        return '$' + this.amount();
+        return '$' + this.payment.amount();
     }, this);
     this.isForceSave = ko.computed(function() {
-        var result = 'immediate' != this.type();
+        var result = 'immediate' != this.payment.type();
         this.paymentSource.save(result);
         this.paymentSource.isForceSave(result);
         return result;
@@ -216,7 +196,7 @@ function Pay(parent, contractId) {
                 }
                 // Do not change order of next calls:
                 self.paymentAccounts.push(data.paymentAccount);
-                self.paymentAccountId(data.paymentAccount.id);
+                self.payment.paymentAccountId(data.paymentAccount.id);
                 // End
                 break;
             case 'user':
@@ -301,7 +281,7 @@ function Pay(parent, contractId) {
                 sendData(Routing.generate('checkout_pay_payment'), forms[currentStep]);
                 break;
             case 'source':
-                if (!self.paymentAccountId() && !self.newPaymentAccount()) {
+                if (!self.payment.paymentAccountId() && !self.newPaymentAccount()) {
                     window.formProcess.removeAllErrors('#pay-popup ');
                     window.formProcess.addFormError(
                         '#' + forms[currentStep],
@@ -334,7 +314,7 @@ function Pay(parent, contractId) {
     };
 
     this.cancelDialog = function() {
-        new Cancel(self.id());
+        new Cancel(self.payment.id());
     };
 
     // Constructor

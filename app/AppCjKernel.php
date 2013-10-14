@@ -39,6 +39,8 @@ class AppCjKernel extends AppKernel
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
             new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
 
             // Must be last in the list
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
@@ -52,15 +54,8 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\AdminBundle\AdminBundle(),
             new CreditJeeves\DealerBundle\DealerBundle(),
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
-            new RentJeeves\TenantBundle\TenantBundle(),
-            new RentJeeves\LandlordBundle\LandlordBundle(),
-            new RentJeeves\DataBundle\RjDataBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
-            new RentJeeves\ComponentBundle\RjComponentBundle(),
-            new RentJeeves\CoreBundle\RjCoreBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
-            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new FOS\RestBundle\FOSRestBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

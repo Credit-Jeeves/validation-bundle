@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use \DateTime;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -34,6 +35,7 @@ class Payment
      *      referencedColumnName="id",
      *      nullable=false
      * )
+     * @Serializer\Exclude
      *
      * @var Contract
      */
@@ -50,6 +52,8 @@ class Payment
      *      referencedColumnName="id",
      *      nullable=false
      * )
+     * @Serializer\SerializedName("paymentAccountId")
+     * @Serializer\Accessor(getter="getPaymentAccountId")
      *
      * @var PaymentAccount
      */
@@ -91,52 +95,57 @@ class Payment
     protected $amount;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="due_date", type="integer")
      * @Assert\NotBlank(
      *      message="checkout.error.dueDate.empty"
      * )
+     * @Serializer\SerializedName("dueDate")
      *
      * @var int
      */
     protected $dueDate;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="start_month", type="integer")
      * @Assert\NotBlank(
      *      message="checkout.error.startMonth.empty"
      * )
+     * @Serializer\SerializedName("startMonth")
      *
      * @var int
      */
     protected $startMonth;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(name="start_year", type="integer")
      * @Assert\NotBlank(
      *      message="checkout.error.startYear.empty"
      * )
+     * @Serializer\SerializedName("startYear")
      *
      * @var int
      */
     protected $startYear;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(name="end_month", type="integer", nullable=true)
      * @Assert\NotBlank(
      *      message="checkout.error.endMonth.empty",
      *      groups={"cancelled_on"}
      * )
+     * @Serializer\SerializedName("endMonth")
      *
      * @var int
      */
     protected $endMonth = null;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(name="end_year", type="integer", nullable=true)
      * @Assert\NotBlank(
      *      message="checkout.error.endYear.empty",
      *      groups={"cancelled_on"}
      * )
+     * @Serializer\SerializedName("endYear")
      *
      * @var int
      */
@@ -145,6 +154,7 @@ class Payment
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
+     * @Serializer\Exclude
      *
      * @var DateTime
      */
@@ -153,6 +163,7 @@ class Payment
     /**
      * @Gedmo\Timestampable(on="update")
      * @ORM\Column(name="updated_at", type="datetime")
+     * @Serializer\Exclude
      *
      * @var DateTime
      */
