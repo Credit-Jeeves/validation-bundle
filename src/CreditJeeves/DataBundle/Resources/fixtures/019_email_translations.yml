@@ -610,7 +610,6 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi !{% endblock %}
       {% block email %}
       <table 
         width="100%"
@@ -619,11 +618,21 @@ fixtures:
           border-collapse: collapse;
        "
       >
-      </table>
-        <br />
-        Enjoy, <br />
-        The RentTrack Team
+        <tbody>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;></td><td style="padding:5px;>{{ datetime }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;></td><td style="padding:5px;>{{ transactionID }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;></td><td style="padding:5px;>{{ amount }}</td>
+          </tr>
+        </tbody>
+      </table
+      The RentTrack Team
       {% endblock %}
+
 # rjOrderError.html
   translation_25_subject:
     translatable: email_25

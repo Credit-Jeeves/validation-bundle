@@ -13,10 +13,11 @@ class PaymentCommandCase extends BaseTestCase
      */
     public function testExecute()
     {
-        $this->load(true);
+        //$this->load(true);
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new PaymentCommand());
+        
         $plugin = $this->registerEmailListener();
         $plugin->clean();
         

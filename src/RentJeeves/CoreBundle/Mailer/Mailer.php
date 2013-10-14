@@ -145,10 +145,24 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    public function sendOrderReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'target')
+    public function sendOrderReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
     {
         $tenant = $order->getTenant();
-        $vars = array();
+        $history = $order->getHeartlands()->last();
+        $vars = array(
+            'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'transactionID' => $history ? $history->getTransactionId() : 'N/A',
+            'amount' => $order->getAmount(),
+            'nameTenant' => $tenant->getFullName(),
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendOrderError(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderError')
+    {
+        $tenant = $order->getTenant();
+        $vars = array(
+        );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 }
