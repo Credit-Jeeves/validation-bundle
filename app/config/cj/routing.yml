@@ -95,7 +95,6 @@ fos_oauth_server_token:
     resource: "@ApiBundle/Controller/TokenController.php"
     type: annotation
 
-
 ApiBundle:
     resource: "@ApiBundle/Controller/CreditJeeves"
     type:     annotation
