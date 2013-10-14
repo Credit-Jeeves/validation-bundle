@@ -112,7 +112,7 @@ class PaymentCommand extends ContainerAwareCommand
             $paymentDetails->setOrder($order);
 
             if (PaymentTypeEnum::ONE_TIME == $payment->getType() ||
-                date('j') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()
+                date('n') == $payment->getEndMonth() && date('Y') == $payment->getEndYear()
             ) {
                 $payment->setStatus(PaymentStatus::CLOSE);
                 $em->persist($payment);
@@ -135,15 +135,15 @@ class PaymentCommand extends ContainerAwareCommand
                 $order->setStatus(OrderStatus::ERROR);
                 $output->writeln("\n" . $paymentDetails->getMessages());
 
-                $e = new RuntimeException(
-                    sprintf(
-                        "Payment FAIL!!!\nGroup ID: %s\nPayment ID: %s\nOrder ID: %s",
-                        $contract->getGroup()->getId(),
-                        $payment->getId(),
-                        $order->getId()
-                    )
-                );
-                $this->get('fp_badaboom.exception_catcher')->handleException($e);
+//                $e = new RuntimeException(
+//                    sprintf(
+//                        "Payment FAIL!!!\nGroup ID: %s\nPayment ID: %s\nOrder ID: %s",
+//                        $contract->getGroup()->getId(),
+//                        $payment->getId(),
+//                        $order->getId()
+//                    )
+//                );
+//                $this->get('fp_badaboom.exception_catcher')->handleException($e);
             }
             $paymentDetails->setAmount($amount + $fee);
             $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
