@@ -566,19 +566,6 @@ abstract class Contract
     }
 
     /**
-<<<<<<< HEAD
-=======
-     * Remove operation
-     *
-     * @param \CreditJeeves\DataBundle\Entity\Operation $opeartion
-     */
-    public function removeOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
-    {
-        $this->operations->removeElement($operation);
-    }
-
-    /**
->>>>>>> c8a85d740658ec3a5d01c65c071603903a3cd2a4
      * Get operations
      *
      * @return \Doctrine\Common\Collections\Collection
