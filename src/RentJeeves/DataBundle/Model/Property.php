@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -124,6 +125,7 @@ abstract class Property
      *     name="created_at",
      *     type="datetime"
      * )
+     * @Serializer\Exclude
      */
     protected $createdAt;
 
@@ -133,6 +135,7 @@ abstract class Property
      *     name="updated_at",
      *     type="datetime"
      * )
+     * @Serializer\Exclude
      */
     protected $updatedAt;
 
@@ -143,6 +146,7 @@ abstract class Property
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
+     * @Serializer\Exclude
      */
     protected $units;
 
@@ -153,6 +157,7 @@ abstract class Property
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
+     * @Serializer\Exclude
      */
     protected $invite;
 
@@ -161,6 +166,7 @@ abstract class Property
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     mappedBy="group_properties"
      * )
+     * @Serializer\Exclude
      */
     protected $property_groups;
 
@@ -175,6 +181,7 @@ abstract class Property
      *     },
      *     orphanRemoval=true
      * )
+     * @Serializer\Exclude
      */
     protected $contracts;
 

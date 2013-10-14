@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -30,6 +31,7 @@ abstract class Contract
      *     name="tenant_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Exclude
      */
     protected $tenant;
 
@@ -42,6 +44,7 @@ abstract class Contract
      *     name="holding_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Exclude
      */
     protected $holding;
 
@@ -54,6 +57,8 @@ abstract class Contract
      *     name="group_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\SerializedName("groupId")
+     * @Serializer\Accessor(getter="getGroupId")
      */
     protected $group;
 
@@ -99,6 +104,7 @@ abstract class Contract
      *         "tenant_contract",
      *     }
      * )
+     * @Serializer\Exclude
      */
     protected $search;
 
@@ -128,11 +134,13 @@ abstract class Contract
 
     /**
      * @ORM\Column(
+     *     name="paid_to",
      *     type="datetime",
      *     nullable=true
      * )
+     * @Serializer\SerializedName("paidTo")
      */
-    protected $paid_to;
+    protected $paidTo;
 
     /**
      * @ORM\Column(
@@ -157,6 +165,7 @@ abstract class Contract
      *         "tenant_invite"
      *     }
      * )
+     * @Serializer\SerializedName("startAt")
      */
     protected $startAt;
 
@@ -172,6 +181,7 @@ abstract class Contract
      *         "tenant_invite"
      *     }
      * )
+     * @Serializer\SerializedName("finishAt")
      */
     protected $finishAt;
     
@@ -182,6 +192,7 @@ abstract class Contract
      *     name="created_at",
      *     type="datetime"
      * )
+     * @Serializer\Exclude
      */
     protected $createdAt;
 
@@ -191,6 +202,7 @@ abstract class Contract
      *     name="updated_at",
      *     type="datetime"
      * )
+     * @Serializer\Exclude
      */
     protected $updatedAt;
 
@@ -201,6 +213,7 @@ abstract class Contract
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
+     * @Serializer\Exclude
      * @var ArrayCollection
      */
     protected $operations;
@@ -212,6 +225,7 @@ abstract class Contract
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
+     * @Serializer\Exclude
      * @var ArrayCollection
      */
     protected $payments;
@@ -416,7 +430,7 @@ abstract class Contract
      */
     public function setPaidTo($paidTo)
     {
-        $this->paid_to = $paidTo;
+        $this->paidTo = $paidTo;
         return $this;
     }
 
@@ -427,7 +441,7 @@ abstract class Contract
      */
     public function getPaidTo()
     {
-        return $this->paid_to;
+        return $this->paidTo;
     }
 
     /**
@@ -557,9 +571,9 @@ abstract class Contract
      *
      * @param \CreditJeeves\DataBundle\Entity\Operation $opeartion
      */
-    public function removeScore(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    public function removeOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
-        $this->opeartions->removeElement($operation);
+        $this->operations->removeElement($operation);
     }
 
     /**
@@ -570,5 +584,37 @@ abstract class Contract
     public function getOperations()
     {
         return $this->operations;
+    }
+
+    /**
+     * Add payment
+     *
+     * @param \RentJeeves\DataBundle\Entity\Payment $payment
+     * @return Contract
+     */
+    public function addPayment(\RentJeeves\DataBundle\Entity\Payment $payment)
+    {
+        $this->payments[] = $payment;
+        return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \RentJeeves\DataBundle\Entity\Payment $opeartion
+     */
+    public function removePayment(\RentJeeves\DataBundle\Entity\Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+    }
+
+    /**
+     * Get payments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }

@@ -6,6 +6,10 @@
                 <source>pay_popup.title</source>
                 <target>Pay Rent</target>
             </trans-unit>
+            <trans-unit id="pay_popup.title.edit">
+                <source>pay_popup.title.edit</source>
+                <target>Edit</target>
+            </trans-unit>
             <trans-unit id="pay_popup.step.1">
                 <source>pay_popup.step.1</source>
                 <target>Payment Details</target>
@@ -392,7 +396,29 @@
             </trans-unit>
             <trans-unit id="checkout.one_time_payment.note">
                 <source>checkout.one_time_payment.note</source>
-                <target>Please note that this is a one time payment for %MONTH% %YEAR%. Any future due dates still require you to create a new rent payment. You can save time by creating a recurring payment.</target>
+                <target>Please note that this is a one time payment for %DATE%. Any future due dates still require you to create a new rent payment. You can save time by creating a recurring payment.</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.cancel">
+                <source>checkout.payment.cancel</source>
+                <target>Cancel&lt;br /&gt;Payment</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.cancel.title">
+                <source>checkout.payment.cancel.title</source>
+                <target>Cancel Payment</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.cancel.text">
+                <source>checkout.payment.cancel.text</source>
+                <target>
+                    Are you sure want to cancel this payment?
+                </target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.cancel.yes">
+                <source>checkout.payment.cancel.yes</source>
+                <target>Yes, Cancel Source</target>
+            </trans-unit>
+            <trans-unit id="checkout.payment.cancel.no">
+                <source>checkout.payment.cancel.no</source>
+                <target>No, Close Popup</target>
             </trans-unit>
         </body>
     </file>

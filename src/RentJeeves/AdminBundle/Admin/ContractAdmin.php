@@ -43,7 +43,7 @@ class ContractAdmin extends Admin
             ->add('unit.name')
             ->add('status')
             ->add('rent')
-            ->add('paid_to', null, array('label' => 'Paid Through'))
+            ->add('paidTo', null, array('label' => 'Paid Through'))
             ->add(
                 '_action',
                 'actions',

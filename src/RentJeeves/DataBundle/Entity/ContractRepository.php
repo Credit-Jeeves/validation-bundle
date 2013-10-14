@@ -102,7 +102,7 @@ class ContractRepository extends EntityRepository
                     $query->orderBy('c.status', $sortOrder);
                     break;
                 case 'due_dateA':
-                    $query->orderBy('c.paid_to', $sortOrder);
+                    $query->orderBy('c.paidTo', $sortOrder);
                     break;
                 default:
                     $sortField = 'c.'.$sortField;
@@ -170,7 +170,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
-        $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.paidTo < :date');
         $query->andWhere('c.status <> :status');
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
@@ -194,7 +194,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
-        $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.paidTo < :date');
         $query->andWhere('c.status <> :status');
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
@@ -314,7 +314,7 @@ class ContractRepository extends EntityRepository
         $query->select('SUM(c.rent)');
         $query->where('c.holding = :holding');
         $query->andWhere('c.status IN (:status)');
-        $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.paidTo < :date');
         $query->setParameter('holding', $holding);
         $query->setParameter('status', $status);
         $query->setParameter('date', new \Datetime());
@@ -326,7 +326,7 @@ class ContractRepository extends EntityRepository
     public function getLateContracts($days = 5)
     {
         $query = $this->createQueryBuilder('c');
-        $query->where('c.paid_to BETWEEN :start AND :now');
+        $query->where('c.paidTo BETWEEN :start AND :now');
         $query->setParameter('start', new \Datetime('-'.$days.' days'));
         $query->setParameter('now', new \Datetime());
         $query = $query->getQuery();
@@ -338,7 +338,7 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->where('c.holding = :holding');
         $query->andWhere('c.status IN (:status)');
-        $query->andWhere('c.paid_to < :date');
+        $query->andWhere('c.paidTo < :date');
         $query->setParameter('holding', $holding);
         $query->setParameter('status', $status);
         $query->setParameter('date', new \Datetime());
