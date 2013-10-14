@@ -14,6 +14,7 @@ imports:
     - { resource: ../base/twig.yml }
     - { resource: ../cj/twig.yml }
     - { resource: ../base/apy_js_form_validation.yml }
+    - { resource: ../base/fos_oauth_server.yml }
 
 sensio_framework_extra:
     view:
@@ -57,7 +58,10 @@ sonata_admin:
 
 api:
     admin_dealer_code: %api.admin_dealer_code%
-
+    username: %api.username%
+    password: %api.password%
+    clientId: %api.clientId%
+    clientSecret: %api.clientSecret%
 
 fos_rest:
     param_fetcher_listener: true
@@ -79,12 +83,3 @@ fos_rest:
     serializer:
         serialize_null: true
         groups: [CreditJeeves]
-
-fos_oauth_server:
-    db_driver: orm
-    client_class:        CreditJeeves\DataBundle\Entity\Client
-    access_token_class:  CreditJeeves\DataBundle\Entity\AccessToken
-    refresh_token_class: CreditJeeves\DataBundle\Entity\RefreshToken
-    auth_code_class:     CreditJeeves\DataBundle\Entity\AuthCode
-    service:
-        user_provider: user.user_provider
