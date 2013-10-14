@@ -100,7 +100,8 @@ class Order extends BaseOrder
     public function countDaysLate()
     {
         $operation = $this->getOperations()->last();
-        $type = $operation->getType();
+        $type = OperationType::REPORT;
+        $type = $operation ? $operation->getType() : $type;
         switch ($type) {
             case OperationType::RENT:
                 $contract = $operation->getContract();
