@@ -620,16 +620,30 @@ fixtures:
       >
         <tbody>
           <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;></td><td style="padding:5px;>{{ datetime }}</td>
+            <td style="padding:5px;">{{ 'order.date.time' | trans }}:</td><td style="padding:5px;">{{ datetime }}</td>
           </tr>
           <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;></td><td style="padding:5px;>{{ transactionID }}</td>
+            <td style="padding:5px;">{{ 'oder.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
           </tr>
           <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;></td><td style="padding:5px;>{{ amount }}</td>
+            <td style="padding:5px;">{{ 'amount' | trans }}:</td><td style="padding:5px;">{{ amount }}</td>
           </tr>
+          {% if fee > 0 %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
+          </tr>
+          {% endif %}
         </tbody>
-      </table
+      </table>
+      </br>
+      {{ 'order.paid.to' | trans }}:{{ groupName }}
+      </br>
+      </br>
+      {{ 'oder.receipt.footer' | trans }}
+      </br>
       The RentTrack Team
       {% endblock %}
 

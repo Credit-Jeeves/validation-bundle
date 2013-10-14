@@ -1326,6 +1326,30 @@
                 <source>payment_account.error.choice.empty</source>
                 <target>Please select a Payment Source from the list or add new one.</target>
             </trans-unit>
+            <trans-unit id="oder.date.time">
+                <source>order.date.time</source>
+                <target>Date & Time</target>
+            </trans-unit>
+            <trans-unit id="oder.transaction.id">
+                <source>order.transaction.id</source>
+                <target>Transaction ID</target>
+            </trans-unit>
+            <trans-unit id="oder.fee">
+                <source>order.fee</source>
+                <target>Fee</target>
+            </trans-unit>
+            <trans-unit id="oder.total">
+                <source>order.total</source>
+                <target>Total</target>
+            </trans-unit>
+            <trans-unit id="oder.paid.to">
+                <source>order.paid.to</source>
+                <target>Paid To</target>
+            </trans-unit>
+            <trans-unit id="oder.receipt.footer">
+                <source>order.receipt.footer</source>
+                <target>Look for a RENTTRK entry on your statement.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

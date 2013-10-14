@@ -10,6 +10,7 @@ use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
 use \Exception;
 use \RuntimeException;
+use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
  * 
@@ -149,10 +150,24 @@ class Mailer extends BaseMailer
     {
         $tenant = $order->getTenant();
         $history = $order->getHeartlands()->last();
+        $type = $order->getType();
+        $fee = 0;
+        $amount = $order->getAmount();
+        $group = $order->getOperations()->last()->getContract()->getGroup();
+        switch ($type) {
+            case OrderType::HEARTLAND_CARD:
+            default:
+                $fee = $amount * (int)$this->container->getParameter('payment_card_fee') / 100;
+                break;
+        }
+        $total = $fee + $amount;
         $vars = array(
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'transactionID' => $history ? $history->getTransactionId() : 'N/A',
             'amount' => $order->getAmount(),
+            'fee' => $fee,
+            'total' => $total,
+            'groupName' => $group->getName(),
             'nameTenant' => $tenant->getFullName(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
