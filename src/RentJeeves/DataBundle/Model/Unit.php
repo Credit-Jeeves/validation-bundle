@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -53,6 +54,7 @@ abstract class Unit
      *     name="property_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Exclude
      */
     protected $property;
 
@@ -65,6 +67,7 @@ abstract class Unit
      *     name="holding_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Exclude
      */
     protected $holding;
 
@@ -77,6 +80,7 @@ abstract class Unit
      *     name="group_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Exclude
      */
     protected $group;
 
@@ -86,6 +90,7 @@ abstract class Unit
      *     name="created_at",
      *     type="datetime"
      * )
+     * @Serializer\Exclude
      */
     protected $createdAt;
 
@@ -95,6 +100,7 @@ abstract class Unit
      *     name="updated_at",
      *     type="datetime"
      * )
+     * @Serializer\Exclude
      */
     protected $updatedAt;
 
@@ -109,6 +115,7 @@ abstract class Unit
      *     },
      *     orphanRemoval=true
      * )
+     * @Serializer\Exclude
      */
     protected $contracts;
     

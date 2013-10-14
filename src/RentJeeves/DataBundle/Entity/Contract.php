@@ -3,10 +3,13 @@ namespace RentJeeves\DataBundle\Entity;
 
 //use EntityManager522a848132d2c_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Contract as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Contract
@@ -58,6 +61,42 @@ class Contract extends Base
     const STATUS_OK = 'C';
 
     const STATUS_LATE = '1';
+
+    /**
+     * @return int
+     */
+    public function getGroupId()
+    {
+        return $this->getGroup()->getId();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("payToName")
+     * @return string
+     */
+    public function getPayToName()
+    {
+        return $this->getHolding()->getName() . ' ' . $this->getGroup()->getName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("payment")
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\Payment")
+     *
+     * @return Payment
+     */
+    public function getNotClosedPayment()
+    {
+        /** @var Payment $payment */
+        if (($payments = $this->getPayments()) && ($payment = $payments->last())) {
+            if (PaymentStatus::CLOSE != $payment->getStatus()) {
+                return $payment;
+            }
+        }
+        return null;
+    }
 
     /**
      * @return array
@@ -168,6 +207,11 @@ class Contract extends Base
         return $result;
     }
 
+    /**
+     * @param $property
+     * @param $unit
+     * @return string
+     */
     public function getRentAddress($property, $unit)
     {
         $result = array();
@@ -301,13 +345,27 @@ class Contract extends Base
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['row_address'] = substr($result['full_address'], 0, 20).'...';
         $result['rent'] = ($rent = $this->getRent()) ? '$'.$rent : '--';
-        $result['full_pay_to'] = $this->getHolding()->getName().' '.$this->getGroup()->getName();
+        $result['full_pay_to'] = $this->getPayToName();
         $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10).'...';
         $result['status'] = $this->getStatus();
         $result['recur'] = 'NO';
         // @todo get payment source name
-        $result['full_payment_source'] = 'N/A';
-        $result['row_payment_source'] = substr($result['full_payment_source'], 0, 10).'...';
+        $result['row_payment_source'] = 'N/A';
+        $result['full_payment_source'] = '';
+        $result['isPayment'] = false;
+
+        if ($payment = $this->getNotClosedPayment()) {
+            $result['isPayment'] = true;
+            if (PaymentType::RECURRING == $payment->getType()) {
+                $result['recur'] = 'Yes';
+            }
+
+            $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
+            if (10 < strlen($result['row_payment_source'])) {
+                $result['row_payment_source'] = substr($result['row_payment_source'], 0, 10).'...';
+                $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
+            }
+        }
         $result['payment_last'] = 'N/A';
         if ($order = $repo->getLastContractPayment($this)) {
             $result['payment_last'] = $order->getUpdatedAt()->format('m/d/Y');

@@ -22,4 +22,12 @@ class Payment extends Base
         }
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getPaymentAccountId()
+    {
+        return $this->paymentAccount->getId();
+    }
 }

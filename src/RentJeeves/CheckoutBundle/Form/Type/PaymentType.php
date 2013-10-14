@@ -24,7 +24,7 @@ class PaymentType extends AbstractType
                     'min' => 1,
                     'step' => '0.01',
                     'class' => 'half-of-right',
-                    'data-bind' => 'value: amount'
+                    'data-bind' => 'value: payment.amount'
                 ),
                 'invalid_message' => 'checkout.error.amount.valid'
             )
@@ -43,22 +43,23 @@ class PaymentType extends AbstractType
                 ),
                 'attr' => array(
                     'class' => 'original',
-                    'html' => '<div class="tooltip-box type3 pie-el" data-bind="visible: \'recurring\' == type()">' .
+                    'html' => '<div class="tooltip-box type3 pie-el" ' .
+                                    'data-bind="visible: \'recurring\' == payment.type()">' .
                         '<h4 data-bind="' .
-                            'text: \'checkout.recurring.\' + frequency() + \'.tooltip.title-%DUE_DAY%\', ' .
-                            'i18n: {\'DUE_DAY\': dueDate}' .
+                            'text: \'checkout.recurring.\' + payment.frequency() + \'.tooltip.title-%DUE_DAY%\', ' .
+                            'i18n: {\'DUE_DAY\': payment.dueDate}' .
                         '"></h4>' .
                         '<p data-bind="' .
-                            'text: \'checkout.recurring.\' + frequency() + \'.\' + ends() + \'.tooltip.text' .
-                                '-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%\', ' .
+                            'text: \'checkout.recurring.\' + payment.frequency() + \'.\' + payment.ends() + ' .
+                                '\'.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%\', ' .
                             'i18n: {' .
                                 '\'AMOUNT\': getAmount, ' .
-                                '\'DUE_DAY\': dueDate, ' .
+                                '\'DUE_DAY\': payment.dueDate, ' .
                                 '\'SETTLE_DAYS\': settleDays, ' .
                                 '\'ENDS_ON\': getLastPaymentDay' .
                             '}' .
                         '"></p></div>',
-                    'data-bind' => 'value: type',
+                    'data-bind' => 'value: payment.type',
                     'row_attr' => array(
                         'data-bind' => ''
                     )
@@ -79,9 +80,9 @@ class PaymentType extends AbstractType
                 ),
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: frequency',
+                    'data-bind' => 'value: payment.frequency',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'recurring\' == type()'
+                        'data-bind' => 'visible: \'recurring\' == payment.type()'
                     )
                 ),
                 'invalid_message' => 'checkout.error.frequency.invalid',
@@ -103,9 +104,9 @@ class PaymentType extends AbstractType
                 'choices' => array_combine($days, $days),
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: dueDate',
+                    'data-bind' => 'value: payment.dueDate',
                     'box_attr' => array(
-                        'data-bind' => 'visible: \'monthly\' == frequency()'
+                        'data-bind' => 'visible: \'monthly\' == payment.frequency()'
                     )
                 ),
                 'invalid_message' => 'checkout.error.dueDate.invalid',
@@ -123,9 +124,9 @@ class PaymentType extends AbstractType
                 'choices' => $months,
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: startMonth',
+                    'data-bind' => 'value: payment.startMonth',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'recurring\' == type()'
+                        'data-bind' => 'visible: \'recurring\' == payment.type()'
                     )
                 ),
                 'invalid_message' => 'checkout.error.startMonth.invalid',
@@ -140,9 +141,9 @@ class PaymentType extends AbstractType
                 'choices' => array_combine($years, $years),
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: startYear',
+                    'data-bind' => 'value: payment.startYear',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'recurring\' == type()'
+                        'data-bind' => 'visible: \'recurring\' == payment.type()'
                     )
                 ),
                 'invalid_message' => 'checkout.error.startYear.invalid',
@@ -161,14 +162,14 @@ class PaymentType extends AbstractType
                 'attr' => array(
                     'class' => 'datepicker-field',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'one_time\' == type()'
+                        'data-bind' => 'visible: \'one_time\' == payment.type()'
                     ),
-                    'data-bind' => 'value: startDate',
+                    'data-bind' => 'value: payment.startDate',
                     'html' => '<div class="tooltip-box type3 pie-el">' .
-                            '<h4 data-bind="i18n: {\'START\': startDate, \'SETTLE\': settle}">' .
+                            '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
                                 'checkout.one_time.tooltip.title-%START%-%SETTLE%' .
                             '</h4>' .
-                            '<p data-bind="i18n: {\'AMOUNT\': getAmount, \'START\': startDate}">' .
+                            '<p data-bind="i18n: {\'AMOUNT\': getAmount, \'START\': payment.startDate}">' .
                                 'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
                         '</p></div>',
                 ),
@@ -200,9 +201,9 @@ class PaymentType extends AbstractType
                 'choices' => array('cancelled' => 'checkout.when_cancelled', 'on' => 'checkout.on'),
                 'empty_value'  => false,
                 'attr' => array(
-                    'data-bind' => 'checked: ends',
+                    'data-bind' => 'checked: payment.ends',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'recurring\' == type()'
+                        'data-bind' => 'visible: \'recurring\' == payment.type()'
                     )
                 ),
                 'constraints' => array(
@@ -222,9 +223,9 @@ class PaymentType extends AbstractType
                 'choices' => $months,
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: endMonth',
+                    'data-bind' => 'value: payment.endMonth',
                     'box_attr' => array(
-                        'data-bind' => 'visible: \'on\' == ends()'
+                        'data-bind' => 'visible: \'on\' == payment.ends()'
                     )
                 ),
                 'invalid_message' => 'checkout.error.endMonth.invalid',
@@ -238,9 +239,9 @@ class PaymentType extends AbstractType
                 'choices' => array_combine($years, $years),
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: endYear',
+                    'data-bind' => 'value: payment.endYear',
                     'box_attr' => array(
-                        'data-bind' => 'visible: \'on\' == ends()'
+                        'data-bind' => 'visible: \'on\' == payment.ends()'
                     )
                 ),
                 'invalid_message' => 'checkout.error.endYear.invalid',
@@ -254,7 +255,7 @@ class PaymentType extends AbstractType
             array(
                 'mapped' => false,
                 'attr' => array(
-                    'data-bind' => 'value: paymentAccountId',
+                    'data-bind' => 'value: payment.paymentAccountId',
                 )
             )
         );
@@ -264,7 +265,7 @@ class PaymentType extends AbstractType
             array(
                 'mapped' => false,
                 'attr' => array(
-                    'data-bind' => 'value: contractId',
+                    'data-bind' => 'value: payment.contractId',
                 )
             )
         );
@@ -273,7 +274,7 @@ class PaymentType extends AbstractType
             'hidden',
             array(
                 'attr' => array(
-                    'data-bind' => 'value: id',
+                    'data-bind' => 'value: payment.id',
                 )
             )
         );

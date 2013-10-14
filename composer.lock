@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "0a5a034e8ffd4aa303f785a36ada2778",
+    "hash": "8e63defb54f0ca68657cd7cb66bb09db",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "2e36a0882b2919e36b1c57694be8a58c33cec3d3"
+                "reference": "72d11569f66917e3282e768fc81e5ea658de909d"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-10-09 07:57:34"
+            "time": "2013-09-26 13:03:26"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -406,11 +406,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "a79c97d524ce3d52ab4fdc6ccf3a7d179328ddb8"
+                "reference": "91fbb6cba37e2bd2a8dd8abfcb02b7b4be419e9c"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-10-08 09:11:10"
+            "time": "2013-10-11 13:09:49"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -1478,12 +1478,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "dcc0c135acd72e3ebab7146806292f884ba7f125"
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/dcc0c135acd72e3ebab7146806292f884ba7f125",
-                "reference": "dcc0c135acd72e3ebab7146806292f884ba7f125",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/8a908b627d7f3d25478a89b8307a9fb9843a8293",
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293",
                 "shasum": ""
             },
             "require": {
@@ -1502,8 +1502,6 @@
                 "sensio/framework-extra-bundle": "~2.1",
                 "symfony/form": "~2.1",
                 "symfony/security": "~2.1",
-                "symfony/serializer": "~2.1",
-                "symfony/validator": "~2.1",
                 "symfony/yaml": "~2.1"
             },
             "suggest": {
@@ -1546,7 +1544,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2013-10-09 08:01:12"
+            "time": "2013-09-03 10:58:43"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -2883,7 +2881,7 @@
             ],
             "authors": [
                 {
-                    "name": "Maksim Kotlyar",
+                    "name": "Kotlyar Maksim",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -4896,7 +4894,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",

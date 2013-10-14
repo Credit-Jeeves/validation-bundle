@@ -1,9 +1,27 @@
 {% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
 {% form_theme userDetailsType 'RjCoreBundle::form.html.twig' %}
 
+<div id="payment-account-cancel" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'checkout.payment.cancel.title' | trans() }}</h1>
+    <div class="clearfix col-box">
+        <div class="attention-box pie-el">
+            {{ 'checkout.payment.cancel.text' | trans() }}
+        </div>
+        <div class="row-20"></div>
+        <div class="footer-button-box">
+            <a class="button" data-bind="attr: { href: cancelUrl }" style="display: inline-block;">
+                <span>{{ 'checkout.payment.cancel.yes' | trans() }}</span>
+            </a>
+            <button data-bind="click: cancelClose" class="button grey buttonFix">
+                <span>{{ 'checkout.payment.cancel.no' | trans() }}</span>
+            </button>
+        </div>
+    </div>
+</div>
 
 <div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
-    <h1>{{ 'pay_popup.title' | trans }}</h1>
+    <h1 data-bind="visible: !payment.id()">{{ 'pay_popup.title' | trans }}</h1>
+    <h1 data-bind="visible: payment.id()">{{ 'pay_popup.title.edit' | trans }}</h1>
     <div class="clearfix col-box attention-container">
 
         <ul class="steps clearfix">
@@ -51,7 +69,7 @@
                             <input type="radio"
                                 required="required"
                                 data-bind="
-                                    checked: $parent.paymentAccountId,
+                                    checked: $parent.payment.paymentAccountId,
                                     value: $data.id
                                 " />
                             <i></i>
@@ -104,12 +122,12 @@
 
         <div data-bind="visible: 'pay' == step()">
             <h3 class="italic">
-                <span data-bind="visible: 'recurring' == type()">{{ 'checkout.recurring_for' | trans }}</span>
+                <span data-bind="visible: 'recurring' == payment.type()">{{ 'checkout.recurring_for' | trans }}</span>
                 <span data-bind="text: propertyAddress"></span>
             </h3>
 
             <div class="information-box pie-el"
-                 data-bind="visible: 'one_time' == type(), i18n: {'DAY': startMonth, 'YEAR': startYear}"
+                 data-bind="visible: 'one_time' == payment.type(), i18n: {'DATE': payment.startDate}"
             >
                 checkout.one_time_payment.note
             </div>
@@ -129,20 +147,21 @@
                             <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix" data-bind="visible: 'immediate' != type()">
+                    <div class="form-row clearfix" data-bind="visible: 'immediate' != payment.type()">
                         <label>{{ 'checkout.starts_on' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: startDate"></span>
+                            <span class="value" data-bind="text: payment.startDate"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix" data-bind="visible: 'recurring' == type()">
+                    <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
                         <label>{{ 'checkout.recurs_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value"
-                                  data-bind="text: 'checkout.day.' + frequency() +'.each_month-%DAY%', i18n: {'DAY': dueDate}"></span>
+                                  data-bind="text: 'checkout.day.' + payment.frequency() +'.each_month-%DAY%', i18n: {'DAY': payment.dueDate}">
+                            </span>
                         </div>
                     </div>
-                    <div class="form-row clearfix" data-bind="visible: 'on' == ends()">
+                    <div class="form-row clearfix" data-bind="visible: 'on' == payment.ends()">
                         <label>{{ 'checkout.last_payment_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: getLastPaymentDay"></span>
@@ -264,6 +283,9 @@
         <button class="button" data-bind="visible: 'pay' == step(), click: next">
             <span>{{ 'checkout.make_payment' | trans }}</span>
         </button>
+        <a href="#" class="link removePropertyConfirm" data-bind="visible: 'details' == step() && payment.id(), click: cancelDialog">
+            {{ 'checkout.payment.cancel' | trans | raw }}
+        </a>
         {{ include('RjCoreBundle::nortonSecured.html.twig') }}
     </div>
 </div>

@@ -69,6 +69,12 @@
                         {{ contract.status | upper }}
                         </td>
                         <td class="font-helvetica">
+                            {% if contract.isPayment %}
+                                {% set buttonText = 'contract.edit' | trans() %}
+                            {% else %}
+                                {% set buttonText = 'contract.pay' | trans() %}
+                            {% endif %}
+
                             {% if contract.status == 'pending' %}
                                 <div class="contract-potential">
                                     <button class="button small button-contract-pay grey floatleft">
@@ -84,7 +90,8 @@
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
                                     >
-                                        <span>{{ 'contract.pay' | trans() }}</span>
+
+                                        <span>{{ buttonText }}</span>
                                     </button>
                                     <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
@@ -96,7 +103,7 @@
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
                                             >
-                                        <span>{{ 'contract.pay' | trans() }}</span>
+                                        <span>{{ buttonText }}</span>
                                     </button>
                                     <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
@@ -117,7 +124,7 @@
 <script type="text/javascript">
     $(document).ready(function() {
         var currentPaymentsViewModel = new CurrentPayments(
-            {{ contracts | serialize('json') | raw }},
+            {{ contractsRaw | serialize('json') | raw }},
             '{{ user.getIsVerified }}'
         );
         ko.applyBindings(currentPaymentsViewModel, $('#current-payments').get(0));
