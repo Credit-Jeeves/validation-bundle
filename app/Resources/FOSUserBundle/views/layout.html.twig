@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block info %}
-    {% if application == 'cj '%}
+    {% if 'cj' == application %}
         <div class="user-logout">
             <a href="{{ path('fos_user_security_login') }}">» {{ 'login.submit' | trans }} </a>&nbsp;|&nbsp;
             <a href="{{ path('fos_user_security_logout') }}">» {{ 'common.help' | trans }} </a>
