@@ -57,6 +57,7 @@ class ContractsListController extends Controller
             $data[] = $contract->getDatagridRow($em);
         }
         return array(
+            'contractsRaw' => $contracts,
             'contracts' => $data,
             'user' => $tenant,
         );

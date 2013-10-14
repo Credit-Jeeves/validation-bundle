@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5d9da32e5899b4dbc66de6f396b39156",
+    "hash": "8e63defb54f0ca68657cd7cb66bb09db",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -376,7 +376,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "3c98a2468fdfee512e2d16b722a07033addc9533"
+                "reference": "6550b67e5dc47dbc385d209e5d30a236302f5f99"
             },
             "require": {
                 "ext-mcrypt": "*",
@@ -398,7 +398,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-10-07 07:41:34"
+            "time": "2013-10-11 13:57:32"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -406,11 +406,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "a79c97d524ce3d52ab4fdc6ccf3a7d179328ddb8"
+                "reference": "91fbb6cba37e2bd2a8dd8abfcb02b7b4be419e9c"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-10-08 09:11:10"
+            "time": "2013-10-11 13:09:49"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -566,7 +566,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -1079,9 +1079,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1183,7 +1183,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -2183,7 +2183,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -3227,7 +3227,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -5011,7 +5011,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
