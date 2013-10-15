@@ -214,7 +214,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git",
-                "reference": "e9a8384121e4db63ebcbf791df8c177c64f4bc4a"
+                "reference": "f9607735fcc02413526ba55c5c17ab9ec09b675c"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -259,7 +259,7 @@
                 "soap",
                 "soap-common"
             ],
-            "time": "2013-08-16 15:18:31"
+            "time": "2013-10-15 09:46:12"
         },
         {
             "name": "braincrafted/validation-bundle",
