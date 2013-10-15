@@ -369,7 +369,7 @@ fixtures:
         <br /><br />
         We'd recommend setting up <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a> so you have one less thing to worry about.
         <br /><br />
-        You're ready to build credit buy paying rent securely online. 
+        You're ready to build credit buy paying rent securely online.
       {% endblock %}
 
 # rjPendingContract.html
