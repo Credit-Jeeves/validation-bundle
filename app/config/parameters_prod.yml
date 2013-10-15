@@ -19,3 +19,8 @@ parameters:
         login_id: '29fDg7sU24G'
         transaction_key: '474v43G35wJ6Gm2d'
         sandbox: false
+
+    heartland:
+        application_id: 1
+        username: RTAPI
+        password: $RTapi13
