@@ -264,8 +264,8 @@ class ContractRepository extends EntityRepository
         $query->select('SUM(o.amount) AS amount, h.id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('c.operations', 'operations');
-        $query->innerJoin('operations.orders', 'o');
+        $query->innerJoin('c.operation', 'operation');
+        $query->innerJoin('operation.orders', 'o');
         $query->where('o.status IN (:status)');
         $query->andWhere('o.updated_at BETWEEN :start AND :end');
         $query->groupBy('h.id');
@@ -294,8 +294,8 @@ class ContractRepository extends EntityRepository
         $query->select('SUM(o.amount)');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('c.operations', 'operations');
-        $query->innerJoin('operations.orders', 'o');
+        $query->innerJoin('c.operation', 'operation');
+        $query->innerJoin('operation.orders', 'o');
         $query->where('c.holding = :holding');
         $query->andWhere('o.status =:status');
         $query->andWhere('o.updated_at BETWEEN :start AND :end');

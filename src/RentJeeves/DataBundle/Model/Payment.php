@@ -28,7 +28,7 @@ class Payment
      * @ORM\ManyToOne(
      *      targetEntity="RentJeeves\DataBundle\Entity\Contract",
      *      inversedBy="payments",
-     *      cascade={"persist"}
+     *      cascade={"all"}
      * )
      * @ORM\JoinColumn(
      *      name="contract_id",

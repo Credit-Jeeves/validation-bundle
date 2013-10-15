@@ -39,6 +39,7 @@ class PaymentRepository extends EntityRepository
         $query->select('p, c, g, d');
         $query->innerJoin('p.contract', 'c');
         $query->innerJoin('c.group', 'g');
+        $query->leftJoin('c.operation', 'oper');
         $query->innerJoin('g.deposit_account', 'd');
         $query->where('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');

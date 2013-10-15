@@ -45,7 +45,7 @@ fixtures:
         type: recurring
         status: active
         amount: 1700
-        dueDate: 3
+        dueDate: 14
         startMonth: 2
         startYear: 2013
         endMonth: 10
@@ -58,7 +58,7 @@ fixtures:
         type: recurring
         status: active
         amount: 2100
-        dueDate: 8
+        dueDate: 14
         startMonth: 2
         startYear: 2013
         endMonth: 10

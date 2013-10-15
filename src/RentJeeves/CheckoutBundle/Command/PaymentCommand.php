@@ -62,13 +62,14 @@ class PaymentCommand extends ContainerAwareCommand
             $payment = $row[0];
             $paymentAccount = $payment->getPaymentAccount();
             $contract = $payment->getContract();
-//            $tenant = $contract->getTenant();
-
+            $operation = $contract->getOperation();
+            if (empty($operation)) {
+                $operation = new Operation();
+            }
             $amount = $payment->getAmount();
             $fee = 0;
 
             $order = new Order();
-            $operation = new Operation();
             $operation->setType(OperationType::RENT);
             $operation->setContract($contract);
 
@@ -120,6 +121,7 @@ class PaymentCommand extends ContainerAwareCommand
 
             $em->persist($order);
             $em->persist($operation);
+            //$em->persist($contract);
             $em->flush();
 
             $captureRequest = new CaptureRequest($paymentDetails);
@@ -130,6 +132,7 @@ class PaymentCommand extends ContainerAwareCommand
 
             if ($statusRequest->isSuccess()) {
                 $order->setStatus(OrderStatus::COMPLETE);
+                $contract->shiftPaidTo($amount);
                 $output->write('.');
             } else {
                 $order->setStatus(OrderStatus::ERROR);
@@ -149,6 +152,7 @@ class PaymentCommand extends ContainerAwareCommand
             $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
             $em->persist($paymentDetails);
             $em->persist($order);
+            $em->persist($contract);
             $em->flush();
         }
         $output->writeln('OK');

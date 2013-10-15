@@ -18,6 +18,9 @@ class Version20130816113404 extends AbstractMigration
             "Migration can only be executed safely on 'mysql'."
         );
         $this->addSql(
+            "DELETE FROM cj_login_defense"
+        );
+        $this->addSql(
             "ALTER TABLE cj_login_defense
                 CHANGE user_id user_id BIGINT DEFAULT NULL"
         );

@@ -114,7 +114,8 @@ abstract class Order
     /**
      * @ORM\ManyToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
-     *     inversedBy="orders"
+     *     inversedBy="orders",
+     *     cascade={"all"}
      * )
      * @ORM\JoinTable(
      *      name="cj_order_operation",
