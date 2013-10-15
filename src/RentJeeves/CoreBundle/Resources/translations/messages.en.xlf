@@ -1328,7 +1328,7 @@
             </trans-unit>
             <trans-unit id="oder.date.time">
                 <source>order.date.time</source>
-                <target>Date & Time</target>
+                <target>Date &amp; Time</target>
             </trans-unit>
             <trans-unit id="oder.transaction.id">
                 <source>order.transaction.id</source>
