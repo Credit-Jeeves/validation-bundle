@@ -58,10 +58,8 @@ sonata_admin:
 
 api:
     admin_dealer_code: %api.admin_dealer_code%
-    username: %api.username%
-    password: %api.password%
-    clientId: %api.clientId%
-    clientSecret: %api.clientSecret%
+    client_id: %api.client_id%
+    client_secret: %api.client_secret%
 
 fos_rest:
     param_fetcher_listener: true
