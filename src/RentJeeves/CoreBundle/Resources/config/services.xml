@@ -13,4 +13,5 @@
             <argument type="service" id="fp_badaboom.exception_catcher" />
         </service>
     </services>
+
 </container>
