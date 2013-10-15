@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "a98058fa705467ef262b2e38959530435328752a"
+                "reference": "f96108ce805d40b788ea8bf6deb78c43cfaf4674"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-10-15 08:40:12"
+            "time": "2013-10-15 11:31:34"
         },
         {
             "name": "credit-jeeves/arf-bundle",
