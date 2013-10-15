@@ -1,8 +1,4 @@
-{% if application == 'rj' %}
-    {% extends "CoreBundle::rj_base.html.twig" %}
-{% else %}
-    {% extends "CoreBundle::base.html.twig" %}
-{% endif %}
+{% extends "::base.html.twig" %}
 
 {% block title 'exception.error.title-%%STATUS_TEXT%%' | trans({'%%STATUS_TEXT%%' : status_text}) %}
 
