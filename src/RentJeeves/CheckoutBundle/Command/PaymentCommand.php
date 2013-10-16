@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 use Doctrine\ORM\EntityManager;
@@ -85,8 +86,6 @@ class PaymentCommand extends ContainerAwareCommand
             $order->setUser($paymentAccount->getUser());
             $order->setAmount($amount); // TODO findout about fee
             $order->setStatus(OrderStatus::NEWONE);
-//            $order->setDaysLate(0); //FIXME Alex please put her correct value!
-
 
             $request = new MakePaymentRequest();
             $billTransaction = new BillTransaction();
@@ -118,10 +117,8 @@ class PaymentCommand extends ContainerAwareCommand
                 $payment->setStatus(PaymentStatus::CLOSE);
                 $em->persist($payment);
             }
-
             $em->persist($order);
             $em->persist($operation);
-            //$em->persist($contract);
             $em->flush();
 
             $captureRequest = new CaptureRequest($paymentDetails);
@@ -129,24 +126,17 @@ class PaymentCommand extends ContainerAwareCommand
 
             $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
             $payum->execute($statusRequest);
-
             if ($statusRequest->isSuccess()) {
                 $order->setStatus(OrderStatus::COMPLETE);
-                $contract->shiftPaidTo($amount);
                 $output->write('.');
+                $contract->shiftPaidTo($amount);
+                $status = $contract->getStatus();
+                if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
+                    $contract->setStatus(ContractStatus::CURRENT);
+                }
             } else {
                 $order->setStatus(OrderStatus::ERROR);
                 $output->writeln("\n" . $paymentDetails->getMessages());
-
-//                $e = new RuntimeException(
-//                    sprintf(
-//                        "Payment FAIL!!!\nGroup ID: %s\nPayment ID: %s\nOrder ID: %s",
-//                        $contract->getGroup()->getId(),
-//                        $payment->getId(),
-//                        $order->getId()
-//                    )
-//                );
-//                $this->get('fp_badaboom.exception_catcher')->handleException($e);
             }
             $paymentDetails->setAmount($amount + $fee);
             $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
@@ -154,6 +144,7 @@ class PaymentCommand extends ContainerAwareCommand
             $em->persist($order);
             $em->persist($contract);
             $em->flush();
+            $em->clear();
         }
         $output->writeln('OK');
     }

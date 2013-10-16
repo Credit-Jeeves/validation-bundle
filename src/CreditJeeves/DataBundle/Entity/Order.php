@@ -121,18 +121,15 @@ class Order extends BaseOrder
             switch ($type) {
                 case OperationType::RENT:
                     $status = $this->getStatus();
-//                     echo $status."\n";
                     if ($status == OrderStatus::COMPLETE) {
                         $contract = $operation->getContract();
-//                         echo 'Amount='.$orderAmount."\n";
-                        $contract->shiftPaidTo($orderAmount);
-                        $status = $contract->getStatus();
-                        if ($status == ContractStatus::INVITE) {
-                            $contract->setStatus(ContractStatus::CURRENT);
-                        }
+//                         $contract->shiftPaidTo($orderAmount);
+//                         $status = $contract->getStatus();
+//                         if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
+//                             $contract->setStatus(ContractStatus::CURRENT);
+//                         }
                         $paidTo = $contract->getPaidTo();
                         $interval = $this->getDiffDays($paidTo);
-//                         echo $interval."\n";
                         $this->setDaysLate($interval);
                     }
                     break;

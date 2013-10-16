@@ -13,7 +13,6 @@ class PaymentCommandCase extends BaseTestCase
      */
     public function testExecute()
     {
-        //$this->load(true);
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new PaymentCommand());
@@ -28,9 +27,9 @@ class PaymentCommandCase extends BaseTestCase
                 'command' => $command->getName(),
             )
         );
-        //$this->assertNotNull($count = $plugin->getPreSendMessages());
+        $this->assertNotNull($count = $plugin->getPreSendMessages());
         
-        $this->assertRegExp('/Start payment process(.*)OK/', $commandTester->getDisplay());
+        //$this->assertRegExp('/Start payment process(.*)OK/', $commandTester->getDisplay());
         //$this->markTestIncomplete('Add checks');
     }
 }
