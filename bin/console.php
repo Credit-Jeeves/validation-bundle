@@ -16,6 +16,7 @@ require_once __DIR__.'/../app/AppRjKernel.php';
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputOption;
+use CreditJeeves\ApiBundle\Command\ClientCreateCommand;
 
 $input = new ArgvInput();
 $env = $input->getParameterOption(array('--env', '-e'), getenv('SYMFONY_ENV') ?: 'cli');
@@ -36,4 +37,5 @@ switch ($app) {
 }
 $application = new Application($kernel);
 $application->getDefinition()->addOption(new InputOption('--app', '-a', InputOption::VALUE_REQUIRED, 'Application'));
+$application->add(new ClientCreateCommand());
 $application->run($input);

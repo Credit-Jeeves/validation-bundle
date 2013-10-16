@@ -39,6 +39,7 @@ class AppRjKernel extends AppKernel
             new Sonata\BlockBundle\SonataBlockBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
             new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
 
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),

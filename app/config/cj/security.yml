@@ -13,6 +13,14 @@ security:
             id: user.user_provider
 
     firewalls:
+        api:
+            pattern: ^/api
+            fos_oauth: true
+            stateless: true
+            anonymous: false
+        oauth_token:
+            pattern: ^/oauth/v2/token
+            security: false
         main:
             pattern: ^/
             form_login:
@@ -23,8 +31,11 @@ security:
             logout:       true
             anonymous:    true
 
+
     access_control:
-        - { path: ^/back_to_admin$,                 role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/*,          roles: [ IS_AUTHENTICATED_FULLY, ROLE_DEALER ] }
+        - { path: ^/back_to_admin$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_behat/tests/,  role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_profiler/,     role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/js/*,           role: IS_AUTHENTICATED_ANONYMOUSLY }
@@ -43,7 +54,6 @@ security:
         - { path: ^/message,        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/public/*,       role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/documentation/api, role: ROLE_ADMIN  }
-        - { path: ^/api/*,          role: IS_AUTHENTICATED_ANONYMOUSLY  }
         - { path: ^/admin/,         role: ROLE_ADMIN }
         - { path: ^/dealer/,        role: ROLE_DEALER }
         - { path: ^/,               role: ROLE_USER }
