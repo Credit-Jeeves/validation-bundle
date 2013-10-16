@@ -1,0 +1,11 @@
+model: CreditJeeves\DataBundle\Entity\Client
+fixtures:
+  client_1:
+    secret: 39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo
+    random_id: qvxzb7ge734ko4ogwcskwksogoc0wskws40gg8oocokwg404s
+    allowed_grant_types:
+      - token
+      - authorization_code
+      - password
+      - client_credentials
+      - refresh_token

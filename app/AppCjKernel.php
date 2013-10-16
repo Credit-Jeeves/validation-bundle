@@ -51,12 +51,13 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
             new CreditJeeves\ExperianBundle\ExperianBundle(),
-            new CreditJeeves\UserBundle\UserBundle(),
             new CreditJeeves\AdminBundle\AdminBundle(),
             new CreditJeeves\DealerBundle\DealerBundle(),
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
+            new CreditJeeves\UserBundle\UserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
