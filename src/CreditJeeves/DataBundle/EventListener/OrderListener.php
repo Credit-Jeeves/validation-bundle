@@ -2,53 +2,43 @@
 namespace CreditJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 
-/**
- * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
- *
- * @Service("order.event_listener.doctrine")
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="prePersist",
- *         "method"="prePersist" 
- *     }
- * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="postPersist",
- *         "method"="postPersist" 
- *     }
- * )
- */
 class OrderListener
 {
-    /**
-     * Two main goals for this method:
-     * 1. Set paidTo for contract
-     * 2. Set daysLate for order
-     * @param LifecycleEventArgs $eventArgs
-     */
-    public function prePersist(LifecycleEventArgs $eventArgs)
+    public function postUpdate(LifecycleEventArgs $eventArgs)
     {
-        $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $entity->checkOrderProperties();
-        }
-    }
-
-    public function postPersist(LifecycleEventArgs $eventArgs)
-    {
-        $em = $eventArgs->getEntityManager();
-        $entity = $eventArgs->getEntity();
-        if ($entity instanceof Order) {
-            // here will be email call
+            $type = OperationType::REPORT;
+            $operation = $entity->getOperations()->last();
+            $type = $operation ? $operation->getType(): $type;
+            switch ($type) {
+//                 case OperationType::RENT:
+//                     $status = $entity->getStatus();
+//                     switch ($status) {
+//                         case OrderStatus::COMPLETE:
+//                             $this->container->get('project.mailer')->sendOrderReceipt($entity);
+//                             break;
+//                         case OrderStatus::ERROR:
+//                             $this->container->get('project.mailer')->sendOrderError($entity);
+//                             break;
+//                     }
+//                     break;
+                case OperationType::REPORT:
+                    $status = $entity->getStatus();
+                    switch ($status) {
+                        case OrderStatus::COMPLETE:
+                            $this->container->get('project.mailer')->sendReceipt($entity);
+                            break;
+                    }
+                    break;
+            }
         }
     }
 }

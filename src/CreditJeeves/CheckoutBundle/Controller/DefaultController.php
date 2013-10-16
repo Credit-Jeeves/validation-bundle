@@ -95,7 +95,6 @@ class DefaultController extends Controller
                     $em->persist($report);
                     $em->persist($this->order);
                     $em->flush();
-                    $this->get('project.mailer')->sendReceipt($this->order);
                     return $this->redirect($this->generateUrl('user_report'));
                 }
             }

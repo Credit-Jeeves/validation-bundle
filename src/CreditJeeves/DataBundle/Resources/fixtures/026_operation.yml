@@ -3,21 +3,6 @@ fixtures:
   rjOperation_1:
     contract: Contract_7
     type: rent
-  rjOperation_2:
-    contract: Contract_7
-    type: rent
-  rjOperation_3:
-    contract: Contract_7
-    type: rent
-  rjOperation_4:
-    contract: Contract_7
-    type: rent
-  rjOperation_5:
-    contract: Contract_7
-    type: rent
-  rjOperation_6:
-    contract: Contract_7
-    type: rent
 # finished contract
   rjOperation_7:
     contract: Contract_3
@@ -25,11 +10,5 @@ fixtures:
 # Another finished contract
   rjOperation_8:
     contract: Contract_4
-    type: rent
-  rjOperation_9:
-    contract: Contract_4
-    type: rent
-  rjOperation_10:
-    contract: Contract_7
     type: rent
 

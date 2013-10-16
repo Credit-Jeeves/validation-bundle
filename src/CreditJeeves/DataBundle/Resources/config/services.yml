@@ -1,7 +1,11 @@
 parameters:
-#    data.example.class: CreditJeeves\DataBundle\Example
+    data.event_listener.order.class: CreditJeeves\DataBundle\EventListener\OrderListener
 
 services:
-#    data.example:
-#        class: %data.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    data.event_listener.order:
+        class: "%data.event_listener.order.class%"
+        tags:
+#            - { name: doctrine.event_listener, event: prePersist, method: prePersist }
+#            - { name: doctrine.event_listener, event: preUpdate, method: preUpdate }
+            - { name: doctrine.event_listener, event: postUpdate, method: postUpdate }
+        arguments: ["@service_container"]

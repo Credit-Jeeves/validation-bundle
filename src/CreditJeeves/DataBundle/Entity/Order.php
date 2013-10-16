@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -96,31 +97,69 @@ class Order extends BaseOrder
         return $result;
     }
 
-    public function checkOrderProperties()
+    public function countDaysLate()
     {
         $operation = $this->getOperations()->last();
-        if ($operation) {
+        $type = OperationType::REPORT;
+        $type = $operation ? $operation->getType() : $type;
+        switch ($type) {
+            case OperationType::RENT:
+                $contract = $operation->getContract();
+                $paidTo = $contract->getPaidTo();
+                $interval = $this->getDiffDays($paidTo);
+                $this->setDaysLate($interval);
+                break;
+        }
+    }
+
+    public function checkOrderProperties()
+    {
+        $operations = $this->getOperations();
+        $orderAmount = $this->getAmount();
+        foreach ($operations as $operation) {
             $type = $operation->getType();
             switch ($type) {
                 case OperationType::RENT:
-                    //echo $this->getStatus();
-                    $contract = $operation->getContract();
-
-                    $paidTo = $contract->getPaidTo();
-                    $interval = $this->getDiffDays($paidTo);
-                    $this->setDaysLate(0);//$interval);
-                    //echo $paidTo->format('Y-m-d').'->'.$interval."\n";
+                    $status = $this->getStatus();
+//                     echo $status."\n";
+                    if ($status == OrderStatus::COMPLETE) {
+                        $contract = $operation->getContract();
+//                         echo 'Amount='.$orderAmount."\n";
+                        $contract->shiftPaidTo($orderAmount);
+                        $status = $contract->getStatus();
+                        if ($status == ContractStatus::INVITE) {
+                            $contract->setStatus(ContractStatus::CURRENT);
+                        }
+                        $paidTo = $contract->getPaidTo();
+                        $interval = $this->getDiffDays($paidTo);
+//                         echo $interval."\n";
+                        $this->setDaysLate($interval);
+                    }
+                    break;
+                case OperationType::REPORT:
+                    // Nothing to do now
                     break;
             }
         }
-//         $status = $this->getStatus();
-//         $operation = $this->getOperations()->last();
-//         $operationType = $operation->getType();
-//         echo $operation->getType();
-//          echo $this->getUser()->getFullName()."\n";
-//          echo $this->getType()."\n";
-//          echo $this->getStatus()."\n";
-//          echo $this->getAmount()."\n";
-//          echo "*************\n";
+    }
+
+    public function getContract()
+    {
+        return $this->getOperations()->last()->getContract();
+    }
+    
+    public function getTenant()
+    {
+        return $this->getContract()->getTenant();
+    }
+
+    public function getGroup()
+    {
+        return $this->getContract()->getGroup();
+    }
+
+    public function getHolding()
+    {
+        return $this->getContract()->getHolding();
     }
 }

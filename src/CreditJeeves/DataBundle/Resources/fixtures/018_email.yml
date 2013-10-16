@@ -46,3 +46,7 @@ fixtures:
     name: rjPaymentDue.html
   email_23:
     name: rjListLateContracts.html
+  email_24:
+    name: rjOrderReceipt.html
+  email_25:
+    name: rjOrderError.html

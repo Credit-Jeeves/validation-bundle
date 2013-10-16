@@ -48,6 +48,15 @@ abstract class AppKernel extends Kernel
         $this->catch = $catch;
     }
 
+    public function boot()
+    {
+        parent::boot();
+        $this->container->get('translator')->setOption(
+            'cache_dir',
+            $this->container->get('translator')->getOption('cache_dir') . '/' . $this->getName()
+        );
+    }
+
     /**
      * @param bool $boolean
      */

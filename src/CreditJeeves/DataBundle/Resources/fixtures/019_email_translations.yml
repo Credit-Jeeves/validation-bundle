@@ -369,7 +369,7 @@ fixtures:
         <br /><br />
         We'd recommend setting up <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a> so you have one less thing to worry about.
         <br /><br />
-        You're ready to build credit buy paying rent securely online. 
+        You're ready to build credit buy paying rent securely online.
       {% endblock %}
 
 # rjPendingContract.html
@@ -597,3 +597,66 @@ fixtures:
         Enjoy, <br />
         The RentTrack Team
       {% endblock %}
+
+# rjOrderReceipt.html
+  translation_24_subject:
+    translatable: email_24
+    locale: %locale%
+    property: subject
+    value: Order Receipt
+  translation_24_body:
+    translatable: email_24
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+      <table 
+        width="100%"
+        style="
+          border: 1px solid #C8C8C8;
+          border-collapse: collapse;
+       "
+      >
+        <tbody>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.date.time' | trans }}:</td><td style="padding:5px;">{{ datetime }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'oder.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'amount' | trans }}:</td><td style="padding:5px;">{{ amount }}</td>
+          </tr>
+          {% if fee > 0 %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+      </br>
+      {{ 'order.paid.to' | trans }}:{{ groupName }}
+      </br>
+      </br>
+      {{ 'oder.receipt.footer' | trans }}
+      </br>
+      The RentTrack Team
+      {% endblock %}
+
+# rjOrderError.html
+  translation_25_subject:
+    translatable: email_25
+    locale: %locale%
+    property: subject
+    value: Order Error
+  translation_25_body:
+    translatable: email_25
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+    
