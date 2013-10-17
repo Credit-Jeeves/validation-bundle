@@ -28,8 +28,7 @@ class PaymentCommandCase extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        
-        //$this->assertRegExp('/Start payment process(.*)OK/', $commandTester->getDisplay());
-        //$this->markTestIncomplete('Add checks');
+        $this->assertCount(3, $count);
+        $this->assertRegExp('/Start payment process(.*)OK/', $commandTester->getDisplay());
     }
 }

@@ -137,7 +137,7 @@ class PaymentCommand extends ContainerAwareCommand
             } else {
                 $order->setStatus(OrderStatus::ERROR);
                 $order->addHeartland($paymentDetails);
-                $output->writeln("\n" . $paymentDetails->getMessages());
+                $output->write('E');
             }
             $paymentDetails->setAmount($amount + $fee);
             $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
