@@ -312,7 +312,7 @@
             </trans-unit>
             <trans-unit id="checkout.fee.note.help">
                 <source>checkout.fee.note.help</source>
-                <target>You will see an additional fee for 2.95% of your rent amount when using a credit card for payment. An estimation will be shown on the Review & Pay step.</target>
+                <target>You will see an additional fee for 2.95% of your rent amount when using a credit card for payment. An estimation will be shown on the Review &amp; Pay step.</target>
             </trans-unit>
             <trans-unit id="checkout.recurring_for">
                 <source>checkout.recurring_for</source>
