@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "bec763c45a128f75c9950f60d70ba4c5",
+    "hash": "0a432b50edf27ecee1beb5231673288a",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -209,12 +209,12 @@
         },
         {
             "name": "besimple/soap-common",
-            "version": "dev-master",
+            "version": "dev-ton",
             "target-dir": "BeSimple/SoapCommon",
             "source": {
                 "type": "git",
-                "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git",
-                "reference": "f9607735fcc02413526ba55c5c17ab9ec09b675c"
+                "url": "git@github.com:66Ton99/BeSimpleSoapCommon.git",
+                "reference": "d60eb191ab8bf8e33fd61a48a237a758eebdbf2c"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "158aca9cc42c4559a8b51125f0f60b913ae0ac53"
+                "reference": "72d11569f66917e3282e768fc81e5ea658de909d"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-10-17 08:10:29"
+            "time": "2013-09-26 13:03:26"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -566,7 +566,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -1079,9 +1079,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes M. Schmitt",
+                    "name": "Johannes Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -1183,7 +1183,7 @@
             ],
             "authors": [
                 {
-                    "name": "Jonathan H. Wage",
+                    "name": "Jonathan Wage",
                     "email": "jonwage@gmail.com",
                     "homepage": "http://www.jwage.com/"
                 },
@@ -1593,12 +1593,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSRestBundle.git",
-                "reference": "dcc0c135acd72e3ebab7146806292f884ba7f125"
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/dcc0c135acd72e3ebab7146806292f884ba7f125",
-                "reference": "dcc0c135acd72e3ebab7146806292f884ba7f125",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSRestBundle/zipball/8a908b627d7f3d25478a89b8307a9fb9843a8293",
+                "reference": "8a908b627d7f3d25478a89b8307a9fb9843a8293",
                 "shasum": ""
             },
             "require": {
@@ -1617,8 +1617,6 @@
                 "sensio/framework-extra-bundle": "~2.1",
                 "symfony/form": "~2.1",
                 "symfony/security": "~2.1",
-                "symfony/serializer": "~2.1",
-                "symfony/validator": "~2.1",
                 "symfony/yaml": "~2.1"
             },
             "suggest": {
@@ -1661,7 +1659,7 @@
             "keywords": [
                 "rest"
             ],
-            "time": "2013-10-09 08:01:12"
+            "time": "2013-09-03 10:58:43"
         },
         {
             "name": "friendsofsymfony/user-bundle",
@@ -2183,7 +2181,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2645,7 +2643,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "Knplabs",
+                    "name": "KnpLabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -2998,7 +2996,7 @@
             ],
             "authors": [
                 {
-                    "name": "Maksim Kotlyar",
+                    "name": "Kotlyar Maksim",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -3227,7 +3225,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "http://jmsyst.com",
+                    "homepage": "https://github.com/schmittjoh",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -5011,7 +5009,7 @@
                 {
                     "name": "Anthon Pang",
                     "email": "apang@softwaredevelopment.ca",
-                    "role": "developer"
+                    "role": "Fork Maintainer"
                 }
             ],
             "description": "PHP WebDriver for Selenium 2",
@@ -5097,6 +5095,12 @@
             "alias_normalized": "0.5.9999999.9999999-dev",
             "version": "9999999-dev",
             "package": "payum/payum"
+        },
+        {
+            "alias": "dev-master",
+            "alias_normalized": "9999999-dev",
+            "version": "dev-ton",
+            "package": "besimple/soap-common"
         },
         {
             "alias": "dev-not-approved",
