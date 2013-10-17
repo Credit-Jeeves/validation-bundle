@@ -1334,22 +1334,44 @@
                 <source>order.transaction.id</source>
                 <target>Transaction ID</target>
             </trans-unit>
-            <trans-unit id="oder.fee">
+            <trans-unit id="order.fee">
                 <source>order.fee</source>
                 <target>Fee</target>
             </trans-unit>
-            <trans-unit id="oder.total">
+            <trans-unit id="order.total">
                 <source>order.total</source>
                 <target>Total</target>
             </trans-unit>
-            <trans-unit id="oder.paid.to">
+            <trans-unit id="order.paid.to">
                 <source>order.paid.to</source>
                 <target>Paid To</target>
             </trans-unit>
-            <trans-unit id="oder.receipt.footer">
+            <trans-unit id="order.receipt.footer">
                 <source>order.receipt.footer</source>
                 <target>Look for a RENTTRK entry on your statement.</target>
             </trans-unit>
+            <trans-unit id="order.error.title">
+                <source>order.error.title</source>
+                <target>We encountered an error when making the following payment</target>
+            </trans-unit>
+            <trans-unit id="order.id">
+                <source>order.id</source>
+                <target>RentTrack Order ID</target>
+            </trans-unit>
+            <trans-unit id="order.transaction.id">
+                <source>order.transaction.id</source>
+                <target>Transaction ID</target>
+            </trans-unit>
+            <trans-unit id="order.contact.us">
+                <source>order.contact.us</source>
+                <target>Please contact RentTrack at help@renttrack.com</target>
+            </trans-unit>
+            <trans-unit id="order.error.message">
+                <source>order.error.message</source>
+                <target> The error message is</target>
+            </trans-unit>
+            
+            
         </body>
     </file>
 </xliff>
