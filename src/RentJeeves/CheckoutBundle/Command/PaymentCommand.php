@@ -50,8 +50,20 @@ class PaymentCommand extends ContainerAwareCommand
         $date = new DateTime();
         $days = $this->getDueDays();
         /** @var PaymentRepository $repo */
+        $doctrine = $this->getContainer()->get('doctrine');
         $repo = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment');
-        $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
+        $payments = $doctrine->getRepository('RjDataBundle:Payment')
+            ->getActivePayments(
+                $days,
+                $date->format('n'),
+                $date->format('Y')
+            );
+        $orders = $doctrine->getRepository('DataBundle:Order')
+            ->getLastOrdersArray(
+                $days,
+                $date->format('n'),
+                $date->format('Y')
+            );
         $output->write('Start payment process');
         /** @var Payum $payum */
         $payum = $this->getContainer()->get('payum')->getPayment('heartland');
@@ -63,6 +75,13 @@ class PaymentCommand extends ContainerAwareCommand
             $payment = $row[0];
             $paymentAccount = $payment->getPaymentAccount();
             $contract = $payment->getContract();
+            if (isset(
+                $orders[$contract->getId()])
+                && $orders[$contract->getId()]['status'] == OrderStatus::COMPLETE
+                && $orders[$contract->getId()]['updated'] == $date->format('Y-m-d')
+                ) {
+                continue;
+            }
             $operation = $contract->getOperation();
             if (empty($operation)) {
                 $operation = new Operation();

@@ -14,6 +14,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
  * c - contract, table rj_contract, class Contract
  * t - tenant, table cj_user, class Tenant
  * g - group, table cj_account_group, class Group
+ * oper - Operation
  *
  */
 class PaymentRepository extends EntityRepository
