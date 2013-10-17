@@ -24,7 +24,9 @@ class ComponentController extends Controller
      */
     public function payAction()
     {
-        $paymentType = $this->createForm(new PaymentType());
+        $paymentType = $this->createForm(
+            new PaymentType($this->container->getParameter('payment_one_time_until_value'))
+        );
         $userDetailsType = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
         $questionsType = $this->createForm(
             new QuestionsType(
