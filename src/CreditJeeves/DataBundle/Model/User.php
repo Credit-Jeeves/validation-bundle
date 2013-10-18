@@ -1697,7 +1697,7 @@ abstract class User extends BaseUser
     /**
      * @param \CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken
      */
-    public function removeAccessToken(\CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken)
+    public function removeRefreshToken(\CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken)
     {
         $this->refreshTokens->removeElement($refreshToken);
     }
