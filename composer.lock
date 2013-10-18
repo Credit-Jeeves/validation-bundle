@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8e63defb54f0ca68657cd7cb66bb09db",
+    "hash": "d78c21b67ab92d611dccaf2982e78773",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -209,12 +209,12 @@
         },
         {
             "name": "besimple/soap-common",
-            "version": "dev-master",
+            "version": "dev-ton",
             "target-dir": "BeSimple/SoapCommon",
             "source": {
                 "type": "git",
-                "url": "git@github.com:BeSimple/BeSimpleSoapCommon.git",
-                "reference": "f9607735fcc02413526ba55c5c17ab9ec09b675c"
+                "url": "git@github.com:66Ton99/BeSimpleSoapCommon.git",
+                "reference": "d60eb191ab8bf8e33fd61a48a237a758eebdbf2c"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "72d11569f66917e3282e768fc81e5ea658de909d"
+                "reference": "158aca9cc42c4559a8b51125f0f60b913ae0ac53"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-09-26 13:03:26"
+            "time": "2013-10-17 08:10:29"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -406,11 +406,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "91fbb6cba37e2bd2a8dd8abfcb02b7b4be419e9c"
+                "reference": "2579d548cc93376b83382287156434b80aa64285"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-10-11 13:09:49"
+            "time": "2013-10-17 18:21:00"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -1419,6 +1419,121 @@
                 "Js Routing"
             ],
             "time": "2013-07-15 09:21:37"
+        },
+        {
+            "name": "friendsofsymfony/oauth-server-bundle",
+            "version": "dev-master",
+            "target-dir": "FOS/OAuthServerBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfSymfony/FOSOAuthServerBundle.git",
+                "reference": "63606399946cb2d8b8db1f0375febedcc0723190"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSOAuthServerBundle/zipball/63606399946cb2d8b8db1f0375febedcc0723190",
+                "reference": "63606399946cb2d8b8db1f0375febedcc0723190",
+                "shasum": ""
+            },
+            "require": {
+                "friendsofsymfony/oauth2-php": "~1.0.4",
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.1",
+                "symfony/security-bundle": "~2.1"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "~1.0",
+                "doctrine/mongodb-odm": "1.0.*@dev",
+                "doctrine/orm": ">=2.2,<2.5-dev",
+                "symfony/class-loader": "~2.1",
+                "symfony/yaml": "~2.1",
+                "willdurand/propel-typehintable-behavior": "1.0.*"
+            },
+            "suggest": {
+                "doctrine/doctrine-bundle": "*",
+                "doctrine/mongodb-odm-bundle": "*",
+                "propel/propel-bundle": "If you want to use Propel with Symfony2, then you will have to install the PropelBundle",
+                "willdurand/propel-typehintable-behavior": "The Typehintable behavior is useful to add type hints on generated methods, to be compliant with interfaces"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "FOS\\OAuthServerBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arnaud Le Blanc",
+                    "email": "arnaud.lb@gmail.com"
+                },
+                {
+                    "name": "FriendsOfSymfony Community",
+                    "homepage": "https://github.com/FriendsOfSymfony/FOSOAuthServerBundle/contributors"
+                }
+            ],
+            "description": "Symfony2 OAuth Server Bundle",
+            "homepage": "http://friendsofsymfony.github.com",
+            "keywords": [
+                "oauth",
+                "oauth2",
+                "server"
+            ],
+            "time": "2013-10-06 23:22:47"
+        },
+        {
+            "name": "friendsofsymfony/oauth2-php",
+            "version": "1.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FriendsOfSymfony/oauth2-php.git",
+                "reference": "f1c7fdf35cab264ca006e8189d8097166ebccf2a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/oauth2-php/zipball/f1c7fdf35cab264ca006e8189d8097166ebccf2a",
+                "reference": "f1c7fdf35cab264ca006e8189d8097166ebccf2a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/http-foundation": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "OAuth2": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Arnaud Le Blanc",
+                    "email": "arnaud.lb@gmail.com"
+                },
+                {
+                    "name": "FriendsOfSymfony Community",
+                    "homepage": "https://github.com/FriendsOfSymfony/oauth2-php/contributors"
+                }
+            ],
+            "description": "OAuth2 library",
+            "homepage": "https://github.com/FriendsOfSymfony/oauth2-php",
+            "keywords": [
+                "oauth",
+                "oauth2"
+            ],
+            "time": "2013-10-08 22:55:49"
         },
         {
             "name": "friendsofsymfony/rest",
@@ -4982,6 +5097,12 @@
             "package": "payum/payum"
         },
         {
+            "alias": "dev-master",
+            "alias_normalized": "9999999-dev",
+            "version": "dev-ton",
+            "package": "besimple/soap-common"
+        },
+        {
             "alias": "dev-not-approved",
             "alias_normalized": "dev-not-approved",
             "version": "dev-ton",
@@ -4997,6 +5118,7 @@
         "credit-jeeves/api-bundle": 20,
         "friendsofsymfony/rest-bundle": 20,
         "nelmio/api-doc-bundle": 20,
+        "friendsofsymfony/oauth-server-bundle": 20,
         "braincrafted/validation-bundle": 20,
         "doctrine/doctrine-bundle": 20,
         "jms/security-extra-bundle": 20,

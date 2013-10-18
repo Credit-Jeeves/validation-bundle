@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "91fbb6cba37e2bd2a8dd8abfcb02b7b4be419e9c"
+                    "reference": "2579d548cc93376b83382287156434b80aa64285"
                 }
             }
         },
@@ -144,6 +144,10 @@
         },
         {
             "type": "git",
+            "url":"git@github.com:66Ton99/BeSimpleSoapCommon.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:Tobur/ApiBundle.git"
         }
     ],
@@ -169,6 +173,7 @@
         "credit-jeeves/api-bundle": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
+        "friendsofsymfony/oauth-server-bundle": "dev-master",
         "braincrafted/validation-bundle": "dev-master",
         "doctrine/orm": ">=2.2.3,<2.4",
         "doctrine/doctrine-bundle": "dev-master",
@@ -190,7 +195,7 @@
         "payum/payum-bundle": "dev-heartland",
         "payum/authorize-net-aim": "0.5.*",
         "payum/heartland": "dev-master",
-        "besimple/soap-common": "dev-master",
+        "besimple/soap-common": "dev-ton as dev-master",
         "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",

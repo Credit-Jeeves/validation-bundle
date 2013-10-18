@@ -1078,8 +1078,8 @@
                 <target>GET PAID</target>
             </trans-unit>
 
-            <trans-unit id="paybox.landlord.collect.paymnets">
-                <source>paybox.landlord.collect.paymnets</source>
+            <trans-unit id="paybox.landlord.collect.payments">
+                <source>paybox.landlord.collect.payments</source>
                 <target>COLLECT PAYMENTS</target>
             </trans-unit>
 

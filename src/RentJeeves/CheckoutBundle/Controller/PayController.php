@@ -31,7 +31,7 @@ class PayController extends Controller
 
     protected function createPaymentForm()
     {
-        $formType = new PaymentType();
+        $formType = new PaymentType($this->container->getParameter('payment_one_time_until_value'));
         $formData = $this->getRequest()->get($formType->getName());
         /** @var Payment $paymentEntity */
         $paymentEntity = null;

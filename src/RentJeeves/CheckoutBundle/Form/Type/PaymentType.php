@@ -9,10 +9,26 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Type;
 use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Callback;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use DateTime;
 
 class PaymentType extends AbstractType
 {
+    /**
+     * @var string
+     */
+    protected $oneTimeUntilValue;
+
+    /**
+     * @param string $oneTimeUntilValue
+     */
+    public function __construct($oneTimeUntilValue)
+    {
+        $this->oneTimeUntilValue = $oneTimeUntilValue;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -38,8 +54,8 @@ class PaymentType extends AbstractType
                 'empty_data' => PaymentTypeEnum::RECURRING,
                 'choices' => array(
                     PaymentTypeEnum::RECURRING => 'checkout.type.recurring',
-//                    PaymentTypeEnum::IMMEDIATE => 'checkout.type.immediate', // TODO Implement
                     PaymentTypeEnum::ONE_TIME => 'checkout.type.one_time',
+//                    PaymentTypeEnum::IMMEDIATE => 'checkout.type.immediate', // TODO Implement
                 ),
                 'attr' => array(
                     'class' => 'original',
@@ -187,6 +203,12 @@ class PaymentType extends AbstractType
                             'message' => 'checkout.error.date.valid',
                         )
                     ),
+                    new Callback(
+                        array(
+                            'groups' => array('one_time'),
+                            'methods' => array(array($this, 'isInTime')),
+                        )
+                    )
                 )
             )
         );
@@ -304,5 +326,14 @@ class PaymentType extends AbstractType
     public function getName()
     {
         return 'rentjeeves_checkoutbundle_paymenttype';
+    }
+
+    public function isInTime($data, ExecutionContextInterface $validatorContext)
+    {
+        $now = new DateTime();
+        $until = new DateTime($this->oneTimeUntilValue);
+        if ($now->format('Y-m-d') == $data && $now >= $until) {
+            $validatorContext->addViolationAt('start_date', 'checkout.error.date.not_in_time', array(), null);
+        }
     }
 }

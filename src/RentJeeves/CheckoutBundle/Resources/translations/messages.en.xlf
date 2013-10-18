@@ -70,6 +70,10 @@
                 <source>checkout.error.date.valid</source>
                 <target>Date is invalid.</target>
             </trans-unit>
+            <trans-unit id="checkout.error.date.not_in_time">
+                <source>checkout.error.date.not_in_time</source>
+                <target>You can not setup payment, date must be tomorrow or late.</target>
+            </trans-unit>
             <trans-unit id="checkout.type">
                 <source>checkout.type</source>
                 <target>Type</target>
