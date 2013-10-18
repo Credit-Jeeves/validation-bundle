@@ -1714,25 +1714,25 @@ abstract class User extends BaseUser
      * @param \CreditJeeves\DataBundle\Entity\AuthToken $authToken
      * @return User
      */
-    public function addAuthToken(\CreditJeeves\DataBundle\Entity\AuthToken $authToken)
+    public function addAuthCode(\CreditJeeves\DataBundle\Entity\AuthCode $authCode)
     {
-        $this->authTokens[] = $authToken;
+        $this->authCodes[] = $authCode;
         return $this;
     }
 
     /**
-     * @param \CreditJeeves\DataBundle\Entity\AuthToken $authToken
+     * @param \CreditJeeves\DataBundle\Entity\AuthToken $authCode
      */
-    public function removeAccessToken(\CreditJeeves\DataBundle\Entity\AuthToken $authToken)
+    public function removeAuthCode(\CreditJeeves\DataBundle\Entity\AuthCode $authCode)
     {
-        $this->authTokens->removeElement($authToken);
+        $this->authCodes->removeElement($authCode);
     }
 
     /**
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getAuthTokens()
+    public function getAuthCodes()
     {
-        return $this->authTokens;
+        return $this->authCodes;
     }
 }
