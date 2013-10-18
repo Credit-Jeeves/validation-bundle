@@ -50,7 +50,10 @@ class OrderListener
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
             $status = $entity->getStatus();
-            $entity->checkOrderProperties();
+            $status = $entity->getStatus();
+            if ($status == OrderStatus::COMPLETE) {
+                $entity->checkOrderProperties();
+            }
         }
     }
     

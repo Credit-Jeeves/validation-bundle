@@ -6,11 +6,8 @@ fixtures:
         type: recurring
         status: active
         amount: 1500
-        dueDate: 28
-        startMonth: 2
-        startYear: 2013
-        endMonth: 10
-        endYear: 2015
+        startDate: 'now'
+        endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     Payment_3:
@@ -19,11 +16,8 @@ fixtures:
         type: recurring
         status: close
         amount: 1500
-        dueDate: 15
-        startMonth: 2
-        startYear: 2013
-        endMonth: 10
-        endYear: 2015
+        startDate: 'now'
+        endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     Payment_4:
@@ -32,11 +26,8 @@ fixtures:
         type: recurring
         status: active
         amount: 1700
-        dueDate: 31
-        startMonth: 2
-        startYear: 2013
-        endMonth: 10
-        endYear: 2015
+        startDate: 'now'
+        endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     Payment_6:
@@ -45,11 +36,8 @@ fixtures:
         type: recurring
         status: active
         amount: 1700
-        dueDate: 14
-        startMonth: 2
-        startYear: 2013
-        endMonth: 10
-        endYear: 2015
+        startDate: 'now'
+        endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     Payment_11:
@@ -58,11 +46,8 @@ fixtures:
         type: recurring
         status: active
         amount: 2100
-        dueDate: 14
-        startMonth: 2
-        startYear: 2013
-        endMonth: 10
-        endYear: 2015
+        startDate: 'now'
+        endDate: '+9 months'
         createdAt: '-50 days'
         updatedAt: '-50 days'
 

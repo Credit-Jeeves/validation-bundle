@@ -30,4 +30,19 @@ class Payment extends Base
     {
         return $this->paymentAccount->getId();
     }
+
+    public function setStartDate($date = 'now')
+    {
+        $dateTime = new \DateTime($date);
+        $this->setDueDate($dateTime->format('d'));
+        $this->setStartMonth($dateTime->format('m'));
+        $this->setStartYear($dateTime->format('Y'));
+    }
+
+    public function setEndDate($date = '+ 9 months')
+    {
+        $dateTime = new \DateTime($date);
+        $this->setEndMonth($dateTime->format('m'));
+        $this->setEndYear($dateTime->format('Y'));
+    }
 }

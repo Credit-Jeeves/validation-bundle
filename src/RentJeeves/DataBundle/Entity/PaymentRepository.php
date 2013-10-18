@@ -14,6 +14,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
  * c - contract, table rj_contract, class Contract
  * t - tenant, table cj_user, class Tenant
  * g - group, table cj_account_group, class Group
+ * oper - Operation
  *
  */
 class PaymentRepository extends EntityRepository
@@ -46,8 +47,7 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('c.status IN (:contract)');
         $query->andWhere('p.startMonth <= :month');
         $query->andWhere('p.startYear <= :year');
-        $query->andWhere('p.endMonth IS NULL OR p.endMonth >= :month');
-        $query->andWhere('p.endYear IS NULL OR p.endYear >= :year');
+        $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
 
         $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
@@ -75,10 +75,9 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere('c.status IN (:contract)');
         $query->andWhere('p.startMonth <= :month');
-        $query->andWhere('p.endMonth >= :month');
         $query->andWhere('p.startYear <= :year');
-        $query->andWhere('p.endYear >= :year');
-    
+        $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
+
         $query->setParameter('status', $statuses);
         $query->setParameter('type', $types);
         $query->setParameter('days', $days);
