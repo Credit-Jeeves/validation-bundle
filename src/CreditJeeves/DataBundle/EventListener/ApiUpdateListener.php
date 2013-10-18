@@ -71,7 +71,7 @@ class ApiUpdateListener
         try {
             /** @var $holding Holding */
             $holding = $this->apiData->getHolding($dealer);
-        } catch(HttpException $e) {
+        } catch (HttpException $e) {
             return false;
         }
 
@@ -81,9 +81,9 @@ class ApiUpdateListener
         $needUpdate = false;
 
         /** @var $lead Lead */
-        foreach($leads as $lead) {
+        foreach ($leads as $lead) {
             /** @var $group Group */
-            foreach($groups as $group) {
+            foreach ($groups as $group) {
                 if ($group->getId() === $lead->getCjGroupId()) {
                     $needUpdate = true;
                     break;

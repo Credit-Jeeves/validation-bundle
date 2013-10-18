@@ -23,4 +23,9 @@ class Client extends BaseClient
         parent::__construct();
         // your own logic
     }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }
