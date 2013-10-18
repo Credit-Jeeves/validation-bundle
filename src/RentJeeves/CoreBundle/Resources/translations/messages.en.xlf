@@ -1370,6 +1370,14 @@
                 <source>order.error.message</source>
                 <target> The error message is</target>
             </trans-unit>
+            <trans-unit id="alert.tenant.verify_email">
+                <source>alert.tenant.verify_email</source>
+                <target>Verify your email address.</target>
+            </trans-unit>
+            <trans-unit id="alert.tenant.first_payment">
+                <source>alert.tenant.first_payment</source>
+                <target>Set up your first rent payment.</target>
+            </trans-unit>
             
             
         </body>
