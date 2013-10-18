@@ -56,10 +56,10 @@ sonata_admin:
                     - sonata.admin.dealer
                     - sonata.admin.applicant
 
-api:
-    admin_dealer_code: %api.admin_dealer_code%
-    client_id: %api.client_id%
-    client_secret: %api.client_secret%
+#api: # Do you use it?
+#    admin_dealer_code: %api.admin_dealer_code%
+#    client_id: %api.client_id%
+#    client_secret: %api.client_secret%
 
 fos_rest:
     param_fetcher_listener: true
