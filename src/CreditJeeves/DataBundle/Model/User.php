@@ -441,7 +441,10 @@ abstract class User extends BaseUser
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
+     * @ORM\ManyToMany(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Group",
+     *     inversedBy="group_dealers"
+     * )
      * @ORM\JoinTable(
      *      name="cj_dealer_group",
      *      joinColumns={@ORM\JoinColumn(name="dealer_id", referencedColumnName="id")},
@@ -507,11 +510,42 @@ abstract class User extends BaseUser
     protected $addresses;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate",
+     *     mappedBy="user"
+     * )
      *
      * @var ArrayCollection
      */
     protected $group_affilate;
+
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\AccessToken",
+     *     mappedBy="user",
+     *     cascade={"all"}
+     * )
+     */
+    protected $accessTokens;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\AuthCode",
+     *     mappedBy="user",
+     *     cascade={"all"}
+     * )
+     */
+    protected $authCodes;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\RefreshToken",
+     *     mappedBy="user",
+     *     cascade={"all"}
+     * )
+     */
+    protected $refreshTokens;
 
     public function __construct()
     {
@@ -528,6 +562,9 @@ abstract class User extends BaseUser
         $this->tradelines = new ArrayCollection();
         $this->addresses = new ArrayCollection();
         $this->group_affilate = new ArrayCollection();
+        $this->accessTokens = new ArrayCollection();
+        $this->authCodes = new ArrayCollection();
+        $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
 
@@ -1075,7 +1112,6 @@ abstract class User extends BaseUser
     public function setHasReport($hasReport)
     {
         $this->has_report = $hasReport;
-
         return $this;
     }
 
@@ -1098,7 +1134,6 @@ abstract class User extends BaseUser
     public function setType($type)
     {
         $this->type = $type;
-
         return $this;
     }
 
@@ -1121,7 +1156,6 @@ abstract class User extends BaseUser
     public function setHoldingId($holdingId)
     {
         $this->holding_id = $holdingId;
-
         return $this;
     }
 
@@ -1144,7 +1178,6 @@ abstract class User extends BaseUser
     public function setIsHoldingAdmin($isHoldingAdmin)
     {
         $this->is_holding_admin = $isHoldingAdmin;
-
         return $this;
     }
 
@@ -1167,7 +1200,6 @@ abstract class User extends BaseUser
     public function setIsSuperAdmin($isSuperAdmin)
     {
         $this->is_super_admin = $isSuperAdmin;
-
         return $this;
     }
 
@@ -1190,7 +1222,6 @@ abstract class User extends BaseUser
     public function setCreatedAt($createdAt)
     {
         $this->created_at = $createdAt;
-
         return $this;
     }
 
@@ -1213,7 +1244,6 @@ abstract class User extends BaseUser
     public function setUpdatedAt($updatedAt)
     {
         $this->updated_at = $updatedAt;
-
         return $this;
     }
 
@@ -1236,7 +1266,6 @@ abstract class User extends BaseUser
     public function addReportsPrequal(\CreditJeeves\DataBundle\Entity\ReportPrequal $reportsPrequal)
     {
         $this->reportsPrequal[] = $reportsPrequal;
-
         return $this;
     }
 
@@ -1269,7 +1298,6 @@ abstract class User extends BaseUser
     public function addReportsD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportsD2c)
     {
         $this->reportsD2c[] = $reportsD2c;
-
         return $this;
     }
 
@@ -1302,7 +1330,6 @@ abstract class User extends BaseUser
     public function addScore(\CreditJeeves\DataBundle\Entity\Score $scores)
     {
         $this->scores[] = $scores;
-
         return $this;
     }
 
@@ -1335,7 +1362,6 @@ abstract class User extends BaseUser
     public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
     {
         $this->orders[] = $orders;
-
         return $this;
     }
 
@@ -1368,7 +1394,6 @@ abstract class User extends BaseUser
     public function addUserLead(\CreditJeeves\DataBundle\Entity\Lead $userLeads)
     {
         $this->user_leads[] = $userLeads;
-
         return $this;
     }
 
@@ -1401,7 +1426,6 @@ abstract class User extends BaseUser
     public function addDealerLead(\CreditJeeves\DataBundle\Entity\Lead $dealerLeads)
     {
         $this->dealer_leads[] = $dealerLeads;
-
         return $this;
     }
 
@@ -1434,7 +1458,6 @@ abstract class User extends BaseUser
     public function addDealerGroup(\CreditJeeves\DataBundle\Entity\Group $dealerGroups)
     {
         $this->dealer_groups[] = $dealerGroups;
-
         return $this;
     }
 
@@ -1467,7 +1490,6 @@ abstract class User extends BaseUser
     public function setVehicle(\CreditJeeves\DataBundle\Entity\Vehicle $vehicle = null)
     {
         $this->vehicle = $vehicle;
-
         return $this;
     }
 
@@ -1490,10 +1512,9 @@ abstract class User extends BaseUser
     public function setDefense(\CreditJeeves\DataBundle\Entity\LoginDefense $defense = null)
     {
         $this->defense = $defense;
-    
         return $this;
     }
-    
+
     /**
      * Get defense
      *
@@ -1503,7 +1524,7 @@ abstract class User extends BaseUser
     {
         return $this->defense;
     }
-    
+
     /**
      * Add pidkiqs
      *
@@ -1513,7 +1534,6 @@ abstract class User extends BaseUser
     public function addPidkiq(\CreditJeeves\DataBundle\Entity\Pidkiq $pidkiqs)
     {
         $this->pidkiqs[] = $pidkiqs;
-
         return $this;
     }
 
@@ -1560,7 +1580,6 @@ abstract class User extends BaseUser
     public function addAddress(\CreditJeeves\DataBundle\Entity\Address $address)
     {
         $this->addresses[] = $address;
-
         return $this;
     }
 
@@ -1584,7 +1603,6 @@ abstract class User extends BaseUser
     public function setAddresses(ArrayCollection $addresses = null)
     {
         $this->addresses = $addresses;
-
         return $this;
     }
 
@@ -1613,7 +1631,6 @@ abstract class User extends BaseUser
     public function addGroupAffilate(\CreditJeeves\DataBundle\Entity\GroupAffiliate $groupAffilate)
     {
         $this->group_affilate[] = $groupAffilate;
-    
         return $this;
     }
 
@@ -1635,5 +1652,87 @@ abstract class User extends BaseUser
     public function getGroupAffilate()
     {
         return $this->group_affilate;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\AccessToken $accessToken
+     * @return User
+     */
+    public function addAccessToken(\CreditJeeves\DataBundle\Entity\AccessToken $accessToken)
+    {
+        $this->accessTokens[] = $accessToken;
+        return $this;
+    }
+
+    /**
+     * Remove accessToken
+     *
+     * @param \CreditJeeves\DataBundle\Entity\AccessToken $accessToken
+     */
+    public function removeAccessToken(\CreditJeeves\DataBundle\Entity\AccessToken $accessToken)
+    {
+        $this->accessTokens->removeElement($accessToken);
+    }
+
+    /**
+     * Get accessTokens
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAccessTokens()
+    {
+        return $this->accessTokens;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken
+     * @return User
+     */
+    public function addRefreshToken(\CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken)
+    {
+        $this->resfreshTokens[] = $refreshToken;
+        return $this;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken
+     */
+    public function removeRefreshToken(\CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken)
+    {
+        $this->refreshTokens->removeElement($refreshToken);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRefreshTokens()
+    {
+        return $this->refreshTokens;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\AuthToken $authToken
+     * @return User
+     */
+    public function addAuthCode(\CreditJeeves\DataBundle\Entity\AuthCode $authCode)
+    {
+        $this->authCodes[] = $authCode;
+        return $this;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\AuthToken $authCode
+     */
+    public function removeAuthCode(\CreditJeeves\DataBundle\Entity\AuthCode $authCode)
+    {
+        $this->authCodes->removeElement($authCode);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuthCodes()
+    {
+        return $this->authCodes;
     }
 }
