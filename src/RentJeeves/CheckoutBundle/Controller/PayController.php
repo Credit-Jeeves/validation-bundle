@@ -167,7 +167,7 @@ class PayController extends Controller
         $contract->setStatus(ContractStatus::APPROVED);
         $em->persist($contract);
         $em->persist($paymentEntity);
-        $em->flush($paymentEntity);
+        $em->flush();
 
         return new JsonResponse(
             array(

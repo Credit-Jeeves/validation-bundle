@@ -608,6 +608,7 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
       {% block email %}
       <table 
         width="100%"
@@ -657,6 +658,7 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
       {% block email %}
       {{ 'order.error.title'| trans }}:
       <table 
