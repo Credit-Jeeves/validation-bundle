@@ -47,12 +47,12 @@ class LandlordAdmin extends Admin
     public function createQuery($context = 'list')
     {
         $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
-        $group = $this->getModelManager()->find('DataBundle:Group', $nGroupId);
-        $holding = $group->getHolding();
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
         $query->leftJoin($alias.'.agent_groups', $alias.'_g');
         if (!empty($nGroupId)) {
+            $group = $this->getModelManager()->find('DataBundle:Group', $nGroupId);
+            $holding = $group->getHolding();
             $this->request->getSession()->set('group_id', $nGroupId);
             $query->andWhere(
                 '('.$alias.'_g.id = :group_id) OR ('.$alias.'.holding = :holding AND '.$alias.'.is_super_admin = true)'
