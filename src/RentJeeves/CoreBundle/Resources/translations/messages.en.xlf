@@ -1303,7 +1303,7 @@
                 <target>
                     Are you sure want to remove this payment source?
                     Any recurring payments using this source will be cancelled.
-                    Please visit the "Payments" page to set up new payments for any affected .
+                    Please visit the "Payments" page to set up new payments for any affected properties.
                 </target>
             </trans-unit>
             <trans-unit id="payment_account.delete.yes">
