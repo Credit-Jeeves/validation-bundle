@@ -262,7 +262,7 @@ fixtures:
                   -moz-border-radius: 4px;
                   -webkit-border-radius: 4px;
                   border-radius: 4px;"
-      >Sign up</a> Still have some questions? <a href="#">Read More</a> or call 866.841.9090
+      >Sign up</a> Still have some questions? <a href="http://www.renttrack.com/property-management">Read More</a> or call 866.841.9090
       {% endblock %}
 
 # rjTenantInvite.html email
@@ -314,7 +314,7 @@ fixtures:
                         -moz-border-radius: 4px;
                         -webkit-border-radius: 4px;
                         border-radius: 4px;
-                ">Pay Rent</a> Still have some questions? <a href="http://www.renttrack.com/property-management">Learn More</a>
+                ">Pay Rent</a> Still have some questions? <a href="http://www.renttrack.com/how-it-works">Learn More</a>
       {% endblock %}
 
 # rjTenantLatePayment.html email
@@ -601,16 +601,25 @@ fixtures:
     translatable: email_24
     locale: %locale%
     property: subject
-    value: Order Receipt
+    value: Rent Payment Receipt
   translation_24_body:
     translatable: email_24
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% if nameTenant %}
+        {% block h1 %}Hello {{ nameTenant }},{% endblock %}
+      {% else %}
+        {% block h1 %}Hello there!{% endblock %}
+      {% endif %}
       {% block email %}
-      <table 
+
+      Your rent payment to {{ groupName }} was sent just now. They should see the deposit in their account in 1-3 days.
+
+      The details:
+
+      <table
         width="100%"
         style="
           border: 1px solid #C8C8C8;
@@ -622,7 +631,7 @@ fixtures:
             <td style="padding:5px;">{{ 'order.date.time' | trans }}:</td><td style="padding:5px;">{{ datetime }}</td>
           </tr>
           <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'oder.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
+            <td style="padding:5px;">{{ 'order.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
           </tr>
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'amount' | trans }}:</td><td style="padding:5px;">{{ amount }}</td>
@@ -638,12 +647,9 @@ fixtures:
         </tbody>
       </table>
       </br>
-      {{ 'order.paid.to' | trans }}:{{ groupName }}
       </br>
       </br>
-      {{ 'oder.receipt.footer' | trans }}
-      </br>
-      The RentTrack Team
+      {{ 'order.receipt.footer' | trans }}
       {% endblock %}
 
 # rjOrderError.html
