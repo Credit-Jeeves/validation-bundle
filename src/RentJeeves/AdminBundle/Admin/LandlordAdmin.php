@@ -41,6 +41,28 @@ class LandlordAdmin extends Admin
         return '/'.self::TYPE;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
+        $group = $this->getModelManager()->find('DataBundle:Group', $nGroupId);
+        $holding = $group->getHolding();
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+        $query->leftJoin($alias.'.agent_groups', $alias.'_g');
+        if (!empty($nGroupId)) {
+            $this->request->getSession()->set('group_id', $nGroupId);
+            $query->andWhere(
+                '('.$alias.'_g.id = :group_id) OR ('.$alias.'.holding = :holding AND '.$alias.'.is_super_admin = true)'
+            );
+            $query->setParameter('group_id', $nGroupId);
+            $query->setParameter('holding', $holding);
+        }
+        return $query;
+    }
+    
     public function configureListFields(ListMapper $listMapper)
     {
         $request = $this->getRequest();
@@ -123,6 +145,58 @@ class LandlordAdmin extends Admin
             ->add('is_active');
     }
 
+    public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
+    {
+        $nGroupId = $this->getRequest()->get('group_id', $this->request->getSession()->get('group_id', null));
+        $menu = $this->menuFactory->createItem('root');
+        $menu = $menu->addChild(
+            $this->trans(
+                $this->getLabelTranslatorStrategy()->getLabel(
+                    'dashboard',
+                    'breadcrumb',
+                    'link'
+                ),
+                array(),
+                'SonataAdminBundle'
+            ),
+            array(
+                'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
+            )
+        );
+        if ('list' == $action & !empty($nGroupId)) {
+            $menu = $menu->addChild(
+                $this->trans(
+                    $this->getLabelTranslatorStrategy()->getLabel(
+                        'Group List',
+                        'breadcrumb',
+                        'link'
+                    ),
+                    array(),
+                    'SonataAdminBundle'
+                ),
+                array(
+                    'uri' => $this->routeGenerator->generate('admin_rj_group_list')
+                )
+            );
+        }
+        $menu = $menu->addChild(
+            $this->trans(
+                $this->getLabelTranslatorStrategy()->getLabel(
+                    'Landlord List',
+                    'breadcrumb',
+                    'link'
+                ),
+                array(),
+                'SonataAdminBundle'
+            ),
+            array(
+                'uri' => $this->routeGenerator->generate('admin_creditjeeves_data_order_list')
+            )
+        );
+        return $this->breadcrumbs[$action] = $menu;
+    }
+    
+
     /**
      * {@inheritdoc}
      */
@@ -145,7 +219,6 @@ class LandlordAdmin extends Admin
         $isValid = false;
         $password = $user->getPassword();
         $request = $this->getRequest();
-        $formData = $request->request->get($this->getUniqid());
         $password_new = $formData['password_new'];
         $password_retype = $formData['password_retype'];
         if (!empty($password)) {
