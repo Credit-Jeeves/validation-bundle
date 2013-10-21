@@ -406,11 +406,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "91fbb6cba37e2bd2a8dd8abfcb02b7b4be419e9c"
+                "reference": "2579d548cc93376b83382287156434b80aa64285"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-10-11 13:09:49"
+            "time": "2013-10-17 18:21:00"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
