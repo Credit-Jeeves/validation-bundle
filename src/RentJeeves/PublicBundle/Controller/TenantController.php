@@ -41,22 +41,9 @@ class TenantController extends Controller
                 $aForm = $request->request->get($form->getName());
                 $password = $this->container->get('user.security.encoder.digest')
                         ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
-
                 $tenant->setPassword($password);
                 $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-
-//                 $contracts = $tenant->getContracts();
                 $em = $this->getDoctrine()->getManager();
-
-//                 if (!empty($contracts)) {
-//                     foreach ($contracts as $contract) {
-//                         if ($contract->getStatus() == ContractStatus::INVITE) {
-//                             $contract->setStatus(ContractStatus::CURRENT);
-//                             $em->persist($contract);
-//                         }
-//                     }
-//                 }
-
                 $tenant->setInviteCode(null);
                 $em->persist($tenant);
                 $em->flush();
@@ -64,7 +51,6 @@ class TenantController extends Controller
                 return $this->login($tenant);
             }
         }
-
         return array(
             'code'      => $code,
             'form'      => $form->createView(),

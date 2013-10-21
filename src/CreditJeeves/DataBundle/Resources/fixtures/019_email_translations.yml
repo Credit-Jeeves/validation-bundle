@@ -657,4 +657,47 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-    
+      {% block email %}
+      {{ 'order.error.title'| trans }}:
+      <table 
+        width="100%"
+        style="
+          border: 1px solid #C8C8C8;
+          border-collapse: collapse;
+       "
+      >
+        <tbody>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.paid.to' | trans }}:</td><td style="padding:5px;">{{ groupName }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.date.time' | trans }}:</td><td style="padding:5px;">{{ datetime }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'amount' | trans }}:</td><td style="padding:5px;">{{ amount }}</td>
+          </tr>
+          {% if fee > 0 %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
+          </tr>
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
+          </tr>
+          {% endif %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.id' | trans }}:</td><td style="padding:5px;">{{ orderId }}</td>
+          </tr>
+          {% if transactionId > 0 %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionId }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+      {{ 'order.contact.us' | trans }}
+      </br>
+      {{ 'order.error.message' | trans }}: {{ error }}
+      </br>
+      The RentTrack Team
+      {% endblock %}
+      

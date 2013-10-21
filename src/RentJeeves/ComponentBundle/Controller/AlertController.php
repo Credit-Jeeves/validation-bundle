@@ -46,4 +46,31 @@ class AlertController extends Controller
             'alerts' => $alerts
         );
     }
+
+    /**
+     * @Template("RjComponentBundle:Alert:index.html.twig")
+     */
+    public function tenantAction()
+    {
+        $alerts = array();
+        $user = $this->getUser();
+        $inviteCode = $user->getInviteCode();
+        if (!empty($inviteCode)) {
+            $alerts[] = $this->get('translator.default')->trans('alert.tenant.verify_email');
+        }
+        $hasPayment = false;
+        $contracts = $user->getContracts();
+        foreach ($contracts as $contract) {
+            $payments = $contract->getPayments();
+            if (count($payments) > 0) {
+                $hasPayment = true;
+            }
+        }
+        if (!$hasPayment) {
+            $alerts[] = $this->get('translator.default')->trans('alert.tenant.first_payment');
+        }
+        return array(
+            'alerts' => $alerts
+        );
+    }
 }

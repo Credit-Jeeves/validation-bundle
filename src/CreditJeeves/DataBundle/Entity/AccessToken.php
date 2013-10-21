@@ -20,45 +20,10 @@ class AccessToken extends BaseAccessToken
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Client")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    protected $client;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User")
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="accessTokens"
+     * )
      */
     protected $user;
-
-    /**
-     * @param mixed $client
-     */
-    public function setClient(ClientInterface $client)
-    {
-        $this->client = $client;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
 }

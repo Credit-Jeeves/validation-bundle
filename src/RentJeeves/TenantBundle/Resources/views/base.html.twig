@@ -2,6 +2,7 @@
 
 {% block stylesheets %}
     {% stylesheets  '@ComponentBundle/Resources/public/css/*'
+                    '@RjComponentBundle/Resources/public/css/*'
                     '@RjPublicBundle/Resources/public/css/footer.css'
                     '@CoreBundle/Resources/public/css/rj-logos.css'
                     '@CoreBundle/Resources/public/css/tabs.css'
@@ -62,6 +63,10 @@
         google.load("visualization", "1", {packages:["corechart", "gauge"]});
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&components=country:usa&language=en&key=AIzaSyC78YrKVlUy2HXQWa29uM1vIn4FJ5IBUtM&types=regions"></script>
+{% endblock %}
+
+{% block alert %}
+    {{ render(controller('RjComponentBundle:Alert:tenant')) }}
 {% endblock %}
 
 {% block tabs %}
