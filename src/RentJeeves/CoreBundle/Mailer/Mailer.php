@@ -162,6 +162,7 @@ class Mailer extends BaseMailer
         }
         $total = $fee + $amount;
         $vars = array(
+            'nameTenant' => $tenant->getFullName(),
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'transactionID' => $history ? $history->getTransactionId() : 'N/A',
             'amount' => $order->getAmount(),
@@ -188,6 +189,7 @@ class Mailer extends BaseMailer
         }
         $total = $fee + $amount;
         $vars = array(
+            'nameTenant' => $tenant->getFullName(),
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'amount' => $order->getAmount(),
             'fee' => $fee,
