@@ -219,6 +219,7 @@ class LandlordAdmin extends Admin
         $isValid = false;
         $password = $user->getPassword();
         $request = $this->getRequest();
+        $formData = $request->request->get($this->getUniqid());
         $password_new = $formData['password_new'];
         $password_retype = $formData['password_retype'];
         if (!empty($password)) {
