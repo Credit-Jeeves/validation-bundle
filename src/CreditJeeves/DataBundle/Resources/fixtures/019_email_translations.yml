@@ -384,13 +384,11 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
       {% block email %}
-        {{ nameTenant }} is ready to pay rent for {{ address }}.
-        <br />
-        <a href="http://my.renttrack.com/">Log in to RentTrack</a> to add contract details and approve this tenant.
-        After that, your tenant will be able to set up their rent payment.
-        <br />
-        Thank you, <br />
-        The RentTrack Team
+        {{ nameTenant }} is ready to pay rent for {{ address }}
+        <br /></br />
+        Please <a href="http://my.renttrack.com/">log in to RentTrack</a>, click on the Tenants tab, and click on the
+        review "eye" next to the pending tenant. You will then be able to add rent details and approve the tenant. Once
+        this is complete, your tenant will be able to set up their rent payment.
       {% endblock %}
 
 #exist_invite.html
@@ -554,15 +552,16 @@ fixtures:
     translatable: email_23
     locale: %locale%
     property: subject
-    value: List Late Contracts
+    value: Review Late Rent Payments
   translation_23_body:
     translatable: email_23
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block h1 %}Hello {{ nameLandlord }},{% endblock %}
       {% block email %}
+      The following tenants have not submitted on-time payments:
       <table 
         width="100%"
         style="
@@ -592,8 +591,9 @@ fixtures:
         </tbody>
       </table>
         <br />
-        Enjoy, <br />
-        The RentTrack Team
+        Please <a href="https://my.renttrack.com">log into RentTrack</a>
+        and click on "Resolve" next to late tenants at the top of the Payments Dashboard to either record payments
+        via alternate means or to send them an email reminder.
       {% endblock %}
 
 # rjOrderReceipt.html
