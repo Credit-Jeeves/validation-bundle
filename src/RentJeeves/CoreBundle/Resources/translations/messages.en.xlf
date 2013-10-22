@@ -1346,6 +1346,10 @@
                 <source>order.fee</source>
                 <target>Fee</target>
             </trans-unit>
+            <trans-unit id="order.fee.free">
+                <source>order.fee.free</source>
+                <target>Free</target>
+            </trans-unit>
             <trans-unit id="order.total">
                 <source>order.total</source>
                 <target>Total</target>
