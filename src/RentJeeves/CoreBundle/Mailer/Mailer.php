@@ -162,6 +162,7 @@ class Mailer extends BaseMailer
         }
         $total = $fee + $amount;
         $vars = array(
+            'nameTenant' => $tenant->getFullName(),
             'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
             'transactionID' => $history ? $history->getTransactionId() : 'N/A',
             'amount' => $order->getAmount(),
@@ -176,7 +177,27 @@ class Mailer extends BaseMailer
     public function sendOrderError(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderError')
     {
         $tenant = $order->getTenant();
+        $type = $order->getType();
+        $fee = 0;
+        $amount = $order->getAmount();
+        $group = $order->getOperations()->last()->getContract()->getGroup();
+        switch ($type) {
+            case OrderType::HEARTLAND_CARD:
+            default:
+                $fee = $amount * (int)$this->container->getParameter('payment_card_fee') / 100;
+                break;
+        }
+        $total = $fee + $amount;
         $vars = array(
+            'nameTenant' => $tenant->getFullName(),
+            'datetime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'amount' => $order->getAmount(),
+            'fee' => $fee,
+            'total' => $total,
+            'groupName' => $group->getName(),
+            'orderId' => $order->getId(),
+            'error' => $order->getHeartlandErrorMessage(),
+            'transactionId' => $order->getHeartlandTransactionId()
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }

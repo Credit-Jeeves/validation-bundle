@@ -144,6 +144,10 @@
         },
         {
             "type": "git",
+            "url":"git@github.com:66Ton99/BeSimpleSoapCommon.git"
+        },
+        {
+            "type": "git",
             "url": "git@github.com:Tobur/ApiBundle.git"
         }
     ],
@@ -191,7 +195,7 @@
         "payum/payum-bundle": "dev-heartland",
         "payum/authorize-net-aim": "0.5.*",
         "payum/heartland": "dev-master",
-        "besimple/soap-common": "dev-master",
+        "besimple/soap-common": "dev-ton as dev-master",
         "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",
         "knplabs/knp-menu-bundle": "1.1.x-dev",

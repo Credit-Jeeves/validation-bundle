@@ -320,7 +320,6 @@ class Contract extends Base
         } else {
             $newDate->modify('+1 months');
         }
-        //echo $newDate->format('Y-m-d')."\n";
         return $this->setPaidTo($newDate);
     }
 

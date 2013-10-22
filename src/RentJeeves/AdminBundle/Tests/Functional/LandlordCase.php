@@ -24,7 +24,7 @@ class LandlordCase extends BaseTestCase
         $this->assertCount(7, $landlords);
         $this->page->clickLink('link_action_create');
         $this->assertNotNull($form = $this->page->find('css', 'form'));
-        $this->assertNotNull($submit = $form->findButton('btn_create_and_edit_again'));
+        $this->assertNotNull($submit = $form->findButton('btn_create_and_return_to_list'));
         $submit->click();
         $this->assertNotNull($error = $this->page->find('css', '.alert-error'));
         $this->assertNotNull($fields = $this->page->findAll('css', 'form input'));
@@ -40,7 +40,7 @@ class LandlordCase extends BaseTestCase
             )
         );
         $submit->click();
-        $this->page->clickLink('Landlord List');
+        //$this->page->clickLink('Landlord List');
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.delete_link'));
         $this->assertCount(8, $landlords);
         $landlords[1]->click();

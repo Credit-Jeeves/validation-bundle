@@ -69,7 +69,12 @@ function Pay(parent, contractId) {
     this.propertyFullAddress.zip(contract.property.zip);
     this.propertyFullAddress.district(contract.property.district);
     this.propertyFullAddress.area(contract.property.area);
-    this.propertyFullAddress.unit(contract.unit.name);
+    if (typeof contract.unit == 'undefined') {
+      this.propertyFullAddress.unit('');
+    } else {
+      this.propertyFullAddress.unit(contract.unit.name);
+    }
+    
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 

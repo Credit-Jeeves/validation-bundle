@@ -11,6 +11,7 @@ use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -149,6 +150,8 @@ class PayController extends Controller
                 ->find($paymentType->get('contractId')->getData())
         ) {
             $paymentEntity->setContract($contract);
+        } else {
+            throw $this->createNotFoundException('Contract does not exist');
         }
 
         if ($paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')
@@ -161,9 +164,10 @@ class PayController extends Controller
             $paymentEntity->setEndYear(null);
         }
 
-
+        $contract->setStatus(ContractStatus::APPROVED);
+        $em->persist($contract);
         $em->persist($paymentEntity);
-        $em->flush($paymentEntity);
+        $em->flush();
 
         return new JsonResponse(
             array(

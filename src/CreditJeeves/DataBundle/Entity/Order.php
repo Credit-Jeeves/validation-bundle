@@ -89,10 +89,20 @@ class Order extends BaseOrder
 
     public function getHeartlandTransactionId()
     {
-        $result = 'N/A';
+        $result = 0;
         $heartlands = $this->getHeartlands();
         if (count($heartlands) > 0) {
             $result = $heartlands->last()->getTransactionId();
+        }
+        return $result;
+    }
+
+    public function getHeartlandErrorMessage()
+    {
+        $result = '';
+        $heartlands = $this->getHeartlands();
+        if (count($heartlands) > 0) {
+            $result = $heartlands->last()->getMessages();
         }
         return $result;
     }
@@ -121,18 +131,10 @@ class Order extends BaseOrder
             switch ($type) {
                 case OperationType::RENT:
                     $status = $this->getStatus();
-//                     echo $status."\n";
                     if ($status == OrderStatus::COMPLETE) {
                         $contract = $operation->getContract();
-//                         echo 'Amount='.$orderAmount."\n";
-                        $contract->shiftPaidTo($orderAmount);
-                        $status = $contract->getStatus();
-                        if ($status == ContractStatus::INVITE) {
-                            $contract->setStatus(ContractStatus::CURRENT);
-                        }
                         $paidTo = $contract->getPaidTo();
                         $interval = $this->getDiffDays($paidTo);
-//                         echo $interval."\n";
                         $this->setDaysLate($interval);
                     }
                     break;
