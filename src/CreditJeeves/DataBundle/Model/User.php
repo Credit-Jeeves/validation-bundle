@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\CoreBundle\Type\Encrypt;
+use CreditJeeves\DataBundle\Entity\ApiUpdate;
 use CreditJeeves\DataBundle\Enum\UserType;
 use FOS\UserBundle\Entity\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
@@ -547,6 +548,19 @@ abstract class User extends BaseUser
      */
     protected $refreshTokens;
 
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ApiUpdate",
+     *     mappedBy="user",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $apiUpdate;
+
     public function __construct()
     {
         parent::__construct();
@@ -567,6 +581,24 @@ abstract class User extends BaseUser
         $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
+
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $apiUpdate
+     */
+    public function setApiUpdate(ApiUpdate $apiUpdate)
+    {
+        $this->apiUpdate = $apiUpdate;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getApiUpdate()
+    {
+        return $this->apiUpdate;
+    }
+
+
 
     public function getRoles()
     {
