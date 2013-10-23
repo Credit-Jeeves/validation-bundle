@@ -38,8 +38,9 @@ class NewController extends Controller
         /** @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
         $Group = new Group();
+        $em = $this->getDoctrine()->getManager();
         if ($code) {
-            $Group->setCode($code);
+            $Group = $em->getRepository('DataBundle:Group')->findOneByCode($code);
         }
         if ($request->getMethod() == 'GET') {
             // Group code
@@ -79,7 +80,7 @@ class NewController extends Controller
                     $User->setInviteCode($Lead->getGroup()->getCode());
                     $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
 
-                    $em = $this->getDoctrine()->getManager();
+                    //$em = $this->getDoctrine()->getManager();
                     $User->setPassword(
                         $this->container->get('user.security.encoder.digest')
                             ->encodePassword($User->getPassword(), $User->getSalt())
@@ -103,13 +104,9 @@ class NewController extends Controller
                 }
             }
         }
-//         echo '<pre>';
-//         print_r($form->getErrorsAsString());
-//         echo '</pre>';
-        
-        //         die();
         return array(
             'form' => $form->createView(),
+            'type' => $Group->getType(),
         );
     }
 
