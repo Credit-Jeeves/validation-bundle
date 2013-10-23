@@ -37,7 +37,7 @@ class UserAddressType extends AbstractType
             'text',
             array(
                 'label' => false,
-                'required' => true
+                'required' => false
             )
         );
         $builder->add(
