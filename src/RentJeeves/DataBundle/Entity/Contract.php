@@ -143,6 +143,7 @@ class Contract extends Base
         if ($finish = $this->getFinishAt()) {
             $result['finish'] = $finish->format('m/d/Y');
         }
+        $result['search'] = $this->getSearch();
         return $result;
     }
 

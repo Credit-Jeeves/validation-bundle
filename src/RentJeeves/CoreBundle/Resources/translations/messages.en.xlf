@@ -1382,6 +1382,10 @@
                 <source>select.from.drop.down.list</source>
                 <target>Please select an address from the drop-down and try again.</target>
             </trans-unit>
+            <trans-unit id="tenant.wants.unit">
+                <source>tenant.wants.unit</source>
+                <target>Tenant wants unit number:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

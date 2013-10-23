@@ -45,6 +45,14 @@
                     <label>{{ 'property'|trans }}<b>*</b></label>
                     <div class="fields-box addressDiv"  data-bind="text: address"></div>
                 </div>
+                <!-- ko if: status == 'PENDING' -->
+                <div class="form-row clearfix">
+                    <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
+                    <select id="unit-edit" class="original" name="unit_id">
+                    </select>
+                    <img src="/bundles/rjpublic/images/ajax-loader-small.gif" style="display: none;" class="loader">
+                </div>
+                <!-- /ko -->
                 <div class="form-row clearfix">
                     <label>{{ 'amount'|trans }}<b>*</b></label>
                     <div class="fields-box">
@@ -86,7 +94,12 @@
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}</label>
                     <div class="fields-box">
+                        <!-- ko if: search -->
+                            <span class="value" data-bind="text: address+' ({{ 'tenant.wants.unit'|trans }} '+search+')'"></span>
+                        <!-- /ko -->
+                        <!-- ko if: !search -->
                         <span class="value" data-bind="text: address"></span>
+                        <!-- /ko -->
                     </div>
                 </div>
                 <div class="form-row clearfix">

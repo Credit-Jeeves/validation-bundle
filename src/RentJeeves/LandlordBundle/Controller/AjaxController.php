@@ -438,6 +438,7 @@ class AjaxController extends Controller
      */
     public function saveContract()
     {
+        $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $contract = $request->request->all('contract');
         $details = $contract['contract'];
@@ -445,14 +446,14 @@ class AjaxController extends Controller
         if (isset($details['action'])) {
             $action = $details['action'];
         }
-        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($details['id']);
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
         $tenant->setFirstName($details['first_name']);
         $tenant->setLastName($details['last_name']);
         $tenant->setEmail($details['email']);
         $tenant->setPhone($details['phone']);
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($details['property_id']);
-        $unit = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
+        $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
+        $unit = $em->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
         $contract->setStartAt(new \Datetime($details['start']));
         $contract->setFinishAt(new \Datetime($details['finish']));
@@ -462,7 +463,7 @@ class AjaxController extends Controller
         if (in_array($details['status'], array(ContractStatus::APPROVED))) {
             $contract->setStatusApproved();
         }
-        $em = $this->getDoctrine()->getManager();
+
         if ($action == 'remove') {
             $em->remove($contract);
         } else {
