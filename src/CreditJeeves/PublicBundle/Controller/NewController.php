@@ -77,7 +77,7 @@ class NewController extends Controller
                     $User->setType(UserType::APPLICANT);
                     $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
 
-                    $User->setInviteCode($Lead->getGroup()->getCode());
+                    //$User->setInviteCode($Lead->getGroup()->getCode());
                     $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
 
                     //$em = $this->getDoctrine()->getManager();
