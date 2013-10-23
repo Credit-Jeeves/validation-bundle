@@ -69,8 +69,8 @@
                             <input type="radio"
                                 required="required"
                                 data-bind="
-                                    checked: $parent.payment.paymentAccountId,
-                                    value: $data.id
+                                    value: $data.id,
+                                    checked: $parent.payment.paymentAccountId
                                 " />
                             <i></i>
                             <span data-bind="text: $data.name"></span>
@@ -147,8 +147,14 @@
                             <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
-                    <div class="form-row clearfix" data-bind="visible: 'immediate' != payment.type()">
+                    <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
                         <label>{{ 'checkout.starts_on' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value" data-bind="text: payment.startDate"></span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix" data-bind="visible: 'one_time' == payment.type()">
+                        <label>{{ 'checkout.sent_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: payment.startDate"></span>
                         </div>
@@ -257,7 +263,7 @@
                 </div>
             </div>
 
-            <div class="form-row checkboxes alone clearfix">
+            {#<div class="form-row checkboxes alone clearfix">
                 <label class="checkbox">
                     <input type="checkbox" checked="checked">
                     <i> </i>
@@ -270,7 +276,7 @@
                 >
                     ?
                 </i>
-            </div>
+            </div>#}
         </div>
     </div>
     <div class="footer-button-box">

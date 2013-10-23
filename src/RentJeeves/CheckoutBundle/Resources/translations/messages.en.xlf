@@ -342,6 +342,10 @@
                 <source>checkout.starts_on</source>
                 <target>Starts On</target>
             </trans-unit>
+            <trans-unit id="checkout.sent_on">
+                <source>checkout.sent_on</source>
+                <target>Sent On</target>
+            </trans-unit>
             <trans-unit id="checkout.recurs_on">
                 <source>checkout.recurs_on</source>
                 <target>Recurs On</target>
@@ -400,7 +404,7 @@
             </trans-unit>
             <trans-unit id="checkout.one_time_payment.note">
                 <source>checkout.one_time_payment.note</source>
-                <target>Please note that this is a one time payment for %DATE%. Any future due dates still require you to create a new rent payment. You can save time by creating a recurring payment.</target>
+                <target>Please note that this is a one time payment for %DATE%. Any future due dates still require you to create a new rent payment. You can save time by creating a recurring payment next time.</target>
             </trans-unit>
             <trans-unit id="checkout.payment.cancel">
                 <source>checkout.payment.cancel</source>
