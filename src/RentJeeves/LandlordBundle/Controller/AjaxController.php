@@ -128,11 +128,19 @@ class AjaxController extends Controller
             $google->savePlace($property);
         }
 
-
+        $securityContext = $this->container->get('security.context');
         $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
+        $isLogin = $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED') ? true : false;
+        $isLandlord = false;
+
+        if ($isLogin) {
+            $isLandlord = ($this->getUser()->getType() == UserType::LANDLORD) ? true : false;
+        }
 
         $data = array(
             'hasLandlord'   => $property->hasLandlord(),
+            'isLogin'      => $isLogin,
+            'isLandlord'   => $isLandlord,
             'property'      => array(
                     'id'        => $property->getId(),
                     'city'      => $property->getCity(),

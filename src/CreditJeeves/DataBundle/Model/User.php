@@ -520,7 +520,7 @@ abstract class User extends BaseUser
      */
     protected $group_affilate;
 
-   /**
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToOne(
