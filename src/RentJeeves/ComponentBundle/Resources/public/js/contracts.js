@@ -163,7 +163,9 @@ function ContractDetails() {
     var contract = self.contract();
     contract.finish = $('#contract-edit-finish').val() || contract.finish;
     contract.start = $('#contract-edit-start').val() || contract.start;
-    if ($("#unit-edit :selected")) {
+    var unitId = $("#unit-edit :selected").val();
+
+    if (typeof unitId != 'undefined') {
         contract.unit_id = $("#unit-edit :selected").val();
     }
     self.contract(contract);
