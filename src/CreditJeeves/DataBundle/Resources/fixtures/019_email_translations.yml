@@ -640,10 +640,15 @@ fixtures:
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
           </tr>
+          {% else %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ 'order.fee.free' | trans }}</td>
+          </tr>
+          {% endif %}
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
           </tr>
-          {% endif %}
+          
         </tbody>
       </table>
       </br>
@@ -688,10 +693,15 @@ fixtures:
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
           </tr>
+          {% else %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ 'order.fee.free' | trans }}</td>
+          </tr>
+          {% endif %}
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
           </tr>
-          {% endif %}
+          
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.id' | trans }}:</td><td style="padding:5px;">{{ orderId }}</td>
           </tr>

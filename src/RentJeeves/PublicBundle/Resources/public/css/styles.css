@@ -4068,6 +4068,7 @@ label.checkbox input[type="radio"]:checked + i {
 
 .ui-datepicker {
   display:none;
+  width: 185px;
 }
 
 .ui-widget-content.ui-datepicker {

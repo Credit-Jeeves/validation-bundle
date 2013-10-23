@@ -145,6 +145,7 @@ class PaymentCommand extends ContainerAwareCommand
 
             $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
             $payum->execute($statusRequest);
+            $order->addHeartland($paymentDetails);
             if ($statusRequest->isSuccess()) {
                 $order->setStatus(OrderStatus::COMPLETE);
                 $output->write('.');
@@ -155,7 +156,6 @@ class PaymentCommand extends ContainerAwareCommand
                 }
             } else {
                 $order->setStatus(OrderStatus::ERROR);
-                $order->addHeartland($paymentDetails);
                 $output->write('E');
             }
             $paymentDetails->setAmount($amount + $fee);
