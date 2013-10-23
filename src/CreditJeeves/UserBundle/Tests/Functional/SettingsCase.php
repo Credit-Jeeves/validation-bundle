@@ -1,15 +1,21 @@
 <?php
 namespace CreditJeeves\UserBundle\Tests\Functional;
 
+use Behat\Mink\Element\DocumentElement;
 use CreditJeeves\TestBundle\Functional\BaseTestCase;
+use CreditJeeves\UserBundle\Tests\Traits\SettingsCaseTrait;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
 class SettingsCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
 {
-
+//    TODO Torn on it if function would be approved for CJ
+//    use SettingsCaseTrait;
+//
     protected $password = '123123';
+    protected $userEmail = 'emilio@example.com';
+//    protected $accountLink = 'tabs.settings';
 
     /**
      * @test

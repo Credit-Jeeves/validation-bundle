@@ -1,0 +1,52 @@
+.dashboard-popup {
+    display: none;
+}
+
+.addresses-table {
+    overflow: hidden;
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+.addresses-table th {
+    padding: 5px 0;
+    border-bottom: 1px solid #cccccc;
+    background-color: #e6e6e6;
+}
+.addresses-table td, .addresses-table th {
+    border-right: 1px solid #cccccc;
+}
+.addresses-table td:last-child, .addresses-table th:last-child {
+    border-right: none;
+}
+.addresses-table .default-address {
+    font-size: 10px;
+}
+
+.add-address-button {
+    line-height: 44px;
+    background-image: url(/bundles/core/images/buttons/btn_lg_green.png);
+}
+
+a.type-ico {
+    float: left;
+    width: 20px;
+}
+a.type-ico.edit {
+    background: url(/sfDoctrinePlugin/images/edit.png) no-repeat 0 0;
+}
+a.type-ico.delete {
+    background: url(/sfDoctrinePlugin/images/delete.png) no-repeat 0 0;
+}
+
+.form-row {
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+.form-row label {
+    float: left;
+    width: 130px;
+}
+.form-row input[type=checkbox] {
+    margin-top: 8px;
+}
