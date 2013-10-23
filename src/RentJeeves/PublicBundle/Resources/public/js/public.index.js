@@ -71,16 +71,16 @@ $(document).ready(function(){
 
         $('#property-add').click(function(){
             if(ERROR == $('#property-search').attr('class')) {
-                showError('Such address doesn\'t exist!');
+                showError(Translator.get('select.from.drop.down.list'));
                 return false;
             }
             if ('' == $('#property-search').val()) {
-              showError('Property Address empty');
+              showError(Translator.get('error.property.empty'));
               return false;
             }
             var place = autocomplete.getPlace();
             if (typeof place == 'undefined') {
-                showError('Such address doesn\'t exist!');
+                showError(Translator.get('select.from.drop.down.list'));
                 return false;
             }
             var data = {'address': place.address_components, 'geometry':place.geometry};
@@ -103,6 +103,11 @@ $(document).ready(function(){
               success: function(data, textStatus, jqXHR) {
                 var isInIFrame = (window.location != window.parent.location);
                 var location = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
+
+                if (data.isLogin && data.isLandlord) {
+                    var location = Routing.generate('landlord_properties');
+                }
+
                 if (isInIFrame == true) {
                     // iframe
                     window.parent.location.href = location;

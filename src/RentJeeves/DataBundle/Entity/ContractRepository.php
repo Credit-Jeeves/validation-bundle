@@ -43,7 +43,8 @@ class ContractRepository extends EntityRepository
                     break;
                 case 'phone':
                 case 'email':
-                    $query->setParameter('t.'.$searchField, '%'.$searchString.'%');
+                    $query->andWhere('t.email LIKE :search');
+                    $query->setParameter('search', '%'.$searchString.'%');
                     break;
                 case 'amount':
                 case 'amountA':

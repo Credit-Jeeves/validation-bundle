@@ -122,3 +122,8 @@ height: 23px;
 #userExistMessage, #userExistMessageLanlord, .content-box {
     display: none;
 }
+
+#unit-edit {
+    margin-top: 7px;
+    margin-left: 10px;
+}
