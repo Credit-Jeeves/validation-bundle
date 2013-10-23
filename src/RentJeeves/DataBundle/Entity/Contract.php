@@ -143,6 +143,7 @@ class Contract extends Base
         if ($finish = $this->getFinishAt()) {
             $result['finish'] = $finish->format('m/d/Y');
         }
+        $result['search'] = $this->getSearch();
         return $result;
     }
 
@@ -218,8 +219,11 @@ class Contract extends Base
         $result[] = $property->getAddress();
         if ($unit) {
             $result[] = $unit->getName();
+            $result = implode(', #', $result);
+        } else {
+            $result = implode(' ', $result);
         }
-        return implode(', #', $result);
+        return $result;
     }
 
     public function getActivePaymentHistory($em)
@@ -320,7 +324,6 @@ class Contract extends Base
         } else {
             $newDate->modify('+1 months');
         }
-        //echo $newDate->format('Y-m-d')."\n";
         return $this->setPaidTo($newDate);
     }
 

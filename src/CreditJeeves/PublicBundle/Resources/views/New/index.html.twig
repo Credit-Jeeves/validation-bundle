@@ -58,6 +58,11 @@
                     <div class="clearboth"></div>
                     {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form.user } %}
                     <div class="clearboth"></div>
+                    {% if type == 'vehicle' %}
+                    <div class="row-20"></div>
+                    <!-- here will be vehicle select component -->
+                    <div class="clearboth"></div>
+                    {% endif %}
                     <div class="row-20"></div>
                     {% include 'ComponentBundle:User:tos.html.twig'      with { 'form' : form.user } %}
                     <div class="clearboth"></div>

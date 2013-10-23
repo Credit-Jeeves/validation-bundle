@@ -45,6 +45,15 @@ fixtures:
     zip: '33039'
     is_default: 1
 
+  Address_25:
+    user: cjApplicant_5
+    street: 'LEHIGH 210'
+    unit: '22'
+    city: BOSTON
+    area: MA
+    zip: '220121'
+    is_default: 0
+
   Address_6:
     user: cjApplicant_6
     street: 'PO BOX 1563'

@@ -442,7 +442,10 @@ abstract class User extends BaseUser
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="\CreditJeeves\DataBundle\Entity\Group", inversedBy="group_dealers")
+     * @ORM\ManyToMany(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\Group",
+     *     inversedBy="group_dealers"
+     * )
      * @ORM\JoinTable(
      *      name="cj_dealer_group",
      *      joinColumns={@ORM\JoinColumn(name="dealer_id", referencedColumnName="id")},
@@ -508,11 +511,42 @@ abstract class User extends BaseUser
     protected $addresses;
 
     /**
-     * @ORM\OneToMany(targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate", mappedBy="user")
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\GroupAffiliate",
+     *     mappedBy="user"
+     * )
      *
      * @var ArrayCollection
      */
     protected $group_affilate;
+
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\AccessToken",
+     *     mappedBy="user",
+     *     cascade={"all"}
+     * )
+     */
+    protected $accessTokens;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\AuthCode",
+     *     mappedBy="user",
+     *     cascade={"all"}
+     * )
+     */
+    protected $authCodes;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\RefreshToken",
+     *     mappedBy="user",
+     *     cascade={"all"}
+     * )
+     */
+    protected $refreshTokens;
 
 
     /**
@@ -542,6 +576,9 @@ abstract class User extends BaseUser
         $this->tradelines = new ArrayCollection();
         $this->addresses = new ArrayCollection();
         $this->group_affilate = new ArrayCollection();
+        $this->accessTokens = new ArrayCollection();
+        $this->authCodes = new ArrayCollection();
+        $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
     }
 
@@ -1107,7 +1144,6 @@ abstract class User extends BaseUser
     public function setHasReport($hasReport)
     {
         $this->has_report = $hasReport;
-
         return $this;
     }
 
@@ -1667,5 +1703,87 @@ abstract class User extends BaseUser
     public function getGroupAffilate()
     {
         return $this->group_affilate;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\AccessToken $accessToken
+     * @return User
+     */
+    public function addAccessToken(\CreditJeeves\DataBundle\Entity\AccessToken $accessToken)
+    {
+        $this->accessTokens[] = $accessToken;
+        return $this;
+    }
+
+    /**
+     * Remove accessToken
+     *
+     * @param \CreditJeeves\DataBundle\Entity\AccessToken $accessToken
+     */
+    public function removeAccessToken(\CreditJeeves\DataBundle\Entity\AccessToken $accessToken)
+    {
+        $this->accessTokens->removeElement($accessToken);
+    }
+
+    /**
+     * Get accessTokens
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAccessTokens()
+    {
+        return $this->accessTokens;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken
+     * @return User
+     */
+    public function addRefreshToken(\CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken)
+    {
+        $this->resfreshTokens[] = $refreshToken;
+        return $this;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken
+     */
+    public function removeRefreshToken(\CreditJeeves\DataBundle\Entity\RefreshToken $refreshToken)
+    {
+        $this->refreshTokens->removeElement($refreshToken);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRefreshTokens()
+    {
+        return $this->refreshTokens;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\AuthToken $authToken
+     * @return User
+     */
+    public function addAuthCode(\CreditJeeves\DataBundle\Entity\AuthCode $authCode)
+    {
+        $this->authCodes[] = $authCode;
+        return $this;
+    }
+
+    /**
+     * @param \CreditJeeves\DataBundle\Entity\AuthToken $authCode
+     */
+    public function removeAuthCode(\CreditJeeves\DataBundle\Entity\AuthCode $authCode)
+    {
+        $this->authCodes->removeElement($authCode);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuthCodes()
+    {
+        return $this->authCodes;
     }
 }

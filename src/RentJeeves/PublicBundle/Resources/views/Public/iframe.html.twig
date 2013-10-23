@@ -28,6 +28,8 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
     {% javascripts '@RjPublicBundle/Resources/public/js/public.index.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

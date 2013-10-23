@@ -22,12 +22,34 @@ function Payment(parent, startDate) {
     this.dueDate = ko.observable(startDate.getDate());
     this.startMonth = ko.observable(startDate.getMonth());
     this.startYear = ko.observable(startDate.getYear());
-    this.startDate = ko.computed(function() {
-        return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
-    }, self);
+    this.startDate = ko.computed({
+        read: function() {
+            return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
+        },
+        write: function (value) {
+            var date = Date.parseExact(value,  "MM/dd/yyyy");
+            this.startMonth(date.toString("MM"));
+            this.startYear(date.toString("yyyy"));
+            this.dueDate(date.toString("dd"));
+        },
+        owner: this
+    });
+
     this.ends = ko.observable('cancelled');
     this.endMonth = ko.observable(null);
     this.endYear = ko.observable(null);
 
 
 }
+this.attemptedValue = ko.computed({
+    read: this.acceptedNumericValue,
+    write: function (value) {
+        if (isNaN(value))
+            this.lastInputWasValid(false);
+        else {
+            this.lastInputWasValid(true);
+            this.acceptedNumericValue(value); // Write to underlying storage
+        }
+    },
+    owner: this
+});

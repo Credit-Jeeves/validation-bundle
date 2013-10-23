@@ -69,21 +69,20 @@ function Pay(parent, contractId) {
     this.propertyFullAddress.zip(contract.property.zip);
     this.propertyFullAddress.district(contract.property.district);
     this.propertyFullAddress.area(contract.property.area);
-    this.propertyFullAddress.unit(contract.unit.name);
+    if (typeof contract.unit == 'undefined') {
+      this.propertyFullAddress.unit('');
+    } else {
+      this.propertyFullAddress.unit(contract.unit.name);
+    }
+    
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
-
-
 
     this.payment = new Payment(this, startDate);
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
     this.payment.endYear(finishDate.getYear());
-
-    if (contract.payment) {
-        ko.mapping.fromJS(contract.payment, {}, this.payment);
-    }
 
     this.newUserAddress = ko.observableArray([]);
     this.payment.paymentAccountId.subscribe(function(newValue) {
@@ -118,6 +117,8 @@ function Pay(parent, contractId) {
         self.newPaymentAccount(true);
         self.paymentSource.clear();
     };
+
+
 
     this.fullPayTo = contract.payToName;
     this.settleDays = 3; // All logic logic in "settle" method depends on this value
@@ -318,6 +319,10 @@ function Pay(parent, contractId) {
     };
 
     // Constructor
+
+    if (contract.payment) {
+        ko.mapping.fromJS(contract.payment, {}, this.payment);
+    }
 
     $('#pay-popup').dialog({
         width: 650,

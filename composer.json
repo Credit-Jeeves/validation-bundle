@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "2579d548cc93376b83382287156434b80aa64285"
+                    "reference": "b083f5d04ccca7ed153396fe56bd1b89d30d9533"
                 }
             }
         },

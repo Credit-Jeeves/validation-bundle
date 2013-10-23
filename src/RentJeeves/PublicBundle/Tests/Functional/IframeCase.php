@@ -178,6 +178,7 @@ class IframeCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->clearEmail();
+        $this->logout();
         $this->session->visit($this->getUrl() . 'iframe');
         $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
         $this->session->visit($this->getUrl() . 'iframe');
