@@ -1378,8 +1378,10 @@
                 <source>alert.tenant.first_payment</source>
                 <target>Set up your first rent payment.</target>
             </trans-unit>
-            
-            
+            <trans-unit id="select.from.drop.down.list">
+                <source>select.from.drop.down.list</source>
+                <target>Please select an address from the drop-down and try again.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
