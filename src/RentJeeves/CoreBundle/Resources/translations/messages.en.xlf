@@ -1236,7 +1236,7 @@
             </trans-unit>
             <trans-unit id="address.not.valid">
                 <source>address.not.valid</source>
-                <target>Aww shucks - your rental isn't valid. Please select address from drop down list.</target>
+                <target>To make sure we get the right place, please select an address from drop down.</target>
             </trans-unit>
             <trans-unit id="address.is.empty">
                 <source>address.is.empty</source>
@@ -1302,8 +1302,8 @@
                 <source>payment_account.delete.text</source>
                 <target>
                     Are you sure want to remove this payment source?
-                    Any recurring payments will br cancelled.
-                    Please visit the "Payments" page to set up new payments for any affect properties.
+                    Any recurring payments using this source will be cancelled.
+                    Please visit the "Payments" page to set up new payments for any affected properties.
                 </target>
             </trans-unit>
             <trans-unit id="payment_account.delete.yes">
@@ -1330,7 +1330,7 @@
                 <source>order.date.time</source>
                 <target>Date &amp; Time</target>
             </trans-unit>
-            <trans-unit id="oder.transaction.id">
+            <trans-unit id="order.transaction.id">
                 <source>order.transaction.id</source>
                 <target>Transaction ID</target>
             </trans-unit>
@@ -1348,7 +1348,7 @@
             </trans-unit>
             <trans-unit id="order.receipt.footer">
                 <source>order.receipt.footer</source>
-                <target>Look for a RENTTRK entry on your statement.</target>
+                <target>This payment will appear on your statement as RENTTRK* followed by your property or landlord name.</target>
             </trans-unit>
             <trans-unit id="order.error.title">
                 <source>order.error.title</source>
@@ -1378,8 +1378,14 @@
                 <source>alert.tenant.first_payment</source>
                 <target>Set up your first rent payment.</target>
             </trans-unit>
-            
-            
+            <trans-unit id="select.from.drop.down.list">
+                <source>select.from.drop.down.list</source>
+                <target>Please select an address from the drop-down and try again.</target>
+            </trans-unit>
+            <trans-unit id="tenant.wants.unit">
+                <source>tenant.wants.unit</source>
+                <target>Tenant wants unit number:</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
