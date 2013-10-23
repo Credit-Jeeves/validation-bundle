@@ -188,7 +188,6 @@ function Search() {
   var self = this;
 
   this.searchFunction = function() {
-    console.log('search', self.searchText().length);
     var searchCollum = $('#searchFilterSelect').linkselect('val');
 
     if(typeof searchCollum != 'string') {
@@ -201,7 +200,6 @@ function Search() {
       $('#search').css('border-color', '#bdbdbd');
     }
     self.isSearch(true);
-    console.log(self.isSearch());
     self.property().searchText(self.searchText());
     self.property().searchCollum(searchCollum);
     self.property().current(1);

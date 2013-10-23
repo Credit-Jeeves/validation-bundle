@@ -1,0 +1,36 @@
+{% extends app.user.type | capitalize ~ "Bundle::base.html.twig" %}
+
+{% block title "common.applicant.dashboard"|trans %}
+
+{% block content %}
+    {% if app.user.type in ["applicant"] %}
+        {% form_theme form 'form_cj_layout.html.twig' %}
+
+        {% stylesheets '@UserBundle/Resources/public/css/user_settings.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
+
+    {% else %}
+        {% form_theme form 'RjCoreBundle::form.html.twig' %}
+
+        {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
+    {% endif %}
+
+    <div class="column-small floatleft">
+        <div class="pod-small pod-border pod-padding shadow">
+            <h2>{{ 'settings.title' | trans }}</h2>
+            {{ knp_menu_render(app.user.type | capitalize ~ 'Bundle:Builder:settingsMenu', { 'template': '::menu.html.twig' }) }}
+        </div>
+    </div>
+    <div class="column-middle floatright">
+        <div class="pod-middle pod-border pod-padding shadow">
+            <h1>{{ headTitle | trans }}</h1>
+            <div class="row-20"></div>
+
+            {{ form(form) }}
+        </div>
+    </div>
+    <div class="clearboth"></div>
+{% endblock %}

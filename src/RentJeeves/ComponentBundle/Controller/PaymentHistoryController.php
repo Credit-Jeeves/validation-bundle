@@ -20,6 +20,7 @@ class PaymentHistoryController extends Controller
             $aMonthes[] = date('M', mktime(0, 0, 0, $i));
         }
         $em = $this->get('doctrine.orm.default_entity_manager');
+        $translator = $this->get('translator.default');
         $contracts = $user->getContracts();
         foreach ($contracts as $contract) {
             $status = $contract->getStatus();
@@ -46,7 +47,7 @@ class PaymentHistoryController extends Controller
                     $item['history'] = $history['history'];
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
-                    $item['status'] = 'PAY';
+                    $item['status'] = $translator->trans('contract.status.pay');
                     $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
@@ -55,7 +56,7 @@ class PaymentHistoryController extends Controller
                     $item['history'] = $history['history'];
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
-                    $item['status'] = 'ACTIVE';
+                    $item['status'] = $translator->trans('contract.status.current');
                     $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
