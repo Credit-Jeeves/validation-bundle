@@ -525,4 +525,26 @@ fixtures:
     has_report: null
     is_verified: passed
     created_at: '-5 days'
+    updated_at: '-5 days'     
+###############################
+  cjApplicant_700Credit:
+    first_name:      700Credit
+    middle_initial:  Petrovich
+    last_name:       Gates
+    email:   noname@gmail.com
+    phone_type:      '2'
+    phone:           '(37529)  118-1804'
+    date_of_birth:   '1980-10-22'
+    ssn:             '656803283'
+    is_active:       true
+    invite_code:     null
+    password: 1a1dc91c907325c69271ddf0c944bc72
+    salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
+    score_changed_notification: true
+    offer_notification: true
+    culture:  %locale%
+    has_data: true
+    has_report: true
+    is_verified: none
+    created_at: '-5 days'
     updated_at: '-5 days'
