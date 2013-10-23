@@ -17,10 +17,17 @@ trait SettingsCaseTrait
         $this->page->clickLink('settings.address.head.manage');
 
         /** @var DocumentElement[] $rows */
-        $this->assertGreaterThanOrEqual(2, $rows = $this->page->findAll('css', '.addresses-table tbody tr'), 'This user shoul hawe two or more fixtures.');
+        $this->assertGreaterThanOrEqual(
+            2,
+            $rows = $this->page->findAll('css', '.addresses-table tbody tr'),
+            'This user shoul hawe two or more fixtures.'
+        );
 
         // Check that the default address isset and on the first position and does not have a delete link
-        $this->assertNotNull($rows[0]->find('css', '.default-address'), 'The first row should have a "(default)" marker.');
+        $this->assertNotNull(
+            $rows[0]->find('css', '.default-address'),
+            'The first row should have a "(default)" marker.'
+        );
         $this->assertNull($rows[0]->find('css', 'a.type-ico.delete'), 'The first row should not have a "delete" link.');
 
         $this->logout();
@@ -41,7 +48,10 @@ trait SettingsCaseTrait
 
         /** @var DocumentElement[] $rows */
         $this->page->clickLink('settings.address.action.add');
-        $this->assertNotNull($form = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype'), 'Cant find form');
+        $this->assertNotNull(
+            $form = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype'),
+            'Cant find form'
+        );
 
         // Check for validation (submit an empty form)
         $form->pressButton('common.add');
@@ -50,24 +60,40 @@ trait SettingsCaseTrait
 
         // Submit a filled form
         $testStreetName = 'NEW_ADDED_STREET';
-        $this->fillForm($form, [
-            'creditjeeves_userbundle_useraddresstype_street' => $testStreetName,
-            'creditjeeves_userbundle_useraddresstype_city'   => 'BELTSVILLE',
-            'creditjeeves_userbundle_useraddresstype_area'   => 'MD',
-            'creditjeeves_userbundle_useraddresstype_zip'    => '207041563',
-            'creditjeeves_userbundle_useraddresstype_unit'   => '116TH 1'
-        ]);
+        $this->fillForm(
+            $form,
+            [
+                'creditjeeves_userbundle_useraddresstype_street' => $testStreetName,
+                'creditjeeves_userbundle_useraddresstype_city' => 'BELTSVILLE',
+                'creditjeeves_userbundle_useraddresstype_area' => 'MD',
+                'creditjeeves_userbundle_useraddresstype_zip' => '207041563',
+                'creditjeeves_userbundle_useraddresstype_unit' => '116TH 1'
+            ]
+        );
 
-        $this->assertNotNull($checkbox = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype_isDefault'), 'The isDefault checkbox was not found.');
+        $this->assertNotNull(
+            $checkbox = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype_isDefault'),
+            'The isDefault checkbox was not found.'
+        );
         $checkbox->check();
 
         $form->pressButton('common.add');
 
         /** @var DocumentElement[] $rows */
-        $this->assertNotNull($rows = $this->page->findAll('css', '.addresses-table tbody tr'), 'Can not find addresses.');
+        $this->assertNotNull(
+            $rows = $this->page->findAll('css', '.addresses-table tbody tr'),
+            'Can not find addresses.'
+        );
         // Check that address was added and is default
-        $this->assertContains($testStreetName, $rows[0]->getHtml(), 'Can not find the added address on the frist position.');
-        $this->assertNotNull($rows[0]->find('css', '.default-address'), 'The added address should have a "(default)" marker.');
+        $this->assertContains(
+            $testStreetName,
+            $rows[0]->getHtml(),
+            'Can not find the added address on the frist position.'
+        );
+        $this->assertNotNull(
+            $rows[0]->find('css', '.default-address'),
+            'The added address should have a "(default)" marker.'
+        );
 
         $this->logout();
     }
@@ -86,27 +112,51 @@ trait SettingsCaseTrait
         $this->page->clickLink('settings.address.head.manage');
 
         /** @var DocumentElement[] $rows */
-        $this->assertGreaterThanOrEqual(2, $rows = $this->page->findAll('css', '.addresses-table tbody tr'), 'This user shoul hawe two or more fixtures.');
+        $this->assertGreaterThanOrEqual(
+            2,
+            $rows = $this->page->findAll('css', '.addresses-table tbody tr'),
+            'This user shoul hawe two or more fixtures.'
+        );
         $this->assertNotNull($link = $rows[1]->find('css', 'a.type-ico.edit'), 'Can not find link to edit page.');
         $link->click();
 
-        $this->assertNotNull($form = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype'), 'Cant find form');
+        $this->assertNotNull(
+            $form = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype'),
+            'Cant find form'
+        );
 
         $testStreetName = 'NEW_ADDED_STREET';
-        $this->fillForm($form, [
-            'creditjeeves_userbundle_useraddresstype_street' => $testStreetName,
-        ]);
+        $this->fillForm(
+            $form,
+            [
+                'creditjeeves_userbundle_useraddresstype_street' => $testStreetName,
+            ]
+        );
 
-        $this->assertNotNull($checkbox = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype_isDefault'), 'The isDefault checkbox was not found.');
+        $this->assertNotNull(
+            $checkbox = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype_isDefault'),
+            'The isDefault checkbox was not found.'
+        );
         $checkbox->check();
 
         $form->pressButton('common.save');
 
-        $this->assertNotNull($rows = $this->page->findAll('css', '.addresses-table tbody tr'), 'Can not find addresses.');
+        $this->assertNotNull(
+            $rows = $this->page->findAll('css', '.addresses-table tbody tr'),
+            'Can not find addresses.'
+        );
         // Check that address was edited and is default
-        $this->assertContains($testStreetName, $rows[0]->getHtml(), 'Can not find the edited address on the frist position.');
+        $this->assertContains(
+            $testStreetName,
+            $rows[0]->getHtml(),
+            'Can not find the edited address on the frist position.'
+        );
         //var_dump($rows[0]->getHtml());die;
-        $this->assertContains('default-address', $rows[0]->getHtml(), 'The edited address should have a "(default)" marker.');
+        $this->assertContains(
+            'default-address',
+            $rows[0]->getHtml(),
+            'The edited address should have a "(default)" marker.'
+        );
 
         // Check that all the other addresses does not have a "(default)" marker
         unset($rows[0]);
@@ -131,11 +181,19 @@ trait SettingsCaseTrait
         $this->page->clickLink('settings.address.head.manage');
 
         /** @var DocumentElement[] $rows */
-        $this->assertGreaterThanOrEqual(2, $rows = $this->page->findAll('css', '.addresses-table tbody tr'), 'This user shoul hawe two or more fixtures.');
+        $this->assertGreaterThanOrEqual(
+            2,
+            $rows = $this->page->findAll('css', '.addresses-table tbody tr'),
+            'This user shoul hawe two or more fixtures.'
+        );
         $this->assertNotNull($link = $rows[1]->find('css', 'a.type-ico.delete'), 'Can not find link to delete page.');
         $link->click();
 
-        $this->assertEquals(count($rows) - 1, count($this->page->findAll('css', '.addresses-table tbody tr')), 'Wrong number of rows.');
+        $this->assertEquals(
+            count($rows) - 1,
+            count($this->page->findAll('css', '.addresses-table tbody tr')),
+            'Wrong number of rows.'
+        );
 
         $this->logout();
     }

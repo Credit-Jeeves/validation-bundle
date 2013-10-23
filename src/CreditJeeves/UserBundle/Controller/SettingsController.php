@@ -51,8 +51,8 @@ class SettingsController extends Controller
         }
 
         return array(
-            'sEmail'    => $sEmail,
-            'form'      => $form->createView(),
+            'sEmail' => $sEmail,
+            'form' => $form->createView(),
         );
     }
 
@@ -145,6 +145,7 @@ class SettingsController extends Controller
                         throw $e;
                     }
                     $this->get('request')->getSession()->invalidate();
+
                     // Commented for develop
                     return $this->redirect($this->generateUrl('fos_user_security_login'));
                 } else {
@@ -152,6 +153,7 @@ class SettingsController extends Controller
                 }
             }
         }
+
         return array(
             'sEmail' => $sEmail,
             'form' => $form->createView()
@@ -191,22 +193,24 @@ class SettingsController extends Controller
         $user = $this->getUser();
 
         if ('new' != $id) {
-            $address = $this->getDoctrine()->getRepository('DataBundle:Address')->findOneBy([
-                'id'   => $id,
-                'user' => $user->getId()
-            ]);
+            $address = $this->getDoctrine()->getRepository('DataBundle:Address')->findOneBy(
+                [
+                    'id' => $id,
+                    'user' => $user->getId()
+                ]
+            );
 
             if (empty($address)) {
                 throw $this->createNotFoundException('This item does not exist.');
             }
 
-            $headTitle   = 'settings.address.head.edit';
+            $headTitle = 'settings.address.head.edit';
 
         } else {
             $address = new Address();
             $address->setUser($user);
 
-            $headTitle   = 'settings.address.head.add';
+            $headTitle = 'settings.address.head.add';
         }
 
         $form = $this->createForm(new UserAddressType($user->getType()), $address);
@@ -231,7 +235,7 @@ class SettingsController extends Controller
 
         return [
             'headTitle' => $headTitle,
-            'form'      => $form->createView(),
+            'form' => $form->createView(),
         ];
     }
 
@@ -248,17 +252,23 @@ class SettingsController extends Controller
         /** @var User $user */
         $user = $this->getUser();
         /** @var Address $address */
-        $address = $this->getDoctrine()->getRepository('DataBundle:Address')->findOneBy([
-            'id'   => $id,
-            'user' => $user->getId()
-        ]);
+        $address = $this->getDoctrine()->getRepository('DataBundle:Address')->findOneBy(
+            [
+                'id' => $id,
+                'user' => $user->getId()
+            ]
+        );
 
         if (empty($address)) {
             throw $this->createNotFoundException('This item does not exist.');
         }
 
         if ($address->getIsDefault()) {
-            $this->get('session')->getFlashBag()->add('notice', 'You can not delete the default address. Set up another address as default.');
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                'You can not delete the default address. Set up another address as default.'
+            );
+
             return $this->redirect($this->generateUrl('user_addresses'));
         }
 
@@ -267,6 +277,7 @@ class SettingsController extends Controller
         $em->flush();
 
         $this->get('session')->getFlashBag()->add('notice', 'The address was deleted successfully.');
+
         return $this->redirect($this->generateUrl('user_addresses'));
     }
 }

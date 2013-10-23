@@ -44,45 +44,73 @@ class UserAddressType extends AbstractType
         /** @var $address Address */
         $address = isset($options['data']) ? $options['data'] : new Address();
 
-        $builder->add('street', 'text', [
-            'label' => 'settings.address.form.street'
-        ]);
-        $builder->add('city', 'text', [
-            'label' => 'settings.address.form.city'
-        ]);
-        $builder->add('area', 'choice', [
-            'label'       => 'settings.address.form.area',
-            'choice_list' => new StateChoiceList(),
-            'attr'        => [
-                'class' => $extraOpts['area']['class'],
+        $builder->add(
+            'street',
+            'text',
+            [
+                'label' => 'settings.address.form.street'
             ]
-        ]);
-        $builder->add('zip', 'text', [
-            'label' => 'settings.address.form.zip'
-        ]);
-        $builder->add('unit', 'text', [
-            'required' => false,
-            'label'    => 'settings.address.form.unit'
-        ]);
+        );
+        $builder->add(
+            'city',
+            'text',
+            [
+                'label' => 'settings.address.form.city'
+            ]
+        );
+        $builder->add(
+            'area',
+            'choice',
+            [
+                'label' => 'settings.address.form.area',
+                'choice_list' => new StateChoiceList(),
+                'attr' => [
+                    'class' => $extraOpts['area']['class'],
+                ]
+            ]
+        );
+        $builder->add(
+            'zip',
+            'text',
+            [
+                'label' => 'settings.address.form.zip'
+            ]
+        );
+        $builder->add(
+            'unit',
+            'text',
+            [
+                'required' => false,
+                'label' => 'settings.address.form.unit'
+            ]
+        );
 
         if (true == $address->getIsDefault()) {
             $builder->add('isDefault', 'hidden');
         } else {
-            $builder->add('isDefault', 'checkbox', [
-                'required' => false,
-                'label'    => 'settings.address.form.isdefault',
-                'attr'     => [
-                    'no_box' => true
+            $builder->add(
+                'isDefault',
+                'checkbox',
+                [
+                    'required' => false,
+                    'label' => 'settings.address.form.isdefault',
+                    'attr' => [
+                        'no_box' => true
+                    ]
                 ]
-            ]);
+            );
         }
 
-        $builder->add('submit', 'submit', [
-            'label' => (null == $address->getId()) ? 'common.add' : 'common.save',
-            'attr'  => [
-                'class' => $extraOpts['submit']['class']
+        $builder->add(
+            'submit',
+            'submit',
+            [
+                'label' => (null == $address->getId()) ? 'common.add' : 'common.save',
+                'attr' => [
+                    'class' => $extraOpts['submit']['class']
+                ]
             ]
-        ]);
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
