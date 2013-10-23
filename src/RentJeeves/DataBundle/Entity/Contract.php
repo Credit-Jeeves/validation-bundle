@@ -219,6 +219,8 @@ class Contract extends Base
         if ($unit) {
             $result[] = $unit->getName();
             $result = implode(', #', $result);
+        } else {
+            $result = implode(' ', $result);
         }
         return $result;
     }
