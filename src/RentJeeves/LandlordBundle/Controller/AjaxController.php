@@ -491,7 +491,7 @@ class AjaxController extends Controller
         if (!isset($data['action'])) {
             return new JsonResponse(array());
         }
-        if (isset($date['amount'])) {
+        if (isset($data['amount'])) {
             $amount = $data['amount'];
         }
         $contract = $this->get('doctrine.orm.default_entity_manager')
