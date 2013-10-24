@@ -841,6 +841,14 @@
                 <source>contract.pay</source>
                 <target>Pay</target>
             </trans-unit>
+            <trans-unit id="contract.paid.cash">
+                <source>contract.paid.cash</source>
+                <target>Amount Paid</target>
+            </trans-unit>
+            <trans-unit id="contract.resolve.warning">
+                <source>contract.resolve.warning</source>
+                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefor agree to handle any associated disputes arising from the information you provide.</target>
+            </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
                 <target>Edit</target>
@@ -1337,10 +1345,6 @@
             <trans-unit id="oder.date.time">
                 <source>order.date.time</source>
                 <target>Date &amp; Time</target>
-            </trans-unit>
-            <trans-unit id="order.transaction.id">
-                <source>order.transaction.id</source>
-                <target>Transaction ID</target>
             </trans-unit>
             <trans-unit id="order.fee">
                 <source>order.fee</source>

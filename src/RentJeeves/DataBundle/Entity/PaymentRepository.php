@@ -34,8 +34,7 @@ class PaymentRepository extends EntityRepository
         $days = array(),
         $month = 1,
         $year = 2000,
-        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT),
-        $types = array(PaymentType::RECURRING)
+        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
     ) {
         $query = $this->createQueryBuilder('p');
         $query->select('p, c, g, d');
@@ -44,7 +43,6 @@ class PaymentRepository extends EntityRepository
         $query->leftJoin('c.operation', 'oper');
         $query->innerJoin('g.deposit_account', 'd');
         $query->where('p.status = :status');
-        $query->andWhere('p.type IN (:type)');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere('c.status IN (:contract)');
         $query->andWhere('p.startMonth <= :month');
@@ -52,7 +50,6 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
 
         $query->setParameter('status', PaymentStatus::ACTIVE);
-        $query->setParameter('type', $types);
         $query->setParameter('days', $days);
         $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);

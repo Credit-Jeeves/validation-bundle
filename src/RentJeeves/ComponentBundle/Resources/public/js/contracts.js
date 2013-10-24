@@ -43,15 +43,15 @@ function ContractDetails() {
   };
 
   this.editContract = function(data) {
+    $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('close');
     $('#tenant-edit-property-popup').dialog('open');
 
     if (data.first_name) {
       self.contract(data);
-
     }
 
-    self.getUnits(data.contract().property_id);
+    self.getUnits(data.property_id);
     var flag = false;
     if(self.approve()) {
       flag = true;
@@ -95,6 +95,7 @@ function ContractDetails() {
     });
   };
   this.approveContract = function(data) {
+    $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('open');
     self.clearDetails();
     self.contract(data);
@@ -134,6 +135,7 @@ function ContractDetails() {
     
   };
   this.reviewContract = function(data) {
+    $('#unit-edit').html(' ');
     $('#tenant-review-property-popup').dialog('open');
     self.clearDetails();
     self.approve(false);
@@ -163,7 +165,7 @@ function ContractDetails() {
     var contract = self.contract();
     contract.finish = $('#contract-edit-finish').val() || contract.finish;
     contract.start = $('#contract-edit-start').val() || contract.start;
-    var unitId = $("#unit-edit :selected").val();
+    //var unitId = $("#unit-edit :selected").val();
 
     if (typeof unitId != 'undefined') {
         contract.unit_id = $("#unit-edit :selected").val();
@@ -330,7 +332,7 @@ function Contracts() {
     $('.payment-start, .payment-end').datepicker({
       showOn: "button",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
-      dateFormat:'dd/mm/yy'
+      dateFormat:'m/d/yy'
     });
   };
   this.filterAddress = function(data) {
@@ -348,13 +350,15 @@ $(document).ready(function(){
 
   ko.applyBindings(ContractsViewModel, $('#contracts-block').get(0));
   ko.applyBindings(DetailsViewModel, $('#contract-actions').get(0));
-  $('#tenant-approve-property-popup').dialog({ 
+  $('#tenant-approve-property-popup').dialog({
+      position: ["center", 200],
       autoOpen: false,
       resizable: false,
       modal: true,
       width:'520px'
   });
   $('#tenant-edit-property-popup').dialog({
+      position: "center",
       autoOpen: false,
       resizable: false,
       modal: true,
@@ -362,6 +366,7 @@ $(document).ready(function(){
   });
 
   $('#tenant-review-property-popup').dialog({
+      position: "center",
       autoOpen: false,
       resizable: false,
       modal: true,
@@ -369,12 +374,12 @@ $(document).ready(function(){
   });
 
   $('#tenant-add-property-popup').dialog({
+      position: "center",
       autoOpen: false,
       resizable: false,
       modal: true,
       width:'520px'
   });
-  
   ContractsViewModel.ajaxAction();
   $('#searchFilter').linkselect("destroy");
   $('#searchFilter').linkselect({
