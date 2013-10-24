@@ -520,17 +520,6 @@ abstract class User extends BaseUser
      */
     protected $group_affilate;
 
-    /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\ApiUpdate",
-     *     mappedBy="user",
-     *     cascade={"all"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $apiUpdate;
 
     /**
      * @ORM\OneToMany(
@@ -558,6 +547,19 @@ abstract class User extends BaseUser
      * )
      */
     protected $refreshTokens;
+
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToOne(
+     *     targetEntity="\CreditJeeves\DataBundle\Entity\ApiUpdate",
+     *     mappedBy="user",
+     *     cascade={"all"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $apiUpdate;
 
     public function __construct()
     {

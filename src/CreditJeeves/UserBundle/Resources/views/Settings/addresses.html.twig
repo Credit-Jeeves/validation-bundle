@@ -1,0 +1,128 @@
+{% extends app.user.type | capitalize ~ "Bundle::base.html.twig" %}
+
+{% block title "common.applicant.dashboard"|trans %}
+
+{% block content %}
+    {% if app.user.type in ["applicant"] %}
+        {% stylesheets '@UserBundle/Resources/public/css/user_settings.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('a.type-ico.delete').bind('click', function(){
+                    if (!confirm('{{ 'settings.address.action.delete.text' | trans }}')) return false;
+                });
+            });
+        </script>
+
+    {% else %}
+        {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css' %}
+        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('a.type-ico.delete').bind('click', function(){
+                    var dialog = $('#user-address-delete-popup');
+                    dialog.find('#submit-delete-address').prop('href', $(this).prop('href'));
+
+                    dialog.dialog({
+                        width:400,
+                        modal:true
+                    });
+
+                    return false;
+                });
+            });
+        </script>
+    {% endif %}
+
+    <div class="column-small floatleft">
+        <div class="pod-small pod-border pod-padding shadow">
+            <h2>{{ 'settings.title' | trans }}</h2>
+            {{ knp_menu_render(app.user.type | capitalize ~ 'Bundle:Builder:settingsMenu', { 'template': '::menu.html.twig' }) }}
+        </div>
+    </div>
+    <div class="column-middle floatright" id="user-addresses-list">
+        <div class="pod-middle pod-border pod-padding shadow">
+            <h1>{{ 'settings.address.head.manage' | trans }}</h1>
+
+            {% for flashMessage in app.session.flashbag.get('notice') %}
+                <div class="flash-notice">
+                    {{ flashMessage }}
+                </div>
+            {% endfor %}
+            <div class="row-20"></div>
+
+            <div class="properties-table-block table-wrap">
+                <div class="addresses-table table-margin zebra-grid">
+                    <table class="properties-table" id="user-address-table">
+                        <thead>
+                        <tr class="contracts">
+                            <th class="font-helvetica">{{ 'settings.tablehead.title' | trans }}</th>
+                            <th style="width: 60px;"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for item in addresses %}
+                            <tr id="user-address-row-{{ loop.revindex }}">
+                                <td class="font-helvetica">
+                                    {{ item.fullAddress }}
+                                    {% if item.isDefault %}
+                                        &nbsp;<em class="default-address">(default)</em>
+                                    {% endif %}
+                                </td>
+                                <td class="font-helvetica">
+                                    <a title="{{ 'edit' | trans }}"
+                                       class="type-ico pie-el edit"
+                                       href="{{ path('user_address_add_edit',   {id: item.id}) }}">
+                                        &nbsp;
+                                    </a>
+
+                                    {% if not item.isDefault %}
+                                    <a title="{{ 'delete' | trans }}"
+                                       class="type-ico pie-el delete"
+                                       href="{{ path('user_address_delete', {id: item.id}) }}">
+                                        &nbsp;
+                                    </a>
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row-20"></div>
+            <a class="button large add-address-button" href="{{ path('user_address_add_edit', {id: "new"}) }}">
+                <span>{{ 'settings.address.action.add' | trans }}</span>
+            </a>
+        </div>
+    </div>
+    <div class="clearboth"></div>
+
+    <!-- Popups -->
+    <div id="user-address-delete-popup" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'settings.address.action.delete.title' | trans() }}</h1>
+        <div class="clearfix col-box">
+            <div class="attention-box pie-el">
+                {{ 'settings.address.action.delete.text' | trans() }}
+            </div>
+            <div class="row-20"></div>
+            <div class="footer-button-box">
+                <a class="button" id="submit-delete-address" href="#" style="display: inline-block;">
+                    <span>{{ 'settings.address.action.delete.yes' | trans() }}</span>
+                </a>
+                <button onclick="$('#user-address-delete-popup').dialog('close')" class="button grey buttonFix">
+                    <span>{{ 'settings.address.action.delete.no' | trans() }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- end Popups -->
+
+{% endblock %}

@@ -219,8 +219,11 @@ class Contract extends Base
         $result[] = $property->getAddress();
         if ($unit) {
             $result[] = $unit->getName();
+            $result = implode(', #', $result);
+        } else {
+            $result = implode(' ', $result);
         }
-        return implode(', #', $result);
+        return $result;
     }
 
     public function getActivePaymentHistory($em)

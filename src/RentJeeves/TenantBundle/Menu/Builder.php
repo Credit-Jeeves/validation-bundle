@@ -66,6 +66,9 @@ class Builder extends ContainerAware
             case 'user_contact':
             case 'user_email':
             case 'user_remove':
+            case 'user_addresses':
+            case 'user_address_add_edit':
+            case 'user_address_delete':
 //                $menu['tabs.settings']->setAttribute('class', 'active');
                 break;
         }
@@ -90,6 +93,7 @@ class Builder extends ContainerAware
         );
         $menu->addChild('settings.email', array('route' => 'user_email'));
         $menu->addChild('settings.remove', array('route' => 'user_remove'));
+        $menu->addChild('settings.address.head.manage', array('route' => 'user_addresses'));
 
        
         switch ($sRoute) {
@@ -104,6 +108,9 @@ class Builder extends ContainerAware
                 break;
             case 'user_remove':
                 $menu['settings.remove']->setUri('');
+                break;
+            case 'user_addresses':
+                $menu['settings.address.head.manage']->setUri('');
                 break;
         }
         return $menu;

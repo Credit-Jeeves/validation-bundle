@@ -95,7 +95,7 @@
                 <source>resetting.check_email-%email%</source>
                 <target>A link to reset your password has been sent to your email %email%. Please check your inbox and click on the link.</target>
             </trans-unit>
-            
+
             <trans-unit id="project.questions">
                 <source>project.questions</source>
                 <target>Questions?</target>
@@ -112,7 +112,7 @@
                 <source>project.dispute.experian</source>
                 <target>Experian Online Dispute Portal</target>
             </trans-unit>
-            
+
             <trans-unit id="automotive.details.title">
                 <source>automotive.details.title</source>
                 <target>Automotive Details</target>
@@ -149,9 +149,9 @@
                 <source>automotive.details.months_left</source>
                 <target>Months Left</target>
             </trans-unit>
-            
-            
-            
+
+
+
             <trans-unit id="common.learn.more">
                 <source>common.learn.more</source>
                 <target>Learn more</target>
@@ -264,6 +264,10 @@
                 <source>common.save</source>
                 <target>Save</target>
             </trans-unit>
+            <trans-unit id="common.add">
+                <source>common.add</source>
+                <target>Add</target>
+            </trans-unit>
             <trans-unit id="common.target">
                 <source>common.target</source>
                 <target>Your Goal</target>
@@ -288,9 +292,9 @@
                 <source>common.ssn</source>
                 <target>SSN</target>
             </trans-unit>
-            
-            
-            
+
+
+
             <trans-unit id="loan.type.balance">
                 <source>loan.type.balance</source>
                 <target>Balance for Loan Type</target>
@@ -307,8 +311,8 @@
                 <source>loan.type.installment</source>
                 <target>Installment Loans</target>
             </trans-unit>
-            
-            
+
+
 
             <trans-unit id="account.total">
                 <source>account.total</source>
@@ -361,7 +365,7 @@
                 <source>payment.missed.comment</source>
                 <target>Out of  %nTotal% payment records on your report,  %nLate% are marked late. To achieve a high credit score, you must pay your bills on time. Even just a few late payments will hurt you score dramatically.</target>
             </trans-unit>
-            
+
             <trans-unit id="inquiries.total">
                 <source>inquiries.total</source>
                 <target>Total Inquiries</target>
@@ -386,7 +390,7 @@
                 <source>inquiries.hard.comment</source>
                 <target>If lenders see more than a few inquiries in the last 6 months, they think you're planning to open many lines of credit and will be wary of extending you a new one.</target>
             </trans-unit>
-            
+
             <trans-unit id="credit.age.average.title">
                 <source>credit.age.average.title</source>
                 <target>Average Age of Open Credit Lines: %nAge% Years</target>
@@ -395,7 +399,7 @@
                 <source>credit.age.average.comment</source>
                 <target>Lenders appreciate a long history of good credit. It is important to keep older credit lines open and in satisfactory status. Your oldest tradeline is %nOldest% years.</target>
             </trans-unit>
-            
+
 
             <trans-unit id="derogatory.current">
                 <source>derogatory.current</source>
@@ -486,8 +490,8 @@
                 <source>component.credit_balance.comment</source>
                 <target>Your score is higher than %nPercent% of the population.</target>
             </trans-unit>
-            
-            
+
+
             <trans-unit id="tradelines.total.comment">
                 <source>tradelines.total.comment</source>
                 <target>You have  %nOpened% Opened and  %nClosed% Closed accounts. Having more accounts is an indicator that lenders are willing to grant credit, and usually results in a higher score.</target>
@@ -549,8 +553,8 @@
                 <source>tradeline.details.creditor_contact</source>
                 <target>Creditor Contact</target>
             </trans-unit>
-            
-            
+
+
             <trans-unit id="public.records.comment">
                 <source>public.records.comment</source>
                 <target>Public actions such as bankruptcies, tax liens, small claims, civil claims and child support delinquencies are listed bellow. These generally remain on your file for 7 years.</target>
@@ -575,8 +579,8 @@
                 <source>public.records.plaintiff</source>
                 <target>Plaintiff</target>
             </trans-unit>
-            
-            
+
+
             <trans-unit id="loan.types.comment">
                 <source>loan.types.comment</source>
                 <target>Lenders like to see that you are responsible with a variety of credit types, including credit cards, installment loans, and mortgages. Here, you can see the proportions for the loan types you currently have.</target>
@@ -591,17 +595,17 @@
                 <source>credit.used.comment</source>
                 <target>Your credit card utilization is an indicator of how well you might be able to handle additional debt. If you have used more than 30% of your available credit, lenders will be wary of extending you additional credit.</target>
             </trans-unit>
-            
+
             <trans-unit id="tab.report">
                 <source>tab.report</source>
                 <target>Report</target>
             </trans-unit>
-            
+
             <trans-unit id="goods.vehicle.title">
                 <source>goods.vehicle.title</source>
                 <target>Your Dream Car</target>
             </trans-unit>
-            
+
             <trans-unit id="footer.title">
                 <source>footer.title</source>
                 <target>Credit Jeeves, at your service.</target>
@@ -729,6 +733,81 @@
                 <target>Remove Authorization</target>
             </trans-unit>
 
+            <trans-unit id="settings.address.head.list">
+                <source>settings.address.head.manage</source>
+                <target>Manage Addresses</target>
+            </trans-unit>
+            <trans-unit id="settings.address.head.add">
+                <source>settings.address.head.add</source>
+                <target>Add a new address</target>
+            </trans-unit>
+            <trans-unit id="settings.address.head.edit">
+                <source>settings.address.head.edit</source>
+                <target>Edit address</target>
+            </trans-unit>
+
+            <trans-unit id="settings.address.form.street">
+                <source>settings.address.form.street</source>
+                <target>Street</target>
+            </trans-unit>
+            <trans-unit id="settings.address.form.city">
+                <source>settings.address.form.city</source>
+                <target>City</target>
+            </trans-unit>
+            <trans-unit id="settings.address.form.area">
+                <source>settings.address.form.area</source>
+                <target>State</target>
+            </trans-unit>
+            <trans-unit id="settings.address.form.zip">
+                <source>settings.address.form.zip</source>
+                <target>ZIP code</target>
+            </trans-unit>
+            <trans-unit id="settings.address.form.unit">
+                <source>settings.address.form.unit</source>
+                <target>Unit</target>
+            </trans-unit>
+            <trans-unit id="settings.address.form.isdefault">
+                <source>settings.address.form.isdefault</source>
+                <target>Set as default</target>
+            </trans-unit>
+
+            <trans-unit id="settings.tablehead.title">
+                <source>settings.tablehead.title</source>
+                <target>Full address line</target>
+            </trans-unit>
+            <trans-unit id="settings.tablehead.actions">
+                <source>settings.tablehead.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="settings.address.action.add">
+                <source>settings.address.action.add</source>
+                <target>Add new</target>
+            </trans-unit>
+            <trans-unit id="settings.address.action.edit">
+                <source>settings.address.action.edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="settings.address.action.delete">
+                <source>settings.address.action.delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="settings.address.action.delete.head">
+                <source>settings.address.action.delete.title</source>
+                <target>Remove Address</target>
+            </trans-unit>
+            <trans-unit id="settings.address.action.delete.text">
+                <source>settings.address.action.delete.text</source>
+                <target>Are you sure you want to remove this address?</target>
+            </trans-unit>
+            <trans-unit id="settings.address.action.delete.yes">
+                <source>settings.address.action.delete.yes</source>
+                <target>Yes, Remove Address</target>
+            </trans-unit>
+            <trans-unit id="settings.address.action.delete.no">
+                <source>settings.address.action.delete.no</source>
+                <target>No, Cancel</target>
+            </trans-unit>
+
             <trans-unit id="rent.properties">
                 <source>rent.properties</source>
                 <target>Payments</target>
@@ -782,7 +861,7 @@
                 <source>leads.select.target</source>
                 <target>Select Target</target>
             </trans-unit>
-            
+
 
             <trans-unit id="pidkiq.error.timeout">
                 <source>pidkiq.error.timeout-%SUPPORT_EMAIL%</source>
@@ -973,16 +1052,16 @@
                 <source>user.email.see</source>
                 <target>If you do not see an email from Credit Jeeves, click on the "Send Email Again" button below and we\'ll send you a new one.</target>
             </trans-unit>
-            
-            
+
+
             <trans-unit id="user.email.again">
                 <source>user.email.again</source>
                 <target>Send Email Again</target>
             </trans-unit>
-            
-            
-            
-            
+
+
+
+
             <trans-unit id="user.invite.title">
                 <source>user.invite.title</source>
                 <target>Please enter your information below and we can get started right away.</target>
@@ -1073,8 +1152,8 @@
                 <source>email.blog</source>
                 <target>Blog</target>
             </trans-unit>
-            
-            
+
+
 
             <trans-unit id="exception.error.title">
                 <source>exception.error.title-%%STATUS_TEXT%%</source>

@@ -262,7 +262,7 @@ fixtures:
                   -moz-border-radius: 4px;
                   -webkit-border-radius: 4px;
                   border-radius: 4px;"
-      >Sign up</a> Still have some questions? <a href="#">Read More</a> or call 866.841.9090
+      >Sign up</a> Still have some questions? <a href="http://www.renttrack.com/property-management">Read More</a> or call 866.841.9090
       {% endblock %}
 
 # rjTenantInvite.html email
@@ -314,7 +314,7 @@ fixtures:
                         -moz-border-radius: 4px;
                         -webkit-border-radius: 4px;
                         border-radius: 4px;
-                ">Pay Rent</a> Still have some questions? <a href="http://www.renttrack.com/property-management">Learn More</a>
+                ">Pay Rent</a> Still have some questions? <a href="http://www.renttrack.com/how-it-works">Learn More</a>
       {% endblock %}
 
 # rjTenantLatePayment.html email
@@ -384,13 +384,11 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
       {% block email %}
-        {{ nameTenant }} is ready to pay rent for {{ address }}.
-        <br />
-        <a href="http://my.renttrack.com/">Log in to RentTrack</a> to add contract details and approve this tenant.
-        After that, your tenant will be able to set up their rent payment.
-        <br />
-        Thank you, <br />
-        The RentTrack Team
+        {{ nameTenant }} is ready to pay rent for {{ address }}
+        <br /></br />
+        Please <a href="http://my.renttrack.com/">log in to RentTrack</a>, click on the Tenants tab, and click on the
+        review "eye" next to the pending tenant. You will then be able to add rent details and approve the tenant. Once
+        this is complete, your tenant will be able to set up their rent payment.
       {% endblock %}
 
 #exist_invite.html
@@ -554,15 +552,16 @@ fixtures:
     translatable: email_23
     locale: %locale%
     property: subject
-    value: List Late Contracts
+    value: Review Late Rent Payments
   translation_23_body:
     translatable: email_23
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block h1 %}Hello {{ nameLandlord }},{% endblock %}
       {% block email %}
+      The following tenants have not submitted on-time payments:
       <table 
         width="100%"
         style="
@@ -592,8 +591,9 @@ fixtures:
         </tbody>
       </table>
         <br />
-        Enjoy, <br />
-        The RentTrack Team
+        Please <a href="https://my.renttrack.com">log into RentTrack</a>
+        and click on "Resolve" next to late tenants at the top of the Payments Dashboard to either record payments
+        via alternate means or to send them an email reminder.
       {% endblock %}
 
 # rjOrderReceipt.html
@@ -601,16 +601,29 @@ fixtures:
     translatable: email_24
     locale: %locale%
     property: subject
-    value: Order Receipt
+    value: Rent Payment Receipt
   translation_24_body:
     translatable: email_24
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+
+      {% block h1 %}
+        {% if nameTenant %}
+          Hello {{ nameTenant }},
+        {% else %}
+          Hello there!
+        {% endif %}
+      {% endblock %}
+
       {% block email %}
-      <table 
+
+      Your rent payment to {{ groupName }} was sent just now. They should see the deposit in their account in 1-3 days.
+
+      The details:
+
+      <table
         width="100%"
         style="
           border: 1px solid #C8C8C8;
@@ -622,7 +635,7 @@ fixtures:
             <td style="padding:5px;">{{ 'order.date.time' | trans }}:</td><td style="padding:5px;">{{ datetime }}</td>
           </tr>
           <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'oder.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
+            <td style="padding:5px;">{{ 'order.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
           </tr>
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'amount' | trans }}:</td><td style="padding:5px;">{{ amount }}</td>
@@ -631,19 +644,21 @@ fixtures:
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
           </tr>
+          {% else %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ 'order.fee.free' | trans }}</td>
+          </tr>
+          {% endif %}
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
           </tr>
-          {% endif %}
+          
         </tbody>
       </table>
       </br>
-      {{ 'order.paid.to' | trans }}:{{ groupName }}
       </br>
       </br>
-      {{ 'oder.receipt.footer' | trans }}
-      </br>
-      The RentTrack Team
+      {{ 'order.receipt.footer' | trans }}
       {% endblock %}
 
 # rjOrderError.html
@@ -682,10 +697,15 @@ fixtures:
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ fee }}</td>
           </tr>
+          {% else %}
+          <tr style="border: 1px solid #C8C8C8;">
+            <td style="padding:5px;">{{ 'order.fee' | trans }}:</td><td style="padding:5px;">{{ 'order.fee.free' | trans }}</td>
+          </tr>
+          {% endif %}
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.total' | trans }}:</td><td style="padding:5px;">{{ total }}</td>
           </tr>
-          {% endif %}
+          
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.id' | trans }}:</td><td style="padding:5px;">{{ orderId }}</td>
           </tr>

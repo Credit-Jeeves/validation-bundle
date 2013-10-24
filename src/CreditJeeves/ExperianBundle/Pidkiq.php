@@ -18,6 +18,9 @@ require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/
 require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/pidkiq/PidkiqXml.class.php';
 
 /**
+ * Precise ID.
+ * Pidkiq is used for verifying user's identity.
+ *
  * @DI\Service("experian.pidkiq")
  */
 class Pidkiq extends \Pidkiq

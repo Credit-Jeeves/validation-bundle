@@ -18,6 +18,8 @@ require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/
 require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/netConnect/NetConnectXml.class.php';
 
 /**
+ * NetConnect is used for getting credit reports through API
+ *
  * @DI\Service("experian.net_connect")
  */
 class NetConnect extends \NetConnect
