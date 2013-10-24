@@ -19,3 +19,16 @@
     margin-left: 0px;
     margin-right: 0px;
 }
+
+.amount-paid-label {
+    width: 75px;
+    padding-top: 5px;
+}
+
+.amount-paid-input {
+    width: 115px;
+}
+
+.amount-paid-input input {
+    width: 100%;
+}
