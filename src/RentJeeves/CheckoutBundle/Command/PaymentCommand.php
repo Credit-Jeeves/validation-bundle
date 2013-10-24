@@ -107,8 +107,13 @@ class PaymentCommand extends ContainerAwareCommand
             $order->setStatus(OrderStatus::NEWONE);
 
             $request = new MakePaymentRequest();
+
             $billTransaction = new BillTransaction();
-            $billTransaction->setID1(1);
+            $billTransaction->setID1(str_replace(",", "", $contract->getProperty()->getFullAddress()));
+            $billTransaction->setID2($contract->getUnit()->getName());
+            $billTransaction->setID3(sprintf("%s %s", $contract->getTenant()->getFirstName(), $contract->getTenant()->getLastName()));
+            $billTransaction->setID4($contract->getGroup()->getName());
+
             $billTransaction->setAmountToApplyToBill($amount);
             $request->getBillTransactions()->setBillTransaction(array($billTransaction));
 
