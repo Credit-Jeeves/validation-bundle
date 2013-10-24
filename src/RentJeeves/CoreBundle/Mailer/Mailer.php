@@ -89,12 +89,13 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
-    public function sendRjPaymentDue($tenant, $holding, $contract, $sTemplate = 'rjPaymentDue')
+    public function sendRjPaymentDue($tenant, $holding, $contract, $recurring = false, $sTemplate = 'rjPaymentDue')
     {
         $vars = array(
             'nameHolding' => $holding->getName(),
             'nameTenant' => $tenant->getFullName(),
             'address' => $contract->getRentAddress($contract->getProperty(), $contract->getUnit()),
+            'recurring' => $recurring,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
