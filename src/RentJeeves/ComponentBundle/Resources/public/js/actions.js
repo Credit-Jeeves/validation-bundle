@@ -3,6 +3,7 @@ function Resolve() {
   this.details = ko.observable();
   this.openForm = function(data) {
     $('#contract-resolve').dialog('open');
+    $('#amount-paid').val(data.amount);
     self.details(data);
   };
   this.closeForm = function() {
@@ -15,6 +16,7 @@ function Resolve() {
       dataType: 'json',
       data: {
           'contract_id' : self.details().id,
+          'amount': $('#amount-paid').val(),
           'action' : $('input[name=ResolutionOptions]:checked').attr('title')
       },
       success: function() {

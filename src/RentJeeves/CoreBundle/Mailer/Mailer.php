@@ -157,8 +157,9 @@ class Mailer extends BaseMailer
         $group = $order->getOperations()->last()->getContract()->getGroup();
         switch ($type) {
             case OrderType::HEARTLAND_CARD:
-            default:
                 $fee = $amount * (int)$this->container->getParameter('payment_card_fee') / 100;
+                break;
+            default:
                 break;
         }
         $total = $fee + $amount;
