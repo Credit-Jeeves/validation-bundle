@@ -43,12 +43,12 @@ function ContractDetails() {
   };
 
   this.editContract = function(data) {
+    $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('close');
     $('#tenant-edit-property-popup').dialog('open');
 
     if (data.first_name) {
       self.contract(data);
-
     }
 
     self.getUnits(data.contract().property_id);
@@ -95,6 +95,7 @@ function ContractDetails() {
     });
   };
   this.approveContract = function(data) {
+    $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('open');
     self.clearDetails();
     self.contract(data);
@@ -134,6 +135,7 @@ function ContractDetails() {
     
   };
   this.reviewContract = function(data) {
+    $('#unit-edit').html(' ');
     $('#tenant-review-property-popup').dialog('open');
     self.clearDetails();
     self.approve(false);
