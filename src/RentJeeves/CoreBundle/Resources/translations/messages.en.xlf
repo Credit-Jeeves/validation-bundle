@@ -1414,6 +1414,10 @@
                 <source>tenant.wants.unit</source>
                 <target>Tenant wants unit number:</target>
             </trans-unit>
+            <trans-unit id="common.notice.information.updated">
+                <source>common.notice.information.updated</source>
+                <target>Information has been updated</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

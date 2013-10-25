@@ -30,11 +30,14 @@ class SettingsController extends Controller
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $address = $form->getData()->getAddress();
-
-                $em->persist($address);
+                $translator = $this->get('translator');
+                $landlord = $form->getData();
                 $em->persist($landlord);
                 $em->flush();
+                $this->get('session')->getFlashBag()->add(
+                    'notice',
+                    $translator->trans('common.notice.information.updated')
+                );
             }
         }
         return array(

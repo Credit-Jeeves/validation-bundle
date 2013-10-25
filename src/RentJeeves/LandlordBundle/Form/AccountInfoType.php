@@ -40,7 +40,7 @@ class AccountInfoType extends AbstractType
             array(
                 'data_class' => 'RentJeeves\DataBundle\Entity\Landlord',
                 'validation_groups' => array(
-                    'invite',
+                    'account_landlord',
                 ),
                 'csrf_protection'    => true,
                 'csrf_field_name'    => '_token',
