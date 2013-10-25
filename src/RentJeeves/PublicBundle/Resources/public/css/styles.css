@@ -3174,6 +3174,9 @@ label.checkbox input[type="radio"]:checked + i {
 .type-ico.e-check {
   background-position:-180px -240px;
 }
+.type-ico.cash {
+  background-position:-240px -240px;
+}
 
 .type-ico.credit-card {
   background-position:-240px -240px;
@@ -3309,6 +3312,9 @@ label.checkbox input[type="radio"]:checked + i {
 
 .clarification.e-check i {
   background-position:-180px -240px;
+}
+.clarification.cash i {
+  background-position:-255px -150px;
 }
 
 .clarification.credit-card i {
