@@ -1214,6 +1214,10 @@
                 <source>contract.status.pending</source>
                 <target>PENDING</target>
             </trans-unit>
+            <trans-unit id="contract.status.pending.text">
+                <source>contract.status.pending.text</source>
+                <target>PENDING Landlord Approval</target>
+            </trans-unit>
             <trans-unit id="contract.status.invite">
                 <source>contract.status.invite</source>
                 <target>INVITE</target>
