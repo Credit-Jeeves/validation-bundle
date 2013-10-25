@@ -1218,9 +1218,17 @@
                 <source>contract.status.pending.text</source>
                 <target>PENDING Landlord Approval</target>
             </trans-unit>
+            <trans-unit id="contract.status.pending.title">
+                <source>contract.status.pending.title</source>
+                <target>Waiting for your landlord to provide contract details.</target>
+            </trans-unit>
             <trans-unit id="contract.status.invite">
                 <source>contract.status.invite</source>
                 <target>INVITE</target>
+            </trans-unit>
+            <trans-unit id="contract.status.invite.title">
+                <source>contract.status.invite.title</source>
+                <target>Waiting for your landlord to join RentTrack.</target>
             </trans-unit>
             <trans-unit id="contract.status.approved">
                 <source>contract.status.approved</source>
