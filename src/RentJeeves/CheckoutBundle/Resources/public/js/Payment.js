@@ -38,18 +38,4 @@ function Payment(parent, startDate) {
     this.ends = ko.observable('cancelled');
     this.endMonth = ko.observable(null);
     this.endYear = ko.observable(null);
-
-
 }
-this.attemptedValue = ko.computed({
-    read: this.acceptedNumericValue,
-    write: function (value) {
-        if (isNaN(value))
-            this.lastInputWasValid(false);
-        else {
-            this.lastInputWasValid(true);
-            this.acceptedNumericValue(value); // Write to underlying storage
-        }
-    },
-    owner: this
-});
