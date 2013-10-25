@@ -421,7 +421,7 @@ fixtures:
     translatable: email_18
     locale: %locale%
     property: subject
-    value: Daily Payments.
+    value: Rent Payments Today
   translation_18_body:
     translatable: email_18
     locale: %locale%
