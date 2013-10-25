@@ -34,7 +34,7 @@
 
   this.timeout = function() {
     var sessionExpared = $.cookie(window.constants.get('SESSION_EXPIRATION_NAME'));
-    console.info(sessionExpared);
+    //console.info(sessionExpared);
     if (sessionExpared) {
       // I don't understood this code, but it setup timezone on the client to 0
       // the same we have on the server - GMT.
@@ -43,17 +43,17 @@
       var now = new Date(utc);
       var date = new Date();
       date.setTime(Date.parse(sessionExpared));
-      console.info(date+ ' - parsed from server');
-      console.info(now+' - now on the browser');
+      //console.info(date+ ' - parsed from server');
+      //console.info(now+' - now on the browser');
       var left = date - now;
       if (window && window.console && window.console.log) {
         window.console.log('Session will expire in ' + (left / 1000) + ' seconds');
       }
       if (0 < left) {
-        console.info('timeout');
+        //console.info('timeout');
         setTimeout(self.timeout, left);
       } else {
-        console.info('lock app');
+        //console.info('lock app');
         self._lockApp();
       }
     }
