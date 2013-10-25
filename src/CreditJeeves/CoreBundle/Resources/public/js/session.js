@@ -43,8 +43,8 @@
       var now = new Date(utc);
       var date = new Date();
       date.setTime(Date.parse(sessionExpared));
-      //console.info(date+ ' - parsed from server');
-      //console.info(now+' - now on the browser');
+      console.info(date+ ' - parsed from server');
+      console.info(now+' - now on the browser');
       var left = date - now;
       if (window && window.console && window.console.log) {
         window.console.log('Session will expire in ' + (left / 1000) + ' seconds');

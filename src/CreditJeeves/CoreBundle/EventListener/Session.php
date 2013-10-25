@@ -1,6 +1,6 @@
 <?php
 
-namespace CreditJeeves\CoreBundle\Event;
+namespace CreditJeeves\CoreBundle\EventListener;
 
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -18,7 +18,7 @@ use \DateTimeZone;
  * @Service
  * @Tag(name="kernel.event_listener", attributes = {"event"=KernelEvents::RESPONSE })
  */
-class ResponseListener
+class Session
 {
 
 
