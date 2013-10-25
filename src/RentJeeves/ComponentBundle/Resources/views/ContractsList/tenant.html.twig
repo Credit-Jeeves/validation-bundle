@@ -60,13 +60,14 @@
                         <td class="font-helvetica">{{ contract.payment_next }}</td>
                         <td class="font-helvetica">{{ contract.recur | capitalize }}</td>
                         {% if contract.status == 'pending' %}
-                        <td class="font-helvetica" title="Waiting for your landlord to provide contract details.">
+                        <td class="font-helvetica" title="{{ 'contract.status.pending.title' | trans }}">{{ 'contract.status.pending.text' | trans }}
                         {% elseif contract.status == 'invite' %}
-                        <td class="font-helvetica" title="Waiting for your landlord to join RentTrack.">
+                        <td class="font-helvetica" title="{{ 'contract.status.invite.title' | trans }}">
+                        {{ contract.status | upper }}
                         {% else %}
                         <td class="font-helvetica">
-                        {% endif %}
                         {{ contract.status | upper }}
+                        {% endif %}
                         </td>
                         <td class="font-helvetica">
                             {% if contract.isPayment %}

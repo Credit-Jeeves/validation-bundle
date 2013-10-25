@@ -3,6 +3,7 @@
 {% form_theme form ':Form:form_errors.html.twig' %}
 
 {% block content %}
+{{ include('RjComponentBundle:Invite:_popupTenant.html.twig') }}
 <section class="form-content">
 <form action="{{ path('tenant_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="tenantInviteRegister" >
     <div class="box type1">
@@ -21,7 +22,11 @@
 {% endblock %}
 
 {% block javascripts %}
+    {% javascripts  '@RjPublicBundle/Resources/public/js/invite-tenant.js'
 
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
 
 
