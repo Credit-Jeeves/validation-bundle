@@ -111,7 +111,8 @@ class PaymentCommand extends ContainerAwareCommand
             $billTransaction = new BillTransaction();
             $billTransaction->setID1(str_replace(",", "", $contract->getProperty()->getFullAddress()));
             $billTransaction->setID2($contract->getUnit()->getName());
-            $billTransaction->setID3(sprintf("%s %s", $contract->getTenant()->getFirstName(), $contract->getTenant()->getLastName()));
+            $tenant = $contract->getTenant();
+            $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
             $billTransaction->setID4($contract->getGroup()->getName());
 
             $billTransaction->setAmountToApplyToBill($amount);
