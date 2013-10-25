@@ -69,10 +69,6 @@ abstract class User extends BaseUser
      *     type="string",
      *     nullable=true
      * )
-     * @Assert\Length(
-     *     min=2,
-     *     max=5
-     * )
      */
     protected $middle_initial;
 
