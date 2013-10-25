@@ -164,6 +164,11 @@ function Pay(parent, contractId) {
     this.getAmount = ko.computed(function() {
         return '$' + this.payment.amount();
     }, this);
+
+    this.getFeeAmountText = function(paymentCardFee) {
+        return paymentCardFee + ' ($' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2) + ')';
+    };
+
     this.isForceSave = ko.computed(function() {
         var result = 'immediate' != this.payment.type();
         this.paymentSource.save(result);

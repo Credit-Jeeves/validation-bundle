@@ -2,7 +2,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use CreditJeeves\CoreBundle\Type\Encrypt;
-use CreditJeeves\DataBundle\Entity\ApiUpdate;
+//use CreditJeeves\DataBundle\Entity\ApiUpdate;
 use CreditJeeves\DataBundle\Enum\UserType;
 use FOS\UserBundle\Entity\User as BaseUser;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
@@ -585,7 +585,7 @@ abstract class User extends BaseUser
     /**
      * @param \Doctrine\Common\Collections\ArrayCollection $apiUpdate
      */
-    public function setApiUpdate(ApiUpdate $apiUpdate)
+    public function setApiUpdate(\CreditJeeves\DataBundle\Entity\ApiUpdate $apiUpdate)
     {
         $this->apiUpdate = $apiUpdate;
     }

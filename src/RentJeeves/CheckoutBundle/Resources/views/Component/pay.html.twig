@@ -255,9 +255,7 @@
                             <span class="value" data-bind="visible: 'bank' == paymentSource.type()">
                                 {{ 'checkout.free' | trans }}
                             </span>
-                            <span class="value" data-bind="visible: 'card' == paymentSource.type()">
-                                {{ payment_card_fee }}
-                            </span>
+                            <span class="value" data-bind="visible: 'card' == paymentSource.type(), text: getFeeAmountText('{{ payment_card_fee }}')"></span>
                         </div>
                     </div>
                 </div>
