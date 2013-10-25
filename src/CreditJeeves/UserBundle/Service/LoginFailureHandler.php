@@ -56,7 +56,8 @@ class LoginFailureHandler implements AuthenticationFailureHandlerInterface
         if ($user) {
             $this->container->get('session')->getFlashBag()->add(
                 'error',
-                'Incorrect email or password.'
+                $exception->getMessage()
+                // Before we have always 'Incorrect email or password.' lets show correct message
             );
             $defense = $user->getDefense();
             if ($defense) {
