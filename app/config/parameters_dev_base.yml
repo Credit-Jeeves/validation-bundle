@@ -7,6 +7,7 @@ parameters:
     mailer_user: null
     mailer_password: null
 
+    session.lifetime:  3600 #in seconds
     api.client_id: 1_qvxzb7ge734ko4ogwcskwksogoc0wskws40gg8oocokwg404s
     api.client_secret: 39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo
     api.admin_dealer_code: 1a1dc91c9073
