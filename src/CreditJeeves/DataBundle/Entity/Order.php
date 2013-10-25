@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
@@ -68,9 +69,21 @@ class Order extends BaseOrder
 
     public function getOrderTypes()
     {
-        // @todo don't hardcode path to images
-        $result = '';// '/bundles/rjpublic/images/icon-cash.png';
-        
+        $type = $this->getType();
+        switch ($type) {
+            case OrderType::HEARTLAND_CARD:
+                $result = 'credit-card';
+                break;
+            case OrderType::HEARTLAND_BANK:
+                $result = 'e-check';
+                break;
+            case OrderType::CASH:
+                $result = 'cash';
+                break;
+            default:
+                $result = '';
+                break;
+        }
         return $result;
     }
 

@@ -18,9 +18,14 @@ abstract class Address
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="bigint")
+     * @ORM\Column(
+     *     name="id",
+     *     type="bigint"
+     * )
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(
+     *     strategy="AUTO"
+     * )
      * @Serializer\Expose
      */
     protected $id;
@@ -28,20 +33,33 @@ abstract class Address
     /**
      * @var integer
      *
-     * @ORM\Column(name="user_id", type="bigint")
+     * @ORM\Column(
+     *     name="user_id",
+     *     type="bigint"
+     * )
      */
     protected $userId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\User", inversedBy="addresses")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\User",
+     *     inversedBy="addresses"
+     * )
+     * @ORM\JoinColumn(
+     *     name="user_id",
+     *     referencedColumnName="id"
+     * )
      */
     protected $user;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="unit", type="encrypt", nullable=true)
+     * @ORM\Column(
+     *     name="unit",
+     *     type="encrypt",
+     *     nullable=true
+     * )
      * @Serializer\Expose
      */
     protected $unit;
@@ -49,7 +67,11 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="number", type="encrypt", nullable=true)
+     * @ORM\Column(
+     *     name="number",
+     *     type="encrypt",
+     *     nullable=true
+     * )
      * @Serializer\Expose
      */
     protected $number;
@@ -62,7 +84,8 @@ abstract class Address
      *     message="error.user.street.empty",
      *     groups={
      *         "user_address_new",
-     *         "buy_report_new"
+     *         "buy_report_new",
+     *         "account_landlord"
      *     }
      * )
      * @Assert\Length(
@@ -70,7 +93,8 @@ abstract class Address
      *     max=255,
      *     groups={
      *         "user_address_new",
-     *         "buy_report_new"
+     *         "buy_report_new",
+     *         "account_landlord"
      *     }
      * )
      * @Serializer\Expose
@@ -104,7 +128,12 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="district", type="string", length=255, nullable=true)
+     * @ORM\Column(
+     *     name="district",
+     *     type="string",
+     *     length=255,
+     *     nullable=true
+     * )
      * @Serializer\Expose
      */
     protected $district;
@@ -112,12 +141,17 @@ abstract class Address
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=255)
+     * @ORM\Column(
+     *     name="city",
+     *     type="string",
+     *     length=255
+     * )
      * @Assert\NotBlank(
      *     message="error.user.city.empty",
      *     groups={
      *         "user_address_new",
-     *         "buy_report_new"
+     *         "buy_report_new",
+     *         "account_landlord"
      *     }
      * )
      * @Serializer\Expose

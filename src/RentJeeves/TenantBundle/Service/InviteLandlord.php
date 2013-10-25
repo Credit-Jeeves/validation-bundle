@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use CreditJeeves\DataBundle\Enum\Grouptype;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\EntityManager;
@@ -71,6 +72,7 @@ class InviteLandlord
             $landlord->setHolding($holding);
             $group = new Group();
             $group->setName($landlord->getUsername());
+            $group->setType(GroupType::RENT);
             $group->setHolding($holding);
             $holding->addGroup($group);
             $landlord->setAgentGroups($group);
