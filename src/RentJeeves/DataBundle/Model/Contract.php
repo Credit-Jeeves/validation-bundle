@@ -440,7 +440,11 @@ abstract class Contract
      */
     public function getPaidTo()
     {
-        return $this->paidTo;
+        $date = $this->paidTo;
+        if (empty($date)) {
+            $date = $this->getStartAt();
+        }
+        return $date;
     }
 
     /**

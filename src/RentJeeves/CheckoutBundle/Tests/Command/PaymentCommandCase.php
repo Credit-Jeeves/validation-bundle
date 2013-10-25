@@ -13,6 +13,8 @@ class PaymentCommandCase extends BaseTestCase
      */
     public function testExecute()
     {
+        $this->load(true);
+        static::$kernel = null;
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new PaymentCommand());
