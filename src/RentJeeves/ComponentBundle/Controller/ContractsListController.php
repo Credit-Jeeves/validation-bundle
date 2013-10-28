@@ -1,7 +1,9 @@
 <?php
 namespace RentJeeves\ComponentBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -14,9 +16,22 @@ class ContractsListController extends Controller
      */
     public function indexAction(\CreditJeeves\DataBundle\Entity\Group $Group, $form)
     {
+        /** @var $user Landlord */
+        $user = $this->getUser();
+        /** @var $group Group */
+        $group = $user->getCurrentGroup();
+        $canInvite = false;
+
+
+        if (!empty($group)) {
+            $merchantName = $group->getMerchantName();
+            $canInvite = (!empty($merchantName))? true : false;
+        }
+
         return array(
-            'form'  => $form,
-            'Group' => $Group,
+            'form'      => $form,
+            'Group'     => $Group,
+            'canInvite' => $canInvite,
         );
     }
 

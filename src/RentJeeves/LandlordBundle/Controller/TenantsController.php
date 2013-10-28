@@ -40,13 +40,27 @@ class TenantsController extends Controller
      */
     public function saveInviteTenantAction()
     {
+        /** @var $user Landlord */
+        $user = $this->getUser();
+        /** @var $group Group */
+        $group = $user->getCurrentGroup();
+        $canInvite = false;
+
+        /**
+         * Only landlord with setup merchant name can invite tenant
+         */
+        if (!empty($group)) {
+            $merchantName = $group->getMerchantName();
+            $canInvite = (!empty($merchantName))? true : false;
+        }
+
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser())
         );
 
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
+        if ($request->getMethod() == 'POST' && $canInvite) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
