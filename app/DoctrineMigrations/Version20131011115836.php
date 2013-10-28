@@ -4,6 +4,7 @@ namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use  CreditJeeves\DataBundle\Entity\Client;
@@ -112,6 +113,19 @@ class Version20131011115836 extends AbstractMigration implements ContainerAwareI
                 FOREIGN KEY (user_id)
                 REFERENCES cj_user (id)"
         );
+
+        $this->addSql(
+            "CREATE TABLE api_update_user (id BIGINT AUTO_INCREMENT NOT NULL,
+                user_id BIGINT DEFAULT NULL,
+                UNIQUE INDEX UNIQ_33880B58A76ED395 (user_id),
+                PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
+        );
+        $this->addSql(
+            "ALTER TABLE api_update_user
+                ADD CONSTRAINT FK_33880B58A76ED395
+                FOREIGN KEY (user_id)
+                REFERENCES cj_user (id)"
+        );
     }
 
     public function down(Schema $schema)
@@ -149,6 +163,10 @@ class Version20131011115836 extends AbstractMigration implements ContainerAwareI
         $this->addSql(
             "DROP TABLE refresh_token"
         );
+
+        $this->addSql(
+            "DROP TABLE api_update_user"
+        );
     }
 
     public function postUp(Schema $schema)
@@ -159,6 +177,7 @@ class Version20131011115836 extends AbstractMigration implements ContainerAwareI
             throw new \Exception("Error configuration. Don't have api.admin_dealer_code");
         }
 
+        /** @var $em EntityManager */
         $em = $this->container->get('doctrine.orm.entity_manager');
         $dealer = $em->getRepository('DataBundle:Dealer')->findOneBy(array(
             'invite_code' => $dealerCode
