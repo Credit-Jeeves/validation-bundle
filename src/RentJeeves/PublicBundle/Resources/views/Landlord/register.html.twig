@@ -113,8 +113,8 @@
     </div>
     <div class="accept-terms-box pie-el">
         <div class="form-row checkboxes clearfix">
-            <label class="checkbox">
-                {{ form_widget(form.landlord.tos) }}
+            <label class="checkbox register-tos">
+                {{ form_widget(form.landlord.tos, {'attr': {'class': 'tos-input-field'}}) }}
                 <i></i>
                 <span class="big">{{ 'landlord.register.terms'|trans({'%link%': 'http://www.renttrack.com/terms-of-service'})|raw }}</span>
             </label>
