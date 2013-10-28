@@ -50,8 +50,7 @@ function ContractDetails() {
     if (data.first_name) {
       self.contract(data);
     }
-
-    self.getUnits(data.property_id);
+    self.getUnits(self.contract().property_id);
     var flag = false;
     if(self.approve()) {
       flag = true;
@@ -61,8 +60,11 @@ function ContractDetails() {
     self.approve(flag);
     window.jQuery.curCSS = window.jQuery.css;
 
+    $('#contractEditStart').attr('readonly', true);
+    $('#contractEditFinish').attr('readonly', true);
+
     $('#contractEditStart').datepicker({
-      showOn: "button",
+      showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
       format:'m/d/Y',
       date: $('#contractEditStart').val(),
@@ -78,7 +80,7 @@ function ContractDetails() {
       }
     });
     $('#contractEditFinish').datepicker({
-      showOn: "button",
+      showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       format:'m/d/Y',
       date: $('#contractEditFinish').val(),
@@ -100,8 +102,11 @@ function ContractDetails() {
     self.clearDetails();
     self.contract(data);
     self.approve(true);
+    $('#contractApproveStart').attr('readonly', true);
+    $('#contractApproveFinish').attr('readonly', true);
+
     $('#contractApproveStart').datepicker({
-      showOn: "button",
+      showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
       format:'m/d/Y',
       date: $('#contractApproveStart').val(),
@@ -117,7 +122,7 @@ function ContractDetails() {
       }
     });
     $('#contractApproveFinish').datepicker({
-      showOn: "button",
+      showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       format:'m/d/Y',
       date: $('#contractApproveFinish').val(),
@@ -329,8 +334,10 @@ function Contracts() {
   };
   this.addTenant = function() {
     $('#tenant-add-property-popup').dialog('open');
+    $('.payment-start').attr('readonly', true);
+    $('.payment-end').attr('readonly', true);
     $('.payment-start, .payment-end').datepicker({
-      showOn: "button",
+      showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       dateFormat:'m/d/yy'
     });
