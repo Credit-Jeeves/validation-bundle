@@ -1,0 +1,14 @@
+{% if isLogin %}
+<script type="text/javascript">
+    var constants = (function() {
+        var private = {
+            'SESSION_NAME': '{{ sessionName }}',
+            'SESSION_EXPIRATION_NAME': '{{ sesssionExpirationName }}'
+        };
+
+        return {
+            get: function(name) { return private[name]; }
+        };
+    })();
+</script>
+{% endif %}

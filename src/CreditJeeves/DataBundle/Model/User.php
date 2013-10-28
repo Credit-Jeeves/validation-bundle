@@ -21,13 +21,20 @@ abstract class User extends BaseUser
 {
     /**
      * @ORM\Id
-     * @ORM\Column(type="bigint")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(
+     *     type="bigint"
+     * )
+     * @ORM\GeneratedValue(
+     *     strategy="AUTO"
+     * )
      */
     protected $id;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(
+     *     type="string",
+     *     nullable=true
+     * )
      * @Assert\NotBlank(
      *     message="error.user.first_name.empty",
      *     groups={
@@ -35,7 +42,8 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "account_landlord"
      *     }
      * )
      * @Assert\Length(
@@ -48,7 +56,8 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "account_landlord"
      *     }
      * )
      *
@@ -56,12 +65,18 @@ abstract class User extends BaseUser
     protected $first_name;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(
+     *     type="string",
+     *     nullable=true
+     * )
      */
     protected $middle_initial;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(
+     *     type="string",
+     *     nullable=true
+     * )
      * @Assert\NotBlank(
      *     message="error.user.last_name.empty",
      *     groups={
@@ -69,7 +84,8 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "account_landlord"
      *     }
      * )
      * @Assert\Length(
@@ -82,7 +98,8 @@ abstract class User extends BaseUser
      *         "buy_report",
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "account_landlord"
      *     }
      * )
      *
@@ -102,7 +119,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "account_landlord"
      *     }
      * )
      * @InviteEmail(

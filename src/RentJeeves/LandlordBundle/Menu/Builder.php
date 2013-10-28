@@ -55,7 +55,7 @@ class Builder extends ContainerAware
     public function settingsMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
-        //$menu->addChild('account.information', array('route' => 'landlord_edit_profile'));
+        $menu->addChild('account.information', array('route' => 'landlord_edit_profile'));
         $menu->addChild('settings.password', array('route' => 'landlord_password'));
         //$menu->addChild('settings.deposit', array('route' => 'settings_deposit'));
 

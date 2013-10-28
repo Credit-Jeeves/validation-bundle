@@ -407,7 +407,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*Up to 10 units are included with your minimum monthly fee of $9.95. Additional units are $1 each per month. Fees will be debited automatically from your deposit account at the end of each month.
+                <target>*Up to 5 units are included with your minimum monthly fee of $9.95. Additional units are $1.95 each per month. Fees will be debited automatically from your deposit account at the end of each month.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -1022,7 +1022,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.title.note_1">
                 <source>popup.landlord.title.note_1</source>
-                <target>Try it for FREE. If you cancel in the first month, we’ll refund your monthly minimum and you keep your rent.</target>
+                <target>We're waiving our monthly minimum of $9.95 during this introductory period!</target>
             </trans-unit>
             <trans-unit id="popup.landlord.title.info">
                 <source>popup.landlord.title.info</source>
@@ -1058,7 +1058,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.safeguards">
                 <source>popup.landlord.safeguards</source>
-                <target>Rock-Solid Safeguards</target>
+                <target>Rock-Solid Security Safeguards</target>
             </trans-unit>
             <trans-unit id="popup.landlord.collect.payments">
                 <source>popup.landlord.collect.payments</source>
@@ -1154,7 +1154,7 @@
             </trans-unit>
             <trans-unit id="benefit.landlord.text">
                 <source>benefit.landlord.text</source>
-                <target>Try it and get your first rent payment for FREE!</target>
+                <target>Sign up before December to get our introductory pricing!</target>
             </trans-unit>
             <trans-unit id="benefit.landlord.el.free">
                 <source>benefit.landlord.el.free</source>
@@ -1214,9 +1214,21 @@
                 <source>contract.status.pending</source>
                 <target>PENDING</target>
             </trans-unit>
+            <trans-unit id="contract.status.pending.text">
+                <source>contract.status.pending.text</source>
+                <target>PENDING Landlord Approval</target>
+            </trans-unit>
+            <trans-unit id="contract.status.pending.title">
+                <source>contract.status.pending.title</source>
+                <target>Waiting for your landlord to provide contract details.</target>
+            </trans-unit>
             <trans-unit id="contract.status.invite">
                 <source>contract.status.invite</source>
                 <target>INVITE</target>
+            </trans-unit>
+            <trans-unit id="contract.status.invite.title">
+                <source>contract.status.invite.title</source>
+                <target>Waiting for your landlord to join RentTrack.</target>
             </trans-unit>
             <trans-unit id="contract.status.approved">
                 <source>contract.status.approved</source>
@@ -1328,7 +1340,7 @@
             </trans-unit>
             <trans-unit id="payment_account.delete.no">
                 <source>payment_account.delete.no</source>
-                <target>No, Cancel</target>
+                <target>No, Do Nothing</target>
             </trans-unit>
             <trans-unit id="payment_account.edit.save">
                 <source>payment_account.edit.save</source>
@@ -1368,7 +1380,7 @@
             </trans-unit>
             <trans-unit id="order.error.title">
                 <source>order.error.title</source>
-                <target>We encountered an error when making the following payment</target>
+                <target>We encountered an error when attempting to make your rent payment.</target>
             </trans-unit>
             <trans-unit id="order.id">
                 <source>order.id</source>
@@ -1380,11 +1392,11 @@
             </trans-unit>
             <trans-unit id="order.contact.us">
                 <source>order.contact.us</source>
-                <target>Please contact RentTrack at help@renttrack.com</target>
+                <target>Please contact RentTrack at help@renttrack.com or call 866-841-9090.</target>
             </trans-unit>
             <trans-unit id="order.error.message">
                 <source>order.error.message</source>
-                <target> The error message is</target>
+                <target>The error message is</target>
             </trans-unit>
             <trans-unit id="alert.tenant.verify_email">
                 <source>alert.tenant.verify_email</source>
@@ -1401,6 +1413,10 @@
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
                 <target>Tenant wants unit number:</target>
+            </trans-unit>
+            <trans-unit id="common.notice.information.updated">
+                <source>common.notice.information.updated</source>
+                <target>Information has been updated</target>
             </trans-unit>
         </body>
     </file>

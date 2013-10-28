@@ -42,6 +42,11 @@ class ContractRepository extends EntityRepository
                     }
                     break;
                 case 'phone':
+                    //Remove all chars except number
+                    $searchString = preg_replace('[\D]', '', $searchString);
+                    $query->andWhere('t.phone LIKE :search');
+                    $query->setParameter('search', '%'.$searchString.'%');
+                    break;
                 case 'email':
                     $query->andWhere('t.email LIKE :search');
                     $query->setParameter('search', '%'.$searchString.'%');
@@ -58,7 +63,7 @@ class ContractRepository extends EntityRepository
                     break;
                 default:
                     foreach ($search as $item) {
-                        $query->andWhere('c'.$searchField.' LIKE :search');
+                        $query->andWhere('c.'.$searchField.' LIKE :search');
                         $query->setParameter('search', '%'.$item.'%');
                     }
                     break;

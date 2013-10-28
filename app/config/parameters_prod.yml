@@ -16,6 +16,7 @@ parameters:
     server_name_cj: my.creditjeeves.com
     server_name_rj: renttrack.com
     google_maps_key: AIzaSyAY1u4_NA6UsJa4gDfTZjmQ6-18dxxeC24
+    session.lifetime: 3600 #in seconds
     authorize_net:
         login_id: '29fDg7sU24G'
         transaction_key: '474v43G35wJ6Gm2d'
