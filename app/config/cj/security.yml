@@ -20,7 +20,8 @@ security:
             anonymous: false
         oauth_token:
             pattern: ^/oauth/v2/token
-            security: false
+            #security: false
+            anonymous: true
         main:
             pattern: ^/
             form_login:

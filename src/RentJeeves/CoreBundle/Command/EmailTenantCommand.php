@@ -119,7 +119,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                         $contract = $payment->getContract();
                         $tenant = $contract->getTenant();
                         $group = $contract->getGroup();
-                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract);
+                        $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract, true);
                         $doctrine->getManager()->detach($row[0]);
                         $output->write('.');
                     }

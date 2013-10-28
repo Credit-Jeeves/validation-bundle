@@ -22,6 +22,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Validator\Constraints\Range;
 use Doctrine\Common\Collections\ArrayCollection;
 use \DateTime;
+use \AuthorizeNetAIM_Response;
 
 /**
  * @method \CreditJeeves\DataBundle\Entity\Applicant getUser
@@ -113,7 +114,7 @@ class DefaultController extends Controller
         $this->get('doctrine.orm.default_entity_manager')->persist($authorize);
         $this->get('doctrine.orm.default_entity_manager')->flush(); // TODO remove and check
 
-        if (\AuthorizeNetAIM_Response::APPROVED != $authorize->getResponseCode()) {
+        if (AuthorizeNetAIM_Response::APPROVED != $authorize->getResponseCode()) {
             $code = $authorize->getResponseReasonCode();
             $message = '';
             if (in_array($code, array(6, 37, 7, 8, 27, 127, 290, 78, 44))) {

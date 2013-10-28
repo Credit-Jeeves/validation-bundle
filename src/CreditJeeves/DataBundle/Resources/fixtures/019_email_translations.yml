@@ -363,9 +363,12 @@ fixtures:
       {% block email %}
         Congratulations! {{ fullNameLandlord }} has teamed up with RentTrack.
         <br /><br />
-        <a href="http://my.renttrack.com/">Log in now</a> to set up your rent payment for {{ address }} {{ unitName }}
+        <a href="http://my.renttrack.com/">Log in now</a> to set up your rent payment for: {{ address }} {{ unitName }} (Note:
+        you may still have to wait for them to set up your payment contract.)
         <br /><br />
-        We'd recommend setting up <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a> so you have one less thing to worry about.
+        We recommend setting up
+        <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a>
+        so you have one less thing to worry about.
         <br /><br />
         You're ready to build credit buy paying rent securely online.
       {% endblock %}
@@ -418,23 +421,25 @@ fixtures:
     translatable: email_18
     locale: %locale%
     property: subject
-    value: Daily Payments.
+    value: Rent Payments Today
   translation_18_body:
     translatable: email_18
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ nameLandlord }}!{% endblock %}
+      {% block h1 %}Rent Collected{% endblock %}
       {% block email %}
-        Today payments is {{ amount }}
-        <br />
-        <br />
-        Enjoy, <br />
-        The RentTrack Team
+        Hi {{ nameLandlord }},
+        <br /><br />
+        We collected ${{ amount }} in rent today. To see your recent payments,
+        <a href="https://my.renttrack.com/">log into RentTrack</a> and click on Dashboard.
+        <br /><br />
+        Payments typically settle in 1-3 days to your account. If you suspect a payment is not transferring, or have
+        any other questions, please contact us at help@creditjeeves.com or call 866-841-9090.
       {% endblock %}
 
-# rjTodayNotPaid.html
+# rjTodayNotPaid.html - not in use, covered by late contract
   translation_19_subject:
     translatable: email_19
     locale: %locale%
@@ -460,7 +465,7 @@ fixtures:
     translatable: email_20
     locale: %locale%
     property: subject
-    value: Daily Report.
+    value: RentTrack Daily Report
   translation_20_body:
     translatable: email_20
     locale: %locale%
@@ -499,9 +504,6 @@ fixtures:
           {% endfor %}
         </tbody>
       </table>
-        <br />
-        Enjoy, <br />
-        The RentTrack Team
       {% endblock %}
 
 # rjTenantLateContract.html
@@ -509,45 +511,54 @@ fixtures:
     translatable: email_21
     locale: %locale%
     property: subject
-    value: Late payment by Contract.
+    value: Rent Payment is Late
   translation_21_body:
     translatable: email_21
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% block h1 %}Hi {{ nameTenant }},{% endblock %}
       {% block email %}
-        You are late with payment for {{ diff }} day(s)
-        for address {{ address }}
-        <br />
-        <br />
-        Enjoy, <br />
-        The RentTrack Team
+        It looks like your rent payment for {{ address }} is <b>late by {{ diff }} day(s)</b>.
+        <br /><br />
+        <a href="https://my.renttrack.com/">Log into RentTrack</a> today to make a new payment. We'd recommend setting up
+        <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a>
+        so you won't see an email like this next month.
+        <br /><br />
+        If you have alread paid by a different method like cash or (*gasp*) paper check, then your landlord needs
+        to log into RentTrack and update your records. They have also received an email reminder regarding this payment.
+        <br /><br />
+        If you need assistance, please email help@renttrack.com or call (866) 841-9090.
       {% endblock %}
 
+# rjPaymentDue.html
   translation_22_subject:
     translatable: email_22
     locale: %locale%
     property: subject
-    value: Payment Due
+    value: Your Rent Is Due
   translation_22_body:
     translatable: email_22
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
+      {% block h1 %}Rent Is Due{% endblock %}
       {% block email %}
-        You need to pay for rent to {{ nameHolding }}
-        for address {{ address }}
-        <br />
-        <br />
-        Enjoy, <br />
-        The RentTrack Team
+      Your rent payment to {{ nameHolding }} for {{ address }} is coming up.
+      <br /><br />
+      {% if recurring == true %}
+        It looks like you have recurring payments set up, so we'll send you another email when we make your payment.
+        If you need to change your payment details or cancel your payment,
+        please <a href="https://my.renttrack.com/">log in to RentTrack today</a> and make any adjustments.
+      {% else %}
+        You do not have recurring payments set up. <a href="https://my.renttrack.com/">Log in to RentTrack today</a>
+        to set up a one-time or recurring payment.
+      {% endif %}
       {% endblock %}
 
-# rjDailyReport.html
+# rjListLateContracts.html
   translation_23_subject:
     translatable: email_23
     locale: %locale%
@@ -608,16 +619,13 @@ fixtures:
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-
-      {% block h1 %}
-        {% if nameTenant %}
-          Hello {{ nameTenant }},
-        {% else %}
-          Hello there!
-        {% endif %}
-      {% endblock %}
-
+      {% block h1 %}Your Rent is Paid{% endblock %}
       {% block email %}
+      {% if nameTenant %}
+        Hi {{ nameTenant }}! <br /><br />
+      {% else %}
+        Hello!  <br /><br />
+      {% endif %}
 
       Your rent payment to {{ groupName }} was sent just now. They should see the deposit in their account in 1-3 days.
 
@@ -675,8 +683,11 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ nameTenant }}!{% endblock %}
       {% block email %}
-      {{ 'order.error.title'| trans }}:
-      <table 
+      {{ 'order.error.title'| trans }}.
+      <br /><br />
+      {{ 'order.error.message' | trans }}: {{ error }}
+      <br /><br />
+      <table
         width="100%"
         style="
           border: 1px solid #C8C8C8;
@@ -717,9 +728,5 @@ fixtures:
         </tbody>
       </table>
       {{ 'order.contact.us' | trans }}
-      </br>
-      {{ 'order.error.message' | trans }}: {{ error }}
-      </br>
-      The RentTrack Team
       {% endblock %}
       
