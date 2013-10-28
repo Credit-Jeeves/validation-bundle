@@ -196,43 +196,4 @@ class Version20130927105815 extends AbstractMigration implements ContainerAwareI
     public function down(Schema $schema)
     {
     }
-
-    public function postUp(Schema $schema)
-    {
-/*        $dealerCode = $this->container->getParameter('api.admin_dealer_code');
-
-        if (empty($dealerCode)) {
-            throw new \Exception("Error configuration. Don't have api.admin_dealer_code");
-        }
-
-        $em = $this->container->get('doctrine.orm.entity_manager');
-
-        $holding = new Holding();
-        $holding->setName('700Credit');
-
-        $group = new Group();
-        $group->setHolding($holding);
-        $group->setName('700Credit');
-        $group->setTargetScore(900);
-        $group->setType(GroupType::GENERIC);
-
-        $dealer = new Dealer();
-        $dealer->setFirstName('700Credit');
-        $dealer->setLastName('700Credit');
-        $dealer->setEmail('support@700credit.com');
-        $dealer->setInviteCode($dealerCode);
-        $dealer->setIsActive(true);
-        $dealer->setIsSuperAdmin(true);
-        $dealer->setIsHoldingAdmin(true);
-        $dealer->setPassword(md5('pass'));
-        $dealer->setHolding($holding);
-        $dealer->addDealerGroup($group);
-
-        $em->persist($holding);
-        $em->persist($group);
-        $em->persist($dealer);
-
-        $em->flush();*/
-    }
-
 }
