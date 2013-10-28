@@ -17,6 +17,7 @@ class ContractsListController extends Controller
         return array(
             'form'  => $form,
             'Group' => $Group,
+            'merchant' => $Group->getMerchantName(),
         );
     }
 

@@ -356,9 +356,15 @@
                     </select>
                     <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
                 </div>
+                {% if merchant == '' %}
+                <button class="button small grey">
+                    <span>{{ 'add.tenant'|trans }}</span>
+                </button>
+                {% else %}
                 <button class="button small" data-bind="click: $root.addTenant">
                     <span>{{ 'add.tenant'|trans }}</span>
                 </button>
+                {% endif %}
             </div>
         </div>
         <div class="content-box">
