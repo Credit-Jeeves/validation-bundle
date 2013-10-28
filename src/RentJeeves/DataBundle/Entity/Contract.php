@@ -77,7 +77,12 @@ class Contract extends Base
      */
     public function getPayToName()
     {
-        return $this->getHolding()->getName() . ' ' . $this->getGroup()->getName();
+        $holdingName = $this->getHolding()->getName();
+        $groupName = $this->getGroup()->getName();
+        if ($holdingName != $groupName) {
+            return $holdingName . ' ' . $groupName;
+        }
+        return $holdingName;
     }
 
     /**
