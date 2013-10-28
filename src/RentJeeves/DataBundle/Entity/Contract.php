@@ -123,7 +123,7 @@ class Contract extends Base
         $result['last_name'] = $tenant->getLastName();
         $result['email'] = $tenant->getEmail();
         $result['phone'] = $tenant->getFomattedPhone();
-        $result['amount'] = 'undefined';
+        $result['amount'] = '';
         if ($rent = $this->getRent()) {
             $result['amount'] = $this->getRent();
         }
