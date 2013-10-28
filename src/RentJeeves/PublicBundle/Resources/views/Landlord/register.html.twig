@@ -140,7 +140,9 @@
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts '@RjPublicBundle/Resources/public/js/landlord/register.js' %}
+    {% javascripts '@RjPublicBundle/Resources/public/js/landlord/register.js'
+                   '@RjPublicBundle/Resources/public/js/landlord/popup-pricing.js'
+    %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
