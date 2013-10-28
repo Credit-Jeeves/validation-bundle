@@ -4,9 +4,12 @@ namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use  CreditJeeves\DataBundle\Entity\Client;
+use \PDO;
+use \Exception;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -112,6 +115,35 @@ class Version20131011115836 extends AbstractMigration implements ContainerAwareI
                 FOREIGN KEY (user_id)
                 REFERENCES cj_user (id)"
         );
+
+        $this->addSql(
+            "CREATE TABLE api_update_user (id BIGINT AUTO_INCREMENT NOT NULL,
+                user_id BIGINT DEFAULT NULL,
+                UNIQUE INDEX UNIQ_33880B58A76ED395 (user_id),
+                PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
+        );
+        $this->addSql(
+            "ALTER TABLE api_update_user
+                ADD CONSTRAINT FK_33880B58A76ED395
+                FOREIGN KEY (user_id)
+                REFERENCES cj_user (id)"
+        );
+
+        $this->addSql(
+            "INSERT INTO `client`
+            (`id`,
+             `random_id`,
+             `redirect_uris`,
+             `secret`,
+             `allowed_grant_types`
+             ) VALUES
+            (1,
+             'qvxzb7ge734ko4ogwcskwksogoc0wskws40gg8oocokwg404s',
+             'a:0:{}',
+             '39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo',
+             'a:5:{i:0;s:5:\"token\";i:1;s:18:\"authorization_code\";i:2;s:8:\"password\";i:3;s:18:\"client_credentials\";i:4;s:13:\"refresh_token\";}'
+            )"
+        );
     }
 
     public function down(Schema $schema)
@@ -149,32 +181,9 @@ class Version20131011115836 extends AbstractMigration implements ContainerAwareI
         $this->addSql(
             "DROP TABLE refresh_token"
         );
-    }
 
-    public function postUp(Schema $schema)
-    {
-        $dealerCode = $this->container->getParameter('api.admin_dealer_code');
-
-        if (empty($dealerCode)) {
-            throw new \Exception("Error configuration. Don't have api.admin_dealer_code");
-        }
-
-        $em = $this->container->get('doctrine.orm.entity_manager');
-        $dealer = $em->getRepository('DataBundle:Dealer')->findOneBy(array(
-            'invite_code' => $dealerCode
-        ));
-
-        if (empty($dealer)) {
-            throw new \Exception("Error configuration. Don't have dealer which such api.admin_dealer_code {$dealerCode}");
-        }
-
-        $clientManager = $this->container->get('fos_oauth_server.client_manager.default');
-        /** @var $client Client */
-        $client = $clientManager->createClient();
-        $client->setRedirectUris(array());
-        $client->setAllowedGrantTypes(array('token', 'authorization_code', 'password','client_credentials','refresh_token'));
-        $client->setRandomId('qvxzb7ge734ko4ogwcskwksogoc0wskws40gg8oocokwg404s');
-        $client->setSecret('39uyn651qlk4ssws40sgs44cwsskgccoc0o04ccgsccgooowwo');
-        $clientManager->updateClient($client);
+        $this->addSql(
+            "DROP TABLE api_update_user"
+        );
     }
 }
