@@ -81,6 +81,17 @@
         <h1>{{ 'approve.tenant.info'|trans }}</h1>
         <div class="clearfix col-box"  data-bind="with: contract">
             <div class="information-box pie-el">{{'pending.tenant.info'|trans}}</div>
+            
+            
+            <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
+                <h3>Oops! It looks like there are some errors &ndash; please see details below.</h3>
+                <ul class="default">
+                <!-- ko foreach: $root.errors() -->
+                <li data-bind="text: $data"></li>
+                <!-- /ko -->
+                </ul>
+            </div>
+        
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'tenant.info'|trans }}</span>

@@ -877,6 +877,14 @@
                 <source>contract.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="contract.error.rent">
+                <source>contract.error.rent</source>
+                <target>Amount could not be empty</target>
+            </trans-unit>
+            <trans-unit id="contract.error.start">
+                <source>contract.error.start</source>
+                <target>Start At could not be empty</target>
+            </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
                 <target>This account is in good standing</target>
