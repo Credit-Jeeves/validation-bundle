@@ -471,7 +471,7 @@ class AjaxController extends Controller
         $contract->setUnit($unit);
         if (in_array($details['status'], array(ContractStatus::APPROVED)) & empty($errors)) {
             $contract->setStatusApproved();
-            //$this->get('project.mailer')->sendContractApprovedToTenant($contract);
+            $this->get('project.mailer')->sendContractApprovedToTenant($contract);
         }
 
         if ($action == 'remove') {
