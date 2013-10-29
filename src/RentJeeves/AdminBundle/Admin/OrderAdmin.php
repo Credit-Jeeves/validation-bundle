@@ -51,7 +51,8 @@ class OrderAdmin extends Admin
             ->add('heartland_transaction_id')
             ->add('operation_type')
             ->add('amount', 'money')
-            ->add('user.full_name')
+            ->add('group_name', 'string', ['template' => 'AdminBundle:CRUD:payments_group_landlords.html.twig'])
+            ->add('user.full_name', 'string', ['template' => 'AdminBundle:CRUD:payments_show_tenant.html.twig'])
             ->add('user.email');
     }
 

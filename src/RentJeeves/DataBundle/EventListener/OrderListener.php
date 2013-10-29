@@ -70,10 +70,10 @@ class OrderListener
                     $status = $entity->getStatus();
                     switch ($status) {
                         case OrderStatus::COMPLETE:
-                            $this->container->get('project.mailer')->sendOrderReceipt($entity);
+                            $this->container->get('project.mailer')->sendRentReceipt($entity);
                             break;
                         case OrderStatus::ERROR:
-                            $this->container->get('project.mailer')->sendOrderError($entity);
+                            $this->container->get('project.mailer')->sendRentError($entity);
                             break;
                     }
                     break;
@@ -81,7 +81,7 @@ class OrderListener
                     $status = $entity->getStatus();
                     switch ($status) {
                         case OrderStatus::COMPLETE:
-                            $this->container->get('project.mailer')->sendReceipt($entity);
+                            $this->container->get('project.mailer')->sendReportReceipt($entity);
                             break;
                     }
                     break;
