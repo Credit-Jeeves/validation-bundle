@@ -143,6 +143,10 @@ class Contract extends Base
         if ($finish = $this->getFinishAt()) {
             $result['finish'] = $finish->format('m/d/Y');
         }
+        $payments = $this->getPayments();
+        $payment = $payments->first();
+
+        $result['payment_setup'] = ($payment)? true : false;
         $result['search'] = $this->getSearch();
         return $result;
     }
