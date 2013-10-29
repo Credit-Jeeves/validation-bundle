@@ -113,8 +113,8 @@
     </div>
     <div class="accept-terms-box pie-el">
         <div class="form-row checkboxes clearfix">
-            <label class="checkbox">
-                {{ form_widget(form.landlord.tos) }}
+            <label class="checkbox register-tos">
+                {{ form_widget(form.landlord.tos, {'attr': {'class': 'tos-input-field'}}) }}
                 <i></i>
                 <span class="big">{{ 'landlord.register.terms'|trans({'%link%': 'http://www.renttrack.com/terms-of-service'})|raw }}</span>
             </label>
@@ -140,7 +140,9 @@
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts '@RjPublicBundle/Resources/public/js/landlord/register.js' %}
+    {% javascripts '@RjPublicBundle/Resources/public/js/landlord/register.js'
+                   '@RjPublicBundle/Resources/public/js/landlord/popup-pricing.js'
+    %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}
@@ -152,41 +154,9 @@
 {% endblock %}
 
 {% block payBox %}
-<section class="pay-box">
-    <div class="pay-content">
-        <h1>{{ 'paybox.landlord.title' | trans() }}</h1>
-        <div class="pay-credit clearfix">
-            <div class="col one-third quickly">
-                <i class="pie-el"> </i>
-                <div>
-                    <h3>{{ 'paybox.landlord.get.paid' | trans() }}<br>{{ 'paybox.landlord.quickly' | trans() }}</h3>
-                    <h4>{{ 'paybox.landlord.title_2' | trans() }}</h4>
-                    <p>{{ 'paybox.landlord.title_3' | trans() }}</p>
-                </div>
-            </div>
-            <div class="col one-third gain">
-                <i class="pie-el"></i>
-                <div>
-                    <h3>{{ 'paybox.landlord.gein.reliable' | trans() }}<br>{{ 'paybox.landlord.tenants' | trans() }}</h3>
-                    <h4>{{ 'paybox.landlord.title_4' | trans() }}</h4>
-                    <p>{{ 'paybox.landlord.title_5' | trans() }}</p>
-                </div>
-            </div>
-            <div class="col one-third collect">
-                <i class="pie-el"> </i>
-                <div>
-                    <h3>{{ 'paybox.landlord.collect.payments' | trans() }}<br>{{ 'paybox.landlord.effortlessly' | trans() }}</h3>
-                    <h4>{{ 'paybox.landlord.title_6' | trans() }}</h4>
-                    <p>{{ 'paybox.landlord.title_7' | trans() }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="quote-box">
-            <q><span>{{ 'paybox.landlord.quote_1' | trans() }}</span></q>
-            <p>{{ 'paybox.landlord.quote_2' | trans() }}</p>
-        </div>
-    </div>
-</section>
+    {{ include(
+    'RjPublicBundle::_landlordMarketing.html.twig'
+    ) }}
 {% endblock %}
 
 {% block pricingBenefitStatement %}

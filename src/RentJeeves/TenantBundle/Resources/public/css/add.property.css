@@ -146,3 +146,7 @@ a.linkselect-link .linkselect-link-text {
     font-size: 15px;
     border-bottom: 1px solid grey;
 }
+.fields-box  {
+    margin-top: 3px !important;
+    padding-top: 2px;
+}

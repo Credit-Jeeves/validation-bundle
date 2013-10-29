@@ -35,7 +35,7 @@ class ContractType extends AbstractType
             array(
                 'input'             => 'string',
                 'widget'            => 'single_text',
-                'format'            => 'dd/MM/yyyy',
+                'format'            => 'MM/dd/yyyy',
                 'error_bubbling'    => true,
             )
         );
@@ -45,7 +45,7 @@ class ContractType extends AbstractType
             array(
                 'input'             => 'string',
                 'widget'            => 'single_text',
-                'format'            => 'dd/MM/yyyy',
+                'format'            => 'MM/dd/yyyy',
                 'error_bubbling'    => true,
             )
         );

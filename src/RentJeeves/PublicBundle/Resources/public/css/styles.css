@@ -3174,6 +3174,9 @@ label.checkbox input[type="radio"]:checked + i {
 .type-ico.e-check {
   background-position:-180px -240px;
 }
+.type-ico.cash {
+  background-position:-240px -240px;
+}
 
 .type-ico.credit-card {
   background-position:-240px -240px;
@@ -3309,6 +3312,9 @@ label.checkbox input[type="radio"]:checked + i {
 
 .clarification.e-check i {
   background-position:-180px -240px;
+}
+.clarification.cash i {
+  background-position:-255px -150px;
 }
 
 .clarification.credit-card i {
@@ -4304,4 +4310,19 @@ form label {
 .form-row.type-submit button {
     padding-left: 10px;
     outline: none;
+}
+
+.tos-input-field {
+    display: inline !important;
+    z-index: 1;
+    position: absolute;
+    margin-left: -24px;
+    margin-top: 3px;
+    width: 1px;
+    height: 1px;
+    -ms-transform: scale(0.1); /* IE */
+    -moz-transform: scale(0.1); /* FF */
+    /*
+    -webkit-transform: scale(0.1); /* Safari and Chrome */
+    -o-transform: scale(0.1); /* Opera */    
 }

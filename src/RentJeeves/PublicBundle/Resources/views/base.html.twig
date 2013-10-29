@@ -43,30 +43,9 @@
                 </div>
             </header>
             {% block payBox %}
-            <section class="pay-box">
-                <div class="pay-content">
-                    <h1>{{ 'public.base.pay.title_1' | trans() }}</h1>
-                    <div class="pay-credit clearfix">
-                        <div class="col pay">
-                            <i class="pie-el"> </i>
-                            <div>
-                                <h3>{{ 'public.base.pay.title_2' | trans() }}</h3>
-                                <h4>{{ 'public.base.pay.title_3' | trans() }}</h4>
-                                <p>{{ 'public.base.pay.title_4' | trans() }}</p>
-                            </div>
-                        </div>
-                        <div class="col credit">
-                            <i class="pie-el"> </i>
-                            <div>
-                                <h3>{{ 'public.base.pay.title_5' | trans() }}</h3>
-                                <h4>{{ 'public.base.pay.title_6' | trans() }}</h4>
-                                <p>{{ 'public.base.pay.title_7' | trans() }}</p>
-                            </div>
-                        </div>
-                        <div class="separator">|</div>
-                    </div>
-                </div>
-            </section>
+                    {{ include(
+                    'RjPublicBundle::_tenantMarketing.html.twig'
+                    ) }}
             {% endblock %}
             <div class="content">
                 {% block pricingBenefitStatement %}

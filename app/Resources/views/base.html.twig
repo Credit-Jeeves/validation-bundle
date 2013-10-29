@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>{% block title %}{{ 'project_name'|trans }}{% endblock %}</title>
-
+    {{ render(controller('CoreBundle:Session:js')) }}
     {% stylesheets
         '@CoreBundle/Resources/public/css/main.css'
         '@CoreBundle/Resources/public/css/linkselect.css'
@@ -14,6 +14,7 @@
         '@ExperianBundle/Resources/public/css/pidkiq-questions.css'
     %}
         <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+
     {% endstylesheets %}
     <!--link href="{{ asset('bundles/core/css/main.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('bundles/core/css/linkselect.css') }}" rel="stylesheet" type="text/css" />
@@ -39,6 +40,8 @@
         '@CoreBundle/Resources/public/js/common.js'
         '@CoreBundle/Resources/public/js/date.js'
         '@FOSJsRoutingBundle/Resources/public/js/router.js'
+        '@CoreBundle/Resources/public/js/jquery.cookie.js'
+        '@CoreBundle/Resources/public/js/session.js'
         'bundles/bazingaexposetranslation/js/translator.min.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

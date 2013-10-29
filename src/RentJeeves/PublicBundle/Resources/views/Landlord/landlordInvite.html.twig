@@ -4,6 +4,7 @@
 
 {% block content %}
 <section class="form-content">
+    {{ include('RjComponentBundle:Invite:_popupLandlord.html.twig') }}
 <form action="{{ path('landlord_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="landlordInviteRegister" >
     <div class="box type1">
       {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form, "inviteCodeLandlord": code }) }}
@@ -21,12 +22,28 @@
 {% endblock %}
 
 {% block javascripts %}
-
+    {{ parent() }}
+    {% javascripts '@RjPublicBundle/Resources/public/js/landlord/popup-pricing.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
 
+{% block payBox %}
+    {{ include(
+    'RjPublicBundle::_landlordMarketing.html.twig'
+    ) }}
+{% endblock %}
+
+{% block pricingBenefitStatement %}
+    <div class="pricing-benefit-statement clearfix">
+        <a href="#"  id="popup-pricing" title="Pricing">{{ 'benefit.landlord.pricing.options' | trans() }}</a>
+        <strong>{{ 'benefit.landlord.text' | trans() }}</strong>
+    </div>
+{% endblock %}
 
 {% block stylesheets %}
     {% stylesheets '@RjPublicBundle/Resources/public/css/tenant/invite.css'
+    '@RjPublicBundle/Resources/public/css/landlord/register.css'
     %}
       <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
