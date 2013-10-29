@@ -413,7 +413,12 @@
                 <td data-bind="text: phone"></td>
                 <td class="property-box ellipsis-box" 
                 data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
+                <!-- ko if: amount > 0 -->
                 <td data-bind="text: '$'+amount"></td>
+                <!-- /ko -->
+                <!-- ko if: amount == '' -->
+                <td data-bind="text: '--' + amount"></td>
+                <!-- /ko -->
                 <td data-bind="text: last_payment"></td>
                 <td class="type-box" data-bind="text: paid_to"></td>
                 <td></td>

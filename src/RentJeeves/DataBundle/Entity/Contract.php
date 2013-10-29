@@ -77,7 +77,12 @@ class Contract extends Base
      */
     public function getPayToName()
     {
-        return $this->getHolding()->getName() . ' ' . $this->getGroup()->getName();
+        $holdingName = $this->getHolding()->getName();
+        $groupName = $this->getGroup()->getName();
+        if ($holdingName != $groupName) {
+            return $holdingName . ' ' . $groupName;
+        }
+        return $holdingName;
     }
 
     /**
@@ -123,7 +128,7 @@ class Contract extends Base
         $result['last_name'] = $tenant->getLastName();
         $result['email'] = $tenant->getEmail();
         $result['phone'] = $tenant->getFomattedPhone();
-        $result['amount'] = 'undefined';
+        $result['amount'] = '';
         if ($rent = $this->getRent()) {
             $result['amount'] = $this->getRent();
         }
@@ -258,15 +263,14 @@ class Contract extends Base
             }
             $nYear = $orderDate->format('Y');
             $nMonth = $orderDate->format('m');
+            $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
+            $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
             if ($late = $order->getDaysLate()) {
-                $nMonth = $orderDate->modify('-'.$late.' days')->format('m');
-                $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                $payments[$nYear][$nMonth]['text'] = $late;
-                
-            } else {
-                $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
-                $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                
+                if ($late > 0) {
+                    $nMonth = $orderDate->modify('-'.$late.' days')->format('m');
+                    $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
+                    $payments[$nYear][$nMonth]['text'] = $late;
+                }
             }
             if (OrderStatus::NEWONE == $order->getStatus()) {
                 $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
