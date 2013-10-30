@@ -48,7 +48,7 @@ class OrderAdmin extends Admin
             ->add('updated_at', 'date')
             ->add('type')
             ->add('status')
-            ->add('heartland_transaction_id')
+            ->add('heartland_transaction_ids')
             ->add('operation_type')
             ->add('amount', 'money')
             ->add('group_name', 'string', ['template' => 'AdminBundle:CRUD:payments_group_landlords.html.twig'])
@@ -62,6 +62,24 @@ class OrderAdmin extends Admin
             ->add('user.email')
             ->add('type')
             ->add('amount')
+            ->add('transaction_id', 'doctrine_orm_callback', [
+                'callback' => function($queryBuilder, $alias, $field, $value) {
+                    if (empty($value['value'])) {
+                        return;
+                    }
+                    $queryBuilder
+                        ->innerJoin($alias.'.heartlands', $alias.'_h')
+                        ->where($alias.'_h.transactionId = :id')
+                        ->setParameter('id', $value['value']);
+
+                    if ($queryBuilder->getQuery()->getResult()) {
+                        return true;
+                    }
+
+                    return false;
+                },
+                'field_type' => 'text'
+            ])
             ->add('status')
             ->add(
                 'created_at',

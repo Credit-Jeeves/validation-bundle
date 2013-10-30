@@ -120,6 +120,25 @@ class Order extends BaseOrder
         return $result;
     }
 
+    /**
+     * @param bool $asString Defines whether to return a string or an array
+     * @param string $glue A glue for string result
+     * @return array|string
+     */
+    public function getHeartlandTransactionIds($asString = true, $glue = ', ')
+    {
+        $result = array();
+        foreach ($this->getHeartlands() as $heartland) {
+            $result[] = $heartland->getTransactionId();
+        }
+
+        if ($asString) {
+            return implode($glue, $result);
+        }
+
+        return $result;
+    }
+
     public function countDaysLate()
     {
         $operation = $this->getOperations()->last();
