@@ -6,6 +6,7 @@ function ContractDetails() {
   this.edit = ko.observable(false);
   this.invite = ko.observable(false);
   this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
+  this.errors = ko.observableArray([]);
   this.cancelEdit = function(data)
   {
     $('#tenant-edit-property-popup').dialog('close');
@@ -139,6 +140,9 @@ function ContractDetails() {
     });
     
   };
+  this.countErrors = ko.computed(function(){
+    return parseInt(self.errors().length);
+  });  
   this.reviewContract = function(data) {
     $('#unit-edit').html(' ');
     $('#tenant-review-property-popup').dialog('open');
@@ -148,7 +152,6 @@ function ContractDetails() {
     self.review(true);
   };
   this.approveSave = function() {
-    $('#tenant-approve-property-popup').dialog('close');
     var data = self.contract();
     data.status = 'approved';
     self.contract(data);
@@ -166,7 +169,7 @@ function ContractDetails() {
     self.approve(false);
   };
   this.saveContract = function(){
-    $('#tenant-edit-property-popup').dialog('close');
+    
     var contract = self.contract();
     contract.finish = $('#contract-edit-finish').val() || contract.finish;
     contract.start = $('#contract-edit-start').val() || contract.start;
@@ -184,8 +187,17 @@ function ContractDetails() {
         'contract': self.contract()
       },
       success: function(response) {
-        self.clearDetails();
-        ContractsViewModel.ajaxAction();
+        if (typeof response.errors == 'undefined') {
+          $('#tenant-edit-property-popup').dialog('close');
+          $('#tenant-approve-property-popup').dialog('close');
+          self.clearDetails();
+          ContractsViewModel.ajaxAction();
+        } else {
+          self.errors(response.errors);
+          if (self.contract().status == 'approved') {
+            self.approveContract(self.contract());
+          }
+        }
       }
     });
   };

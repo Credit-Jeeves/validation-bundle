@@ -22,11 +22,26 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
         $this->assertCount(2, $contractPendings, 'Wrong number of pending');
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
+        $this->page->pressButton('approve.tenant');
+        $this->session->wait($this->timeout, "$('div.attention-box').is(':visible')");
+        $this->assertNotNull($errors = $this->page->findAll('css', 'div.attention-box ul.default li'));
+        $this->assertCount(2, $errors, 'Wrong number of errors');
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $amount->setValue('200');
+        $start = $this->page->find('css', '#contractApproveStart');
+        $this->assertNotNull($start);
+        $start->click();
+        $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
+        $this->assertNotNull($today);
+        $today->click();
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+        $finish = $this->page->find('css', '#contractApproveFinish');
+        $this->assertNotNull($finish);
+        $finish->click();
         $this->page->pressButton('approve.tenant');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
