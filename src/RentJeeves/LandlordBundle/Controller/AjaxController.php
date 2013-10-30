@@ -480,7 +480,7 @@ class AjaxController extends Controller
             $em->persist($contract);
         }
         $em->flush();
-        if (!empty($errors)) {
+        if (!empty($errors) & 'edit' == $action) {
             $response['errors'] = $errors;
         }
         return new JsonResponse($response);
