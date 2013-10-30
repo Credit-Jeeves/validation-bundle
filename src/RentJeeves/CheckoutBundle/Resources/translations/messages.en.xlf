@@ -70,8 +70,8 @@
                 <source>checkout.error.date.valid</source>
                 <target>Date is invalid.</target>
             </trans-unit>
-            <trans-unit id="checkout.error.date_of_birth.valid">
-                <source>checkout.error.date_of_birth.valid</source>
+            <trans-unit id="checkout.error.date_of_birth.invalid">
+                <source>checkout.error.date_of_birth.invalid</source>
                 <target>Date of birth is invalid.</target>
             </trans-unit>
             <trans-unit id="checkout.error.date.not_in_time">
