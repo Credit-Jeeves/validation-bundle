@@ -718,7 +718,7 @@
             </trans-unit>
            <trans-unit id="conflict.resolve.email">
                 <source>conflict.resolve.email</source>
-                <target>Send email reminder to tenant</target>
+                    <target>Send email reminder to tenant</target>
             </trans-unit>
            <trans-unit id="conflict.resolve.paid">
                 <source>conflict.resolve.paid</source>
@@ -1425,6 +1425,22 @@
             <trans-unit id="you.tenant.has.no.payment">
                 <source>you.tenant.has.no.payment</source>
                 <target>Your tenant has not set up a payment yet.</target>
+            </trans-unit>
+            <trans-unit id="send.reminder">
+                <source>send.reminder</source>
+                <target>Send Reminder</target>
+            </trans-unit>
+            <trans-unit id="revoke.inv">
+                <source>revoke.inv</source>
+                <target><![CDATA[Revoke <br /> Invitation]]></target>
+            </trans-unit>
+            <trans-unit id="yes.revoke.inv">
+                <source>yes.revoke.inv</source>
+                <target>Yes, Revoke Invitation</target>
+            </trans-unit>
+            <trans-unit id="revoke.inv.ask">
+                <source>revoke.inv.ask</source>
+                <target>Are you sure you want to revoke this invitation?</target>
             </trans-unit>
         </body>
     </file>

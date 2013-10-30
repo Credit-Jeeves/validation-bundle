@@ -640,6 +640,37 @@ class AjaxController extends Controller
         return new JsonResponse($data);
     }
 
+    /**
+     * @Route(
+     *     "/revoke/invitation/{contractId}",
+     *     name="revoke_invitation",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function revokeInvitation($contractId)
+    {
+        return new JsonResponse(array());
+    }
+
+    /**
+     * @Route(
+     *     "/send/invitation/reminder/{contractId}",
+     *     name="send_reminder_invitation",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function sendReminderInvite($contractId)
+    {
+        return new JsonResponse(array());
+    }
+
+
     private function datagridPagination($total, $limit)
     {
         $result = array();

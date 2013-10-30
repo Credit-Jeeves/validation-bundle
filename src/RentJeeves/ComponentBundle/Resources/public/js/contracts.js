@@ -189,6 +189,31 @@ function ContractDetails() {
       }
     });
   };
+  this.revokeInvitation = function() {
+      jQuery('#tenant-revoke-invotation').showOverlay();
+      $.ajax({
+          url: Routing.generate('revoke_invitation', {'contractId': self.contract().id }),
+          type: 'GET',
+          dataType: 'json',
+          success: function(response) {
+              self.clearDetails();
+              ContractsViewModel.ajaxAction();
+              $('#tenant-revoke-invotation').dialog('close');
+          }
+      });
+  };
+
+  this.sendReminderInvition = function() {
+     jQuery('#tenant-review-property-popup').showOverlay();
+     $.ajax({
+        url: Routing.generate('send_reminder_invitation', {'contractId': self.contract().id }),
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            $('#tenant-review-property-popup').dialog('close');
+        }
+     });
+  };
 }
 
 function Contracts() {
@@ -373,6 +398,14 @@ $(document).ready(function(){
   });
 
   $('#tenant-review-property-popup').dialog({
+      position: "center",
+      autoOpen: false,
+      resizable: false,
+      modal: true,
+      width:'520px'
+  });
+
+  $('#tenant-revoke-invotation').dialog({
       position: "center",
       autoOpen: false,
       resizable: false,
