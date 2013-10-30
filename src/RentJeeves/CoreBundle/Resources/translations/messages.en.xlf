@@ -1442,6 +1442,14 @@
                 <source>revoke.inv.ask</source>
                 <target>Are you sure you want to revoke this invitation?</target>
             </trans-unit>
+            <trans-unit id="contract.not.found">
+                <source>contract.not.found</source>
+                <target>Contract not found.</target>
+            </trans-unit>
+            <trans-unit id="contract.reminder.already.send">
+                <source>contract.reminder.error.already.send</source>
+                <target>You can not so often send reminders for the same contract.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

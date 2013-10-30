@@ -50,3 +50,7 @@ fixtures:
     name: rjOrderReceipt.html
   email_25:
     name: rjOrderError.html
+  email_26:
+    name: rjTenantInviteReminder.html
+  email_27:
+    name: rjTenantInviteReminderPayment.html

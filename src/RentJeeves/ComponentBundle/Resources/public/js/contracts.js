@@ -197,9 +197,15 @@ function ContractDetails() {
           dataType: 'json',
           success: function(response) {
               jQuery('#tenant-revoke-invotation').hideOverlay();
-              $('#tenant-revoke-invotation').dialog('close');
-              self.clearDetails();
-              ContractsViewModel.ajaxAction();
+              if (typeof response.error !== 'undefined') {
+                  $('#tenant-review-property-popup').find('.error').html(response.error);
+                  $('#tenant-review-property-popup').find('.error').show();
+              } else {
+                  $('#tenant-review-property-popup').find('.error').hide();
+                  $('#tenant-revoke-invotation').dialog('close');
+                  self.clearDetails();
+                  ContractsViewModel.ajaxAction();
+              }
           }
       });
   };
@@ -212,6 +218,12 @@ function ContractDetails() {
         dataType: 'json',
         success: function(response) {
             jQuery('#tenant-review-property-popup').hideOverlay();
+            if (typeof response.error !== 'undefined') {
+               $('#tenant-review-property-popup').find('.error').html(response.error);
+               $('#tenant-review-property-popup').find('.error').show();
+            } else {
+               $('#tenant-review-property-popup').find('.error').hide();
+            }
         }
      });
   };
