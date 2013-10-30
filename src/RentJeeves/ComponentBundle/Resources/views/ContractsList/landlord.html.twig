@@ -8,7 +8,7 @@
         <h1>{{ 'edit.tenant.info'|trans }}</h1>
         <div class="clearfix col-box" data-bind="with: contract">
             <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrorsEdit() > 0">
-                <h3>{{ 'tenant.error.description'|trans|raw }}</h3>
+                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
                 <ul class="default">
                     <!-- ko foreach: $root.errorsEdit() -->
                     <li data-bind="text: $data"></li>
@@ -90,7 +90,7 @@
         <div class="clearfix col-box"  data-bind="with: contract">
             <div class="information-box pie-el">{{'pending.tenant.info'|trans}}</div>
             <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrorsApprove() > 0">
-                <h3>{{ 'tenant.error.description'|trans|raw }}</h3>
+                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
                 <ul class="default">
                     <!-- ko foreach: $root.errorsApprove() -->
                     <li data-bind="text: $data"></li>

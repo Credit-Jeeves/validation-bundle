@@ -1434,10 +1434,6 @@
                 <source>you.tenant.has.no.payment</source>
                 <target>Your tenant has not set up a payment yet.</target>
             </trans-unit>
-            <trans-unit id="tenant.error.description">
-                <source>tenant.error.description</source>
-                <target><![CDATA[Oops! It looks like there are some errors &ndash; please see details below.]]></target>
-            </trans-unit>
         </body>
     </file>
 </xliff>
