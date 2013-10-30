@@ -92,12 +92,12 @@ class PaymentCommand extends ContainerAwareCommand
             $order = new Order();
             $operation->setType(OperationType::RENT);
             $operation->setContract($contract);
-
+            // Fee would be processed on heartland side
             if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-                $fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
+                //$fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
                 $order->setType(OrderType::HEARTLAND_CARD);
             } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-                $fee = (double)$this->getContainer()->getParameter('payment_bank_fee');
+                //$fee = (double)$this->getContainer()->getParameter('payment_bank_fee');
                 $order->setType(OrderType::HEARTLAND_BANK);
             }
 
