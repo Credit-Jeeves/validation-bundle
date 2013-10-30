@@ -62,24 +62,28 @@ class OrderAdmin extends Admin
             ->add('user.email')
             ->add('type')
             ->add('amount')
-            ->add('transaction_id', 'doctrine_orm_callback', [
-                'callback' => function($queryBuilder, $alias, $field, $value) {
-                    if (empty($value['value'])) {
-                        return;
-                    }
-                    $queryBuilder
-                        ->innerJoin($alias.'.heartlands', $alias.'_h')
-                        ->where($alias.'_h.transactionId = :id')
-                        ->setParameter('id', $value['value']);
+            ->add(
+                'transaction_id',
+                'doctrine_orm_callback',
+                [
+                    'callback' => function($queryBuilder, $alias, $field, $value) {
+                        if (empty($value['value'])) {
+                            return;
+                        }
+                        $queryBuilder
+                            ->innerJoin($alias.'.heartlands', $alias.'_h')
+                            ->where($alias.'_h.transactionId = :id')
+                            ->setParameter('id', $value['value']);
 
-                    if ($queryBuilder->getQuery()->getResult()) {
-                        return true;
-                    }
+                        if ($queryBuilder->getQuery()->getResult()) {
+                            return true;
+                        }
 
-                    return false;
-                },
-                'field_type' => 'text'
-            ])
+                        return false;
+                    },
+                    'field_type' => 'text'
+                ]
+            )
             ->add('status')
             ->add(
                 'created_at',
