@@ -7,6 +7,14 @@
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'edit.tenant.info'|trans }}</h1>
         <div class="clearfix col-box" data-bind="with: contract">
+            <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrorsEdit() > 0">
+                <h3>{{ 'tenant.error.description'|trans|raw }}</h3>
+                <ul class="default">
+                    <!-- ko foreach: $root.errorsEdit() -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+            </div>
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'tenant.info'|trans }}</span>
@@ -81,17 +89,14 @@
         <h1>{{ 'approve.tenant.info'|trans }}</h1>
         <div class="clearfix col-box"  data-bind="with: contract">
             <div class="information-box pie-el">{{'pending.tenant.info'|trans}}</div>
-            
-            
-            <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
-                <h3>Oops! It looks like there are some errors &ndash; please see details below.</h3>
+            <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrorsApprove() > 0">
+                <h3>{{ 'tenant.error.description'|trans|raw }}</h3>
                 <ul class="default">
-                <!-- ko foreach: $root.errors() -->
-                <li data-bind="text: $data"></li>
-                <!-- /ko -->
+                    <!-- ko foreach: $root.errorsApprove() -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
                 </ul>
             </div>
-        
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'tenant.info'|trans }}</span>

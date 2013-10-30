@@ -101,6 +101,9 @@ class TenantCase extends BaseTestCase
             "$('.half-of-right').val(' ');"
         );
 
+        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
+
         $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
         $amount->setValue('200');
 
@@ -126,13 +129,15 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($future);
         $future[count($future)-1]->click();
 
-
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
         $start = $contractEditStart->getValue();
         
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditFinish'));
         $finish = $contractEditStart->getValue();
-        
+
+        $this->assertNotNull($unitEdit = $this->page->find('css', '#unit-edit'));
+        $unitEdit->selectOption('2-e'); //
+
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -142,9 +147,11 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($editStart = $this->page->find('css', '#contractApproveStart'));
         $this->assertNotNull($editFinish = $this->page->find('css', '#contractApproveFinish'));
         $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $this->assertNotNull($address = $this->page->find('css', '#tenant-approve-property-popup .addressDiv'));
         $this->assertEquals($start, $editStart->getValue(), 'Wrong edit start');
         $this->assertEquals($finish, $editFinish->getValue(), 'Wrong edit finish');
         $this->assertEquals('200', $amount->getValue(), 'Wrong edit amount');
+        $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong edit unit');
         $this->logout();
     }
 
