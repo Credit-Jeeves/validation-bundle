@@ -25,7 +25,8 @@ class SsnType extends AbstractType
                     'error_bubbling' => true,
                     'attr' => array(
                         'class' => 'user-margin user-ssn1 user-ssn',
-                        'maxlength' => 3
+                        'maxlength' => 3,
+                        'tabindex'  => 1
                     ),
                     'constraints' => array(
                         new NotBlank(),
@@ -45,7 +46,8 @@ class SsnType extends AbstractType
                     'error_bubbling' => true,
                     'attr' => array(
                         'class' => 'user-margin user-ssn2 user-ssn',
-                        'maxlength' => 2
+                        'maxlength' => 2,
+                        'tabindex'  => 2
                     ),
                     'label' => false,
                 )
@@ -57,7 +59,8 @@ class SsnType extends AbstractType
                     'error_bubbling' => true,
                     'attr' => array(
                         'class' => 'user-margin user-ssn3 user-ssn',
-                        'maxlength' => 4
+                        'maxlength' => 4,
+                        'tabindex'  => 3
                     ),
                     'label' => false,
                 )

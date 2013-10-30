@@ -6,7 +6,9 @@ function ContractDetails() {
   this.edit = ko.observable(false);
   this.invite = ko.observable(false);
   this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
-  this.errors = ko.observableArray([]);
+  this.errorsApprove = ko.observableArray([]);
+  this.errorsEdit = ko.observableArray([]);
+
   this.cancelEdit = function(data)
   {
     $('#tenant-edit-property-popup').dialog('close');
@@ -44,6 +46,8 @@ function ContractDetails() {
   };
 
   this.editContract = function(data) {
+    self.errorsApprove([]);
+    self.errorsEdit([]);
     $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('close');
     $('#tenant-edit-property-popup').dialog('open');
@@ -98,6 +102,8 @@ function ContractDetails() {
     });
   };
   this.approveContract = function(data) {
+    self.errorsApprove([]);
+    self.errorsEdit([]);
     $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('open');
     self.clearDetails();
@@ -140,9 +146,15 @@ function ContractDetails() {
     });
     
   };
-  this.countErrors = ko.computed(function(){
-    return parseInt(self.errors().length);
-  });  
+
+  this.countErrorsEdit = ko.computed(function(){
+    return parseInt(self.errorsEdit().length);
+  });
+
+  this.countErrorsApprove = ko.computed(function(){
+    return parseInt(self.errorsApprove().length);
+  });
+
   this.reviewContract = function(data) {
     $('#unit-edit').html(' ');
     $('#tenant-review-property-popup').dialog('open');
@@ -169,11 +181,16 @@ function ContractDetails() {
     self.approve(false);
   };
   this.saveContract = function(){
-    
+    if (self.edit()) {
+        var id = '#tenant-edit-property-popup';
+    } else {
+        var id = '#tenant-approve-property-popup';
+    }
+    jQuery(id).showOverlay();
     var contract = self.contract();
     contract.finish = $('#contract-edit-finish').val() || contract.finish;
     contract.start = $('#contract-edit-start').val() || contract.start;
-    //var unitId = $("#unit-edit :selected").val();
+    var unitId = $("#unit-edit :selected").val();
 
     if (typeof unitId != 'undefined') {
         contract.unit_id = $("#unit-edit :selected").val();
@@ -187,17 +204,26 @@ function ContractDetails() {
         'contract': self.contract()
       },
       success: function(response) {
+        jQuery(id).hideOverlay();
+        self.errorsApprove([]);
+        self.errorsEdit([]);
         if (typeof response.errors == 'undefined') {
           $('#tenant-edit-property-popup').dialog('close');
           $('#tenant-approve-property-popup').dialog('close');
           self.clearDetails();
           ContractsViewModel.ajaxAction();
         } else {
-          self.errors(response.errors);
-          if (self.contract().status == 'approved') {
-            self.approveContract(self.contract());
+          if (self.edit()) {
+              self.editContract(self.contract());
+              self.errorsEdit(response.errors);
+          } else {
+              if (self.contract().status == 'approved') {
+                  self.approveContract(self.contract());
+              }
+              self.errorsApprove(response.errors);
           }
         }
+
       }
     });
   };

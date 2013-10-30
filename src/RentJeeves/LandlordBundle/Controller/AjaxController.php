@@ -453,7 +453,7 @@ class AjaxController extends Controller
             $errors[] = $translator->trans('contract.error.rent');
         }
         if (empty($details['start'])) {
-            $errors[] = $translator->trans('contract.erros.start');
+            $errors[] = $translator->trans('contract.error.start');
         }
         $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
