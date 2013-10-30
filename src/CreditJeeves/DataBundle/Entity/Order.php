@@ -214,7 +214,7 @@ class Order extends BaseOrder
      */
     public function getGroupName()
     {
-        if ($contract = $this->getContract()){
+        if ($contract = $this->getContract()) {
             return $contract->getGroup()->getName();
         }
 
