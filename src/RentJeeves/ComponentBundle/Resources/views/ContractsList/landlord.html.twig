@@ -3,6 +3,86 @@
 
 <div id="contract-actions">
 
+    <!-- Action Revoke-->
+    <div id="tenant-revoke-invotation" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'Information'|trans }}</h1>
+        <div class="clearfix col-box"  data-bind="with: contract">
+            <div class="attention-box pie-el">
+                {{ 'revoke.inv.ask'|trans }}
+            </div>
+            <div class="attention-box pie-el error" style="display: none;">
+            </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'tenant.info'|trans }}</span>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'name'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: tenant"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: address"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'phone'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value"  data-bind="text: phone"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'email'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: email"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'request.payments'|trans }}</span>
+                    <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value left">{{ 'monthly'|trans }} </span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'amount'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value left" data-bind="text: amount"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'start'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value left" id="contract-edit-start" data-bind="text: start"></span>
+                        <label class="fixed">{{ 'end'|trans }}</label>
+                        <span class="value left" id="contract-edit-finish" data-bind="text: finish"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-button-box">
+            <button class="button dark" data-bind="click: $root.revokeInvitation">
+                <span>{{ 'yes.revoke.inv'|trans }}</span>
+            </button>
+            <button class="button grey" onclick="
+                $('#tenant-review-property-popup').dialog( 'open' );
+                $('#tenant-revoke-invotation').dialog( 'close' );
+                false;"
+            >
+                <span>{{ 'no.remove.property'|trans }}</span>
+            </button>
+        </div>
+    </div>
+    <!-- Action Revoke -->
     <!-- Action Edit -->
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'edit.tenant.info'|trans }}</h1>
@@ -160,6 +240,8 @@
               {{ 'you.tenant.has.no.payment'|trans }}
           </div>
           <!-- /ko -->
+        <div class="attention-box pie-el error" style="display: none;">
+        </div>
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'tenant.info'|trans }}</span>
@@ -217,10 +299,18 @@
           </div>
         </div>
       </div>
-      <div class="footer-button-box">
+      <div class="footer-button-box" data-bind="with: contract">
+          <!-- ko if: reminder_revoke -->
+          <button class="button" data-bind="click: $root.sendReminderInvition"><span>{{ 'send.reminder'|trans }}</span></button>
+          <!-- /ko -->
           <button class="button grey" onclick="$('#tenant-review-property-popup').dialog( 'close' ); return false;">
             <span>{{ 'legend.close'|trans|capitalize }}</span>
           </button>
+          <!-- ko if: reminder_revoke -->
+            <a href="#" class="link" onclick="$('#tenant-revoke-invotation').dialog('open');$('#tenant-review-property-popup').dialog('close');false;">
+                {{ 'revoke.inv'|trans|raw}}
+            </a>
+          <!-- /ko -->
       </div>
     </div>
     <!-- Action Add Tenant-->

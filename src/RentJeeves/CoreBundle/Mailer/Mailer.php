@@ -203,4 +203,35 @@ class Mailer extends BaseMailer
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
+
+    public function sendRjTenantInviteReminder($tenant, $landlord, $contract, $sTemplate = 'rjTenantInviteReminder')
+    {
+        $unit = $contract->getUnit();
+        $vars = array(
+            'fullNameLandlord'      => $landlord->getFullName(),
+            'nameTenant'            => $tenant->getFirstName(),
+            'address'               => $contract->getProperty()->getAddress(),
+            'unitName'              => $unit ? $unit->getName() : '',
+            'inviteCode'            => $tenant->getInviteCode(),
+        );
+
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendRjTenantInviteReminderPayment(
+        $tenant,
+        $landlord,
+        $contract,
+        $sTemplate = 'rjTenantInviteReminderPayment'
+    ) {
+        $unit = $contract->getUnit();
+        $vars = array(
+            'fullNameLandlord'      => $landlord->getFullName(),
+            'nameTenant'            => $tenant->getFirstName(),
+            'address'               => $contract->getProperty()->getAddress(),
+            'unitName'              => $unit ? $unit->getName() : '',
+        );
+
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
 }

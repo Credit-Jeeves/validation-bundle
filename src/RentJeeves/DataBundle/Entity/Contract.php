@@ -151,6 +151,7 @@ class Contract extends Base
         $payments = $this->getPayments();
         $payment = $payments->first();
 
+        $result['reminder_revoke'] = ($this->getStatus() === ContractStatus::INVITE)? true : false;
         $result['payment_setup'] = ($payment)? true : false;
         $result['search'] = $this->getSearch();
         return $result;
