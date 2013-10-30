@@ -196,9 +196,10 @@ function ContractDetails() {
           type: 'GET',
           dataType: 'json',
           success: function(response) {
+              jQuery('#tenant-revoke-invotation').hideOverlay();
+              $('#tenant-revoke-invotation').dialog('close');
               self.clearDetails();
               ContractsViewModel.ajaxAction();
-              $('#tenant-revoke-invotation').dialog('close');
           }
       });
   };
@@ -210,7 +211,7 @@ function ContractDetails() {
         type: 'GET',
         dataType: 'json',
         success: function(response) {
-            $('#tenant-review-property-popup').dialog('close');
+            jQuery('#tenant-review-property-popup').hideOverlay();
         }
      });
   };
