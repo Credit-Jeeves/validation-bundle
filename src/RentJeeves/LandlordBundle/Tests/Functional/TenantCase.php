@@ -9,6 +9,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 class TenantCase extends BaseTestCase
 {
     protected $timeout = 30000;
+
     /**
      * @test
      */
@@ -96,11 +97,35 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
         $amount->setValue('200');
+
+        $start = $this->page->find('css', '#contractEditStart');
+        $this->assertNotNull($start);
+        $start->click();
+
+        $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
+        $this->assertNotNull($today);
+        $today->click();
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
+        $finish = $this->page->find('css', '#contractEditFinish');
+        $this->assertNotNull($finish);
+        $finish->click();
+        $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
+
+        $next = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-next');
+        $this->assertNotNull($next);
+        $next->click();
+
+        $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
+        $this->assertNotNull($future);
+        $future[count($future)-1]->click();
+
+
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
-        $contractEditStart->setValue('08/01/2013');
+        $start = $contractEditStart->getValue();
         
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditFinish'));
-        $contractEditStart->setValue('08/25/2013');
+        $finish = $contractEditStart->getValue();
         
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
@@ -111,8 +136,8 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($editStart = $this->page->find('css', '#contractApproveStart'));
         $this->assertNotNull($editFinish = $this->page->find('css', '#contractApproveFinish'));
         $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
-        $this->assertEquals('08/01/2013', $editStart->getValue(), 'Wrong edit start');
-        $this->assertEquals('08/25/2013', $editFinish->getValue(), 'Wrong edit finish');
+        $this->assertEquals($start, $editStart->getValue(), 'Wrong edit start');
+        $this->assertEquals($finish, $editFinish->getValue(), 'Wrong edit finish');
         $this->assertEquals('200', $amount->getValue(), 'Wrong edit amount');
         $this->logout();
     }
@@ -195,10 +220,30 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'test@email.ru',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt'  => '01/08/2013',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAt' => '01/12/2013',
             )
         );
+        $start = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt');
+        $this->assertNotNull($start);
+        $start->click();
+
+        $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
+        $this->assertNotNull($today);
+        $today->click();
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
+        $finish = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAt');
+        $this->assertNotNull($finish);
+        $finish->click();
+        $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
+
+        $next = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-next');
+        $this->assertNotNull($next);
+        $next->click();
+
+        $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
+        $this->assertNotNull($future);
+        $future[count($future)-1]->click();
+
         $this->page->pressButton('invite.tenant');
 
         //Check created contracts
@@ -272,11 +317,33 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'robyn@rentrack.com',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt'  => '01/08/2013',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAt' => '01/12/2013',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200'
             )
         );
+
+        $start = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt');
+        $this->assertNotNull($start);
+        $start->click();
+
+        $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
+        $this->assertNotNull($today);
+        $today->click();
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+
+        $finish = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAt');
+        $this->assertNotNull($finish);
+        $finish->click();
+        $this->session->wait($this->timeout, "$('#ui-datepicker-div').is(':visible')");
+
+        $next = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-next');
+        $this->assertNotNull($next);
+        $next->click();
+
+        $future = $this->page->findAll('css', '#ui-datepicker-div .ui-state-default');
+        $this->assertNotNull($future);
+        $future[count($future)-1]->click();
+
+
         $this->session->wait($this->timeout, "$('#userExistMessage').is(':visible')");
         $this->page->pressButton('invite.tenant');
 
