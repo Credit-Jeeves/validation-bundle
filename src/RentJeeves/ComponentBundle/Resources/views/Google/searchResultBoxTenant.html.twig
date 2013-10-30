@@ -4,7 +4,7 @@
     <div id="search-result-text" class="search-result-text">
       {% set i = 1 %}
       {% if countProperyInvite > 0 %}
-        <h4 class="titleSearch">
+        <h4 class="titleSearch notFoundTitle">
           {{ 'notfoundrentalmessage'|trans|raw }}
         </h4>
         <ul>
@@ -34,7 +34,7 @@
       {% endif %}
 
       {% if countProperyHaveLandlord > 0 %}
-        <h4 class="titleSearch">
+        <h4 class="titleSearch titleExistRental">
           {% if countProperyHaveLandlord == 1 %}
             {{ 'tenant.found.match'|trans }}
           {% else %}
@@ -49,6 +49,7 @@
               <a href="#" class="moveToLocation" rel="{{ i }}">
                 <span class="titleAddress">{{ prop.number }} {{ prop.street }}</span><br>
                 <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
+                <input type="hidden" value="{{ 'you.rental.in.city.area'|trans({'%city%': prop.city, '%area%':prop.area}) }}" class="titleMach">
               </a>
               </strong>
               <div class="form-row clearfix">
@@ -88,3 +89,4 @@
   <div id="shade-top"> </div>
   <div id="shade-left"> </div>
 </div>
+<input type="hidden" class="titlebefore" value="">

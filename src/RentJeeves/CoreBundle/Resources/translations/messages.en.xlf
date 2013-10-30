@@ -1418,6 +1418,14 @@
                 <source>common.notice.information.updated</source>
                 <target>Information has been updated</target>
             </trans-unit>
+            <trans-unit id="you.rental.in.city.area">
+                <source>you.rental.in.city.area</source>
+                <target>Your rental in %city%, %area%:</target>
+            </trans-unit>
+            <trans-unit id="you.tenant.has.no.payment">
+                <source>you.tenant.has.no.payment</source>
+                <target>Your tenant has not set up a payment yet.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

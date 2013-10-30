@@ -17,3 +17,7 @@ form li, #errorForm {
 .wrapper .pay-content {
     height: 312px;
 }
+.register-tos {
+    margin-left: 20px !important;
+    width: 380px !important;
+}

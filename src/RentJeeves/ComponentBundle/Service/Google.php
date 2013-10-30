@@ -89,7 +89,14 @@ class Google
             return true;
         }
 
-        throw new \Exception("Error processing(save) google request for Property ID =".$property->getId(), 1);
+        throw new \Exception(
+            sprintf(
+                "Error processing(save) google request for Property ID = %s, Error: %s",
+                $property->getId(),
+                print_r($result, true)
+            )
+        );
+
     }
 
     /**

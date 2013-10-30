@@ -155,7 +155,11 @@
     <div id="tenant-review-property-popup" class="pricing-popup dashboard-popup properties-popup">
       <h1>{{ 'Information'|trans }}</h1>
       <div class="clearfix col-box"  data-bind="with: contract">
-
+          <!-- ko if: !payment_setup && status == 'INVITE' -->
+          <div id="userpayment" class="information-box pie-el">
+              {{ 'you.tenant.has.no.payment'|trans }}
+          </div>
+          <!-- /ko -->
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'tenant.info'|trans }}</span>
@@ -215,7 +219,7 @@
       </div>
       <div class="footer-button-box">
           <button class="button grey" onclick="$('#tenant-review-property-popup').dialog( 'close' ); return false;">
-            <span>{{ 'cancel'|trans }}</span>
+            <span>{{ 'legend.close'|trans|capitalize }}</span>
           </button>
       </div>
     </div>
@@ -413,7 +417,12 @@
                 <td data-bind="text: phone"></td>
                 <td class="property-box ellipsis-box" 
                 data-bind="text: address, event: { dblclick: $root.filterAddress }"></td>
+                <!-- ko if: amount > 0 -->
                 <td data-bind="text: '$'+amount"></td>
+                <!-- /ko -->
+                <!-- ko if: amount == '' -->
+                <td data-bind="text: '--' + amount"></td>
+                <!-- /ko -->
                 <td data-bind="text: last_payment"></td>
                 <td class="type-box" data-bind="text: paid_to"></td>
                 <td></td>
