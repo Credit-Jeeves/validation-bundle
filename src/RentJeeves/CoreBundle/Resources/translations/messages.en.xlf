@@ -1434,6 +1434,10 @@
                 <source>you.tenant.has.no.payment</source>
                 <target>Your tenant has not set up a payment yet.</target>
             </trans-unit>
+            <trans-unit id="unit.live.it.empty">
+                <source>unit.live.it.empty</source>
+                <target>leave blank if this is a single property</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
