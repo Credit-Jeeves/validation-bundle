@@ -847,7 +847,7 @@
             </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
-                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefor agree to handle any associated disputes arising from the information you provide.</target>
+                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to handle any associated disputes arising from the information you provide.</target>
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
@@ -1384,7 +1384,7 @@
             </trans-unit>
             <trans-unit id="order.receipt.footer">
                 <source>order.receipt.footer</source>
-                <target>This payment will appear on your statement as RENTTRK* followed by your property or landlord name.</target>
+                <target>This payment will appear on your statement as RENTTRK or RENTTRACK followed by your property or landlord name.</target>
             </trans-unit>
             <trans-unit id="order.error.title">
                 <source>order.error.title</source>
