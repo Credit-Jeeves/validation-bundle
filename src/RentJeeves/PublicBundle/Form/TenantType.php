@@ -36,7 +36,13 @@ class TenantType extends AbstractType
             'repeated',
             array(
                 'first_name'    => 'Password',
+                'first_options' => array(
+                    'label' => 'Password*'
+                 ),
                 'second_name'   => 'Verify_Password',
+                'second_options' => array(
+                    'label' => 'Verify Password*'
+                 ),
                 'type'          => 'password',
                 'mapped'        => false,
                 'constraints'   => array(

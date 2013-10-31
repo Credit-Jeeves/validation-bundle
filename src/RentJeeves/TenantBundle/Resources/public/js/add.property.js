@@ -1,10 +1,12 @@
 $(document).ready(function(){
 
     function initScroll() {
+      $('.slimScrollDiv').css('height','310px');
+      $('#search-result-text').css('height','310px');
       $('#search-result-text').slimScroll({
         alwaysVisible:true,
         width:307,
-        height:295
+        height:310
       });
     }
 
@@ -263,9 +265,28 @@ $(document).ready(function(){
       }
     });
 
+    function notFountTitle(isHide)
+    {
+        if ($('.notFoundTitle').length <= 0) {
+            return;
+        }
+
+        if (isHide) {
+            $('.notFoundTitle').hide();
+            return;
+        }
+
+        $('.notFoundTitle').show();
+    }
+
+
+
     $('.thisIsMyRental').click(function(){
         hideError();
+        var titleNew = $(this).parent().parent().parent().parent().find('.titleMach').val();
         if($(this).hasClass('match')) {
+          notFountTitle(false);
+          $('.titleExistRental').html($('.titlebefore').val());
           $(this).addClass('greyTenant');
           propertyId = $(this).attr('data');
           $.each($('.addressText'), function(index, value) {
@@ -283,7 +304,10 @@ $(document).ready(function(){
           initScroll();
           $(this).removeClass('match');
         } else {
+          notFountTitle(true);
           $(this).removeClass('greyTenant');
+          $('.titlebefore').val($('.titleExistRental').html());
+          $('.titleExistRental').html(titleNew);
           propertyId = $(this).attr('data');
           $.each($('.addressText'), function(index, value) {
               var id = $(this).attr('data');

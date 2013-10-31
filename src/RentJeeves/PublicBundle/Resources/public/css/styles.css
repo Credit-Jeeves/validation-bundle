@@ -3054,7 +3054,7 @@ label.checkbox input[type="radio"]:checked + i {
 }
 
 .table-wrap .properties-table td {
-  padding:7px 12px;
+  padding:12px 12px 12px;
   color:#000;
   font-family:"PT Sans",sans-serif;
   font-size:12px;
@@ -4310,4 +4310,19 @@ form label {
 .form-row.type-submit button {
     padding-left: 10px;
     outline: none;
+}
+
+.tos-input-field {
+    display: inline !important;
+    z-index: 1;
+    position: absolute;
+    margin-left: -24px;
+    margin-top: 3px;
+    width: 1px;
+    height: 1px;
+    -ms-transform: scale(0.1); /* IE */
+    -moz-transform: scale(0.1); /* FF */
+    /*
+    -webkit-transform: scale(0.1); /* Safari and Chrome */
+    -o-transform: scale(0.1); /* Opera */    
 }

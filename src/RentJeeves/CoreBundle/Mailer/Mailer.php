@@ -203,4 +203,13 @@ class Mailer extends BaseMailer
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
+
+    public function sendContractApprovedToTenant($contract, $sTemplate = 'rjContractApproved')
+    {
+        $tenant = $contract->getTenant();
+        $vars = array(
+            'nameTenant' => $tenant->getFullName(),
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
 }
