@@ -885,6 +885,10 @@
                 <source>contract.status.current</source>
                 <target>This account is in good standing</target>
             </trans-unit>
+            <trans-unit id="contract.status.select.current">
+                <source>contract.status.select.current</source>
+                <target>CURRENT</target>
+            </trans-unit>
             <trans-unit id="contract.delete">
                 <source>contract.delete</source>
                 <target>Delete Contract?</target>
