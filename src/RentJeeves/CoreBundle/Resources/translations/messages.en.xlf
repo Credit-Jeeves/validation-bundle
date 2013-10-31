@@ -795,6 +795,14 @@
                 <source>payments.legend</source>
                 <target>Legend</target>
             </trans-unit>
+            <trans-unit id="payment.account">
+                <source>payment.account</source>
+                <target>Existing Accounts</target>
+            </trans-unit>
+            <trans-unit id="payment.account.new">
+                <source>payment.account.new</source>
+                <target>New account</target>
+            </trans-unit>
             
             <trans-unit id="reporting.start">
                 <source>reporting.start</source>

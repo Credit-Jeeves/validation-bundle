@@ -63,7 +63,9 @@
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
             <div class="form-row clearfix">
+                <label>{{ 'payment.account' | trans }}*</label>
                 <div class="fields-box">
+                <small><b>*</b>{{ 'required' | trans }}</small>
                     <!-- ko foreach: paymentAccounts -->
                         <label class="checkbox radio" style="clear: left;">
                             <input type="radio"
@@ -77,8 +79,9 @@
                         </label>
                     <!-- /ko -->
                     <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
-                        <a href="#" data-bind="click: addNewPaymentAccount">{{ 'common.add_new' | trans }}</a>
+                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus"><span></span>{{ 'payment.account.new' | trans }}</a>
                     </div>
+                    
                 </div>
             </div>
             <div data-bind="visible: isNewPaymentAccount">
