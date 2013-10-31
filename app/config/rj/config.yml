@@ -48,6 +48,8 @@ framework:
 sonata_admin:
     title:      Admin
     title_logo: /bundles/rjpublic/images/logo-new.png
+    templates:
+        layout:  RjAdminBundle::standard_layout.html.twig
     dashboard:
         blocks:
             # display a dashboard block

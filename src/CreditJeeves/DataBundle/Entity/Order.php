@@ -239,4 +239,9 @@ class Order extends BaseOrder
 
         return null;
     }
+
+    public function getAvailableOrderStatuses()
+    {
+        return OrderStatus::all();
+    }
 }

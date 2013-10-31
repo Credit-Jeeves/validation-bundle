@@ -47,7 +47,7 @@ class OrderAdmin extends Admin
             ->add('created_at', 'date')
             ->add('updated_at', 'date')
             ->add('type')
-            ->add('status')
+            ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
             ->add('heartland_transaction_ids')
             ->add('operation_type')
             ->add('amount', 'money')
@@ -66,7 +66,7 @@ class OrderAdmin extends Admin
                 'transaction_id',
                 'doctrine_orm_callback',
                 [
-                    'callback' => function($queryBuilder, $alias, $field, $value) {
+                    'callback' => function ($queryBuilder, $alias, $field, $value) {
                         if (empty($value['value'])) {
                             return;
                         }
