@@ -172,7 +172,7 @@ class Contract extends Base
 
     public function getLastPayment()
     {
-        $result = 'N/A';
+        $result = '--';
         $payments = array();
         $operation = $this->getOperation();
         if (empty($operation)) {

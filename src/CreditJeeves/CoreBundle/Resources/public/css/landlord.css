@@ -153,18 +153,18 @@ table.properties-table th {
 }
 
 .contract-late {
-    background-image: linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
-    background-image: -o-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
-    background-image: -moz-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
-    background-image: -webkit-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
-    background-image: -ms-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 65%);
+    background-image: linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);
+    background-image: -o-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);
+    background-image: -moz-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);
+    background-image: -webkit-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);
+    background-image: -ms-linear-gradient(left , rgb(255,0,0) 0%, rgb(255,255,255) 100%);
 
     background-image: -webkit-gradient(
         linear,
         left top,
         right top,
         color-stop(0, rgb(255,0,0)),
-        color-stop(0.65, rgb(255,255,255))
+        color-stop(1, rgb(255,255,255))
     );
 }
 
