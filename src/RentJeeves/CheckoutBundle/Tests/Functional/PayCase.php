@@ -66,7 +66,7 @@ class PayCase extends BaseTestCase
             "jQuery('#id-source-step:visible').length"
         );
 
-        $this->page->clickLink('common.add_new');
+        $this->page->clickLink('payment.account.new');
 
 
 
