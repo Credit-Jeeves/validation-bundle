@@ -120,6 +120,25 @@ class Order extends BaseOrder
         return $result;
     }
 
+    /**
+     * @param bool $asString Defines whether to return a string or an array
+     * @param string $glue A glue for string result
+     * @return array|string
+     */
+    public function getHeartlandTransactionIds($asString = true, $glue = ', ')
+    {
+        $result = array();
+        foreach ($this->getHeartlands() as $heartland) {
+            $result[] = $heartland->getTransactionId();
+        }
+
+        if ($asString) {
+            return implode($glue, $result);
+        }
+
+        return $result;
+    }
+
     public function countDaysLate()
     {
         $operation = $this->getOperations()->last();
@@ -158,23 +177,71 @@ class Order extends BaseOrder
         }
     }
 
+    /**
+     * @return \RentJeeves\DataBundle\Entity|null
+     */
     public function getContract()
     {
-        return $this->getOperations()->last()->getContract();
+        if ($operation = $this->getOperations()->last()) {
+            return $operation->getContract();
+        }
+
+        return null;
     }
-    
+
+    /**
+     * @return bool
+     */
+    public function hasContract()
+    {
+        if ($this->getContract()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @deprecated Will be removed in v2.2
+     * @return mixed
+     */
     public function getTenant()
     {
         return $this->getContract()->getTenant();
     }
 
+    /**
+     * @deprecated Will be removed in v2.2
+     * @return mixed
+     */
     public function getGroup()
     {
         return $this->getContract()->getGroup();
     }
 
+    /**
+     * @deprecated Will be removed in v2.2
+     * @return mixed
+     */
     public function getHolding()
     {
         return $this->getContract()->getHolding();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGroupName()
+    {
+        if ($contract = $this->getContract()) {
+            return $contract->getGroup()->getName();
+        }
+
+        return null;
+    }
+
+    public function getAvailableOrderStatuses()
+    {
+        return OrderStatus::all();
     }
 }

@@ -38,6 +38,24 @@ class TenantAdmin extends Admin
         return '/'.self::TYPE;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function createQuery($context = 'list')
+    {
+        $id = $this->getRequest()->get('id', null);
+
+        $query = parent::createQuery($context);
+        $alias = $query->getRootAlias();
+
+        if (!empty($id)) {
+            $query->andWhere($alias.'.id = :user_id');
+            $query->setParameter('user_id', $id);
+        }
+
+        return $query;
+    }
+
     public function configureListFields(ListMapper $listMapper)
     {
         $this->request->getSession()->set('contract_id', null);

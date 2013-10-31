@@ -432,6 +432,10 @@
                 <source>checkout.payment.cancel.no</source>
                 <target>No, Do Nothing</target>
             </trans-unit>
+            <trans-unit id="checkout.error.date.is_in_past">
+                <source>checkout.error.date.is_in_past</source>
+                <target>You cannot specify a date in the past</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
