@@ -753,7 +753,7 @@
             </trans-unit>
             <trans-unit id="date.initiated">
                 <source>date.initiated</source>
-                <target>Date Initiated</target>
+                <target>Date</target>
             </trans-unit>
             <trans-unit id="resolve">
                 <source>resolve</source>
