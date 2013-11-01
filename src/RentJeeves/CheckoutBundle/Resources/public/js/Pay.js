@@ -366,18 +366,4 @@ function Pay(parent, contractId) {
     });
 
     window.formProcess.removeAllErrors('#pay-popup ');
-
-    /**
-     * Fix for tabs from year birthday to ssn
-     */
-    $('#rentjeeves_checkoutbundle_userdetailstype_date_of_birth').on(
-        'keydown',
-        '#rentjeeves_checkoutbundle_userdetailstype_date_of_birth_year',
-        function(e) {
-            if (e.which == 9) {
-                e.preventDefault();
-                $("#ssn_rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1").focus().select();
-            }
-        }
-    );
 }
