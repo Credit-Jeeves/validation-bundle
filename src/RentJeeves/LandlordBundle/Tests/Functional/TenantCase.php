@@ -12,7 +12,7 @@ class TenantCase extends BaseTestCase
     protected $timeout = 30000;
 
     /**
-     * test
+     * @test
      */
     public function approve()
     {
@@ -38,7 +38,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function sort()
     {
@@ -69,7 +69,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function edit()
     {
@@ -135,7 +135,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function remove()
     {
@@ -160,7 +160,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function search()
     {
@@ -185,7 +185,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function addTenantNoneExist()
     {
@@ -283,7 +283,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function addTenantExist()
     {
@@ -364,7 +364,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function checkNotifyLandlord()
     {
