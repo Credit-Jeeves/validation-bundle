@@ -27,7 +27,7 @@ parameters:
         main_site: 'www.renttrack.com'
         user_voice: 'renttrack.uservoice.com'
 # parameters for twig
-    payment_bank_fee: 0.10
+    payment_bank_fee: 0 # Fee would be processed on heartland side
     payment_card_fee: 2.95%
     payment_dollars: $20
     payment_one_time_until_value: '18:00' # 01:59
@@ -48,6 +48,8 @@ framework:
 sonata_admin:
     title:      Admin
     title_logo: /bundles/rjpublic/images/logo-new.png
+    templates:
+        layout:  RjAdminBundle::standard_layout.html.twig
     dashboard:
         blocks:
             # display a dashboard block

@@ -855,7 +855,7 @@
             </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
-                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefor agree to handle any associated disputes arising from the information you provide.</target>
+                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to handle any associated disputes arising from the information you provide.</target>
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
@@ -884,6 +884,14 @@
             <trans-unit id="contract.status">
                 <source>contract.status</source>
                 <target>Status</target>
+            </trans-unit>
+            <trans-unit id="contract.error.rent">
+                <source>contract.error.rent</source>
+                <target>Amount could not be empty</target>
+            </trans-unit>
+            <trans-unit id="contract.error.start">
+                <source>contract.error.start</source>
+                <target>Start At could not be empty</target>
             </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
@@ -1388,7 +1396,7 @@
             </trans-unit>
             <trans-unit id="order.receipt.footer">
                 <source>order.receipt.footer</source>
-                <target>This payment will appear on your statement as RENTTRK* followed by your property or landlord name.</target>
+                <target>This payment will appear on your statement as RENTTRK or RENTTRACK followed by your property or landlord name.</target>
             </trans-unit>
             <trans-unit id="order.error.title">
                 <source>order.error.title</source>
@@ -1437,6 +1445,10 @@
             <trans-unit id="you.tenant.has.no.payment">
                 <source>you.tenant.has.no.payment</source>
                 <target>Your tenant has not set up a payment yet.</target>
+            </trans-unit>
+            <trans-unit id="unit.live.it.empty">
+                <source>unit.live.it.empty</source>
+                <target>leave blank if this is a single property</target>
             </trans-unit>
         </body>
     </file>

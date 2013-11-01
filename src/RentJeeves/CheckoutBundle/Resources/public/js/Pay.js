@@ -57,9 +57,6 @@ function Pay(parent, contractId) {
         }
     });
 
-    var startDate = new Date(contract.startAt);
-    startDate.setDate(startDate.getDate() + 1);
-
     var finishDate = new Date(contract.finishAt);
 
     this.propertyFullAddress = new Address(this, window.addressesViewModels);
@@ -74,11 +71,10 @@ function Pay(parent, contractId) {
     } else {
       this.propertyFullAddress.unit(contract.unit.name);
     }
-    
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 
-    this.payment = new Payment(this, startDate);
+    this.payment = new Payment(this, new Date(contract.startAt));
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
@@ -117,7 +113,6 @@ function Pay(parent, contractId) {
         self.newPaymentAccount(true);
         self.paymentSource.clear();
     };
-
 
 
     this.fullPayTo = contract.payToName;
@@ -371,4 +366,18 @@ function Pay(parent, contractId) {
     });
 
     window.formProcess.removeAllErrors('#pay-popup ');
+
+    /**
+     * Fix fo tabs on the Verify Identity tab on payment
+     */
+    $('#rentjeeves_checkoutbundle_userdetailstype_ssn_row').on(
+        'keydown',
+        '#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1',
+        function(e) {
+            if (e.which == 9) {
+                e.preventDefault();
+                $("#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn2").focus();
+            }
+        }
+    );
 }

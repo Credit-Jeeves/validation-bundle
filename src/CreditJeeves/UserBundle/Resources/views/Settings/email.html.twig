@@ -48,7 +48,13 @@
                 </table>
                 {{ form_rest(form) }}
                 <div class="row-20"></div>
+                {% if application == 'rj' %}
+                <button type="submit" class="button large" >
+                    <span>{{ 'common.save' | trans }}</span>
+                </button>
+                {% else %}
                 <input class="button large green" type="submit" name="_submit" value="{{ 'common.save' | trans }}" />
+                {% endif %}
             </form>
         </div>
     </div>

@@ -34,7 +34,7 @@ class OrderListener
                     $status = $entity->getStatus();
                     switch ($status) {
                         case OrderStatus::COMPLETE:
-                            $this->container->get('project.mailer')->sendReceipt($entity);
+                            $this->container->get('project.mailer')->sendReportReceipt($entity);
                             break;
                     }
                     break;

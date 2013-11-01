@@ -147,14 +147,13 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    public function sendOrderReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
+    public function sendRentReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
     {
-        $tenant = $order->getTenant();
+        $tenant = $order->getContract()->getTenant();
         $history = $order->getHeartlands()->last();
         $type = $order->getType();
         $fee = 0;
         $amount = $order->getAmount();
-        $group = $order->getOperations()->last()->getContract()->getGroup();
         switch ($type) {
             case OrderType::HEARTLAND_CARD:
                 $fee = $amount * (int)$this->container->getParameter('payment_card_fee') / 100;
@@ -170,19 +169,18 @@ class Mailer extends BaseMailer
             'amount' => $order->getAmount(),
             'fee' => $fee,
             'total' => $total,
-            'groupName' => $group->getName(),
+            'groupName' => $order->getGroupName(),
             'nameTenant' => $tenant->getFullName(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
-    public function sendOrderError(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderError')
+    public function sendRentError(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderError')
     {
-        $tenant = $order->getTenant();
+        $tenant = $order->getContract()->getTenant();
         $type = $order->getType();
         $fee = 0;
         $amount = $order->getAmount();
-        $group = $order->getOperations()->last()->getContract()->getGroup();
         switch ($type) {
             case OrderType::HEARTLAND_CARD:
             default:
@@ -196,10 +194,19 @@ class Mailer extends BaseMailer
             'amount' => $order->getAmount(),
             'fee' => $fee,
             'total' => $total,
-            'groupName' => $group->getName(),
+            'groupName' => $order->getGroupName(),
             'orderId' => $order->getId(),
             'error' => $order->getHeartlandErrorMessage(),
             'transactionId' => $order->getHeartlandTransactionId()
+        );
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendContractApprovedToTenant($contract, $sTemplate = 'rjContractApproved')
+    {
+        $tenant = $contract->getTenant();
+        $vars = array(
+            'nameTenant' => $tenant->getFullName(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
