@@ -76,4 +76,21 @@
         </div>
     </div>
 <div class="clearboth"></div>
+<script type="text/javascript">
+    $( document ).ready(function() {
+        /**
+         * Fix for tabs from password to ssn
+         */
+        $('.form-input').on(
+                'keydown',
+                '#creditjeeves_applicantbundle_leadnewtype_user_password_Retype',
+                function(e) {
+                    if (e.which == 9) {
+                        e.preventDefault();
+                        $("#ssn_creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn1").focus().select();
+                    }
+                }
+        );
+    });
+</script>
 {% endblock %}
