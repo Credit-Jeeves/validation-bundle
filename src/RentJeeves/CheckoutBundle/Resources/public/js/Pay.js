@@ -366,18 +366,4 @@ function Pay(parent, contractId) {
     });
 
     window.formProcess.removeAllErrors('#pay-popup ');
-
-    /**
-     * Fix fo tabs on the Verify Identity tab on payment
-     */
-    $('#rentjeeves_checkoutbundle_userdetailstype_ssn_row').on(
-        'keydown',
-        '#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1',
-        function(e) {
-            if (e.which == 9) {
-                e.preventDefault();
-                $("#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn2").focus();
-            }
-        }
-    );
 }
