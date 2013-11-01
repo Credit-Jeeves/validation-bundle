@@ -1,9 +1,6 @@
 imports:
     - { resource: config.yml }
 
-parameters:
-    payment_bank_fee: 0.10 # Would be removed after Heartland reconfigure test ENV
-
 framework:
     router:   { resource: "%kernel.root_dir%/config/rj/routing_dev.yml" }
     profiler: { only_exceptions: false }
