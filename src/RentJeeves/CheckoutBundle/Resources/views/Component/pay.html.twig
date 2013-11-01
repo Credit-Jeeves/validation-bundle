@@ -25,17 +25,17 @@
     <div class="clearfix col-box attention-container">
 
         <ul class="steps clearfix">
-            <li class="step1" data-bind="css: { 'active': 'details' == step() }">
+            <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
                 <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
             </li>
-            <li class="step2" data-bind="css: { 'active': 'source' == step() }">
+            <li class="step2" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: {'active': 'user' == step() || 'questions' == step() }, visible: stepExist('questions')">
+                data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('user') || isPassed('questions') }">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
-            <li class="step4" data-bind="css: { 'active': 'pay' == step() }">
+            <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
                 <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
             </li>
         </ul>
