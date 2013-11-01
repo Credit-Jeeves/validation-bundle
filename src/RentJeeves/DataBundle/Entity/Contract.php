@@ -267,7 +267,7 @@ class Contract extends Base
             }
             $nYear = $orderDate->format('Y');
             $nMonth = $orderDate->format('m');
-            echo $order->getId().'>>>'.$nYear.'->'.$nMonth.'<br>';
+            //echo $order->getId().'>>>'.$nYear.'->'.$nMonth.'<br>';
             $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
             $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
             if ($late = $order->getDaysLate()) {
