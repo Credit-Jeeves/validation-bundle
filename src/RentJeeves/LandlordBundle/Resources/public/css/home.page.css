@@ -32,3 +32,21 @@
 .amount-paid-input input {
     width: 100%;
 }
+.column-order-status {
+    width: 75px;
+}
+.column-order-date {
+    width: 65px;
+}
+.column-order-address {
+    width: 250px;
+}
+.column-order-tenant {
+    width: 250px;
+}
+.column-order-amount {
+    width: 60px;
+}
+.column-order-type {
+    width: 30px;
+}

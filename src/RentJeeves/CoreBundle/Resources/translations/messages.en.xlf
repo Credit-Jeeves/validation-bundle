@@ -753,7 +753,7 @@
             </trans-unit>
             <trans-unit id="date.initiated">
                 <source>date.initiated</source>
-                <target>Date Initiated</target>
+                <target>Date</target>
             </trans-unit>
             <trans-unit id="resolve">
                 <source>resolve</source>
@@ -794,6 +794,14 @@
             <trans-unit id="payments.legend">
                 <source>payments.legend</source>
                 <target>Legend</target>
+            </trans-unit>
+            <trans-unit id="payment.account">
+                <source>payment.account</source>
+                <target>Existing Accounts</target>
+            </trans-unit>
+            <trans-unit id="payment.account.new">
+                <source>payment.account.new</source>
+                <target>New account</target>
             </trans-unit>
             
             <trans-unit id="reporting.start">
@@ -892,6 +900,10 @@
             <trans-unit id="contract.status.current">
                 <source>contract.status.current</source>
                 <target>This account is in good standing</target>
+            </trans-unit>
+            <trans-unit id="contract.status.select.current">
+                <source>contract.status.select.current</source>
+                <target>CURRENT</target>
             </trans-unit>
             <trans-unit id="contract.delete">
                 <source>contract.delete</source>
