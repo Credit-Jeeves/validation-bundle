@@ -267,11 +267,12 @@ class Contract extends Base
             }
             $nYear = $orderDate->format('Y');
             $nMonth = $orderDate->format('m');
+            echo $order->getId().'>>>'.$nYear.'->'.$nMonth.'<br>';
             $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
             $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
             if ($late = $order->getDaysLate()) {
                 if ($late > 0) {
-                    $nMonth = $orderDate->modify('-'.$late.' days')->format('m');
+                    //$nMonth = $orderDate->modify('-'.$late.' days')->format('m');
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
                     $payments[$nYear][$nMonth]['text'] = $late;
                 }
@@ -280,8 +281,17 @@ class Contract extends Base
                 $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
                 $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
             }
+            if (!isset($payments[$nYear][$nMonth]['amount'])) {
+//                 echo $order->getId().'>>>'.$nYear.'->'.$nMonth.'<br>';
+//                 echo $this->getId().'*****';
+//                 echo '<pre>';
+                $payments[$nYear][$nMonth]['amount'] = $order->getAmount();
+//                 print_r($payments);
+//                 exit;
+            }
             $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
         }
+        ksort($payments);
         $result['history'] = $payments;
         return $result;
     }
