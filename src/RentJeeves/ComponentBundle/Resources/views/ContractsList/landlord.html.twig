@@ -372,6 +372,7 @@
                         <option value='pending'>{{ 'contract.status.pending' | trans() }}</option>
                         <option value='invite'>{{ 'contract.status.invite' | trans() }}</option>
                         <option value='approved'>{{ 'contract.status.approved' | trans() }}</option>
+                        <option value='current'>{{ 'contract.status.select.current' | trans() }}</option>
                         <option value='finished'>{{ 'contract.status.finished' | trans() }}</option>
                     </select>
                     <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
@@ -394,32 +395,31 @@
           <table class="properties-table zebra-grid">
             <thead>
               <tr class="properties-th">
-                <th class="pie-el">
+                <th class="pie-el column-status">
                     <span class="sort" id="status" data-bind="click: sortFunction">{{'filter.status'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-name">
                     <span class="sort" id="first_name" data-bind="click: sortFunction">{{'tenant'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-email">
                     <span class="sort" id="email" data-bind="click: sortFunction">{{'email'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-phone">
                     <span>{{'phone'|trans}}</span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-address">
                     <span class="sort" id="street" data-bind="click: sortFunction">{{'property'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-amount">
                     <span class="sort" id="rent" data-bind="click: sortFunction">{{'amount'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-last">
                     <span class="pie-el">{{'contract.payment.last'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-paid">
                     <span class="sort" id="paidTo" data-bind="click: sortFunction">{{'paid_to'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el"  style="width: 35px;"><span>{{'type'|trans}}<i> </i></span></th>
-                <th class="pie-el" style="width: 20px;">&nbsp;</th>
+                <th class="pie-el column-action">&nbsp;</th>
               </tr>
             </thead>
             <tbody>
@@ -428,7 +428,7 @@
                 <td data-bind="attr: {'class': 'actions-status '+style}">
                     <div data-bind="text: status"></div>
                 </td>
-                <td data-bind="text: tenant"></td>
+                <td class="email-box ellipsis-box" data-bind="text: tenant"></td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>
                 <td data-bind="text: phone"></td>
                 <td class="property-box ellipsis-box" 
@@ -437,11 +437,10 @@
                 <td data-bind="text: '$'+amount"></td>
                 <!-- /ko -->
                 <!-- ko if: amount == '' -->
-                <td data-bind="text: '--' + amount"></td>
+                <td data-bind="text: '-' + amount"></td>
                 <!-- /ko -->
-                <td data-bind="text: last_payment"></td>
-                <td class="type-box" data-bind="text: paid_to"></td>
-                <td></td>
+                <td align="center"   data-bind="text: last_payment"></td>
+                <td align="center"  data-bind="text: paid_to"></td>
                 <td class="type-box">
                     <!-- ko if: 'CURRENT' == status -->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
