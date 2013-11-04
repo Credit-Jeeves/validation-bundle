@@ -11,4 +11,10 @@ fixtures:
   rjOperation_8:
     contract: Contract_4
     type: rent
+# Operation with one-dollar payment
+  rjOperation_16:
+    contract: Contract_16
+    type: rent
+
+    
 

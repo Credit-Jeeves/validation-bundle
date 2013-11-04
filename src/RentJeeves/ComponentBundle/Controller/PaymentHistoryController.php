@@ -38,8 +38,14 @@ class PaymentHistoryController extends Controller
             $item['start'] = $contract->getStartAt()->format('m/d/Y');
             $item['finish'] = $contract->getFinishAt();
             $item['updated'] = $contract->getUpdatedAt()->format('F d, Y');
-            $item['balance_year'] = $contract->getFinishAt()->format('Y');
-            $item['balance_month'] = $contract->getFinishAt()->format('m');
+            $item['balance_year'] = '-';
+            $item['balance_month'] = '-';
+            
+            $finishedDate = $contract->getFinishAt();
+            if ($finishedDate) {
+                $item['balance_year'] = $contract->getFinishAt()->format('Y');
+                $item['balance_month'] = $contract->getFinishAt()->format('m');
+            }
             $item['tenant'] = $contract->getTenant()->getFullName();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::APPROVED:
