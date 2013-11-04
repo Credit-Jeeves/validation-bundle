@@ -280,7 +280,7 @@ class PaymentAccountType extends AbstractType
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.address.addressChoice',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && newUserAddress().length > 0'
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() && hasAddresses()'
                     ),
                     'html' =>
                         '<!-- ko foreach: newUserAddress -->' .
@@ -295,12 +295,7 @@ class PaymentAccountType extends AbstractType
                                 '<i></i>' .
                                 '<span data-bind="text: $data.toString()"></span>' .
                             '</label>' .
-                        '<!-- /ko -->' .
-                        '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
-                            '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
-                                'common.add_new' .
-                            '</a>' .
-                        '</div>'
+                        '<!-- /ko -->'
                 ),
                 'invalid_message' => 'checkout.error.address_choice.invalid',
                 'constraints' => array(
@@ -319,10 +314,32 @@ class PaymentAccountType extends AbstractType
             array(
                 'mapped' => false,
                 'attr' => array(
-                    'data-bind' => 'value: paymentSource.address.isAddNewAddress',
+                    'data-bind' => 'value: paymentSource.address.isAddNewAddress'
                 )
             )
         );
+
+        $builder->add(
+            'is_new_address_link',
+            'text',
+            array(
+                'mapped' => false,
+                'label' => false,
+                'attr' => array(
+                    'data-bind' => 'visible: false',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                    ),
+                    'html' => '<div class="fields-box" data-bind="visible: !paymentSource.address.isAddNewAddress()">' .
+                        '<a href="#" data-bind="i18n: {}, click: paymentSource.address.addAddress">' .
+                        'common.add_new' .
+                        '</a>' .
+                        '</div>',
+                    'force_row' => true,
+                )
+            )
+        );
+
         $builder->add(
             'address',
             new UserAddressType('paymentSource.'),
