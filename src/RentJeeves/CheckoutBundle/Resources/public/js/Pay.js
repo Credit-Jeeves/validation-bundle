@@ -207,10 +207,6 @@ function Pay(parent, contractId) {
         self.newUserAddress.push(address);
     };
 
-    this.hasAddresses = function() {
-        return window.addressesViewModels.length
-    }
-
     var onSuccessStep = function(data) {
         var currentStep = steps[current];
         switch (currentStep) {

@@ -280,7 +280,7 @@ class PaymentAccountType extends AbstractType
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.address.addressChoice',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type() && hasAddresses()'
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() && window.addressesViewModels.length'
                     ),
                     'html' =>
                         '<!-- ko foreach: newUserAddress -->' .
