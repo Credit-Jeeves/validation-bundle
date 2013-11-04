@@ -32,7 +32,7 @@
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('user') || isPassed('questions') }">
+                data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('questions') }">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
             <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">

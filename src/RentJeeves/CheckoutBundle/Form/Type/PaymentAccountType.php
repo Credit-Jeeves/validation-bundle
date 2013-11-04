@@ -234,7 +234,7 @@ class PaymentAccountType extends AbstractType
                     new NotBlank(
                         array(
                             'groups' => array('card'),
-                            'message' => 'checkout.error.expiration.month.empty',
+                            'message' => 'checkout.error.ExpirationMonth.empty',
                         )
                     ),
                 ),
@@ -274,13 +274,13 @@ class PaymentAccountType extends AbstractType
             array(
                 'class' => 'CreditJeeves\DataBundle\Entity\Address',
                 'mapped' => false,
-                'label' => 'common.address',
+                'label' => 'checkout.billing_address',
                 'expanded' => true,
                 'choices' => clone $this->user->getAddresses(),
                 'attr' => array(
                     'data-bind' => 'checked: paymentSource.address.addressChoice',
                     'row_attr' => array(
-                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
+                        'data-bind' => 'visible: \'card\' == paymentSource.type() && newUserAddress().length > 0'
                     ),
                     'html' =>
                         '<!-- ko foreach: newUserAddress -->' .
@@ -328,14 +328,15 @@ class PaymentAccountType extends AbstractType
             new UserAddressType('paymentSource.'),
             array(
                 'mapped' => true,
-                'label' => false,
+                'label' => 'checkout.billing_address.new',
                 'by_reference' => true,
                 'attr' => array(
                     'no_box' => true,
                     'force_row' => true,
                     'row_attr' => array(
                         'data-bind' => 'visible: \'card\' == paymentSource.type() ' .
-                            '&& paymentSource.address.isAddNewAddress()'
+                            '&& paymentSource.address.isAddNewAddress()',
+                        'class' => 'form-row-custom clearfix type-text'
                     )
                 )
             )
