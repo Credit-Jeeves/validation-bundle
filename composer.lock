@@ -302,8 +302,8 @@
             "target-dir": "CreditJeeves/ApiBundle",
             "source": {
                 "type": "git",
-                "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "e175bfb9a10958f015d48793ff3be048517f7794"
+                "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
+                "reference": "51a1fde4ccb28648b8776430c76a788343e0e79b"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
