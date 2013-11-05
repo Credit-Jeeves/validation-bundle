@@ -49,6 +49,11 @@ function Payments() {
         } else {
           $('#'+self.sortColumn()).attr('class', 'sort-up');
         }
+
+        $('#'+self.sortColumn()).find('i').show();
+        $.each($('#payments-block .sort i'), function( index, value ) {
+           $(this).hide();
+        });
       }
     });
   };

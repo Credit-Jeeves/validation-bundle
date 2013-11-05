@@ -107,6 +107,9 @@ class ContractRepository extends EntityRepository
                 case 'statusA':
                     $query->orderBy('c.status', $sortOrder);
                     break;
+                case 'email':
+                    $query->orderBy('t.email', $sortOrder);
+                    break;
                 case 'due_dateA':
                     $query->orderBy('c.paidTo', $sortOrder);
                     break;
@@ -116,6 +119,7 @@ class ContractRepository extends EntityRepository
                     break;
             }
         }
+
         return $query;
     }
 

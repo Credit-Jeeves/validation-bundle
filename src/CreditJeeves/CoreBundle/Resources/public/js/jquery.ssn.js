@@ -34,10 +34,18 @@
                 clone.show();
             });
             $('#' + id).bind('keydown', function(eventObject) {
-                var nSsn = $(this).val().length;
 
+                /**
+                 * It's for tab
+                 */
+                if (eventObject.keyCode == 9) {
+                    return;
+                }
+
+                var nSsn = $(this).val().length;
                 var char = String.fromCharCode(eventObject.keyCode);
-                if (0 <= char && char <= 9) {
+
+                if ((0 <= char && char <= 9) || (eventObject.keyCode >= 96  && eventObject.keyCode <= 105)) {
                     if (eventObject.target.selectionStart != eventObject.target.selectionEnd) {
                         return true;
                     }

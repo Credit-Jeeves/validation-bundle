@@ -439,6 +439,9 @@ class AjaxController extends Controller
      */
     public function saveContract()
     {
+        $errors = array();
+        $response = array();
+        $translator = $this->get('translator');
         $em = $this->getDoctrine()->getManager();
         $request = $this->getRequest();
         $contract = $request->request->all('contract');
@@ -446,6 +449,12 @@ class AjaxController extends Controller
         $action = 'edit';
         if (isset($details['action'])) {
             $action = $details['action'];
+        }
+        if (empty($details['amount'])) {
+            $errors[] = $translator->trans('contract.error.rent');
+        }
+        if (empty($details['start'])) {
+            $errors[] = $translator->trans('contract.error.start');
         }
         $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
@@ -461,8 +470,9 @@ class AjaxController extends Controller
         $contract->setTenant($tenant);
         $contract->setProperty($property);
         $contract->setUnit($unit);
-        if (in_array($details['status'], array(ContractStatus::APPROVED))) {
+        if (in_array($details['status'], array(ContractStatus::APPROVED)) & empty($errors)) {
             $contract->setStatusApproved();
+            $this->get('project.mailer')->sendContractApprovedToTenant($contract);
         }
 
         if ($action == 'remove') {
@@ -471,7 +481,10 @@ class AjaxController extends Controller
             $em->persist($contract);
         }
         $em->flush();
-        return new JsonResponse(array());
+        if (!empty($errors) & 'edit' == $action) {
+            $response['errors'] = $errors;
+        }
+        return new JsonResponse($response);
     }
 
     /**

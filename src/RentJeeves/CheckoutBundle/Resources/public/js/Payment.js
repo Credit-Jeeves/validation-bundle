@@ -6,11 +6,7 @@ function Payment(parent, startDate) {
     this.paymentAccountId = ko.observable(null);
     this.amount = ko.observable(null);
     this.type = ko.observable('recurring');
-    this.type.subscribe(function(newValue) {
-        if ('one_time' == newValue) {
-            self.ends('cancelled');
-        }
-    });
+
     this.frequency = ko.observable('monthly');
     this.frequency.subscribe(function(newValue) {
         if ('month_last_date' == newValue) {
@@ -19,9 +15,10 @@ function Payment(parent, startDate) {
             this.dueDate(startDate.getDate());
         }
     }, this);
-    this.dueDate = ko.observable(startDate.getDate());
-    this.startMonth = ko.observable(startDate.getMonth());
-    this.startYear = ko.observable(startDate.getYear());
+
+    this.dueDate = ko.observable(startDate.toString("dd"));
+    this.startMonth = ko.observable(startDate.toString("MM"));
+    this.startYear = ko.observable(startDate.toString("yyyy"));
     this.startDate = ko.computed({
         read: function() {
             return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
@@ -35,21 +32,19 @@ function Payment(parent, startDate) {
         owner: this
     });
 
+    this.type.subscribe(function(newValue) {
+        if ('one_time' == newValue) {
+            self.ends('cancelled');
+            self.startDate(Date.today().toString("MM/dd/yyyy"));
+        }
+        if ('recurring' == newValue) {
+            self.dueDate(startDate.toString("dd"));
+            self.startMonth(startDate.toString("MM"));
+            self.startYear(startDate.toString("yyyy"));
+        }
+    });
+
     this.ends = ko.observable('cancelled');
     this.endMonth = ko.observable(null);
     this.endYear = ko.observable(null);
-
-
 }
-this.attemptedValue = ko.computed({
-    read: this.acceptedNumericValue,
-    write: function (value) {
-        if (isNaN(value))
-            this.lastInputWasValid(false);
-        else {
-            this.lastInputWasValid(true);
-            this.acceptedNumericValue(value); // Write to underlying storage
-        }
-    },
-    owner: this
-});

@@ -1,0 +1,12 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field %}
+    {% if admin.isGranted('EDIT', object) and object.hasContract %}
+        <a href="{{ path('admin_landlord_list', { "group_id": object.getContract.getGroup.getId }) }}" class="edit_link" title="{{ 'admin.list.landlords'|trans({}) }}">
+            <i class="icon-dealer"></i>
+            {{ object.getGroupName }}
+        </a>
+    {% else %}
+        {{ object.getGroupName }}
+    {% endif %}
+{% endblock %}

@@ -753,7 +753,7 @@
             </trans-unit>
             <trans-unit id="date.initiated">
                 <source>date.initiated</source>
-                <target>Date Initiated</target>
+                <target>Date</target>
             </trans-unit>
             <trans-unit id="resolve">
                 <source>resolve</source>
@@ -794,6 +794,14 @@
             <trans-unit id="payments.legend">
                 <source>payments.legend</source>
                 <target>Legend</target>
+            </trans-unit>
+            <trans-unit id="payment.account">
+                <source>payment.account</source>
+                <target>Existing Accounts</target>
+            </trans-unit>
+            <trans-unit id="payment.account.new">
+                <source>payment.account.new</source>
+                <target>New account</target>
             </trans-unit>
             
             <trans-unit id="reporting.start">
@@ -847,7 +855,7 @@
             </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
-                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefor agree to handle any associated disputes arising from the information you provide.</target>
+                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to handle any associated disputes arising from the information you provide.</target>
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
@@ -877,6 +885,14 @@
                 <source>contract.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="contract.error.rent">
+                <source>contract.error.rent</source>
+                <target>Amount could not be empty</target>
+            </trans-unit>
+            <trans-unit id="contract.error.start">
+                <source>contract.error.start</source>
+                <target>Start At could not be empty</target>
+            </trans-unit>
             <trans-unit id="contract.status.pay">
                 <source>contract.status.pay</source>
                 <target>This account is in good standing</target>
@@ -884,6 +900,10 @@
             <trans-unit id="contract.status.current">
                 <source>contract.status.current</source>
                 <target>This account is in good standing</target>
+            </trans-unit>
+            <trans-unit id="contract.status.select.current">
+                <source>contract.status.select.current</source>
+                <target>CURRENT</target>
             </trans-unit>
             <trans-unit id="contract.delete">
                 <source>contract.delete</source>
@@ -1376,7 +1396,7 @@
             </trans-unit>
             <trans-unit id="order.receipt.footer">
                 <source>order.receipt.footer</source>
-                <target>This payment will appear on your statement as RENTTRK* followed by your property or landlord name.</target>
+                <target>This payment will appear on your statement as RENTTRK or RENTTRACK followed by your property or landlord name.</target>
             </trans-unit>
             <trans-unit id="order.error.title">
                 <source>order.error.title</source>
@@ -1531,7 +1551,10 @@
                 <source>iframe.powered</source>
                 <target>Powered by</target>
             </trans-unit>
-
+            <trans-unit id="unit.live.it.empty">
+                <source>unit.live.it.empty</source>
+                <target>leave blank if this is a single property</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

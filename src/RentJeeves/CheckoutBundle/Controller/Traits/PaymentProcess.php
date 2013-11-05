@@ -91,10 +91,12 @@ trait PaymentProcess
             $request->setRoutingNumber($paymentAccountType->get('RoutingNumber')->getData());
             $request->setAccountNumber($paymentAccountType->get('AccountNumber')->getData());
             $ACHDepositType = $paymentAccountType->get('ACHDepositType')->getData();
-            $request->setACHDepositType($ACHDepositType);
+
             if (ACHDepositType::UNASSIGNED == $ACHDepositType) {
+                $request->setACHDepositType(ACHDepositType::CHECKING);
                 $request->setACHAccountType(ACHAccountType::BUSINESS);
             } else {
+                $request->setACHDepositType($ACHDepositType);
                 $request->setACHAccountType(ACHAccountType::PERSONAL);
             }
             $request->setPaymentMethod(TokenPaymentMethod::ACH);
