@@ -7,8 +7,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LoginType;
 use RentJeeves\DataBundle\Entity\Tenant;
-// use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-// use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class IframeController extends Controller
@@ -21,8 +19,8 @@ class IframeController extends Controller
     {
         $tenant = new Tenant();
         $form = $this->createForm(
-                new LoginType(),
-                $tenant
+            new LoginType(),
+            $tenant
         );
         $url = '';
         $request = $this->get('request');
@@ -31,7 +29,11 @@ class IframeController extends Controller
             if ($form->isValid()) {
                 $tenant = $form->getData();
                 $user = $this->get('user.user_provider')->loadUserByUsername($tenant->getEmail());
-                $isValid = $this->get('user.security.encoder.digest')->isPasswordValid($user->getPassword(), $tenant->getPassword(), $user->getSalt());
+                $isValid = $this->get('user.security.encoder.digest')->isPasswordValid(
+                    $user->getPassword(),
+                    $tenant->getPassword(),
+                    $user->getSalt()
+                );
                 if ($isValid) {
                     $this->login($user);
                     $url = $this->generateUrl('tenant_homepage');
@@ -48,15 +50,15 @@ class IframeController extends Controller
     {
         $response = new RedirectResponse($this->generateUrl('tenant_homepage'));
         $this->container->get('fos_user.security.login_manager')->loginUser(
-                $this->container->getParameter('fos_user.firewall_name'),
-                $tenant,
-                $response
+            $this->container->getParameter('fos_user.firewall_name'),
+            $tenant,
+            $response
         );
     
         $this->container->get('user.service.login_success_handler')
         ->onAuthenticationSuccess(
-                $this->container->get('request'),
-                $this->container->get('security.context')->getToken()
+            $this->container->get('request'),
+            $this->container->get('security.context')->getToken()
         );
         return $response;
     }
