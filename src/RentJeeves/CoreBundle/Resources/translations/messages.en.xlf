@@ -1450,6 +1450,88 @@
                 <source>contract.reminder.error.already.send</source>
                 <target>You can not so often send reminders for the same contract.</target>
             </trans-unit>
+            <trans-unit id="iframe.login.title">
+                <source>iframe.login.title</source>
+                <target>RentTrack Member Log In</target>
+            </trans-unit>
+            <trans-unit id="iframe.login.email">
+                <source>iframe.login.email</source>
+                <target>Your Email</target>
+            </trans-unit>
+            <trans-unit id="iframe.login.password">
+                <source>iframe.login.password</source>
+                <target>Your Password</target>
+            </trans-unit>
+            <trans-unit id="iframe.login.submit">
+                <source>iframe.login.submit</source>
+                <target>Log In</target>
+            </trans-unit>
+            <trans-unit id="iframe.top.title">
+                <source>iframe.top.title</source>
+                <target>Property Management - Pay My Rent Online</target>
+            </trans-unit>
+            <trans-unit id="iframe.top.text">
+                <source>iframe.top.text</source>
+                <target>
+                    Long &amp; Foster Real Estate, Inc. has teamed up with RentTrack to elimionate the burden of mailing your lease payment every month.
+                    RentTrack facilitates *easy payments through secure electronics check transfers and credit cards* - you get to choose.
+                    *Reminders* are sent automatically to you x days before rent is due and late notices are sent x days after the due date.
+                    As a tenant, you also benefit because RentTrack allows you to build credit history by reporting on-time payments to Experian.
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.title">
+                <source>iframe.redirect.title</source>
+                <target>Not registered yet?</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.text">
+                <source>iframe.redirect.text</source>
+                <target>Find your rental to make a payment</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.button">
+                <source>iframe.redirect.button</source>
+                <target>Get Started</target>
+            </trans-unit>
+            <trans-unit id="iframe.items.title">
+                <source>iframe.items.title</source>
+                <target>Pay rent. Build Credit</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.pay.title">
+                <source>iframe.item.pay.title</source>
+                <target>Pay rent effortlessly</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.pay.text">
+                <source>iframe.item.pay.text</source>
+                <target>Want to "set it and forget it"? With RentTrack, you can set up autometic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.build.title">
+                <source>iframe.item.build.title</source>
+                <target>Build your credit</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.build.text">
+                <source>iframe.item.build.text</source>
+                <target>RentTrack is able to report your on-time rent payments to credit bureaus. This optional service helps you build the credit history you'll need to secure your financial future.</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.monitor.title">
+                <source>iframe.item.monitor.title</source>
+                <target>Monitor your progress</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.monitor.text">
+                <source>iframe.item.monitor.text</source>
+                <target>RenTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+            </trans-unit>
+            <trans-unit id="iframe.questions">
+                <source>iframe.questions</source>
+                <target>Still have questions?</target>
+            </trans-unit>
+            <trans-unit id="iframe.learn.more">
+                <source>iframe.learn.more</source>
+                <target>Learn More</target>
+            </trans-unit>
+            <trans-unit id="iframe.powered">
+                <source>iframe.powered</source>
+                <target>Powered by</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

@@ -1,0 +1,170 @@
+body {
+    font-family: "PT Sans Caption","ABeeZee",sans-serif;
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+h2 {
+    color: #EB6024;
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+h3 {
+    color: #EB6024;
+    font-size: 16px;
+}
+
+form label {
+    margin-top: 15px;
+    float: left;
+}
+
+.iframe-top-text {
+    text-align: justify;
+    margin: 20px 0;
+}
+
+.iframe-body-left {
+    background-color: #f3f3f3;
+    border: 1px solid #c8c8c8;
+    padding: 15px;
+    width: 235px;
+    float: left;
+}
+
+.iframe-input {
+    background: linear-gradient(to bottom, #F3F3F3 0%, #FFFFFF 45%, #FFFFFF 100%) repeat scroll 0 0 transparent;
+    border: 1px solid #BDBDBD;
+    border-radius: 2px 2px 2px 2px;
+    box-shadow: 0 0 5px 0 #FFFFFF inset;
+    margin: 0;
+    padding: 4px 9px 3px;
+}
+
+.iframe-login {
+    margin-bottom: 20px;
+}
+
+.iframe-button {
+    background: linear-gradient(to bottom, #F28130 0%, #E44018 100%) repeat scroll 0 0 transparent;
+    border: 1px solid #EB6024;
+    border-radius: 4px 4px 4px 4px;
+    color: #FFFFFF;
+    display: inline-block;
+    font: bold 16px/20px "PT Sans",sans-serif;
+    padding: 11px 40px;
+    position: relative;
+    text-align: center;
+    text-shadow: 0 1px 0 #B13F16;
+    margin-top: 20px;
+    width: 150px;
+}
+.iframe-button:hover {
+    background: linear-gradient(to bottom, #E44018 0%, #F28130 100%) repeat scroll 0 0 transparent;
+    text-shadow: 0 -1px 0 #B13F16;
+}
+
+.iframe-button-grey {
+     background: none repeat scroll 0 0 #A9A9A9;
+    border: 1px solid #A9A9A9;
+    text-shadow: none;
+    margin-top: 0;
+}
+
+.iframe-questions {
+    color: #EB6024;
+}
+
+.iframe-redirect {
+    border-top: 1px solid #c8c8c8;
+    padding-top: 10px;
+}
+.iframe-redirect-title {
+    font-size: 14px;
+}
+
+.iframe-redirect-text {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.iframe-body-right {
+    margin-left: 290px;
+    padding-top: 15px;
+}
+
+.iframe-item i {
+   background-color: #d0e4b4;
+    background-image: url("/bundles/rjpublic/images/sprite-icons.png");
+    background-repeat: no-repeat;
+    border-radius: 24px 24px 24px 24px;
+    float: left;
+    height: 47px;
+    position: relative;
+    width: 47px;
+    margin-right: 25px;
+}
+
+.iframe-item p {
+    font-size: 12px;
+}
+
+.iframe-pay i {
+     background-position: -62px -152px;
+}
+
+.iframe-build i {
+    background-position: -302px -153px;
+}
+
+.iframe-monitor i {
+    background-position: -2px -153px;
+}
+
+.iframe-ns {
+    background: url("/bundles/rjpublic/images/logo-norton-secured.png") no-repeat scroll 0 0 transparent;
+    display: block;
+    font-size: 0;
+    height: 45px;
+    line-height: 0;
+    margin-top: 20px;
+    overflow: hidden;
+    text-indent: -999px;
+    width: 80px;
+}
+
+.iframe-logo {
+    width: 180px;
+    color: #c8c8c8;
+    font-size: 10px;
+    margin-top: 15px;
+    float: left;
+}
+
+.iframe-logo span {
+     background: url("/bundles/rjpublic/images/logo-new.png") no-repeat scroll -19px -11px transparent;
+    float: left;
+    height: 50px;
+    overflow: hidden;
+    text-indent: -999px;
+    width: 180px;
+}
+/* additional styles */
+.floatleft {
+    float: left;
+}
+
+.clearboth {
+    clear: both;
+}
+
+.row-10 {
+    margin-top: 10px;
+}
+
+.row-20 {
+    margin-top: 20px;
+}
