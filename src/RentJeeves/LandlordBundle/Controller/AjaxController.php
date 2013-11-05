@@ -99,13 +99,13 @@ class AjaxController extends Controller
                     )?  true : false;
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertyDataAddress);
+        $propertyDataLocation = $property->parseGoogleLocation($data);
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertyDataLocation);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
         if (empty($property)) {
             $property = new Property();
-            $propertyDataLocation = $property->parseGoogleLocation($data);
             $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
             $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
@@ -139,9 +139,11 @@ class AjaxController extends Controller
         }
 
         $data = array(
-            'hasLandlord'   => $property->hasLandlord(),
-            'isLogin'      => $isLogin,
-            'isLandlord'   => $isLandlord,
+            'hasLandlord'           => $property->hasLandlord(),
+            'isLogin'               => $isLogin,
+            'isLandlord'            => $isLandlord,
+            'propertyDataAddress'   => $propertyDataAddress,
+            'propertyDataLocation'  => $propertyDataLocation,git log
             'property'      => array(
                     'id'        => $property->getId(),
                     'city'      => $property->getCity(),

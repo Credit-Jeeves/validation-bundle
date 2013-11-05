@@ -9,12 +9,14 @@
       <div class="field-box">
         <input id="property-search" type="text" placeholder="{{ 'iframe.placeholdersearch'|trans }}">
         <span class="icon-find">&nbsp;</span>
+
       </div>
       <button type="submit"  id="property-add" class="button">
         <span>{{ 'iframe.find'|trans }}</span>
         <img src="/bundles/rjpublic/images/spinner-grey-ajax-loader.gif" title="{{'loading'|trans}}..." class="loadingSpinner">
       </button>
     </div>
+    <div id="errorSearchIframe"></div>
   </form>
   <div class="property-rent-box">
     <div class="property-rent">
@@ -30,7 +32,10 @@
 {% block javascripts %}
     <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
     <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
-    {% javascripts '@RjPublicBundle/Resources/public/js/public.index.js' %}
+    {% javascripts
+        '@RjPublicBundle/Resources/public/js/google.search.lib.js'
+        '@RjPublicBundle/Resources/public/js/public.index.js'
+    %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

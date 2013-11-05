@@ -1410,6 +1410,10 @@
                 <source>select.from.drop.down.list</source>
                 <target>Please select an address from the drop-down and try again.</target>
             </trans-unit>
+            <trans-unit id="fill.full.address">
+                <source>fill.full.address</source>
+                <target>Please fill full address and try again. It's very short.</target>
+            </trans-unit>
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
                 <target>Tenant wants unit number:</target>
