@@ -143,7 +143,7 @@ class AjaxController extends Controller
             'isLogin'               => $isLogin,
             'isLandlord'            => $isLandlord,
             'propertyDataAddress'   => $propertyDataAddress,
-            'propertyDataLocation'  => $propertyDataLocation,git log
+            'propertyDataLocation'  => $propertyDataLocation,
             'property'      => array(
                     'id'        => $property->getId(),
                     'city'      => $property->getCity(),
