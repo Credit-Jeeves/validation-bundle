@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "fcec1cefdd0205f790bca51fb23f3f61",
+    "hash": "8081aa2012fb06d93b637904b3eb516e",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -337,7 +337,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-11-05 09:29:55"
+            "time": "2013-11-05 09:28:17"
         },
         {
             "name": "credit-jeeves/arf-bundle",
