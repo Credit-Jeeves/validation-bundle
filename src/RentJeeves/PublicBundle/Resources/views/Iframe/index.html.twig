@@ -9,17 +9,17 @@
     <div class="iframe-body">
         <div class="iframe-body-left">
             <h2>{{ 'iframe.login.title' | trans }}</h2>
-            <div class="iframe-login">
+            <div id="iframe-login-form" class="iframe-login">
                 {{ form(form) }}
             </div>
             <div class="iframe-redirect">
                 <div class="iframe-redirect-title">{{ 'iframe.redirect.title' | trans }}</div>
                 <div class="iframe-redirect-text">{{ 'iframe.redirect.text' | trans }}</div>
-                <input type="button" class="iframe-button iframe-button-grey" value="{{ 'iframe.redirect.button' | trans }}">
+                <input id="iframe-get-started" type="button" class="iframe-button iframe-button-grey" value="{{ 'iframe.redirect.button' | trans }}">
             </div>
         </div>
         <div class="iframe-body-right">
-            <h2>{{ 'iframe.items.title' | trans }}</h2>
+            <h3>{{ 'iframe.items.title' | trans }}</h3>
             <div class="iframe-item iframe-pay">
                 <i></i>
                 <div>
@@ -64,3 +64,12 @@
         <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@RjPublicBundle/Resources/public/js/jquery-1.10.2.min.js'
+                   '@RjPublicBundle/Resources/public/js/public-iframe.js' 
+%}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+

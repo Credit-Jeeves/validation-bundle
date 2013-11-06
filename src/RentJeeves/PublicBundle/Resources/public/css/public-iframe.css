@@ -7,22 +7,38 @@ h1, h2, h3, h4 {
 }
 
 h2 {
-    color: #EB6024;
+    color: #ff5200;
     margin-bottom: 15px;
-    font-size: 18px;
+    font-size: 18pt;
+    font-family: 'ABeeZee', sans-serif;
 }
 
 h3 {
-    color: #EB6024;
-    font-size: 16px;
+    color: #ff5200;
+    font-size: 20pt;
+    font-family: 'ABeeZee', sans-serif;
+    color: #ff5200;
+    margin-bottom: 15px;
+}
+
+h4 {
+    font-family: Tahoma, "PT Sans", sans-serif;
+    font-size: 16pt;
+    color: #666666;
+    font-weight: bold;
 }
 
 form label {
     margin-top: 15px;
     float: left;
+    width: 300px;
+    font-size: 12pt;
+    font-family: 'ABeeZee', sans-serif;
 }
 
 .iframe-top-text {
+    font-family: Tahoma, "PT Sans", sans-serif;
+    font-size: 12pt;
     text-align: justify;
     margin: 20px 0;
 }
@@ -31,7 +47,7 @@ form label {
     background-color: #f3f3f3;
     border: 1px solid #c8c8c8;
     padding: 15px;
-    width: 235px;
+    width: 340px;
     float: left;
 }
 
@@ -42,6 +58,7 @@ form label {
     box-shadow: 0 0 5px 0 #FFFFFF inset;
     margin: 0;
     padding: 4px 9px 3px;
+    width: 315px;
 }
 
 .iframe-login {
@@ -60,7 +77,7 @@ form label {
     text-align: center;
     text-shadow: 0 1px 0 #B13F16;
     margin-top: 20px;
-    width: 150px;
+    width: 175px;
 }
 .iframe-button:hover {
     background: linear-gradient(to bottom, #E44018 0%, #F28130 100%) repeat scroll 0 0 transparent;
@@ -75,15 +92,26 @@ form label {
 }
 
 .iframe-questions {
-    color: #EB6024;
+    color: #ff5200;
+    font-size: 14pt;
+    font-weight: bold;
+    font-family: 'ABeeZee', sans-serif;
+}
+
+.iframe-questions  a {
+    color: #00aeef;
 }
 
 .iframe-redirect {
     border-top: 1px solid #c8c8c8;
     padding-top: 10px;
+    color: #666666;
+    font-family: 'ABeeZee', sans-serif;
 }
 .iframe-redirect-title {
-    font-size: 14px;
+    font-size: 14pt;
+    
+    
 }
 
 .iframe-redirect-text {
@@ -92,7 +120,7 @@ form label {
 }
 
 .iframe-body-right {
-    margin-left: 290px;
+    margin-left: 400px;
     padding-top: 15px;
 }
 
@@ -109,7 +137,10 @@ form label {
 }
 
 .iframe-item p {
-    font-size: 12px;
+    font-size: 11pt;
+    color: #666666;
+    font-family: Tahoma, "PT Sans", sans-serif;
+    font-weight: bold;
 }
 
 .iframe-pay i {
