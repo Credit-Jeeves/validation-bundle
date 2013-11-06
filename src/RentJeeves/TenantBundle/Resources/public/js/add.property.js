@@ -9,46 +9,6 @@ $(document).ready(function(){
         height:310
       });
     }
-
-    function checkDeleteButton()
-    {
-      if($('#property-search').val() != '') {
-        $('#delete').show();
-      } else {
-        $('#delete').hide();
-      }
-    }
-
-    initScroll();
-    
-    var ERROR = 'notfound';
-    var markersArray = [];
-    var rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
-              new google.maps.Size(38,54),
-              new google.maps.Point(0,0),
-              new google.maps.Point(19, 41)
-            );
-
-    function deleteOverlays() 
-    {
-      if (markersArray) {
-        for (i in markersArray) {
-          markersArray[i].setMap(null);
-        }
-      }
-    }
-
-    function getHtmlPopap(title, content)
-    {
-      return  '<div id="content">'+
-              '<div id="siteNotice">'+
-              '</div>'+
-              '<h1 id="firstHeading" class="firstHeading">'+title+'</h1>'+
-              '<div id="bodyContent" style="width:150px;">'+content 
-              '<p></div>'+
-              '</div>';
-    }
-
     function destroySlimscroll(objectId) {
         $("#"+objectId).parent().replaceWith($("#"+objectId));
     }
@@ -78,6 +38,51 @@ $(document).ready(function(){
         });
         return;
     }
+
+/*    function checkDeleteButton()
+    {
+      if($('#property-search').val() != '') {
+        $('#delete').show();
+      } else {
+        $('#delete').hide();
+      }
+    }*/
+
+    initScroll();
+    
+  /*  var ERROR = 'notfound';
+    var markersArray = [];
+    var rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
+              new google.maps.Size(38,54),
+              new google.maps.Point(0,0),
+              new google.maps.Point(19, 41)
+            );
+
+    function deleteOverlays() 
+    {
+      if (markersArray) {
+        for (i in markersArray) {
+          markersArray[i].setMap(null);
+        }
+      }
+    }
+
+    function getHtmlPopap(title, content)
+    {
+      return  '<div id="content">'+
+              '<div id="siteNotice">'+
+              '</div>'+
+              '<h1 id="firstHeading" class="firstHeading">'+title+'</h1>'+
+              '<div id="bodyContent" style="width:150px;">'+content 
+              '<p></div>'+
+              '</div>';
+    }
+
+    function destroySlimscroll(objectId) {
+        $("#"+objectId).parent().replaceWith($("#"+objectId));
+    }*/
+
+/*
 
 
     function search(place, map) 
@@ -221,13 +226,13 @@ $(document).ready(function(){
         });
 
         google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
-    }
+    }*/
 
     $('#formSearch').submit(function() {
       return false;
     });
 
-    google.maps.event.addDomListener(window, 'load', initialize);
+    //google.maps.event.addDomListener(window, 'load', initialize);
     $('.select-unit').linkselect('destroy');
     $('.select-unit').linkselect({
       change: function(li, val, text){
@@ -252,9 +257,35 @@ $(document).ready(function(){
       return false;
     });
 
-    $('#delete').click(function() {
+/*    $('#delete').click(function() {
       $('#property-search').val(' ');
       return false;
+    });*/
+    var lat = $('#lat').val();
+    var lng = $('#lng').val();
+    var google = $('#property-search').google({
+        formId: "formSearch",
+        findButtonId: "search-submit",
+        mapCanvasId: 'search-result-map',
+        loadingSpinner: true,
+        loadingSpinnerClass: 'loadingSpinner',
+        autoHideLoadingSpinner: true,
+        addPropertyCallback: function(data, textStatus, jqXHR){
+            return location.href = Routing.generate('property_add_id', {'propertyId':data.property.id });
+        },
+        addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus){
+
+        },
+        clearSearchCallback: function(isEmpty){},
+        changeSearch: function(){
+
+        },
+        markers: true,
+        divIdError: 'searchError',
+        defaultLat: lat,
+        defaultLong: lng,
+        clearSearchId: 'delete',
+        clearSearchClass: null
     });
 
     $('#register').click(function(){
@@ -328,5 +359,6 @@ $(document).ready(function(){
         return false;
     });
 
-    checkDeleteButton();
+
+
 });

@@ -26,7 +26,8 @@
             defaultLat: null,
             defaultLong: null,
             clearSearchId: null,
-            clearSearchClass: null
+            clearSearchClass: null,
+            moveToLocationClass: 'moveToLocation'
         }, options );
 
 
@@ -37,6 +38,7 @@
             } else {
                 var close = $('#'+settings.findInputId).parent().parent().find('.'+settings.clearSearchClass);
             }
+
             $('#'+settings.findInputId).keyup(function(){
                 if ($(this).val().length > 0) {
                     settings.clearSearchCallback(false);
@@ -44,7 +46,6 @@
                 } else {
                     settings.clearSearchCallback(true);
                     close.hide();
-                    console.info('1');
                 }
             });
 
@@ -54,6 +55,14 @@
                 close.hide();
                 return false;
             });
+
+            if ($('#'+settings.findInputId).val().length > 0) {
+                settings.clearSearchCallback(false);
+                close.show();
+            } else {
+                settings.clearSearchCallback(true);
+                close.hide();
+            }
         }
 
         this.deleteOverlays = function()
@@ -156,6 +165,20 @@
                     });
 
                 });
+
+                $('.'+settings.moveToLocationClass).click(function(){
+                    number =  $(this).attr('rel');
+                    contentString = self.getHtmlPopap(
+                                 $(this).parent().find('.titleAddress').html(),
+                                  $(this).parent().find('.contentAddress').html()
+                              );
+                    var infowindow = new google.maps.InfoWindow({
+                         content: contentString
+                    });
+
+                    infowindow.open(self.map, self.markersArray[number]);
+                         return false;
+                    });
             }
             //end setup markers
             var marker = new google.maps.Marker({

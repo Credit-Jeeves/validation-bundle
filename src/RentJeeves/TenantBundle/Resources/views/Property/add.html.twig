@@ -12,6 +12,7 @@
                         'RjComponentBundle:Google:formSearch.html.twig',
                                 { 'property': property, 'verifyMessage': 'find.your.rentaladdress' }
                     ) }}
+                    <div id="searchError"></div>
                     <form action="{{ path('property_add_id', {'propertyId':propertyId }) }}"
                           method="post"
                           id="tenantAddProperty">
@@ -58,7 +59,8 @@
     <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
     <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@TenantBundle/Resources/public/js/add.property.js'
+    {% javascripts  '@RjPublicBundle/Resources/public/js/google.search.lib.js'
+                    '@TenantBundle/Resources/public/js/add.property.js'
                     '@RjPublicBundle/Resources/public/js/jquery-ui.js'
                     '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
 
