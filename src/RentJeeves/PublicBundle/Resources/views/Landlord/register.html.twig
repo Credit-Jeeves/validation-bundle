@@ -86,6 +86,7 @@
                         <input type="text" value="{{ propertyName }}" id="property-search" name="searsh-field" placeholder="Your rental address">
                         <a href="#" id="delete" class="pie-el">x</a>
                         <button type="submit" id="search-submit" class="pie-el">{{ 'search' | trans() }}</button>
+                        <img src="/bundles/rjpublic/images/spinner-grey-ajax-loader.gif" title="loading..." class="loadingSpinner">
                     </div>
                     <div id="errorForm"></div>
                     <div id="search-result-map"></div>
@@ -139,9 +140,12 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts '@RjPublicBundle/Resources/public/js/landlord/register.js'
-                   '@RjPublicBundle/Resources/public/js/landlord/popup-pricing.js'
+    {% javascripts  '@RjPublicBundle/Resources/public/js/google.search.lib.js'
+                    '@RjPublicBundle/Resources/public/js/landlord/register.js'
+                    '@RjPublicBundle/Resources/public/js/landlord/popup-pricing.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

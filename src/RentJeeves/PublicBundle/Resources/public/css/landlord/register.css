@@ -21,3 +21,9 @@ form li, #errorForm {
     margin-left: 20px !important;
     width: 380px !important;
 }
+
+.loadingSpinner {
+    position: absolute;
+    margin-top: -14px;
+    margin-left: -13px;
+}

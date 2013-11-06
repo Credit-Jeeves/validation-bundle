@@ -17,7 +17,9 @@
             loadingSpinnerClass: 'loadingSpinner',
             autoHideLoadingSpinner: false,
             linkAddProperty: Routing.generate('landlord_property_add'),
-            addPropertyCallback: function(data, textStatus, jqXHR, self){},
+            addPropertyCallback: function(data, textStatus, jqXHR){},
+            addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus){},
+            clearSearchCallback: function(isEmpty){},
             markers: false,
             divIdError: false,
             defaultLat: null,
@@ -29,14 +31,17 @@
         if (settings.clearSearchId != null) {
             $('#'+settings.findInputId).keyup(function(){
                 if ($(this).val().length > 0) {
+                    settings.clearSearchCallback(false);
                     $('#'+settings.clearSearchId).show();
                 } else {
+                    settings.clearSearchCallback(true);
                     $('#'+settings.clearSearchId).hide();
                 }
             });
 
             $('#'+settings.clearSearchId).click(function() {
                 $('#'+settings.findInputId).val(' ');
+                settings.clearSearchCallback(true);
                 return false;
             });
         }
@@ -225,6 +230,7 @@
                     error: function(jqXHR, errorThrown, textStatus) {
                         afterAddProperty();
                         showError(Translator.get('fill.full.address'));
+                        settings.addPropertyCallbackNotValid.call(self, jqXHR, errorThrown, textStatus);
                         return false;
                     },
                     success: function(data, textStatus, jqXHR) {
