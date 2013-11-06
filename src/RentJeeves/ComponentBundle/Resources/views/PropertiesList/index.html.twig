@@ -100,7 +100,7 @@
           <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search" autocomplete="off">
           <a class="pie-el clearSearchProperty" id="delete" href="#">x</a>
           <button class="pie-el" id="search-submit" type="submit">{{ 'search'|trans }}</button>
-          <img src="/bundles/rjpublic/images/spinner-grey-ajax-loader.gif" title="loading..." class="loadingSpinner">
+          <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." class="loadingSpinner">
           <div id="search-result-map"></div>
         </div>
       </div>

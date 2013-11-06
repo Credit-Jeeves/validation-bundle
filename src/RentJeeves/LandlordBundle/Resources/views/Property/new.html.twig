@@ -17,7 +17,7 @@
               <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search">
               <a class="pie-el" id="delete" href="#">x</a>
               <button class="pie-el" id="search-submit" type="submit">{{ 'search'|trans }}</button>
-              <img src="/bundles/rjpublic/images/spinner-grey-ajax-loader.gif" title="loading..." class="loadingSpinner">
+              <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." class="loadingSpinner">
             </div>
             <div id="search-result-map"></div>
           </div>
