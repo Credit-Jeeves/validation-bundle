@@ -13,7 +13,7 @@ class LoginType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'email',
+            '_username',
             null,
             array(
                 'label' => 'iframe.login.email',
@@ -23,7 +23,7 @@ class LoginType extends AbstractType
             )
         );
         $builder->add(
-            'password',
+            '_password',
             'password',
             array(
                 'label' => 'iframe.login.password',
@@ -31,6 +31,10 @@ class LoginType extends AbstractType
                     'class' => 'iframe-input'
                 )
             )
+        );
+        $builder->add(
+            '_csrf_token',
+            'hidden'
         );
         $builder->add(
             'save',
@@ -48,7 +52,7 @@ class LoginType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
+//                'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
 //                 'validation_groups' => array(
 //                 ),
                 'csrf_protection' => true,
@@ -60,6 +64,6 @@ class LoginType extends AbstractType
 
     public function getName()
     {
-        return 'rentjeeves_publicbundle_logintype';
+        return '';// 'rentjeeves_publicbundle_logintype';
     }
 }

@@ -19,11 +19,18 @@ class IframeController extends Controller
      */
     public function indexAction()
     {
-        $tenant = new Tenant();
         $form = $this->createForm(
             new LoginType(),
-            $tenant
+            null,
+            array(
+                'action' => $this->generateUrl('fos_user_security_check'),
+                'attr' => array(
+                    'target' => '_blank'
+                 )
+            )
         );
+        $csrfToken = $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate');
+        $form->get('_csrf_token')->setData($csrfToken);
         $url = '';
         $request = $this->get('request');
         if ($request->getMethod() == 'POST') {
