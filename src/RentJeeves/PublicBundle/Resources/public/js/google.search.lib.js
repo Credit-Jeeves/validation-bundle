@@ -84,7 +84,7 @@
             new google.maps.Point(19, 41)
         );
 
-        function showError(message)
+        self.showError = function(message)
         {
             if (settings.divIdError === false) {
                 alert(message);
@@ -221,12 +221,12 @@
             function executeSearch(data)
             {
                 if (typeof data == 'undefined') {
-                    showError(Translator.get('select.from.drop.down.list'));
+                    self.showError(Translator.get('select.from.drop.down.list'));
                     return false;
                 }
 
                 if (data.address.length < 5) {
-                    showError(Translator.get('fill.full.address'));
+                    self.showError(Translator.get('fill.full.address'));
                     return false;
                 }
 
@@ -241,7 +241,7 @@
                     data: {'data': JSON.stringify(data, null)},
                     error: function(jqXHR, errorThrown, textStatus) {
                         afterAddProperty();
-                        showError(Translator.get('fill.full.address'));
+                        self.showError(Translator.get('fill.full.address'));
                         settings.addPropertyCallbackNotValid.call(self, jqXHR, errorThrown, textStatus);
                         return false;
                     },
@@ -264,7 +264,7 @@
                 $('#'+settings.findButtonId).addClass('disabled grey');
 
                 if ('' == $('#'+settings.findInputId).val()) {
-                    showError(Translator.get('error.property.empty'));
+                    self.showError(Translator.get('error.property.empty'));
                     return false;
                 }
 
@@ -296,7 +296,7 @@
                             var data = {'address': results[0].address_components, 'geometry':results[0].geometry};
                             executeSearch(data);
                         } else {
-                            showError(Translator.get('select.from.drop.down.list'));
+                            self.showError(Translator.get('select.from.drop.down.list'));
                         }
                     });
                 }

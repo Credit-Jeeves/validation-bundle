@@ -342,85 +342,6 @@ $(document).ready(function(){
         modal: true,
         width:'520px'
     });
- /*   $('#delete').click(function(){
-        $('#searsh-field').val(' ');
-        markAsNotValid();
-        search.clearSearch();
-        return false;
-    });
-*/
-/*    $('#property-search').change(function(){
-      $(this).addClass('notfound');
-      markAsNotValid();
-      if($(this).val() != '') {
-        search.searchFunction();
-      } else {
-        search.clearSearch();
-      }
-    });*/
-
-/*    function initialize() {
-        var lat = 0.0;
-        var lng = 0.0;
-
-        var mapOptions = {
-            center: new google.maps.LatLng(lat, lng),
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(
-            document.getElementById('search-result-map'),
-            mapOptions
-        );
-        var input = (document.getElementById('property-search'));
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
-        var infowindow = new google.maps.InfoWindow();
-        var marker = new google.maps.Marker({
-                map: map
-        });
-
-        function validateAddress()
-        {
-            clearError();
-            if($('#property-search').val() != '') {
-                $('#delete').show();
-            } else {
-                $('#delete').hide();
-            }
-            infowindow.close();
-            marker.setVisible(false);
-            input.className = '';
-            
-            markAsNotValid();
-
-            var place = autocomplete.getPlace();
-            //Inform the user that the place was not found and return.
-            if (!place.geometry) {
-                input.className = ERROR;
-            }
-
-            if (ERROR == $('#property-search').attr('class')) {
-                return showError('Such address doesn\'t exist!');
-            }
-
-            if ('' == $('#property-search').val()) {
-                return showError('Property Address empty');
-            }
-
-            if (typeof place.geometry == 'undefined') {
-                return showError('Such address doesn\'t exist!');
-            }
-
-            clearError();
-        }
-        
-
-        google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
-        addProperties.autocomplete(autocomplete);
-    }*/
-
-
 
     ko.applyBindings(PropertiesViewModel, $('#properties-block').get(0));
     PropertiesViewModel.ajaxAction();
@@ -436,11 +357,7 @@ $(document).ready(function(){
       return false;
     });
     
-
-    //google.maps.event.addDomListener(window, 'load', initialize);
-
     var google = $('#property-search').google({
-        // These are the defaults.
         formId: null,
         findButtonId: "search-submit",
         findInputId: "property-search",
@@ -448,7 +365,6 @@ $(document).ready(function(){
         loadingSpinner: true,
         loadingSpinnerClass: 'loadingSpinner',
         autoHideLoadingSpinner: true,
-        addPropertyCallback: function(data, textStatus, jqXHR){},
         addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus)
         {
                 markAsNotValid();
