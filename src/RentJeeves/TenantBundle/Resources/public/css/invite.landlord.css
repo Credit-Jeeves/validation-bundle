@@ -52,3 +52,15 @@ input {
     padding-left: 10px;
     padding-top: 4px;
 }
+
+#errorSearch {
+    position: absolute;
+    color: #ff0000;
+    display: none;
+}
+
+.loadingSpinner {
+    position: absolute;
+    margin-top: -17px;
+    margin-left: -13px;
+}
