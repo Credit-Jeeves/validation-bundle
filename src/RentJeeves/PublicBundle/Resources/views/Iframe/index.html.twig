@@ -49,12 +49,6 @@
             <a class="iframe-ns">Norton Secured</a>
         </div>
     </div>
-
-    {% if url != '' %}
-        <script>
-            window.parent.location.href = {{ url }};
-        </script>
-    {% endif %}
 {% endblock %}
 
 {% block stylesheets %}
@@ -70,6 +64,11 @@
                    '@RjPublicBundle/Resources/public/js/public-iframe.js' 
 %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
+        <script type="text/javascript">
+<!--
+redirectUrl = "{{ url }}";
+//-->
+</script>
     {% endjavascripts %}
 {% endblock %}
 
