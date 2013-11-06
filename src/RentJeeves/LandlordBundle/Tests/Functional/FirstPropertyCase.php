@@ -16,10 +16,8 @@ class FirtstPropertyCase extends BaseTestCase
         $propertySearch->click();
         $propertySearch->setValue($fillAddress);
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('div.pac-container').children().length > 0");
-        $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', '.pac-item'));
-        $item->click();
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $searchSubmit->click();
     }
 
     /**
@@ -35,7 +33,16 @@ class FirtstPropertyCase extends BaseTestCase
         $this->assertNotNull($addUnit = $this->page->find('css', '#addProperty'));
         $addUnit->click();
         $address = "30 Rockefeller Plaza, New York City, NY 10112";
-        $this->fillGoogleAddress('30 Rockefeller Plaza, New York City, NY 10112');
+        $this->fillGoogleAddress($address);
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->assertNotNull($errorSearch = $this->page->find('css', '#errorSearch'));
+        $this->assertEquals(
+            'fill.full.address',
+            $errorSearch->getHtml()
+        );
+        $address = '45 Rockefeller Plaza, New York City, NY 10111';
+        $this->fillGoogleAddress($address);
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($numberOfUnit = $this->page->find('css', '#numberOfUnit'));
         $numberOfUnit->setValue(5);
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit'));

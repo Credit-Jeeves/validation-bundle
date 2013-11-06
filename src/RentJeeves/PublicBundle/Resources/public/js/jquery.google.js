@@ -85,6 +85,7 @@
                 '</div>';
         }
 
+        self.place = '';
         self.markersArray = [];
 
         this.rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
@@ -189,38 +190,38 @@
                 infowindow.close();
                 marker.setVisible(false);
                 input.className = '';
-                var place = self.autocomplete.getPlace();
+                self.place = self.autocomplete.getPlace();
                 //Inform the user that the place was not found and return.
-                if (!place.geometry) {
+                if (!self.place.geometry) {
                     input.className = error;
                     return;
                 } else {
                     input.className = '';
                 }
                 //If the place has a geometry, then present it on a map.
-                if (place.geometry.viewport) {
-                    self.map.fitBounds(place.geometry.viewport);
+                if (self.place.geometry.viewport) {
+                    self.map.fitBounds(self.place.geometry.viewport);
                 } else {
-                    self.map.setCenter(place.geometry.location);
+                    self.map.setCenter(self.place.geometry.location);
                     self.map.setZoom(15);  // Why 17? Because it looks good.
                 }
                 marker.setIcon(/** @type {google.maps.Icon} */({
-                    url: place.icon,
+                    url: self.place.icon,
                     size: new google.maps.Size(71, 71),
                     origin: new google.maps.Point(0, 0),
                     anchor: new google.maps.Point(17, 34),
                     scaledSize: new google.maps.Size(35, 35)
                 }));
-                marker.setPosition(place.geometry.location);
+                marker.setPosition(self.place.geometry.location);
                 marker.setVisible(true);
                 var address = '';
-                if (place.address_components) {
+                if (self.place.address_components) {
                     address = [
-                        (place.address_components[0] && place.address_components[0].short_name || ''),
-                        (place.address_components[1] && place.address_components[1].short_name || '')
+                        (self.place.address_components[0] && self.place.address_components[0].short_name || ''),
+                        (self.place.address_components[1] && self.place.address_components[1].short_name || '')
                     ].join(' ');
                 }
-                infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
+                infowindow.setContent('<div><strong>' + self.place.name + '</strong><br>' + address);
                 infowindow.open(self.map, marker);
             }
 

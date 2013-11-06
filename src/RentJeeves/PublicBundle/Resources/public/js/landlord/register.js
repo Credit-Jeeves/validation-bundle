@@ -58,4 +58,8 @@ $(document).ready(function(){
             return false;
         }
     });
+
+    if($('.propertyId').val().length > 0) {
+        markAsValid();
+    }
 });

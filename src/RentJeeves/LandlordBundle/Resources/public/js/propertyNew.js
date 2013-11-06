@@ -84,7 +84,7 @@ $(document).ready(function(){
             dataType: 'json',
             data: {'units': units, 'property_id': propertyId },
             error: function(jqXHR, errorThrown, textStatus) {
-
+                google.showError(Translator.get('fill.full.address'));
             },
             success: function(data, textStatus, jqXHR) {
                 return location.href = Routing.generate('landlord_properties');
