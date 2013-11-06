@@ -292,14 +292,14 @@
                     return false;
                 }
 
-                if (typeof data != 'undefined') {
-                    delete data;
+                if (self.data.length > 0) {
+                    self.data = [];
                 }
 
                 self.place = self.autocomplete.getPlace();
                 if (typeof self.place != 'undefined' && typeof self.place.address_components != 'undefined') {
-                    var data = {'address': self.place.address_components, 'geometry': self.place.geometry};
-                    executeSearch(data);
+                    self.data = {'address': self.place.address_components, 'geometry': self.place.geometry};
+                    executeSearch(self.data);
                 } else {
                     infowindow.close();
                     var addressText = $('#'+settings.findInputId).val();
@@ -317,8 +317,8 @@
                             infowindow.open(self.map, marker);
 
                             $("#"+settings.findInputId).val(addressText);
-                            var data = {'address': results[0].address_components, 'geometry':results[0].geometry};
-                            executeSearch(data);
+                            self.data = {'address': results[0].address_components, 'geometry':results[0].geometry};
+                            executeSearch(self.data);
                         } else {
                             self.showError(Translator.get('select.from.drop.down.list'));
                         }

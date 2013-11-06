@@ -94,13 +94,11 @@ $(document).ready(function(){
 
     function addProperty()
     {
-        var place = google.place;
-        var data = {'address': place.address_components, 'geometry':place.geometry};
         jQuery.ajax({
             url: Routing.generate('landlord_property_add'),
             type: 'POST',
             dataType: 'json',
-            data: {'data': JSON.stringify(data, null)},
+            data: {'data': JSON.stringify(google.data, null)},
             error: function(jqXHR, errorThrown, textStatus) {
                 google.showError(Translator.get('fill.full.address'));
             },
