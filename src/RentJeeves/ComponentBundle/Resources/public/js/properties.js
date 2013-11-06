@@ -4,7 +4,7 @@ function markAsNotValid()
   $('#addUnitToNewProperty').addClass('grey');
 }
 
-function clearError()
+function markAsValid()
 {
   $('#saveProperty').removeClass('grey');
   $('#addUnitToNewProperty').removeClass('grey');
@@ -222,8 +222,7 @@ function addProperties()
   this.property = ko.observable("");
   this.aUnits = ko.observableArray([]);
   this.add = ko.observable(1);
-  this.autocomplete = ko.observable("");
-
+  this.google = ko.observable("");
   var self = this;
   this.clearUnits = function() {
     self.aUnits([]);
@@ -256,7 +255,7 @@ function addProperties()
       return;
     }
 
-    var place = self.autocomplete().getPlace();
+    var place = self.google().place;
     var data = {'address': place.address_components, 'geometry':place.geometry};
 
     self.property().processProperty(true);
@@ -343,14 +342,14 @@ $(document).ready(function(){
         modal: true,
         width:'520px'
     });
-    $('#delete').click(function(){
+ /*   $('#delete').click(function(){
         $('#searsh-field').val(' ');
         markAsNotValid();
         search.clearSearch();
         return false;
     });
-
-    $('#property-search').change(function(){
+*/
+/*    $('#property-search').change(function(){
       $(this).addClass('notfound');
       markAsNotValid();
       if($(this).val() != '') {
@@ -358,9 +357,9 @@ $(document).ready(function(){
       } else {
         search.clearSearch();
       }
-    });
+    });*/
 
-    function initialize() {
+/*    function initialize() {
         var lat = 0.0;
         var lng = 0.0;
 
@@ -419,7 +418,7 @@ $(document).ready(function(){
 
         google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
         addProperties.autocomplete(autocomplete);
-    }
+    }*/
 
 
 
@@ -438,6 +437,43 @@ $(document).ready(function(){
     });
     
 
-    google.maps.event.addDomListener(window, 'load', initialize);
+    //google.maps.event.addDomListener(window, 'load', initialize);
 
+    var google = $('#property-search').google({
+        // These are the defaults.
+        formId: null,
+        findButtonId: "search-submit",
+        findInputId: "property-search",
+        mapCanvasId: 'search-result-map',
+        loadingSpinner: true,
+        loadingSpinnerClass: 'loadingSpinner',
+        autoHideLoadingSpinner: true,
+        addPropertyCallback: function(data, textStatus, jqXHR){},
+        addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus)
+        {
+                markAsNotValid();
+        },
+        clearSearchCallback: function(isEmpty)
+        {
+            if (isEmpty) {
+                markAsNotValid();
+            }
+        },
+        markers: false,
+        divIdError: false,
+        defaultLat: null,
+        defaultLong: null,
+        clearSearchId: null,
+        clearSearchClass: 'clearSearchProperty',
+        divIdError: 'errorSearch',
+        addPropertyCallback: function(data, textStatus, jqXHR)
+        {
+            markAsValid();
+        },
+        changeSearch: function(){
+            markAsNotValid();
+        }
+    });
+
+    addProperties.google(google);
 });

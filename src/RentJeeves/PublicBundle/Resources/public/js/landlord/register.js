@@ -38,7 +38,9 @@ $(document).ready(function(){
         loadingSpinnerClass: 'loadingSpinner',
         findButtonId: 'search-submit',
         clearSearchCallback: function(isEmpty){
-            markAsNotValid();
+            if (isEmpty) {
+                markAsNotValid();
+            }
         },
         addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus) {
             $('#LandlordAddressType_property').val('');

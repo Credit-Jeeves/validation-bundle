@@ -98,11 +98,13 @@
         <label for="searsh-field">{{ 'find.your.rental'|trans }}</label>
         <div class="clearfix">
           <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search" autocomplete="off">
-          <a class="pie-el" id="delete" href="#">x</a>
+          <a class="pie-el clearSearchProperty" id="delete" href="#">x</a>
           <button class="pie-el" id="search-submit" type="submit">{{ 'search'|trans }}</button>
+          <img src="/bundles/rjpublic/images/spinner-grey-ajax-loader.gif" title="loading..." class="loadingSpinner">
           <div id="search-result-map"></div>
         </div>
       </div>
+      <div id="errorSearch"></div>
     </div>
     
     <div class="col">

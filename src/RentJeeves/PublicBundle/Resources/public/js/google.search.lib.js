@@ -20,31 +20,42 @@
             addPropertyCallback: function(data, textStatus, jqXHR){},
             addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus){},
             clearSearchCallback: function(isEmpty){},
+            changeSearch: function(){},
             markers: false,
             divIdError: false,
             defaultLat: null,
             defaultLong: null,
-            clearSearchId: null
+            clearSearchId: null,
+            clearSearchClass: null
         }, options );
 
 
-        if (settings.clearSearchId != null) {
+        if (settings.clearSearchId != null || settings.clearSearchClass) {
+
+            if (settings.clearSearchId != null) {
+                var close = $('#'+settings.clearSearchId);
+            } else {
+                var close = $('#'+settings.findInputId).parent().parent().find('.'+settings.clearSearchClass);
+            }
             $('#'+settings.findInputId).keyup(function(){
                 if ($(this).val().length > 0) {
                     settings.clearSearchCallback(false);
-                    $('#'+settings.clearSearchId).show();
+                    close.show();
                 } else {
                     settings.clearSearchCallback(true);
-                    $('#'+settings.clearSearchId).hide();
+                    close.hide();
+                    console.info('1');
                 }
             });
 
-            $('#'+settings.clearSearchId).click(function() {
+            close.click(function() {
                 $('#'+settings.findInputId).val(' ');
                 settings.clearSearchCallback(true);
+                close.hide();
                 return false;
             });
         }
+
         this.deleteOverlays = function()
         {
             if (self.markersArray) {
@@ -104,8 +115,8 @@
                 mapOptions
             );
             var input = (document.getElementById(settings.findInputId));
-            var autocomplete = new google.maps.places.Autocomplete(input);
-            autocomplete.bindTo('bounds', self.map);
+            self.autocomplete = new google.maps.places.Autocomplete(input);
+            self.autocomplete.bindTo('bounds', self.map);
             var infowindow = new google.maps.InfoWindow();
             //setup markers
             if (settings.markers) {
@@ -155,7 +166,7 @@
                 infowindow.close();
                 marker.setVisible(false);
                 input.className = '';
-                var place = autocomplete.getPlace();
+                var place = self.autocomplete.getPlace();
                 //Inform the user that the place was not found and return.
                 if (!place.geometry) {
                     input.className = ERROR;
@@ -192,6 +203,7 @@
 
             $('#'+settings.findInputId).change(function(){
                 $(this).addClass('notfound');
+                settings.changeSearch();
             });
 
             function afterAddProperty()
@@ -260,7 +272,7 @@
                     delete data;
                 }
 
-                self.place = autocomplete.getPlace();
+                self.place = self.autocomplete.getPlace();
                 if (typeof self.place != 'undefined' && typeof self.place.address_components != 'undefined') {
                     var data = {'address': self.place.address_components, 'geometry': self.place.geometry};
                     executeSearch(data);
@@ -300,7 +312,7 @@
                 initialCheck();
             });
 
-            google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
+            google.maps.event.addListener(self.autocomplete, 'place_changed', validateAddress);
         }
 
 
@@ -310,6 +322,8 @@
         $('#'+settings.formId).submit(function() {
             return false;
         });
+
+        return self;
     };
 
 }( jQuery ));

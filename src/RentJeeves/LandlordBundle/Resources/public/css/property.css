@@ -1,0 +1,12 @@
+.loadingSpinner {
+    position: absolute;
+    margin-top: -15px;
+    display: none;
+    margin-left: -13px;
+}
+#errorSearch {
+    color: #ff0000;
+    margin-left: 1px;
+    margin-top: -15px;
+    position: absolute;
+}
