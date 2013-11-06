@@ -5,6 +5,7 @@
 
 {% block stylesheets %}
     {% stylesheets  '@ComponentBundle/Resources/public/css/*'
+                    '@RjComponentBundle/Resources/public/css/alert.css'
                     '@RjPublicBundle/Resources/public/css/footer.css'
                     '@CoreBundle/Resources/public/css/rj-logos.css'
                     '@CoreBundle/Resources/public/css/tabs.css'
@@ -13,6 +14,7 @@
                     '@CoreBundle/Resources/public/css/rent-menu.css'
                     '@TenantBundle/Resources/public/css/alert.css'
                     '@TenantBundle/Resources/public/css/home.page.css'
+                    '@CheckoutBundle/Resources/public/css/checkout.css'
     %}
         <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
     {% endstylesheets %}
@@ -27,6 +29,9 @@
         <div class="column-small floatright">
              {{ render(controller('CheckoutBundle:Default:box')) }}
         </div>#}
+        <div class="column-small floatright">
+             {{ render(controller('ComponentBundle:LearnMore:index')) }}
+        </div>
         <div class="clearboth"></div>
         <div class="column-large">
             <div class="row-20"></div>
@@ -52,8 +57,9 @@
         </div>
         <div class="column-small floatright">
             {{ render(controller('ComponentBundle:DidYouKnow:index', {'Report': Report})) }}
+            {# TODO Moved to top until we get buy CC back
             <div class="row-20"></div>
-            {{ render(controller('ComponentBundle:LearnMore:index')) }}
+            {{ render(controller('ComponentBundle:LearnMore:index')) }} #}
         </div>
         <div class="clearboth"></div>
     </div>

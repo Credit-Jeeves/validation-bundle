@@ -24,7 +24,13 @@
             {{ form_widget(form.phone) }}
             {{ form_rest(form) }}
             <div class="row-20"></div>
-            <input class="button large green" type="submit" name="_submit" value="{{ 'common.update' | trans }}" />
+            {% if application == 'rj' %}
+                <button type="submit" class="button large" >
+                    <span>{{ 'common.update' | trans }}</span>
+                </button>
+            {% else %}
+                <input class="button large green" type="submit" name="_submit" value="{{ 'common.update' | trans }}" />
+            {% endif %}
         </form>
         </div>
     </div>

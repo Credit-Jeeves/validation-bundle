@@ -31,7 +31,8 @@ class BlocksController extends Controller
 
         return array(
             'isAdmin'     => $isAdmin,
-            'accountType' => $user->getType()
+            'accountType' => $user->getType(),
+            'email'       => $user->getEmail()
         );
     }
 

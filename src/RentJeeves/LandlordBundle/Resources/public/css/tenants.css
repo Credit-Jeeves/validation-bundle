@@ -49,7 +49,6 @@
 }
 .properties-table>tbody>tr>td, .tenant-box {
     word-wrap: break-word !important;
-    word-break: break-all !important;
 }
 .notHaveData {
     height: 50px;
@@ -126,4 +125,36 @@ height: 23px;
 #unit-edit {
     margin-top: 7px;
     margin-left: 10px;
+}
+
+.column-status {
+    width: 85px;
+}
+.column-name {
+    width: 93px;
+}
+
+.column-email {
+    width: 150px;
+}
+.column-phone {
+    width: 105px;
+}
+.column-address {
+    width: 100px;
+}
+.column-amount {
+    width: 50px;
+}
+.column-last {
+    width: 45px;
+}
+.column-paid {
+    width: 45px;
+}
+.column-type {
+    width: 50px;
+}
+.column-action {
+    width: 50px;
 }

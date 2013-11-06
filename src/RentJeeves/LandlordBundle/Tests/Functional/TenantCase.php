@@ -23,11 +23,26 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
         $this->assertCount(2, $contractPendings, 'Wrong number of pending');
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
+        $this->page->pressButton('approve.tenant');
+        $this->session->wait($this->timeout, "$('div.attention-box').is(':visible')");
+        $this->assertNotNull($errors = $this->page->findAll('css', 'div.attention-box ul.default li'));
+        $this->assertCount(2, $errors, 'Wrong number of errors');
+        $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $amount->setValue('200');
+        $start = $this->page->find('css', '#contractApproveStart');
+        $this->assertNotNull($start);
+        $start->click();
+        $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
+        $this->assertNotNull($today);
+        $today->click();
+        $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
+        $finish = $this->page->find('css', '#contractApproveFinish');
+        $this->assertNotNull($finish);
+        $finish->click();
         $this->page->pressButton('approve.tenant');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -87,6 +102,9 @@ class TenantCase extends BaseTestCase
             "$('.half-of-right').val(' ');"
         );
 
+        $this->session->wait($this->timeout, "$('#tenant-edit-property-popup .loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup .loader').is(':visible')");
+
         $this->assertNotNull($amount = $this->page->find('css', '#amount-edit'));
         $amount->setValue('200');
 
@@ -112,13 +130,15 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($future);
         $future[count($future)-1]->click();
 
-
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
         $start = $contractEditStart->getValue();
         
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditFinish'));
         $finish = $contractEditStart->getValue();
-        
+
+        $this->assertNotNull($unitEdit = $this->page->find('css', '#unit-edit'));
+        $unitEdit->selectOption('2-e'); //
+
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -128,9 +148,11 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($editStart = $this->page->find('css', '#contractApproveStart'));
         $this->assertNotNull($editFinish = $this->page->find('css', '#contractApproveFinish'));
         $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
+        $this->assertNotNull($address = $this->page->find('css', '#tenant-approve-property-popup .addressDiv'));
         $this->assertEquals($start, $editStart->getValue(), 'Wrong edit start');
         $this->assertEquals($finish, $editFinish->getValue(), 'Wrong edit finish');
         $this->assertEquals('200', $amount->getValue(), 'Wrong edit amount');
+        $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong edit unit');
         $this->logout();
     }
 
@@ -393,7 +415,7 @@ class TenantCase extends BaseTestCase
         $this->logout();
     }
 
-    private function sendReminder()
+    private function sendReminder($nCountEmails = 1)
     {
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
@@ -434,7 +456,7 @@ class TenantCase extends BaseTestCase
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount($nCountEmails, $email, 'Wrong number of emails');
         // end
     }
     /**
@@ -507,7 +529,7 @@ class TenantCase extends BaseTestCase
         $user->setIsActive(true);
         $em->persist($user);
         $em->flush();
-        $this->sendReminder();
+        $this->sendReminder(0);
     }
 
     /**

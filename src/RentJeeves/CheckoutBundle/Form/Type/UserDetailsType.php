@@ -42,7 +42,8 @@ class UserDetailsType extends AbstractType
                     'html' => '<div class="tooltip-box type3 pie-el">' .
                         '<p class="verify" data-bind="i18n: {}">checkout.date_of_birth.tooltip.line1</p>' .
                     '</div>'
-                )
+                ),
+                'invalid_message' => 'checkout.error.date_of_birth.invalid',
             )
         );
         $builder->add(
