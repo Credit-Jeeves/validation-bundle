@@ -5,7 +5,7 @@
 
     $.fn.google = function( options ) {
 
-        var ERROR = 'notfound';
+        var error = 'notfound';
         var self = this;
         var settings = $.extend({
             // These are the defaults.
@@ -192,7 +192,7 @@
                 var place = self.autocomplete.getPlace();
                 //Inform the user that the place was not found and return.
                 if (!place.geometry) {
-                    input.className = ERROR;
+                    input.className = error;
                     return;
                 } else {
                     input.className = '';
