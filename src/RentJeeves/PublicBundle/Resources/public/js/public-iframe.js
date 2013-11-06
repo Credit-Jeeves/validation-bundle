@@ -3,6 +3,7 @@ $(document).ready(function(){
     window.open('http://www.renttrack.com/');
   });
   $('#rentjeeves_publicbundle_logintype_save').click(function(event){
+    return true;
     event.preventDefault();
     var data = $('#iframe-login-form form').serializeArray();
     $.ajax({
