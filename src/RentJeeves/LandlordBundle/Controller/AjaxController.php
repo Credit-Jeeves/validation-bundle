@@ -100,7 +100,16 @@ class AjaxController extends Controller
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
         $propertyDataLocation = $property->parseGoogleLocation($data);
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertyDataLocation);
+        if (!isset($propertyDataAddress['number'])) {
+            throw new \Exception(
+                sprintf(
+                    "We don't have number for property Data: %s",
+                    print_r($data, true)
+                )
+            );
+        }
+        $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
@@ -139,6 +148,7 @@ class AjaxController extends Controller
         }
 
         $data = array(
+            'error'                 => false,
             'hasLandlord'           => $property->hasLandlord(),
             'isLogin'               => $isLogin,
             'isLandlord'            => $isLandlord,

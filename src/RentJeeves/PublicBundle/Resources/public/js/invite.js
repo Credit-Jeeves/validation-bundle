@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+/*
     var ERROR = 'notfound';
 
     function showError(message)
@@ -44,7 +44,7 @@ $(document).ready(function(){
               map.setCenter(place.geometry.location);
               map.setZoom(15);  // Why 17? Because it looks good.
           }
-          marker.setIcon(/** @type {google.maps.Icon} */({
+          marker.setIcon(*//** @type {google.maps.Icon} *//*({
               url: place.icon,
               size: new google.maps.Size(71, 71),
               origin: new google.maps.Point(0, 0),
@@ -110,9 +110,9 @@ $(document).ready(function(){
 
     $('#formSearch').submit(function() {
       return false;
-    });
+    });*/
 
-    google.maps.event.addDomListener(window, 'load', initialize);
+  /*  google.maps.event.addDomListener(window, 'load', initialize);*/
 
     $(function() {
       $("#pricing-popup").dialog({
@@ -129,4 +129,21 @@ $(document).ready(function(){
       $("#pricing-popup").dialog('close');
     });
 
+
+    $('#property-search').google({
+        autoHideLoadingSpinner: true,
+        mapCanvasId: "map-canvas",
+        formId: "formSearch",
+        markers: false,
+        clearSearchId: 'delete',
+        divIdError: "errors",
+        findButtonId: 'search-submit',
+        addPropertyCallback: function(data, textStatus, jqXHR){
+            if (data.isLogin && data.isLandlord) {
+                location.href = Routing.generate('landlord_properties');
+                return;
+            }
+            location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id});
+        }
+    });
 });

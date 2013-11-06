@@ -6,7 +6,7 @@
     $.fn.google = function( options ) {
 
         var ERROR = 'notfound';
-
+        var self = this;
         var settings = $.extend({
             // These are the defaults.
             formId: "formSearch",
@@ -17,11 +17,56 @@
             loadingSpinnerClass: 'loadingSpinner',
             autoHideLoadingSpinner: false,
             linkAddProperty: Routing.generate('landlord_property_add'),
-            addPropertyCallback: function(data, textStatus, jqXHR){},
-            divIdError: false
+            addPropertyCallback: function(data, textStatus, jqXHR, self){},
+            markers: false,
+            divIdError: false,
+            defaultLat: null,
+            defaultLong: null,
+            clearSearchId: null
         }, options );
 
 
+        if (settings.clearSearchId != null) {
+            $('#'+settings.findInputId).keyup(function(){
+                if ($(this).val().length > 0) {
+                    $('#'+settings.clearSearchId).show();
+                } else {
+                    $('#'+settings.clearSearchId).hide();
+                }
+            });
+
+            $('#'+settings.clearSearchId).click(function() {
+                $('#'+settings.findInputId).val(' ');
+                return false;
+            });
+        }
+        this.deleteOverlays = function()
+        {
+            if (self.markersArray) {
+                for (i in self.markersArray) {
+                    self.markersArray[i].setMap(null);
+                }
+            }
+        }
+
+        this.getHtmlPopap = function(title, content)
+        {
+            return  '<div id="content">'+
+                '<div id="siteNotice">'+
+                '</div>'+
+                '<h1 id="firstHeading" class="firstHeading">'+title+'</h1>'+
+                '<div id="bodyContent" style="width:150px;">'+content +
+                '<p></div>'+
+                '</div>';
+        }
+
+        self.markersArray = [];
+
+        this.rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
+            new google.maps.Size(38,54),
+            new google.maps.Point(0,0),
+            new google.maps.Point(19, 41)
+        );
 
         function showError(message)
         {
@@ -36,21 +81,69 @@
         }
 
         function initialize() {
-            var mapOptions = {
-                center: new google.maps.LatLng(38, -90),
-                zoom: 4,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            var map = new google.maps.Map(
+            if (settings.defaultLat != null && settings.defaultLong != null) {
+                var mapOptions = {
+                    center: new google.maps.LatLng(settings.defaultLat, settings.defaultLong),
+                    zoom: 14,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+            } else {
+                 var mapOptions = {
+                    center: new google.maps.LatLng(38, -90),
+                    zoom: 4,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                 };
+            }
+            self.map = new google.maps.Map(
                 document.getElementById(settings.mapCanvasId),
                 mapOptions
             );
             var input = (document.getElementById(settings.findInputId));
             var autocomplete = new google.maps.places.Autocomplete(input);
-            autocomplete.bindTo('bounds', map);
+            autocomplete.bindTo('bounds', self.map);
             var infowindow = new google.maps.InfoWindow();
+            //setup markers
+            if (settings.markers) {
+                $.each($('.addressText'), function(index, value) {
+                    var lat = $(this).find('.lat').val();
+                    var lng = $(this).find('.lng').val();
+                    var addressSelect = $(this).find('.addressSelect').val();
+                    var number = $(this).attr('number');
+                    var myLatlng = new google.maps.LatLng(lat,lng);
+                    var rentaPoint = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_'+number+'.png',
+                        new google.maps.Size(26,42),
+                        new google.maps.Point(0,0),
+                        new google.maps.Point(13,42)
+                    );
+
+                    var contentString = self.getHtmlPopap(
+                        $(this).find('.titleAddress').html(),
+                        $(this).find('.contentAddress').html()
+                    );
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString
+                    });
+
+                    var marker = new google.maps.Marker({
+                        position: myLatlng,
+                        map: self.map,
+                        title: addressSelect,
+                        icon: rentaPoint,
+                        shadow: self.rentaPiontShadow
+                    });
+
+                    self.markersArray[number] = marker;
+
+                    google.maps.event.addListener(marker, 'click', function() {
+                        infowindow.open(self.map, self.markersArray[number]);
+                    });
+
+                });
+            }
+            //end setup markers
             var marker = new google.maps.Marker({
-                map: map
+                map: self.map
             });
 
             function validateAddress(){
@@ -67,10 +160,10 @@
                 }
                 //If the place has a geometry, then present it on a map.
                 if (place.geometry.viewport) {
-                    map.fitBounds(place.geometry.viewport);
+                    self.map.fitBounds(place.geometry.viewport);
                 } else {
-                    map.setCenter(place.geometry.location);
-                    map.setZoom(15);  // Why 17? Because it looks good.
+                    self.map.setCenter(place.geometry.location);
+                    self.map.setZoom(15);  // Why 17? Because it looks good.
                 }
                 marker.setIcon(/** @type {google.maps.Icon} */({
                     url: place.icon,
@@ -89,12 +182,24 @@
                     ].join(' ');
                 }
                 infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-                infowindow.open(map, marker);
+                infowindow.open(self.map, marker);
             }
 
             $('#'+settings.findInputId).change(function(){
                 $(this).addClass('notfound');
             });
+
+            function afterAddProperty()
+            {
+                if (settings.autoHideLoadingSpinner === false) {
+                    return;
+                }
+                $('#'+settings.findButtonId).removeClass('grey');
+                $('#'+settings.findButtonId).removeClass('disabled');
+                if (settings.loadingSpinner) {
+                    $('#'+settings.findButtonId).parent().find('.'+settings.loadingSpinnerClass).hide();
+                }
+            }
 
             function executeSearch(data)
             {
@@ -118,19 +223,13 @@
                     dataType: 'json',
                     data: {'data': JSON.stringify(data, null)},
                     error: function(jqXHR, errorThrown, textStatus) {
-                        location.reload();
+                        afterAddProperty();
+                        showError(Translator.get('fill.full.address'));
+                        return false;
                     },
                     success: function(data, textStatus, jqXHR) {
-                        settings.addPropertyCallback(data, textStatus, jqXHR);
-
-                        if (settings.autoHideLoadingSpinner === false) {
-                            return;
-                        }
-                        $('#'+settings.findButtonId).removeClass('grey');
-                        $('#'+settings.findButtonId).removeClass('disabled');
-                        if (settings.loadingSpinner) {
-                            $('#'+settings.findButtonId).parent().find('.'+settings.loadingSpinnerClass).hide();
-                        }
+                        settings.addPropertyCallback.call(self, data, textStatus, jqXHR);
+                        afterAddProperty();
                     }
                 });
             }
@@ -155,9 +254,9 @@
                     delete data;
                 }
 
-                var place = autocomplete.getPlace();
-                if (typeof place != 'undefined' && typeof place.address_components != 'undefined') {
-                    var data = {'address': place.address_components, 'geometry':place.geometry};
+                self.place = autocomplete.getPlace();
+                if (typeof self.place != 'undefined' && typeof self.place.address_components != 'undefined') {
+                    var data = {'address': self.place.address_components, 'geometry': self.place.geometry};
                     executeSearch(data);
                 } else {
                     infowindow.close();
@@ -173,7 +272,7 @@
 
                             marker.setPosition(latlng);
                             infowindow.setContent(placeName);
-                            infowindow.open(map, marker);
+                            infowindow.open(self.map, marker);
 
                             $("#"+settings.findInputId).val(addressText);
                             var data = {'address': results[0].address_components, 'geometry':results[0].geometry};

@@ -5,6 +5,7 @@
 {% block content %}
 <section class="form-content">
 {{ include('RjComponentBundle:Invite:_formSearch.html.twig') }}
+<div id="errors" class="errors"></div>
 {{ include('RjComponentBundle:Invite:_popupTenant.html.twig') }}
 <form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }} id="inviteForm">
     {{ include('RjComponentBundle:Invite:_form.html.twig', {"form": form.invite }) }}
@@ -22,8 +23,11 @@
 {% endblock %}
 
 {% block javascripts %}
+    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@RjPublicBundle/Resources/public/js/invite.js'
+    {% javascripts  '@RjPublicBundle/Resources/public/js/google.search.lib.js'
+                    '@RjPublicBundle/Resources/public/js/invite.js'
 
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

@@ -22,3 +22,9 @@
     position: relative;
     z-index: 5
 }
+
+#errors {
+  color: #ff0000;
+  position: absolute;
+  margin-left: 10px;
+}
