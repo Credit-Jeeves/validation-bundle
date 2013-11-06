@@ -415,7 +415,7 @@ class TenantCase extends BaseTestCase
         $this->logout();
     }
 
-    private function sendReminder()
+    private function sendReminder($nCountEmails = 1)
     {
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
@@ -456,7 +456,7 @@ class TenantCase extends BaseTestCase
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(1, $email, 'Wrong number of emails');
+        $this->assertCount($nCountEmails, $email, 'Wrong number of emails');
         // end
     }
     /**
@@ -529,7 +529,7 @@ class TenantCase extends BaseTestCase
         $user->setIsActive(true);
         $em->persist($user);
         $em->flush();
-        $this->sendReminder();
+        $this->sendReminder(0);
     }
 
     /**
