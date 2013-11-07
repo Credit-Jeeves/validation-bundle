@@ -234,6 +234,7 @@ class AjaxController extends Controller
     public function saveUnitsList()
     {
         $data = array();
+        $names = array();
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
@@ -250,8 +251,10 @@ class AjaxController extends Controller
             if (empty($unit['id']) & !empty($unit['name'])) {
                 continue;
             } else {
+                $names[] = $unit['name'];
                 $unitKeys[$unit['id']] = $key;
             }
+            
         }
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
@@ -277,7 +280,7 @@ class AjaxController extends Controller
             
         }
         foreach ($units as $unit) {
-            if (empty($unit['id']) & !empty($unit['name'])) {
+            if (empty($unit['id']) & !empty($unit['name']) & !in_array($unit['name'], $names)) {
                 $entity = new Unit();
                 $entity->setProperty($parent);
                 $entity->setHolding($holding);
@@ -285,6 +288,7 @@ class AjaxController extends Controller
                 $entity->setName($unit['name']);
                 $em->persist($entity);
                 $em->flush();
+                $names[] = $unit['name'];
             }
         }
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
