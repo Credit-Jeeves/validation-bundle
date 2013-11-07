@@ -82,6 +82,7 @@ class IframeCase extends BaseTestCase
             'fill.full.address',
             $errors->getHtml()
         );
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $fillAddress = '350 5th Avenue, Manhattan, New York City, NY 10118';
         $this->fillForm(
             $form,
