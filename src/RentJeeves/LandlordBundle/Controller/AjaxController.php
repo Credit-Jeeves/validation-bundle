@@ -259,14 +259,17 @@ class AjaxController extends Controller
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
         $em = $this->getDoctrine()->getManager();
+        $existingNames = array();
         foreach ($records as $entity) {
-            if (in_array($entity->getId(), array_keys($unitKeys))) {
+            if (in_array($entity->getId(), array_keys($unitKeys)) & !in_array($entity->getName(), $existingNames)) {
                 $key = $unitKeys[$entity->getId()];
-                if (!empty($units[$key]['name'])) {
+                if (!empty($units[$key]['name']) & !in_array($units[$key]['name'], $existingNames)) {
+                    $existingNames[] = $units[$key]['name'];
                     if ($units[$key]['name'] != $entity->getName()) {
                         $entity->setName($units[$key]['name']);
                         $em->persist($entity);
                         $em->flush();
+                        
                     }
                 } else {
                     $em->remove($entity);
