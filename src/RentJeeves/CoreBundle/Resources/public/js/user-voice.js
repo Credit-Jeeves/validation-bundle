@@ -41,5 +41,4 @@ $(document).ready(function(){
   }]);
   
   UserVoice.push('autoprompt', {});
-  console.log(user);
 });
