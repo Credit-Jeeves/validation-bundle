@@ -1,7 +1,6 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
-//use EntityManager522a848132d2c_546a8d27f194334ee012bfe64f629947b07e4919\__CG__\Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -54,12 +53,24 @@ class Contract extends Base
      */
     const PAYMENT_LATE = ' DAYS LATE';
 
+    /**
+     * @var string
+     */
     const STATUS_EMPTY = 'empty-month';
 
+    /**
+     * @var string
+     */
     const STATUS_PAY = 'auto';
 
+    /**
+     * @var string
+     */
     const STATUS_OK = 'C';
 
+    /**
+     * @var string
+     */
     const STATUS_LATE = '1';
 
     /**
@@ -253,7 +264,7 @@ class Contract extends Base
 
     public function getPaymentHistory($em)
     {
-        $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '');
+        $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '-');
         $payments = $this->createHistoryArray();
         $currentDate = new \DateTime('now');
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
@@ -261,36 +272,38 @@ class Contract extends Base
         $orders = $repo->getContractHistory($this);
         foreach ($orders as $order) {
             $orderDate = $order->getCreatedAt();
-            $interval = $currentDate->diff($orderDate)->format('%r%a');
-            if ($interval > $lastDate) {
-                $result['last_amount'] = $order->getAmount();
-                $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
-            }
             $nYear = $orderDate->format('Y');
             $nMonth = $orderDate->format('m');
-            //echo $order->getId().'>>>'.$nYear.'->'.$nMonth.'<br>';
-            $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
-            $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-            if ($late = $order->getDaysLate()) {
-                if ($late > 0) {
-                    //$nMonth = $orderDate->modify('-'.$late.' days')->format('m');
-                    $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                    $payments[$nYear][$nMonth]['text'] = $late;
-                }
+            $interval = $currentDate->diff($orderDate)->format('%r%a');
+            $status = $order->getStatus();
+            switch ($status) {
+                case OrderStatus::NEWONE:
+                    $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
+                    $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
+                    break;
+                case OrderStatus::COMPLETE:
+                    if ($interval > $lastDate) {
+                        $result['last_amount'] = $order->getAmount();
+                        $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
+                    }
+                    $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
+                    $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
+                    if ($late = $order->getDaysLate()) {
+                        if ($late > 0) {
+                            $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
+                            $payments[$nYear][$nMonth]['text'] = $late;
+                        }
+                    }
+                    if (!isset($payments[$nYear][$nMonth]['amount'])) {
+                        $payments[$nYear][$nMonth]['amount'] = $order->getAmount();
+                    } else {
+                        $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
+                    }
+                    break;
+                default:
+                    continue 2;
+                    break;
             }
-            if (OrderStatus::NEWONE == $order->getStatus()) {
-                $payments[$nYear][$nMonth]['status'] = self::STATUS_PAY;
-                $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
-            }
-            if (!isset($payments[$nYear][$nMonth]['amount'])) {
-//                 echo $order->getId().'>>>'.$nYear.'->'.$nMonth.'<br>';
-//                 echo $this->getId().'*****';
-//                 echo '<pre>';
-                $payments[$nYear][$nMonth]['amount'] = $order->getAmount();
-//                 print_r($payments);
-//                 exit;
-            }
-            $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
         }
         ksort($payments);
         $result['history'] = $payments;
@@ -311,7 +324,10 @@ class Contract extends Base
         $start = $this->getStartAt();
         $finish = $this->getFinishAt();
         $startYear = $start->format('Y');
-        $finishYear = $finish->format('Y');
+        $finishYear = $startYear;
+        if ($finish) {
+            $finishYear = $finish->format('Y');
+        }
         for ($i = $startYear; $i <= $finishYear; $i++) {
             $result[$i] = $aMonthes;
         }
@@ -320,7 +336,7 @@ class Contract extends Base
             $result[$paidTo->format('Y')][$paidTo->format('m')] = array(
                 'status' => self::STATUS_PAY,
                 'text' => self::PAYMENT_PAY,
-                'amount' => $this->getRent(),
+                'amount' => 0,
             );
         }
         return $result;
