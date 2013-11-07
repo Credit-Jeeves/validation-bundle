@@ -403,4 +403,25 @@ fixtures:
     days_late: 0
     created_at: '-1 days'
     updated_at: '-1 days'
+  rjOrder_6_1:
+    operations:
+      - rjOperation_16
+    user: Tenant_12
+    status: complete
+    type: heartland_card
+    amount: 1
+    days_late: 0
+    created_at: '-1 days'
+    updated_at: '-1 days'
+  rjOrder_6_2:
+    operations:
+      - rjOperation_16
+    user: Tenant_12
+    status: complete
+    type: heartland_card
+    amount: 2
+    days_late: 0
+    created_at: '-1 days'
+    updated_at: '-1 days'
+    
 

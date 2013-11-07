@@ -4271,7 +4271,6 @@ table.ui-datepicker-calendar tbody tr td a {
     width: auto;
 }
 
-#rentjeeves_checkoutbundle_paymentaccounttype_address_row,
 #rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1_row,
 #rentjeeves_checkoutbundle_userdetailstype_new_address_row{
     padding-left: 0px;
@@ -4325,4 +4324,8 @@ form label {
     /*
     -webkit-transform: scale(0.1); /* Safari and Chrome */
     -o-transform: scale(0.1); /* Opera */    
+}
+
+.form-row-custom label {
+    margin-top: 16px;
 }
