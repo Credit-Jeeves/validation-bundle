@@ -90,12 +90,10 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
         $propertySearch->click();
         $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY';
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $propertySearch->setValue($fillAddress);
-        //$propertySearch->click();
-        $this->session->wait($this->timeout, "$('div.pac-container').children().length > 0");
-        $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', 'div.pac-container div'));
-        $item->click();
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($numberOfUnit = $this->page->find('css', '#numberOfUnit'));
         $numberOfUnit->setValue(5);
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnitToNewProperty>span'));

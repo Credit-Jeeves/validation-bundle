@@ -260,9 +260,6 @@ function addProperties()
       return;
     }
 
-    var place = self.google().place;
-    var data = {'address': place.address_components, 'geometry':place.geometry};
-
     self.property().processProperty(true);
     $('#add-property-popup').dialog('close');
 
@@ -270,7 +267,7 @@ function addProperties()
         url: Routing.generate('landlord_property_add'),
         type: 'POST',
         dataType: 'json',
-        data: {'data': JSON.stringify(data, null)},
+        data: {'data': JSON.stringify(self.google().data, null)},
         error: function(jqXHR, errorThrown, textStatus) {;
         },
         success: function(data, textStatus, jqXHR) {
