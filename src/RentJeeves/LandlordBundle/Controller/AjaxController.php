@@ -235,6 +235,8 @@ class AjaxController extends Controller
     {
         $data = array();
         $names = array();
+        $existingNames = array();
+        $errorNames = array();
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
@@ -259,7 +261,7 @@ class AjaxController extends Controller
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
         $em = $this->getDoctrine()->getManager();
-        $existingNames = array();
+        
         foreach ($records as $entity) {
             if (in_array($entity->getId(), array_keys($unitKeys)) & !in_array($entity->getName(), $existingNames)) {
                 $key = $unitKeys[$entity->getId()];
@@ -272,6 +274,7 @@ class AjaxController extends Controller
                         
                     }
                 } else {
+                    $errorNames[] = $units[$key]['name'];
                     $em->remove($entity);
                     $em->flush();
                 }
@@ -292,6 +295,8 @@ class AjaxController extends Controller
                 $em->persist($entity);
                 $em->flush();
                 $names[] = $unit['name'];
+            } else {
+                $errorNames[] = $unit['name'];
             }
         }
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);

@@ -156,7 +156,7 @@ $(document).ready(function(){
                 error: function(jqXHR, errorThrown, textStatus) {;
                 },
                 success: function(data, textStatus, jqXHR) {
-                    var propertyId = data.property.id
+                    var propertyId = data.property.id;
                     if(propertyId) {
                         return saveUnitList(propertyId);
                     }

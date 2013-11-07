@@ -157,7 +157,6 @@
             </div>
           </div>
         </div>
-        
         <div class="col" style="padding-top: 45px;" >
           <h4>{{ 'unit.info'|trans }}</h4>
           <div class="form-row clearfix">
@@ -181,6 +180,15 @@
                 <!-- /ko -->
             </div>
           </div>
+          <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
+                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+                <ul class="default">
+                    <!-- ko foreach: $root.errors() -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+
         </div>
       </div>
       <div data-bind="style: { display: process() ? 'block' : 'none' }">
