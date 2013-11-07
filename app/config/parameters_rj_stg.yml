@@ -1,0 +1,16 @@
+imports:
+    - { resource: parameters_dev_base.yml }
+
+parameters:
+    database_name: rj_stg
+    database_user: root
+    database_password: 'passw0rd'
+    mailer_transport: smtp
+#    mailer_host: 127.0.0.1
+#    mailer_user: null
+#    mailer_password: null
+
+    server: stg
+    server_name_cj: stg2.creditjeeves.com
+    server_name_rj: stg.renttrack.com
+    api.admin_dealer_code: 1a1dc91c9073
