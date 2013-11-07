@@ -1,0 +1,9 @@
+#checkboxterms {
+    float: left;
+    margin-left: 0px;
+}
+#checkboxterms a {
+    margin-left: 89px;
+    position: absolute;
+    margin-top: -18px;
+}

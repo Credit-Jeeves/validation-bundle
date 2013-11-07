@@ -35,7 +35,9 @@
 {% endblock %}
 
 {% block stylesheets %}
-    {% stylesheets '@RjPublicBundle/Resources/public/css/invite.css'
+    {% stylesheets
+        '@RjPublicBundle/Resources/public/css/landlord/invite.css'
+        '@RjPublicBundle/Resources/public/css/invite.css'
     %}
       <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
