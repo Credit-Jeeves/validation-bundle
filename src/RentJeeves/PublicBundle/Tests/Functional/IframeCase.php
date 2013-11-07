@@ -77,12 +77,12 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '#errors'));
         $this->assertEquals(
             'fill.full.address',
             $errors->getHtml()
         );
-        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $fillAddress = '350 5th Avenue, Manhattan, New York City, NY 10118';
         $this->fillForm(
             $form,
@@ -90,9 +90,10 @@ class IframeCase extends BaseTestCase
                 'property-search' => $fillAddress,
             )
         );
-        $propertySearch->click();
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $url = $this->session->getCurrentUrl();
+        $propertySearch->click();
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "document.URL != '{$url}'");
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
