@@ -15,6 +15,20 @@
         {% endif %}
         <a href="{{ path('fos_user_security_logout') }}"> {{ 'common.log_out' | trans }}</a>
     </div>
+    
+{% block javascripts %}
+    {% javascripts '@RjCoreBundle/Resources/public/js/user-voice.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        <script type="text/javascript">
+          user.email = "{{ email }}";
+          user.fullName = "{{ fullName }}";
+          user.login = {{ login }};
+          user.id = {{ id }};
+          user.type = "{{ accountType }}";
+          
+        </script>
+    {% endjavascripts %}
+{% endblock %}
 {% else %}
     <div class="user-logout">
         <a href="{{ path('fos_user_security_login') }}">{{ 'login.submit' | trans }}</a>

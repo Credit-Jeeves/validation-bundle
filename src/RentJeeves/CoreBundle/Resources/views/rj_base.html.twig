@@ -1,11 +1,9 @@
 {% extends "::base.html.twig" %}
 
 {% block google_analytics %}
-{% javascripts '@RjCoreBundle/Resources/public/js/google-analytics.js'
-               '@RjCoreBundle/Resources/public/js/user-voice.js'
-%}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
+    {% javascripts '@RjCoreBundle/Resources/public/js/google-analytics.js' %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
 
 {% block title %}
@@ -15,5 +13,4 @@
 {% block info %}
      {{ render(controller('RjComponentBundle:Blocks:info' )) }}
 {% endblock %}
-
 
