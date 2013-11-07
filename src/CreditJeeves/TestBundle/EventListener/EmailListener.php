@@ -1,7 +1,11 @@
 <?php
 namespace CreditJeeves\TestBundle\EventListener;
 
-class EmailListener implements \Swift_Events_SendListener
+use \Swift_Message;
+use \Swift_Events_SendEvent;
+use \Swift_Events_SendListener;
+
+class EmailListener implements Swift_Events_SendListener
 {
     /**
      * @var array
@@ -19,12 +23,12 @@ class EmailListener implements \Swift_Events_SendListener
         $this->postSendMessages = array();
     }
 
-    public function beforeSendPerformed(\Swift_Events_SendEvent $evt)
+    public function beforeSendPerformed(Swift_Events_SendEvent $evt)
     {
         $this->preSendMessages[] = $evt->getMessage();
     }
 
-    public function sendPerformed(\Swift_Events_SendEvent $evt)
+    public function sendPerformed(Swift_Events_SendEvent $evt)
     {
         $this->postSendMessages[] = $evt->getMessage();
     }
@@ -37,5 +41,31 @@ class EmailListener implements \Swift_Events_SendListener
     public function getPostSendMessages()
     {
         return $this->postSensMessages;
+    }
+
+    /**
+     * @param $item
+     *
+     * @return Swift_Message
+     */
+    public function getPreSendMessage($item)
+    {
+        if (empty($this->preSendMessages[$item])) {
+            return null;
+        }
+        return $this->preSendMessages[$item];
+    }
+
+    /**
+     * @param $item
+     *
+     * @return Swift_Message
+     */
+    public function getPostSendMessage($item)
+    {
+        if (empty($this->postSensMessages[$item])) {
+            return null;
+        }
+        return $this->postSensMessages[$item];
     }
 }

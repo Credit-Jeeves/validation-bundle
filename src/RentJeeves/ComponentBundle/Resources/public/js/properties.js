@@ -79,6 +79,11 @@ function Properties() {
         } else {
           $('#'+self.sortColumn()).attr('class', 'sort-up');
         }
+
+        $('#'+self.sortColumn()).find('i').show();
+        $.each($('.properties-table-block .sort i'), function( index, value ) {
+           $(this).hide();
+        });
       }
     });
   };

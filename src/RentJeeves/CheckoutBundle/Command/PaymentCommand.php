@@ -92,7 +92,7 @@ class PaymentCommand extends ContainerAwareCommand
             $order = new Order();
             $operation->setType(OperationType::RENT);
             $operation->setContract($contract);
-
+            
             if (PaymentAccountType::CARD == $paymentAccount->getType()) {
                 $fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
                 $order->setType(OrderType::HEARTLAND_CARD);
@@ -110,7 +110,9 @@ class PaymentCommand extends ContainerAwareCommand
 
             $billTransaction = new BillTransaction();
             $billTransaction->setID1(str_replace(",", "", $contract->getProperty()->getFullAddress()));
-            $billTransaction->setID2($contract->getUnit()->getName());
+            if ($contract->getUnit()) { // For houses, there are no units
+                $billTransaction->setID2($contract->getUnit()->getName());
+            }
             $tenant = $contract->getTenant();
             $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
             $billTransaction->setID4($contract->getGroup()->getName());

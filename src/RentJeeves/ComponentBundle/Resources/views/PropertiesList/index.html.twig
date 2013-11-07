@@ -108,9 +108,9 @@
     </div>
     
     <div class="col">
-      <h4>{{ 'unit.info'|trans }}</h4>
+      <h4>{{ 'unit.info'|trans }} ({{ 'unit.live.it.empty'|trans }})</h4>
       <div class="form-row clearfix">
-        <label>{{'unit.numberof'|trans}}<b>*</b></label>
+        <label>{{'unit.numberof'|trans}}<b></b></label>
         <div class="fields-box">
           <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
           <button class="button small grey buttonFixPopupAddUnit" data-bind="click: addUnits" id="addUnitToNewProperty" type="button">
@@ -119,7 +119,7 @@
         </div>
       </div>
       <div class="form-row clearfix full show">
-        <label>{{ 'nameofunit'|trans }}<b>*</b></label>
+        <label style="width: 78px;">{{ 'nameofunit'|trans }}<b></b></label>
         <div class="fields-box" style="width:375px;margin-left: -12px;">
           <!-- ko foreach: { data: aUnits() } -->
             <div class="units-item">

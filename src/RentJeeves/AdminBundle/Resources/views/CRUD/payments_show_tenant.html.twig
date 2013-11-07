@@ -1,0 +1,18 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field %}
+    {# TODO: remove tenant type condition when no cj user types are shown #}
+    {% if admin.isGranted('EDIT', object) and object.user.getType == 'tenant' %}
+
+        {% set route_name %}
+            admin_{{ object.user.type }}_list
+        {% endset %}
+
+        <a href="{{ path('admin_tenant_list', { "id": object.user.getId }) }}" class="edit_link" title="{{ 'action_show'|trans({}) }}">
+            <i class="icon-show"></i>
+            {{ object.user.getFullName }}
+        </a>
+    {% else %}
+        {{ object.user.getFullName }}
+    {% endif %}
+{% endblock %}

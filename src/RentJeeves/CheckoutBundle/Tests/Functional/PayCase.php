@@ -66,7 +66,7 @@ class PayCase extends BaseTestCase
             "jQuery('#id-source-step:visible').length"
         );
 
-        $this->page->clickLink('common.add_new');
+        $this->page->clickLink('payment.account.new');
 
 
 
@@ -170,7 +170,7 @@ class PayCase extends BaseTestCase
             $this->timeout,
             "jQuery('#id-source-step:visible').length"
         );
-        $this->page->clickLink('common.add_new');
+        $this->page->clickLink('payment.account.new');
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymentaccounttype');
         $this->fillForm(
             $form,

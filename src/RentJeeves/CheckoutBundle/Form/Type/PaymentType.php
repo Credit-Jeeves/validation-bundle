@@ -5,6 +5,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Type;
@@ -173,7 +174,7 @@ class PaymentType extends AbstractType
                 'label' => 'checkout.date',
                 'input' => 'string',
                 'widget' => 'single_text',
-                'format' => 'MM/dd/yyyyy',
+                'format' => 'MM/dd/yyyy',
                 'empty_data' => '',
                 'attr' => array(
                     'class' => 'datepicker-field',
@@ -208,7 +209,13 @@ class PaymentType extends AbstractType
                             'groups' => array('one_time'),
                             'methods' => array(array($this, 'isInTime')),
                         )
-                    )
+                    ),
+                    new Callback(
+                        array(
+                            'groups' => array('one_time'),
+                            'methods' => array(array($this, 'isLaterOrEqualNow'))
+                        )
+                    ),
                 )
             )
         );
@@ -334,6 +341,17 @@ class PaymentType extends AbstractType
         $until = new DateTime($this->oneTimeUntilValue);
         if ($now->format('Y-m-d') == $data && $now >= $until) {
             $validatorContext->addViolationAt('start_date', 'checkout.error.date.not_in_time', array(), null);
+        }
+    }
+
+    public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)
+    {
+        $now = new DateTime();
+        $now->setTime(0, 0);
+
+        $payDate = new DateTime($data);
+        if ($payDate < $now) {
+            $validatorContext->addViolationAt('start_date', 'checkout.error.date.is_in_past', array(), null);
         }
     }
 }

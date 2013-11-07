@@ -1,0 +1,74 @@
+{% extends "RjPublicBundle::public_iframe.html.twig" %}
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
+
+{% block content %}
+    <div class="iframe-top">
+        <h1>{{ 'iframe.top.title' | trans }}</h1>
+        <div class="iframe-top-text">{{ 'iframe.top.text' | trans }}</div>
+    </div>
+    <div class="iframe-body">
+        <div class="iframe-body-left">
+            <h2>{{ 'iframe.login.title' | trans }}</h2>
+            <div id="iframe-login-form" class="iframe-login">
+                {{ form(form) }}
+            </div>
+            <div class="iframe-redirect">
+                <div class="iframe-redirect-title">{{ 'iframe.redirect.title' | trans }}</div>
+                <div class="iframe-redirect-text">{{ 'iframe.redirect.text' | trans }}</div>
+                <input id="iframe-get-started" type="button" class="iframe-button iframe-button-grey" value="{{ 'iframe.redirect.button' | trans }}">
+            </div>
+        </div>
+        <div class="iframe-body-right">
+            <h3>{{ 'iframe.items.title' | trans }}</h3>
+            <div class="iframe-item iframe-pay">
+                <i></i>
+                <div>
+                    <h4>{{ 'iframe.item.pay.title' | trans | upper }}</h4>
+                    <p>{{ 'iframe.item.pay.text' | trans }}</p>
+                </div>
+            </div>
+            <div class="iframe-item iframe-build">
+                <i></i>
+                <div>
+                    <h4>{{ 'iframe.item.build.title' | trans | upper }}</h4>
+                    <p>{{ 'iframe.item.build.text' | trans }}</p>
+                </div>
+            </div>
+            <div class="iframe-item iframe-monitor">
+                <i></i>
+                <div>
+                    <h4>{{ 'iframe.item.monitor.title' | trans | upper }}</h4>
+                    <p>{{ 'iframe.item.monitor.text' | trans }}</p>
+                </div>
+            </div>
+            <div class="iframe-questions">
+                {{ 'iframe.questions' | trans }}&nbsp;<a href="#">{{ 'iframe.learn.more' | trans }}</a>
+            </div>
+            <div class="iframe-logo">{{ 'iframe.powered' | trans }}<br><span></span>
+            </div>
+            <a class="iframe-ns">Norton Secured</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {% stylesheets '@RjPublicBundle/Resources/public/css/fonts.css'
+                   '@RjPublicBundle/Resources/public/css/public-iframe.css'
+    %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {% javascripts '@RjPublicBundle/Resources/public/js/jquery-1.10.2.min.js'
+                   '@RjPublicBundle/Resources/public/js/public-iframe.js' 
+%}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        <script type="text/javascript">
+<!--
+redirectUrl = "{{ url }}";
+//-->
+</script>
+    {% endjavascripts %}
+{% endblock %}
+
