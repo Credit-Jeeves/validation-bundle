@@ -143,7 +143,16 @@
 
 <div id="edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
       <h1>{{ 'property.edit.info'|trans }}</h1>
+      
       <div id="blockPopupEditProperty" class="clearfix col-box"  data-bind="style: { display: process() ? 'none' : 'block' }">
+          <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
+                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+                <ul class="default">
+                    <!-- ko foreach: $root.errors() -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+            </div>
         
         <div class="col">
           <h4 class="clearfix">
@@ -180,15 +189,6 @@
                 <!-- /ko -->
             </div>
           </div>
-          <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
-                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
-                <ul class="default">
-                    <!-- ko foreach: $root.errors() -->
-                    <li data-bind="text: $data"></li>
-                    <!-- /ko -->
-                </ul>
-            </div>
-
         </div>
       </div>
       <div data-bind="style: { display: process() ? 'block' : 'none' }">
