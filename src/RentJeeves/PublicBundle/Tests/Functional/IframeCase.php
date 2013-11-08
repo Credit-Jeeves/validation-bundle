@@ -77,6 +77,7 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
+        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '#errors'));
         $this->assertEquals(
@@ -92,6 +93,7 @@ class IframeCase extends BaseTestCase
         );
         $url = $this->session->getCurrentUrl();
         $propertySearch->click();
+        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $searchSubmit->click();
