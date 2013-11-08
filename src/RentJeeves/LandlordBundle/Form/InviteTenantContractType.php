@@ -14,10 +14,12 @@ class InviteTenantContractType extends AbstractType
 {
 
     protected $user;
+    protected $group;
 
-    public function __construct($user)
+    public function __construct($user, $group = null)
     {
         $this->user = $user;
+        $this->group = $group;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -28,7 +30,7 @@ class InviteTenantContractType extends AbstractType
         );
         $builder->add(
             'contract',
-            new ContractType($this->user)
+            new ContractType($this->user, $this->group)
         );
     }
 
