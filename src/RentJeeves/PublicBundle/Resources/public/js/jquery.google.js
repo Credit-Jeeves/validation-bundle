@@ -270,7 +270,12 @@
                         return false;
                     },
                     success: function(data, textStatus, jqXHR) {
-                        settings.addPropertyCallback.call(self, data, textStatus, jqXHR);
+                        if (data.status == "OK") {
+                            settings.addPropertyCallback.call(self, data, textStatus, jqXHR);
+                        } else {
+                            self.showError(data.message);
+                            settings.addPropertyCallbackNotValid.call(self, jqXHR, errorThrown, textStatus);
+                        }
                         afterAddProperty();
                     }
                 });

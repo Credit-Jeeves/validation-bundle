@@ -5,9 +5,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
-    {% javascripts '@RjPublicBundle/Resources/public/js/jquery.google.js'
+    {% javascripts 'bundles/bazingaexposetranslation/js/translator.min.js'
+                   '@RjPublicBundle/Resources/public/js/jquery.google.js'
                    '@ComponentBundle/Resources/public/js/groups.js'
                    '@RjComponentBundle/Resources/public/js/searchProperties.js'
                    '@RjComponentBundle/Resources/public/js/removeProperty.js'
@@ -20,6 +19,7 @@
      %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}

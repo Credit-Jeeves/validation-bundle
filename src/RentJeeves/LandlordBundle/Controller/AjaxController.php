@@ -101,12 +101,10 @@ class AjaxController extends Controller
         $propertyDataAddress = $property->parseGoogleAddress($data);
         $propertyDataLocation = $property->parseGoogleLocation($data);
         if (!isset($propertyDataAddress['number'])) {
-            throw new \Exception(
-                sprintf(
-                    "We don't have number for property Data: %s",
-                    print_r($data, true)
-                )
-            );
+            return new JsonResponse(array(
+                'status'  => 'ERROR',
+                'message' => $this->get('translator')->trans('property.number.not.exist')
+            ));
         }
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
@@ -130,9 +128,15 @@ class AjaxController extends Controller
             $group->addGroupProperty($property);
             $em->persist($group);
         }
-        $em->persist($property);
-        $em->flush();
-
+        try {
+            $em->persist($property);
+            $em->flush();
+        } catch(DBALException $e) {
+            return new JsonResponse(array(
+                'status'  => 'ERROR',
+                'message' => $this->get('translator')->trans('fill.full.address')
+            ));
+        }
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $google = $this->container->get('google');
             $google->savePlace($property);
@@ -148,7 +152,7 @@ class AjaxController extends Controller
         }
 
         $data = array(
-            'error'                 => false,
+            'status'                => 'OK',
             'hasLandlord'           => $property->hasLandlord(),
             'isLogin'               => $isLogin,
             'isLandlord'            => $isLandlord,

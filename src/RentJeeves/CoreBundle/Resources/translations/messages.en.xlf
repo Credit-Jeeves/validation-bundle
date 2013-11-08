@@ -1559,6 +1559,10 @@
                 <source>unit.live.it.empty</source>
                 <target>leave blank if this is a single property</target>
             </trans-unit>
+            <trans-unit id="property.number.not.exist">
+                <source>property.number.not.exist</source>
+                <target>Please put number for property.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
