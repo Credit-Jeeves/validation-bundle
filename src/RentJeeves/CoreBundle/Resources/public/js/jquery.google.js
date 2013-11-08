@@ -77,14 +77,16 @@
 
         this.getHtmlPopap = function(title, content)
         {
-            return  '<div id="content">'+
-                '<div id="siteNotice">'+
-                '</div>'+
-                '<h1 id="firstHeading" class="firstHeading">'+title+'</h1>'+
-                '<div id="bodyContent" style="width:150px;">'+content +
-                '<p></div>'+
-                '</div>';
+            var templateBody = [
+                {
+                    'title': title,
+                    'content': content
+                }
+            ];
+            var html = $('#htmlPopap').tmpl(templateBody).html();
+            return  html;
         }
+
 
         self.place = '';
         self.markersArray = [];
