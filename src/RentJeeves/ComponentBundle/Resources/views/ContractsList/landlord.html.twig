@@ -297,14 +297,15 @@
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>{{'start'|trans}}<b>*</b></label>
+            <label>{{'contract.payment.date.next'|trans}}<b>*</b></label>
             <div class="fields-box">
               {{ form_widget(
                 form.contract.startAt,
                    { 'attr': 
                     {
                       'class': 'datepicker-field payment-start',
-                      'placeholder':"mm/dd/YYYY"
+                      'placeholder':"mm/dd/YYYY",
+                      'value': start
                     }
                    }
                 ) 
@@ -315,7 +316,8 @@
                    { 'attr': 
                     {
                       'class': 'datepicker-field payment-end',
-                      'placeholder':"mm/dd/YYYY"
+                      'placeholder':"mm/dd/YYYY",
+                      'value': end
                     }
                    }
                 ) 
