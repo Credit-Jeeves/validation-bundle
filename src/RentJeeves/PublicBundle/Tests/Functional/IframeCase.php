@@ -43,7 +43,7 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
         $submit->click();
-        $this->assertNotNull($errorSearchIframe = $this->page->find('css', '#errorSearchIframe'));
+        $this->assertNotNull($errorSearchIframe = $this->page->find('css', '.errorsGoogleSearch'));
         $this->assertEquals(
             'error.property.empty',
             $errorSearchIframe->getHtml()
@@ -65,7 +65,7 @@ class IframeCase extends BaseTestCase
             "$('#property-search').val('');"
         );
         $propertySearch->click();
-        $this->assertNotNull($errors = $this->page->find('css', '#errors'));
+        $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
         $this->assertEquals(
             'error.property.empty',
             $errors->getHtml()
@@ -79,7 +79,7 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
         $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
-        $this->assertNotNull($errors = $this->page->find('css', '#errors'));
+        $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
         $this->assertEquals(
             'property.number.not.exist',
             $errors->getHtml()

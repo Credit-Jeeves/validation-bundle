@@ -35,7 +35,7 @@ class FirtstPropertyCase extends BaseTestCase
         $address = "30 Rockefeller Plaza, New York City, NY 10112";
         $this->fillGoogleAddress($address);
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
-        $this->assertNotNull($errorSearch = $this->page->find('css', '#errorSearch'));
+        $this->assertNotNull($errorSearch = $this->page->find('css', '.errorsGoogleSearch'));
         $this->assertEquals(
             'property.number.not.exist',
             $errorSearch->getHtml()
