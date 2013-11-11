@@ -108,6 +108,11 @@
                     $('.'+settings.classError).html(message);
                 }
             }
+
+            if (settings.loadingSpinner) {
+                $('#'+settings.findButtonId).parent().find('.'+settings.loadingSpinnerClass).hide();
+            }
+
             $('#'+settings.findButtonId).removeClass('grey');
             $('#'+settings.findButtonId).removeClass('disabled');
         }
@@ -288,11 +293,11 @@
                     success: function(data, textStatus, jqXHR) {
                         if (data.status == "OK") {
                             settings.addPropertyCallback.call(self, data, textStatus, jqXHR);
+                            afterAddProperty();
                         } else {
                             self.showError(data.message);
                             settings.addPropertyCallbackNotValid.call(self, data, textStatus, jqXHR);
                         }
-                        afterAddProperty();
                     }
                 });
             }

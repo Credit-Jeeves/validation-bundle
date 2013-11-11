@@ -32,7 +32,7 @@ class FirtstPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#property-search').length > 0");
         $this->assertNotNull($addUnit = $this->page->find('css', '#addProperty'));
         $addUnit->click();
-        $address = "Rockefeller Plaza, New York City";
+        $address = "Lexington Avenue, Manhattan, New York City, NY";
         $this->fillGoogleAddress($address);
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($errorSearch = $this->page->find('css', '.errorsGoogleSearch'));
