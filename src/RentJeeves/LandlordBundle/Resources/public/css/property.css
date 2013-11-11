@@ -4,9 +4,13 @@
     display: none;
     margin-left: -13px;
 }
-#errorSearch {
+.errorsGoogleSearch {
     color: #ff0000;
     margin-left: 1px;
-    margin-top: -15px;
+    margin-top: -25px;
     position: absolute;
+}
+
+#add-property-popup .errorsGoogleSearch {
+    margin-top: -15px;
 }

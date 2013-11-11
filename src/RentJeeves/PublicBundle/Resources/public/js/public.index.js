@@ -1,7 +1,7 @@
 $(document).ready(function(){
     $('#property-search').google({
         autoHideLoadingSpinner: true,
-        divIdError: "errorSearchIframe",
+        classError: "errorsGoogleSearch",
         addPropertyCallback: function(data, textStatus, jqXHR){
             var isInIFrame = (window.location != window.parent.location);
             var location = Routing.generate('iframe_search_check', {'propertyId':data.property.id});

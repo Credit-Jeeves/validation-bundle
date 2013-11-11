@@ -503,3 +503,7 @@ a.linkselect-link .linkselect-link-text {
     margin-left: 0;
     margin-right: 0;
 }
+
+.errorsGoogleSearch {
+    color: red;
+}

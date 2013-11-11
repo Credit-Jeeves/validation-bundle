@@ -21,7 +21,7 @@
             </div>
             <div id="search-result-map"></div>
           </div>
-          <div id="errorSearch" style="margin-top:5px;"></div>
+          <div class="errorsGoogleSearch"></div>
         </div>
         <div class="col right">
           <h4>{{ 'unit.add'|trans }}</h4>
@@ -53,14 +53,14 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
     {% javascripts '@ComponentBundle/Resources/public/js/groups.js'
+                   'bundles/bazingaexposetranslation/js/translator.min.js'
                    '@RjPublicBundle/Resources/public/js/jquery.google.js'
                    '@LandlordBundle/Resources/public/js/propertyNew.js'
      %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}

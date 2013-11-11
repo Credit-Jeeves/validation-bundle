@@ -73,13 +73,8 @@ $(document).ready(function(){
                 markAsNotValid();
             }
         },
-        markers: false,
-        divIdError: false,
-        defaultLat: null,
-        defaultLong: null,
-        clearSearchId: null,
         clearSearchClass: 'clearSearchProperty',
-        divIdError: 'errorSearch',
+        classError: 'errorsGoogleSearch',
         addPropertyCallback: function(data, textStatus, jqXHR)
         {
             markAsValid();

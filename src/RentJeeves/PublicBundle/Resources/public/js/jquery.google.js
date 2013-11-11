@@ -1,7 +1,7 @@
 /**
  * Author:  Alexandr Sharamko
  */
-(function ( $ ) {
+(function ( $, google ) {
 
     $.fn.google = function( options ) {
 
@@ -23,6 +23,7 @@
             changeSearch: function(){},
             markers: false,
             divIdError: false,
+            classError: false,
             defaultLat: null,
             defaultLong: null,
             clearSearchId: null,
@@ -96,11 +97,16 @@
 
         self.showError = function(message)
         {
-            if (settings.divIdError === false) {
+            if (settings.divIdError === false && settings.classError === false) {
                 alert(message);
             } else {
-                $('#'+settings.divIdError).show();
-                $('#'+settings.divIdError).html(message);
+                if (settings.divIdError) {
+                    $('#'+settings.divIdError).show();
+                    $('#'+settings.divIdError).html(message);
+                } else {
+                    $('.'+settings.classError).show();
+                    $('.'+settings.classError).html(message);
+                }
             }
             $('#'+settings.findButtonId).removeClass('grey');
             $('#'+settings.findButtonId).removeClass('disabled');
@@ -274,7 +280,7 @@
                             settings.addPropertyCallback.call(self, data, textStatus, jqXHR);
                         } else {
                             self.showError(data.message);
-                            settings.addPropertyCallbackNotValid.call(self, jqXHR, errorThrown, textStatus);
+                            settings.addPropertyCallbackNotValid.call(self, data, textStatus, jqXHR);
                         }
                         afterAddProperty();
                     }
@@ -355,4 +361,4 @@
         return self;
     };
 
-}( jQuery ));
+}( jQuery, google ));

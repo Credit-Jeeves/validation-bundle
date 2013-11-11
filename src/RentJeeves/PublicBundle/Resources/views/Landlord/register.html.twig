@@ -88,7 +88,7 @@
                         <button type="submit" id="search-submit" onclick="return false;" class="pie-el">{{ 'search' | trans() }}</button>
                         <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." class="loadingSpinner">
                     </div>
-                    <div id="errorForm"></div>
+                    <div class="errorsGoogleSearch"></div>
                     <div id="search-result-map"></div>
                 </div>
                 <div class="form-row clearfix">
@@ -140,15 +140,15 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@RjPublicBundle/Resources/public/js/jquery.google.js'
+    {% javascripts  'bundles/bazingaexposetranslation/js/translator.min.js'
+                    '@RjPublicBundle/Resources/public/js/jquery.google.js'
                     '@RjPublicBundle/Resources/public/js/landlord/register.js'
                     '@RjPublicBundle/Resources/public/js/landlord/popup-pricing.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}

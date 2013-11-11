@@ -9,7 +9,7 @@
 .titleNotFound {
     display: none;
 }
-#errorSearchIframe {
+.errorsGoogleSearch {
     display: block;
     position: absolute;
     color: red;

@@ -1,7 +1,7 @@
 #delete {
     display: none;
 }
-form li, #errorForm {
+form li, .errorsGoogleSearch {
     color: red;
 }
 #search-result-map {

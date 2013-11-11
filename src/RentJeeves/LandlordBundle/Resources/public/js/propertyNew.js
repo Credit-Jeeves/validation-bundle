@@ -51,7 +51,7 @@ $(document).ready(function(){
         },
         markers: false,
         clearSearchId: 'delete',
-        divIdError: 'errorSearch',
+        classError: 'errorsGoogleSearch',
         addPropertyCallback: function(data, textStatus, jqXHR)
         {
             markAsValid();

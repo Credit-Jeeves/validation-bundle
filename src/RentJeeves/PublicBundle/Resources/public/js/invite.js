@@ -19,9 +19,8 @@ $(document).ready(function(){
         autoHideLoadingSpinner: true,
         mapCanvasId: "map-canvas",
         formId: "formSearch",
-        markers: false,
         clearSearchId: 'delete',
-        divIdError: "errors",
+        classError: "errorsGoogleSearch",
         findButtonId: 'search-submit',
         addPropertyCallback: function(data, textStatus, jqXHR){
             if (data.isLogin && data.isLandlord) {
