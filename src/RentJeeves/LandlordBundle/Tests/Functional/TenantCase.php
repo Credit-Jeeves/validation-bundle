@@ -224,7 +224,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->assertCount(3, $errorList, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -322,7 +322,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->assertCount(3, $errorList, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -403,7 +403,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->assertCount(3, $errorList, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(

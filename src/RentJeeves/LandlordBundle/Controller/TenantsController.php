@@ -20,7 +20,6 @@ class TenantsController extends Controller
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser(), $this->getCurrentGroup())
         );
-
         $data = array(
             'nGroups'   => $groups->count(),
             'Group'     => $this->getCurrentGroup(),
@@ -45,7 +44,6 @@ class TenantsController extends Controller
         /** @var $group Group */
         $group = $this->get("core.session.landlord")->getGroup();
         $canInvite = false;
-
         /**
          * Only landlord with setup merchant name can invite tenant
          */
@@ -61,7 +59,6 @@ class TenantsController extends Controller
         $request = $this->get('request');
         if ($request->getMethod() == 'POST' && $canInvite) {
             $form->handleRequest($request);
-            //exit;
             if ($form->isValid()) {
                 $tenant = $form->getData()['tenant'];
                 $contract = $form->getData()['contract'];
@@ -71,7 +68,6 @@ class TenantsController extends Controller
                         'email' => $tenant->getEmail(),
                     )
                 );
-
                 if ($tenantInDb) {
                     unset($tenant);
                     $tenant = $tenantInDb;
