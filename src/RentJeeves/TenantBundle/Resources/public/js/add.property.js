@@ -90,7 +90,7 @@ $(document).ready(function(){
 
         },
         markers: true,
-        divIdError: 'searchError',
+        classError: 'errorsGoogleSearch',
         defaultLat: lat,
         defaultLong: lng,
         clearSearchId: 'delete',

@@ -150,7 +150,7 @@ class AjaxController extends Controller
         if ($isLogin) {
             $isLandlord = ($this->getUser()->getType() == UserType::LANDLORD) ? true : false;
         }
-
+        //@TODO refactor - change array to entity JSM serialisation
         $data = array(
             'status'                => 'OK',
             'hasLandlord'           => $property->hasLandlord(),

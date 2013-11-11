@@ -57,11 +57,11 @@ input {
     margin-left: 10px;
 }
 
-
-#errorSearch {
+.errorsGoogleSearch {
     position: absolute;
     color: #ff0000;
     display: none;
+    margin-left: 21px;
 }
 
 .loadingSpinner {

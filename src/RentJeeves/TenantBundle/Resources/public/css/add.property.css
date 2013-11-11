@@ -151,7 +151,7 @@ a.linkselect-link .linkselect-link-text {
     padding-top: 2px;
 }
 
-#searchError {
+.errorsGoogleSearch {
     position: absolute;
     margin-top: -14px;
     color: red;

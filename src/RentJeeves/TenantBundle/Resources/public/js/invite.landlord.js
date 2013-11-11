@@ -13,7 +13,7 @@ $(document).ready(function(){
                 return location.href = Routing.generate('tenant_invite_landlord', {'propertyId':data.property.id });
             }
         },
-        divIdError: 'errorSearch',
+        classError: 'errorsGoogleSearch',
         clearSearchId: 'delete'
     });
 });

@@ -5,7 +5,7 @@
 {% block content %}
 <section class="form-content">
 {{ include('RjComponentBundle:Invite:_formSearch.html.twig') }}
-<div id="errorSearch"></div>
+<div class="errorsGoogleSearch"></div>
 <form action="{{ path('tenant_invite_landlord', {"propertyId": property.id }) }}" method="post" {{ form_enctype(form) }} id="inviteForm">
     {{ include('RjComponentBundle:Invite:_form.html.twig', {"form": form }) }}
     {{ form_rest(form) }}
