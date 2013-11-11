@@ -17,9 +17,10 @@ class AlertController extends Controller
     {
         $user = $this->getUser();
         $alerts = array();
-        $group = $this->getUser()->getCurrentGroup();
+        $group = $this->get("core.session.landlord")->getGroup();
         $contracts = $group->getContracts();
         $deposit = $group->getDepositAccount();
+        $merchantName = $group->getMerchantName();
         $pending = 0;
         foreach ($contracts as $contract) {
             $status = $contract->getStatus();
@@ -29,7 +30,7 @@ class AlertController extends Controller
                     break;
             }
         }
-        if (empty($deposit)) {
+        if (empty($merchantName)) {
             $alerts[] = $this->get('translator.default')->trans('deposit.merchant.setup');
         }
         if ($pending > 0) {

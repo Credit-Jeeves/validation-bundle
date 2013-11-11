@@ -869,6 +869,10 @@
                 <source>contract.payment.next</source>
                 <target>Next Due Date</target>
             </trans-unit>
+            <trans-unit id="contract.payment.date.next">
+                <source>contract.payment.date.next</source>
+                <target>Next Payment Date</target>
+            </trans-unit>
             <trans-unit id="contract.payment.recurring">
                 <source>contract.payment.recurring</source>
                 <target>Recurs?</target>

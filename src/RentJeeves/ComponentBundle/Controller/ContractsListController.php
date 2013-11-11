@@ -27,11 +27,16 @@ class ContractsListController extends Controller
             $merchantName = $group->getMerchantName();
             $canInvite = (!empty($merchantName))? true : false;
         }
-
+        $date = new \DateTime();
+        $start = $date->format('m/d/Y');
+        $date->modify('+1 year');
+        $end = $date->format('m/d/Y');
         return array(
             'form'      => $form,
             'Group'     => $Group,
             'canInvite' => $canInvite,
+            'start'     => $start,
+            'end'       => $end
         );
     }
 
