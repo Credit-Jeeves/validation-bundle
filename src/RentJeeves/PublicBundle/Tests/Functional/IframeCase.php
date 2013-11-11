@@ -81,7 +81,7 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($errors = $this->page->find('css', '#errors'));
         $this->assertEquals(
-            'fill.full.address',
+            'property.number.not.exist',
             $errors->getHtml()
         );
         $fillAddress = '350 5th Avenue, Manhattan, New York City, NY 10118';
