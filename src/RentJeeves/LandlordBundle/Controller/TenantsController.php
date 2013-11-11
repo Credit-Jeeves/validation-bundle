@@ -43,7 +43,7 @@ class TenantsController extends Controller
         /** @var $user Landlord */
         $user = $this->getUser();
         /** @var $group Group */
-        $group = $user->getCurrentGroup();
+        $group = $this->get("core.session.landlord")->getGroup();
         $canInvite = false;
 
         /**
@@ -53,16 +53,15 @@ class TenantsController extends Controller
             $merchantName = $group->getMerchantName();
             $canInvite = (!empty($merchantName))? true : false;
         }
-
         $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(
-            new InviteTenantContractType($this->getUser())
+            new InviteTenantContractType($this->getUser(), $group)
         );
-
+         
         $request = $this->get('request');
         if ($request->getMethod() == 'POST' && $canInvite) {
             $form->handleRequest($request);
-
+            //exit;
             if ($form->isValid()) {
                 $tenant = $form->getData()['tenant'];
                 $contract = $form->getData()['contract'];
