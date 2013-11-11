@@ -24,10 +24,9 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('bundles/bazingaexposetranslation/js/translator.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@RjPublicBundle/Resources/public/js/jquery.google.js'
+    {% javascripts  'bundles/bazingaexposetranslation/js/translator.min.js'
+                    '@RjPublicBundle/Resources/public/js/jquery.google.js'
                     '@TenantBundle/Resources/public/js/invite.landlord.js'
                     '@RjPublicBundle/Resources/public/js/jquery-ui.js'
                     '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
@@ -35,6 +34,7 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}
 
 
