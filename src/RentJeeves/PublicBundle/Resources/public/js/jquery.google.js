@@ -246,6 +246,16 @@
                 if (settings.loadingSpinner) {
                     $('#'+settings.findButtonId).parent().find('.'+settings.loadingSpinnerClass).hide();
                 }
+
+                if (!settings.divIdError && !settings.classError) {
+                    return;
+                }
+
+                if (settings.divIdError) {
+                    $('#'+settings.divIdError).hide();
+                } else {
+                    $('.'+settings.classError).hide();
+                }
             }
 
             function executeSearch(data)
@@ -290,6 +300,10 @@
             function initialCheck() {
                 if (settings.divIdError !== false) {
                     $('#'+settings.divIdError).hide();
+                }
+
+                if (settings.classError !== false) {
+                    $('.'+settings.classError).hide();
                 }
 
                 if($('#'+settings.findButtonId).hasClass('grey')) {
@@ -354,10 +368,11 @@
 
         google.maps.event.addDomListener(window, 'load', initialize);
 
-        $('#'+settings.formId).submit(function() {
-            return false;
-        });
-
+        if (settings.formId) {
+            $(document).delegate('#'+settings.formId,"submit",function(){
+                return false;
+            });
+        }
         return self;
     };
 
