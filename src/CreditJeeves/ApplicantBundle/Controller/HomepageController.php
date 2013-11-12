@@ -33,9 +33,10 @@ class HomepageController extends Controller
 
         $nLeads = $User->getUserLeads()->count();
         $nTarget = $this->getTarget();
-        $nScore  = $this->getScore()->getScore();
+        $score = $this->getScore();
+        $nScore  = $score ? $score->getScore() : 'N/A';
         $isSuccess = false;
-        if ($nScore >= $nTarget) {
+        if ($nScore >= $nTarget && $score) {
             $isSuccess = true;
         }
         $sEmail  = $User->getEmail();

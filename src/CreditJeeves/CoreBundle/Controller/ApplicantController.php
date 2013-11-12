@@ -47,6 +47,7 @@ class ApplicantController extends Controller
     private function getUserDetails($user)
     {
         $this->report = $user->getReportsPrequal()->last();
-        $this->score = $user->getScores()->last();
+        $scores = $user->getScores();
+        $this->score = $scores ? $scores->last() : null;
     }
 }

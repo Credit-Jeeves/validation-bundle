@@ -55,10 +55,12 @@ class Doctrine
     {
         $arfReport = $Report->getArfReport();
         $newScore = $arfReport->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
-        $score = new Score();
-        $score->setUser($Report->getUser());
-        $score->setScore($newScore);
-        $em->persist($score);
+        if ($newScore < 1000) {
+            $score = new Score();
+            $score->setUser($Report->getUser());
+            $score->setScore($newScore);
+            $em->persist($score);
+        }
     }
 
     private function checkCompleted(Tradeline $tradeline, $em)
