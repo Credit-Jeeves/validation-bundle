@@ -26,10 +26,13 @@ class LeadController extends Controller
                 $nTargetScore
             );
         }
+        if (empty($chartData)) {
+            $chartData = array('', '', '');
+        }
         $chartData = implode(',', $chartData);
-        $nScore = $cjUser->getScores()->last()->getScore();
-        $nFicoScore = $cjUser->getScores()->last()->getFicoScore();
-        $sDate = $cjUser->getScores()->last()->getCreatedDate()->format('M d, Y');
+        $nScore = $cjUser->getLastScore();
+        $nFicoScore = $cjUser->getLastFicoScore();
+        $sDate = $nScore ? $cjUser->getScores()->last()->getCreatedDate()->format('M d, Y') : '-';
         $nTop = intval((850 - $nTargetScore) * 171 / 600);
         return array(
             'chartData' => $chartData,

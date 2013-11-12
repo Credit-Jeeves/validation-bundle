@@ -285,16 +285,16 @@ fixtures:
     is_verified: passed
     created_at: '-5 days'
     updated_at: '-5 days'
-###############################
+############################### We'll use this applicant for the ticket-353
   cjApplicant_14:
-    first_name: MATHEW
-    middle_initial: J
-    last_name: DOYLE
+    first_name: MILDRED
+    middle_initial: 
+    last_name: RIOS-HERNANDEZ
     email: app4@example.com
-    phone_type: 
-    phone: 
-    date_of_birth: '1933-09-02'
-    ssn: '666361452'
+    phone_type: 2
+    phone: 4068921606
+    date_of_birth: 
+    ssn: '666241517'
     is_active: true
     invite_code: null
     password: 1a1dc91c907325c69271ddf0c944bc72

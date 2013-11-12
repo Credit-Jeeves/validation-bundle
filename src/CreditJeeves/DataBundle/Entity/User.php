@@ -376,4 +376,16 @@ abstract class User extends BaseUser
         }
         return null;
     }
+
+    public function getLastScore()
+    {
+        $score = $this->getScores()->last();
+        return $score ? $score->getScore() : 0;
+    }
+
+    public function getLastFicoScore()
+    {
+        $score = $this->getLastScore();
+        return $score ? $score->getFicoScore(): 0;
+    }
 }
