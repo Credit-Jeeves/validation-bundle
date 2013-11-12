@@ -79,7 +79,7 @@ class InviteController extends Controller
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($User);
                     $em->flush();
-                    return new RedirectResponse($this->get('router')->generate('applicant_homepage'));
+                    return $this->login($User);
                 }
 
             }
@@ -90,5 +90,22 @@ class InviteController extends Controller
             'isFullForm' => $isFullForm,
             'sName' => $User->getFirstName(),
         );
+    }
+
+    private function login($applicant)
+    {
+        $response = new RedirectResponse($this->generateUrl('applicant_homepage'));
+        $this->container->get('fos_user.security.login_manager')->loginUser(
+            $this->container->getParameter('fos_user.firewall_name'),
+            $applicant,
+            $response
+        );
+    
+        $this->container->get('user.service.login_success_handler')
+        ->onAuthenticationSuccess(
+            $this->container->get('request'),
+            $this->container->get('security.context')->getToken()
+        );
+        return $response;
     }
 }
