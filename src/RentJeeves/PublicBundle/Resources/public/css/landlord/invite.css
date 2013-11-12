@@ -1,0 +1,9 @@
+label.checkbox {
+    float: left;
+    margin-left: 0px;
+}
+label.checkbox a {
+    margin-left: 89px;
+    position: absolute;
+    margin-top: -18px;
+}

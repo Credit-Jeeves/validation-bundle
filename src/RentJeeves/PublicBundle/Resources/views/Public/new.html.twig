@@ -43,12 +43,15 @@
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@RjPublicBundle/Resources/public/js/new.js'
+    {% javascripts  'bundles/bazingaexposetranslation/js/translator.min.js'
+                    '@RjPublicBundle/Resources/public/js/jquery.google.js'
+                    '@RjPublicBundle/Resources/public/js/new.js'
                     '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
 
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}
 
 

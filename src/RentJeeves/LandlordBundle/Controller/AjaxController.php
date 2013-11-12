@@ -99,13 +99,22 @@ class AjaxController extends Controller
                     )?  true : false;
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertyDataAddress);
+        $propertyDataLocation = $property->parseGoogleLocation($data);
+        if (!isset($propertyDataAddress['number'])) {
+            return new JsonResponse(
+                array(
+                    'status'  => 'ERROR',
+                    'message' => $this->get('translator')->trans('property.number.not.exist')
+                )
+            );
+        }
+        $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
         if (empty($property)) {
             $property = new Property();
-            $propertyDataLocation = $property->parseGoogleLocation($data);
             $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
             $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
@@ -121,9 +130,17 @@ class AjaxController extends Controller
             $group->addGroupProperty($property);
             $em->persist($group);
         }
-        $em->persist($property);
-        $em->flush();
-
+        try {
+            $em->persist($property);
+            $em->flush();
+        } catch (DBALException $e) {
+            return new JsonResponse(
+                array(
+                    'status'  => 'ERROR',
+                    'message' => $this->get('translator')->trans('fill.full.address')
+                )
+            );
+        }
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $google = $this->container->get('google');
             $google->savePlace($property);
@@ -137,11 +154,14 @@ class AjaxController extends Controller
         if ($isLogin) {
             $isLandlord = ($this->getUser()->getType() == UserType::LANDLORD) ? true : false;
         }
-
+        //@TODO refactor - change array to entity JSM serialisation
         $data = array(
-            'hasLandlord'   => $property->hasLandlord(),
-            'isLogin'      => $isLogin,
-            'isLandlord'   => $isLandlord,
+            'status'                => 'OK',
+            'hasLandlord'           => $property->hasLandlord(),
+            'isLogin'               => $isLogin,
+            'isLandlord'            => $isLandlord,
+            'propertyDataAddress'   => $propertyDataAddress,
+            'propertyDataLocation'  => $propertyDataLocation,
             'property'      => array(
                     'id'        => $property->getId(),
                     'city'      => $property->getCity(),
