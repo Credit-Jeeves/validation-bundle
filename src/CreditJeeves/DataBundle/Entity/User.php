@@ -386,6 +386,8 @@ abstract class User extends BaseUser
     public function getLastFicoScore()
     {
         $score = $this->getLastScore();
-        return $score ? $score->getFicoScore(): 0;
+        $nFicoScore = round(10 * (($score - 483.06) / 11.079) + 490);
+        $nFicoScore = $nFicoScore > 850 ? 850 : $nFicoScore;
+        return $score ? $nFicoScore: 0;
     }
 }
