@@ -103,7 +103,7 @@ $(document).ready(function(){
                     return location.href = Routing.generate('landlord_properties');
                 }
             });
-        }
+        
 
         function addProperty() 
         {
@@ -123,7 +123,7 @@ $(document).ready(function(){
                     }
 
                     showError('Something wrong, we can\'t save property');
-                }
+                
 
                 google.showError(Translator.get('fill.full.address'));
             }
