@@ -9,46 +9,6 @@ $(document).ready(function(){
         height:310
       });
     }
-
-    function checkDeleteButton()
-    {
-      if($('#property-search').val() != '') {
-        $('#delete').show();
-      } else {
-        $('#delete').hide();
-      }
-    }
-
-    initScroll();
-    
-    var ERROR = 'notfound';
-    var markersArray = [];
-    var rentaPiontShadow = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_shadow.png',
-              new google.maps.Size(38,54),
-              new google.maps.Point(0,0),
-              new google.maps.Point(19, 41)
-            );
-
-    function deleteOverlays() 
-    {
-      if (markersArray) {
-        for (i in markersArray) {
-          markersArray[i].setMap(null);
-        }
-      }
-    }
-
-    function getHtmlPopap(title, content)
-    {
-      return  '<div id="content">'+
-              '<div id="siteNotice">'+
-              '</div>'+
-              '<h1 id="firstHeading" class="firstHeading">'+title+'</h1>'+
-              '<div id="bodyContent" style="width:150px;">'+content 
-              '<p></div>'+
-              '</div>';
-    }
-
     function destroySlimscroll(objectId) {
         $("#"+objectId).parent().replaceWith($("#"+objectId));
     }
@@ -79,155 +39,12 @@ $(document).ready(function(){
         return;
     }
 
-
-    function search(place, map) 
-    {
-        var data = {'address': place.address_components, 'geometry':place.geometry, 'addGroup': 0};
-
-        jQuery.ajax({
-          url: Routing.generate('landlord_property_add'),
-          type: 'POST',
-          dataType: 'json',
-          data: {'data': JSON.stringify(data, null)},
-          error: function(jqXHR, errorThrown, textStatus) {;
-          },
-          success: function(data, textStatus, jqXHR) {
-              return location.href = Routing.generate('property_add_id', {'propertyId':data.property.id });
-          }
-        });
-    }
-
-
-    function initialize() {
-        var lat = $('#lat').val();
-        var lng = $('#lng').val();
-
-        var mapOptions = {
-            center: new google.maps.LatLng(lat, lng),
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(
-            document.getElementById('search-result-map'),
-            mapOptions
-        );
-        var input = (document.getElementById('property-search'));
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
-        var infowindow = new google.maps.InfoWindow();
-        
-        var arrBubble = [];
-        $.each($('.addressText'), function(index, value) {
-            var lat = $(this).find('.lat').val();
-            var lng = $(this).find('.lng').val();
-            var addressSelect = $(this).find('.addressSelect').val();
-            var number = $(this).attr('number');
-            var myLatlng = new google.maps.LatLng(lat,lng);
-            var rentaPoint = new google.maps.MarkerImage('/bundles/rjpublic/images/ill-renta-point_'+number+'.png',
-              new google.maps.Size(26,42),
-              new google.maps.Point(0,0),
-              new google.maps.Point(13,42)
-            );
-
-            var contentString = getHtmlPopap(
-              $(this).find('.titleAddress').html(),
-              $(this).find('.contentAddress').html()
-            );
-
-            var infowindow = new google.maps.InfoWindow({
-              content: contentString
-            });
-
-            var marker = new google.maps.Marker({
-                position: myLatlng,
-                map: map,
-                title: addressSelect,
-                icon: rentaPoint,
-                shadow: rentaPiontShadow
-            });
-
-            markersArray[number] = marker;
-
-            google.maps.event.addListener(marker, 'click', function() {
-              infowindow.open(map,markersArray[number]);
-            });
-
-        });
-        
-        var marker = new google.maps.Marker({
-                map: map
-        });
-
-        function validateAddress(){
-          infowindow.close();
-          marker.setVisible(false);
-          input.className = '';
-          var place = autocomplete.getPlace();
-          //Inform the user that the place was not found and return.
-          if (!place.geometry) {
-              input.className = ERROR;
-              return false;
-          } 
-        }
-        
-        $('#property-search').change(function(){
-          hideError();
-          $(this).addClass('notfound');
-          checkDeleteButton();
-        });
-
-        $('#search-submit').click(function(){
-            hideError();
-            var place = autocomplete.getPlace();
-            $('#propertyId').val('');
-            $('#register').addClass('greyButton');
-            $('#register').addClass('disabled');
-            if (ERROR == $('#property-search').attr('class')) {
-                return showError(Translator.get('address.not.valid'));
-            }
-
-            if ('' == $('#property-search').val()) {
-                return showError(Translator.get('address.is.empty'));
-            }
-
-            if (typeof place.geometry == 'undefined') {
-                return showError(Translator.get('address.not.valid'));
-            }
-
-            if($('#search-submit').hasClass('grey')) {
-              return false;
-            }
-
-            $('#search-submit').addClass('disabled grey');
-            $('#search-submit').find('.loadingSpinner').show();
-
-            search(place, map);
-            return false;
-        });
-
-        $('.moveToLocation').click(function(){
-            number =  $(this).attr('rel');
-            var contentString = getHtmlPopap(
-              $(this).parent().find('.titleAddress').html(),
-              $(this).parent().find('.contentAddress').html()
-            );
-
-            var infowindow = new google.maps.InfoWindow({
-              content: contentString
-            });
-   
-            infowindow.open(map, markersArray[number]);
-            return false;
-        });
-
-        google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
-    }
+    initScroll();
 
     $('#formSearch').submit(function() {
       return false;
     });
 
-    google.maps.event.addDomListener(window, 'load', initialize);
     $('.select-unit').linkselect('destroy');
     $('.select-unit').linkselect({
       change: function(li, val, text){
@@ -252,9 +69,32 @@ $(document).ready(function(){
       return false;
     });
 
-    $('#delete').click(function() {
-      $('#property-search').val(' ');
-      return false;
+    var lat = $('#lat').val();
+    var lng = $('#lng').val();
+
+    var google = $('#property-search').google({
+        formId: "formSearch",
+        findButtonId: "search-submit",
+        mapCanvasId: 'search-result-map',
+        loadingSpinner: true,
+        loadingSpinnerClass: 'loadingSpinner',
+        autoHideLoadingSpinner: true,
+        addPropertyCallback: function(data, textStatus, jqXHR){
+            return location.href = Routing.generate('property_add_id', {'propertyId':data.property.id });
+        },
+        addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus){
+
+        },
+        clearSearchCallback: function(isEmpty){},
+        changeSearch: function(){
+
+        },
+        markers: true,
+        classError: 'errorsGoogleSearch',
+        defaultLat: lat,
+        defaultLong: lng,
+        clearSearchId: 'delete',
+        clearSearchClass: null
     });
 
     $('#register').click(function(){
@@ -328,5 +168,6 @@ $(document).ready(function(){
         return false;
     });
 
-    checkDeleteButton();
+
+
 });

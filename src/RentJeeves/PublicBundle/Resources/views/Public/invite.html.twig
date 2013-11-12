@@ -5,6 +5,7 @@
 {% block content %}
 <section class="form-content">
 {{ include('RjComponentBundle:Invite:_formSearch.html.twig') }}
+<div class="errorsGoogleSearch"></div>
 {{ include('RjComponentBundle:Invite:_popupTenant.html.twig') }}
 <form action="{{ path('iframe_invite', {"propertyId": propertyId }) }}" method="post" {{ form_enctype(form) }} id="inviteForm">
     {{ include('RjComponentBundle:Invite:_form.html.twig', {"form": form.invite }) }}
@@ -23,15 +24,20 @@
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  '@RjPublicBundle/Resources/public/js/invite.js'
+    {% javascripts  'bundles/bazingaexposetranslation/js/translator.min.js'
+                    '@RjPublicBundle/Resources/public/js/jquery.google.js'
+                    '@RjPublicBundle/Resources/public/js/invite.js'
 
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
-    {% stylesheets '@RjPublicBundle/Resources/public/css/invite.css'
+    {% stylesheets
+        '@RjPublicBundle/Resources/public/css/landlord/invite.css'
+        '@RjPublicBundle/Resources/public/css/invite.css'
     %}
       <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}

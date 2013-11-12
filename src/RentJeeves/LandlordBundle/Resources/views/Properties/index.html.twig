@@ -5,13 +5,27 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@ComponentBundle/Resources/public/js/groups.js'
+    {% javascripts 'bundles/bazingaexposetranslation/js/translator.min.js'
+                   '@RjPublicBundle/Resources/public/js/jquery.google.js'
+                   '@ComponentBundle/Resources/public/js/groups.js'
+                   '@RjComponentBundle/Resources/public/js/searchProperties.js'
+                   '@RjComponentBundle/Resources/public/js/removeProperty.js'
+                   '@RjComponentBundle/Resources/public/js/addProperties.js'
+                   '@RjComponentBundle/Resources/public/js/units.js'
                    '@RjComponentBundle/Resources/public/js/properties.js'
+                   '@LandlordBundle/Resources/public/js/properties.js'
                    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
                    
      %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/property.css'%}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
 

@@ -1430,6 +1430,10 @@
                 <source>select.from.drop.down.list</source>
                 <target>Please select an address from the drop-down and try again.</target>
             </trans-unit>
+            <trans-unit id="fill.full.address">
+                <source>fill.full.address</source>
+                <target>Please fill full address and try again. It's very short.</target>
+            </trans-unit>
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
                 <target>Tenant wants unit number:</target>
@@ -1554,6 +1558,10 @@
             <trans-unit id="unit.live.it.empty">
                 <source>unit.live.it.empty</source>
                 <target>leave blank if this is a single property</target>
+            </trans-unit>
+            <trans-unit id="property.number.not.exist">
+                <source>property.number.not.exist</source>
+                <target>Please put number for property.</target>
             </trans-unit>
         </body>
     </file>

@@ -9,3 +9,9 @@
 .titleNotFound {
     display: none;
 }
+.errorsGoogleSearch {
+    display: block;
+    position: absolute;
+    color: red;
+    margin-top: 5px;
+}

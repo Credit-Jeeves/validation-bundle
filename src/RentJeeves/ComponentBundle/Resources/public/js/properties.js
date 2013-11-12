@@ -1,16 +1,4 @@
-function markAsNotValid()
-{
-  $('#saveProperty').addClass('grey');
-  $('#addUnitToNewProperty').addClass('grey');
-}
-
-function clearError()
-{
-  $('#saveProperty').removeClass('grey');
-  $('#addUnitToNewProperty').removeClass('grey');
-}
-
-function Properties() {
+function properties() {
   var limit = 10;
   var current = 1;
   var self = this;
@@ -40,7 +28,7 @@ function Properties() {
       self.isSortAsc(false);
       $('#'.field).attr('class', 'sort-up');
      }
-     
+
      self.current(1);
      self.ajaxAction();
   };
