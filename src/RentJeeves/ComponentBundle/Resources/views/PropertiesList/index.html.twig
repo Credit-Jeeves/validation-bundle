@@ -147,15 +147,6 @@
       <h1>{{ 'property.edit.info'|trans }}</h1>
       
       <div id="blockPopupEditProperty" class="clearfix col-box"  data-bind="style: { display: process() ? 'none' : 'block' }">
-          <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
-                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
-                <ul class="default">
-                    <!-- ko foreach: $root.errors() -->
-                    <li data-bind="text: $data"></li>
-                    <!-- /ko -->
-                </ul>
-            </div>
-        
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'property.info'|trans }}</span>
