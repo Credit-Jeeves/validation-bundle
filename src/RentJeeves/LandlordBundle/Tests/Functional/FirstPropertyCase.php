@@ -30,8 +30,8 @@ class FirtstPropertyCase extends BaseTestCase
         $this->login('landlord6@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "$('#property-search').length > 0");
-        $this->assertNotNull($addUnit = $this->page->find('css', '#addProperty'));
-        $addUnit->click();
+        $this->assertNotNull($addProperty = $this->page->find('css', '#addProperty'));
+        $addProperty->click();
         $address = "Lexington Avenue, Manhattan, New York City, NY";
         $this->fillGoogleAddress($address);
         $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
@@ -56,8 +56,7 @@ class FirtstPropertyCase extends BaseTestCase
         $unitNames[3]->setValue('1D');
         $unitNames[4]->setValue('1T');
         
-        $this->assertNotNull($addUnit = $this->page->find('css', '#addProperty'));
-        $addUnit->click();
+        $addProperty->click();
         $this->session->wait($this->timeout, '$(".properties-table-block").length > 0');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
