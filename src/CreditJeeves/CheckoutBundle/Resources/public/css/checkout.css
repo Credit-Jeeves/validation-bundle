@@ -32,3 +32,19 @@
     padding-top: 0;
     padding-bottom: 0;
 }
+
+.form-row {
+    margin-left: 20px;
+}
+
+.background-grey {
+    margin-left: 0;
+}
+
+.background-grey div.form-row {
+    margin-left: 0;
+}
+
+a.linkselect-link .linkselect-link-text {
+    line-height: 20px;
+}
