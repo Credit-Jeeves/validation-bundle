@@ -254,6 +254,9 @@ class AjaxController extends Controller
     public function saveUnitsList()
     {
         $data = array();
+        $names = array();
+        $existingNames = array();
+        $errorNames = array();
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
@@ -270,22 +273,28 @@ class AjaxController extends Controller
             if (empty($unit['id']) & !empty($unit['name'])) {
                 continue;
             } else {
+                $names[] = $unit['name'];
                 $unitKeys[$unit['id']] = $key;
             }
+            
         }
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
         $em = $this->getDoctrine()->getManager();
+        
         foreach ($records as $entity) {
-            if (in_array($entity->getId(), array_keys($unitKeys))) {
+            if (in_array($entity->getId(), array_keys($unitKeys)) & !in_array($entity->getName(), $existingNames)) {
                 $key = $unitKeys[$entity->getId()];
-                if (!empty($units[$key]['name'])) {
+                if (!empty($units[$key]['name']) & !in_array($units[$key]['name'], $existingNames)) {
+                    $existingNames[] = $units[$key]['name'];
                     if ($units[$key]['name'] != $entity->getName()) {
                         $entity->setName($units[$key]['name']);
                         $em->persist($entity);
                         $em->flush();
+                        
                     }
                 } else {
+                    $errorNames[] = $units[$key]['name'];
                     $em->remove($entity);
                     $em->flush();
                 }
@@ -297,7 +306,7 @@ class AjaxController extends Controller
             
         }
         foreach ($units as $unit) {
-            if (empty($unit['id']) & !empty($unit['name'])) {
+            if (empty($unit['id']) & !empty($unit['name']) & !in_array($unit['name'], $names)) {
                 $entity = new Unit();
                 $entity->setProperty($parent);
                 $entity->setHolding($holding);
@@ -305,6 +314,9 @@ class AjaxController extends Controller
                 $entity->setName($unit['name']);
                 $em->persist($entity);
                 $em->flush();
+                $names[] = $unit['name'];
+            } else {
+                $errorNames[] = $unit['name'];
             }
         }
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
