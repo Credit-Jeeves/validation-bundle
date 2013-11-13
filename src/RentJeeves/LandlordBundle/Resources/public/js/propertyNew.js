@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    
     function markAsValid()
     {
         $('#addUnit').removeClass('grey');
@@ -7,7 +6,6 @@ $(document).ready(function(){
         $('#addProperty').removeClass('grey');
         $('#addProperty').removeClass('disabled');
     }
-
     function markAsNotValid()
     {
         $('#addUnit').addClass('grey');
@@ -15,22 +13,6 @@ $(document).ready(function(){
         $('#addProperty').addClass('grey');
         $('#addProperty').addClass('disabled');
     }
-
-
-    $('#addUnit').click(function(){
-        if($(this).hasClass('grey')) {
-            return false;
-        }
-
-        var i = parseInt($('#numberOfUnit').val());
-         var input = '<input type="text" value="" class="unit-name" name="unit-name[]">';
-        for(k = 1; k <= i; k++) {
-            $('.unitsListNames').append(input);
-        }
-
-        return false;
-    });
-
     var google = $('#property-search').google({
         formId: null,
         findButtonId: "search-submit",
@@ -60,25 +42,20 @@ $(document).ready(function(){
             markAsNotValid();
         }
     });
-
     function getUnits() {
         var unitsList = new Array();
         $.each($('.unitsListNames').find('.unit-name'), function(index, value) {
             unitsList.push({'name': $(this).val(), 'id': ''});
         });
-
         return unitsList;
     }
-
     function saveUnitList(propertyId)
     {
         var units = getUnits();
-
         if(units.length === 0) {
             return location.href = Routing.generate('landlord_properties');
         }
-
-        jQuery.ajax({
+        $.ajax({
             url: Routing.generate('landlord_units_save'),
             type: 'POST',
             dataType: 'json',
@@ -94,7 +71,7 @@ $(document).ready(function(){
 
     function addProperty()
     {
-        jQuery.ajax({
+        $.ajax({
             url: Routing.generate('landlord_property_add'),
             type: 'POST',
             dataType: 'json',
@@ -103,17 +80,26 @@ $(document).ready(function(){
                 google.showError(Translator.get('fill.full.address'));
             },
             success: function(data, textStatus, jqXHR) {
-                var propertyId = data.property.id
+                var propertyId = data.property.id;
                 if(propertyId) {
                     return saveUnitList(propertyId);
                 }
-
                 google.showError(Translator.get('fill.full.address'));
             }
         });
     }
-
-    $('#addProperty').click(function(){
+    $('.right').delegate('#addUnit', 'click', function(){
+        if($(this).hasClass('grey')) {
+            return false;
+        }
+        var i = parseInt($('#numberOfUnit').val());
+        var input = '<input type="text" value="" class="unit-name" name="unit-name[]">';
+        for(var k = 1; k <= i; k++) {
+            $('.unitsListNames').append(input);
+        }
+        return false;
+    });
+    $('.footer-button-box').delegate('#addProperty', 'click', function(){
         if($(this).hasClass('grey')) {
             return false;
         }

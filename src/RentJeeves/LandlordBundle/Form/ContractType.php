@@ -13,10 +13,12 @@ class ContractType extends AbstractType
 {
 
     protected $user;
+    protected $group;
 
-    public function __construct($user)
+    public function __construct($user, $group = null)
     {
         $this->user = $user;
+        $this->group = $group;
     }
     
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -57,6 +59,14 @@ class ContractType extends AbstractType
                 'error_bubbling'    => true,
                 'query_builder'     => function (EntityRepository $er) use ($groups) {
 
+                    if ($this->group) {
+                        $query = $er->createQueryBuilder('p');
+                        $query->innerJoin('p.property_groups', 'g');
+                        $query->where('g.id = :groupId');
+                        $query->setParameter('groupId', $this->group->getId());
+                        return $query;
+                    }
+                
                     if (!$groups) {
                         $query = $er->createQueryBuilder('p');
                         $query->where('p.id = :sero');
