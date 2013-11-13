@@ -5,8 +5,9 @@
 
     $.fn.google = function( options ) {
 
-        var error = 'notfound';
         var self = this;
+        self.isValid = false;
+
         var settings = $.extend({
             // These are the defaults.
             formId: "formSearch",
@@ -99,6 +100,7 @@
 
         self.showError = function(message)
         {
+            self.isValid = false;
             if (settings.divIdError === false && settings.classError === false) {
                 alert(message);
             } else {
@@ -206,10 +208,10 @@
                 self.place = self.autocomplete.getPlace();
                 //Inform the user that the place was not found and return.
                 if (!self.place.geometry) {
-                    input.className = error;
+                    self.isValid = false;
                     return;
                 } else {
-                    input.className = '';
+                    self.isValid = true;
                 }
                 //If the place has a geometry, then present it on a map.
                 if (self.place.geometry.viewport) {
