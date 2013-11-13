@@ -2,14 +2,20 @@
     margin-left: 0px !important;
 }
 #checkboxterms a {
-    display: inline;
+    display: block;
     float: none;
-    clear: both;
-    position: absolute;
-    margin-top: -18px;
     margin-left: 86px;
+    margin-top: -18px;
+    position: absolute;
 }
 
 .loadingSpinner {
   margin-top: 3px;
+}
+
+.errorsGoogleSearch {
+    display: block;
+    color: red;
+    position: absolute;
+    margin-top: -15px;
 }

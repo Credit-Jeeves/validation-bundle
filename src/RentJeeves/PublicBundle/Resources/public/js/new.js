@@ -10,13 +10,14 @@ $(document).ready(function(){
 
     initScroll();
     
-    $('#property-search').google({
+    var google = $('#property-search').google({
         mapCanvasId: "search-result-map",
         markers: true,
         clearSearchId: 'delete',
         findButtonId: 'search-submit',
         defaultLat: $('#lat').val(),
         defaultLong: $('#lng').val(),
+        classError :'errorsGoogleSearch',
         addPropertyCallback: function(data, textStatus, jqXHR) {
             if(data.hasLandlord) {
                 return location.href = Routing.generate('iframe_search_check', {'propertyId':data.property.id });
@@ -103,7 +104,10 @@ $(document).ready(function(){
     $('#register').click(function(){
       var propertyId = $('#propertyId').val();
       if(propertyId == '') {
-        showError('Please select your rental');
+        $('html, body').animate({
+              scrollTop: $(".search-box").offset().top
+        }, 800);
+        google.showError(Translator.get('select.rental'));
         return false;
       }
     });
@@ -151,8 +155,6 @@ $(document).ready(function(){
         modal:true
       });
     });
-
-    $('')
 
     $('#popup-pricing').click(function(){
       $("#pricing-popup").dialog('open');

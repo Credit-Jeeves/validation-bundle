@@ -17,6 +17,7 @@
             'RjComponentBundle:Google:formSearch.html.twig',
             { 'property': property }
           ) }}
+          <div class="errorsGoogleSearch"></div>
           <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
            method="post" {{ form_enctype(form) }}>
             {{ include(
