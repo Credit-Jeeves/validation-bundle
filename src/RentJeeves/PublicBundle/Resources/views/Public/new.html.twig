@@ -17,6 +17,7 @@
             'RjComponentBundle:Google:formSearch.html.twig',
             { 'property': property }
           ) }}
+          <div class="errorsGoogleSearch"></div>
           <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
            method="post" {{ form_enctype(form) }}>
             {{ include(
@@ -44,7 +45,8 @@
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
     {% javascripts  'bundles/bazingaexposetranslation/js/translator.min.js'
-                    '@RjPublicBundle/Resources/public/js/jquery.google.js'
+                    '@RjCoreBundle/Resources/public/js/jquery.tmpl.js'
+                    '@RjCoreBundle/Resources/public/js/jquery.google.js'
                     '@RjPublicBundle/Resources/public/js/new.js'
                     '@RjPublicBundle/Resources/public/js/jquery.slimscroll.js'
 
