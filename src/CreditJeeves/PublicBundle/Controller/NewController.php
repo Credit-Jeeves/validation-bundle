@@ -79,17 +79,8 @@ class NewController extends Controller
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                /** @var Lead $Lead */
                 $Lead = $form->getData();
-
                 if ($this->validateLead($Lead)) {
-
-                    $User = $Lead->getUser();
-                    $User->setCulture($request->getLocale());
-                    $User->setUsername($User->getEmail());
-                    $User->setIsVerified(UserIsVerified::NONE);
-                    $User->setType(UserType::APPLICANT);
-                    $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
                     // prepare target name and target url
                     if (GroupType::VEHICLE == $Group->getType()) {
                         $target = $Lead->getTargetName();
@@ -102,52 +93,55 @@ class NewController extends Controller
                         $model = $result[$target['model']];
                         $Lead->setTargetName($make.' '.$model[0]);
                         $Lead->setTargetUrl($model[1]);
+                    } else {
+                        $Lead->setTargetName('');
+                        $Lead->setTargetUrl('');
                     }
                     $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
-                    $User->setPassword(
-                        $this->container->get('user.security.encoder.digest')
-                            ->encodePassword($User->getPassword(), $User->getSalt())
-                    );
-//                     $email = $User->getEmail();
-//                     $check = $this->
-//                     getDoctrine()->
-//                     getRepository('DataBundle:User')->
-//                         findBy(
-//                             array(
-//                                 'email' => $email,
-//                             )
-//                         );
-//                     if (empty($check)) {
-//                         echo '****';
-//                         exit;
-//                         $em->persist($User);
-//                     } else {
-//                         $em->persist($Lead);
-//                         $em->flush();
-//                         $check->addUserLeads($Lead);
-//                         $em->persist($check);
-//                         $em->flush();
-                        
-//                     }
-                    //$em->persist($Lead);
-
-                    
-                    
-                    $em->persist($User);
-                    $em->persist($Lead);
-                    $em->flush();
-
+                    $Lead->setDealer($Lead->getGroup()->getMainDealer());
+                    $User = $Lead->getUser();
+                    // We need to check if such user already exists in the system
+                    $email = $User->getEmail();
+                    $check = $this->
+                        getDoctrine()->
+                        getRepository('DataBundle:User')->
+                            findOneBy(
+                                array(
+                                    'email' => $email,
+                                )
+                            );
+                    if ($check) {
+                        $User = $check;
+                        $Lead->setUser($User);
+                        $em->persist($Lead);
+                        $em->flush();
+                    } else {
+                        $User->setCulture($request->getLocale());
+                        $User->setUsername($User->getEmail());
+                        $User->setIsVerified(UserIsVerified::NONE);
+                        $User->setType(UserType::APPLICANT);
+                        $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
+                        $User->setPassword(
+                            $this->container->get('user.security.encoder.digest')
+                                ->encodePassword($User->getPassword(), $User->getSalt())
+                        );
+                        $em->persist($User);
+                        $em->persist($Lead);
+                        $em->flush();
+                    }
                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
                     $this->get('core.session.applicant')->setUser($User);
                     $this->get('project.mailer')->sendCheckEmail($User);
                     return $this->redirect($this->generateUrl('applicant_new_send'));
 
                 } else {
-                    // FIXME this text must be moved to i18n file
+                    $translator = $this->get('translator');
                     $this->get('session')->getFlashBag()->add(
                         'notice',
-                        'You are already associated with this dealership. Please contact the dealership at ' .
-                        $Lead->getGroup()->getName() . ' if you wish to change your salesperson.'
+                        $translator->trans(
+                            'leads.user.exists',
+                            array('%GROUP_NAME%', $Lead->getGroup()->getName())
+                        )
                     );
                 }
             }

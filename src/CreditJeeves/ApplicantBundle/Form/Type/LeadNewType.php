@@ -51,7 +51,7 @@ class LeadNewType extends AbstractType
             new VehicleType(),
             array(
                 'error_bubbling' => true,
-                'label' => 'select.vehicle',
+                'label' => 'leads.select.target',
                 'attr' => array(
                     'index' => $index
                 )

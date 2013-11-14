@@ -82,4 +82,21 @@ class Group extends BaseGroup
         $depositAccount = $this->getDepositAccount();
         return !empty($depositAccount) ? $depositAccount->getMerchantName() : '';
     }
+
+    public function getMainDealer()
+    {
+        $dealer = $this->getDealer();
+        if ($dealer) {
+            return $dealer;
+        }
+        $dealers = $this->getGroupDealers();
+        $first = $dealers->first();
+        foreach ($dealers as $dealer) {
+            $isAdmin = $dealer->isSuperAdmin();
+            if ($isAdmin) {
+                return $dealer;
+            }
+        }
+        return $first;
+    }
 }
