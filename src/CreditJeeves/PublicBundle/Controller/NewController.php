@@ -5,6 +5,7 @@ namespace CreditJeeves\PublicBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
+use CreditJeeves\DataBundle\Enum\GroupType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -12,7 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\ApplicantBundle\Form\Type\LeadNewType;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Utility\VehicleUtility;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -27,16 +30,26 @@ class NewController extends Controller
      */
     public function indexAction($code = null)
     {
+        $vehicles = array();
+        $makes = array();
+        $prepare = VehicleUtility::getVehicles();
+        foreach ($prepare as $make => $model) {
+            $makes[] = $make;
+            $vehicles[] = $model;
+        }
         if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('applicant_homepage'));
         }
         /** @var Request $request */
         $request = $this->get('request');
+        $data = $request->request->all();
+        $index = 0;
+        if (isset($data['creditjeeves_applicantbundle_leadnewtype']['target_name']['make'])) {
+            $index = $data['creditjeeves_applicantbundle_leadnewtype']['target_name']['make'];
+        }
         $query = $request->query;
         $Lead = new Lead();
-
-        /** @var User $User */
-        $User = $this->get('core.session.applicant')->getUser();
+        $User = new Applicant();
         $Group = new Group();
         $em = $this->getDoctrine()->getManager();
         if ($code) {
@@ -59,7 +72,8 @@ class NewController extends Controller
             new LeadNewType(),
             $Lead,
             array(
-                'em' => $this->getDoctrine()->getManager()
+                'em' => $this->getDoctrine()->getManager(),
+                'attr' => array('index' => $index )
                 )
         );
         if ($request->getMethod() == 'POST') {
@@ -76,15 +90,49 @@ class NewController extends Controller
                     $User->setIsVerified(UserIsVerified::NONE);
                     $User->setType(UserType::APPLICANT);
                     $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
-
-                    //$User->setInviteCode($Lead->getGroup()->getCode());
+                    // prepare target name and target url
+                    if (GroupType::VEHICLE == $Group->getType()) {
+                        $target = $Lead->getTargetName();
+                        $make = $makes[$target['make']];
+                        $models = $vehicles[$target['make']];
+                        $result = array();
+                        foreach ($models as $name => $url) {
+                            $result[] = array($name, $url);
+                        }
+                        $model = $result[$target['model']];
+                        $Lead->setTargetName($make.' '.$model[0]);
+                        $Lead->setTargetUrl($model[1]);
+                    }
                     $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
-
-                    //$em = $this->getDoctrine()->getManager();
                     $User->setPassword(
                         $this->container->get('user.security.encoder.digest')
                             ->encodePassword($User->getPassword(), $User->getSalt())
                     );
+//                     $email = $User->getEmail();
+//                     $check = $this->
+//                     getDoctrine()->
+//                     getRepository('DataBundle:User')->
+//                         findBy(
+//                             array(
+//                                 'email' => $email,
+//                             )
+//                         );
+//                     if (empty($check)) {
+//                         echo '****';
+//                         exit;
+//                         $em->persist($User);
+//                     } else {
+//                         $em->persist($Lead);
+//                         $em->flush();
+//                         $check->addUserLeads($Lead);
+//                         $em->persist($check);
+//                         $em->flush();
+                        
+//                     }
+                    //$em->persist($Lead);
+
+                    
+                    
                     $em->persist($User);
                     $em->persist($Lead);
                     $em->flush();
@@ -107,6 +155,7 @@ class NewController extends Controller
         return array(
             'form' => $form->createView(),
             'type' => $Group->getType(),
+            'vehicles' => json_encode($vehicles),
         );
     }
 
@@ -116,14 +165,25 @@ class NewController extends Controller
         if (empty($Group)) {
             return false;
         }
-        $nUserId = $Lead->getUser()->getId();
+        $email = $Lead->getUser()->getEmail();
+        $user = $this->
+            getDoctrine()->
+            getRepository('DataBundle:User')->
+            findOneBy(
+                array(
+                    'email' => $email,
+                )
+            );
+        if (!$user) {
+            return true; //This is new applicant
+        }
         $nGroupId = $Group->getId();
         $nLeads = $this->
             getDoctrine()->
             getRepository('DataBundle:Lead')->
             findBy(
                 array(
-                    'cj_applicant_id' => $nUserId,
+                    'cj_applicant_id' => $user->getId(),
                     'cj_group_id' => $nGroupId,
                 )
             );

@@ -52,7 +52,7 @@ class VehicleUtility
     /**
      * 
      */
-    private static function loadAmazonData($container)
+    private static function loadAmazonData($container = null)
     {
         $filename = __DIR__ . '/../Resources/public/'.self::FILE_NAME;
         return file_get_contents($filename);
@@ -68,5 +68,11 @@ class VehicleUtility
     {
         $aVehicles = self::getAmazonData($container);
         return isset($aVehicles[$make][$model]) ? $aVehicles[$make][$model] : self::DEFAUL_URL;
+    }
+
+    public static function getVehicles()
+    {
+        $aVehicles = self::loadAmazonData();
+        return self::formatAmazonData(json_decode($aVehicles, true));
     }
 }

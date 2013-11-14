@@ -1,0 +1,22 @@
+<div class="form-row">
+    <div class="form-label">{{ form_label(form) }}</div>
+    <div class="form-widget">
+        {{ form_widget(
+            form.make,
+            { 'attr':
+                {
+                    'class': 'floatleft'
+                    
+                }
+            })
+        }}
+        {{ form_widget(
+            form.model,
+            { 'attr':
+                {
+                    'class': 'floatleft'
+                }
+            })
+        }}
+    </div>
+</div>

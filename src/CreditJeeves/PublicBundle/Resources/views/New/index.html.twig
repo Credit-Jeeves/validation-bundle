@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/applicant/css/vehicle.css') }}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block tabs %}
@@ -38,7 +39,7 @@
                     {{ flashMessage }}
                 </div>
             {% endfor %}
-            <form action="{{ path('applicant_new') }}" method="post" {{ form_enctype(form) }}>
+            <form method="post" {{ form_enctype(form) }}>
                 {{ form_errors(form) }}
                 <fieldset>
                     {% include 'ComponentBundle:User:code.html.twig'     with { 'form' : form } %}
@@ -59,14 +60,23 @@
                     {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form.user } %}
                     <div class="clearboth"></div>
                     {% if type == 'vehicle' %}
-                    <div class="row-20"></div>
-                    <!-- here will be vehicle select component -->
+                    <div class="row-10"></div>
+                    {% include 'ComponentBundle:User:vehicle.html.twig'      with { 'form' : form.target_name } %}
+                    {% block javascripts %}
+                        <script src="{{ asset('bundles/applicant/js/vehicle.js') }}" type="text/javascript"></script>
+                        <script type="text/javascript">
+                            vehicles = {% autoescape false %}{{ vehicles }}{% endautoescape %};
+                        </script>
+                    {% endblock %}
+                        
                     <div class="clearboth"></div>
                     {% endif %}
                     <div class="row-20"></div>
                     {% include 'ComponentBundle:User:tos.html.twig'      with { 'form' : form.user } %}
                     <div class="clearboth"></div>
+                    <div style="display:none;">
                     {{ form_rest(form) }}
+                    </div>
                     <div class="row-20"></div>
                     <div class="form-row">
                         <input class="button large green" type="submit" name="_submit" value="{{ 'common.get.score' | trans }}" />
@@ -77,3 +87,4 @@
     </div>
 <div class="clearboth"></div>
 {% endblock %}
+
