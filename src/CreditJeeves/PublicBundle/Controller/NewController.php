@@ -113,12 +113,11 @@ class NewController extends Controller
                     if ($check) {
                         $User = $check;
                         $Lead->setUser($User);
+                        $em->persist($User);
                         $em->persist($Lead);
                         $em->flush();
                     } else {
                         $User->setCulture($request->getLocale());
-                        $User->setUsername($User->getEmail());
-                        $User->setIsVerified(UserIsVerified::NONE);
                         $User->setType(UserType::APPLICANT);
                         $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
                         $User->setPassword(

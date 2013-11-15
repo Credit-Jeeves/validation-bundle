@@ -1,5 +1,4 @@
 var Vehicles = {};
-
 var vehicles = [];
 
 Vehicles.app = {

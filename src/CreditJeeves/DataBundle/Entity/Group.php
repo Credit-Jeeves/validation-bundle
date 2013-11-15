@@ -90,13 +90,12 @@ class Group extends BaseGroup
             return $dealer;
         }
         $dealers = $this->getGroupDealers();
-        $first = $dealers->first();
         foreach ($dealers as $dealer) {
             $isAdmin = $dealer->isSuperAdmin();
             if ($isAdmin) {
                 return $dealer;
             }
         }
-        return $first;
+        return $dealer;
     }
 }
