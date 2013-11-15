@@ -30,12 +30,13 @@ class VehicleUtility
     private static $instance;
 
     /**
-     * @todo depricated
+     * @todo  move to service
+     * @deprecated
      */
     public static function getInstance()
     {
         if (self::$instance == null) {
-            self::$instance = new Static();
+            self::$instance = new static();
         }
         return self::$instance;
     }

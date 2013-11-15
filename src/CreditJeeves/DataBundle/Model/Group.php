@@ -110,8 +110,8 @@ abstract class Group
     protected $dealers;
 
     /**
-     * @var ArrayCollection
-     *
+     * @var \CreditJeeves\DataBundle\Entity\Dealer
+     * 
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Dealer",
      *     mappedBy="group",

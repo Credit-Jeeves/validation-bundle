@@ -13,6 +13,7 @@ class VehicleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $index =  isset($options['attr']['index']) ? $options['attr']['index'] : 0;
+        // @todo replace by service
         $vehicles = VehicleUtility::getInstance()->getVehicles();
         $makes = array_keys($vehicles);
         $make = $makes[$index];
