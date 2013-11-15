@@ -241,6 +241,16 @@ class AjaxController extends Controller
         return new JsonResponse($result);
     }
 
+    //@TODO find best way for this implementation
+    private function checkContract($entity)
+    {
+        if ($entity->getContracts()->count() <= 0) {
+            $this->getDoctrine()->getFilters()->disable('softdeleteable');
+        } else {
+            $this->getDoctrine()->getFilters()->enable('softdeleteable');
+        }
+    }
+
     /**
      * @Route(
      *     "/unit/save",
@@ -281,7 +291,8 @@ class AjaxController extends Controller
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
         $em = $this->getDoctrine()->getManager();
-        
+
+        /** @var $entity Unit */
         foreach ($records as $entity) {
             if (in_array($entity->getId(), array_keys($unitKeys)) & !in_array($entity->getName(), $existingNames)) {
                 $key = $unitKeys[$entity->getId()];
@@ -295,11 +306,13 @@ class AjaxController extends Controller
                     }
                 } else {
                     $errorNames[] = $units[$key]['name'];
+                    $this->checkContract($entity);
                     $em->remove($entity);
                     $em->flush();
                 }
                 unset($unitKeys[$key]);
             } else {
+                $this->checkContract($entity);
                 $em->remove($entity);
                 $em->flush();
             }
@@ -375,6 +388,9 @@ class AjaxController extends Controller
      */
     public function getContractsList()
     {
+        //For this page need show unit each was removed
+        //@TODO find best way for this implementation
+        $this->get('doctrine')->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -418,6 +434,9 @@ class AjaxController extends Controller
      */
     public function getActionsList()
     {
+        //For this page need show unit each was removed
+        //@TODO find best way for this implementation
+        $this->get('doctrine')->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -508,10 +527,10 @@ class AjaxController extends Controller
         }
 
         if ($action == 'remove') {
-            $em->remove($contract);
-        } else {
-            $em->persist($contract);
+            /** @var $contract Contract */
+            $contract->setStatus(ContractStatus::DELETED);
         }
+        $em->persist($contract);
         $em->flush();
         if (!empty($errors) & 'edit' == $action) {
             $response['errors'] = $errors;
@@ -596,6 +615,9 @@ class AjaxController extends Controller
      */
     public function getPaymentsList()
     {
+        // Show all unit, even it removed
+        //@TODO find best way for this implementation
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();

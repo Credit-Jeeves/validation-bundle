@@ -14,6 +14,8 @@ class HistoryController extends Controller
      */
     public function indexAction()
     {
+        //For this page need show unit each was removed
+        $this->get('doctrine')->getFilters()->disable('softdeleteable');
         $user = $this->getUser();
         return array(
             'user' => $user,
