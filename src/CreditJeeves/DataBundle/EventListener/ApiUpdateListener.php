@@ -3,7 +3,7 @@
 namespace CreditJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\ApiUpdate;
-use CreditJeeves\DataBundle\Entity\Dealer;
+use CreditJeeves\DataBundle\Entity\Dealer as EntityDealer;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\Lead;
@@ -57,7 +57,7 @@ class ApiUpdateListener
             return false;
         }
 
-        /** @var $dealer Dealer */
+        /** @var $dealer EntityDealer */
         $dealer = $em->getRepository('CreditJeeves\DataBundle\Entity\Dealer')->findOneBy(
             array(
                 'invite_code' => $this->dealerCode,

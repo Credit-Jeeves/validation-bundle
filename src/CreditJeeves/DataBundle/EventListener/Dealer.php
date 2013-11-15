@@ -7,6 +7,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
+use \Exception;
 
 /**
  * @Service("data.event_listener.dealer.doctrine")
@@ -35,7 +36,7 @@ class Dealer
 
         if ($entity instanceof DealerEntity) {
             if ($entity->canRemove() === false) {
-                throw new \Exception('Please reassign leads before deleting a dealer.');
+                throw new Exception('Please reassign leads before deleting a dealer.');
             }
         }
     }
