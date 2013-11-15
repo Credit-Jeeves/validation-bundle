@@ -111,7 +111,7 @@ class NewController extends Controller
                                 )
                             );
                     if ($check) {
-                        // @todo move to login page and create page to add lead 
+                        // @todo move to login page and create page to add lead
                         $password = $User->getPassword();
                         $isPasswordValid = $this->container->
                             get('user.security.encoder.digest')->
