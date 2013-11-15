@@ -5,6 +5,7 @@ namespace CreditJeeves\PublicBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
+use CreditJeeves\DataBundle\Enum\GroupType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -12,7 +13,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use CreditJeeves\ApplicantBundle\Form\Type\LeadNewType;
 use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Utility\VehicleUtility;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -27,16 +30,26 @@ class NewController extends Controller
      */
     public function indexAction($code = null)
     {
+        $vehicles = array();
+        $makes = array();
+        $prepare = $this->get('data.utility.vehicle')->getVehicles();
+        foreach ($prepare as $make => $model) {
+            $makes[] = $make;
+            $vehicles[] = $model;
+        }
         if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('applicant_homepage'));
         }
         /** @var Request $request */
         $request = $this->get('request');
+        $data = $request->request->all();
+        $index = 0;
+        if (isset($data['creditjeeves_applicantbundle_leadnewtype']['target_name']['make'])) {
+            $index = $data['creditjeeves_applicantbundle_leadnewtype']['target_name']['make'];
+        }
         $query = $request->query;
         $Lead = new Lead();
-
-        /** @var User $User */
-        $User = $this->get('core.session.applicant')->getUser();
+        $User = new Applicant();
         $Group = new Group();
         $em = $this->getDoctrine()->getManager();
         if ($code) {
@@ -59,47 +72,105 @@ class NewController extends Controller
             new LeadNewType(),
             $Lead,
             array(
-                'em' => $this->getDoctrine()->getManager()
+                'em' => $this->getDoctrine()->getManager(),
+                'attr' => array('index' => $index)
                 )
         );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);
             if ($form->isValid()) {
-                /** @var Lead $Lead */
                 $Lead = $form->getData();
-
                 if ($this->validateLead($Lead)) {
-
-                    $User = $Lead->getUser();
-                    $User->setCulture($request->getLocale());
-                    $User->setUsername($User->getEmail());
-                    $User->setIsVerified(UserIsVerified::NONE);
-                    $User->setType(UserType::APPLICANT);
-                    $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
-
-                    //$User->setInviteCode($Lead->getGroup()->getCode());
+                    // prepare target name and target url
+                    if (GroupType::VEHICLE == $Group->getType()) {
+                        $target = $Lead->getTargetName();
+                        $make = $makes[$target['make']];
+                        $models = $vehicles[$target['make']];
+                        $result = array();
+                        foreach ($models as $name => $url) {
+                            $result[] = array($name, $url);
+                        }
+                        $model = $result[$target['model']];
+                        $Lead->setTargetName($make.' '.$model[0]);
+                        $Lead->setTargetUrl($model[1]);
+                    } else {
+                        $Lead->setTargetName('');
+                        $Lead->setTargetUrl('');
+                    }
                     $Lead->setTargetScore($Lead->getGroup()->getTargetScore());
-
-                    //$em = $this->getDoctrine()->getManager();
-                    $User->setPassword(
-                        $this->container->get('user.security.encoder.digest')
-                            ->encodePassword($User->getPassword(), $User->getSalt())
-                    );
-                    $em->persist($User);
-                    $em->persist($Lead);
-                    $em->flush();
-
+                    $Lead->setDealer($Lead->getGroup()->getMainDealer());
+                    $User = $Lead->getUser();
+                    // We need to check if such user already exists in the system
+                    $email = $User->getEmail();
+                    $check = $this->
+                        getDoctrine()->
+                        getRepository('DataBundle:User')->
+                            findOneBy(
+                                array(
+                                    'email' => $email,
+                                )
+                            );
+                    if ($check) {
+                        // @todo move to login page and create page to add lead
+                        $password = $User->getPassword();
+                        $isPasswordValid = $this->container->
+                            get('user.security.encoder.digest')->
+                            isPasswordValid(
+                                $check->getPassword(),
+                                $password,
+                                $check->getSalt()
+                            );
+                        if ($isPasswordValid) {
+                            $User = $check;
+                            $Lead->setUser($User);
+                            $em->persist($User);
+                            $em->persist($Lead);
+                            $em->flush();
+                        } else {
+                            $i18n = $this->get('translator');
+                            $this->get('session')->
+                                getFlashBag()->
+                                add(
+                                    'message_title',
+                                    $i18n->trans(
+                                        'error.user.absent.title'
+                                    )
+                                );
+                            $this->get('session')->
+                                getFlashBag()->
+                                add(
+                                    'message_body',
+                                    $i18n->trans(
+                                        'error.user.absent.text'
+                                    )
+                                );
+                            return $this->redirect($this->generateUrl('public_message_flash'));
+                        }
+                    } else {
+                        $User->setCulture($request->getLocale());
+                        $User->setType(UserType::APPLICANT);
+                        $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
+                        $User->setPassword(
+                            $this->container->get('user.security.encoder.digest')
+                                ->encodePassword($User->getPassword(), $User->getSalt())
+                        );
+                        $em->persist($User);
+                        $em->persist($Lead);
+                        $em->flush();
+                    }
                     $this->get('core.session.applicant')->setLeadId($Lead->getId());
                     $this->get('core.session.applicant')->setUser($User);
                     $this->get('project.mailer')->sendCheckEmail($User);
                     return $this->redirect($this->generateUrl('applicant_new_send'));
 
                 } else {
-                    // FIXME this text must be moved to i18n file
+                    $translator = $this->get('translator');
                     $this->get('session')->getFlashBag()->add(
                         'notice',
-                        'You are already associated with this dealership. Please contact the dealership at ' .
-                        $Lead->getGroup()->getName() . ' if you wish to change your salesperson.'
+                        $translator->trans(
+                            'leads.user.exists',
+                            array('%GROUP_NAME%'=> $Lead->getGroup()->getName())
+                        )
                     );
                 }
             }
@@ -107,6 +178,7 @@ class NewController extends Controller
         return array(
             'form' => $form->createView(),
             'type' => $Group->getType(),
+            'vehicles' => json_encode($vehicles),
         );
     }
 
@@ -116,14 +188,25 @@ class NewController extends Controller
         if (empty($Group)) {
             return false;
         }
-        $nUserId = $Lead->getUser()->getId();
+        $email = $Lead->getUser()->getEmail();
+        $user = $this->
+            getDoctrine()->
+            getRepository('DataBundle:User')->
+            findOneBy(
+                array(
+                    'email' => $email,
+                )
+            );
+        if (!$user) {
+            return true; //This is new applicant
+        }
         $nGroupId = $Group->getId();
         $nLeads = $this->
             getDoctrine()->
             getRepository('DataBundle:Lead')->
             findBy(
                 array(
-                    'cj_applicant_id' => $nUserId,
+                    'cj_applicant_id' => $user->getId(),
                     'cj_group_id' => $nGroupId,
                 )
             );
