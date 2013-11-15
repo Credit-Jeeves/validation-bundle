@@ -22,11 +22,10 @@ use \Exception;
 class Dealer
 {
     /**
-     * On this method we need fill api update table if user or his lead was updated
-     * it's only for user each have dealer with invite code $dealerCode
+     *
+     * Check can we remove dealer or not. 
      *
      * @param LifecycleEventArgs $eventArgs
-     * @return bool
      */
     public function preRemove(LifecycleEventArgs $eventArgs)
     {
