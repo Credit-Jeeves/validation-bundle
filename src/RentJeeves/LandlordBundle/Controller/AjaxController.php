@@ -245,9 +245,9 @@ class AjaxController extends Controller
     private function checkContract($entity)
     {
         if ($entity->getContracts()->count() <= 0) {
-            $this->getDoctrine()->getFilters()->disable('softdeleteable');
+            $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         } else {
-            $this->getDoctrine()->getFilters()->enable('softdeleteable');
+            $this->get('doctrine')->getManager()->getFilters()->enable('softdeleteable');
         }
     }
 
