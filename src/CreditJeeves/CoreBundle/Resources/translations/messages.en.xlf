@@ -1307,6 +1307,10 @@
                 <source>common.last</source>
                 <target>last</target>
             </trans-unit>
+            <trans-unit id="action_delete_cannot">
+                <source>action_delete_cannot</source>
+                <target>Please reassign leads before deleting a dealer.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

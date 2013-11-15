@@ -1,0 +1,24 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% if admin.isGranted('DELETE', object) and admin.hasRoute('delete') %}
+    {% if (object.canRemove == false) %}
+        <a href="#" class="btn delete_link disabled" title="{{ 'action_delete_cannot'|trans({}) }}">
+            <i class="icon-remove"></i>
+            {{ 'action_delete'|trans({}, 'SonataAdminBundle') }}
+        </a>
+    {% else %}
+    <a href="{{ admin.generateObjectUrl('delete', object) }}" class="btn delete_link" title="{{ 'action_delete'|trans({}, 'SonataAdminBundle') }}">
+        <i class="icon-remove"></i>
+        {{ 'action_delete'|trans({}, 'SonataAdminBundle') }}
+    </a>
+    {% endif %}
+{% endif %}
