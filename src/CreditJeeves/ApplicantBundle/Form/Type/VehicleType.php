@@ -5,13 +5,15 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use CreditJeeves\DataBundle\Utility\VehicleUtility;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use JMS\DiExtraBundle\Annotation as DI;
 
 class VehicleType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $index =  isset($options['attr']['index']) ? $options['attr']['index'] : 0;
-        $vehicles = VehicleUtility::getVehicles();
+        $vehicles = VehicleUtility::getInstance()->getVehicles();
         $makes = array_keys($vehicles);
         $make = $makes[$index];
         $models = array_keys($vehicles[$make]);

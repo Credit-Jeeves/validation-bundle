@@ -32,7 +32,7 @@ class NewController extends Controller
     {
         $vehicles = array();
         $makes = array();
-        $prepare = VehicleUtility::getVehicles();
+        $prepare = $this->get('data.utility.vehicle')->getVehicles();
         foreach ($prepare as $make => $model) {
             $makes[] = $make;
             $vehicles[] = $model;
@@ -73,7 +73,7 @@ class NewController extends Controller
             $Lead,
             array(
                 'em' => $this->getDoctrine()->getManager(),
-                'attr' => array('index' => $index )
+                'attr' => array('index' => $index)
                 )
         );
         if ($request->getMethod() == 'POST') {
@@ -111,11 +111,40 @@ class NewController extends Controller
                                 )
                             );
                     if ($check) {
-                        $User = $check;
-                        $Lead->setUser($User);
-                        $em->persist($User);
-                        $em->persist($Lead);
-                        $em->flush();
+                        $password = $User->getPassword();
+                        $isPasswordValid = $this->container->
+                            get('user.security.encoder.digest')->
+                            isPasswordValid(
+                                $check->getPassword(),
+                                $password,
+                                $check->getSalt()
+                            );
+                        if ($isPasswordValid) {
+                            $User = $check;
+                            $Lead->setUser($User);
+                            $em->persist($User);
+                            $em->persist($Lead);
+                            $em->flush();
+                        } else {
+                            $i18n = $this->get('translator');
+                            $this->get('session')->
+                                getFlashBag()->
+                                add(
+                                    'message_title',
+                                    $i18n->trans(
+                                        'error.user.absent.title'
+                                    )
+                                );
+                            $this->get('session')->
+                                getFlashBag()->
+                                add(
+                                    'message_body',
+                                    $i18n->trans(
+                                        'error.user.absent.text'
+                                    )
+                                );
+                            return $this->redirect($this->generateUrl('public_message_flash'));
+                        }
                     } else {
                         $User->setCulture($request->getLocale());
                         $User->setType(UserType::APPLICANT);
@@ -139,7 +168,7 @@ class NewController extends Controller
                         'notice',
                         $translator->trans(
                             'leads.user.exists',
-                            array('%GROUP_NAME%', $Lead->getGroup()->getName())
+                            array('%GROUP_NAME%'=> $Lead->getGroup()->getName())
                         )
                     );
                 }
