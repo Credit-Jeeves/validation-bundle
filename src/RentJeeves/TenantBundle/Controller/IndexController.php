@@ -29,7 +29,7 @@ class IndexController extends Controller
 //         }
         //For this page need show unit each was removed
         //@TODO find best way for this implementation
-        $this->get('doctrine')->getFilters()->disable('softdeleteable');
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         $isReporting = $this->get('doctrine')->getRepository('RjDataBundle:Contract')
                                 ->countReporting($tenant);
         return array(

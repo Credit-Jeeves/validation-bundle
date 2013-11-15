@@ -17,7 +17,8 @@ class UnitAdmin extends Admin
     public function configure()
     {
         /**
-         * This executes everywhere in the admin and disables softdelete for everything, if you need something cleverer this should be rethought.
+         * This executes everywhere in the admin and disables softdelete for everything, if you need something cleverer
+         * this should be rethought.
          */
         $filters = $this->getModelManager()->getEntityManager($this->getClass())->getFilters();
 

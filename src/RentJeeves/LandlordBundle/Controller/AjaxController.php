@@ -390,7 +390,7 @@ class AjaxController extends Controller
     {
         //For this page need show unit each was removed
         //@TODO find best way for this implementation
-        $this->get('doctrine')->getFilters()->disable('softdeleteable');
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -436,7 +436,7 @@ class AjaxController extends Controller
     {
         //For this page need show unit each was removed
         //@TODO find best way for this implementation
-        $this->get('doctrine')->getFilters()->disable('softdeleteable');
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();
