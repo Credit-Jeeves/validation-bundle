@@ -74,8 +74,9 @@ class InviteController extends Controller
                         ->encodePassword($User->getPassword(), $User->getSalt())
                 );
                 $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
-                if (!empty($sCurrentDob) && $sCurrentDob == $sFormDob) {
+                if (empty($sCurrentDob) || $sCurrentDob == $sFormDob) {
                     $User->setInviteCode(null);
+                    $User->setEnabled(true);
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($User);
                     $em->flush();
