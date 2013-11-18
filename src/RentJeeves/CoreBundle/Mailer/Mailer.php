@@ -272,7 +272,6 @@ class Mailer extends BaseMailer
             'unitName'              => $unit ? $unit->getName() : '',
         );
 
-        var_dump($vars);
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 }
