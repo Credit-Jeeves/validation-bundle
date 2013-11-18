@@ -110,22 +110,6 @@ abstract class Group
     protected $dealers;
 
     /**
-     * @var \CreditJeeves\DataBundle\Entity\Dealer
-     * 
-     * @ORM\OneToOne(
-     *     targetEntity="\CreditJeeves\DataBundle\Entity\Dealer",
-     *     mappedBy="group",
-     *     orphanRemoval=true
-     * )
-     * @ORM\JoinColumn(
-     *     name="dealer_id",
-     *     referencedColumnName="id"
-     * )
-     */
-    protected $dealer;
-    
-
-    /**
      * @ORM\Column(type="string")
      */
     protected $name;
@@ -1057,8 +1041,7 @@ abstract class Group
      */
     public function setDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer = null)
     {
-        $this->dealer = $dealer;
-    
+        $this->dealers = $dealer;
         return $this;
     }
 
@@ -1067,6 +1050,6 @@ abstract class Group
      */
     public function getDealer()
     {
-        return $this->dealer;
+        return $this->dealers;
     }
 }
