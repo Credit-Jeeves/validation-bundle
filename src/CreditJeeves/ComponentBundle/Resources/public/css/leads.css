@@ -2,7 +2,7 @@
     cursor: pointer;
     float: right;
     position: relative;
-    top: 105px;
+    top: 89px;
     left: 13px;
 }
 
@@ -15,7 +15,7 @@
     overflow: hidden;
     position: relative;
     top: 105px;
-    width: 120px;
+    width: 210px;
 }
 
 .lead-select-lead {
