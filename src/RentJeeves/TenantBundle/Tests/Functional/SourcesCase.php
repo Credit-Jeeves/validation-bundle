@@ -144,5 +144,35 @@ class SourcesCase extends BaseTestCase
         $this->assertNotNull($rows = $this->page->findAll('css', '#payment-account-table tbody tr'));
         $this->assertCount(1, $rows);
         $this->logout();
+
+    }
+
+    /**
+     *
+     * @test
+     */
+    public function checkEmailNotifyWhenRemoveContract()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(false);
+        $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
+        $this->assertCount(3, $rows);
+
+        $this->assertNotNull($contract = $this->page->findAll('css', '.contract-delete'));
+        $contract[0]->click();
+        $this->session->wait($this->timeout, "jQuery('#contract-delete:visible').length");
+        $this->assertNotNull($delete = $this->page->find('css', '#button-contract-delete'));
+        $delete->click();
+        $this->session->wait($this->timeout, "2 == jQuery('.properties-table tbody tr').length");
+        $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
+        $this->assertCount(2, $rows);
+        $this->logout();
+
+        //Check email notify landlord about removed contract by tenant
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
     }
 }

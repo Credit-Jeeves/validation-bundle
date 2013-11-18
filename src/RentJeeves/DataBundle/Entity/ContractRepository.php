@@ -135,8 +135,6 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.tenant', 't');
         $query->innerJoin('c.property', 'p');
         $query->where('c.group = :group');
-        $query->andWhere('c.status != :delete');
-        $query->setParameter('delete', ContractStatus::DELETED);
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $query->getQuery();
@@ -167,8 +165,6 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group');
-        $query->andWhere('c.status != :delete');
-        $query->setParameter('delete', ContractStatus::DELETED);
         $query->setParameter('group', $group);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $this->applySortOrder($query, $sortField, $sortOrder);

@@ -2,6 +2,8 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\User;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -71,10 +73,48 @@ class AjaxController extends Controller
     {
         $request = $this->getRequest();
         $data = $request->request->all('data');
+        /** @var $contract Contract */
         $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
-        $contract->setStatus(ContractStatus::DELETED);
         $em = $this->getDoctrine()->getManager();
-        $em->persist($contract);
+
+        /**
+         *  On this logic if else
+         *  implement logic each describe on the ContractStatus class
+         *  for more detail see it.
+         */
+        if (in_array($contract->getStatus(), array(ContractStatus::INVITE, ContractStatus::PENDING))) {
+            $tenant = $contract->getTenant();
+            $landlordUsers = $contract->getGroup()->getHolding()->getDealers();
+
+            if ($landlordUsers) {
+                /**
+                 *
+                 * Notify holding admin each have relationship with this contract by email
+                 *
+                 * @var $landlord User
+                 */
+                foreach ($landlordUsers as $landlord) {
+                    if (!$landlord->getIsSuperAdmin()) {
+                        continue;
+                    }
+
+                    $this->get('project.mailer')->sendRjContractRemovedFromDbByTenant(
+                        $tenant,
+                        $landlord,
+                        $contract
+                    );
+                }
+            }
+
+            $em->remove($contract);
+        } elseif (in_array($contract->getStatus(), array(ContractStatus::APPROVED))) {
+            $contract->setStatus(ContractStatus::DELETED);
+            $em->persist($contract);
+        } elseif (in_array($contract->getStatus(), array(ContractStatus::CURRENT))) {
+            $contract->setStatus(ContractStatus::FINISHED);
+            $em->persist($contract);
+        }
+
         $em->flush();
         return new JsonResponse(array());
     }

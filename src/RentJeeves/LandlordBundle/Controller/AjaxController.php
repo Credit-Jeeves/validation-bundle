@@ -527,10 +527,21 @@ class AjaxController extends Controller
         }
 
         if ($action == 'remove') {
-            /** @var $contract Contract */
-            $contract->setStatus(ContractStatus::DELETED);
+            /**
+             * This contract don't have any payment this is just contract, so we can remove it from db
+             */
+            $tenant = $contract->getTenant();
+            $landlord = $this->getUser();
+            $this->get('project.mailer')->sendRjContractRemovedFromDbByLandlord(
+                $tenant,
+                $landlord,
+                $contract
+            );
+            $em->remove($contract);
+        } else {
+            $em->persist($contract);
         }
-        $em->persist($contract);
+
         $em->flush();
         if (!empty($errors) & 'edit' == $action) {
             $response['errors'] = $errors;
@@ -739,9 +750,17 @@ class AjaxController extends Controller
         if ($contract->getGroupId() !== $group->getId()) {
             return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
         }
-
-        $contract->setStatus(ContractStatus::DELETED);
-        $em->persist($contract);
+        /**
+         * This contract don't have any payment this is just contract, so we can remove it from db
+         */
+        $tenant = $contract->getTenant();
+        $landlord = $this->getUser();
+        $this->get('project.mailer')->sendRjContractRemovedFromDbByLandlord(
+            $tenant,
+            $landlord,
+            $contract
+        );
+        $em->remove($contract);
         $em->flush();
 
         return new JsonResponse(array());
