@@ -239,4 +239,39 @@ class Mailer extends BaseMailer
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
+
+
+    public function sendRjContractRemovedFromDbByLandlord(
+        $tenant,
+        $landlord,
+        $contract,
+        $sTemplate = 'rjContractRemovedFromDbByLandlord'
+    ) {
+        $unit = $contract->getUnit();
+        $vars = array(
+            'fullNameLandlord'      => $landlord->getFullName(),
+            'fullNameTenant'        => $tenant->getFullName(),
+            'address'               => $contract->getProperty()->getAddress(),
+            'unitName'              => $unit ? $unit->getName() : '',
+        );
+
+        return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendRjContractRemovedFromDbByTenant(
+        $tenant,
+        $landlord,
+        $contract,
+        $sTemplate = 'rjContractRemovedFromDbByTenant'
+    ) {
+        $unit = $contract->getUnit();
+        $vars = array(
+            'fullNameLandlord'      => $landlord->getFullName(),
+            'fullNameTenant'        => $tenant->getFullName(),
+            'address'               => $contract->getProperty()->getAddress(),
+            'unitName'              => $unit ? $unit->getName() : '',
+        );
+
+        return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
 }

@@ -846,4 +846,37 @@ fixtures:
       {% block h1 %}Hello {{ nameTenant }},{% endblock %}
       {% block email %}
       {% endblock %}
-      
+  # rjContractRemovedFromDbByLandlord.html
+  translation_29_subject:
+    translatable: email_29
+    locale: %locale%
+    property: subject
+    value: You contract was removed by Landlord
+  translation_29_body:
+    translatable: email_29
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ fullNameTenant }}!{% endblock %}
+      {% block email %}
+        Your landlord, {{ fullNameLandlord }}, removed contract on RentTrack:
+        {{ address }} {{ unitName }}.
+      {% endblock %}
+  # rjContractRemovedFromDbByTenant.html
+  translation_30_subject:
+    translatable: email_30
+    locale: %locale%
+    property: subject
+    value: You contract was removed by Tenant
+  translation_30_body:
+    translatable: email_30
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ fullNameLandlord }}!{% endblock %}
+      {% block email %}
+        Your tenant, {{ fullNameTenant }}, removed contract on RentTrack:
+        {{ address }} {{ unitName }}.
+      {% endblock %}

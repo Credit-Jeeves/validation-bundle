@@ -775,6 +775,9 @@ abstract class Group
         return $this;
     }
 
+    /**
+     * @return Holding
+     */
     public function getHolding()
     {
         return $this->holding;
