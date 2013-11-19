@@ -28,7 +28,7 @@
 }
 
 .landlord-alert-right {
-    width: 500px;
+    width: 650px;
 }
 
 .landlord-alert-number {
@@ -40,4 +40,8 @@
     text-align: center;
     width: 20px;
     margin-bottom: 5px;
+}
+
+.landlord-alert-text {
+    width: 550px;
 }

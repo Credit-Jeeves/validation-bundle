@@ -76,6 +76,7 @@ class InviteController extends Controller
                 $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
                 if (empty($sCurrentDob) || $sCurrentDob == $sFormDob) {
                     $User->setInviteCode(null);
+					$User->setIsActive(true);
                     $User->setEnabled(true);
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($User);

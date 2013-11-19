@@ -32,12 +32,12 @@ class LeadController extends Controller
         $chartData = implode(',', $chartData);
         $nScore = $cjUser->getLastScore();
         $nFicoScore = $cjUser->getLastFicoScore();
-        $sDate = $nScore ? $cjUser->getScores()->last()->getCreatedDate()->format('M d, Y') : '-';
+        $sDate = $cjUser->getScores()->last()->getCreatedDate()->format('M d, Y');
         $nTop = intval((850 - $nTargetScore) * 171 / 600);
         return array(
             'chartData' => $chartData,
-            'nScore' => $nScore,
-            'nFicoScore' => $nFicoScore,
+            'nScore' => $nScore ? $nScore : 'N/A',
+            'nFicoScore' => $nFicoScore ? $nFicoScore : 'N/A',
             'nTargetScore' => $nTargetScore,
             'nTop' => $nTop,
             'sDate' => $sDate,

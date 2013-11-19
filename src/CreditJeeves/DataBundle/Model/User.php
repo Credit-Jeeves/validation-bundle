@@ -485,8 +485,6 @@ abstract class User extends BaseUser
     protected $dealer_to_groups;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Vehicle",
      *     mappedBy="user",
@@ -497,8 +495,6 @@ abstract class User extends BaseUser
     protected $vehicle;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\LoginDefense",
      *     mappedBy="user",
@@ -568,8 +564,6 @@ abstract class User extends BaseUser
 
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\ApiUpdate",
      *     mappedBy="user",
