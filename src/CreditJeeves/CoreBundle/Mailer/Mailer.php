@@ -39,6 +39,17 @@ class Mailer extends BaseMailer implements MailerInterface
             true
         );
 
+        $kernel = $this->container->get('kernel');
+        if ($kernel->getName() === 'rj') {
+            return $this->sendEmail(
+                $user,
+                'rj_resetting',
+                array(
+                    'confirmationUrl' => $url
+                )
+            );
+        }
+
         return $this->sendEmail(
             $user,
             'resetting',
