@@ -274,4 +274,14 @@ class Mailer extends BaseMailer
 
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
+
+    public function merchantNameSetuped($landlord, $group, $template = 'rjMerchantNameSetuped')
+    {
+        $vars = array(
+            'fullNameLandlord'  => $landlord->getFullName(),
+            'groupName'         => $group->getName(),
+        );
+
+        return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
 }

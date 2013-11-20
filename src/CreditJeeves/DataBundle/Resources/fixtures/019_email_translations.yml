@@ -860,7 +860,7 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hello {{ fullNameTenant }}!{% endblock %}
       {% block email %}
-        Your landlord, {{ fullNameLandlord }}, removed contract on RentTrack:
+        Your landlord, {{ fullNameLandlord }}, removed contract on RentTrack:<br />
         {{ address }} {{ unitName }}.
       {% endblock %}
   # rjContractRemovedFromDbByTenant.html
@@ -877,6 +877,25 @@ fixtures:
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hello {{ fullNameLandlord }}!{% endblock %}
       {% block email %}
-        Your tenant, {{ fullNameTenant }}, removed contract on RentTrack:
+        Your tenant, {{ fullNameTenant }}, removed contract on RentTrack:<br />
         {{ address }} {{ unitName }}.
+      {% endblock %}
+
+  #rjMerchantNameSetuped.html
+  translation_31_subject:
+    translatable: email_31
+    locale: %locale%
+    property: subject
+    value: Merchant name was setuped
+  translation_31_body:
+    translatable: email_31
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ fullNameLandlord }}!{% endblock %}
+      {% block email %}
+        For group "{{ groupName }}" was setuped merchant name.
+        <br />
+        Thank you for using RentTrack!
       {% endblock %}

@@ -60,3 +60,5 @@ fixtures:
     name: rjContractRemovedFromDbByLandlord.html
   email_30:
     name: rjContractRemovedFromDbByTenant.html
+  email_31:
+    name: rjMerchantNameSetuped.html

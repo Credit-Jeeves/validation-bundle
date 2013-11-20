@@ -84,20 +84,16 @@ class AjaxController extends Controller
          */
         if (in_array($contract->getStatus(), array(ContractStatus::INVITE, ContractStatus::PENDING))) {
             $tenant = $contract->getTenant();
-            $landlordUsers = $contract->getGroup()->getHolding()->getDealers();
+            $landlordUsersAdmin = $contract->getGroup()->getHolding()->getHoldingAdmin();
 
-            if ($landlordUsers) {
+            if ($landlordUsersAdmin) {
                 /**
                  *
                  * Notify holding admin each have relationship with this contract by email
                  *
                  * @var $landlord User
                  */
-                foreach ($landlordUsers as $landlord) {
-                    if (!$landlord->getIsSuperAdmin()) {
-                        continue;
-                    }
-
+                foreach ($landlordUsersAdmin as $landlord) {
                     $this->get('project.mailer')->sendRjContractRemovedFromDbByTenant(
                         $tenant,
                         $landlord,
