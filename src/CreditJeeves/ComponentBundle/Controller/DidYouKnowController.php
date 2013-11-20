@@ -24,7 +24,7 @@ class DidYouKnowController extends Controller
                 'img' => 'https://www.lduhtrp.net/image-6606250-10523214',
             )
         );
-        $this->nScore = $this->get('core.session.applicant')->getUser()->getScores()->last()->getScore();
+        $this->nScore = $this->get('core.session.applicant')->getUser()->getLastScore();
         $this->cjArfReport = $Report->getArfReport();
         $this->addMortgageOffer();
         $this->addCreditCardOffer();

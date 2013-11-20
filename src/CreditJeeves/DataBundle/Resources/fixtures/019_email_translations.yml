@@ -134,12 +134,9 @@ fixtures:
         You recently asked to reset your password.
         <a href="{{ confirmationUrl }}">Click here to change your password.</a>
 
-        Didn't request this change?
-        If you didn't request a new password, please contact us at <a mailto="help@renttrack.com">help@renttrack.com</a>.
+        CreditJeeves will never e-mail you and ask you to disclose or verify your CreditJeeves.com password, credit card, or banking account number.
 
-        RentTrack will never e-mail you and ask you to disclose or verify your RentTrack.com password, credit card, or banking account number.
-
-        Thank you for using RentTrack!
+        Thank you for using CreditJeeves!
       {% endblock %}
 
 # check.html email
@@ -729,7 +726,7 @@ fixtures:
       </table>
       {{ 'order.contact.us' | trans }}
       {% endblock %}
-
+      
 # rjTenantInviteReminder.html email
   translation_26_subject:
     translatable: email_26
@@ -897,5 +894,29 @@ fixtures:
       {% block email %}
         For group "{{ groupName }}" was setuped merchant name.
         <br />
+        Thank you for using RentTrack!
+      {% endblock %}
+# rj_resetting.html email
+  translation_32_subject:
+    translatable: email_32
+    locale: %locale%
+    property: subject
+    value: Reset Password
+  translation_32_body:
+    translatable: email_32
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ user.full_name }}!{% endblock %}
+      {% block email %}
+        You recently asked to reset your password.
+        <a href="{{ confirmationUrl }}">Click here to change your password.</a>
+
+        Didn't request this change?
+        If you didn't request a new password, please contact us at <a mailto="help@renttrack.com">help@renttrack.com</a>.
+
+        RentTrack will never e-mail you and ask you to disclose or verify your RentTrack.com password, credit card, or banking account number.
+
         Thank you for using RentTrack!
       {% endblock %}

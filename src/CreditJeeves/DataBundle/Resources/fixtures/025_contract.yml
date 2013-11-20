@@ -200,5 +200,13 @@ fixtures:
         startAt:   '30 days'
         createdAt: '-20 days'
         updatedAt: '-20 days'
-
+    Contract_16:
+        tenant:   Tenant_5
+        holding:  rjHolding_1
+        group:    RentGroup_2
+        property: Property_1
+        unit:     Unit_1_1
+        status:   pending
+        createdAt: '-50 days'
+        updatedAt: '-50 days'        
         

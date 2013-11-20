@@ -29,7 +29,9 @@
       <div class='rainbow-chart'>
         <span class='score-line score' style="right: {{ nRight }}px">{{ nCurrentScore }}</span>
       </div>
+      {% if nCurrentScore > 0 %}
       <div class='key score-text'>{{ 'component.credit_balance.comment' | trans | replace({'%nPercent%': nPercent}) }}</div>
+      {% endif %}
   </div>
   <div class="clearboth"></div>
 </div>

@@ -1278,13 +1278,25 @@
                 <source>landlord.alert.pending-one</source>
                 <target>There is one new tenant pending your review.</target>
             </trans-unit>
+            <trans-unit id="landlord.alert.pending-one.admin">
+                <source>landlord.alert.pending-one.admin</source>
+                <target>There is one new tenant pending your review in the %GROUP% group.</target>
+            </trans-unit>
             <trans-unit id="landlord.alert.pending-many">
                 <source>landlord.alert.pending-many</source>
                 <target>There are %COUNT% new tenants pending your review.</target>
             </trans-unit>
+            <trans-unit id="landlord.alert.pending-many.admin">
+                <source>landlord.alert.pending-many.admin</source>
+                <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
+            </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
                 <target>You need to set up your merchant account. Call 866-841-9090.</target>
+            </trans-unit>
+            <trans-unit id="deposit.merchant.setup.admin">
+                <source>deposit.merchant.setup.admin</source>
+                <target>You need to set up your merchant account for the %GROUP% group. Call 866-841-9090.</target>
             </trans-unit>
             <trans-unit id="address.not.valid">
                 <source>address.not.valid</source>

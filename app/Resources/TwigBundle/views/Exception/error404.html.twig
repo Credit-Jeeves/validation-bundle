@@ -1,9 +1,6 @@
-{% if application == 'rj' %}
-    {% extends "CoreBundle::rj_base.html.twig" %}
-{% else %}
-    {% extends "CoreBundle::base.html.twig" %}
-{% endif %}
-
+{% extends application == 'rj' 
+    ? "CoreBundle::rj_base.html.twig" 
+    : "CoreBundle::base.html.twig" %}
 
 {% block title '404 Error' %}
 

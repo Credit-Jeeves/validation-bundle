@@ -4,6 +4,7 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 use CreditJeeves\ApplicantBundle\Form\Type\GroupType;
 use CreditJeeves\ApplicantBundle\Form\Type\UserNewType;
 use CreditJeeves\ApplicantBundle\Form\Type\TosType;
+use CreditJeeves\ApplicantBundle\Form\Type\VehicleType;
 use CreditJeeves\ApplicantBundle\Form\Type\NewPasswordType;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\CodeToGroupTransformer;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\EmailToUserTransformer;
@@ -17,6 +18,7 @@ class LeadNewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $entityManager = $options['em'];
+        $index = isset($options['attr']['index']) ? $options['attr']['index'] : 0;
         $groupTransformer = new CodeToGroupTransformer($entityManager);
         $builder->add(
             'user',
@@ -43,6 +45,17 @@ class LeadNewType extends AbstractType
                     )
                 )
             )->addModelTransformer($groupTransformer)
+        );
+        $builder->add(
+            'target_name',
+            new VehicleType(),
+            array(
+                'error_bubbling' => true,
+                'label' => 'leads.select.target',
+                'attr' => array(
+                    'index' => $index
+                )
+            )
         );
     }
 

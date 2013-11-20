@@ -2,6 +2,7 @@
 {% trans_default_domain 'checkout' %}
 {% block stylesheets %}
     <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/checkout/css/checkout.css') }}" rel="stylesheet" type="text/css" />
     {{ parent() }}
 {% endblock %}
 
@@ -81,11 +82,14 @@
                             </div>
                         </div>
 
-                        {{ form_rest(form) }}
+                       
                     </fieldset>
 
 
                     <div class="clearboth"></div>
+                    <div class="hidden">
+                     {{ form_rest(form) }}
+                     </div>
                     <div class="row-20"></div>
                     <div class='help'>
                         {{ 'buy-report-form-help' | trans }}<br />

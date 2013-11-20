@@ -15,32 +15,82 @@ class AlertController extends Controller
      */
     public function indexAction()
     {
-        $user = $this->getUser();
         $alerts = array();
-        $group = $this->getUser()->getCurrentGroup();
-        $contracts = $group->getContracts();
-        $deposit = $group->getDepositAccount();
-        $pending = 0;
-        foreach ($contracts as $contract) {
-            $status = $contract->getStatus();
-            switch ($status) {
-                case ContractStatus::PENDING:
-                    $pending++;
-                    break;
+        $user = $this->get('core.session.landlord')->getUser();
+        if ($isSuperAdmin = $user->getIsSuperAdmin()) {
+            $holding = $user->getHolding();
+            $groups = $holding->getGroups();
+            // alerts about merchant name
+            foreach ($groups as $group) {
+                $deposit = $group->getDepositAccount();
+                if (empty($deposit)) {
+                    $alerts[] = $this->get('translator.default')->
+                        trans(
+                            'deposit.merchant.setup.admin',
+                            array(
+                                '%GROUP%' => $group->getName()
+                            )
+                        );
+                }
             }
-        }
-        if (empty($deposit)) {
-            $alerts[] = $this->get('translator.default')->trans('deposit.merchant.setup');
-        }
-        if ($pending > 0) {
-            $text = $this->get('translator.default')->trans('landlord.alert.pending-one');
-            if ($pending > 1) {
-                $text = $this->get('translator.default')->trans(
-                    'landlord.alert.pending-many',
-                    array('%COUNT%' => $pending)
-                );
+            foreach ($groups as $group) {
+                $pending = 0;
+                $contracts = $group->getContracts();
+                foreach ($contracts as $contract) {
+                    $status = $contract->getStatus();
+                    switch ($status) {
+                        case ContractStatus::PENDING:
+                            $pending++;
+                            break;
+                    }
+                }
+                if ($pending > 0) {
+                    $text = $this->get('translator.default')->
+                        trans(
+                            'landlord.alert.pending-one.admin',
+                            array(
+                                '%GROUP%' => $group->getName()
+                            )
+                        );
+                    if ($pending > 1) {
+                        $text = $this->get('translator.default')->trans(
+                            'landlord.alert.pending-many.admin',
+                            array(
+                                '%COUNT%' => $pending,
+                                '%GROUP%' => $group->getName()
+                            )
+                        );
+                    }
+                    $alerts[] = $text;
+                }
+                
             }
-            $alerts[] = $text;
+        } else {
+            $group = $this->get('core.session.landlord')->getGroup();
+            $deposit = $group->getDepositAccount();
+            $contracts = $group->getContracts();
+            $pending = 0;
+            foreach ($contracts as $contract) {
+                $status = $contract->getStatus();
+                switch ($status) {
+                    case ContractStatus::PENDING:
+                        $pending++;
+                        break;
+                }
+            }
+            if (empty($deposit)) {
+                $alerts[] = $this->get('translator.default')->trans('deposit.merchant.setup');
+            }
+            if ($pending > 0) {
+                $text = $this->get('translator.default')->trans('landlord.alert.pending-one');
+                if ($pending > 1) {
+                    $text = $this->get('translator.default')->trans(
+                        'landlord.alert.pending-many',
+                        array('%COUNT%' => $pending)
+                    );
+                }
+                $alerts[] = $text;
+            }
         }
         return array(
             'alerts' => $alerts
