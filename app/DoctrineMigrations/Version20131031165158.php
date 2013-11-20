@@ -19,10 +19,6 @@ class Version20131031165158 extends AbstractMigration
         );
         
         $this->addSql(
-            "DROP TABLE migration_version"
-        );
-
-        $this->addSql(
             "ALTER TABLE auth_code
                 DROP
                 FOREIGN KEY FK_5933D02C19EB6921"
@@ -70,9 +66,6 @@ class Version20131031165158 extends AbstractMigration
             "Migration can only be executed safely on 'mysql'."
         );
         
-        $this->addSql(
-            "CREATE TABLE migration_version (version INT DEFAULT NULL) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
-        );
         $this->addSql(
             "ALTER TABLE access_token
                 ADD client_id INT NOT NULL"

@@ -54,3 +54,5 @@ fixtures:
     name: rjTenantInviteReminder.html
   email_27:
     name: rjTenantInviteReminderPayment.html
+  email_28:
+    name: rj_resetting.html
