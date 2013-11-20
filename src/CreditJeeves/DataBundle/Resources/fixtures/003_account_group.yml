@@ -304,6 +304,7 @@ fixtures:
     updated_at:     '-8 days'
   Group_3:
     name:           Generic group
+    code:           GENERIC
     target_score:   850
     type:           generic
     created_at:     '-60 days'

@@ -152,6 +152,7 @@ fixtures:
     dealer_groups:
       - cjAccountGroup_9
       - cjAccountGroup_4
+      - Group_3
     holding: cjHolding_1
     first_name: AUDI
     last_name: Dealer
@@ -178,4 +179,4 @@ fixtures:
     culture: %locale%
     created_at: '2012-11-29 14:36:16'
     updated_at: '2012-11-29 14:36:40'
-
+### Generic dealer

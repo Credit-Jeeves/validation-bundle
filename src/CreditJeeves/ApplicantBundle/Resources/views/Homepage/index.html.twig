@@ -23,10 +23,12 @@
                 {{ render(controller('ComponentBundle:Success:index', {'Lead': Lead})) }}
                 <div class="row-20"></div>
             {% endif %}
+            {% if reportScore > 0 %}
             {{ render(controller('ExperianBundle:Atb:simulation' )) }}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report, 'Lead': Lead})) }}
             <div class="row-20"></div>
+            {% endif %}
             {{ render(controller('ComponentBundle:Incentives:index', {'Lead': Lead})) }}
         </div>
         <div class="row-20"></div>

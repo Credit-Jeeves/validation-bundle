@@ -1,8 +1,14 @@
 <?php
 namespace CreditJeeves\DataBundle\Utility;
 
+use JMS\DiExtraBundle\Annotation as DI;
+
+/**
+ * @DI\Service("data.utility.vehicle")
+ */
 class VehicleUtility
 {
+    
     /**
      * 
      * @var string
@@ -19,18 +25,32 @@ class VehicleUtility
      * 
      * @var array
      */
-    private static $VEHICLES = null;
+    private $vehicles = null;
+
+    private static $instance;
+
+    /**
+     * @todo  move to service
+     * @deprecated
+     */
+    public static function getInstance()
+    {
+        if (self::$instance == null) {
+            self::$instance = new static();
+        }
+        return self::$instance;
+    }
 
     /**
      * @return array
      */
-    private static function getAmazonData($container)
+    private function getAmazonData($container)
     {
-        if (!self::$VEHICLES) {
-            self::$VEHICLES = self::formatAmazonData(json_decode(self::loadAmazonData($container), true));
+        if (!$this->vehicles) {
+            $this->vehicles = $this->formatAmazonData(json_decode($this->loadAmazonData($container), true));
         }
         
-        return self::$VEHICLES;
+        return $this->vehicles;
         
     }
 
@@ -38,7 +58,7 @@ class VehicleUtility
      * 
      * @param array $aVehicles
      */
-    private static function formatAmazonData($aVehicles)
+    private function formatAmazonData($aVehicles)
     {
         $aResult = array();
         foreach ($aVehicles as $make => $aModels) {
@@ -52,7 +72,7 @@ class VehicleUtility
     /**
      * 
      */
-    private static function loadAmazonData($container)
+    private function loadAmazonData($container = null)
     {
         $filename = __DIR__ . '/../Resources/public/'.self::FILE_NAME;
         return file_get_contents($filename);
@@ -64,9 +84,15 @@ class VehicleUtility
      * @param string $model
      * @return string
      */
-    public static function getAmazonVehicle($make, $model, $container)
+    public function getAmazonVehicle($make, $model, $container)
     {
-        $aVehicles = self::getAmazonData($container);
+        $aVehicles = $this->getAmazonData($container);
         return isset($aVehicles[$make][$model]) ? $aVehicles[$make][$model] : self::DEFAUL_URL;
+    }
+
+    public function getVehicles()
+    {
+        $aVehicles = self::loadAmazonData();
+        return self::formatAmazonData(json_decode($aVehicles, true));
     }
 }

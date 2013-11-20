@@ -1036,4 +1036,23 @@ abstract class Group
     {
         return $this->paymentAccounts;
     }
+
+    /**
+     * 
+     * @param \CreditJeeves\DataBundle\Entity\Dealer $dealer
+     * @return \CreditJeeves\DataBundle\Model\Group
+     */
+    public function setDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer = null)
+    {
+        $this->dealers = $dealer;
+        return $this;
+    }
+
+    /**
+     * 
+     */
+    public function getDealer()
+    {
+        return $this->dealers;
+    }
 }
