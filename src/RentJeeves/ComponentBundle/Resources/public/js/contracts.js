@@ -45,6 +45,11 @@ function ContractDetails() {
       });
   };
 
+  this.closeApprove = function(data) {
+      $('#tenant-approve-property-popup').dialog('close');
+      return false;
+  }
+
   this.editContract = function(data) {
     self.errorsApprove([]);
     self.errorsEdit([]);
@@ -67,11 +72,11 @@ function ContractDetails() {
 
     $('#contractEditStart').attr('readonly', true);
     $('#contractEditFinish').attr('readonly', true);
-
     $('#contractEditStart').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
       format:'m/d/Y',
+      minDate: 0,
       date: $('#contractEditStart').val(),
       current: $('#contractEditStart').val(),
       starts: 1,
@@ -88,12 +93,13 @@ function ContractDetails() {
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       format:'m/d/Y',
+      minDate: 0,
       date: $('#contractEditFinish').val(),
       current: $('#contractEditFinish').val(),
       starts: 1,
       position: 'r',
       onBeforeShow: function(){
-        $('#contractEditFinish').DatePickerSetDate($('#contract-edit-finish').val(), true);
+         $('#contractEditFinish').DatePickerSetDate($('#contract-edit-finish').val(), true);
       },
       onChange: function(formated, dates){
         $('#contractEditFinish').val(formated);
@@ -112,33 +118,42 @@ function ContractDetails() {
     $('#contractApproveStart').attr('readonly', true);
     $('#contractApproveFinish').attr('readonly', true);
 
+    if ($('#contractApproveStart').val().length > 0) {
+        var start = $('#contractApproveStart').val();
+    } else {
+        var today = new Date();
+        var start = today.toString('MM/dd/yyyy');
+    }
+
+    $('#contractApproveStart').val(start);
     $('#contractApproveStart').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
       format:'m/d/Y',
-      date: $('#contractApproveStart').val(),
-      current: $('#contractApproveStart').val(),
       starts: 1,
+      minDate: 0,
       position: 'r',
-      onBeforeShow: function(){
-        $('#contractApproveStart').DatePickerSetDate($('#contract-edit-start').val(), true);
-      },
       onChange: function(formated, dates){
         $('#contractApproveStart').val(formated);
         $('#contractApproveStart').DatePickerHide();
       }
     });
+
+    if ($('#contractApproveFinish').val().length > 0) {
+       var finish = $('#contractApproveFinish').val();
+    } else {
+       var today = new Date();
+       today.setFullYear(today.getFullYear()+1);
+       var finish = today.toString('MM/dd/yyyy');
+    }
+    $('#contractApproveFinish').val(finish)
     $('#contractApproveFinish').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       format:'m/d/Y',
-      date: $('#contractApproveFinish').val(),
-      current: $('#contractApproveFinish').val(),
       starts: 1,
+      minDate: 0,
       position: 'r',
-      onBeforeShow: function(){
-        $('#contractApproveFinish').DatePickerSetDate($('#contract-edit-finish').val(), true);
-      },
       onChange: function(formated, dates){
         $('#contractApproveFinish').val(formated);
         $('#contractApproveFinish').DatePickerHide();
@@ -247,7 +262,21 @@ function ContractDetails() {
           }
       });
   };
+  this.closeRevokeInvitation = function() {
+      $('#tenant-review-property-popup').dialog('open');
+      $('#tenant-revoke-invotation').dialog('close');
+      return false;
+  }
 
+  this.closeReminderRevoke = function() {
+    $('#tenant-revoke-invotation').dialog('open');
+    $('#tenant-review-property-popup').dialog('close');
+    return false;
+  }
+  this.closeTenantReviewPropertyPopup = function() {
+      $('#tenant-review-property-popup').dialog( 'close' );
+      return false;
+  }
   this.sendReminderInvition = function() {
      jQuery('#tenant-review-property-popup').showOverlay();
      $.ajax({
@@ -420,7 +449,8 @@ function Contracts() {
     $('.payment-start, .payment-end').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
-      dateFormat:'m/d/yy'
+      dateFormat:'m/d/yy',
+      minDate: 0
     });
   };
   this.filterAddress = function(data) {

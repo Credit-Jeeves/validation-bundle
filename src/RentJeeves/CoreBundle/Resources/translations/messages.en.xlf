@@ -837,6 +837,10 @@
                 <source>next_due_date</source>
                 <target>Next Due Date</target>
             </trans-unit>
+            <trans-unit id="next_payment_date">
+                <source>next_payment_date</source>
+                <target>Next Payment Date</target>
+            </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
                 <target>Norton Secured</target>
