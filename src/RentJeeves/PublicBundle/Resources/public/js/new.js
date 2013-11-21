@@ -10,7 +10,7 @@ $(document).ready(function(){
 
     initScroll();
     
-    var google = $('#property-search').google({
+    var googleLib = $('#property-search').google({
         mapCanvasId: "search-result-map",
         markers: true,
         clearSearchId: 'delete',
@@ -30,7 +30,6 @@ $(document).ready(function(){
             $.each($('.addressText'), function(index, value) {
                 $(this).hide();
             });
-
             var link = Routing.generate('iframe_search_check', {'propertyId': data.property.id });
             $('.notFound').show();
             $('.notFound').find('.titleAddress').html(data.property.number+' '+data.property.street);
@@ -66,18 +65,11 @@ $(document).ready(function(){
             });
 
             this.markersArray['notfound'] = marker;
-
+            this.infowindow.close();
             google.maps.event.addListener(marker, 'click', function() {
                 infowindow.open(this.map, marker);
             });
-
-            //If the place has a geometry, then present it on a map.
-            if (typeof this.place.geometry.viewport != 'undefined') {
-                this.map.fitBounds(this.place.geometry.viewport);
-            } else if (typeof this.place.geometry.location != 'undefined') {
-                this.map.setCenter(this.place.geometry.location);
-                this.map.setZoom(15);  // Why 15? Because it looks good.
-            }
+            infowindow.open(this.map, marker);
         }
     });
 
@@ -107,7 +99,7 @@ $(document).ready(function(){
         $('html, body').animate({
               scrollTop: $(".search-box").offset().top
         }, 800);
-        google.showError(Translator.get('select.rental'));
+        googleLib.showError(Translator.get('select.rental'));
         return false;
       }
     });
