@@ -350,7 +350,7 @@
 
                             marker.setPosition(latlng);
                             var title = results[0].address_components[0].long_name + results[0].address_components[1].long_name;
-                            var address = results[0].address_components[2].long_name +', '+results[0].address_components[3].long_name;
+                            var address = results[0].address_components[2].long_name +', '+results[0].address_components[4].long_name;
                             var htmlPopup = self.getHtmlPopap(title, address);
                             self.infowindow.setContent(htmlPopup);
                             self.infowindow.open(self.map, marker);
