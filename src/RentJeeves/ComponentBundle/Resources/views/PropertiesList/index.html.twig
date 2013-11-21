@@ -152,6 +152,14 @@
             <span>{{ 'property.info'|trans }}</span>
             <small><b>*</b>{{ 'required'|trans }}</small>
           </h4>
+          <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
+            <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+                <ul class="default">
+                    <!-- ko foreach: $root.errors() -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+          </div>
           <div class="form-row clearfix">
             <label>{{ 'address'|trans }}<b>*</b></label>
             <div class="fields-box">
