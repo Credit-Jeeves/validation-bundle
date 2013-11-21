@@ -1533,7 +1533,7 @@
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
-                <target>Pay rent. Build Credit</target>
+                <target>Pay rent. Build Credit.</target>
             </trans-unit>
             <trans-unit id="iframe.item.pay.title">
                 <source>iframe.item.pay.title</source>
@@ -1541,7 +1541,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.pay.text">
                 <source>iframe.item.pay.text</source>
-                <target>Want to "set it and forget it"? With RentTrack, you can set up autometic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
+                <target>Want to "set it and forget it"? With RentTrack, you can set up automatic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
             </trans-unit>
             <trans-unit id="iframe.item.build.title">
                 <source>iframe.item.build.title</source>
@@ -1557,7 +1557,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.monitor.text">
                 <source>iframe.item.monitor.text</source>
-                <target>RenTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+                <target>RentTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
             </trans-unit>
             <trans-unit id="iframe.questions">
                 <source>iframe.questions</source>
