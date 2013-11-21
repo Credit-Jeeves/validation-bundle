@@ -889,7 +889,7 @@ fixtures:
     locale: %locale%
     property: body
     value: |
-      {% extends "CoreBundle:Mailer:base.html.twig" %}
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hello {{ fullNameLandlord }},{% endblock %}
       {% block email %}
         Your merchant account for "{{ groupName }}" is approved and ready!
