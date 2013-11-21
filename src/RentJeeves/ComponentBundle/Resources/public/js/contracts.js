@@ -72,13 +72,19 @@ function ContractDetails() {
 
     $('#contractEditStart').attr('readonly', true);
     $('#contractEditFinish').attr('readonly', true);
+    if ($('#contractApproveStart').val().length > 0) {
+      var start = $('#contractApproveStart').val();
+    } else {
+      var today = new Date();
+      var start = today.toString('MM/dd/yyyy');
+    }
+
+    $('#contractEditStart').val(start);
     $('#contractEditStart').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
       format:'m/d/Y',
       minDate: 0,
-      date: $('#contractEditStart').val(),
-      current: $('#contractEditStart').val(),
       starts: 1,
       position: 'r',
       onBeforeShow: function(){
@@ -89,13 +95,19 @@ function ContractDetails() {
         $('#contractEditStart').DatePickerHide();
       }
     });
+    if ($('#contractApproveFinish').val().length > 0) {
+      var finish = $('#contractApproveFinish').val();
+    } else {
+      var today = new Date();
+      today.setFullYear(today.getFullYear()+1);
+      var finish = today.toString('MM/dd/yyyy');
+    }
+    $('#contractEditFinish').val(finish);
     $('#contractEditFinish').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       format:'m/d/Y',
       minDate: 0,
-      date: $('#contractEditFinish').val(),
-      current: $('#contractEditFinish').val(),
       starts: 1,
       position: 'r',
       onBeforeShow: function(){
@@ -444,9 +456,24 @@ function Contracts() {
   };
   this.addTenant = function() {
     $('#tenant-add-property-popup').dialog('open');
-    $('.payment-start').attr('readonly', true);
-    $('.payment-end').attr('readonly', true);
-    $('.payment-start, .payment-end').datepicker({
+      if ($('.payment-end').val().length > 0) {
+          var finish = $('.payment-end').val();
+      } else {
+          var today = new Date();
+          today.setFullYear(today.getFullYear()+1);
+          var finish = today.toString('MM/dd/yyyy');
+      }
+      if ($('.payment-start').val().length > 0) {
+          var start = $('.payment-start').val();
+      } else {
+          var today = new Date();
+          var start = today.toString('MM/dd/yyyy');
+      }
+      $('.payment-end').val(finish);
+      $('.payment-start').val(start);
+      $('.payment-start').attr('readonly', true);
+      $('.payment-end').attr('readonly', true);
+      $('.payment-start, .payment-end').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
       dateFormat:'m/d/yy',
