@@ -27,9 +27,6 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
         $this->assertNotNull($item = $this->page->find('css', 'div.pac-container div'));
         $item->click();
-        $propertySearch->click();
-        $this->assertNotNull($submit = $form->findButton('iframe.find'));
-        $submit->click();
     }
 
     /**

@@ -1583,6 +1583,10 @@
                 <source>property.number.not.exist</source>
                 <target>Please put number for property.</target>
             </trans-unit>
+            <trans-unit id="help.popup">
+                <source>help.popup</source>
+                <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
