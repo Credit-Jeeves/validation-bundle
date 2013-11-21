@@ -407,7 +407,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*Up to 5 units are included with your minimum monthly fee of $9.95. Additional units are $1.95 each per month. Fees will be debited automatically from your deposit account at the end of each month.
+                <target>*Up to 5 eChecks are included with your minimum monthly fee of $9.95. Additional eChecks are $1.95 each per month. Fees will be debited automatically from your deposit account at the end of each month.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -1050,7 +1050,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.unit">
                 <source>popup.landlord.unit</source>
-                <target>unit</target>
+                <target>eCheck</target>
             </trans-unit>
             <trans-unit id="popup.landlord.monthly.minimum">
                 <source>popup.landlord.monthly.minimum</source>
@@ -1094,7 +1094,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-                <target>*We'll waive your unit fee if the tenant enrolls in any one of our monthly </target>
+                <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly </target>
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
