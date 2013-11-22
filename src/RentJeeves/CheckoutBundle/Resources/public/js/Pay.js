@@ -126,6 +126,14 @@ function Pay(parent, contractId) {
 
 
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
+
+    this.notEmptyPaymentAccount = ko.computed(function() {
+        if (self.paymentAccounts().length > 0) {
+            return true;
+        }
+        return false;
+    });
+
     this.isNewPaymentAccount = ko.computed(function() {
         return this.newPaymentAccount() && !this.payment.paymentAccountId();
     }, self);

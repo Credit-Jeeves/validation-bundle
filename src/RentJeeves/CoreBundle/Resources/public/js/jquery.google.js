@@ -142,7 +142,7 @@
             var input = (document.getElementById(settings.findInputId));
             self.autocomplete = new google.maps.places.Autocomplete(input);
             self.autocomplete.bindTo('bounds', self.map);
-            var infowindow = new google.maps.InfoWindow();
+            self.infowindow = new google.maps.InfoWindow();
             //setup markers
             if (settings.markers) {
                 $.each($('.addressText'), function(index, value) {
@@ -202,7 +202,7 @@
             });
 
             function validateAddress(){
-                infowindow.close();
+                self.infowindow.close();
                 marker.setVisible(false);
                 input.className = '';
                 self.place = self.autocomplete.getPlace();
@@ -228,7 +228,7 @@
                     scaledSize: new google.maps.Size(35, 35)
                 }));
                 marker.setPosition(self.place.geometry.location);
-                marker.setVisible(true);
+                marker.setVisible(false);
                 var address = '';
                 if (self.place.address_components) {
                     address = [
@@ -236,8 +236,10 @@
                         (self.place.address_components[1] && self.place.address_components[1].short_name || '')
                     ].join(' ');
                 }
-                infowindow.setContent('<div><strong>' + self.place.name + '</strong><br>' + address);
-                infowindow.open(self.map, marker);
+                var htmlPopup = self.getHtmlPopap(self.place.name, address);
+                self.infowindow.setContent(htmlPopup);
+                self.infowindow.open(self.map, marker);
+                initialCheck();
             }
 
             $('#'+settings.findInputId).change(function(){
@@ -335,7 +337,7 @@
                     self.data = {'address': self.place.address_components, 'geometry': self.place.geometry};
                     executeSearch(self.data);
                 } else {
-                    infowindow.close();
+                    self.infowindow.close();
                     var addressText = $('#'+settings.findInputId).val();
                     //var addressText = $(".pac-container .pac-item:first").text();
                     var geocoder = new google.maps.Geocoder();
@@ -347,8 +349,11 @@
                                 latlng = new google.maps.LatLng(lat, lng);
 
                             marker.setPosition(latlng);
-                            infowindow.setContent(placeName);
-                            infowindow.open(self.map, marker);
+                            var title = results[0].address_components[0].long_name + results[0].address_components[1].long_name;
+                            var address = '';
+                            var htmlPopup = self.getHtmlPopap(title, address);
+                            self.infowindow.setContent(htmlPopup);
+                            self.infowindow.open(self.map, marker);
 
                             $("#"+settings.findInputId).val(addressText);
                             self.data = {'address': results[0].address_components, 'geometry':results[0].geometry};
