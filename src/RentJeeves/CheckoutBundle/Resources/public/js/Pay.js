@@ -182,7 +182,7 @@ function Pay(parent, contractId) {
     }, this);
 
     this.getFeeAmountText = function(paymentCardFee) {
-        return paymentCardFee + ' ($' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2) + ')';
+        return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };
 
     this.isForceSave = ko.computed(function() {
