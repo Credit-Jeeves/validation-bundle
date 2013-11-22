@@ -48,13 +48,20 @@ class DepositAccountListener
         }
 
         $usersAdminList = $entity->getGroup()->getHolding()->getHoldingAdmin();
+        $users = $entity->getGroup()->getHolding()->getDealers();
+        $group =  $entity->getGroup();
+        $mail = $this->container->get('project.mailer');
 
-        if (empty($usersAdminList)) {
+        if (empty($usersAdminList) && empty($users)) {
             return;
         }
 
-        $mail = $this->container->get('project.mailer');
-        $group =  $entity->getGroup();
+        if (empty($usersAdminList) && !empty($users)) {
+            $user = $users->first();
+            $mail->merchantNameSetuped($user, $group);
+            return;
+        }
+
         foreach ($usersAdminList as $user) {
             $mail->merchantNameSetuped($user, $group);
         }
