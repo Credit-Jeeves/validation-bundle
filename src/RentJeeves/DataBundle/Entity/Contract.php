@@ -238,7 +238,8 @@ class Contract extends Base
             }
 
             /**
-             * If tenant is approved, but has never made payment before, just show Approved without red shading for status
+             * If tenant is approved, but has never made payment before, just show Approved
+             * without red shading for status
              */
             if ($result['status'] == strtoupper(ContractStatus::APPROVED)) {
                 $result['class'] = 'contract-late';
