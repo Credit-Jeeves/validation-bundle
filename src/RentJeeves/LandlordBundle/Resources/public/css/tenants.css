@@ -159,3 +159,7 @@ height: 23px;
 .column-action {
     width: 50px;
 }
+
+.approve.grey {
+    background-color: #999999;
+}

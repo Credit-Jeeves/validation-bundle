@@ -1587,6 +1587,10 @@
                 <source>help.popup</source>
                 <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
             </trans-unit>
+            <trans-unit id="order.type.cash">
+                <source>order.type.cash</source>
+                <target>Cash.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
