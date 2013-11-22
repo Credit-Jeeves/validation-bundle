@@ -349,7 +349,7 @@ fixtures:
     translatable: email_15
     locale: %locale%
     property: subject
-    value: Set up your Rent Payment
+    value: Your Landlord Joined RentTrack
   translation_15_body:
     translatable: email_15
     locale: %locale%
@@ -360,14 +360,10 @@ fixtures:
       {% block email %}
         Congratulations! {{ fullNameLandlord }} has teamed up with RentTrack.
         <br /><br />
-        <a href="http://my.renttrack.com/">Log in now</a> to set up your rent payment for: {{ address }} {{ unitName }} (Note:
-        you may still have to wait for them to set up your payment contract.)
+        We're now working with them to ready their account to accept payments. You'll receive another email when you're
+        approved to pay rent online.
         <br /><br />
-        We recommend setting up
-        <a href="https://renttrack.uservoice.com/knowledgebase/articles/263021-how-do-i-set-up-automatic-payments-">automatic payments</a>
-        so you have one less thing to worry about.
-        <br /><br />
-        You're ready to build credit buy paying rent securely online.
+        Thank you for your patience!
       {% endblock %}
 
 # rjPendingContract.html
@@ -833,49 +829,56 @@ fixtures:
     translatable: email_28
     locale: %locale%
     property: subject
-    value: Your contract approved
+    value: You're Approved to Pay Rent Online
   translation_28_body:
     translatable: email_28
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ nameTenant }},{% endblock %}
+      {% block h1 %}You're Approved!{% endblock %}
       {% block email %}
+      Hello {{ nameTenant }},
+
+      Your landlord has approved you and you can now set up your rent payment. Please <a href="http://my.renttrack.com/">log in to RentTrack</a> and click on the "Pay" button corresponding to your rental.
       {% endblock %}
+
   # rjContractRemovedFromDbByLandlord.html
   translation_29_subject:
     translatable: email_29
     locale: %locale%
     property: subject
-    value: You contract was removed by Landlord
+    value: You Contract was Removed by Your Landlord
   translation_29_body:
     translatable: email_29
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ fullNameTenant }}!{% endblock %}
+      {% block h1 %}Hello {{ fullNameTenant }},{% endblock %}
       {% block email %}
-        Your landlord, {{ fullNameLandlord }}, removed contract on RentTrack:<br />
+        Your landlord, {{ fullNameLandlord }}, removed the contract on RentTrack for:<br />
         {{ address }} {{ unitName }}.
+      <br /><br />
+      If this is an error, please contact your landlord.
       {% endblock %}
   # rjContractRemovedFromDbByTenant.html
   translation_30_subject:
     translatable: email_30
     locale: %locale%
     property: subject
-    value: You contract was removed by Tenant
+    value: Your Contract was Removed by Your Tenant
   translation_30_body:
     translatable: email_30
     locale: %locale%
     property: body
     value: |
       {% extends "RjComponentBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hello {{ fullNameLandlord }}!{% endblock %}
+      {% block h1 %}Hello {{ fullNameLandlord }},{% endblock %}
       {% block email %}
-        Your tenant, {{ fullNameTenant }}, removed contract on RentTrack:<br />
+        Your tenant, {{ fullNameTenant }}, removed the contract on RentTrack for:<br />
         {{ address }} {{ unitName }}.
+      If this is an error, please contact your tenant.
       {% endblock %}
 
   #rjMerchantNameSetuped.html
@@ -883,19 +886,25 @@ fixtures:
     translatable: email_31
     locale: %locale%
     property: subject
-    value: Your RentTrack Merchant Account is Ready
+    value: Your RentTrack Merchant Account is Ready!
   translation_31_body:
     translatable: email_31
     locale: %locale%
     property: body
     value: |
-      {% extends "CoreBundle:Mailer:base.html.twig" %}
-      {% block h1 %}Hi {{ fullNameLandlord }}!{% endblock %}
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hello {{ fullNameLandlord }},{% endblock %}
       {% block email %}
-        For group "{{ groupName }}" Merchant Account is Ready.
-        <br />
-        Thank you for using RentTrack!
+        Your merchant account for "{{ groupName }}" is approved and ready!
+        <br /><br />
+
+        You can now accept rent payments online, and funds will be deposited into the account
+        you specified in your application. Begin by
+        <a href="http://renttrack.uservoice.com/knowledgebase/articles/285491-how-do-i-add-or-invite-a-tenant-">inviting your tenants</a>, or
+        <a href="http://renttrack.uservoice.com/knowledgebase/articles/275851-how-do-i-approve-a-tenant-so-they-can-pay-rent-">approving any pending tenants</a>
+        that invited you.
       {% endblock %}
+
 # rj_resetting.html email
   translation_32_subject:
     translatable: email_32
