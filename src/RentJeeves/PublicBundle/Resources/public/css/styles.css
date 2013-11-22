@@ -4278,6 +4278,7 @@ table.ui-datepicker-calendar tbody tr td a {
 
 #rentjeeves_checkoutbundle_userdetailstype_ssn_box {
     padding-top: 0px;
+    margin-left: -20px;
 }
 
 #rentjeeves_checkoutbundle_userdetailstype_ssn input {
