@@ -837,6 +837,10 @@
                 <source>next_due_date</source>
                 <target>Next Due Date</target>
             </trans-unit>
+            <trans-unit id="next_payment_date">
+                <source>next_payment_date</source>
+                <target>Next Payment Date</target>
+            </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
                 <target>Norton Secured</target>
@@ -1578,6 +1582,10 @@
             <trans-unit id="property.number.not.exist">
                 <source>property.number.not.exist</source>
                 <target>Please put number for property.</target>
+            </trans-unit>
+            <trans-unit id="help.popup">
+                <source>help.popup</source>
+                <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
             </trans-unit>
         </body>
     </file>

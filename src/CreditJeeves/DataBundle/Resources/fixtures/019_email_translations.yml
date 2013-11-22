@@ -883,7 +883,7 @@ fixtures:
     translatable: email_31
     locale: %locale%
     property: subject
-    value: Merchant name was setuped
+    value: Your RentTrack Merchant Account is Ready
   translation_31_body:
     translatable: email_31
     locale: %locale%
@@ -892,7 +892,7 @@ fixtures:
       {% extends "CoreBundle:Mailer:base.html.twig" %}
       {% block h1 %}Hi {{ fullNameLandlord }}!{% endblock %}
       {% block email %}
-        For group "{{ groupName }}" was setuped merchant name.
+        For group "{{ groupName }}" Merchant Account is Ready.
         <br />
         Thank you for using RentTrack!
       {% endblock %}
