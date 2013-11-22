@@ -282,7 +282,7 @@ class Contract extends Base
                     $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
                     break;
                 case OrderStatus::COMPLETE:
-                    if ($interval > $lastDate) {
+                    if ($interval >= $lastDate) {
                         $result['last_amount'] = $order->getAmount();
                         $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
                     }
