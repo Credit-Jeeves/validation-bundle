@@ -52,11 +52,11 @@ class DepositAccountListener
         $group =  $entity->getGroup();
         $mail = $this->container->get('project.mailer');
 
-        if (empty($usersAdminList) && empty($users)) {
+        if (empty($usersAdminList) && $users->count() <= 0) {
             return;
         }
 
-        if (empty($usersAdminList) && !empty($users)) {
+        if (empty($usersAdminList) && $users->count() > 0) {
             $user = $users->first();
             $mail->merchantNameSetuped($user, $group);
             return;
