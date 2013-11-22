@@ -74,6 +74,11 @@ class Contract extends Base
     const STATUS_LATE = '1';
 
     /**
+     * @var string
+     */
+    const EMPTY_LAST_PAYMENT = '-';
+
+    /**
      * @return int
      */
     public function getGroupId()
@@ -165,6 +170,7 @@ class Contract extends Base
         $result['reminder_revoke'] = ($this->getStatus() === ContractStatus::INVITE)? true : false;
         $result['payment_setup'] = ($payment)? true : false;
         $result['search'] = $this->getSearch();
+
         return $result;
     }
 
@@ -184,7 +190,7 @@ class Contract extends Base
 
     public function getLastPayment()
     {
-        $result = '-';
+        $result = self::EMPTY_LAST_PAYMENT;
         $payments = array();
         $operation = $this->getOperation();
         if (empty($operation)) {
@@ -216,12 +222,29 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new \DateTime();
             $interval = $now->diff($date);
-            if ($sign = $interval->format('%r')) {
+            $sign = $interval->format('%r');
+            if (!$sign) {
+                return $result;
+            }
+            $lastPayment = $this->getLastPayment();
+            /**
+             * if we have payments for this contract need show days late
+             */
+            if ($lastPayment != self::EMPTY_LAST_PAYMENT) {
                 $days = $interval->format('%d');
                 $result['status'] = 'LATE ('.$days.' days)';
                 $result['class'] = 'contract-late';
                 return $result;
             }
+
+            /**
+             * If tenant is approved, but has never made payment before, just show Approved without red shading for status
+             */
+            if ($result['status'] == strtoupper(ContractStatus::APPROVED)) {
+                $result['class'] = 'contract-late';
+                return $result;
+            }
+
             return $result;
         }
         $result['status'] = strtoupper($this->getStatus());
