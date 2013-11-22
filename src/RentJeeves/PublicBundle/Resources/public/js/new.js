@@ -64,12 +64,18 @@ $(document).ready(function(){
                 shadow: this.rentaPiontShadow
             });
 
+
+            this.deleteOverlays();
+            if ("notfound" in this.markersArray) {
+                this.markersArray['notfound'].setMap(null);
+            }
             this.markersArray['notfound'] = marker;
             this.infowindow.close();
             google.maps.event.addListener(marker, 'click', function() {
                 infowindow.open(this.map, marker);
             });
             infowindow.open(this.map, marker);
+
         }
     });
 
