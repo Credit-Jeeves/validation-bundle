@@ -73,11 +73,7 @@
             <button class="button dark" data-bind="click: $root.revokeInvitation">
                 <span>{{ 'yes.revoke.inv'|trans }}</span>
             </button>
-            <button class="button grey" onclick="
-                $('#tenant-review-property-popup').dialog( 'open' );
-                $('#tenant-revoke-invotation').dialog( 'close' );
-                false;"
-            >
+            <button class="button grey" data-bind="click: $root.closeRevokeInvitation" onclick="false;">
                 <span>{{ 'no.remove.property'|trans }}</span>
             </button>
         </div>
@@ -127,7 +123,7 @@
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'request.payments'|trans }}</span>
-                    <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+                    <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}<b>*</b></label>
@@ -148,7 +144,7 @@
                     </div>
                 </div>
                 <div class="form-row clearfix">
-                    <label>{{ 'start'|trans }}<b>*</b></label>
+                    <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
                         <label class="fixed">{{ 'end'|trans }}</label>
@@ -214,7 +210,7 @@
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'request.payments'|trans }}</span>
-                    <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+                    <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}<b>*</b></label>
@@ -227,7 +223,7 @@
                     </div>
                 </div>
                 <div class="form-row clearfix">
-                    <label>{{ 'start'|trans }}<b>*</b></label>
+                    <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractApproveStart">
                         <label class="fixed">{{ 'end'|trans }}</label>
@@ -240,7 +236,7 @@
             <button class="button" data-bind="click: approveSave"><span>{{ 'approve.tenant'|trans }}</span></button>
             <button class="button" data-bind="click: editContract"><span>{{ 'edit.Info'|trans }}</span></button>
             <div class="with-seperator-box">
-                <button class="button grey" onclick="$('#tenant-approve-property-popup').dialog( 'close' ); return false;">
+                <button class="button grey" data-bind="click: closeApprove" onclick="return false;">
                     <span>{{ 'cancel'|trans }}</span>
                 </button>
             </div>
@@ -291,7 +287,7 @@
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'request.payments'|trans }}</span>
-            <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+            <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
           </h4>
           <div class="form-row clearfix">
             <label>{{ 'property'|trans }}</label>
@@ -308,9 +304,9 @@
           <div class="form-row clearfix">
             <label>{{ 'start'|trans }}</label>
             <div class="fields-box">
-              <span class="value left" id="contract-edit-start" data-bind="text: start"></span>
+              <span class="value left" data-bind="text: start"></span>
               <label class="fixed">{{ 'end'|trans }}</label>
-              <span class="value left" id="contract-edit-finish" data-bind="text: finish"></span>
+              <span class="value left" data-bind="text: finish"></span>
             </div>
           </div>
         </div>
@@ -319,11 +315,11 @@
           <!-- ko if: reminder_revoke -->
           <button class="button" data-bind="click: $root.sendReminderInvition"><span>{{ 'send.reminder'|trans }}</span></button>
           <!-- /ko -->
-          <button class="button grey" onclick="$('#tenant-review-property-popup').dialog( 'close' ); return false;">
+          <button class="button grey" data-bind="click: $root.closeTenantReviewPropertyPopup" onclick="return false;">
             <span>{{ 'legend.close'|trans|capitalize }}</span>
           </button>
           <!-- ko if: reminder_revoke -->
-            <a href="#" class="link" onclick="$('#tenant-revoke-invotation').dialog('open');$('#tenant-review-property-popup').dialog('close');false;">
+            <a href="#" class="link" data-bind="click: $root.closeReminderRevoke" onclick="false;">
                 {{ 'revoke.inv'|trans|raw}}
             </a>
           <!-- /ko -->
@@ -378,7 +374,7 @@
         <div class="col">
           <h4 class="clearfix">
             <span>{{'request.payments'|trans}}</span>
-            <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+            <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
           </h4>
           <div class="form-row clearfix">
             <label>{{'amount'|trans}}<b>*</b></label>
@@ -387,7 +383,7 @@
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>{{'start'|trans}}<b>*</b></label>
+            <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
             <div class="fields-box">
               {{ form_widget(
                 form.contract.startAt,
