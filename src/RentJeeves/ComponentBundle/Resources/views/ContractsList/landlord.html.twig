@@ -534,8 +534,13 @@
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                     <!-- ko if: 'PENDING' == status -->
+                    {% if canInvite %}
                     <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve" href="#" 
                     data-bind="click: $root.approveContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
+                    {% else %}
+                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve grey" href="#" 
+                    >&nbsp;</a>
+                    {% endif %}
                     <!-- /ko -->
                     <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status -->
                     <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>

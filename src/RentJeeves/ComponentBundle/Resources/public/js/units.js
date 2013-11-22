@@ -26,6 +26,9 @@ function Units() {
             }
         });
     };
+    this.cancelEdit = function() {
+      $('#edit-property-popup').dialog('close');
+    };
     this.clearUnits = function() {
         self.aUnits([]);
         self.total(0);
