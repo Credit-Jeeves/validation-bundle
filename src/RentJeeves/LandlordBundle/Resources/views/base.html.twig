@@ -46,6 +46,14 @@
     {{ render(controller('RjComponentBundle:Footer:index')) }}
 {% endblock %}
 
+{% block head_javascripts %}
+{% javascripts '@RjCoreBundle/Resources/public/js/user-voice.js'
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}
+{% endblock %}
+
+
 {% block javascripts %}
     {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
                     '@CoreBundle/Resources/public/js/datepicker.js'
