@@ -15,6 +15,6 @@ class GroupPhone extends Base
 {
     public function __toString()
     {
-        return $this->getName();
+        return $this->getPhone();
     }
 }

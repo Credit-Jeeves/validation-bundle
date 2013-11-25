@@ -28,7 +28,8 @@ abstract class GroupPhone
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="groupPhones"
+     *     inversedBy="groupPhones",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="group_id",

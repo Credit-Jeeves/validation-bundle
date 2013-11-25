@@ -327,7 +327,8 @@ abstract class Group
     /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\GroupPhone",
-     *     mappedBy="group"
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $groupPhones;
