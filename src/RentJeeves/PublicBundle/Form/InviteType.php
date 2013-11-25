@@ -14,10 +14,17 @@ class InviteType extends AbstractType
             'first_name',
             null,
             array(
-                'label' => 'Landlord Name',
+                'label'     => 'Landlord Name',
+                'required'  => false
             )
         );
-        $builder->add('last_name');
+        $builder->add(
+            'last_name',
+             null,
+             array(
+                 'required'  => false
+             )
+        );
         $builder->add(
             'email',
             null,
