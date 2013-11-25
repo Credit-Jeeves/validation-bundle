@@ -27,9 +27,6 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
         $this->assertNotNull($item = $this->page->find('css', 'div.pac-container div'));
         $item->click();
-        $propertySearch->click();
-        $this->assertNotNull($submit = $form->findButton('iframe.find'));
-        $submit->click();
     }
 
     /**
@@ -43,8 +40,12 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
         $submit->click();
-        $this->acceptAlert();
-        $fillAddress = '30 Rockefeller Plaza, New York City, NY 10112';
+        $this->assertNotNull($errorSearchIframe = $this->page->find('css', '.errorsGoogleSearch'));
+        $this->assertEquals(
+            'error.property.empty',
+            $errorSearchIframe->getHtml()
+        );
+        $fillAddress = '45 Rockefeller Plaza, New York City, NY 10111';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
@@ -56,11 +57,16 @@ class IframeCase extends BaseTestCase
         //Check search on the not found
         $fillAddress = 'Manhattan, New York City, NY 10118';
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
-        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $this->session->executeScript(
-            "$('#property-search').val(' ');"
+            "$('#property-search').val('');"
         );
         $propertySearch->click();
+        $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
+        $this->assertEquals(
+            'error.property.empty',
+            $errors->getHtml()
+        );
         $this->fillForm(
             $form,
             array(
@@ -68,12 +74,25 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('div.pac-container').children().length > 0");
-        $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', 'div.pac-container div'));
-        $item->click();
-        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->assertNotNull($errors = $this->page->find('css', '.errorsGoogleSearch'));
+        $this->assertEquals(
+            'property.number.not.exist',
+            $errors->getHtml()
+        );
+        $fillAddress = '350 5th Avenue, Manhattan, New York City, NY 10118';
+        $this->fillForm(
+            $form,
+            array(
+                'property-search' => $fillAddress,
+            )
+        );
         $url = $this->session->getCurrentUrl();
+        $propertySearch->click();
+        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "document.URL != '{$url}'");
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
@@ -187,7 +206,6 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#register').length > 0");
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
-        $this->acceptAlert();
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
         $thisIsMyRental->click();
         $submit->click();

@@ -27,8 +27,10 @@ class IndexController extends Controller
 //                 }
 //             }
 //         }
-        $em = $this->get('doctrine')->getManager();
-        $isReporting = $em->getRepository('RjDataBundle:Contract')
+        //For this page need show unit each was removed
+        //@TODO find best way for this implementation
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
+        $isReporting = $this->get('doctrine')->getRepository('RjDataBundle:Contract')
                                 ->countReporting($tenant);
         return array(
             'reporting' => $isReporting,

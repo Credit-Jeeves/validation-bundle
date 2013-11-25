@@ -861,6 +861,10 @@
                 <source>leads.select.target</source>
                 <target>Select Target</target>
             </trans-unit>
+            <trans-unit id="leads.user.exists">
+                <source>leads.user.exists</source>
+                <target>You are already associated with this dealership. Please contact the dealership at %GROUP_NAME% if you wish to change your salesperson.</target>
+            </trans-unit>
 
 
             <trans-unit id="pidkiq.error.timeout">
@@ -1306,6 +1310,10 @@
             <trans-unit id="common.last">
                 <source>common.last</source>
                 <target>last</target>
+            </trans-unit>
+            <trans-unit id="action_delete_cannot">
+                <source>action_delete_cannot</source>
+                <target>Please reassign leads before deleting a dealer.</target>
             </trans-unit>
         </body>
     </file>

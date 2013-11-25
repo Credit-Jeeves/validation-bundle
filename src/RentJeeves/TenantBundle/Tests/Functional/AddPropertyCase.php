@@ -23,10 +23,6 @@ class AddPropertyCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('div.pac-container').children().length > 0");
-        $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', 'div.pac-container div'));
-        $item->click();
     }
 
     /**
@@ -219,7 +215,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(2, $contract, 'Wrong number of contracts');
+        $this->assertCount(3, $contract, 'Wrong number of contracts');
         $this->logout();
     }
 }

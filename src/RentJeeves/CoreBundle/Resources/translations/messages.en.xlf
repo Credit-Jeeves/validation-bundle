@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="didnotfind">
                 <source>didnotfind</source>
-                <target>We didn’t find a match yet – let your landlord know!</target>
+                <target>Your landlord hasn't joined RentTrack yet - invite them!</target>
             </trans-unit>
             <trans-unit id="keep.paying">
                 <source>keep.paying</source>
@@ -407,7 +407,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*Up to 5 units are included with your minimum monthly fee of $9.95. Additional units are $1.95 each per month. Fees will be debited automatically from your deposit account at the end of each month.
+                <target>*Up to 5 eChecks are included with your minimum monthly fee of $9.95. Additional eChecks are $1.95 each per month.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -718,7 +718,7 @@
             </trans-unit>
            <trans-unit id="conflict.resolve.email">
                 <source>conflict.resolve.email</source>
-                <target>Send email reminder to tenant</target>
+                    <target>Send email reminder to tenant</target>
             </trans-unit>
            <trans-unit id="conflict.resolve.paid">
                 <source>conflict.resolve.paid</source>
@@ -753,7 +753,7 @@
             </trans-unit>
             <trans-unit id="date.initiated">
                 <source>date.initiated</source>
-                <target>Date Initiated</target>
+                <target>Date</target>
             </trans-unit>
             <trans-unit id="resolve">
                 <source>resolve</source>
@@ -795,6 +795,14 @@
                 <source>payments.legend</source>
                 <target>Legend</target>
             </trans-unit>
+            <trans-unit id="payment.account">
+                <source>payment.account</source>
+                <target>Existing Accounts</target>
+            </trans-unit>
+            <trans-unit id="payment.account.new">
+                <source>payment.account.new</source>
+                <target>New account</target>
+            </trans-unit>
             
             <trans-unit id="reporting.start">
                 <source>reporting.start</source>
@@ -828,6 +836,10 @@
             <trans-unit id="next_due_date">
                 <source>next_due_date</source>
                 <target>Next Due Date</target>
+            </trans-unit>
+            <trans-unit id="next_payment_date">
+                <source>next_payment_date</source>
+                <target>Next Payment Date</target>
             </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
@@ -875,7 +887,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.recurring">
                 <source>contract.payment.recurring</source>
-                <target>Recurs?</target>
+                <target>Recurring?</target>
             </trans-unit>
             <trans-unit id="contract.status">
                 <source>contract.status</source>
@@ -896,6 +908,10 @@
             <trans-unit id="contract.status.current">
                 <source>contract.status.current</source>
                 <target>This account is in good standing</target>
+            </trans-unit>
+            <trans-unit id="contract.status.select.current">
+                <source>contract.status.select.current</source>
+                <target>CURRENT</target>
             </trans-unit>
             <trans-unit id="contract.delete">
                 <source>contract.delete</source>
@@ -1021,7 +1037,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_2">
                 <source>popup.tenant.footer.note_2</source>
-                <target>We’ll sign you up for ScoreTrack when you set up your first rent payment.</target>
+                <target>Coming Soon!</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_3">
                 <source>popup.tenant.footer.note_3</source>
@@ -1042,7 +1058,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.unit">
                 <source>popup.landlord.unit</source>
-                <target>unit</target>
+                <target>eCheck</target>
             </trans-unit>
             <trans-unit id="popup.landlord.monthly.minimum">
                 <source>popup.landlord.monthly.minimum</source>
@@ -1086,7 +1102,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-                <target>*We'll waive your unit fee if the tenant enrolls in any one of our monthly </target>
+                <target>*We'll waive your eCheck fee if the tenant enrolls in any one of our monthly </target>
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
@@ -1246,6 +1262,10 @@
                 <source>contract.status.approved</source>
                 <target>APPROVED</target>
             </trans-unit>
+            <trans-unit id="contract.status.deleted">
+                <source>contract.status.deleted</source>
+                <target>DELETED</target>
+            </trans-unit>
             <trans-unit id="contract.status.finished">
                 <source>contract.status.finished</source>
                 <target>FINISHED</target>
@@ -1266,13 +1286,25 @@
                 <source>landlord.alert.pending-one</source>
                 <target>There is one new tenant pending your review.</target>
             </trans-unit>
+            <trans-unit id="landlord.alert.pending-one.admin">
+                <source>landlord.alert.pending-one.admin</source>
+                <target>There is one new tenant pending your review in the %GROUP% group.</target>
+            </trans-unit>
             <trans-unit id="landlord.alert.pending-many">
                 <source>landlord.alert.pending-many</source>
                 <target>There are %COUNT% new tenants pending your review.</target>
             </trans-unit>
+            <trans-unit id="landlord.alert.pending-many.admin">
+                <source>landlord.alert.pending-many.admin</source>
+                <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
+            </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
                 <target>You need to set up your merchant account. Call 866-841-9090.</target>
+            </trans-unit>
+            <trans-unit id="deposit.merchant.setup.admin">
+                <source>deposit.merchant.setup.admin</source>
+                <target>You need to set up your merchant account for the %GROUP% group. Call 866-841-9090.</target>
             </trans-unit>
             <trans-unit id="address.not.valid">
                 <source>address.not.valid</source>
@@ -1422,6 +1454,10 @@
                 <source>select.from.drop.down.list</source>
                 <target>Please select an address from the drop-down and try again.</target>
             </trans-unit>
+            <trans-unit id="fill.full.address">
+                <source>fill.full.address</source>
+                <target>Please fill full address and try again. It's very short.</target>
+            </trans-unit>
             <trans-unit id="tenant.wants.unit">
                 <source>tenant.wants.unit</source>
                 <target>Tenant wants unit number:</target>
@@ -1437,6 +1473,127 @@
             <trans-unit id="you.tenant.has.no.payment">
                 <source>you.tenant.has.no.payment</source>
                 <target>Your tenant has not set up a payment yet.</target>
+            </trans-unit>
+            <trans-unit id="send.reminder">
+                <source>send.reminder</source>
+                <target>Send Reminder</target>
+            </trans-unit>
+            <trans-unit id="revoke.inv">
+                <source>revoke.inv</source>
+                <target><![CDATA[Revoke <br /> Invitation]]></target>
+            </trans-unit>
+            <trans-unit id="yes.revoke.inv">
+                <source>yes.revoke.inv</source>
+                <target>Yes, Revoke Invitation</target>
+            </trans-unit>
+            <trans-unit id="revoke.inv.ask">
+                <source>revoke.inv.ask</source>
+                <target>Are you sure you want to revoke this invitation?</target>
+            </trans-unit>
+            <trans-unit id="contract.not.found">
+                <source>contract.not.found</source>
+                <target>Contract not found.</target>
+            </trans-unit>
+            <trans-unit id="contract.reminder.already.send">
+                <source>contract.reminder.error.already.send</source>
+                <target>You can not so often send reminders for the same contract.</target>
+            </trans-unit>
+            <trans-unit id="iframe.login.title">
+                <source>iframe.login.title</source>
+                <target>RentTrack Member Log In</target>
+            </trans-unit>
+            <trans-unit id="iframe.login.email">
+                <source>iframe.login.email</source>
+                <target>Your Email</target>
+            </trans-unit>
+            <trans-unit id="iframe.login.password">
+                <source>iframe.login.password</source>
+                <target>Your Password</target>
+            </trans-unit>
+            <trans-unit id="iframe.login.submit">
+                <source>iframe.login.submit</source>
+                <target>Log In</target>
+            </trans-unit>
+            <trans-unit id="iframe.top.title">
+                <source>iframe.top.title</source>
+                <target>Pay My Rent Online</target>
+            </trans-unit>
+            <trans-unit id="iframe.top.text">
+                <source>iframe.top.text</source>
+                <target>
+                    Long &amp; Foster Real Estate, Inc. has teamed up with RentTrack to elimionate the burden of mailing your lease payment every month.
+                    RentTrack facilitates *easy payments through secure electronics check transfers and credit cards* - you get to choose.
+                    *Reminders* are sent automatically to you x days before rent is due and late notices are sent x days after the due date.
+                    As a tenant, you also benefit because RentTrack allows you to build credit history by reporting on-time payments to Experian.
+                </target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.title">
+                <source>iframe.redirect.title</source>
+                <target>Not registered yet?</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.text">
+                <source>iframe.redirect.text</source>
+                <target>Find your rental to make a payment</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.button">
+                <source>iframe.redirect.button</source>
+                <target>Get Started</target>
+            </trans-unit>
+            <trans-unit id="iframe.items.title">
+                <source>iframe.items.title</source>
+                <target>Pay rent. Build Credit.</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.pay.title">
+                <source>iframe.item.pay.title</source>
+                <target>Pay rent effortlessly</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.pay.text">
+                <source>iframe.item.pay.text</source>
+                <target>Want to "set it and forget it"? With RentTrack, you can set up automatic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.build.title">
+                <source>iframe.item.build.title</source>
+                <target>Build your credit</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.build.text">
+                <source>iframe.item.build.text</source>
+                <target>RentTrack is able to report your on-time rent payments to credit bureaus. This optional service helps you build the credit history you'll need to secure your financial future.</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.monitor.title">
+                <source>iframe.item.monitor.title</source>
+                <target>Monitor your progress</target>
+            </trans-unit>
+            <trans-unit id="iframe.item.monitor.text">
+                <source>iframe.item.monitor.text</source>
+                <target>RentTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+            </trans-unit>
+            <trans-unit id="iframe.questions">
+                <source>iframe.questions</source>
+                <target>Still have questions?</target>
+            </trans-unit>
+            <trans-unit id="iframe.learn.more">
+                <source>iframe.learn.more</source>
+                <target>Learn More</target>
+            </trans-unit>
+            <trans-unit id="iframe.powered">
+                <source>iframe.powered</source>
+                <target>Powered by</target>
+            </trans-unit>
+            <trans-unit id="unit.live.it.empty">
+                <source>unit.live.it.empty</source>
+                <target>leave blank if this is a single property</target>
+            </trans-unit>
+            <trans-unit id="property.number.not.exist">
+                <source>property.number.not.exist</source>
+                <target>Please put number for property.</target>
+            </trans-unit>
+            <trans-unit id="help.popup">
+                <source>help.popup</source>
+                <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
+            </trans-unit>
+            <trans-unit id="order.type.cash">
+                <source>order.type.cash</source>
+                <target>Cash</target>
             </trans-unit>
         </body>
     </file>

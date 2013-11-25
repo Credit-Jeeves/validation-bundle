@@ -4,6 +4,7 @@ namespace CreditJeeves\ApplicantBundle\Controller;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\CoreBundle\Controller\ApplicantController as Controller;
+use CreditJeeves\ArfBundle\Parser\ArfParser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\DataBundle\Entity\Lead;
@@ -33,18 +34,27 @@ class HomepageController extends Controller
 
         $nLeads = $User->getUserLeads()->count();
         $nTarget = $this->getTarget();
-        $nScore  = $this->getScore()->getScore();
+        $score = $this->getScore();
+        $nScore  = $score ? $score->getScore() : 'N/A';
         $isSuccess = false;
-        if ($nScore >= $nTarget) {
+        if ($nScore >= $nTarget && $score) {
             $isSuccess = true;
         }
         $sEmail  = $User->getEmail();
+        $tableScore = $User->getLastScore();
+        $arfReport = $Report->getArfReport();
+        $reportScore = $arfReport->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
+        if ($reportScore > 1000) {
+            $reportScore = 0;
+        }
         return array(
             'Report' => $Report,
             'Lead' => $Lead,
             'sEmail' => $sEmail,
             'isSuccess' => $isSuccess,
             'nLeads' => $nLeads,
+            'tableScore' => $tableScore,
+            'reportScore' => $reportScore,
         );
     }
 

@@ -92,7 +92,7 @@ class PaymentCommand extends ContainerAwareCommand
             $order = new Order();
             $operation->setType(OperationType::RENT);
             $operation->setContract($contract);
-
+            
             if (PaymentAccountType::CARD == $paymentAccount->getType()) {
                 $fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
                 $order->setType(OrderType::HEARTLAND_CARD);

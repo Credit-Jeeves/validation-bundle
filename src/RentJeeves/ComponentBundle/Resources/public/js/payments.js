@@ -8,8 +8,8 @@ function Payments() {
   this.current = ko.observable(1);
   this.last = ko.observable('Last');
   this.processPayment = ko.observable(true);
-  this.sortColumn = ko.observable("status");
-  this.isSortAsc = ko.observable(true);
+  this.sortColumn = ko.observable("date-initiated");
+  this.isSortAsc = ko.observable(false);
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("");
   this.isSearch = ko.observable(false);
@@ -49,6 +49,11 @@ function Payments() {
         } else {
           $('#'+self.sortColumn()).attr('class', 'sort-up');
         }
+
+        $('#'+self.sortColumn()).find('i').show();
+        $.each($('#payments-block .sort i'), function( index, value ) {
+           $(this).hide();
+        });
       }
     });
   };

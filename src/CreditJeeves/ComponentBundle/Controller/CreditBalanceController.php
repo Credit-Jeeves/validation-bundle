@@ -50,8 +50,10 @@ class CreditBalanceController extends Controller
         $nCurrentScore = $nCurrentScore ? $nCurrentScore : 0;
         $nScale = self::COMPONENT_WIDTH / self::COMPONENT_POINTS;
         $nRight = intval((900 - $nCurrentScore) * $nScale - 37);
+        if ($nRight > 300) {
+            $nRight = 210;
+        }
         $nPercent = $Score->getScorePercentage();
-
         return $this->render(
             'ComponentBundle:CreditBalance:index.html.twig',
             array(

@@ -118,7 +118,32 @@ abstract class Unit
      * @Serializer\Exclude
      */
     protected $contracts;
-    
+
+    /**
+     * @ORM\Column(
+     *      name="deleted_at",
+     *      type="datetime",
+     *      nullable=true
+     * )
+     */
+    protected $deletedAt;
+
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
     public function __construct()
     {
         $this->contracts = new ArrayCollection();

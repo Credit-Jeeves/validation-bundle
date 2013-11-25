@@ -26,12 +26,15 @@ class BlocksController extends Controller
         if ($this->get('session')->get('observe_admin_id')) {
             $isAdmin = true;
         }
-
-
-
+        $lastLogin = $user->getLastLogin();
+        
         return array(
             'isAdmin'     => $isAdmin,
-            'accountType' => $user->getType()
+            'accountType' => $user->getType(),
+            'email'       => $user->getEmail(),
+            'fullName'    => $user->getFullName(),
+            'login'       => $lastLogin ? $lastLogin->getTimestamp() : '',
+            'id'          => $user->getId(),
         );
     }
 

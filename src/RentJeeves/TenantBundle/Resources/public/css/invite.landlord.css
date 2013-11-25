@@ -52,3 +52,20 @@ input {
     padding-left: 10px;
     padding-top: 4px;
 }
+
+#cancel {
+    margin-left: 10px;
+}
+
+.errorsGoogleSearch {
+    position: absolute;
+    color: #ff0000;
+    display: none;
+    margin-left: 21px;
+}
+
+.loadingSpinner {
+    position: absolute;
+    margin-top: -17px;
+    margin-left: -13px;
+}

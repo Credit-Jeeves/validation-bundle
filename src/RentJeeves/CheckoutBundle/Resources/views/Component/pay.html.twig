@@ -25,17 +25,17 @@
     <div class="clearfix col-box attention-container">
 
         <ul class="steps clearfix">
-            <li class="step1" data-bind="css: { 'active': 'details' == step() }">
+            <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
                 <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
             </li>
-            <li class="step2" data-bind="css: { 'active': 'source' == step() }">
+            <li class="step2" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: {'active': 'user' == step() || 'questions' == step() }, visible: stepExist('questions')">
+                data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('questions') }">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
-            <li class="step4" data-bind="css: { 'active': 'pay' == step() }">
+            <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
                 <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
             </li>
         </ul>
@@ -62,8 +62,10 @@
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
-            <div class="form-row clearfix">
+            <div data-bind="visible: $root.notEmptyPaymentAccount" class="form-row clearfix" >
+                <label>{{ 'payment.account' | trans }}*</label>
                 <div class="fields-box">
+                    <small ><b>*</b>{{ 'required' | trans }}</small>
                     <!-- ko foreach: paymentAccounts -->
                         <label class="checkbox radio" style="clear: left;">
                             <input type="radio"
@@ -77,11 +79,11 @@
                         </label>
                     <!-- /ko -->
                     <div class="fields-box" data-bind="visible: !isNewPaymentAccount()">
-                        <a href="#" data-bind="click: addNewPaymentAccount">{{ 'common.add_new' | trans }}</a>
+                        <a href="#" data-bind="click: addNewPaymentAccount" class="checkout-plus"><span></span>{{ 'payment.account.new' | trans }}</a>
                     </div>
                 </div>
             </div>
-            <div data-bind="visible: isNewPaymentAccount">
+            <div data-bind="visible: isNewPaymentAccount || !$root.notEmptyPaymentAccount">
                 {{ render(controller('RjCheckoutBundle:Component:source')) }}
             </div>
         </div>

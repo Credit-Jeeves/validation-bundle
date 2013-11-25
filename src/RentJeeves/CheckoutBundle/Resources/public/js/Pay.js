@@ -13,12 +13,31 @@ function Pay(parent, contractId) {
 
     var steps = ['details', 'source', 'user', 'questions', 'pay'];
 
+    this.passedSteps = ko.observableArray([]);
+
     if ('passed' == parent.verification) {
-        steps.splice(2, 2);
+        this.passedSteps.push(steps.splice(2, 1)[0]);
+        this.passedSteps.push(steps.splice(2, 1)[0]);
+    }
+    this.step = ko.observable();
+
+    this.isPassed = function(step) {
+        return this.passedSteps().indexOf(step) >= 0;
     }
 
-    this.step = ko.observable('details');
     this.step.subscribe(function(newValue) {
+
+        // if this step was already passed, then remove it (when user clicks Previous button)
+        if (self.passedSteps.indexOf(newValue) >= 0) {
+            self.passedSteps.remove(newValue);
+        } else {
+            var stepNum = steps.indexOf(newValue);
+            // if previous step exists, then it is passed
+            if (typeof steps[stepNum - 1] != 'undefined') {
+                self.passedSteps.push(steps[stepNum - 1]);
+            }
+        }
+
         switch (newValue) {
             case 'details':
                 break;
@@ -57,8 +76,7 @@ function Pay(parent, contractId) {
         }
     });
 
-    var startDate = new Date(contract.startAt);
-    startDate.setDate(startDate.getDate() + 1);
+    this.step('details');
 
     var finishDate = new Date(contract.finishAt);
 
@@ -74,11 +92,10 @@ function Pay(parent, contractId) {
     } else {
       this.propertyFullAddress.unit(contract.unit.name);
     }
-    
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 
-    this.payment = new Payment(this, startDate);
+    this.payment = new Payment(this, new Date(contract.startAt));
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
@@ -109,6 +126,14 @@ function Pay(parent, contractId) {
 
 
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
+
+    this.notEmptyPaymentAccount = ko.computed(function() {
+        if (self.paymentAccounts().length > 0) {
+            return true;
+        }
+        return false;
+    });
+
     this.isNewPaymentAccount = ko.computed(function() {
         return this.newPaymentAccount() && !this.payment.paymentAccountId();
     }, self);
@@ -117,7 +142,6 @@ function Pay(parent, contractId) {
         self.newPaymentAccount(true);
         self.paymentSource.clear();
     };
-
 
 
     this.fullPayTo = contract.payToName;
@@ -166,7 +190,7 @@ function Pay(parent, contractId) {
     }, this);
 
     this.getFeeAmountText = function(paymentCardFee) {
-        return paymentCardFee + ' ($' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2) + ')';
+        return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };
 
     this.isForceSave = ko.computed(function() {
@@ -371,18 +395,4 @@ function Pay(parent, contractId) {
     });
 
     window.formProcess.removeAllErrors('#pay-popup ');
-
-    /**
-     * Fix fo tabs on the Verify Identity tab on payment
-     */
-    $('#rentjeeves_checkoutbundle_userdetailstype_ssn_row').on(
-        'keydown',
-        '#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1',
-        function(e) {
-            if (e.which == 9) {
-                e.preventDefault();
-                $("#rentjeeves_checkoutbundle_userdetailstype_ssn_ssn2").focus();
-            }
-        }
-    );
 }

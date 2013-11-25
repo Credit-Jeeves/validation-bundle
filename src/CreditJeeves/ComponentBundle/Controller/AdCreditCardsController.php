@@ -38,10 +38,9 @@ class AdCreditCardsController extends Controller
         $isMortgage = empty($nMortgageDebt) ? "false" : "true";
         $nTotal = $Report->getCountApplicantTotalTradelines();
         $sTotal = $this->formatTradelinesCount($nTotal);
-        $nTier        = 9;
-        $aScore = $this->get('core.session.applicant')->getUser()->getScores()->last();
-        if (!empty($aScore)) {
-            $nScore = $aScore->getScore();
+         $nTier = array('value' => 9, 'interval' => '< 300');
+        $nScore = $this->get('core.session.applicant')->getUser()->getLastScore();
+        if ($nScore) {
             $nTier = Score::getTier($nScore);
         }
         $nAvailableDebt = 100 - $cjArfReport->getValue(

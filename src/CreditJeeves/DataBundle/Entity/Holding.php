@@ -15,4 +15,23 @@ class Holding extends BaseHolding
     {
         return $this->getName() ?: '';
     }
+
+    public function getHoldingAdmin()
+    {
+        $usersAdmin = array();
+
+        if (empty($this->users)) {
+            return $usersAdmin;
+        }
+
+        foreach ($this->users as $user) {
+            if (!$user->getIsSuperAdmin()) {
+                continue;
+            }
+
+            $usersAdmin[] = $user;
+        }
+
+        return $usersAdmin;
+    }
 }

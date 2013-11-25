@@ -3,6 +3,82 @@
 
 <div id="contract-actions">
 
+    <!-- Action Revoke-->
+    <div id="tenant-revoke-invotation" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'Information'|trans }}</h1>
+        <div class="clearfix col-box"  data-bind="with: contract">
+            <div class="attention-box pie-el">
+                {{ 'revoke.inv.ask'|trans }}
+            </div>
+            <div class="attention-box pie-el error" style="display: none;">
+            </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'tenant.info'|trans }}</span>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'name'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: tenant"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: address"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'phone'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value"  data-bind="text: phone"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'email'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: email"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'request.payments'|trans }}</span>
+                    <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value left">{{ 'monthly'|trans }} </span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'amount'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value left" data-bind="text: amount"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'start'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value left" id="contract-edit-start" data-bind="text: start"></span>
+                        <label class="fixed">{{ 'end'|trans }}</label>
+                        <span class="value left" id="contract-edit-finish" data-bind="text: finish"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-button-box">
+            <button class="button dark" data-bind="click: $root.revokeInvitation">
+                <span>{{ 'yes.revoke.inv'|trans }}</span>
+            </button>
+            <button class="button grey" data-bind="click: $root.closeRevokeInvitation" onclick="false;">
+                <span>{{ 'no.remove.property'|trans }}</span>
+            </button>
+        </div>
+    </div>
+    <!-- Action Revoke -->
     <!-- Action Edit -->
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'edit.tenant.info'|trans }}</h1>
@@ -47,7 +123,7 @@
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'request.payments'|trans }}</span>
-                    <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+                    <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}<b>*</b></label>
@@ -68,7 +144,7 @@
                     </div>
                 </div>
                 <div class="form-row clearfix">
-                    <label>{{ 'start'|trans }}<b>*</b></label>
+                    <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
                         <label class="fixed">{{ 'end'|trans }}</label>
@@ -134,7 +210,7 @@
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'request.payments'|trans }}</span>
-                    <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+                    <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}<b>*</b></label>
@@ -147,7 +223,7 @@
                     </div>
                 </div>
                 <div class="form-row clearfix">
-                    <label>{{ 'start'|trans }}<b>*</b></label>
+                    <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractApproveStart">
                         <label class="fixed">{{ 'end'|trans }}</label>
@@ -160,7 +236,7 @@
             <button class="button" data-bind="click: approveSave"><span>{{ 'approve.tenant'|trans }}</span></button>
             <button class="button" data-bind="click: editContract"><span>{{ 'edit.Info'|trans }}</span></button>
             <div class="with-seperator-box">
-                <button class="button grey" onclick="$('#tenant-approve-property-popup').dialog( 'close' ); return false;">
+                <button class="button grey" data-bind="click: closeApprove" onclick="return false;">
                     <span>{{ 'cancel'|trans }}</span>
                 </button>
             </div>
@@ -176,6 +252,8 @@
               {{ 'you.tenant.has.no.payment'|trans }}
           </div>
           <!-- /ko -->
+        <div class="attention-box pie-el error" style="display: none;">
+        </div>
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'tenant.info'|trans }}</span>
@@ -209,7 +287,7 @@
         <div class="col">
           <h4 class="clearfix">
             <span>{{ 'request.payments'|trans }}</span>
-            <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+            <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
           </h4>
           <div class="form-row clearfix">
             <label>{{ 'property'|trans }}</label>
@@ -226,17 +304,25 @@
           <div class="form-row clearfix">
             <label>{{ 'start'|trans }}</label>
             <div class="fields-box">
-              <span class="value left" id="contract-edit-start" data-bind="text: start"></span>
+              <span class="value left" data-bind="text: start"></span>
               <label class="fixed">{{ 'end'|trans }}</label>
-              <span class="value left" id="contract-edit-finish" data-bind="text: finish"></span>
+              <span class="value left" data-bind="text: finish"></span>
             </div>
           </div>
         </div>
       </div>
-      <div class="footer-button-box">
-          <button class="button grey" onclick="$('#tenant-review-property-popup').dialog( 'close' ); return false;">
+      <div class="footer-button-box" data-bind="with: contract">
+          <!-- ko if: reminder_revoke -->
+          <button class="button" data-bind="click: $root.sendReminderInvition"><span>{{ 'send.reminder'|trans }}</span></button>
+          <!-- /ko -->
+          <button class="button grey" data-bind="click: $root.closeTenantReviewPropertyPopup" onclick="return false;">
             <span>{{ 'legend.close'|trans|capitalize }}</span>
           </button>
+          <!-- ko if: reminder_revoke -->
+            <a href="#" class="link" data-bind="click: $root.closeReminderRevoke" onclick="false;">
+                {{ 'revoke.inv'|trans|raw}}
+            </a>
+          <!-- /ko -->
       </div>
     </div>
     <!-- Action Add Tenant-->
@@ -288,7 +374,7 @@
         <div class="col">
           <h4 class="clearfix">
             <span>{{'request.payments'|trans}}</span>
-            <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+            <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
           </h4>
           <div class="form-row clearfix">
             <label>{{'amount'|trans}}<b>*</b></label>
@@ -297,7 +383,7 @@
             </div>
           </div>
           <div class="form-row clearfix">
-            <label>{{'contract.payment.date.next'|trans}}<b>*</b></label>
+            <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
             <div class="fields-box">
               {{ form_widget(
                 form.contract.startAt,
@@ -374,7 +460,9 @@
                         <option value='pending'>{{ 'contract.status.pending' | trans() }}</option>
                         <option value='invite'>{{ 'contract.status.invite' | trans() }}</option>
                         <option value='approved'>{{ 'contract.status.approved' | trans() }}</option>
+                        <option value='current'>{{ 'contract.status.select.current' | trans() }}</option>
                         <option value='finished'>{{ 'contract.status.finished' | trans() }}</option>
+                        <option value='deleted'>{{ 'contract.status.deleted' | trans() }}</option>
                     </select>
                     <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
                 </div>
@@ -396,32 +484,31 @@
           <table class="properties-table zebra-grid">
             <thead>
               <tr class="properties-th">
-                <th class="pie-el">
+                <th class="pie-el column-status">
                     <span class="sort" id="status" data-bind="click: sortFunction">{{'filter.status'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-name">
                     <span class="sort" id="first_name" data-bind="click: sortFunction">{{'tenant'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-email">
                     <span class="sort" id="email" data-bind="click: sortFunction">{{'email'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-phone">
                     <span>{{'phone'|trans}}</span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-address">
                     <span class="sort" id="street" data-bind="click: sortFunction">{{'property'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-amount">
                     <span class="sort" id="rent" data-bind="click: sortFunction">{{'amount'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-last">
                     <span class="pie-el">{{'contract.payment.last'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el">
+                <th class="pie-el column-paid">
                     <span class="sort" id="paidTo" data-bind="click: sortFunction">{{'paid_to'|trans}}<i> </i></span>
                 </th>
-                <th class="pie-el"  style="width: 35px;"><span>{{'type'|trans}}<i> </i></span></th>
-                <th class="pie-el" style="width: 20px;">&nbsp;</th>
+                <th class="pie-el column-action">&nbsp;</th>
               </tr>
             </thead>
             <tbody>
@@ -430,7 +517,7 @@
                 <td data-bind="attr: {'class': 'actions-status '+style}">
                     <div data-bind="text: status"></div>
                 </td>
-                <td data-bind="text: tenant"></td>
+                <td class="email-box ellipsis-box" data-bind="text: tenant"></td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>
                 <td data-bind="text: phone"></td>
                 <td class="property-box ellipsis-box" 
@@ -439,19 +526,23 @@
                 <td data-bind="text: '$'+amount"></td>
                 <!-- /ko -->
                 <!-- ko if: amount == '' -->
-                <td data-bind="text: '--' + amount"></td>
+                <td data-bind="text: '-' + amount"></td>
                 <!-- /ko -->
-                <td data-bind="text: last_payment"></td>
-                <td class="type-box" data-bind="text: paid_to"></td>
-                <td></td>
+                <td align="center"   data-bind="text: last_payment"></td>
+                <td align="center"  data-bind="text: paid_to"></td>
                 <td class="type-box">
                     <!-- ko if: 'CURRENT' == status -->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                     <!-- ko if: 'PENDING' == status -->
+                    {% if canInvite %}
                     <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve" href="#" 
                     data-bind="click: $root.approveContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
+                    {% else %}
+                    <a title="{{ 'approve'|trans }} " class="type-ico pie-el approve grey" href="#" 
+                    >&nbsp;</a>
+                    {% endif %}
                     <!-- /ko -->
                     <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status -->
                     <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>

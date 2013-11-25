@@ -775,6 +775,9 @@ abstract class Group
         return $this;
     }
 
+    /**
+     * @return Holding
+     */
     public function getHolding()
     {
         return $this->holding;
@@ -1032,5 +1035,24 @@ abstract class Group
     public function getPaymentAccounts()
     {
         return $this->paymentAccounts;
+    }
+
+    /**
+     * 
+     * @param \CreditJeeves\DataBundle\Entity\Dealer $dealer
+     * @return \CreditJeeves\DataBundle\Model\Group
+     */
+    public function setDealer(\CreditJeeves\DataBundle\Entity\Dealer $dealer = null)
+    {
+        $this->dealers = $dealer;
+        return $this;
+    }
+
+    /**
+     * 
+     */
+    public function getDealer()
+    {
+        return $this->dealers;
     }
 }

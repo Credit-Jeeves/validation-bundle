@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -98,13 +99,22 @@ class AjaxController extends Controller
                     )?  true : false;
         $property = new Property();
         $propertyDataAddress = $property->parseGoogleAddress($data);
-        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertyDataAddress);
+        $propertyDataLocation = $property->parseGoogleLocation($data);
+        if (!isset($propertyDataAddress['number'])) {
+            return new JsonResponse(
+                array(
+                    'status'  => 'ERROR',
+                    'message' => $this->get('translator')->trans('property.number.not.exist')
+                )
+            );
+        }
+        $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
+        $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
         if (empty($property)) {
             $property = new Property();
-            $propertyDataLocation = $property->parseGoogleLocation($data);
             $propertyData = array_merge($propertyDataAddress, $propertyDataLocation);
             $property->fillPropertyData($propertyData);
             $itsNewProperty = true;
@@ -120,9 +130,17 @@ class AjaxController extends Controller
             $group->addGroupProperty($property);
             $em->persist($group);
         }
-        $em->persist($property);
-        $em->flush();
-
+        try {
+            $em->persist($property);
+            $em->flush();
+        } catch (DBALException $e) {
+            return new JsonResponse(
+                array(
+                    'status'  => 'ERROR',
+                    'message' => $this->get('translator')->trans('fill.full.address')
+                )
+            );
+        }
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $google = $this->container->get('google');
             $google->savePlace($property);
@@ -136,11 +154,14 @@ class AjaxController extends Controller
         if ($isLogin) {
             $isLandlord = ($this->getUser()->getType() == UserType::LANDLORD) ? true : false;
         }
-
+        //@TODO refactor - change array to entity JSM serialisation
         $data = array(
-            'hasLandlord'   => $property->hasLandlord(),
-            'isLogin'      => $isLogin,
-            'isLandlord'   => $isLandlord,
+            'status'                => 'OK',
+            'hasLandlord'           => $property->hasLandlord(),
+            'isLogin'               => $isLogin,
+            'isLandlord'            => $isLandlord,
+            'propertyDataAddress'   => $propertyDataAddress,
+            'propertyDataLocation'  => $propertyDataLocation,
             'property'      => array(
                     'id'        => $property->getId(),
                     'city'      => $property->getCity(),
@@ -220,6 +241,16 @@ class AjaxController extends Controller
         return new JsonResponse($result);
     }
 
+    //@TODO find best way for this implementation
+    private function checkContract($entity)
+    {
+        if ($entity->getContracts()->count() <= 0) {
+            $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
+        } else {
+            $this->get('doctrine')->getManager()->getFilters()->enable('softdeleteable');
+        }
+    }
+
     /**
      * @Route(
      *     "/unit/save",
@@ -233,6 +264,9 @@ class AjaxController extends Controller
     public function saveUnitsList()
     {
         $data = array();
+        $names = array();
+        $existingNames = array();
+        $errorNames = array();
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
@@ -249,34 +283,43 @@ class AjaxController extends Controller
             if (empty($unit['id']) & !empty($unit['name'])) {
                 continue;
             } else {
+                $names[] = $unit['name'];
                 $unitKeys[$unit['id']] = $key;
             }
+            
         }
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
         $em = $this->getDoctrine()->getManager();
+
+        /** @var $entity Unit */
         foreach ($records as $entity) {
-            if (in_array($entity->getId(), array_keys($unitKeys))) {
+            if (in_array($entity->getId(), array_keys($unitKeys)) & !in_array($entity->getName(), $existingNames)) {
                 $key = $unitKeys[$entity->getId()];
-                if (!empty($units[$key]['name'])) {
+                if (!empty($units[$key]['name']) & !in_array($units[$key]['name'], $existingNames)) {
+                    $existingNames[] = $units[$key]['name'];
                     if ($units[$key]['name'] != $entity->getName()) {
                         $entity->setName($units[$key]['name']);
                         $em->persist($entity);
                         $em->flush();
+                        
                     }
                 } else {
+                    $errorNames[] = $units[$key]['name'];
+                    $this->checkContract($entity);
                     $em->remove($entity);
                     $em->flush();
                 }
                 unset($unitKeys[$key]);
             } else {
+                $this->checkContract($entity);
                 $em->remove($entity);
                 $em->flush();
             }
             
         }
         foreach ($units as $unit) {
-            if (empty($unit['id']) & !empty($unit['name'])) {
+            if (empty($unit['id']) & !empty($unit['name']) & !in_array($unit['name'], $names)) {
                 $entity = new Unit();
                 $entity->setProperty($parent);
                 $entity->setHolding($holding);
@@ -284,6 +327,9 @@ class AjaxController extends Controller
                 $entity->setName($unit['name']);
                 $em->persist($entity);
                 $em->flush();
+                $names[] = $unit['name'];
+            } else {
+                $errorNames[] = $unit['name'];
             }
         }
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
@@ -342,6 +388,9 @@ class AjaxController extends Controller
      */
     public function getContractsList()
     {
+        //For this page need show unit each was removed
+        //@TODO find best way for this implementation
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -385,6 +434,9 @@ class AjaxController extends Controller
      */
     public function getActionsList()
     {
+        //For this page need show unit each was removed
+        //@TODO find best way for this implementation
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -475,10 +527,21 @@ class AjaxController extends Controller
         }
 
         if ($action == 'remove') {
+            /**
+             * This contract don't have any payment this is just contract, so we can remove it from db
+             */
+            $tenant = $contract->getTenant();
+            $landlord = $this->getUser();
+            $this->get('project.mailer')->sendRjContractRemovedFromDbByLandlord(
+                $tenant,
+                $landlord,
+                $contract
+            );
             $em->remove($contract);
         } else {
             $em->persist($contract);
         }
+
         $em->flush();
         if (!empty($errors) & 'edit' == $action) {
             $response['errors'] = $errors;
@@ -563,6 +626,9 @@ class AjaxController extends Controller
      */
     public function getPaymentsList()
     {
+        // Show all unit, even it removed
+        //@TODO find best way for this implementation
+        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -652,6 +718,113 @@ class AjaxController extends Controller
 
         return new JsonResponse($data);
     }
+
+    /**
+     * @Route(
+     *     "/revoke/invitation/{contractId}",
+     *     name="revoke_invitation",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function revokeInvitation($contractId)
+    {
+        $translator = $this->get('translator');
+        /** @var $em EntityManager */
+        $em = $this->getDoctrine()->getManager();
+        /** @var $contract Contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+
+        if (!$contract) {
+            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
+        }
+
+        $group = $this->getCurrentGroup();
+
+        if (!$group) {
+            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
+        }
+
+        if ($contract->getGroupId() !== $group->getId()) {
+            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
+        }
+        /**
+         * This contract don't have any payment this is just contract, so we can remove it from db
+         */
+        $tenant = $contract->getTenant();
+        $landlord = $this->getUser();
+        $this->get('project.mailer')->sendRjContractRemovedFromDbByLandlord(
+            $tenant,
+            $landlord,
+            $contract
+        );
+        $em->remove($contract);
+        $em->flush();
+
+        return new JsonResponse(array());
+    }
+
+    /**
+     * @Route(
+     *     "/send/invitation/reminder/{contractId}",
+     *     name="send_reminder_invitation",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function sendReminderInvite($contractId)
+    {
+        $translator = $this->get('translator');
+        $session = $this->get("session");
+        $landlordReminder = $session->get('landlord_reminder');
+        if (!$landlordReminder) {
+            $landlordReminder = array();
+        } else {
+            $landlordReminder = json_decode($landlordReminder, true);
+        }
+
+        if (in_array($contractId, $landlordReminder)) {
+            return new JsonResponse(array('error' => $translator->trans('contract.reminder.error.already.send')));
+        }
+
+        /** @var $em EntityManager */
+        $em = $this->getDoctrine()->getManager();
+        /** @var $contract Contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+
+        if (!$contract) {
+            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
+        }
+
+        $group = $this->getCurrentGroup();
+
+        if (!$group) {
+            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
+        }
+
+        if ($contract->getGroupId() !== $group->getId()) {
+            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
+        }
+
+        $tenant = $contract->getTenant();
+
+        if ($tenant->getIsActive()) {
+            $this->get('project.mailer')->sendRjTenantInviteReminderPayment($tenant, $this->getUser(), $contract);
+        } else {
+            $this->get('project.mailer')->sendRjTenantInviteReminder($tenant, $this->getUser(), $contract);
+        }
+
+        $landlordReminder[] = $contract->getId();
+
+        $session->set('landlord_reminder', json_encode($landlordReminder));
+
+        return new JsonResponse(array());
+    }
+
 
     private function datagridPagination($total, $limit)
     {

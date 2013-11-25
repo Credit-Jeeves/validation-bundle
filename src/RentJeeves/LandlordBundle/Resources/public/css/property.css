@@ -1,0 +1,16 @@
+.loadingSpinner {
+    position: absolute;
+    margin-top: -15px;
+    display: none;
+    margin-left: -13px;
+}
+.errorsGoogleSearch {
+    color: #ff0000;
+    margin-left: 1px;
+    margin-top: -25px;
+    position: absolute;
+}
+
+#add-property-popup .errorsGoogleSearch {
+    margin-top: -15px;
+}

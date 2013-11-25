@@ -25,8 +25,14 @@
                 </div>
                 {{ form_rest(form) }}
                 <div class="row-20"></div>
-                <input class="button large green" type="submit" name="_submit" value="{{ 'common.remove' | trans }}" />
-            </form>
+                {% if application == 'rj' %}
+                    <button type="submit" class="button large" >
+                        <span>{{ 'common.remove' | trans }}</span>
+                    </button>
+                {% else %}
+                    <input class="button large green" type="submit" name="_submit" value="{{ 'common.remove' | trans }}" />
+                {% endif %}
+             </form>
             
         </div>
     </div>

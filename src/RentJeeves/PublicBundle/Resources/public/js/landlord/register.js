@@ -1,13 +1,9 @@
 $(document).ready(function(){
     
-    function showError(message)
+    function markAsValid()
     {
-        return $('#errorForm').html(message);
-    }
-
-    function clearError()
-    {
-        return $('#errorForm').html(' ');
+        $('#addUnit').removeClass('grey');
+        $('#addProperty').removeClass('grey');
     }
 
     function markAsNotValid()
@@ -15,8 +11,6 @@ $(document).ready(function(){
         $('#addUnit').addClass('grey');
         $('#addProperty').addClass('grey');
     }
-
-    var ERROR = 'notfound';
 
     $('#addUnit').click(function(){
         if($(this).hasClass('grey')) {
@@ -33,127 +27,38 @@ $(document).ready(function(){
         return false;
     });
 
-    $('#delete').click(function(){
-        $('#property-search').val(' ');
-        markAsNotValid();
-        $(this).hide();
-        return false;
-    });
-
-
-
-    function initialize() {
-        var lat = 0.0;
-        var lng = 0.0;
-
-        var mapOptions = {
-            center: new google.maps.LatLng(lat, lng),
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(
-            document.getElementById('search-result-map'),
-            mapOptions
-        );
-        var input = (document.getElementById('property-search'));
-        var autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.bindTo('bounds', map);
-        var infowindow = new google.maps.InfoWindow();
-        var marker = new google.maps.Marker({
-                map: map
-        });
-
-        function validateAddress()
-        {
-            clearError();
-            if($('#property-search').val() != '') {
-                $('#delete').show();
-            } else {
-                $('#delete').hide();
+    $('#property-search').google({
+        autoHideLoadingSpinner: true,
+        mapCanvasId: "search-result-map",
+        formId: "formSearch",
+        clearSearchId: 'delete',
+        classError: "errorsGoogleSearch",
+        loadingSpinner: true,
+        loadingSpinnerClass: 'loadingSpinner',
+        findButtonId: 'search-submit',
+        clearSearchCallback: function(isEmpty){
+            if (isEmpty) {
+                markAsNotValid();
             }
-            infowindow.close();
-            marker.setVisible(false);
-            input.className = '';
-            
+        },
+        addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus) {
+            $('#LandlordAddressType_property').val('');
             markAsNotValid();
-
-            var place = autocomplete.getPlace();
-            //Inform the user that the place was not found and return.
-            if (!place.geometry) {
-                input.className = ERROR;
-            }
-
-            if (ERROR == $('#property-search').attr('class')) {
-                return showError('Such address doesn\'t exist!');
-            }
-
-            if ('' == $('#property-search').val()) {
-                return showError('Property Address empty');
-            }
-
-            if (typeof place.geometry == 'undefined') {
-                return showError('Such address doesn\'t exist!');
-            }
-
-            $('#addUnit').removeClass('grey');
-        }
-        
-        $('#property-search').change(function(){
-          $(this).addClass('notfound');
-          markAsNotValid();
-          if($(this).val() != '') {
-            $('#delete').show();
-          } else {
-            $('#delete').hide();
-          }
-        });
-
-        google.maps.event.addListener(autocomplete, 'place_changed', validateAddress);
-
-        function getUnits() {
-            var unitsList = new Array();
-            $.each($('.unitsListNames').find('.unit-name'), function(index, value) {
-               unitsList.push({'name': $(this).val(), 'id': ''});
-            });
-
-            return unitsList;
-        }
-
-
-        function addProperty() 
-        {
-            var place = autocomplete.getPlace();
-            var data = {'address': place.address_components, 'geometry':place.geometry, 'addGroup': 0};
-            jQuery.ajax({
-                url: Routing.generate('landlord_property_add'),
-                type: 'POST',
-                dataType: 'json',
-                async: false,
-                data: {'data': JSON.stringify(data, null)},
-                error: function(jqXHR, errorThrown, textStatus) {;
-                },
-                success: function(data, textStatus, jqXHR) {
-                    var propertyId = data.property.id
-                    if(propertyId) {
-                        $('#LandlordAddressType_property').val(propertyId);
-                        return true;
-                    }
-
-                    return false;
-                }
-            });
-        }
-
-        $('#LandlordAddressType').submit(function() {
-            $('#submitForm').hide();
-            $('.loader').show();
-            if (ERROR == $('#property-search').attr('class')) {
+        },
+        addPropertyCallback: function(data, textStatus, jqXHR){
+            $('#LandlordAddressType_property').val('');
+            var propertyId = data.property.id
+            if(propertyId) {
+                $('#LandlordAddressType_property').val(propertyId);
+                markAsValid();
                 return true;
             }
-            addProperty();
-            return true;
-        });
-    }
+            markAsNotValid();
+            return false;
+        }
+    });
 
-    google.maps.event.addDomListener(window, 'load', initialize);
+    if($('.propertyId').val().length > 0) {
+        markAsValid();
+    }
 });

@@ -1,7 +1,7 @@
 #delete {
     display: none;
 }
-form li, #errorForm {
+form li, .errorsGoogleSearch {
     color: red;
 }
 #search-result-map {
@@ -20,4 +20,10 @@ form li, #errorForm {
 .register-tos {
     margin-left: 20px !important;
     width: 380px !important;
+}
+
+.loadingSpinner {
+    position: absolute;
+    margin-top: -14px;
+    margin-left: -13px;
 }

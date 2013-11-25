@@ -39,6 +39,17 @@ class Mailer extends BaseMailer implements MailerInterface
             true
         );
 
+        $kernel = $this->container->get('kernel');
+        if ($kernel->getName() === 'rj') {
+            return $this->sendEmail(
+                $user,
+                'rj_resetting',
+                array(
+                    'confirmationUrl' => $url
+                )
+            );
+        }
+
         return $this->sendEmail(
             $user,
             'resetting',
@@ -75,7 +86,7 @@ class Mailer extends BaseMailer implements MailerInterface
         );
     }
 
-    public function sendReceipt(Order $order)
+    public function sendReportReceipt(Order $order)
     {
         $dateShortFormat = $this->container->getParameter('date_short');
         return $this->sendEmail(

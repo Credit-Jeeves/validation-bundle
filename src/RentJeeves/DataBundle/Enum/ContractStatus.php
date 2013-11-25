@@ -4,12 +4,15 @@ namespace RentJeeves\DataBundle\Enum;
 use CreditJeeves\CoreBundle\Enum;
 
 /**
+ * Link to discourse about this logic on email alexandr sharamko
+ * https://mail.google.com/mail/u/0/?hl=RU#label/%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%2Fforma+pro/14260742d42b950b
+ *
  * Contract statuses
  * Avaliable chains:
- * 1. PENDING -> DELETED
+ * 1. PENDING -> DELETED FROM DB
  * 2. PENDING -> APPROVED -> DELETED
  * 3. PENDING -> APPROVED -> CURRENT -> FINISHED
- * 4. INVITE -> DELETED
+ * 4. INVITE -> DELETED FROM DB
  * 5. INVITE -> APPROVED -> DELETED
  * 6. INVITE -> APPROVED -> CURRENT -> FINISHED
  * 
