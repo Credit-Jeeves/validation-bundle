@@ -324,6 +324,16 @@ abstract class Group
      */
     protected $paymentAccounts;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\BillingAccount",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $billingAccount;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();

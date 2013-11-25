@@ -4,11 +4,12 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Model\PaymentAccount as Base;
+use RentJeeves\DataBundle\Entity\UserAwareInterface;
 
 /**
  * @ORM\Table(name="rj_payment_account")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentAccountRepository")
  */
-class PaymentAccount extends Base
+class PaymentAccount extends Base implements UserAwareInterface
 {
 }

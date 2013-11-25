@@ -77,9 +77,39 @@ class PayController extends Controller
     public function sourceAction(Request $request)
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
+        $paymentAccountType->handleRequest($this->get('request'));
+        if (!$paymentAccountType->isValid()) {
+            return $this->renderErrors($paymentAccountType);
+        }
 
-        return $this->savePaymentAccount($paymentAccountType);
+        try {
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser());
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                array(
+                    $paymentAccountType->getName() => array(
+                        '_globals' => explode('|', $e->getMessage())
+                    )
+                )
+            );
+        }
+
+        return new JsonResponse(
+            array(
+                'success' => true,
+                'paymentAccount' => $this->get('jms_serializer')->serialize(
+                    $paymentAccountEntity,
+                    'array'
+                ),
+                'newAddress' => $this->hasNewAddress ?
+                    $this->get('jms_serializer')->serialize(
+                        $paymentAccountEntity->getAddress(),
+                        'array'
+                    ) : null
+            )
+        );
     }
+
 
     /**
      * @Route("/user", name="checkout_pay_user", options={"expose"=true})

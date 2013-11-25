@@ -3,6 +3,7 @@ namespace RentJeeves\CheckoutBundle\Controller\Traits;
 
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\User;
 use Payum\Heartland\Soap\Base\ACHAccountType;
 use Payum\Heartland\Soap\Base\ACHDepositType;
 use Payum\Heartland\Soap\Base\GetTokenRequest;
@@ -15,6 +16,7 @@ use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
+use RentJeeves\DataBundle\Entity\UserAwareInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,52 +32,79 @@ use \DateTime;
  */
 trait PaymentProcess
 {
+    protected $hasNewAddress = false;
+    protected $merchantName = null;
+
+    protected function setMerchantName($merchantName)
+    {
+        $this->merchantName = $merchantName;
+    }
+
+    protected function getMerchantName(Group $group)
+    {
+        return $this->merchantName ?: $group->getMerchantName();
+    }
+
     /**
      * @param PaymentAccountType $paymentAccountType
      *
      * @return JsonResponse
      */
-    protected function savePaymentAccount(Form $paymentAccountType)
+    protected function savePaymentAccount(Form $paymentAccountType, User $user, $group = null)
     {
-        $paymentAccountType->handleRequest($this->get('request'));
-        if (!$paymentAccountType->isValid()) {
-            return $this->renderErrors($paymentAccountType);
-        }
         $em = $this->getDoctrine()->getManager();
+        $paymentAccountEntity = $paymentAccountType->getData();
 
-        /** @var Payment $payment */
-        $payment = $this->get('payum')->getPayment('heartland');
+        if (empty($group)) {
+            $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
+        }
+
+        $paymentAccountEntity->setGroup($group);
+
+        $merchantName = $this->getMerchantName($group);
+
+        if (empty($merchantName)) {
+            throw new \Exception('Merchant name is not installed');
+        }
+
+        $tokenRequest = $this->getTokenRequest($paymentAccountType, $user);
+        $token = $this->getTokenResponse($tokenRequest, $merchantName);
+
+        $paymentAccountEntity->setToken($token);
+
+        if ($paymentAccountEntity instanceof UserAwareInterface) {
+            $paymentAccountEntity->setUser($user);
+        }
+
+        $em->persist($paymentAccountEntity);
+        $em->flush();
+
+        return $paymentAccountEntity;
+    }
+
+    protected function getTokenRequest(Form $paymentAccountType, User $user)
+    {
         $request = new GetTokenRequest();
-
-        $isNewAddress = false;
 
         /** @var PaymentAccount $paymentAccountEntity */
         $paymentAccountEntity = $paymentAccountType->getData();
-        $request->getAccountHolderData()->setEmail($this->getUser()->getEmail());
-        $request->getAccountHolderData()->setFirstName($this->getUser()->getFirstName());
-        $request->getAccountHolderData()->setLastName($this->getUser()->getLastName());
-        $request->getAccountHolderData()->setPhone($this->getUser()->getPhone());
+        $request->getAccountHolderData()->setEmail($user->getEmail());
+        $request->getAccountHolderData()->setFirstName($user->getFirstName());
+        $request->getAccountHolderData()->setLastName($user->getLastName());
+        $request->getAccountHolderData()->setPhone($user->getPhone());
+
         if (PaymentAccountTypeEnum::CARD == $paymentAccountEntity->getType()) {
             $ccMonth = $paymentAccountType->get('ExpirationMonth')->getData();
             $ccYear = $paymentAccountType->get('ExpirationYear')->getData();
             $paymentAccountEntity->setCcExpiration(new DateTime("last day of {$ccYear}-{$ccMonth}"));
 
-            /** @var Address $address */
             if ($address = $paymentAccountType->get('address_choice')->getData()) {
-//                /** @var Address $ad */
-//                foreach ($this->getUser()->getAddresses() as $ad) { // TODO find a problem and remove
-//                    if ($address->getId() == $ad->getId()) {
-//                        $address = $ad;
-//                        var_dump($ad->getZip());
-//                        break;
-//                    }
-//                }
+                // TODO: address is a Proxy, but should be Entity
                 $paymentAccountEntity->setAddress($address);
             } else {
-                $isNewAddress = true;
+                $this->hasNewAddress = true;
             }
-            $paymentAccountEntity->getAddress()->setUser($this->getUser());
-
+            $paymentAccountEntity->getAddress()->setUser($user);
 
             $request->getAccountHolderData()->setAddress($paymentAccountEntity->getAddress()->getAddress());
             $request->getAccountHolderData()->setCity($paymentAccountEntity->getAddress()->getCity());
@@ -87,7 +116,11 @@ trait PaymentProcess
             $request->setExpirationYear($ccYear);
             $request->setPaymentMethod(TokenPaymentMethod::CREDIT);
         } elseif (PaymentAccountTypeEnum::BANK == $paymentAccountEntity->getType()) {
-            $paymentAccountEntity->setAddress(null);
+
+            if ($paymentAccountEntity instanceof UserAwareInterface) {
+                $paymentAccountEntity->setAddress(null);
+            }
+
             $request->setRoutingNumber($paymentAccountType->get('RoutingNumber')->getData());
             $request->setAccountNumber($paymentAccountType->get('AccountNumber')->getData());
             $ACHDepositType = $paymentAccountType->get('ACHDepositType')->getData();
@@ -102,35 +135,18 @@ trait PaymentProcess
             $request->setPaymentMethod(TokenPaymentMethod::ACH);
         }
 
-        $merchantName = null;
-        $group = $paymentAccountEntity->getGroup();
-        if (empty($group)) {
-            /** @var Group $group */
-            if ($group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData())) {
-                $merchantName = $group->getMerchantName();
-            }
-            $paymentAccountEntity->setGroup($group);
-        } else {
-            $merchantName = $group->getMerchantName();
-        }
+        return $request;
+    }
 
-        if (empty($merchantName)) {
-            return new JsonResponse(
-                array(
-                    $paymentAccountType->getName() => array(
-                        '_globals' => array(
-                            'Merchant name not installed'
-                        )
-                    )
-                )
-            );
-        }
-
+    protected function getTokenResponse($tokenRequest, $merchantName)
+    {
         $paymentDetails = new PaymentDetails();
         $paymentDetails->setMerchantName($merchantName);
-        $paymentDetails->setRequest($request);
-
+        $paymentDetails->setRequest($tokenRequest);
         $captureRequest = new CaptureRequest($paymentDetails);
+
+        /** @var Payment $payment */
+        $payment = $this->get('payum')->getPayment('heartland');
         $payment->execute($captureRequest);
 
         $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
@@ -139,35 +155,10 @@ trait PaymentProcess
         /** @var GetTokenResponse $response */
         $response = $statusRequest->getModel()->getResponse();
 
-        $paymentAccountEntity->setUser($this->getUser());
-        if ($statusRequest->isSuccess()) {
-            $paymentAccountEntity->setToken($response->getToken());
-        } else {
-            return new JsonResponse(
-                array(
-                    $paymentAccountType->getName() => array(
-                        '_globals' => explode('|', $paymentDetails->getMessages())
-                    )
-                )
-            );
+        if (!$statusRequest->isSuccess()) {
+            throw new \Exception($paymentDetails->getMessages());
         }
 
-        $em->persist($paymentAccountEntity);
-        $em->flush();
-
-        return new JsonResponse(
-            array(
-                'success' => true,
-                'paymentAccount' => $this->get('jms_serializer')->serialize(
-                    $paymentAccountEntity,
-                    'array'
-                ),
-                'newAddress' => $isNewAddress ?
-                    $this->get('jms_serializer')->serialize(
-                        $paymentAccountEntity->getAddress(),
-                        'array'
-                    ) : null
-            )
-        );
+        return $response->getToken();
     }
 }

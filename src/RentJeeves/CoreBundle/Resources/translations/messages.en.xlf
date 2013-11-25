@@ -423,6 +423,22 @@
                 <source>landlord.register.text4</source>
                 <target>Tell us a bit about the property you’re renting.</target>
             </trans-unit>
+            <trans-unit id="landlord.register.text5">
+                <source>landlord.register.text5</source>
+                <target>This information is used to deposit rent payments, collect fees, and comply with federal "Know Your Customer" regulations. Deposits typically take 1-2 business days to show up in your account.</target>
+            </trans-unit>
+            <trans-unit id="landlord.register.where_to_find_numbers">
+                <source>landlord.register.where_to_find_numbers</source>
+                <target>Where to find your banking numbers:</target>
+            </trans-unit>
+            <trans-unit id="landlord.register.text6">
+                <source>landlord.register.text6</source>
+                <target>Tell us where you would like to deposit rent payments.</target>
+            </trans-unit>
+            <trans-unit id="landlord.register.text7">
+                <source>landlord.register.text7</source>
+                <target><![CDATA[Still have questions? Learn more about the <a href="#">RentTrack's secure payment process</a>]]></target>
+            </trans-unit>
             <trans-unit id="tenant.found.match">
                 <source>tenant.found.match</source>
                 <target>Good news! We found a match.</target>
@@ -1562,6 +1578,10 @@
             <trans-unit id="property.number.not.exist">
                 <source>property.number.not.exist</source>
                 <target>Please put number for property.</target>
+            </trans-unit>
+            <trans-unit id="direct_deposit.info">
+                <source>direct_deposit.info</source>
+                <target>Direct deposit information</target>
             </trans-unit>
         </body>
     </file>
