@@ -28,14 +28,14 @@ class DashboardCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processPayment').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processPayment').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
-        $this->assertEquals('order.status.text.returned', $td[0]->getText(), 'Wrong text in field');
+        $this->assertEquals('order.status.text.new', $td[0]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($status = $this->page->find('css', '#status'));
         $status->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '#payments-block td'));
-        $this->assertEquals('order.status.text.new', $td[0]->getText(), 'Wrong text in field');
+        $this->assertEquals('order.status.text.returned', $td[0]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($propertyA = $this->page->find('css', '#propertyA'));
         $propertyA->click();
