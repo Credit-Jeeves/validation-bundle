@@ -507,3 +507,10 @@ a.linkselect-link .linkselect-link-text {
 .errorsGoogleSearch {
     color: red;
 }
+
+.pricing-popup .attention-box h3 {
+    color: #EF543E;
+    font: bold 14px/18px 'ABeeZee',sans-serif;
+    padding: 0;
+    text-align: left;
+}
