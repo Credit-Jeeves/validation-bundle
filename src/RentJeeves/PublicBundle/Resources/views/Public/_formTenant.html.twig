@@ -62,6 +62,10 @@
   </div>
   {{ form_errors(form.tos) }}
   <p>
-    {{ 'terms.service'|trans }}
+    {% if inviteCodeLandlord is defined  %}
+        {{ 'landlord.register.text2'|trans }}
+    {% else %}
+        {{ 'terms.service'|trans }}
+    {% endif %}
   </p>
 </div>

@@ -8,7 +8,7 @@ function Payments() {
   this.current = ko.observable(1);
   this.last = ko.observable('Last');
   this.processPayment = ko.observable(true);
-  this.sortColumn = ko.observable("status");
+  this.sortColumn = ko.observable("date-initiated");
   this.isSortAsc = ko.observable(true);
   this.searchText = ko.observable("");
   this.searchCollum = ko.observable("");
