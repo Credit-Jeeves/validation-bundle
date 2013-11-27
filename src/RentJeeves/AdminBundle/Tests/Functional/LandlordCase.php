@@ -28,7 +28,7 @@ class LandlordCase extends BaseTestCase
         $submit->click();
         $this->assertNotNull($error = $this->page->find('css', '.alert-error'));
         $this->assertNotNull($fields = $this->page->findAll('css', 'form input'));
-        $this->assertCount(13, $fields, 'wrong number of inputs');
+        $this->assertCount(14, $fields, 'wrong number of inputs');
         $this->fillForm(
             $form,
             array(
