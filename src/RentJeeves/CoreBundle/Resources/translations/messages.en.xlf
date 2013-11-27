@@ -1591,6 +1591,10 @@
                 <source>order.type.cash</source>
                 <target>Cash.</target>
             </trans-unit>
+            <trans-unit id="base.order.report">
+                <source>base.order.report</source>
+                <target>Base order report</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
