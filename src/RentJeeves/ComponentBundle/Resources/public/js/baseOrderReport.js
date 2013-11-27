@@ -1,5 +1,5 @@
 $(function() {
-    var currentTime = new Date()
+    var currentTime = new Date();
     var minDate = new Date(currentTime.getYear(), currentTime.getMonth()-24); //previous
     var maxDate =  new Date(currentTime.getFullYear(),currentTime.getMonth()); // this month
     $('.calendar').datepicker({
@@ -12,7 +12,7 @@ $(function() {
         position: 'r'
     });
 
-    $('.typeReport').change(function(){
+    $('#base_order_report_type_type').change(function(){
        $('.helpContainer>a').hide();
        $('.'+$(this).val()).show();
     });
