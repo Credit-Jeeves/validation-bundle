@@ -4,9 +4,29 @@
 <div>
   <div class="pod-middle pod-border pod-padding shadow">
     <section class="form-content">
+        {{ render(controller('RjComponentBundle:Reports:baseOrderReport')) }}
     </section>
     <div class="col-box clearfix"></div>
   </div>
 </div>
 <div class="col-box clearfix"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/reports.css' %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    'bundles/bazingaexposetranslation/js/translator.min.js'
+    '@RjComponentBundle/Resources/public/js/baseOrderReport.js'
+    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
 {% endblock %}

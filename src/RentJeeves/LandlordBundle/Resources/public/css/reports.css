@@ -1,0 +1,32 @@
+.widthSelect {
+    width: 155px;
+}
+.begin, .end {
+    width: 65px !important;
+}
+.date {
+    width: 150px;
+    padding-left: 0px;
+    float: left;
+}
+.date>label {
+    margin: 15px 0 0 0px;
+    width: 28px;
+}
+.date>.fields-box {
+    width: 120px;
+}
+.none {
+    display: none;
+}
+.helpContainer{
+    position: absolute;
+    margin-top: -20px;
+    margin-left: 285px;
+}
+.submitBaseReport {
+    margin-left: 130px;
+}
+.dateCol {
+    padding-left: 0px;
+}

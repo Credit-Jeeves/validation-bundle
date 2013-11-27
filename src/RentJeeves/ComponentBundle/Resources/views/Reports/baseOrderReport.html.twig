@@ -1,0 +1,56 @@
+{% form_theme form ':Form:form_errors.html.twig' %}
+
+{{ form_errors(form) }}
+<div class="col-box clearfix">
+    <h3>
+        {{ 'tabs.reports'|trans }}
+    </h3>
+    <div class="col">
+        <div class="form-row clearfix">
+            {{ form_label(form.type) }}
+            <div class="fields-box">
+                {{ form_widget(form.type, { 'attr': {'class': 'original widthSelect typeReport'} }) }}
+                {{ form_errors(form.type) }}
+            </div>
+        </div>
+        <div class="form-row clearfix">
+            {{ form_label(form.property) }}
+            <div class="fields-box">
+                {{ form_widget(form.property, { 'attr': {'class': 'original widthSelect'} }) }}
+                {{ form_errors(form.property) }}
+            </div>
+        </div>
+        <br />
+        <button type="submit" class="button small submitBaseReport">
+                <span>
+                    {{ 'base.order.report.download'|trans }}
+                </span>
+        </button>
+        <div class="helpContainer">
+            Help:
+            <a href="#" class="xml">{{ 'base.order.report.how_to.yardi'|trans }}</a>
+            <a href="#" class="csv none">{{ 'base.order.report.how_to.realpage'|trans }}</a>
+        </div>
+    </div>
+    <div class="col dateCol">
+        <div class="form-row clearfix date">
+            {{ form_label(form.begin) }}
+            <div class="fields-box">
+                {{ form_widget(form.begin, { 'attr': {'class': 'begin calendar'} }) }}
+                {{ form_errors(form.begin) }}
+            </div>
+        </div>
+        <div class="form-row clearfix date">
+            {{ form_label(form.end) }}
+            <div class="fields-box">
+                {{ form_widget(form.end, { 'attr': {'class': 'end calendar'} }) }}
+                {{ form_errors(form.end) }}
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="form-row clearfix">
+
+        </div>
+    </div>
+</div>

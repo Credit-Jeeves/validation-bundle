@@ -1599,7 +1599,30 @@
                 <source>tabs.reports</source>
                 <target>Reports</target>
             </trans-unit>
-
+            <trans-unit id="base.order.report.type.yardi">
+                <source>base.order.report.type.yardi</source>
+                <target>Yardi Voyager (XML)</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.type.realpage">
+                <source>base.order.report.type.realpage</source>
+                <target>RealPage OneSite (CSV)</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.download">
+                <source>base.order.report.download</source>
+                <target>Download Report</target>
+            </trans-unit>
+            <trans-unit id="help">
+                <source>help</source>
+                <target>Help</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.how_to.yardi">
+                <source>base.order.report.how_to.yardi</source>
+                <target>How to Import into Yardi</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.how_to.realpage">
+                <source>base.order.report.how_to.realpage</source>
+                <target>How to Import into RealPage OneSite</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
