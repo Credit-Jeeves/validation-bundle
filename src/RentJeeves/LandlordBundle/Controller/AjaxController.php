@@ -76,6 +76,32 @@ class AjaxController extends Controller
 
     /**
      * @Route(
+     *     "/reports/baseOrderReport/validate",
+     *     name="base_order_report",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function baseOrderReportValidateAction()
+    {
+        $data = array();
+        $user = $this->get('security.context')->getToken()->getUser();
+        $group = $this->get('core.session.landlord')->getGroup();
+        $form = $this->createForm(new BaseOrderReportType($user, $group));
+        if ($form->isValid()) {
+            $data['isValid'] = 'OK';
+        } else {
+            $data['isValid'] = 'NO';
+            $data['errors'] = $form->getErrors();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route(
      *  "/property/add",
      *  name="landlord_property_add",
      *  defaults={"_format"="json"},
