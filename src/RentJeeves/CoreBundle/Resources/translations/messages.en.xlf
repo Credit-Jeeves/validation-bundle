@@ -1595,6 +1595,11 @@
                 <source>base.order.report</source>
                 <target>Base order report</target>
             </trans-unit>
+            <trans-unit id="tabs.reports">
+                <source>tabs.reports</source>
+                <target>Reports</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>

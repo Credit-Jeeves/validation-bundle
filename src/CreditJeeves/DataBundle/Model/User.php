@@ -614,11 +614,24 @@ abstract class User extends BaseUser
     }
 
     /**
-     * @return mixed
+     * @return UserSettings
      */
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    public function haveAccessToReports()
+    {
+        if (!$this->getSettings()) {
+            return false;
+        }
+
+        if ($this->getSettings()->getIsBaseOrderReport()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
