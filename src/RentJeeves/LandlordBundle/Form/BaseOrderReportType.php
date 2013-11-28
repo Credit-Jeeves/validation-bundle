@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Form;
+namespace RentJeeves\LandlordBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,6 +37,9 @@ class BaseOrderReportType extends AbstractType
                     'csv' => 'base.order.report.type.realpage'
                 ),
                 'required'  => true,
+                'attr'      => array(
+                    'class'     => 'original widthSelect'
+                )
             )
         );
 
@@ -46,6 +49,9 @@ class BaseOrderReportType extends AbstractType
             array(
                 'class'             => 'RjDataBundle:Property',
                 'error_bubbling'    => true,
+                'attr'              => array(
+                    'class'         =>  'original widthSelect',
+                ),
                 'query_builder'     => function (EntityRepository $er) use ($groups) {
 
                     if ($this->group) {
@@ -85,7 +91,10 @@ class BaseOrderReportType extends AbstractType
                 'input'             => 'string',
                 'widget'            => 'single_text',
                 'format'            => 'MM/dd/yyyy',
-                'error_bubbling'    => true,
+                'attr'              => array(
+                    'class'     =>  'begin calendar',
+                    'force_row' => true
+                )
             )
         );
 
@@ -94,9 +103,12 @@ class BaseOrderReportType extends AbstractType
             'date',
             array(
                 'input'             => 'string',
+                'required'          => true,
                 'widget'            => 'single_text',
                 'format'            => 'MM/dd/yyyy',
-                'error_bubbling'    => true,
+                'attr'              => array(
+                    'class' =>  'end calendar'
+                )
             )
         );
     }
