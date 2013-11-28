@@ -466,6 +466,7 @@ class AjaxController extends Controller
                 $searchText
             );
             foreach ($contracts as $contract) {
+                $contract->statusShowLateForce = true;
                 $item = $contract->getItem();
                 $items[] = $item;
             }

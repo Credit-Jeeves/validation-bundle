@@ -79,6 +79,15 @@ class Contract extends Base
     const EMPTY_LAST_PAYMENT = '-';
 
     /**
+     * Details in RT-65
+     * On the tenant tab we need use false
+     * On the dashboard tab we need use true
+     *
+     * @var bool
+     */
+    public $statusShowLateForce = false;
+
+    /**
      * @return int
      */
     public function getGroupId()
@@ -230,7 +239,7 @@ class Contract extends Base
             /**
              * if we have payments for this contract need show days late
              */
-            if ($lastPayment != self::EMPTY_LAST_PAYMENT) {
+            if ($lastPayment != self::EMPTY_LAST_PAYMENT || $this->statusShowLateForce) {
                 $days = $interval->format('%d');
                 $result['status'] = 'LATE ('.$days.' days)';
                 $result['class'] = 'contract-late';
