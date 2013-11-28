@@ -239,7 +239,8 @@ class Contract extends Base
             /**
              * if we have payments for this contract need show days late
              */
-            if ($lastPayment != self::EMPTY_LAST_PAYMENT || $this->statusShowLateForce) {
+            if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
+                ($this->statusShowLateForce && $result['status'] == strtoupper(ContractStatus::APPROVED))) {
                 $days = $interval->format('%d');
                 $result['status'] = 'LATE ('.$days.' days)';
                 $result['class'] = 'contract-late';
