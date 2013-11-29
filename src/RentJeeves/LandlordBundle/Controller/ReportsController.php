@@ -79,6 +79,12 @@ class ReportsController extends Controller
         $context = new SerializationContext();
         $context->setSerializeNull(true);
         $context->setGroups('xmlBaseReport');
+        //@TODO Find way to implement this options to Context, because now we use SerializedName("TotalAmount")
+        //jms_serializer:
+        //    property_naming:
+        //        separator: ""
+        //        lower_case: false
+
         $response->setContent($serializer->serialize($ysiTran, 'xml', $context));
         return $response;
     }

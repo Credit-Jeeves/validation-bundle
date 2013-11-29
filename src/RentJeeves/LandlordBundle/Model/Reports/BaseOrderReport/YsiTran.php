@@ -10,6 +10,7 @@ use JMS\Serializer\Annotation as Serializer;
 class YsiTran
 {
     /**
+     * @Serializer\SerializedName("Receipts")
      * @Serializer\XmlList(inline = false, entry="Receipt")
      * @Serializer\XmlKeyValuePairs
      * @Serializer\Groups({"xmlBaseReport"})
