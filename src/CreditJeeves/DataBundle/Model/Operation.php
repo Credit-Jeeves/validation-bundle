@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -35,6 +36,7 @@ abstract class Operation
      *     type="integer",
      *     nullable=true
      * )
+     * @Serializer\Groups({"xmlBaseReport"})
      */
     protected $amount;
 

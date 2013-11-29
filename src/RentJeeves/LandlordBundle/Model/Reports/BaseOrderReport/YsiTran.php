@@ -9,21 +9,21 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class YsiTran
 {
-    /** @Serializer\XmlAttributeMap */
-    private $attributes = array(
-        'xmlns:xsi' => "http://www.w3.org/2001/XMLSchema-instance"
-    );
-
     /**
      * @Serializer\XmlList(inline = false, entry="Receipt")
      * @Serializer\XmlKeyValuePairs
+     * @Serializer\Groups({"xmlBaseReport"})
      */
     protected $receipts = array();
 
+    public function setReceipt($receipt)
+    {
+        $this->receipts = $receipt;
+    }
     /**
      * @param mixed $receipts
      */
-    public function addReceipt(Receipt $receipts)
+    public function addReceipt($receipts)
     {
         $this->receipts[] = $receipts;
     }

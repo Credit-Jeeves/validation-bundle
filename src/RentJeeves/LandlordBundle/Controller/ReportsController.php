@@ -9,8 +9,6 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\LandlordBundle\Model\Reports\BaseOrderReport\Detail;
-use RentJeeves\LandlordBundle\Model\Reports\BaseOrderReport\Receipt;
 use RentJeeves\LandlordBundle\Model\Reports\BaseOrderReport\YsiTran;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -77,62 +75,17 @@ class ReportsController extends Controller
         $response->headers->set('Content-Disposition', 'attachment; filename=report_'.$begin.'_and_'.$end.'.xml');
         $response->sendHeaders();
         $ysiTran = new YsiTran();
-        /**
-         * @var $order Order
-         */
-        foreach ($orders as $order) {
-            $receipt = new Receipt();
-            $detail = new Detail();
-            $detail->setAmount($order->getAmount());
-            $detail->setNotes($order->getCreatedAt()->format('d/m/y'));
-            $receipt->addDetails($detail);
-            $receipt->setTotalAmount();
-            if ($order->getType() === OrderType::CASH) {
-                $receipt->setIsCash(true);
-            } else {
-                $receipt->setIsCash(false);
-                $checkNumber = $order->getType()." ".$order->getHeartlandTransactionId();
-                $receipt->setCheckNumber($checkNumber);
-            }
-            $receipt->setDate($order->getUpdatedAt());
-            /**
-             * @var $property Property
-             */
-            $property = $order->getContract()->getProperty();
-            $unit = $order->getContract()->getUnit();
-            $unitName = '';
-            if ($unit) {
-                $unitName = ' #'.$unit->getName();
-            }
-            $address = $property->getFullAddress().$unitName;
-            $receipt->setNotes($address);
-            /**
-             * @var $tenant Tenant
-             */
-            $tenant = $order->getContract()->getTenant();
-            $receipt->setPayerName($tenant->getFullName());
-            /**
-             * @TODO create suggestion about:
-             * We need write month and year - user paid rent for ??
-             */
-            $date = $order->getUpdatedAt();
-            $daysLate = $order->getDaysLate();
-            if ($daysLate < 0) {
-                $date->modify('-'.$daysLate.' day');
-            } elseif ($daysLate > 0) {
-                $daysLate = $daysLate * -1;
-                $date->modify($daysLate.' day');
-            }
-            $receipt->setPostMonth($date);
-
-            $ysiTran->addReceipt($receipt);
-        }
-        $response->setContent($serializer->serialize($ysiTran, 'xml'));
+        $ysiTran->setReceipt($orders);
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('xmlBaseReport');
+        $response->setContent($serializer->serialize($ysiTran, 'xml', $context));
         return $response;
     }
 
     /**
      * CsvBaseReport download
+     * @TODO wrtite driver for serialization and move it to order entity
      */
     public function csvBaseReport($orders, $begin, $end)
     {
