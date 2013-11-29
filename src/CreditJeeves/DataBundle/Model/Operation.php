@@ -34,7 +34,7 @@ abstract class Operation
      * @var float
      * @ORM\Column(
      *     type="integer",
-     *     nullable=true
+     *     nullable=false
      * )
      * @Serializer\Groups({"xmlBaseReport"})
      */
