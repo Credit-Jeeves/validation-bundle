@@ -39,6 +39,11 @@ parameters:
     landlord_payment_per_month_dollars: 1
     landlord_payment_per_month_cents: 95
 
+jms_serializer:
+    property_naming:
+        separator: ""
+        lower_case: false
+
 framework:
     router:
         resource: "%kernel.root_dir%/config/rj/routing.yml"
