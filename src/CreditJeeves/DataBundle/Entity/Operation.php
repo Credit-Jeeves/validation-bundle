@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Operation as Base;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Operation
@@ -12,6 +13,19 @@ use CreditJeeves\DataBundle\Model\Operation as Base;
  */
 class Operation extends Base
 {
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Notes")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return DateTime
+     */
+    public function getNotes()
+    {
+        return $this->getCreatedAt();
+    }
+
     /**
      * Add orders
      *

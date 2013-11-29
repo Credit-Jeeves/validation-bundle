@@ -7,15 +7,140 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
  * @ORM\Table(name="cj_order")
  * @ORM\HasLifecycleCallbacks()
+ * @Serializer\AccessorOrder("custom", custom = {
+ *      "TotalAmount",
+ *      "IsCash",
+ *      "CheckNumber",
+ *      "Date",
+ *      "Notes",
+ *      "IsCash",
+ *      "PayerName",
+ *      "operations"
+ * })
  */
 class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("TotalAmount")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return float
+     */
+    public function getTotalAmount()
+    {
+        return $this->getAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("IsCash")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return string
+     */
+    public function getIsCash()
+    {
+        if ($this->getType() === OrderType::CASH) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CheckNumber")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return string
+     */
+    public function getCheckNumber()
+    {
+        if ($this->getIsCash()) {
+            return null;
+        }
+
+        $checkNumber = $this->getType()." ".$this->getHeartlandTransactionId();
+        return $checkNumber;
+    }
+
+    /**
+     * Date time of actual payment transaction with Heartland
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Date")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return DateTime
+     */
+    public function getDate()
+    {
+        return $this->getUpdatedAt();
+    }
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Notes")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return DateTime
+     */
+    public function getNotes()
+    {
+        $property = $this->getContract()->getProperty();
+        $unit = $this->getContract()->getUnit();
+        $unitName = '';
+        if ($unit) {
+            $unitName = ' #'.$unit->getName();
+        }
+        $address = $property->getFullAddress().$unitName;
+
+        return $address;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PayerName")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return DateTime
+     */
+    public function getPayerName()
+    {
+        $tenant = $this->getContract()->getTenant();
+        return $tenant->getFullName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PostMonth")
+     * @Serializer\Groups({"xmlBaseReport"})
+     *
+     * @return DateTime
+     */
+    public function getPostMonth()
+    {
+        $date = $this->getUpdatedAt();
+        $daysLate = $this->getDaysLate();
+        if ($daysLate < 0) {
+            $date->modify('-'.$daysLate.' day');
+        } elseif ($daysLate > 0) {
+            $daysLate = $daysLate * -1;
+            $date->modify($daysLate.' day');
+        }
+
+        return $date;
+    }
 
     /**
      * @ORM\PrePersist

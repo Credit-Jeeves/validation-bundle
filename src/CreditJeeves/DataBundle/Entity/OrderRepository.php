@@ -265,4 +265,27 @@ class OrderRepository extends EntityRepository
         }
         return $result;
     }
+
+    public function getOrdersForReport(
+        $propertyId,
+        $start,
+        $end
+    ) {
+        $query = $this->createQueryBuilder('o');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('t.tenant', 'ten');
+        $query->innerJoin('t.property', 'prop');
+        $query->innerJoin('t.unit', 'unit');
+        $query->where('o.created_at BETWEEN :start AND :end');
+        $query->andWhere('prop.id = :propId');
+        $query->andWhere('o.status = :status');
+        $query->setParameter('end', $end);
+        $query->setParameter('start', $start);
+        $query->setParameter('propId', $propertyId);
+        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->orderBy('o.updated_at', 'ASC');
+        $query = $query->getQuery();
+        return $query->execute();
+    }
 }
