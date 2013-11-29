@@ -38,7 +38,7 @@ abstract class Operation
      * )
      * @Serializer\Groups({"xmlBaseReport"})
      */
-    protected $amount;
+    protected $amount = 0;
 
     /**
      * @var integer
