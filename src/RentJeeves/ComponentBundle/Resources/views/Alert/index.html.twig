@@ -6,7 +6,7 @@
         </div>
         <div class="landlord-alert-right floatleft">
             {% for key, alert in alerts %}
-            <div class="landlord-alert-number floatleft">{{ key + 1 }}</div><div class="floatleft">{{ alert }}</div>
+            <div class="landlord-alert-number floatleft">{{ key + 1 }}</div><div class="landlord-alert-text floatleft">{{ alert }}</div>
             <div class="clearboth"></div>
             {% endfor %}
         </div>

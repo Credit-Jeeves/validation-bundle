@@ -126,6 +126,14 @@ function Pay(parent, contractId) {
 
 
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
+
+    this.notEmptyPaymentAccount = ko.computed(function() {
+        if (self.paymentAccounts().length > 0) {
+            return true;
+        }
+        return false;
+    });
+
     this.isNewPaymentAccount = ko.computed(function() {
         return this.newPaymentAccount() && !this.payment.paymentAccountId();
     }, self);
@@ -182,7 +190,7 @@ function Pay(parent, contractId) {
     }, this);
 
     this.getFeeAmountText = function(paymentCardFee) {
-        return paymentCardFee + ' ($' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2) + ')';
+        return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };
 
     this.isForceSave = ko.computed(function() {

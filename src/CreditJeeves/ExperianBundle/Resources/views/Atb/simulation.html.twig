@@ -30,10 +30,6 @@
                  data-bind="style: { visibility: blocks().length ? 'visible' : 'hidden' }">
                 <span class="arrow-up-icon"></span>
                 <span class="score" data-bind="text: score_best"></span>
-                <div class="estimated-fico" data-bind=" visible: !is_dealer_side() ">
-                    {{ 'common.estimated.fico' | trans }}
-                    <span data-bind="text: getFico()"></span>
-                </div>
             </div>
             <div class="comments">
                 <div id="steps-title" data-bind="html: title"></div>

@@ -67,4 +67,8 @@
     width: 220px;
 }
 
+/* additional style */
+.hidden {
+    display: none;
+}
 

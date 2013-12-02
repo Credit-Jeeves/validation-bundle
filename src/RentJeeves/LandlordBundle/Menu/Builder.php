@@ -2,6 +2,7 @@
 namespace RentJeeves\LandlordBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
+use RentJeeves\DataBundle\Entity\Landlord;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Builder extends ContainerAware
@@ -28,12 +29,19 @@ class Builder extends ContainerAware
                 'route' => 'landlord_tenants'
             )
         );
-//         $menu->addChild(
-//             'tabs.settings',
-//             array(
-//                 'route' => 'landlord_settings'
-//             )
-//         );
+        /**
+         * @var $user Landlord
+         */
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        if ($user->haveAccessToReports()) {
+            $menu->addChild(
+                'tabs.reports',
+                array(
+                    'route' => 'landlord_reports'
+                )
+            );
+        }
+
         switch ($sRoute) {
             case 'landlord_homepage':
                 $menu['tabs.dashboard']->setAttribute('class', 'active');
@@ -44,6 +52,9 @@ class Builder extends ContainerAware
                 break;
             case 'landlord_tenants':
                 $menu['tabs.tenants']->setAttribute('class', 'active');
+                break;
+            case 'landlord_reports':
+                $menu['tabs.reports']->setAttribute('class', 'active');
                 break;
             default:
                 break;

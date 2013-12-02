@@ -86,152 +86,163 @@
   </div>
 </div>
 
+<!-- Add Property Popup -->
 <div id="add-property-popup" class="pricing-popup dashboard-popup properties-popup">
-  <h1>{{ 'add.property'|trans }}</h1>
-  <div class="clearfix col-box">
-    <div class="col">
-      <h4 class="clearfix">
-        <span>{{ 'property.info'|trans }}</span>
-        <small><b>*</b>{{ 'required'|trans }}</small>
-      </h4>
-      <div class="search-box pie-el">
-        <label for="searsh-field">{{ 'find.your.rental'|trans }}</label>
-        <div class="clearfix">
-          <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search" autocomplete="off">
-          <a class="pie-el clearSearchProperty" id="delete" href="#">x</a>
-          <button class="pie-el" id="search-submit" type="submit">{{ 'search'|trans }}</button>
-          <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." class="loadingSpinner">
-          <div id="search-result-map"></div>
-        </div>
-      </div>
-      <div class="errorsGoogleSearch"></div>
-    </div>
-    
-    <div class="col">
-      <h4>{{ 'unit.info'|trans }} ({{ 'unit.live.it.empty'|trans }})</h4>
-      <div class="form-row clearfix">
-        <label>{{'unit.numberof'|trans}}<b></b></label>
-        <div class="fields-box">
-          <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
-          <button class="button small grey buttonFixPopupAddUnit" data-bind="click: addUnits" id="addUnitToNewProperty" type="button">
-            <span>{{ 'add'|trans }}</span>
-          </button>
-        </div>
-      </div>
-      <div class="form-row clearfix full show">
-        <label style="width: 78px;">{{ 'nameofunit'|trans }}<b></b></label>
-        <div class="fields-box" style="width:375px;margin-left: -12px;">
-          <!-- ko foreach: { data: aUnits() } -->
-            <div class="units-item">
-                <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
-                <div class="floatleft unit-delete" data-bind="click: $root.removeUnit">
+    <h1>{{ 'add.property'|trans }}</h1>
+    <div class="clearfix col-box">
+        <div class="col">
+            <h4 class="clearfix">
+                <span>{{ 'property.info'|trans }}</span>
+                <small><b>*</b>{{ 'required'|trans }}</small>
+            </h4>
+            <div class="search-box pie-el">
+                <label for="searsh-field">{{ 'find.your.rental'|trans }}</label>
+                <div class="clearfix">
+                    <input type="text" placeholder="{{ 'your.rental'|trans }}" value="" name="searsh-field" id="property-search" autocomplete="off">
+                    <a class="pie-el clearSearchProperty" id="delete" href="#">x</a>
+                    <button class="pie-el" id="search-submit" type="submit">{{ 'search'|trans }}</button>
+                    <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." class="loadingSpinner">
+                    <div id="search-result-map"></div>
                 </div>
             </div>
-          <!-- /ko -->
+            <div class="errorsGoogleSearch"></div>
         </div>
-      </div>
-    </div>
-    
-  </div>
-  <div class="footer-button-box">
-    <button class="button grey buttonFix" id="saveProperty" data-bind="click: saveProperty">
-      <span>{{ 'add.property'|trans }}</span>
-    </button>
-    <button class="button grey buttonFix" onclick="$('#add-property-popup').dialog( 'close' ); return false;">
-      <span>{{ 'cancel'|trans}}</span>
-    </button>
-  </div>
-</div>
-
-<div id="edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <h1>{{ 'property.edit.info'|trans }}</h1>
-      
-      <div id="blockPopupEditProperty" class="clearfix col-box"  data-bind="style: { display: process() ? 'none' : 'block' }">
         <div class="col">
-          <h4 class="clearfix">
-            <span>{{ 'property.info'|trans }}</span>
-            <small><b>*</b>{{ 'required'|trans }}</small>
-          </h4>
-          <div class="form-row clearfix">
-            <label>{{ 'address'|trans }}<b>*</b></label>
-            <div class="fields-box">
-              <span data-bind="text: name" class="value"></span>
+            <h4>{{ 'unit.info'|trans }} ({{ 'unit.live.it.empty'|trans }})</h4>
+            <div class="form-row clearfix">
+                <label>{{'unit.numberof'|trans}}<b></b></label>
+                <div class="fields-box">
+                    <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
+                    <button class="button small grey buttonFixPopupAddUnit" data-bind="click: addUnits" id="addUnitToNewProperty" type="button">
+                        <span>{{ 'add'|trans }}</span>
+                    </button> 
+                </div>
             </div>
-          </div>
+            <div class="form-row clearfix full show">
+                <label style="width: 78px;">{{ 'nameofunit'|trans }}<b></b></label>
+                <div class="fields-box" style="width:375px;margin-left: -12px;">
+                    <!-- ko foreach: { data: aUnits() } -->
+                    <div class="units-item">
+                        <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
+                        <div class="floatleft unit-delete" data-bind="click: $root.removeUnit"></div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+            </div>
         </div>
-        <div class="col" style="padding-top: 45px;" >
-          <h4>{{ 'unit.info'|trans }}</h4>
-          <div class="form-row clearfix">
-            <label>{{ 'unit.add'|trans }}<b>*</b></label>
-            <div class="fields-box">
-              <input type="text" class="zc-width" id="inputEditAddUnit" data-bind="value: add" value="1">
-              <button class="button small buttonFixPopupAddUnit" data-bind="click: addUnits" type="button">
-                <span id="addEditUnit">{{ 'add'|trans }}</span>
-              </button>
-            </div>
-          </div>
-          <div class="form-row clearfix full edit">
-            <label>{{ 'nameofunit'|trans }}:<b>*</b></label>
-            <div class="fields-box clearfix" style="margin-left: -2px;">
-                <!-- ko foreach: { data: aUnits() } -->
-                <div class="units-item">
-                    <input type="text" class="unit-input unit-input-edit floatleft" data-bind="value: name" placeholder="Unit">
-                    <div class="floatleft unit-delete" data-bind="click: $root.removeUnit">
+    </div>
+    <div class="footer-button-box">
+        <button class="button grey buttonFix" id="saveProperty" data-bind="click: saveProperty">
+            <span>{{ 'add.property'|trans }}</span>
+        </button>
+        <button class="button grey buttonFix" onclick="$('#add-property-popup').dialog( 'close' ); return false;">
+            <span>{{ 'cancel'|trans}}</span>
+        </button>
+    </div>
+</div>
+<!-- End Add property popup -->
+
+<!-- Edit Units Popup -->
+<div id="edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
+    <h1>{{ 'property.edit.info'|trans }}</h1>
+    <div class="clearfix col-box">
+        <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrors() > 0">
+            <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+            <ul class="default">
+                <!-- ko foreach: $root.errors() -->
+                <li data-bind="text: $data"></li>
+                <!-- /ko -->
+            </ul>
+        </div>
+        <div id="blockPopupEditProperty" class="clearfix col-box"  data-bind="style: { display: process() ? 'none' : 'block' }">
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'property.info'|trans }}</span>
+                    <small><b>*</b>{{ 'required'|trans }}</small>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'address'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <span data-bind="text: name" class="value"></span>
                     </div>
                 </div>
-                <!-- /ko -->
             </div>
-          </div>
+            <div class="col" style="padding-top: 45px;" >
+                <h4>{{ 'unit.info'|trans }}</h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'unit.add'|trans }}<b>*</b></label>
+                    <div class="fields-box">
+                        <input type="text" class="zc-width" id="inputEditAddUnit" data-bind="value: add" value="1">
+                        <button class="button small buttonFixPopupAddUnit" data-bind="click: addUnits" type="button">
+                            <span id="addEditUnit">{{ 'add'|trans }}</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-row clearfix full edit">
+                    <label>{{ 'nameofunit'|trans }}:<b>*</b></label>
+                    <div class="fields-box clearfix" style="margin-left: -2px;">
+                        <!-- ko foreach: { data: aUnits() } -->
+                        <div class="units-item">
+                            <input type="text" class="unit-input unit-input-edit floatleft" data-bind="value: name" placeholder="Unit">
+                            <div class="floatleft unit-delete" data-bind="click: $root.removeUnit"></div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div data-bind="style: { display: process() ? 'block' : 'none' }">
-          <br />
-          <br />
-          <center>
-            <img src="/bundles/core/images/img_loading.gif" title="Loading" />
-          </center>
-          <br />
-          <br />
-      </div>
-      <div class="footer-button-box">
-        <button class="button buttonFix" data-bind="click: saveUnits"><span  id="saveManageUnits">{{ 'savechanges'|trans }}</span></button>
-        <button class="button grey buttonFix" onclick="$('#edit-property-popup').dialog( 'close' ); return false;">
-          <span  data-bind="click: clearUnits">{{ 'cancel'|trans}}</span>
+        <div data-bind="style: { display: process() ? 'block' : 'none' }">
+            <br/>
+            <br/>
+            <center>
+                <img src="/bundles/core/images/img_loading.gif" title="Loading" />
+            </center>
+            <br/>
+            <br/>
+        </div>
+    </div>
+    <div class="footer-button-box">
+        <button class="button buttonFix" data-bind="click: saveUnits">
+            <span  id="saveManageUnits">{{ 'savechanges'|trans }}</span>
         </button>
-        <a href="#" class="link removePropertyConfirm"  data-bind="click: deletePropertyConfirm">
-          {{ 'delete'|trans }}<br>{{'property'|trans}}</a>
-      </div>
+        <button class="button grey buttonFix"  data-bind="click: cancelEdit">
+            <span  data-bind="click: clearUnits">{{ 'cancel'|trans}}</span>
+        </button>
+        <a href="#" class="link removePropertyConfirm"  data-bind="click: deletePropertyConfirm">{{ 'delete'|trans }}<br>{{'property'|trans}}</a>
+    </div>
 </div>
+<!--  End edit units -->
 
-
+<!-- Remove Property Popup -->
 <div id="remove-property-popup" class="pricing-popup dashboard-popup properties-popup">
-      <h1>{{ 'remove.property'|trans }}</h1>
-      <div class="clearfix col-box">
-        <div class="attention-box pie-el">
-          {{ 'remove.property.description'|trans }} 
-        </div>
+    <h1>{{ 'remove.property'|trans }}</h1>
+    <div class="clearfix col-box">
+        <div class="attention-box pie-el">{{ 'remove.property.description'|trans }}</div>
         <div class="col">
-          <h4>{{ 'property.info'|trans }}</h4>
-          <div class="form-row clearfix">
-            <label>{{ 'address'|trans }}</label>
-            <div class="fields-box">
-              <span class="value" data-bind="text: name"></span>
+            <h4>{{ 'property.info'|trans }}</h4>
+            <div class="form-row clearfix">
+                <label>{{ 'address'|trans }}</label>
+                <div class="fields-box">
+                    <span class="value" data-bind="text: name"></span>
+                </div>
             </div>
-          </div>
-          <div class="form-row clearfix">
-            <label><span data-bind="text: countUnit"></span> {{'units'|trans}}</label>
-            <div class="fields-box clearfix">
-               <!-- ko foreach: { data: aUnits() } -->
-              <span class="value"  data-bind="text: name"></span>
-              <!-- /ko -->
+            <div class="form-row clearfix">
+                <label><span data-bind="text: countUnit"></span> {{'units'|trans}}</label>
+                <div class="fields-box clearfix">
+                    <!-- ko foreach: { data: aUnits() } -->
+                    <span class="value"  data-bind="text: name"></span>
+                    <!-- /ko -->
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-      <div class="footer-button-box">
-        <button data-bind="click: deleteProperty"  class="button dark buttonFix"><span class="removeProperyLast">{{ 'yep.remove.property'|trans }}</span></button>
-        <button data-bind="click: cancel" class="button grey buttonFix" >
-          <span >{{ 'no.remove.property'|trans }}</span>
+    </div>
+    <div class="footer-button-box">
+        <button data-bind="click: deleteProperty" class="button dark buttonFix">
+            <span class="removeProperyLast">{{ 'yep.remove.property'|trans }}</span>
         </button>
-      </div>
+        <button data-bind="click: cancel" class="button grey buttonFix">
+            <span >{{ 'no.remove.property'|trans }}</span>
+        </button>
+    </div>
 </div>
+<!--  End Remove property Popup -->

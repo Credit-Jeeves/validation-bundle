@@ -161,6 +161,7 @@ class TenantCase extends BaseTestCase
      */
     public function remove()
     {
+        $this->clearEmail();
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
@@ -179,6 +180,11 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (12)', $allh2->getText(), 'Wrong count');
         $this->logout();
+        //Check email notify tenant about removed contract by landlord
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
     }
 
     /**
@@ -225,7 +231,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->assertCount(3, $errorList, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -323,7 +329,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->assertCount(3, $errorList, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -404,7 +410,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->assertCount(3, $errorList, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -478,7 +484,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(4, $errorList, 'Wrong number of errors');
+        $this->assertCount(3, $errorList, 'Wrong number of errors');
         $this->fillForm(
             $form,
             array(
@@ -538,6 +544,7 @@ class TenantCase extends BaseTestCase
      */
     public function revoke()
     {
+        $this->clearEmail();
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
@@ -577,5 +584,11 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (0)', $all->getText(), 'Wrong count');
+        $this->logout();
+        //Check email notify tenant about removed contract by landlord
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
     }
 }

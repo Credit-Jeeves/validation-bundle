@@ -30,5 +30,15 @@ class Dealer extends User
         foreach ($dealerGroups as $dealerGroup) {
             $this->addDealerGroup($dealerGroup);
         }
+
+    }
+
+    public function canRemove()
+    {
+        if ($this->getDealerLeads()->count() > 0) {
+            return false;
+        }
+
+        return true;
     }
 }

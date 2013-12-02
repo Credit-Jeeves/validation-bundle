@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="didnotfind">
                 <source>didnotfind</source>
-                <target>We didn’t find a match yet – let your landlord know!</target>
+                <target>Your landlord hasn't joined RentTrack yet - invite them!</target>
             </trans-unit>
             <trans-unit id="keep.paying">
                 <source>keep.paying</source>
@@ -407,7 +407,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*Up to 5 units are included with your minimum monthly fee of $9.95. Additional units are $1.95 each per month. Fees will be debited automatically from your deposit account at the end of each month.
+                <target>*Up to 5 eChecks are included with your minimum monthly fee of $9.95. Additional eChecks are $1.95 each per month.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -853,6 +853,10 @@
                 <source>next_due_date</source>
                 <target>Next Due Date</target>
             </trans-unit>
+            <trans-unit id="next_payment_date">
+                <source>next_payment_date</source>
+                <target>Next Payment Date</target>
+            </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
                 <target>Norton Secured</target>
@@ -895,7 +899,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.recurring">
                 <source>contract.payment.recurring</source>
-                <target>Recurs?</target>
+                <target>Recurring?</target>
             </trans-unit>
             <trans-unit id="contract.status">
                 <source>contract.status</source>
@@ -1045,7 +1049,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_2">
                 <source>popup.tenant.footer.note_2</source>
-                <target>We’ll sign you up for ScoreTrack when you set up your first rent payment.</target>
+                <target>Coming Soon!</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_3">
                 <source>popup.tenant.footer.note_3</source>
@@ -1066,7 +1070,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.unit">
                 <source>popup.landlord.unit</source>
-                <target>unit</target>
+                <target>eCheck</target>
             </trans-unit>
             <trans-unit id="popup.landlord.monthly.minimum">
                 <source>popup.landlord.monthly.minimum</source>
@@ -1110,7 +1114,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-                <target>*We'll waive your unit fee if the tenant enrolls in any one of our monthly </target>
+                <target>*We'll waive your eCheck fee if the tenant enrolls in any one of our monthly </target>
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
@@ -1270,6 +1274,10 @@
                 <source>contract.status.approved</source>
                 <target>APPROVED</target>
             </trans-unit>
+            <trans-unit id="contract.status.deleted">
+                <source>contract.status.deleted</source>
+                <target>DELETED</target>
+            </trans-unit>
             <trans-unit id="contract.status.finished">
                 <source>contract.status.finished</source>
                 <target>FINISHED</target>
@@ -1290,13 +1298,25 @@
                 <source>landlord.alert.pending-one</source>
                 <target>There is one new tenant pending your review.</target>
             </trans-unit>
+            <trans-unit id="landlord.alert.pending-one.admin">
+                <source>landlord.alert.pending-one.admin</source>
+                <target>There is one new tenant pending your review in the %GROUP% group.</target>
+            </trans-unit>
             <trans-unit id="landlord.alert.pending-many">
                 <source>landlord.alert.pending-many</source>
                 <target>There are %COUNT% new tenants pending your review.</target>
             </trans-unit>
+            <trans-unit id="landlord.alert.pending-many.admin">
+                <source>landlord.alert.pending-many.admin</source>
+                <target>There are %COUNT% new tenants pending your review in the %GROUP% group.</target>
+            </trans-unit>
             <trans-unit id="deposit.merchant.setup">
                 <source>deposit.merchant.setup</source>
                 <target>You need to set up your merchant account. Call 866-841-9090.</target>
+            </trans-unit>
+            <trans-unit id="deposit.merchant.setup.admin">
+                <source>deposit.merchant.setup.admin</source>
+                <target>You need to set up your merchant account for the %GROUP% group. Call 866-841-9090.</target>
             </trans-unit>
             <trans-unit id="address.not.valid">
                 <source>address.not.valid</source>
@@ -1533,7 +1553,7 @@
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
-                <target>Pay rent. Build Credit</target>
+                <target>Pay rent. Build Credit.</target>
             </trans-unit>
             <trans-unit id="iframe.item.pay.title">
                 <source>iframe.item.pay.title</source>
@@ -1541,7 +1561,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.pay.text">
                 <source>iframe.item.pay.text</source>
-                <target>Want to "set it and forget it"? With RentTrack, you can set up autometic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
+                <target>Want to "set it and forget it"? With RentTrack, you can set up automatic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
             </trans-unit>
             <trans-unit id="iframe.item.build.title">
                 <source>iframe.item.build.title</source>
@@ -1557,7 +1577,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.monitor.text">
                 <source>iframe.item.monitor.text</source>
-                <target>RenTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+                <target>RentTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
             </trans-unit>
             <trans-unit id="iframe.questions">
                 <source>iframe.questions</source>
@@ -1582,6 +1602,46 @@
             <trans-unit id="direct_deposit.info">
                 <source>direct_deposit.info</source>
                 <target>Direct deposit information</target>
+            </trans-unit>
+            <trans-unit id="help.popup">
+                <source>help.popup</source>
+                <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
+            </trans-unit>
+            <trans-unit id="order.type.cash">
+                <source>order.type.cash</source>
+                <target>Cash.</target>
+            </trans-unit>
+            <trans-unit id="base.order.report">
+                <source>base.order.report</source>
+                <target>Base order report</target>
+            </trans-unit>
+            <trans-unit id="tabs.reports">
+                <source>tabs.reports</source>
+                <target>Reports</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.type.yardi">
+                <source>base.order.report.type.yardi</source>
+                <target>Yardi Voyager (XML)</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.type.realpage">
+                <source>base.order.report.type.realpage</source>
+                <target>RealPage OneSite (CSV)</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.download">
+                <source>base.order.report.download</source>
+                <target>Download Report</target>
+            </trans-unit>
+            <trans-unit id="help">
+                <source>help</source>
+                <target>Help</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.how_to.yardi">
+                <source>base.order.report.how_to.yardi</source>
+                <target>How to Import into Yardi</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.how_to.realpage">
+                <source>base.order.report.how_to.realpage</source>
+                <target>How to Import into RealPage OneSite</target>
             </trans-unit>
         </body>
     </file>

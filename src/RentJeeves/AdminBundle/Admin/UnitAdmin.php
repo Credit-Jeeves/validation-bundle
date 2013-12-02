@@ -11,6 +11,23 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class UnitAdmin extends Admin
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function configure()
+    {
+        /**
+         * This executes everywhere in the admin and disables softdelete for everything, if you need something cleverer
+         * this should be rethought.
+         */
+        $filters = $this->getModelManager()->getEntityManager($this->getClass())->getFilters();
+
+        if (array_key_exists('softdeleteable', $filters->getEnabledFilters())) {
+            $filters->disable('softdeleteable');
+        }
+
+    }
+
     public function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('delete');
@@ -58,6 +75,7 @@ class UnitAdmin extends Admin
             ->add('name')
             ->add('rent')
             ->add('beds')
+            ->add('deletedAt')
             ->add(
                 '_action',
                 'actions',

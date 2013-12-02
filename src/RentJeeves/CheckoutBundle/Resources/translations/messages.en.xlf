@@ -442,7 +442,7 @@
             </trans-unit>
             <trans-unit id="checkout.billing_address.new">
                 <source>checkout.billing_address.new</source>
-                <target>New billing address</target>
+                <target>Card Billing Address</target>
             </trans-unit>
             <trans-unit id="checkout.bank_name">
                 <source>checkout.bank_name</source>

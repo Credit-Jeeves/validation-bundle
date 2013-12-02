@@ -43,6 +43,8 @@ class NewCase extends BaseTestCase
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '26',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '02',
                 'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1958',
+                'creditjeeves_applicantbundle_leadnewtype_target_name_make'        => 'Acura',
+                'creditjeeves_applicantbundle_leadnewtype_target_name_model'        => 'ILX',
             )
         );
         $form->pressButton('common.get.score');
@@ -91,5 +93,56 @@ class NewCase extends BaseTestCase
         $htmlLink->click();
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
         $this->assertEquals('Welcome to CreditJeeves', $title->getText());
+    }
+
+    /**
+     * @test
+     * @depends userNewForm
+     */
+    public function newEmilioLeadVehicle()
+    {
+        $this->load(true);
+        $this->session->visit($this->getUrl() . 'new/dealer/GENERIC');
+        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
+        $this->fillForm(
+            $form,
+            array(
+                'creditjeeves_applicantbundle_leadnewtype_user_first_name' => 'BRIAN',
+                'creditjeeves_applicantbundle_leadnewtype_user_middle_initial' => 'P',
+                'creditjeeves_applicantbundle_leadnewtype_user_last_name' => 'KURTH',
+                'creditjeeves_applicantbundle_leadnewtype_user_email' => 'emilio@example.com',
+                'creditjeeves_applicantbundle_leadnewtype_user_password_Password' => 'pass',
+                'creditjeeves_applicantbundle_leadnewtype_user_password_Retype' => 'pass',
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn1' => '666',
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn2' => '81',
+                'creditjeeves_applicantbundle_leadnewtype_user_ssn_ssn3' => '0987',
+                'creditjeeves_applicantbundle_leadnewtype_user_addresses_0_street' => '2010 SAINT NAZAIRE BLVD',
+                'creditjeeves_applicantbundle_leadnewtype_user_addresses_0_unit' => 'S-1',
+                'creditjeeves_applicantbundle_leadnewtype_user_addresses_0_city' => 'HOMESTEAD',
+                'creditjeeves_applicantbundle_leadnewtype_user_addresses_0_area' => 'FL',
+                'creditjeeves_applicantbundle_leadnewtype_user_addresses_0_zip' => '33039',
+                'creditjeeves_applicantbundle_leadnewtype_user_phone' => '3013246413',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_day' => '01',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_month' => '01',
+                'creditjeeves_applicantbundle_leadnewtype_user_date_of_birth_year' => '1963',
+                'creditjeeves_applicantbundle_leadnewtype_user_tos' => true
+            )
+        );
+        $form->pressButton('common.get.score');
+        $this->assertNotNull($title = $this->page->find('css', 'h1'));
+        $this->setDefaultSession('selenium2');
+        $this->login('emilio@example.com', 'pass');
+        $this->assertNotNull($select = $this->page->find('css', '#lead-select-button'));
+        $select->click();
+        $this->session->wait(
+            $this->timeout + 3000,
+            "jQuery('#lead-select-form .lead-select-lead').length > 0"
+        );
+        $this->assertNotNull($form = $this->page->find('css', '#lead-select-form'));
+        $this->assertNotNull($links = $this->page->findAll('css', '.lead-select-lead'));
+        $this->assertCount(4, $links, 'Wrong number of accounts');
+        
+        $this->logout();
+        
     }
 }

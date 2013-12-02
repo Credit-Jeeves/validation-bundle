@@ -67,7 +67,9 @@ class DealerAdmin extends Admin
                 array(
                     'actions' => array(
                         'edit' => array(),
-                        'delete' => array(),
+                        'delete' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_dealer_delete.html.twig'
+                        ),
                         'leads' => array(
                             'template' => 'AdminBundle:CRUD:list__action_leads.html.twig'
                         ),

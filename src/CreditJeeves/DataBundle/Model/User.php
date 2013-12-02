@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
+use RentJeeves\DataBundle\Entity\UserSettings;
 
 /**
  * @ORM\MappedSuperclass
@@ -485,8 +486,6 @@ abstract class User extends BaseUser
     protected $dealer_to_groups;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Vehicle",
      *     mappedBy="user",
@@ -497,8 +496,6 @@ abstract class User extends BaseUser
     protected $vehicle;
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\LoginDefense",
      *     mappedBy="user",
@@ -568,8 +565,6 @@ abstract class User extends BaseUser
 
 
     /**
-     * @var ArrayCollection
-     *
      * @ORM\OneToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\ApiUpdate",
      *     mappedBy="user",
@@ -578,6 +573,16 @@ abstract class User extends BaseUser
      * )
      */
     protected $apiUpdate;
+
+    /**
+     * @ORM\OneToOne(
+     *      targetEntity="\RentJeeves\DataBundle\Entity\UserSettings",
+     *      mappedBy="user",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $settings;
 
     public function __construct()
     {
@@ -598,6 +603,35 @@ abstract class User extends BaseUser
         $this->authCodes = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
+    }
+
+    /**
+     * @param mixed $settings
+     */
+    public function setSettings(UserSettings $settings)
+    {
+        $this->settings = $settings;
+    }
+
+    /**
+     * @return UserSettings
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    public function haveAccessToReports()
+    {
+        if (!$this->getSettings()) {
+            return false;
+        }
+
+        if ($this->getSettings()->getIsBaseOrderReport()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

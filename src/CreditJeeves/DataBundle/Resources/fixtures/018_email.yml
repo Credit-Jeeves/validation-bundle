@@ -56,3 +56,11 @@ fixtures:
     name: rjTenantInviteReminderPayment.html
   email_28:
     name: rjContractApproved.html
+  email_29:
+    name: rjContractRemovedFromDbByLandlord.html
+  email_30:
+    name: rjContractRemovedFromDbByTenant.html
+  email_31:
+    name: rjMerchantNameSetuped.html
+  email_32:
+    name: rj_resetting.html

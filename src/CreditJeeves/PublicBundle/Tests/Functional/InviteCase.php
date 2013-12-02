@@ -79,7 +79,7 @@ class InviteCase extends BaseTestCase
         );
 
         $form->pressButton('common.i_agree');
-        $this->login('linda@example.com', 'pass');
+        //$this->login('linda@example.com', 'pass');
         $this->logout();
     }
 }
