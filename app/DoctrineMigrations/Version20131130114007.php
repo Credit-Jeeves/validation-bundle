@@ -2,10 +2,10 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration,
-    Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\DBAL\Schema\Schema;
 
-class Version20131118180454 extends AbstractMigration
+class Version20131130114007 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -18,6 +18,7 @@ class Version20131118180454 extends AbstractMigration
             "CREATE TABLE rj_billing_account (id INT AUTO_INCREMENT NOT NULL,
                 group_id BIGINT DEFAULT NULL,
                 token VARCHAR(255) NOT NULL,
+                nickname VARCHAR(255) NOT NULL,
                 UNIQUE INDEX UNIQ_6D16C91BFE54D947 (group_id),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );

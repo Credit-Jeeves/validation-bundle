@@ -39,6 +39,15 @@ abstract class BillingAccount
     protected $token;
 
     /**
+     * @ORM\Column(
+     *      name="nickname",
+     *      type="string",
+     *      length=255
+     * )
+     */
+    protected $nickname;
+
+    /**
      * @return int
      */
     public function getId()
@@ -82,5 +91,21 @@ abstract class BillingAccount
     public function getToken()
     {
         return $this->token;
+    }
+
+    /**
+     * @param string $nickname
+     */
+    public function setNickname($nickname)
+    {
+        $this->nickname = $nickname;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNickname()
+    {
+        return $this->nickname;
     }
 }

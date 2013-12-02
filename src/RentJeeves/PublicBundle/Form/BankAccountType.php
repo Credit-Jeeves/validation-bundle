@@ -13,10 +13,10 @@ class BankAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'name',
+            'nickname',
             'text',
             array(
-                'mapped' => false,
+                'mapped' => true,
                 'label' => 'checkout.account_nickname',
                 'attr' => array(
                     'placeholder' => 'Bank of America Checking'
@@ -25,38 +25,6 @@ class BankAccountType extends AbstractType
                     new NotBlank(
                         array(
                             'message' => 'checkout.error.account_nickname.empty',
-                        )
-                    ),
-                ),
-            )
-        );
-
-        $builder->add(
-            'PayorName',
-            'text',
-            array(
-                'mapped' => false,
-                'label' => 'checkout.payor_name',
-                'constraints' => array(
-                    new NotBlank(
-                        array(
-                            'message' => 'checkout.error.payor_name.empty',
-                        )
-                    ),
-                ),
-            )
-        );
-
-        $builder->add(
-            'BankName',
-            'text',
-            array(
-                'mapped' => false,
-                'label' => 'checkout.bank_name',
-                'constraints' => array(
-                    new NotBlank(
-                        array(
-                            'message' => 'checkout.error.bank_name.empty',
                         )
                     ),
                 ),

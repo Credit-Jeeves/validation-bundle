@@ -4,99 +4,109 @@ namespace RentJeeves\PublicBundle\Controller;
 
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\LandlordBundle\Registration\MerchantAccountModel;
+use RentJeeves\LandlordBundle\Registration\SAMLEnvelope;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LandlordAddressType;
-use RentJeeves\DataBundle\Entity\Landlord;
-use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\PublicBundle\Form\LandlordType;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use CreditJeeves\DataBundle\Enum\Grouptype;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface as UrlGenerator;
 
 class LandlordController extends Controller
 {
     use PaymentProcess;
+
     /**
      * @Route("/landlord/register/", name="landlord_register")
      * @Template()
      *
      * @return array
      */
-    public function registerAction()
+    public function registerAction(Request $request)
     {
         $form = $this->createForm(
             new LandlordAddressType()
         );
 
-        $request = $this->get('request');
-        $propertyName = $request->get('searsh-field');
-
         $form->handleRequest($request);
         if ($form->isValid()) {
-            /*** SAVE LANDLORD ***/
-            $landlord = $form->getData()['landlord'];
-            $address = $form->getData()['address'];
+
             $formData = $request->request->get($form->getName());
-
-            $password = $this->container->get('user.security.encoder.digest')
-                    ->encodePassword($formData['landlord']['password']['Password'], $landlord->getSalt());
-
-            $landlord->setPassword($password);
-            $address->setUser($landlord);
-            $landlord->setCulture($this->container->parameters['kernel.default_locale']);
-
-            $holding = new Holding();
-            $holding->setName($landlord->getUsername());
-            $landlord->setHolding($holding);
-            $group = new Group();
-            $group->setType(GroupType::RENT);
-            $group->setName($landlord->getUsername());
-            $group->setHolding($holding);
-            $holding->addGroup($group);
-            $landlord->setAgentGroups($group);
-            $em = $this->getDoctrine()->getManager();
-
-            $property = $em->getRepository('RjDataBundle:Property')->find($formData['property']);
-            if ($property) {
-                $units = (isset($formData['units']))? $formData['units'] : array();
-                $property->addPropertyGroup($group);
-                $group->addGroupProperty($property);
-                if (!empty($units)) {
-                    foreach ($units as $name) {
-                        if (empty($name)) {
-                            continue;
-                        }
-                        $unit = new Unit();
-                        $unit->setProperty($property);
-                        $unit->setHolding($holding);
-                        $unit->setGroup($group);
-                        $unit->setName($name);
-                        $em->persist($unit);
-                    }
-                }
-            }
-
-            $em->persist($address);
-            $em->persist($holding);
-            $em->persist($group);
-            $em->persist($landlord);
-            $em->flush();
-            /*** END SAVE LANDLORD ***/
+            $landlord = $this->get('landlord.registration')->register($form, $formData);
 
             $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
-            $paymentAccountEntity = $this->savePaymentAccount($form->get('deposit'), $landlord, $group);
+            $this->savePaymentAccount($form->get('deposit'), $landlord, $landlord->getCurrentGroup());
 
-            $this->get('project.mailer')->sendRjCheckEmail($landlord);
-            return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$landlord->getId())));
+            $merchantAccount = new MerchantAccountModel(
+                $formData['deposit']['RoutingNumber'],
+                $formData['deposit']['AccountNumber'],
+                $formData['deposit']['ACHDepositType']
+            );
+            $saml = new SAMLEnvelope(
+                $landlord,
+                $merchantAccount,
+                $this->generateUrl(
+                    'landlord_success_registration', array('userId' => $landlord->getId()), UrlGenerator::ABSOLUTE_URL
+                ),
+                $this->generateUrl(
+                    'landlord_error_registration', array('userId' => $landlord->getId()), UrlGenerator::ABSOLUTE_URL
+                )
+            );
+            $signedSaml = $this->get('signature.manager')->sign($saml->getAssertionResponse());
+
+            return $this->render(
+                'RjPublicBundle:Landlord:redirectHeartland.html.twig',
+                array(
+                    'saml' => $saml->encodeAssertionResponse($signedSaml),
+                    'url' => $saml::ONLINE_BOARDING,
+                    'samlData' => $signedSaml->saveXML($signedSaml->documentElement),
+                    'portalData' => $saml->getPortalApplication()->saveXML($saml->getPortalApplication()->documentElement),
+                )
+            );
+
+            // TODO: send it on success
+//            $this->get('project.mailer')->sendRjCheckEmail($landlord);
+//            return $this->redirect($this->generateUrl('user_new_send', array('userId' => $landlord->getId())));
         }
 
         return array(
             'form'          => $form->createView(),
-            'propertyName'  => $propertyName,
+            'propertyName'  => $request->get('searsh-field'),
         );
+    }
+
+    /**
+     * @Route("/landlord/app/success/{userId}/", name="landlord_success_registration")
+     * @Template()
+     *
+     * @return array
+     */
+    public function successAction($userId)
+    {
+        $landlord = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Landlord')->find($userId);
+        if (!$landlord) {
+            throw new NotFoundHttpException('Landlord not found');
+        }
+
+        $this->get('project.mailer')->sendRjCheckEmail($landlord);
+
+        return $this->redirect($this->generateUrl('user_new_send', array('userId' => $userId)));
+    }
+
+    /**
+     * @Route("/landlord/app/error/{userId}/", name="landlord_error_registration")
+     * @Template()
+     *
+     * @return array
+     */
+    public function errorAction($userId)
+    {
+        echo "ERROR";
+        die;
     }
 
     /**
