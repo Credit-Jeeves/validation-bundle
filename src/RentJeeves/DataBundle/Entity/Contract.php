@@ -240,7 +240,7 @@ class Contract extends Base
              * if we have payments for this contract need show days late
              */
             if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
-                ($this->statusShowLateForce && $result['status'] == strtoupper(ContractStatus::APPROVED))) {
+                ($this->statusShowLateForce && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
                 $days = $interval->format('%d');
                 $result['status'] = 'LATE ('.$days.' days)';
                 $result['class'] = 'contract-late';
@@ -251,7 +251,8 @@ class Contract extends Base
              * If tenant is approved, but has never made payment before, just show Approved
              * without red shading for status
              */
-            if ($result['status'] == strtoupper(ContractStatus::APPROVED)) {
+            if ($result['status'] == strtoupper(ContractStatus::APPROVED) ||
+                $result['status'] == strtoupper(ContractStatus::INVITE)) {
                 $result['class'] = 'contract-late';
                 return $result;
             }
