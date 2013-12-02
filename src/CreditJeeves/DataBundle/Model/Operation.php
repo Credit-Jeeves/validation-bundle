@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -33,10 +34,12 @@ abstract class Operation
      * @var float
      * @ORM\Column(
      *     type="integer",
-     *     nullable=true
+     *     nullable=false
      * )
+     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\SerializedName("Amount")
      */
-    protected $amount;
+    protected $amount = 0;
 
     /**
      * @var integer
