@@ -85,7 +85,7 @@ class Contract extends Base
      *
      * @var bool
      */
-    public $statusShowLateForce = false;
+    protected $statusShowLateForce = false;
 
     /**
      * @param boolean $statusShowLateForce
