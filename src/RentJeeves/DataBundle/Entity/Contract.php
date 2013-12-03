@@ -79,6 +79,31 @@ class Contract extends Base
     const EMPTY_LAST_PAYMENT = '-';
 
     /**
+     * Details in RT-65
+     * On the tenant tab we need use false
+     * On the dashboard tab we need use true
+     *
+     * @var bool
+     */
+    protected $statusShowLateForce = false;
+
+    /**
+     * @param boolean $statusShowLateForce
+     */
+    public function setStatusShowLateForce($statusShowLateForce)
+    {
+        $this->statusShowLateForce = $statusShowLateForce;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getStatusShowLateForce()
+    {
+        return $this->statusShowLateForce;
+    }
+
+    /**
      * @return int
      */
     public function getGroupId()
@@ -230,7 +255,8 @@ class Contract extends Base
             /**
              * if we have payments for this contract need show days late
              */
-            if ($lastPayment != self::EMPTY_LAST_PAYMENT) {
+            if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
+                ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
                 $days = $interval->format('%d');
                 $result['status'] = 'LATE ('.$days.' days)';
                 $result['class'] = 'contract-late';
@@ -241,7 +267,8 @@ class Contract extends Base
              * If tenant is approved, but has never made payment before, just show Approved
              * without red shading for status
              */
-            if ($result['status'] == strtoupper(ContractStatus::APPROVED)) {
+            if ($result['status'] == strtoupper(ContractStatus::APPROVED) ||
+                $result['status'] == strtoupper(ContractStatus::INVITE)) {
                 $result['class'] = 'contract-late';
                 return $result;
             }
