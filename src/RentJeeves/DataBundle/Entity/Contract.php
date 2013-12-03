@@ -88,6 +88,22 @@ class Contract extends Base
     public $statusShowLateForce = false;
 
     /**
+     * @param boolean $statusShowLateForce
+     */
+    public function setStatusShowLateForce($statusShowLateForce)
+    {
+        $this->statusShowLateForce = $statusShowLateForce;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getStatusShowLateForce()
+    {
+        return $this->statusShowLateForce;
+    }
+
+    /**
      * @return int
      */
     public function getGroupId()
@@ -240,7 +256,7 @@ class Contract extends Base
              * if we have payments for this contract need show days late
              */
             if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
-                ($this->statusShowLateForce && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
+                ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
                 $days = $interval->format('%d');
                 $result['status'] = 'LATE ('.$days.' days)';
                 $result['class'] = 'contract-late';
