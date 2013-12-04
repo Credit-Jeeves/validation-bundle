@@ -425,7 +425,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text5">
                 <source>landlord.register.text5</source>
-                <target>This information is used to deposit rent payments, collect fees, and comply with federal "Know Your Customer" regulations. Deposits typically take 1-2 business days to show up in your account.</target>
+                <target>This account information is used to collect RentTrack fees and comply with federal "Know Your Customer" regulations.</target>
             </trans-unit>
             <trans-unit id="landlord.register.where_to_find_numbers">
                 <source>landlord.register.where_to_find_numbers</source>
@@ -433,11 +433,11 @@
             </trans-unit>
             <trans-unit id="landlord.register.text6">
                 <source>landlord.register.text6</source>
-                <target>Tell us where you would like to deposit rent payments.</target>
+                <target>Please provide a bank account for payment.</target>
             </trans-unit>
             <trans-unit id="landlord.register.text7">
                 <source>landlord.register.text7</source>
-                <target><![CDATA[Still have questions? Learn more about the <a href="#">RentTrack's secure payment process</a>]]></target>
+                <target><![CDATA[Still have questions? Learn more about the <a href="http://www.renttrack.com/security" target="_blank">RentTrack's secure payment process</a>]]></target>
             </trans-unit>
             <trans-unit id="tenant.found.match">
                 <source>tenant.found.match</source>
@@ -1601,7 +1601,7 @@
             </trans-unit>
             <trans-unit id="direct_deposit.info">
                 <source>direct_deposit.info</source>
-                <target>Direct deposit information</target>
+                <target>Payment information</target>
             </trans-unit>
             <trans-unit id="help.popup">
                 <source>help.popup</source>
