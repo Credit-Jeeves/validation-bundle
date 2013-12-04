@@ -62,9 +62,7 @@ class LandlordController extends Controller
                 'RjPublicBundle:Landlord:redirectHeartland.html.twig',
                 array(
                     'saml' => $saml->encodeAssertionResponse($signedSaml),
-                    'url' => $saml::ONLINE_BOARDING,
-                    'samlData' => $signedSaml->saveXML($signedSaml->documentElement),
-                    'portalData' => $saml->getPortalApplication()->saveXML($saml->getPortalApplication()->documentElement),
+                    'url' => $saml::ONLINE_BOARDING
                 )
             );
 

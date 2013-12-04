@@ -1,15 +1,7 @@
 <form method="post" action="{{ url }}" enctype="application/x-www-form-urlencoded" id="form-saml">
     <input type="hidden" name="SAMLResponse" value="{{ saml }}" />
-
-    <input type="submit" value="Submit" />
 </form>
-<div>
-    {{ portalData|raw }}
-</div>
-<div>
-    {{ samlData|raw }}
-</div>
+
 <script type="text/javascript">
-//    document.getElementById('form-saml').submit();
-//window.onload = function () { document.forms[0].submit(); }
+    window.onload = function () { document.forms[0].submit(); }
 </script>

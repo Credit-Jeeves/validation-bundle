@@ -3,7 +3,7 @@
 namespace RentJeeves\LandlordBundle\Registration;
 
 
-class MerchantAccountModel 
+class MerchantAccountModel
 {
     protected $routingNumber;
     protected $accountNumber;
@@ -33,7 +33,7 @@ class MerchantAccountModel
     }
 
     /**
-     * @param int $accountType
+     * @param mixed $accountType
      */
     public function setAccountType($accountType)
     {
@@ -41,7 +41,7 @@ class MerchantAccountModel
     }
 
     /**
-     * @return int
+     * @return mixed
      */
     public function getAccountType()
     {
