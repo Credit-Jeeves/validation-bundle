@@ -39,11 +39,7 @@ class DepositAccountListener
             return;
         }
 
-        $id = $entity->getId();
-        /**
-         *  return because we need only for create merchant name event
-         */
-        if (!empty($id)) {
+        if (!$entity->isComplete()) {
             return;
         }
 

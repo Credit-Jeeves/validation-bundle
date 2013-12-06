@@ -1643,6 +1643,22 @@
                 <source>base.order.report.how_to.realpage</source>
                 <target>How to Import into RealPage OneSite</target>
             </trans-unit>
+            <trans-unit id="landlord.hps.processing_message">
+                <source>landlord.hps.processing_message</source>
+                <target>We are processing your application. You will be notified when your application is approved and you can begin accepting payments.</target>
+            </trans-unit>
+            <trans-unit id="landlord.hps.error_message">
+                <source>landlord.hps.error_message</source>
+                <target>There was an error submitting your application, please contact help@renttrack.com or call 866-841-9090. %heartland_msg%</target>
+            </trans-unit>
+            <trans-unit id="landlord.hps.complete_application">
+                <source>landlord.hps.complete_application</source>
+                <target><![CDATA[Please complete your merchant application by filling out <a href="%complete_url%" target="_blank">this form</a> through our payment processor.]]></target>
+            </trans-unit>
+            <trans-unit id="landlord.payment_account.set_up_message">
+                <source>landlord.payment_account.set_up_message</source>
+                <target><![CDATA[Please visit your <a href="#">account settings</a> to set up a payment account.]]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

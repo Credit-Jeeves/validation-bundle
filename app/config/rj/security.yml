@@ -45,7 +45,6 @@ security:
         - { path: ^/message,                        role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/iframe,                         role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/register,              role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/landlord/app/*,                 role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/checkProperty/*,                role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/invite,                    role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/new,                       role: IS_AUTHENTICATED_ANONYMOUSLY }
