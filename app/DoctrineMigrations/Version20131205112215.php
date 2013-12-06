@@ -26,7 +26,11 @@ class Version20131205112215 extends AbstractMigration
                 ADD message VARCHAR(255) DEFAULT NULL"
         );
 
-        // TODO: set status=complete for existing deposit accounts with merchant names
+        $this->addSql(
+            "UPDATE rj_deposit_account
+                SET status='complete'
+                WHERE merchant_name is not null"
+        );
     }
 
     public function down(Schema $schema)

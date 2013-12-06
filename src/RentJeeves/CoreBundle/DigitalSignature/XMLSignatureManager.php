@@ -12,16 +12,11 @@ class XMLSignatureManager
 {
     protected $privateKeyPath;
     protected $x509CertPath;
-    /**
-     * @DI\InjectParams({
-     *     "privateKeyPath" = @DI\Inject("%digital_signature.private_key%"),
-     *     "x509CertPath" = @DI\Inject("%digital_signature.certificate%")
-     * })
-     */
-    public function __construct($privateKeyPath, $x509CertPath)
+
+    public function __construct()
     {
-        $this->privateKeyPath = $privateKeyPath;
-        $this->x509CertPath = $x509CertPath;
+        $this->privateKeyPath = __DIR__.'/../Resources/keys/saml_renttrack_com_key.txt';
+        $this->x509CertPath = __DIR__.'/../Resources/keys/saml_renttrack_com_cert.txt';
     }
 
     public function sign(\DOMDocument $dom)

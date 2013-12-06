@@ -9,27 +9,6 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function shouldBeConstructedWithKeyPathAndCertPath()
-    {
-        $keyPath = __DIR__.'/../Fixtures/DigitalSignature/saml_key.txt';
-        $certPath = __DIR__.'/../Fixtures/DigitalSignature/saml_cert.txt';
-
-        $signatureManager = new XMLSignatureManager($keyPath, $certPath);
-        $reflClass = new \ReflectionClass('RentJeeves\CoreBundle\DigitalSignature\XMLSignatureManager');
-
-        $actualKeyPath = $reflClass->getProperty('privateKeyPath');
-        $actualKeyPath->setAccessible(true);
-
-        $actualCertPath = $reflClass->getProperty('x509CertPath');
-        $actualCertPath->setAccessible(true);
-
-        $this->assertEquals($keyPath, $actualKeyPath->getValue($signatureManager));
-        $this->assertEquals($certPath, $actualCertPath->getValue($signatureManager));
-    }
-
-    /**
-     * @test
-     */
     public function shouldSignXml()
     {
         $xmlTemplate = __DIR__.'/../Fixtures/DigitalSignature/sign_template.xml';
@@ -82,7 +61,12 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
         $result = $signatureManager->sign($dom);
         $signatureValue = $result->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
 
-        $this->assertEquals('qabGaqfEbJH9MIfndn9xaHg1j+FUXIeB66LhRVGE1NZ15/ctxW7MF4RWm3E7UFEjC/LbT/ejEQj5UrROrMD/Xrea3tecnLuBx+dj4omE7Xmb+V2yu9JTgV0jKU5iIsb8U/HOr+WgCLiVUtUluvzjRRuFGuW8iOtokPb0bC6Do+d5Ys3L7zLbElF/IICuBod0eWEAMRAXVuT4HwsDCD44xkJPM0g95KEjHfdXUnTG4HC2+h6HwQLBg3Qv/enhUVHnpskkmJoxzPebzYFkvJ+O57E0bF80d4OBkYPp8SOZbExKkmHMVo71IUGfdQHkbVxv9rflT80pWrE9t14b4kr55A==', $signatureValue);
+        $expected = 'qabGaqfEbJH9MIfndn9xaHg1j+FUXIeB66LhRVGE1NZ15/ctxW7MF4RWm3E7UFEjC/LbT/ejEQj5UrROrMD/Xrea3tecn' .
+            'LuBx+dj4omE7Xmb+V2yu9JTgV0jKU5iIsb8U/HOr+WgCLiVUtUluvzjRRuFGuW8iOtokPb0bC6Do+d5Ys3L7zLbElF/IICuBod0' .
+            'eWEAMRAXVuT4HwsDCD44xkJPM0g95KEjHfdXUnTG4HC2+h6HwQLBg3Qv/enhUVHnpskkmJoxzPebzYFkvJ+O57E0bF80d4OBkYP' .
+            'p8SOZbExKkmHMVo71IUGfdQHkbVxv9rflT80pWrE9t14b4kr55A==';
+
+        $this->assertEquals($expected, $signatureValue);
     }
 
     /**
@@ -147,10 +131,7 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
      */
     protected function getSignatureManager()
     {
-        $keyPath = __DIR__ . '/../Fixtures/DigitalSignature/saml_key.txt';
-        $certPath = __DIR__ . '/../Fixtures/DigitalSignature/saml_cert.txt';
-
-        $signatureManager = new XMLSignatureManager($keyPath, $certPath);
+        $signatureManager = new XMLSignatureManager();
 
         return $signatureManager;
     }

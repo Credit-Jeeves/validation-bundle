@@ -1082,6 +1082,4 @@ abstract class Group
     {
         return $this->billingAccount;
     }
-
-
 }

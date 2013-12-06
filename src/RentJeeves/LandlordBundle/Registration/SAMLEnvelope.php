@@ -140,8 +140,12 @@ class SAMLEnvelope
     {
         $doc = new \DOMDocument('1.0', 'utf-8');
         $root = $doc->createElementNS('urn:oasis:names:tc:SAML:2.0:protocol', 'Response');
-        $root->setAttributeNS('http://www.w3.org/2000/xmlns/' ,'xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
-        $root->setAttributeNS('http://www.w3.org/2000/xmlns/' ,'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
+        $root->setAttributeNS(
+            'http://www.w3.org/2000/xmlns/',
+            'xmlns:xsi',
+            'http://www.w3.org/2001/XMLSchema-instance'
+        );
+        $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:xsd', 'http://www.w3.org/2001/XMLSchema');
         $root->setAttribute('ID', XMLDigitalSignature::generate_GUID(self::RESPONSE_ID_PREFIX));
         $root->setAttribute('Version', '2.0');
         $root->setAttribute('IssueInstant', gmdate("Y-m-d\TH:i:s\Z"));

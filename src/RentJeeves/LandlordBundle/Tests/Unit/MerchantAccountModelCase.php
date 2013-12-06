@@ -63,5 +63,4 @@ class MerchantAccountModelCase extends \PHPUnit_Framework_TestCase
 
         return new MerchantAccountModel($routingNumber, $accountNumber, $accountType);
     }
-
 }

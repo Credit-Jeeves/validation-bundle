@@ -90,5 +90,4 @@ class RegistrationManager
 
         return $landlord;
     }
-
 }

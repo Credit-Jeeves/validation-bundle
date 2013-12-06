@@ -76,7 +76,10 @@ class LandlordController extends Controller
                     )
                 );
             } catch (\Exception $e) {
-                $this->get('common.login.manager')->loginAndRedirect($landlord, $this->generateUrl('landlord_tenants'));
+                return $this->get('common.login.manager')->loginAndRedirect(
+                    $landlord,
+                    $this->generateUrl('landlord_tenants')
+                );
             }
         }
 

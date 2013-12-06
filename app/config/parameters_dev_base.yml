@@ -26,6 +26,3 @@ parameters:
         username: RTAPI
         password: $RTapi13
     rt_merchant_name: 'RentTrack'
-#    digital_signature:
-    digital_signature.private_key: /home/tatyana/projects/cj/cj2/src/RentJeeves/CoreBundle/Resources/keys/saml_renttrack_com_key.txt
-    digital_signature.certificate: /home/tatyana/projects/cj/cj2/src/RentJeeves/CoreBundle/Resources/keys/saml_renttrack_com_cert.txt
