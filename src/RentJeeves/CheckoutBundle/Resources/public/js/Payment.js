@@ -35,7 +35,7 @@ function Payment(parent, startDate) {
     this.type.subscribe(function(newValue) {
         if ('one_time' == newValue) {
             self.ends('cancelled');
-            self.startDate(Date.today().toString("M/dd/yyyy"));
+            self.startDate(Date.today().toString("M/d/yyyy"));
         }
         if ('recurring' == newValue) {
             self.dueDate(startDate.toString("d"));
