@@ -163,7 +163,7 @@ function Pay(parent, contractId) {
             daysShift = 0;
         }
         settleDate.add(daysShift + daysAdd).days();
-        return settleDate.toString('MM/dd/yyyy');
+        return settleDate.toString('M/d/yyyy');
     }, this);
     this.getLastPaymentDay = ko.computed(function() {
         var finishDate = new Date(contract.finishAt);
@@ -176,7 +176,7 @@ function Pay(parent, contractId) {
                     this.payment.dueDate()
             );
         }
-        return finishDate.toString('MM/dd/yyyy');
+        return finishDate.toString('M/d/yyyy');
     }, this);
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
@@ -372,7 +372,7 @@ function Pay(parent, contractId) {
         buttonImageOnly: true,
         showOtherMonths: true,
         selectOtherMonths: true,
-        dateFormat: 'mm/dd/yy',
+        dateFormat: 'M/d/yy',
         minDate: new Date(),
         onSelect: function(dateText, inst) {
             self.payment.startDate(dateText);

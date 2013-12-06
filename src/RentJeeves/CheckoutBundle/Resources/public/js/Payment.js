@@ -21,28 +21,11 @@ function Payment(parent, startDate) {
     this.startYear = ko.observable(startDate.toString("yyyy"));
     this.startDate = ko.computed({
         read: function() {
-            /**
-             * It's hack for js knokout because it's don't want work well as we need
-             * and if we use format with number 0, as example 08,07
-             * it's never change
-             */
-            var month = parseInt(this.startMonth());
-            var day = parseInt(this.dueDate());
-
-            if (this.startMonth() < 10) {
-                var month = '0'+this.startMonth();
-            }
-            if (this.dueDate() < 10) {
-                var day = '0'+this.dueDate();
-            }
-
-            var date =  month + '/' + day + '/' + this.startYear();
-
-            return date;
+            return this.startMonth(); + '/' + this.dueDate(); + '/' + this.startYear();
         },
         write: function (value) {
-            var date = Date.parseExact(value,  "mm/dd/yyyy");
-            this.startMonth(date.toString('m'));
+            var date = Date.parseExact(value,  "M/d/yyyy");
+            this.startMonth(date.toString('M'));
             this.startYear(date.toString('yyyy'));
             this.dueDate(date.toString('d'));
         },
@@ -52,11 +35,11 @@ function Payment(parent, startDate) {
     this.type.subscribe(function(newValue) {
         if ('one_time' == newValue) {
             self.ends('cancelled');
-            self.startDate(Date.today().toString("MM/dd/yyyy"));
+            self.startDate(Date.today().toString("M/dd/yyyy"));
         }
         if ('recurring' == newValue) {
-            self.dueDate(startDate.toString("dd"));
-            self.startMonth(startDate.toString("MM"));
+            self.dueDate(startDate.toString("d"));
+            self.startMonth(startDate.toString("M"));
             self.startYear(startDate.toString("yyyy"));
         }
     });
