@@ -21,7 +21,7 @@ function Payment(parent, startDate) {
     this.startYear = ko.observable(startDate.toString("yyyy"));
     this.startDate = ko.computed({
         read: function() {
-            return this.startMonth(); + '/' + this.dueDate(); + '/' + this.startYear();
+            return this.startMonth() + '/' + this.dueDate(); + '/' + this.startYear();
         },
         write: function (value) {
             var date = Date.parseExact(value,  "M/d/yyyy");
