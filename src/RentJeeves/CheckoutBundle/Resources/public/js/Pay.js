@@ -367,11 +367,16 @@ function Pay(parent, contractId) {
 
 
     $("input.datepicker-field").datepicker({
-        showOn: "button",
+        showOn: "both",
         buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
         buttonImageOnly: true,
         showOtherMonths: true,
-        selectOtherMonths: true
+        selectOtherMonths: true,
+        dateFormat: 'mm/dd/yy',
+        minDate: new Date(),
+        onSelect: function(dateText, inst) {
+            self.payment.startDate(dateText);
+        }
     });
 
 //    $("#vi-questions").parent().replaceWith($("#vi-questions"));

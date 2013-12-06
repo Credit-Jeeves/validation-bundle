@@ -178,6 +178,7 @@ class PaymentType extends AbstractType
                 'empty_data' => '',
                 'attr' => array(
                     'class' => 'datepicker-field',
+                    'readonly'=> 'true',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'one_time\' == payment.type()'
                     ),
