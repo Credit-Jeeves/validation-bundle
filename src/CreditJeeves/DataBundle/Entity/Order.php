@@ -13,20 +13,57 @@ use JMS\Serializer\Annotation as Serializer;
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
  * @ORM\Table(name="cj_order")
  * @ORM\HasLifecycleCallbacks()
- * @Serializer\AccessorOrder("custom", custom = {
- *      "TotalAmount",
- *      "IsCash",
- *      "CheckNumber",
- *      "Date",
- *      "Notes",
- *      "IsCash",
- *      "PayerName",
- *      "operations"
- * })
  */
 class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Property")
+     * @Serializer\Groups({"csvBaseReportCsv"})
+     *
+     * @return string
+     */
+    public function getPropertyForReportCsv()
+    {
+        $property = $this->getContract()->getProperty();
+        return $property->getFullAddress();
+    }
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Unit")
+     * @Serializer\Groups({"csvBaseReportCsv"})
+     *
+     * @return string
+     */
+    public function getUnitForReportCsv()
+    {
+        $unit = $this->getContract()->getUnit();
+        $unitName = '';
+        if ($unit) {
+            $unitName = $unit->getName();
+        }
+
+        return $unitName;
+    }
+
+    /**
+     * Date time of actual payment transaction with Heartland
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Date")
+     * @Serializer\Groups({"xmlBaseReport", "csvBaseReportCsv"})
+     *
+     * @return DateTime
+     */
+    public function getDate()
+    {
+        return $this->getUpdatedAt()->format('r');
+    }
 
     /**
      * @Serializer\VirtualProperty
@@ -38,6 +75,67 @@ class Order extends BaseOrder
     public function getTotalAmount()
     {
         return $this->getAmount();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("First_Name")
+     * @Serializer\Groups({"csvBaseReportCsv"})
+     *
+     * @return string
+     */
+    public function getFirstNameForCsvReport()
+    {
+        $tenant = $this->getContract()->getTenant();
+        return $tenant->getFirstName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Last_Name")
+     * @Serializer\Groups({"csvBaseReportCsv"})
+     *
+     * @return string
+     */
+    public function getLastNameForCsvReport()
+    {
+        $tenant = $this->getContract()->getTenant();
+        return $tenant->getLastName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Code")
+     * @Serializer\Groups({"csvBaseReportCsv"})
+     *
+     * @return string
+     */
+    public function getCodeForCsvReport()
+    {
+        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+            $code = 'PMTCRED';
+        } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
+            $code = 'PMTCHECK';
+        } else {
+            $code = '';
+        }
+
+        return $code;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Description")
+     * @Serializer\Groups({"csvBaseReportCsv"})
+     *
+     * @return string
+     */
+    public function getDescriptionForCsvReport()
+    {
+        $desc = $this->getPropertyForReportCsv().'#'.$this->getUnitForReportCsv();
+        $desc .= ' '.$this->getType().' '.$this->getHeartlandTransactionId();
+
+        return $desc;
     }
 
     /**
@@ -71,20 +169,6 @@ class Order extends BaseOrder
 
         $checkNumber = $this->getType()." ".$this->getHeartlandTransactionId();
         return $checkNumber;
-    }
-
-    /**
-     * Date time of actual payment transaction with Heartland
-     *
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"xmlBaseReport"})
-     *
-     * @return DateTime
-     */
-    public function getDate()
-    {
-        return $this->getUpdatedAt();
     }
 
     /**

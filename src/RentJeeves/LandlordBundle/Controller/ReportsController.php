@@ -13,9 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use \Exception;
-use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
-use Symfony\Component\HttpFoundation\Response;
-use JMS\Serializer\SerializationContext;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @Route("/reports")
@@ -45,15 +43,16 @@ class ReportsController extends Controller
         if ($formBaseOrder->isValid()) {
 
             $data = $formBaseOrder->getData();
-            $begin = $data['begin'];
-            $end = $data['end'];
-            $propertyId = $data['property']->getId();
-            $type = $data['type'];
+            $baseReport = $this->get('base.report');
+            $report = $baseReport->getReport($data);
 
-            $orderRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
-            $orders = $orderRepository->getOrdersForReport($propertyId, $begin, $end);
+            $response = new StreamedResponse();
+            $response->setContent($report);
+            $response->headers->set('Cache-Control', 'private');
+            $response->headers->set('Content-Type', $baseReport->getContentType());
+            $response->headers->set('Content-Disposition', 'attachment; filename='.$this->getFileName());
 
-            return $this->get('report.factory')->getBaseReportByType($type, $orders, $begin, $end);
+            return $response;
         }
 
         return array(
@@ -62,20 +61,5 @@ class ReportsController extends Controller
         );
     }
 
-    public function testCsv()
-    {
-        $propertyId = 1;
-        $begin = '2010-09-12';
-        $end = '2013-12-25';
 
-        $orderRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
-        $orders = $orderRepository->getOrdersForReport($propertyId, $begin, $end);
-
-        $context = new SerializationContext();
-        $context->setSerializeNull(true);
-        $context->setGroups('csvBaseReportCsv');
-        //var_dump($orders);exit;
-        $result = $this->get('jms_serializer')->serialize($orders, 'csv', $context);
-        var_dump($result);exit;
-    }
 }

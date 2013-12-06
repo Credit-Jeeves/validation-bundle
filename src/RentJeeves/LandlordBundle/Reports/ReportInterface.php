@@ -7,11 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 interface ReportInterface
 {
     /**
-     * @param $orders
-     * @param $begin
-     * @param $end
-     *
-     * @return Response
+     * @return string
      */
-    public function getReport($orders, $begin, $end);
+    public function getReport();
 }

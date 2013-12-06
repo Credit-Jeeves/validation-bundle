@@ -23,12 +23,21 @@ use JMS\Serializer\Util\Writer;
  */
 class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterface
 {
-    protected $writer;
+    const DELIMITER = ",";
+
+    const ENCLOSURE = '"';
+
+    protected $navigator;
+
+    protected $fp;
+
+    protected $currentLine = array();
+
+    private $headerFlag = false;
 
     public function __construct()
     {
-        echo "Construct\n";
-        $this->writer = new Writer();
+        $this->fp = fopen('php://temp', 'r+');
     }
 
     /**
@@ -39,10 +48,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitNull($data, array $type, Context $context)
     {
-        var_dump($data);
-        var_dump($type);
-        echo "visitNull\n";
-        // TODO: Implement visitNull() method.
+        return "";
     }
 
     /**
@@ -53,8 +59,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitString($data, array $type, Context $context)
     {
-        // TODO: Implement visitString() method.
-        echo "visitString\n";
+        return (string) $data;
     }
 
     /**
@@ -65,8 +70,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitBoolean($data, array $type, Context $context)
     {
-        echo "visitBoolean\n";
-        // TODO: Implement visitBoolean() method.
+        return ($data)? 'true': 'false';
     }
 
     /**
@@ -77,8 +81,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitDouble($data, array $type, Context $context)
     {
-        echo "visitDouble\n";
-        // TODO: Implement visitDouble() method.
+        return floatval($data);
     }
 
     /**
@@ -89,8 +92,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitInteger($data, array $type, Context $context)
     {
-        echo "VisitInteger\n";
-        // TODO: Implement visitInteger() method.
+        return (int) $data;
     }
 
     /**
@@ -101,9 +103,13 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitArray($data, array $type, Context $context)
     {
-        echo "visitArray()\n";
-        var_dump($data);
-        // TODO: Implement visitArray() method.
+        foreach ($data as $k => $v) {
+            if (null === $v && (!is_string($k) || ! $context->shouldSerializeNull())) {
+                continue;
+            }
+
+            $this->navigator->accept($v, null, $context);
+        }
     }
 
     /**
@@ -117,8 +123,6 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
-        // TODO: Implement startVisitingObject() method.
-        echo "startVisitingObject\n";
     }
 
     /**
@@ -129,8 +133,11 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
-        echo "visitProperty\n";
-        // TODO: Implement visitProperty() method.
+        $name = $metadata->serializedName;
+        $value = $metadata->getValue($data);
+        $type = $metadata->type;
+
+        $this->currentLine[$name] = $this->navigator->accept($value, $metadata->type, $context);
     }
 
     /**
@@ -144,8 +151,10 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
-        echo "endVisitingObject\n";
-        // TODO: Implement endVisitingObject() method.
+        if ($this->headerFlag === false) {
+            fputcsv($this->fp, array_keys($this->currentLine),  self::DELIMITER, self::ENCLOSURE);
+        }
+        fputcsv($this->fp, $this->currentLine,  self::DELIMITER, self::ENCLOSURE);
     }
 
     /**
@@ -157,8 +166,8 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function setNavigator(GraphNavigator $navigator)
     {
-        echo "setNavigator\n";
-        // TODO: Implement setNavigator() method.
+        $this->navigator = $navigator;
+        return $this;
     }
 
     /**
@@ -167,17 +176,19 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function getNavigator()
     {
-        echo "getNavigator\n";
-        // TODO: Implement getNavigator() method.
+        return $this->navigator;
     }
 
     /**
-     * @return object|array|scalar
+     * @return string
      */
     public function getResult()
     {
-        echo "getResult\n";
-        // TODO: Implement getResult() method.
+        rewind($this->fp);
+        $data = fread($this->fp, 1048576);
+        fclose($this->fp);
+
+        return $data;
     }
 
 }
