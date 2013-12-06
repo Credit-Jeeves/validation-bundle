@@ -132,6 +132,10 @@
                 <span class="experian-data">{{ 'footer.data_provided_by' | trans }}</span><br>
                 <img alt="" src="{{ asset('bundles/core/images/logo/experian_sm.png') }}" />
             </div>
+        {% else %}
+            <div class="accreditations">
+                <script type="text/javascript" src="https://seal.verisign.com/getseal?host_name=my.renttrack.com&amp;size=XS&amp;use_flash=NO&amp;use_transparent=NO&amp;lang=en"></script>
+            </div>
         {% endif %}
     </div>
     {% block javascripts %}{% endblock %}
