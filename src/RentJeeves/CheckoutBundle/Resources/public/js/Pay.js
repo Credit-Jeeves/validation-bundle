@@ -163,7 +163,7 @@ function Pay(parent, contractId) {
             daysShift = 0;
         }
         settleDate.add(daysShift + daysAdd).days();
-        return settleDate.toString('MM/dd/yyyy');
+        return settleDate.toString('M/d/yyyy');
     }, this);
     this.getLastPaymentDay = ko.computed(function() {
         var finishDate = new Date(contract.finishAt);
@@ -176,7 +176,7 @@ function Pay(parent, contractId) {
                     this.payment.dueDate()
             );
         }
-        return finishDate.toString('MM/dd/yyyy');
+        return finishDate.toString('M/d/yyyy');
     }, this);
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
@@ -367,11 +367,13 @@ function Pay(parent, contractId) {
 
 
     $("input.datepicker-field").datepicker({
-        showOn: "button",
+        showOn: "both",
         buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
         buttonImageOnly: true,
         showOtherMonths: true,
-        selectOtherMonths: true
+        selectOtherMonths: true,
+        dateFormat: 'm/d/yy',
+        minDate: new Date()
     });
 
 //    $("#vi-questions").parent().replaceWith($("#vi-questions"));
