@@ -176,7 +176,7 @@ function Pay(parent, contractId) {
                     this.payment.dueDate()
             );
         }
-        return finishDate.toString('m/d/yyyy');
+        return finishDate.toString('M/d/yyyy');
     }, this);
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
