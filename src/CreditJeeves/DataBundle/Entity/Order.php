@@ -31,7 +31,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TotalAmount")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlBaseReport", "csvBaseReportCsv"})
      *
      * @return float
      */

@@ -14,7 +14,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ReportFactory
 {
-    protected $container;
+    protected $xmlBaseReport;
+
+    protected $csvBaseReport;
 
     /**
      * @InjectParams({
