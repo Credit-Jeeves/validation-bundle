@@ -1098,11 +1098,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-<<<<<<< HEAD
                 <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly </target>
-=======
-                <target>*We'll waive your eCheck fee if the tenant enrolls in any one of our monthly </target>
->>>>>>> c76a518a2b47ce9a8b5e9ddce33e2a3aacb764da
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
@@ -1577,4 +1573,56 @@
             </trans-unit>
             <trans-unit id="iframe.powered">
                 <source>iframe.powered</source>
-      
+                <target>Powered by</target>
+            </trans-unit>
+            <trans-unit id="unit.live.it.empty">
+                <source>unit.live.it.empty</source>
+                <target>leave blank if this is a single property</target>
+            </trans-unit>
+            <trans-unit id="property.number.not.exist">
+                <source>property.number.not.exist</source>
+                <target>Please put number for property.</target>
+            </trans-unit>
+            <trans-unit id="help.popup">
+                <source>help.popup</source>
+                <target>Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.</target>
+            </trans-unit>
+            <trans-unit id="order.type.cash">
+                <source>order.type.cash</source>
+                <target>Cash.</target>
+            </trans-unit>
+            <trans-unit id="base.order.report">
+                <source>base.order.report</source>
+                <target>Base order report</target>
+            </trans-unit>
+            <trans-unit id="tabs.reports">
+                <source>tabs.reports</source>
+                <target>Reports</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.type.yardi">
+                <source>base.order.report.type.yardi</source>
+                <target>Yardi Voyager (XML)</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.type.realpage">
+                <source>base.order.report.type.realpage</source>
+                <target>RealPage OneSite (CSV)</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.download">
+                <source>base.order.report.download</source>
+                <target>Download Report</target>
+            </trans-unit>
+            <trans-unit id="help">
+                <source>help</source>
+                <target>Help</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.how_to.yardi">
+                <source>base.order.report.how_to.yardi</source>
+                <target>How to Import into Yardi</target>
+            </trans-unit>
+            <trans-unit id="base.order.report.how_to.realpage">
+                <source>base.order.report.how_to.realpage</source>
+                <target>How to Import into RealPage OneSite</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
