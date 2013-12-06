@@ -176,7 +176,7 @@ function Pay(parent, contractId) {
                     this.payment.dueDate()
             );
         }
-        return finishDate.toString('M/d/yyyy');
+        return finishDate.toString('m/d/yyyy');
     }, this);
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
@@ -372,11 +372,8 @@ function Pay(parent, contractId) {
         buttonImageOnly: true,
         showOtherMonths: true,
         selectOtherMonths: true,
-        dateFormat: 'M/d/yy',
-        minDate: new Date(),
-        onSelect: function(dateText, inst) {
-            self.payment.startDate(dateText);
-        }
+        dateFormat: 'm/d/yy',
+        minDate: new Date()
     });
 
 //    $("#vi-questions").parent().replaceWith($("#vi-questions"));
