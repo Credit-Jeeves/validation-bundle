@@ -192,7 +192,7 @@
             </trans-unit>
             <trans-unit id="didnotfind">
                 <source>didnotfind</source>
-                <target>We didn’t find a match yet – let your landlord know!</target>
+                <target>Your landlord hasn't joined RentTrack yet - invite them!</target>
             </trans-unit>
             <trans-unit id="keep.paying">
                 <source>keep.paying</source>
@@ -407,7 +407,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text2">
                 <source>landlord.register.text2</source>
-                <target>*Up to 5 eChecks are included with your minimum monthly fee of $9.95. Additional eChecks are $1.95 each per month. Fees will be debited automatically from your deposit account at the end of each month.
+                <target>*Up to 5 eChecks are included with your minimum monthly fee of $9.95. Additional eChecks are $1.95 each per month.
                 </target>
             </trans-unit>
             <trans-unit id="landlord.register.terms">
@@ -837,6 +837,10 @@
                 <source>next_due_date</source>
                 <target>Next Due Date</target>
             </trans-unit>
+            <trans-unit id="next_payment_date">
+                <source>next_payment_date</source>
+                <target>Next Payment Date</target>
+            </trans-unit>
             <trans-unit id="norton_secured">
                 <source>norton_secured</source>
                 <target>Norton Secured</target>
@@ -879,7 +883,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.recurring">
                 <source>contract.payment.recurring</source>
-                <target>Recurs?</target>
+                <target>Recurring?</target>
             </trans-unit>
             <trans-unit id="contract.status">
                 <source>contract.status</source>
@@ -1029,7 +1033,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_2">
                 <source>popup.tenant.footer.note_2</source>
-                <target>We’ll sign you up for ScoreTrack when you set up your first rent payment.</target>
+                <target>Coming Soon!</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_3">
                 <source>popup.tenant.footer.note_3</source>
@@ -1094,7 +1098,11 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
+<<<<<<< HEAD
                 <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly </target>
+=======
+                <target>*We'll waive your eCheck fee if the tenant enrolls in any one of our monthly </target>
+>>>>>>> c76a518a2b47ce9a8b5e9ddce33e2a3aacb764da
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
@@ -1533,7 +1541,7 @@
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
-                <target>Pay rent. Build Credit</target>
+                <target>Pay rent. Build Credit.</target>
             </trans-unit>
             <trans-unit id="iframe.item.pay.title">
                 <source>iframe.item.pay.title</source>
@@ -1541,7 +1549,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.pay.text">
                 <source>iframe.item.pay.text</source>
-                <target>Want to "set it and forget it"? With RentTrack, you can set up autometic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
+                <target>Want to "set it and forget it"? With RentTrack, you can set up automatic electronic payments and never have to walk to the bank again. Better yet, electronic check payments are FREE.</target>
             </trans-unit>
             <trans-unit id="iframe.item.build.title">
                 <source>iframe.item.build.title</source>
@@ -1557,7 +1565,7 @@
             </trans-unit>
             <trans-unit id="iframe.item.monitor.text">
                 <source>iframe.item.monitor.text</source>
-                <target>RenTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
+                <target>RentTrack offers additional services to monitor your credit score and profile over time. To start you off, we'll give you your first credit score FREE.</target>
             </trans-unit>
             <trans-unit id="iframe.questions">
                 <source>iframe.questions</source>
@@ -1569,16 +1577,4 @@
             </trans-unit>
             <trans-unit id="iframe.powered">
                 <source>iframe.powered</source>
-                <target>Powered by</target>
-            </trans-unit>
-            <trans-unit id="unit.live.it.empty">
-                <source>unit.live.it.empty</source>
-                <target>leave blank if this is a single property</target>
-            </trans-unit>
-            <trans-unit id="property.number.not.exist">
-                <source>property.number.not.exist</source>
-                <target>Please put number for property.</target>
-            </trans-unit>
-        </body>
-    </file>
-</xliff>
+      

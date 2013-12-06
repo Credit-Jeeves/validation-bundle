@@ -74,6 +74,36 @@ class Contract extends Base
     const STATUS_LATE = '1';
 
     /**
+     * @var string
+     */
+    const EMPTY_LAST_PAYMENT = '-';
+
+    /**
+     * Details in RT-65
+     * On the tenant tab we need use false
+     * On the dashboard tab we need use true
+     *
+     * @var bool
+     */
+    protected $statusShowLateForce = false;
+
+    /**
+     * @param boolean $statusShowLateForce
+     */
+    public function setStatusShowLateForce($statusShowLateForce)
+    {
+        $this->statusShowLateForce = $statusShowLateForce;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getStatusShowLateForce()
+    {
+        return $this->statusShowLateForce;
+    }
+
+    /**
      * @return int
      */
     public function getGroupId()
@@ -165,6 +195,7 @@ class Contract extends Base
         $result['reminder_revoke'] = ($this->getStatus() === ContractStatus::INVITE)? true : false;
         $result['payment_setup'] = ($payment)? true : false;
         $result['search'] = $this->getSearch();
+
         return $result;
     }
 
@@ -184,7 +215,7 @@ class Contract extends Base
 
     public function getLastPayment()
     {
-        $result = '-';
+        $result = self::EMPTY_LAST_PAYMENT;
         $payments = array();
         $operation = $this->getOperation();
         if (empty($operation)) {
@@ -216,12 +247,32 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new \DateTime();
             $interval = $now->diff($date);
-            if ($sign = $interval->format('%r')) {
+            $sign = $interval->format('%r');
+            if (!$sign) {
+                return $result;
+            }
+            $lastPayment = $this->getLastPayment();
+            /**
+             * if we have payments for this contract need show days late
+             */
+            if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
+                ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
                 $days = $interval->format('%d');
                 $result['status'] = 'LATE ('.$days.' days)';
                 $result['class'] = 'contract-late';
                 return $result;
             }
+
+            /**
+             * If tenant is approved, but has never made payment before, just show Approved
+             * without red shading for status
+             */
+            if ($result['status'] == strtoupper(ContractStatus::APPROVED) ||
+                $result['status'] == strtoupper(ContractStatus::INVITE)) {
+                $result['class'] = 'contract-late';
+                return $result;
+            }
+
             return $result;
         }
         $result['status'] = strtoupper($this->getStatus());
@@ -282,7 +333,7 @@ class Contract extends Base
                     $payments[$nYear][$nMonth]['text'] = self::PAYMENT_AUTO;
                     break;
                 case OrderStatus::COMPLETE:
-                    if ($interval > $lastDate) {
+                    if ($interval >= $lastDate) {
                         $result['last_amount'] = $order->getAmount();
                         $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
                     }
