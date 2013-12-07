@@ -18,6 +18,7 @@ use CreditJeeves\DataBundle\Enum\Grouptype;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface as UrlGenerator;
+use Exception;
 
 class LandlordController extends Controller
 {
@@ -75,7 +76,7 @@ class LandlordController extends Controller
                         'url' => $saml::ONLINE_BOARDING
                     )
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return $this->get('common.login.manager')->loginAndRedirect(
                     $landlord,
                     $this->generateUrl('landlord_tenants')

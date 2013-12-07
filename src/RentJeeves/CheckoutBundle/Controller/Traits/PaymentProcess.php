@@ -21,6 +21,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use \DateTime;
+use \RuntimeException;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
@@ -64,7 +65,7 @@ trait PaymentProcess
         $merchantName = $this->getMerchantName($group);
 
         if (empty($merchantName)) {
-            throw new \Exception('Merchant name is not installed');
+            throw new RuntimeException('Merchant name is not installed');
         }
 
         $tokenRequest = $this->getTokenRequest($paymentAccountType, $user);
@@ -98,6 +99,7 @@ trait PaymentProcess
             $ccYear = $paymentAccountType->get('ExpirationYear')->getData();
             $paymentAccountEntity->setCcExpiration(new DateTime("last day of {$ccYear}-{$ccMonth}"));
 
+            /** @var Address $address */
             if ($address = $paymentAccountType->get('address_choice')->getData()) {
                 // TODO: address is a Proxy, but should be Entity
                 $paymentAccountEntity->setAddress($address);
@@ -156,7 +158,7 @@ trait PaymentProcess
         $response = $statusRequest->getModel()->getResponse();
 
         if (!$statusRequest->isSuccess()) {
-            throw new \Exception($paymentDetails->getMessages());
+            throw new RuntimeException($paymentDetails->getMessages());
         }
 
         return $response->getToken();

@@ -4,7 +4,8 @@ namespace RentJeeves\LandlordBundle\Registration;
 
 use CreditJeeves\DataBundle\Entity\User;
 use RentJeeves\LandlordBundle\Registration\MerchantAccountModel as MerchantAccount;
-use XMLSecurityDSig as XMLDigitalSignature;
+use \XMLSecurityDSig as XMLDigitalSignature;
+use \DOMDocument;
 
 class SAMLEnvelope
 {
@@ -64,14 +65,14 @@ class SAMLEnvelope
      * @param \DOMDocument $signedDocument
      * @return string
      */
-    public function encodeAssertionResponse(\DOMDocument $signedDocument)
+    public function encodeAssertionResponse(DOMDocument $signedDocument)
     {
         return base64_encode($signedDocument->saveXML($signedDocument->documentElement));
     }
 
     protected function createPortalApplicationData()
     {
-        $doc = new \DOMDocument('1.0', 'utf-8');
+        $doc = new DOMDocument('1.0', 'utf-8');
 
         $root = $doc->createElement('InboundConfiguration');
         $parentApplicationNode = $doc->createElement('InboundApplicationConfigurations');
@@ -138,7 +139,7 @@ class SAMLEnvelope
 
     protected function createAssertionResponse()
     {
-        $doc = new \DOMDocument('1.0', 'utf-8');
+        $doc = new DOMDocument('1.0', 'utf-8');
         $root = $doc->createElementNS('urn:oasis:names:tc:SAML:2.0:protocol', 'Response');
         $root->setAttributeNS(
             'http://www.w3.org/2000/xmlns/',
@@ -266,7 +267,7 @@ class SAMLEnvelope
     {
         $filename = "/tmp/{$this->user->getId()}.xml";
         file_put_contents($filename, $this->assertionResponse->saveXML($this->assertionResponse->documentElement));
-        $doc = new \DOMDocument('1.0', 'utf-8');
+        $doc = new DOMDocument('1.0', 'utf-8');
         $doc->load($filename);
         unlink($filename);
 

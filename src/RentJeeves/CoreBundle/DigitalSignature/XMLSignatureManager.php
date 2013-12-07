@@ -4,6 +4,8 @@ namespace RentJeeves\CoreBundle\DigitalSignature;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use XMLSecurityDSig as XMLDigitalSignature;
+use \DOMDocument;
+use \XMLSecurityKey;
 
 /**
  * @DI\Service("signature.manager")
@@ -19,7 +21,7 @@ class XMLSignatureManager
         $this->x509CertPath = __DIR__.'/../Resources/keys/saml_renttrack_com_cert.txt';
     }
 
-    public function sign(\DOMDocument $dom)
+    public function sign(DOMDocument $dom)
     {
         $digitalSignature = new XMLDigitalSignature('');
         $digitalSignature->setCanonicalMethod(XMLDigitalSignature::EXC_C14N);
@@ -30,8 +32,8 @@ class XMLSignatureManager
             array('id_name' => 'ID', 'overwrite' => false)
         );
 
-        $privateKey = new \XMLSecurityKey(
-            \XMLSecurityKey::RSA_SHA1,
+        $privateKey = new XMLSecurityKey(
+            XMLSecurityKey::RSA_SHA1,
             array('type'=>'private')
         );
 

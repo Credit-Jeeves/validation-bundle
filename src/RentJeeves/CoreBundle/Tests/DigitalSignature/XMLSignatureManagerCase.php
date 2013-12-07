@@ -3,6 +3,7 @@
 namespace RentJeeves\CoreBundle\Tests\DigitalSignature;
 
 use RentJeeves\CoreBundle\DigitalSignature\XMLSignatureManager;
+use \DOMDocument;
 
 class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
 {
@@ -15,7 +16,7 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
 
         $signatureManager = $this->getSignatureManager();
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->load($xmlTemplate);
 
         $result = $signatureManager->sign($dom);
@@ -37,7 +38,7 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
 
         $signatureManager = $this->getSignatureManager();
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->load($xmlTemplate);
 
         $result = $signatureManager->sign($dom);
@@ -55,7 +56,7 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
 
         $signatureManager = $this->getSignatureManager();
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->load($xmlTemplate);
 
         $result = $signatureManager->sign($dom);
@@ -78,7 +79,7 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
 
         $signatureManager = $this->getSignatureManager();
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->load($xmlTemplate);
 
         $result = $signatureManager->sign($dom);
@@ -114,7 +115,7 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
 
         $signatureManager = $this->getSignatureManager();
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->load($xmlTemplate);
 
         $result = $signatureManager->sign($dom);

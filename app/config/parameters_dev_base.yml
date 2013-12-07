@@ -25,4 +25,3 @@ parameters:
         application_id: 3
         username: RTAPI
         password: $RTapi13
-    rt_merchant_name: 'RentTrack'

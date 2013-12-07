@@ -5,6 +5,7 @@ namespace RentJeeves\LandlordBundle\Tests\Unit;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\LandlordBundle\Registration\MerchantAccountModel;
 use RentJeeves\LandlordBundle\Registration\SAMLEnvelope;
+use \DOMDocument;
 
 class SAMLEnvelopeCase extends BaseTestCase
 {
@@ -84,7 +85,7 @@ class SAMLEnvelopeCase extends BaseTestCase
     {
         $saml = new SAMLEnvelope($this->getUser(), $this->getMerchantAccount());
 
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->appendChild($dom->createElement('TestElement', 'Some test data inside'));
 
         $this->assertEquals(

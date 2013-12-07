@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use Exception;
 
 /**
  * @method \RentJeeves\DataBundle\Entity\Tenant getUser()
@@ -84,7 +85,7 @@ class PayController extends Controller
 
         try {
             $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return new JsonResponse(
                 array(
                     $paymentAccountType->getName() => array(

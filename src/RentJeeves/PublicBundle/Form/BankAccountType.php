@@ -18,9 +18,6 @@ class BankAccountType extends AbstractType
             array(
                 'mapped' => true,
                 'label' => 'checkout.account_nickname',
-                'attr' => array(
-                    'placeholder' => 'Bank of America Checking'
-                ),
                 'constraints' => array(
                     new NotBlank(
                         array(
