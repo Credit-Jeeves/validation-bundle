@@ -32,8 +32,8 @@ class IndexController extends Controller
      */
     public function completeAccountAction()
     {
-       $landlord = $this->get('core.session.landlord')->getUser();
-       $group = $this->get('core.session.landlord')->getGroup();
+        $landlord = $this->get('core.session.landlord')->getUser();
+        $group = $this->get('core.session.landlord')->getGroup();
 
         $merchantAccount = new MerchantAccountModel('', '', '');
         $saml = new SAMLEnvelope(
