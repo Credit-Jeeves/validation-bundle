@@ -98,6 +98,12 @@ class AlertController extends Controller
             if (empty($billing)) {
                 $alerts[] = $this->get('translator.default')->trans('landlord.payment_account.set_up_message');
             }
+
+            $inviteCode = $user->getInviteCode();
+            if (!empty($inviteCode)) {
+                $alerts[] = $this->get('translator.default')->trans('landlord.alert.verify_email');
+            }
+
             if ($pending > 0) {
                 $text = $this->get('translator.default')->trans('landlord.alert.pending-one');
                 if ($pending > 1) {

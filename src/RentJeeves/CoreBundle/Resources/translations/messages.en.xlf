@@ -1659,6 +1659,11 @@
                 <source>landlord.payment_account.set_up_message</source>
                 <target><![CDATA[Please visit your <a href="#">account settings</a> to set up a payment account.]]></target>
             </trans-unit>
+            <trans-unit id="landlord.alert.verify_email">
+                <source>landlord.alert.verify_email</source>
+                <target><![CDATA[Verify your email address. <a href="#" id="landlord-verify-email">Resend Verification Email</a>]]></target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
