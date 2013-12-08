@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\LandlordBundle\Tests\Unit;
 
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\TenantBundle\Service\InviteLandlord;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -71,6 +72,7 @@ class DepositAccountCase extends BaseTestCase
 
         $depositAccount = new DepositAccount();
         $depositAccount->setMerchantName('My First merchantName');
+        $depositAccount->setStatus(DepositAccountStatus::DA_COMPLETE);
         $depositAccount->setGroup($landord->getCurrentGroup());
 
         $em->persist($depositAccount);

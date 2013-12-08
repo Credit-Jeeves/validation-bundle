@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 
 /**
  * @ORM\MappedSuperclass
@@ -35,10 +36,31 @@ abstract class DepositAccount
      * @ORM\Column(
      *     name="merchant_name",
      *     type="string",
-     *     length=255
+     *     length=255,
+     *     nullable=true
      * )
      */
     protected $merchantName;
+
+    /**
+     * @ORM\Column(
+     *     type="DepositAccountStatus",
+     *     options={
+     *         "default"="init"
+     * }
+     * )
+     *
+     */
+    protected $status = DepositAccountStatus::DA_INIT;
+
+    /**
+     * @ORM\Column(
+     *     type="string",
+     *     length=255,
+     *     nullable=true
+     * )
+     */
+    protected $message;
 
     /**
      * Get id
@@ -84,5 +106,37 @@ abstract class DepositAccount
     public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
     {
         $this->group = $group;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }
