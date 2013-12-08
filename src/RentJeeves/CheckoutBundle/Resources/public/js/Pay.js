@@ -359,6 +359,7 @@ function Pay(parent, contractId) {
         beforeClose: function( event, ui ) {
             self.paymentAccounts([{id: '', name: ''}]);
             self.newUserAddress([new Address()]);
+            $("input.datepicker-field").datepicker("destroy");
         }
     });
 
