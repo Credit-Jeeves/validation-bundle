@@ -48,6 +48,7 @@
 
 {% block head_javascripts %}
     {% javascripts '@RjCoreBundle/Resources/public/js/user-voice.js'
+                   '@LandlordBundle/Resources/public/js/verifyEmail.js'
 %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
 {% endjavascripts %}
@@ -58,7 +59,6 @@
     {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
                     '@CoreBundle/Resources/public/js/datepicker.js'
                     '@ComponentBundle/Resources/public/js/groups.js'
-                    '@LandlordBundle/Resources/public/js/verifyEmail.js'
 
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

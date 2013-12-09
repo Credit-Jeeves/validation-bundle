@@ -18,6 +18,12 @@ class AlertController extends Controller
     {
         $alerts = array();
         $user = $this->get('core.session.landlord')->getUser();
+
+        $inviteCode = $user->getInviteCode();
+        if (!empty($inviteCode)) {
+            $alerts[] = $this->get('translator.default')->trans('landlord.alert.verify_email');
+        }
+
         if ($isSuperAdmin = $user->getIsSuperAdmin()) {
             $holding = $user->getHolding();
             $groups = $holding->getGroups();
@@ -97,11 +103,6 @@ class AlertController extends Controller
             }
             if (empty($billing)) {
                 $alerts[] = $this->get('translator.default')->trans('landlord.payment_account.set_up_message');
-            }
-
-            $inviteCode = $user->getInviteCode();
-            if (!empty($inviteCode)) {
-                $alerts[] = $this->get('translator.default')->trans('landlord.alert.verify_email');
             }
 
             if ($pending > 0) {

@@ -1,14 +1,18 @@
-$(document).ready(function() {
+$(function() {
     $('#landlord-verify-email').click(function()
         {
-            alert(155);
             $.ajax({
                 url: Routing.generate('landlord_resend_verification'),
                 type: 'POST',
                 dataType: 'json',
-                data: {}
+                data: {},
+                success: function() {
+                    $(this).hide();
+                    $('#landlord-verify-resent').show();
+                }
             });
-            $(this).hide();
+
+            return false;
         }
     );
 });
