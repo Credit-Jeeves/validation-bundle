@@ -87,7 +87,7 @@ class Report implements ReportInterface
                 $content = $this->serializer->serialize($this->getOrders(), 'csv', $context);
                 break;
             default:
-                throw new Exception('We does not have logic for this type report');
+                throw new Exception("We does not have logic for this type report:".$this->getType());
         }
         return $content;
     }
