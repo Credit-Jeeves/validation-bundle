@@ -9,11 +9,12 @@ use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use \Exception;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/reports")
@@ -30,7 +31,6 @@ class ReportsController extends Controller
      */
     public function indexAction()
     {
-        $this->testCsv();
         $user = $this->get('security.context')->getToken()->getUser();
         if (!$user->haveAccessToReports()) {
             throw new Exception("Don't have access");
@@ -46,11 +46,11 @@ class ReportsController extends Controller
             $baseReport = $this->get('base.report');
             $report = $baseReport->getReport($data);
 
-            $response = new StreamedResponse();
+            $response = new Response();
             $response->setContent($report);
             $response->headers->set('Cache-Control', 'private');
             $response->headers->set('Content-Type', $baseReport->getContentType());
-            $response->headers->set('Content-Disposition', 'attachment; filename='.$this->getFileName());
+            $response->headers->set('Content-Disposition', 'attachment; filename='.$baseReport->getFileName());
 
             return $response;
         }
@@ -60,6 +60,4 @@ class ReportsController extends Controller
             'formBaseOrder'      => $formBaseOrder->createView()
         );
     }
-
-
 }

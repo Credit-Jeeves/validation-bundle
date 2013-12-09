@@ -3,9 +3,12 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class BaseOrderReportType extends AbstractType
 {
@@ -39,7 +42,10 @@ class BaseOrderReportType extends AbstractType
                 'required'  => true,
                 'attr'      => array(
                     'class'     => 'original widthSelect'
-                )
+                ),
+                'constraints' => array(
+                    new NotBlank(),
+                ),
             )
         );
 
@@ -51,6 +57,9 @@ class BaseOrderReportType extends AbstractType
                 'error_bubbling'    => true,
                 'attr'              => array(
                     'class'         =>  'original widthSelect',
+                ),
+                'constraints' => array(
+                    new NotBlank(),
                 ),
                 'query_builder'     => function (EntityRepository $er) use ($groups) {
 
@@ -88,12 +97,17 @@ class BaseOrderReportType extends AbstractType
             'begin',
             'date',
             array(
+                'required'          => true,
                 'input'             => 'string',
                 'widget'            => 'single_text',
                 'format'            => 'MM/dd/yyyy',
                 'attr'              => array(
                     'class'     =>  'begin calendar',
                     'force_row' => true
+                ),
+                'constraints' => array(
+                    new NotBlank(),
+                    new Date(),
                 )
             )
         );
@@ -108,6 +122,10 @@ class BaseOrderReportType extends AbstractType
                 'format'            => 'MM/dd/yyyy',
                 'attr'              => array(
                     'class' =>  'end calendar'
+                ),
+                'constraints' => array(
+                    new NotBlank(),
+                    new Date(),
                 )
             )
         );

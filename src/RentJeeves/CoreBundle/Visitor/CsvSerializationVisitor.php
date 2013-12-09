@@ -21,7 +21,7 @@ use JMS\Serializer\Util\Writer;
  * @Service("jms_serializer.csv_serialization_visitor")
  * @Tag("jms_serializer.serialization_visitor", attributes = {"format" = "csv"})
  */
-class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterface
+class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterface
 {
     const DELIMITER = ",";
 
@@ -59,7 +59,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitString($data, array $type, Context $context)
     {
-        return (string) $data;
+        return (string)$data;
     }
 
     /**
@@ -70,7 +70,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitBoolean($data, array $type, Context $context)
     {
-        return ($data)? 'true': 'false';
+        return ($data) ? 'true' : 'false';
     }
 
     /**
@@ -92,7 +92,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitInteger($data, array $type, Context $context)
     {
-        return (int) $data;
+        return (int)$data;
     }
 
     /**
@@ -104,7 +104,7 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
     public function visitArray($data, array $type, Context $context)
     {
         foreach ($data as $k => $v) {
-            if (null === $v && (!is_string($k) || ! $context->shouldSerializeNull())) {
+            if (null === $v && (!is_string($k) || !$context->shouldSerializeNull())) {
                 continue;
             }
 
@@ -133,9 +133,9 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
      */
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
-        $name = $metadata->serializedName;
+        $name  = $metadata->serializedName;
         $value = $metadata->getValue($data);
-        $type = $metadata->type;
+        $type  = $metadata->type;
 
         $this->currentLine[$name] = $this->navigator->accept($value, $metadata->type, $context);
     }
@@ -152,9 +152,10 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         if ($this->headerFlag === false) {
-            fputcsv($this->fp, array_keys($this->currentLine),  self::DELIMITER, self::ENCLOSURE);
+            fputcsv($this->fp, array_keys($this->currentLine), self::DELIMITER, self::ENCLOSURE);
+            $this->headerFlag = true;
         }
-        fputcsv($this->fp, $this->currentLine,  self::DELIMITER, self::ENCLOSURE);
+        fputcsv($this->fp, $this->currentLine, self::DELIMITER, self::ENCLOSURE);
     }
 
     /**
@@ -190,5 +191,4 @@ class CsvSerializationVisitor  extends AbstractVisitor implements VisitorInterfa
 
         return $data;
     }
-
 }

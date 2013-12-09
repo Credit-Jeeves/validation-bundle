@@ -7,6 +7,8 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\Serializer\SerializationContext;
 use \Exception;
+use RentJeeves\LandlordBundle\Model\Reports\BaseOrderReport\YsiTran;
+use RentJeeves\LandlordBundle\Reports\ReportInterface;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -36,17 +38,17 @@ class Report implements ReportInterface
     public function __construct($serializer, $em)
     {
         $this->serializer = $serializer;
-        $this->em = $em;
+        $this->em         = $em;
     }
 
     public function getContentType()
     {
-        return 'text/'.$this->type;
+        return 'text/' . $this->type;
     }
 
     public function getFileName()
     {
-        return 'report_'.$this->getBegin().'_and_'.$this->getEnd().'.'.$this->getType();
+        return 'report_' . $this->getBegin() . '_and_' . $this->getEnd() . '.' . $this->getType();
     }
 
     public function setupData($dataFromForm)
@@ -60,9 +62,7 @@ class Report implements ReportInterface
     public function getOrders()
     {
         $orderRepository = $this->em->getRepository('DataBundle:Order');
-        $orders = $orderRepository->getOrdersForReport($this->getPropertyId(), $this->getBegin(), $this->getEnd());
-
-        return $orders;
+        return $orderRepository->getOrdersForReport($this->getPropertyId(), $this->getBegin(), $this->getEnd());
     }
 
     public function getReport($dataFromForm = null)
@@ -78,7 +78,7 @@ class Report implements ReportInterface
                 $context = new SerializationContext();
                 $context->setSerializeNull(true);
                 $context->setGroups('xmlBaseReport');
-                $content = $this->serializer->serialize($this->getOrders(), 'csv', $context);
+                $content = $this->serializer->serialize($ysiTran, 'xml', $context);
                 break;
             case 'csv':
                 $context = new SerializationContext();
@@ -89,7 +89,6 @@ class Report implements ReportInterface
             default:
                 throw new Exception('We does not have logic for this type report');
         }
-
         return $content;
     }
 
