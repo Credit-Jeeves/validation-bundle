@@ -17,7 +17,7 @@ class Operation extends Base
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Notes")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
      *
      * @return DateTime
      */

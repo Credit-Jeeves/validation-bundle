@@ -43,7 +43,7 @@ class ReportsController extends Controller
         if ($formBaseOrder->isValid()) {
 
             $data = $formBaseOrder->getData();
-            $baseReport = $this->get('base.report');
+            $baseReport = $this->get('report.order');
             $report = $baseReport->getReport($data);
 
             $response = new Response();

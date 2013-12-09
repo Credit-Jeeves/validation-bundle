@@ -22,11 +22,11 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Property")
-     * @Serializer\Groups({"csvBaseReportCsv"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
-    public function getPropertyForReportCsv()
+    public function getPropertyAddress()
     {
         $property = $this->getContract()->getProperty();
         return $property->getFullAddress();
@@ -36,11 +36,11 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Unit")
-     * @Serializer\Groups({"csvBaseReportCsv"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
-    public function getUnitForReportCsv()
+    public function getUnitName()
     {
         $unit = $this->getContract()->getUnit();
         $unitName = '';
@@ -56,11 +56,11 @@ class Order extends BaseOrder
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Date")
-     * @Serializer\Groups({"xmlBaseReport", "csvBaseReportCsv"})
+     * @Serializer\Groups({"xmlReport", "csvReport"})
      *
      * @return DateTime
      */
-    public function getDate()
+    public function getActualPaymentTransactionDate()
     {
         return $this->getUpdatedAt()->format('r');
     }
@@ -68,7 +68,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("TotalAmount")
-     * @Serializer\Groups({"xmlBaseReport", "csvBaseReportCsv"})
+     * @Serializer\Groups({"xmlReport", "csvReport"})
      *
      * @return float
      */
@@ -80,11 +80,11 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("First_Name")
-     * @Serializer\Groups({"csvBaseReportCsv"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
-    public function getFirstNameForCsvReport()
+    public function getFirstNameTenant()
     {
         $tenant = $this->getContract()->getTenant();
         return $tenant->getFirstName();
@@ -93,11 +93,11 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Last_Name")
-     * @Serializer\Groups({"csvBaseReportCsv"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
-    public function getLastNameForCsvReport()
+    public function getLastNameReport()
     {
         $tenant = $this->getContract()->getTenant();
         return $tenant->getLastName();
@@ -106,11 +106,11 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Code")
-     * @Serializer\Groups({"csvBaseReportCsv"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
-    public function getCodeForCsvReport()
+    public function getCode()
     {
         if ($this->getType() === OrderType::HEARTLAND_CARD) {
             $code = 'PMTCRED';
@@ -126,22 +126,25 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Description")
-     * @Serializer\Groups({"csvBaseReportCsv"})
+     * @Serializer\Groups({"csvReport"})
      *
      * @return string
      */
-    public function getDescriptionForCsvReport()
+    public function getDescription()
     {
-        $desc = $this->getPropertyForReportCsv().'#'.$this->getUnitForReportCsv();
-        $desc .= ' '.$this->getType().' '.$this->getHeartlandTransactionId();
-
-        return $desc;
+        return sprintf(
+            '%s #%s %s %d',
+            $this->getPropertyAddress(),
+            $this->getUnitName(),
+            $this->getType(),
+            $this->getHeartlandTransactionId()
+        );
     }
 
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("IsCash")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
      *
      * @return string
      */
@@ -157,7 +160,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("CheckNumber")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
      *
      * @return string
      */
@@ -167,15 +170,14 @@ class Order extends BaseOrder
             return null;
         }
 
-        $checkNumber = $this->getType()." ".$this->getHeartlandTransactionId();
-        return $checkNumber;
+        return sprintf('%s %d', $this->getType(), $this->getHeartlandTransactionId());
     }
 
     /**
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Notes")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
      *
      * @return DateTime
      */
@@ -195,7 +197,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PayerName")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
      *
      * @return DateTime
      */
@@ -208,7 +210,7 @@ class Order extends BaseOrder
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PostMonth")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
      *
      * @return DateTime
      */

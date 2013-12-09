@@ -137,7 +137,7 @@ abstract class Order
      * @Serializer\SerializedName("Details")
      * @Serializer\XmlList(inline = false, entry="Detail")
      * @Serializer\XmlKeyValuePairs
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
      *
      * @var ArrayCollection
      */
