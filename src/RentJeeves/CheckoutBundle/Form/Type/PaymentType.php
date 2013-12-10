@@ -174,7 +174,7 @@ class PaymentType extends AbstractType
                 'label' => 'checkout.date',
                 'input' => 'string',
                 'widget' => 'single_text',
-                'format' => 'MM/dd/yyyy',
+                'format' => 'M/d/yyyy',
                 'empty_data' => '',
                 'attr' => array(
                     'class' => 'datepicker-field',

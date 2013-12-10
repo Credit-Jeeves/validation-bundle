@@ -548,6 +548,10 @@ $(document).ready(function(){
     }
   });
   
+  $('#tenant-add-property-button-cancel').click(function(){
+    $('#tenant-add-property-popup').dialog( 'close' );
+    return false;
+  });
   function getUnits(propertyId)
   {
       $(idUnit).linkselect('destroy');
