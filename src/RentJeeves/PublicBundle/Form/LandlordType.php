@@ -16,7 +16,7 @@ class LandlordType extends AbstractType
             'first_name',
             null,
             array(
-                'label' => 'Name*',
+                'label' => 'Name',
             )
         );
         $builder->add('last_name');
@@ -24,7 +24,7 @@ class LandlordType extends AbstractType
             'email',
             null,
             array(
-                'label' => 'Email*',
+                'label' => 'Email',
             )
         );
         $builder->add(
@@ -37,11 +37,11 @@ class LandlordType extends AbstractType
             array(
                 'first_name'    => 'Password',
                 'first_options' => array(
-                    'label' => 'Password*'
+                    'label' => 'Password'
                  ),
                 'second_name'   => 'Verify_Password',
                 'second_options' => array(
-                    'label' => 'Verify Password*'
+                    'label' => 'Verify Password'
                  ),
                 'type'          => 'password',
                 'mapped'        => false,

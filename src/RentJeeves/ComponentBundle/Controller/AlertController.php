@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\Controller;
 
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -68,6 +69,7 @@ class AlertController extends Controller
         } else {
             $group = $this->get('core.session.landlord')->getGroup();
             $deposit = $group->getDepositAccount();
+            $billing = $group->getBillingAccount();
             $contracts = $group->getContracts();
             $pending = 0;
             foreach ($contracts as $contract) {
@@ -78,8 +80,23 @@ class AlertController extends Controller
                         break;
                 }
             }
-            if (empty($deposit)) {
-                $alerts[] = $this->get('translator.default')->trans('deposit.merchant.setup');
+            if (empty($deposit) || $deposit->getStatus() == DepositAccountStatus::DA_INIT) {
+                $alerts[] = $this->get('translator.default')->trans(
+                    'landlord.hps.complete_application',
+                    array('%complete_url%' => $this->generateUrl('landlord_complete_account'))
+                );
+            }
+            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_SUCCESS) {
+                $alerts[] = $this->get('translator.default')->trans('landlord.hps.processing_message');
+            }
+            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_ERROR) {
+                $alerts[] = $this->get('translator.default')->trans(
+                    'landlord.hps.error_message',
+                    array('%heartland_msg%' => $deposit->getMessage())
+                );
+            }
+            if (empty($billing)) {
+                $alerts[] = $this->get('translator.default')->trans('landlord.payment_account.set_up_message');
             }
             if ($pending > 0) {
                 $text = $this->get('translator.default')->trans('landlord.alert.pending-one');

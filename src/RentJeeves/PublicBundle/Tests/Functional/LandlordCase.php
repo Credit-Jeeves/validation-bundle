@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
+use Payum\Heartland\Soap\Base\ACHAccountType;
+use Payum\Heartland\Soap\Base\ACHDepositType;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
@@ -36,7 +38,7 @@ class LandlordCase extends BaseTestCase
         $submit->click();
         $this->session->wait($this->timeout, "$('.error_list').length > 0");
         $errorList = $this->page->findAll('css', '.error_list');
-        $this->assertCount(8, $errorList, 'Error list');
+        $this->assertCount(12, $errorList, 'Error list');
         $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->page->clickLink('Pricing');
@@ -60,7 +62,11 @@ class LandlordCase extends BaseTestCase
                 'LandlordAddressType_address_street'                     => 'My Street',
                 'LandlordAddressType_address_city'                       => 'Test',
                 'LandlordAddressType_address_zip'                        =>'1231',
-                'numberOfUnit'                                           => 3
+                'numberOfUnit'                                           => 3,
+                'LandlordAddressType_deposit_nickname'                   => 'Nick',
+                'LandlordAddressType_deposit_AccountNumber'              => '12345678',
+                'LandlordAddressType_deposit_RoutingNumber'              => '12345678',
+                'LandlordAddressType_deposit_ACHDepositType_0'           => true,
             )
         );
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit>span'));
@@ -73,8 +79,19 @@ class LandlordCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
 
-        $fields = $this->page->findAll('css', '#inviteText>h4');
-        $this->assertCount(2, $fields, 'wrong number of text h4');
+        $this->session->wait($this->timeout, "$('#main-content-wrapper').is(':visible')");
+
+        $this->assertNotNull($title = $this->page->find('css', 'h1'));
+        $expected = 'RentTrack - Online Merchant Agreement ' .
+            '<img src="/Content/images/HPY_logo.png" alt="Heartland Payment Systems Logo">';
+        $this->assertEquals($expected, $title->getHtml());
+    }
+
+    /**
+     * @test
+     */
+    public function landlordLogin()
+    {
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));

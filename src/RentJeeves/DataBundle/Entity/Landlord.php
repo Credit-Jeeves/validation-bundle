@@ -130,7 +130,7 @@ class Landlord extends User
 
         $merchantExist = false;
         foreach ($groups as $group) {
-            if ($group->getDepositAccount()) {
+            if (($depositAccount = $group->getDepositAccount()) && $depositAccount->isComplete()) {
                 $merchantExist = true;
                 break;
             }
