@@ -838,7 +838,7 @@ class AjaxController extends Controller
      */
     public function sendVerificationAction()
     {
-        $landlord = $this->get('core.session.landlord')->getUser();
+        $landlord = $this->getUser();
         $this->get('project.mailer')->sendRjCheckEmail($landlord);
 
         return new JsonResponse();

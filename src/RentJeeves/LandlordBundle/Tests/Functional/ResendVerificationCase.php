@@ -11,7 +11,7 @@ class ResendVerificationCase extends BaseTestCase
      */
     public function resendVerification()
     {
-        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
 
