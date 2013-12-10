@@ -32,6 +32,19 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
+    sonata.admin.rj_group.phone:
+        class: RentJeeves\AdminBundle\Admin\GroupPhoneAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Groups" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\GroupPhone
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+
+
     sonata.admin.landlord:
         class: RentJeeves\AdminBundle\Admin\LandlordAdmin
         tags:

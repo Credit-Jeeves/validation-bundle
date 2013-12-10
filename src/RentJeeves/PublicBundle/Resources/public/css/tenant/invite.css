@@ -3,11 +3,12 @@
 }
 #checkboxterms .big {
     height: 20px;
-    width: 195px;
+    width: 400px;
 }
-#checkboxterms .big>a {
-    margin-top: -17px;
-}
+
 .box.type1 .form-row a { 
-    float: right;
+    clear: both;
+    white-space:normal;
+    margin: 0;
+    float: none;
 }
