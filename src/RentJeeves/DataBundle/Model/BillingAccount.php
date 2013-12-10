@@ -18,7 +18,7 @@ abstract class BillingAccount
     protected $id;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     inversedBy="billingAccount"
      * )
@@ -46,6 +46,17 @@ abstract class BillingAccount
      * )
      */
     protected $nickname;
+
+    /**
+     * @ORM\Column(
+     *     name="active",
+     *     type="boolean",
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     */
+    protected $isActive = 0;
 
     /**
      * @return int
@@ -107,5 +118,21 @@ abstract class BillingAccount
     public function getNickname()
     {
         return $this->nickname;
+    }
+
+    /**
+     * @param boolean $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isActive()
+    {
+        return $this->isActive;
     }
 }

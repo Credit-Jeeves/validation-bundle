@@ -960,13 +960,11 @@
             </trans-unit>
             <trans-unit id="settings.deposit">
                 <source>settings.deposit</source>
-                <target>Direct Deposit Accounts</target>
+                <target>Payment Accounts</target>
             </trans-unit>
             <trans-unit id="settings.deposit.description">
                 <source>settings.deposit.description</source>
-                <target>
-                    Specify where you wold like us to deposit incoming rent payments.
-                    Any RentTrack fees will also be withdrawn from this account.
+                <target>Specify how you would like to pay for RentTrack service fees.
                 </target>
             </trans-unit>
             <trans-unit id="add.account">
@@ -975,9 +973,7 @@
             </trans-unit>
             <trans-unit id="add.account.popup.desc">
                 <source>add.account.popup.desc</source>
-                <target>This information is only used to direct payments to you.
-                        Deposit will be initiate on you "Rent Due Date" and typically
-                        take 1-3 days to show up in you chosen account.</target>
+                <target>This account will be used to pay any RentTrack service fees. You will receive a receipt detailing all fees.</target>
             </trans-unit>
             <trans-unit id="add.account.popup.title.edit">
                 <source>add.account.popup.title.edit</source>
@@ -1667,7 +1663,7 @@
             </trans-unit>
             <trans-unit id="landlord.payment_account.set_up_message">
                 <source>landlord.payment_account.set_up_message</source>
-                <target><![CDATA[Please visit your <a href="#">account settings</a> to set up a payment account.]]></target>
+                <target><![CDATA[Please visit your <a href="%payment_account_url%">account settings</a> to set up a payment account.]]></target>
             </trans-unit>
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>

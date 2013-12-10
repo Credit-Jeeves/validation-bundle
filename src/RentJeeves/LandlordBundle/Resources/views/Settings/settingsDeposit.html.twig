@@ -1,52 +1,60 @@
 {% extends "LandlordBundle::base.html.twig" %}
 
 {% block content %}
-{% include 'LandlordBundle:Settings:_menu.html.twig' %}
-<div class="column-middle floatright">
-  <div class="pod-middle pod-border pod-padding shadow">
-    <section class="form-content">
-      <h3>{{'settings.deposit'|trans}}</h3>
-      <br />
-      <hr />
-      <br />
-      <p>{{'settings.deposit.description'|trans}}</p>
-      <br />
-      <hr>
-      <br />
-      <a href="#" class="add-account">{{ 'add.account'|trans }}</a>
-    </section>
+    {% include 'LandlordBundle:Settings:_menu.html.twig' %}
+    <div class="column-middle floatright">
+        <div class="pod-middle pod-border pod-padding shadow">
+            <section class="form-content">
+                <h3>{{'settings.deposit'|trans}}</h3>
+                <hr />
+                <p>{{'settings.deposit.description'|trans}}</p>
+                <br />
+                <div>
+                    {% for payment_account in payment_accounts %}
+                        <label for="payment_account_{{ payment_account.getId }}">{{ payment_account.getNickname }}</label>
+                        <input type="radio" value="{{ payment_account.getId }}" id="payment_account_{{ payment_account.getId }}">
+                    {% endfor %}
+                </div>
+                <hr>
+                <a href="#" class="add-account">{{ 'add.account'|trans }}</a>
+            </section>
+            <div class="col-box clearfix"></div>
+        </div>
+    </div>
     <div class="col-box clearfix"></div>
-  </div>
-</div>
-<div class="col-box clearfix"></div>
 
 
 
-<!-- Action Add deposit account -->
-<div id="deposit-landlord-popup" class="pricing-popup dashboard-popup">
-  <h1>{{ 'add.account.popup.title.edit'|trans }}</h1>
-  <div class="clearfix col-box">
-    <div class="col">
-          <br />
-          <p class="clearfix">
-            <span>{{'add.account.popup.desc'|trans}}</span>
-          </p>
-          <br />
+    <!-- Action Add deposit account -->
+    <div id="billing-account-edit" class="pricing-popup dashboard-popup">
+        <h1>{{ 'add.account.popup.title.edit'|trans }}</h1>
+        <div class="clearfix col-box">
+            <div class="col">
+                <p class="clearfix">
+                    <span>{{'add.account.popup.desc'|trans}}</span>
+                </p>
+                {{ render(controller('LandlordBundle:Settings:bankAccount')) }}
+            </div>
+
+            <div class="footer-button-box">
+                <button class="button" onclick="saveBillingAccount()">
+                    <span>{{'add.account'|trans}}</span>
+                </button>
+                <div class="with-seperator-box">
+                    <button class="button grey" onclick="$('#deposit-landlord-popup').dialog( 'close' ); return false;">
+                        <span>{{ 'cancel'|trans}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="footer-button-box">
-    <button class="button" type="submit">
-      <span>{{'add.account'|trans}}</span>
-    </button>
-    <div class="with-seperator-box">
-      <button class="button grey" onclick="$('#deposit-landlord-popup').dialog( 'close' ); return false;">
-        <span>{{ 'cancel'|trans}}</span>
-      </button>
-    </div>
-  </div>
-</div>
 
-
+    {#<script type="text/javascript">#}
+        {#$(document).ready(function() {#}
+            {#var viewModel = new BillingAccountViewModel();#}
+            {#ko.applyBindings(paymentSources, $('#payment-accounts').get(0));#}
+        {#});#}
+    {#</script>#}
 {% endblock %}
 
 {% block stylesheets %}

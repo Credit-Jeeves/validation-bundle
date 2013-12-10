@@ -1,0 +1,20 @@
+{% form_theme bankAccountType 'RjCoreBundle::form.html.twig' %}
+
+<form {{ form_enctype(bankAccountType) }} novalidate method="post">
+    {{ form_widget(bankAccountType) }}
+    {{ JSFV(bankAccountType) }}
+</form>
+
+{#<script type="text/javascript">#}
+    {#window.addressesViewModels = [];#}
+    {#{% for address in addresses %}#}
+    {#var address = new Address(null);#}
+    {#ko.mapping.fromJS({{ address | serialize('json') | raw }}, {}, address);#}
+    {#window.addressesViewModels.push(address);#}
+    {#{% endfor %}#}
+
+    {#window.paymentAccounts = [];#}
+    {#{% for paymentAccount in paymentAccounts %}#}
+    {#window.paymentAccounts.push({{ paymentAccount | serialize('json') | raw }});#}
+    {#{% endfor %}#}
+{#</script>#}

@@ -76,7 +76,7 @@ class AlertController extends Controller
         } else {
             $group = $this->get('core.session.landlord')->getGroup();
             $deposit = $group->getDepositAccount();
-            $billing = $group->getBillingAccount();
+            $billing = $group->getActiveBillingAccount();
             $contracts = $group->getContracts();
             $pending = 0;
             foreach ($contracts as $contract) {
@@ -102,10 +102,13 @@ class AlertController extends Controller
                     array('%heartland_msg%' => $deposit->getMessage())
                 );
             }
-            /* TODO: uncomment it when payment accounts management is added
-             * if (empty($billing)) {
-                $alerts[] = $translator->trans('landlord.payment_account.set_up_message');
-            }*/
+
+            if (empty($billing)) {
+                $alerts[] = $translator->trans(
+                    'landlord.payment_account.set_up_message',
+                    array('%payment_account_url%' => $this->generateUrl('settings_deposit'))
+                );
+            }
 
             if ($pending > 0) {
                 $text = $translator->trans('landlord.alert.pending-one');

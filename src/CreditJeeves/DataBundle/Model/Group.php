@@ -327,6 +327,7 @@ abstract class Group
 
     /**
      * @ORM\OneToMany(
+<<<<<<< HEAD
      *     targetEntity="RentJeeves\DataBundle\Entity\GroupPhone",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"}
@@ -336,13 +337,13 @@ abstract class Group
 
     /**
      * @ORM\OneToOne(
+=======
+>>>>>>> Initial commit
      *     targetEntity="\RentJeeves\DataBundle\Entity\BillingAccount",
-     *     mappedBy="group",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
+     *     mappedBy="group"
      * )
      */
-    protected $billingAccount;
+    protected $billingAccounts;
 
     public function __construct()
     {
@@ -358,6 +359,7 @@ abstract class Group
         $this->contracts = new ArrayCollection();
         $this->paymentAccounts = new ArrayCollection();
         $this->groupPhones = new ArrayCollection();
+        $this->billingAccounts = new ArrayCollection();
     }
 
     /**
@@ -1059,6 +1061,33 @@ abstract class Group
     }
 
     /**
+     * @param BillingAccount $billingAccount
+     * @return $this
+     */
+    public function addBillingAccount(\RentJeeves\DataBundle\Entity\BillingAccount $billingAccount)
+    {
+        $this->billingAccounts[] = $billingAccount;
+
+        return $this;
+    }
+
+    /**
+     * @param \RentJeeves\DataBundle\Entity\BillingAccount $billingAccount
+     */
+    public function removeBillingAccount(\RentJeeves\DataBundle\Entity\BillingAccount $billingAccount)
+    {
+        $this->billingAccounts->removeElement($billingAccount);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBillingAccounts()
+    {
+        return $this->billingAccounts;
+    }
+
+    /**
      * 
      * @param \CreditJeeves\DataBundle\Entity\Dealer $dealer
      * @return \CreditJeeves\DataBundle\Model\Group
@@ -1075,22 +1104,6 @@ abstract class Group
     public function getDealer()
     {
         return $this->dealers;
-    }
-
-    /**
-     * @param BillingAccount $billingAccount
-     */
-    public function setBillingAccount(BillingAccount $billingAccount)
-    {
-        $this->billingAccount = $billingAccount;
-    }
-
-    /**
-     * @return BillingAccount
-     */
-    public function getBillingAccount()
-    {
-        return $this->billingAccount;
     }
 
     /**
