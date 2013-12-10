@@ -25,6 +25,7 @@ class Configuration implements ConfigurationInterface
         // configure your bundle. See the documentation linked above for
         // more information on that topic.
 
+
         return $treeBuilder;
     }
 }

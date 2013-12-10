@@ -1623,6 +1623,18 @@
                 <source>base.order.report.how_to.realpage</source>
                 <target>How to Import into RealPage OneSite</target>
             </trans-unit>
+            <trans-unit id="property.id">
+                <source>property.id</source>
+                <target>PropertyID</target>
+            </trans-unit>
+            <trans-unit id="account.id">
+                <source>account.id</source>
+                <target>AccountID</target>
+            </trans-unit>
+            <trans-unit id="ar.account.id">
+                <source>ar.account.id</source>
+                <target>ArAccountID</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

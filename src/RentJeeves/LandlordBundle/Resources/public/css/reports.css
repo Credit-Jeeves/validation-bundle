@@ -34,14 +34,21 @@
 .submitBaseReport {
     margin-left: 130px;
     clear: both;
-    position: absolute;
-    margin-top: 85px;
+    margin-top: 18px;
 }
 .form-content {
-    height: 115px;
+    height: auto;
 }
 .helpContainer{
-    position: absolute;
     margin-left: 286px;
-    margin-top: 103px;
+    margin-top: -15px;
+}
+.int {
+    width: 50px !important;
+}
+
+.type-date {
+    float: right !important;
+    margin-right: 140px;
+    margin-top: -175px;
 }

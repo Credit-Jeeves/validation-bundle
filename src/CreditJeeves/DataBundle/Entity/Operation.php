@@ -18,12 +18,87 @@ class Operation extends Base
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Notes")
      * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("DateTime")
+     * @Serializer\XmlElement(cdata=false)
      *
      * @return DateTime
      */
     public function getNotes()
     {
         return $this->getCreatedAt();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("AccountId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    public function setAccountId($accountId)
+    {
+        $this->accountId = $accountId;
+        return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ArAccountId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getArAccountId()
+    {
+        return $this->arAccountId;
+    }
+
+    public function setArAccountId($arAccountId)
+    {
+        $this->arAccountId = $arAccountId;
+        return $this;
+    }
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PropertyId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getPropertyId()
+    {
+        return $this->propertyId;
+    }
+
+    public function setPropertyId($propertyId)
+    {
+        $this->propertyId = $propertyId;
+        return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ChargeId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getChargeId()
+    {
+        return null;
     }
 
     /**

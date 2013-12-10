@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class BaseOrderReportType extends AbstractType
@@ -89,6 +90,63 @@ class BaseOrderReportType extends AbstractType
 
                     return $query;
                 }
+            )
+        );
+
+        $builder->add(
+            'propertyId',
+            'integer',
+            array(
+                'required'          => true,
+                'label'             => 'property.id',
+                'attr'              => array(
+                    'class'     =>  'int',
+                ),
+                'constraints' => array(
+                    new NotBlank(),
+                )
+            )
+        );
+
+        $builder->add(
+            'accountId',
+            'text',
+            array(
+                'required'          => true,
+                'label'             => 'account.id',
+                'attr'              => array(
+                    'class'     =>  'int',
+                ),
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(
+                        $options = array(
+                            'min' => 5,
+                            'max' => 10,
+                        )
+                    )
+                )
+            )
+        );
+
+        $builder->add(
+            'arAccountId',
+            'text',
+            array(
+                'required'          => true,
+                'label'             => 'ar.account.id',
+                'attr'              => array(
+                    'class'     =>  'int',
+                ),
+                'constraints' => array(
+                    new NotBlank(),
+                    new Length(
+                        $options = array(
+                            'min' => 5,
+                            'max' => 10,
+                        )
+                    )
+                )
             )
         );
 

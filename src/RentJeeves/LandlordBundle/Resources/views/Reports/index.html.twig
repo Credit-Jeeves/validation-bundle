@@ -10,17 +10,18 @@
   <div class="pod-middle pod-border pod-padding shadow">
     <section class="form-content">
        <form action="{{ path('landlord_reports')}}" method="post" {{ form_enctype(formBaseOrder) }} id="baseOrderReport" >
-            <button type="submit" class="button small submitBaseReport">
+
+            {{ form_widget(formBaseOrder) }}
+           <button type="submit" class="button small submitBaseReport">
                     <span>
                         {{ 'base.order.report.download'|trans }}
                     </span>
-            </button>
-            <div class="helpContainer">
-                Help:
-                <a href="#" class="xml">{{ 'base.order.report.how_to.yardi'|trans }}</a>
-                <a href="#" class="csv none">{{ 'base.order.report.how_to.realpage'|trans }}</a>
-            </div>
-            {{ form_widget(formBaseOrder) }}
+           </button>
+           <div class="helpContainer">
+               Help:
+               <a href="#" class="xml">{{ 'base.order.report.how_to.yardi'|trans }}</a>
+               <a href="#" class="csv none">{{ 'base.order.report.how_to.realpage'|trans }}</a>
+           </div>
         </form>
     </section>
     <div class="col-box clearfix"></div>

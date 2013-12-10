@@ -25,10 +25,15 @@ class ReportsCase extends BaseTestCase
 
         $this->page->pressButton('base.order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(2, count($errors));
+        $this->assertEquals(5, count($errors));
 
         $this->assertNotNull($begin = $this->page->find('css', '#base_order_report_type_begin'));
         $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_propertyId'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+        $this->assertNotNull($end = $this->page->find('css', '#base_order_report_type_end'));
+
         $begin->setValue($beginD->format('m/d/Y'));
         $end->setValue($endD->format('m/d/Y'));
 
@@ -66,7 +71,7 @@ class ReportsCase extends BaseTestCase
 
         $this->page->pressButton('base.order.report.download');
         $this->assertNotNull($errors = $this->page->findAll('css', '.error_list>li'));
-        $this->assertEquals(2, count($errors));
+        $this->assertEquals(5, count($errors));
 
         $this->assertNotNull($type = $this->page->find('css', '#base_order_report_type_type'));
         $type->selectOption('csv');
