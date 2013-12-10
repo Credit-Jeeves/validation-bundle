@@ -1,3 +1,4 @@
 twig:
     globals:
         serverName: '%server_name_rj%'
+        external_urls: %external_urls%

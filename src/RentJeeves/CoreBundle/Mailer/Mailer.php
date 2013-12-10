@@ -183,8 +183,9 @@ class Mailer extends BaseMailer
         $amount = $order->getAmount();
         switch ($type) {
             case OrderType::HEARTLAND_CARD:
+                $fee = round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100;
+                break;
             default:
-                $fee = $amount * (int)$this->container->getParameter('payment_card_fee') / 100;
                 break;
         }
         $total = $fee + $amount;
