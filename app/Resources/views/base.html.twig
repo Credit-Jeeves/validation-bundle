@@ -47,19 +47,9 @@
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     {% block google_analytics %}
-        <script type="text/javascript">
-
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-43812921-2']);
-            _gaq.push(['_trackPageview']);
-
-            (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-
-        </script>
+        {% if app.environment == 'prod' %}
+            {% include '::google_analytics.html.twig' %}
+        {% endif %}
     {% endblock %}
     {% block head_javascripts %}{% endblock %}
     <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
