@@ -47,7 +47,11 @@
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     {% block google_analytics %}
-        {% include '::google_analytics.html.twig' %}
+        {% if application == 'rj' %}
+            {% include 'RjCoreBundle::google_analytics.html.twig' %}
+        {% else %}
+            {% include 'CoreBundle::google_analytics.html.twig' %}
+        {% endif %}
     {% endblock %}
     {% block head_javascripts %}{% endblock %}
     <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
