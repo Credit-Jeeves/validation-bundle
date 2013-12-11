@@ -155,7 +155,11 @@ class LandlordAdmin extends Admin
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('is_active');
+            ->add('is_active')
+            ->add('first_name')
+            ->add('last_name')
+            ->add('email')
+        ;
     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)

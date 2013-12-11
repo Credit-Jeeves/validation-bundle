@@ -23,4 +23,9 @@ class DepositAccount extends Base
     {
         return $this->status == DepositAccountStatus::DA_COMPLETE && !empty($this->merchantName);
     }
+
+    public function __toString()
+    {
+        return (string)$this->status;
+    }
 }
