@@ -23,6 +23,7 @@ class RjDataBundle extends Bundle
             Type::addType('PaymentAccountType', 'RentJeeves\DataBundle\Enum\PaymentAccountType');
             Type::addType('PaymentStatus', 'RentJeeves\DataBundle\Enum\PaymentStatus');
             Type::addType('PaymentType', 'RentJeeves\DataBundle\Enum\PaymentType');
+            Type::addType('DepositAccountStatus', 'RentJeeves\DataBundle\Enum\DepositAccountStatus');
             $this->container->get('doctrine.orm.default_entity_manager')
                 ->getConnection()
                 ->getDatabasePlatform()

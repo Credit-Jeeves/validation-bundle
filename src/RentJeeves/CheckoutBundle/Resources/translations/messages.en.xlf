@@ -444,6 +444,10 @@
                 <source>checkout.billing_address.new</source>
                 <target>Card Billing Address</target>
             </trans-unit>
+            <trans-unit id="checkout.bank_name">
+                <source>checkout.bank_name</source>
+                <target>Bank Name</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

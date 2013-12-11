@@ -826,6 +826,24 @@ class AjaxController extends Controller
         return new JsonResponse(array());
     }
 
+    /**
+     * @Route(
+     *     "/verify/",
+     *     name="landlord_resend_verification",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function sendVerificationAction()
+    {
+        $landlord = $this->getUser();
+        $this->get('project.mailer')->sendRjCheckEmail($landlord);
+
+        return new JsonResponse();
+    }
+
 
     private function datagridPagination($total, $limit)
     {

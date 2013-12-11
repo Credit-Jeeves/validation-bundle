@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c51b3cbded685cd03e736781cdccb008",
+    "hash": "2de90b1278ff20943924f1e01b7a30dd",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1208,6 +1208,47 @@
                 "orm"
             ],
             "time": "2013-05-11 07:51:12"
+        },
+        {
+            "name": "formapro/xmlseclibs",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:formapro/xmlseclib.git",
+                "reference": "5045813f341d24fe57843d5a5fde8e2bc4eaba6d"
+            },
+            "suggest": {
+                "ext/mcrypt": "MCrypt extension",
+                "ext/openssl": "OpenSSL extension"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "XMLSecurityDSig.php",
+                    "XMLSecurityKey.php",
+                    "XMLSecEnc.php"
+                ]
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Richards"
+                }
+            ],
+            "description": "A PHP library for XML Security",
+            "homepage": "http://code.google.com/p/xmlseclibs/",
+            "keywords": [
+                "certificate",
+                "security",
+                "signature",
+                "signing",
+                "x.509",
+                "xml",
+                "xmlsec"
+            ],
+            "time": "2013-11-28 10:05:46"
         },
         {
             "name": "fp/badaboom",
@@ -5121,6 +5162,7 @@
         "credit-jeeves/arf-bundle": 20,
         "credit-jeeves/simulation-bundle": 20,
         "credit-jeeves/api-bundle": 20,
+        "formapro/xmlseclibs": 20,
         "friendsofsymfony/rest-bundle": 20,
         "nelmio/api-doc-bundle": 20,
         "friendsofsymfony/oauth-server-bundle": 20,
