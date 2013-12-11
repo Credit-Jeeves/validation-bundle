@@ -39,6 +39,6 @@ trait DateCommon
         if (empty($now)) {
             $now = new \DateTime();
         }
-        return $interval = $now->diff($date)->format('%r%a');
+        return $interval = $date->diff($now)->format('%r%a');
     }
 }

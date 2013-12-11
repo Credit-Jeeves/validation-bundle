@@ -57,7 +57,16 @@
     <label id="checkboxterms"class="checkbox">
       {{ form_widget(form.tos, {'attr': {'class': 'tos-input-field'}}) }}
       <i class="tos-label"> </i>
-      <span class="big">{{'terms.service.pre-link'|trans }}<a href="http://www.renttrack.com/terms-of-service" type="Terms of Service">{{'terms.service.link.text'|trans }}</a></span>
+      <span class="big">
+          {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
+          {% if inviteCodeLandlord is defined  %}
+              {{ 'landlord.register.terms'|trans({'%link%': link })|raw }}
+          {% else %}
+              {{'terms.service.pre-link'|trans }}
+              <a href="{{ link }}" title="{{ 'terms.service.link.text'|trans }}">{{'terms.service.link.text'|trans }}
+              </a>
+          {% endif %}
+      </span>
     </label>
   </div>
   {{ form_errors(form.tos) }}

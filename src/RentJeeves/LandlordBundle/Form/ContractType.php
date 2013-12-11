@@ -29,6 +29,7 @@ class ContractType extends AbstractType
         } else {
             $groups = $this->user->getAgentGroups() ? $this->user->getAgentGroups() : null;
         }
+        $group = $this->group;
 
         $builder->add('rent');
         $builder->add(
@@ -99,7 +100,7 @@ class ContractType extends AbstractType
 
         $builder->addEventListener(
             FormEvents::PRE_BIND,
-            function (FormEvent $event) use ($groups) {
+            function (FormEvent $event) use ($group) {
                 $form = $event->getForm();
                 $data = $event->getData();
                 if (!isset($data['property'])) {
@@ -111,20 +112,14 @@ class ContractType extends AbstractType
                 $formOptions = array(
                     'class'             => 'RjDataBundle:Unit',
                     'error_bubbling'    => true,
-                    'query_builder'     => function (EntityRepository $er) use ($groups, $property) {
-                        
-                        $ids = array();
-                        foreach ($groups as $group) {
-                            $ids[$group->getId()] = $group->getId();
-                        }
-                        $groupsIds = implode("','", $ids);
+                    'query_builder'     => function (EntityRepository $er) use ($group, $property) {
 
                         $query = $er->createQueryBuilder('u');
                         $query->where('u.property = :property');
-                        $query->andWhere('u.group IN (:groupsIds)');
+                        $query->andWhere('u.group = :groupId');
                         $query->setParameter('property', $property);
-                        $query->setParameter('groupsIds', $groupsIds);
-
+                        $query->setParameter('groupId', $group->getId());
+                        
                         return $query;
                     },
                 );

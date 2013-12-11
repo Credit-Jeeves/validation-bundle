@@ -2,6 +2,7 @@
 
 namespace RentJeeves\ComponentBundle\Controller;
 
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -16,7 +17,14 @@ class AlertController extends Controller
     public function indexAction()
     {
         $alerts = array();
-        $user = $this->get('core.session.landlord')->getUser();
+        $user = $this->getUser();
+        $translator = $this->get('translator.default');
+
+        $inviteCode = $user->getInviteCode();
+        if (!empty($inviteCode)) {
+            $alerts[] = $translator->trans('landlord.alert.verify_email');
+        }
+
         if ($isSuperAdmin = $user->getIsSuperAdmin()) {
             $holding = $user->getHolding();
             $groups = $holding->getGroups();
@@ -24,7 +32,7 @@ class AlertController extends Controller
             foreach ($groups as $group) {
                 $deposit = $group->getDepositAccount();
                 if (empty($deposit)) {
-                    $alerts[] = $this->get('translator.default')->
+                    $alerts[] = $translator->
                         trans(
                             'deposit.merchant.setup.admin',
                             array(
@@ -45,7 +53,7 @@ class AlertController extends Controller
                     }
                 }
                 if ($pending > 0) {
-                    $text = $this->get('translator.default')->
+                    $text = $translator->
                         trans(
                             'landlord.alert.pending-one.admin',
                             array(
@@ -53,7 +61,7 @@ class AlertController extends Controller
                             )
                         );
                     if ($pending > 1) {
-                        $text = $this->get('translator.default')->trans(
+                        $text = $translator->trans(
                             'landlord.alert.pending-many.admin',
                             array(
                                 '%COUNT%' => $pending,
@@ -68,6 +76,7 @@ class AlertController extends Controller
         } else {
             $group = $this->get('core.session.landlord')->getGroup();
             $deposit = $group->getDepositAccount();
+            $billing = $group->getBillingAccount();
             $contracts = $group->getContracts();
             $pending = 0;
             foreach ($contracts as $contract) {
@@ -78,13 +87,29 @@ class AlertController extends Controller
                         break;
                 }
             }
-            if (empty($deposit)) {
-                $alerts[] = $this->get('translator.default')->trans('deposit.merchant.setup');
+            if (empty($deposit) || $deposit->getStatus() == DepositAccountStatus::DA_INIT) {
+                $alerts[] = $translator->trans(
+                    'landlord.hps.complete_application',
+                    array('%complete_url%' => $this->generateUrl('landlord_complete_account'))
+                );
             }
+            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_SUCCESS) {
+                $alerts[] = $translator->trans('landlord.hps.processing_message');
+            }
+            if (!empty($deposit) && $deposit->getStatus() == DepositAccountStatus::HPS_ERROR) {
+                $alerts[] = $translator->trans(
+                    'landlord.hps.error_message',
+                    array('%heartland_msg%' => $deposit->getMessage())
+                );
+            }
+            if (empty($billing)) {
+                $alerts[] = $translator->trans('landlord.payment_account.set_up_message');
+            }
+
             if ($pending > 0) {
-                $text = $this->get('translator.default')->trans('landlord.alert.pending-one');
+                $text = $translator->trans('landlord.alert.pending-one');
                 if ($pending > 1) {
-                    $text = $this->get('translator.default')->trans(
+                    $text = $translator->trans(
                         'landlord.alert.pending-many',
                         array('%COUNT%' => $pending)
                     );

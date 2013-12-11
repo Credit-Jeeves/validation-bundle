@@ -323,6 +323,14 @@ class Contract extends Base
         $orders = $repo->getContractHistory($this);
         foreach ($orders as $order) {
             $orderDate = $order->getCreatedAt();
+            $late = $order->getDaysLate();
+            if ($late < 0) {
+                $late--;
+                $orderDate = $orderDate->modify('+'.(-1)*$late.' days');
+            } else {
+                $late++;
+                $orderDate = $orderDate->modify('-'.$late.' days');
+            }
             $nYear = $orderDate->format('Y');
             $nMonth = $orderDate->format('m');
             $interval = $currentDate->diff($orderDate)->format('%r%a');
@@ -339,11 +347,9 @@ class Contract extends Base
                     }
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
                     $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                    if ($late = $order->getDaysLate()) {
-                        if ($late > 0) {
-                            $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                            $payments[$nYear][$nMonth]['text'] = $late;
-                        }
+                    if ($late > 0) {
+                        $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
+                        $payments[$nYear][$nMonth]['text'] = $late;
                     }
                     if (!isset($payments[$nYear][$nMonth]['amount'])) {
                         $payments[$nYear][$nMonth]['amount'] = $order->getAmount();

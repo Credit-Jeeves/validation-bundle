@@ -1,0 +1,7 @@
+<form method="post" action="{{ url }}" enctype="application/x-www-form-urlencoded" id="form-saml">
+    <input type="hidden" name="SAMLResponse" value="{{ saml }}" />
+</form>
+
+<script type="text/javascript">
+    window.onload = function () { document.forms[0].submit(); }
+</script>
