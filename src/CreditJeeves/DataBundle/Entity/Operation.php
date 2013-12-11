@@ -16,16 +16,31 @@ class Operation extends Base
     /**
      *
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("Notes")
      * @Serializer\Groups({"xmlReport"})
-     * @Serializer\Type("DateTime")
+     * @Serializer\SerializedName("Amount")
+     * @Serializer\Type("float")
      * @Serializer\XmlElement(cdata=false)
      *
-     * @return DateTime
+     * @return string
+     */
+    public function getFormatedAmount()
+    {
+        return number_format($this->getAmount(), 2, '.', '');
+    }
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Notes")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
      */
     public function getNotes()
     {
-        return $this->getCreatedAt();
+        return $this->getCreatedAt()->format('Y-m-d\TH:m:n');
     }
 
     /**

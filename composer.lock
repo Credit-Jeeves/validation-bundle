@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c51b3cbded685cd03e736781cdccb008",
+    "hash": "09d36c922c1e7412aa79c7db59517e3e",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1208,6 +1208,57 @@
                 "orm"
             ],
             "time": "2013-05-11 07:51:12"
+        },
+        {
+            "name": "egeloen/ordered-form-bundle",
+            "version": "0.9.1",
+            "target-dir": "Ivory/OrderedFormBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/egeloen/IvoryOrderedFormBundle.git",
+                "reference": "7f808f2e77b0463e4497438370ba1195f1a0e5ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/egeloen/IvoryOrderedFormBundle/zipball/7f808f2e77b0463e4497438370ba1195f1a0e5ec",
+                "reference": "7f808f2e77b0463e4497438370ba1195f1a0e5ec",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "symfony/form": ">=2.1",
+                "symfony/framework-bundle": ">=2.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.9-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Ivory\\OrderedFormBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eric GELOEN",
+                    "email": "geloen.eric@gmail.com"
+                }
+            ],
+            "description": "Allows you to order your Symfony2 form fields by adding the position option to all fields.",
+            "keywords": [
+                "form",
+                "order"
+            ],
+            "time": "2013-10-29 15:32:49"
         },
         {
             "name": "fp/badaboom",

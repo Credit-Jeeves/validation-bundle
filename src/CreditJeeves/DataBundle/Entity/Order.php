@@ -88,7 +88,7 @@ class Order extends BaseOrder
      */
     public function getActualPaymentTransactionDate()
     {
-        return $this->getUpdatedAt()->format('r');
+        return $this->getUpdatedAt()->format('Y-m-d\TH:m:n');
     }
 
     /**
@@ -322,7 +322,7 @@ class Order extends BaseOrder
      */
     public function getTotalAmount()
     {
-        return $this->getAmount();
+        return number_format($this->getAmount(), 2, '.', '');
     }
 
     /**
@@ -391,7 +391,7 @@ class Order extends BaseOrder
             '%s #%s %s %d',
             $this->getPropertyAddress(),
             $this->getUnitName(),
-            $this->getType(),
+            $this->getCode(),
             $this->getHeartlandTransactionId()
         );
     }
@@ -429,7 +429,15 @@ class Order extends BaseOrder
             return null;
         }
 
-        return sprintf('%s %d', $this->getType(), $this->getHeartlandTransactionId());
+        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+            $code = 'PMTCRED';
+        } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
+            $code = 'PMTCHECK';
+        } else {
+            $code = '';
+        }
+
+        return sprintf('%s %d', $code, $this->getHeartlandTransactionId());
     }
 
     /**
@@ -490,7 +498,7 @@ class Order extends BaseOrder
             $date->modify($daysLate.' day');
         }
 
-        return $date->format('r');
+        return $date->format('Y-m-d\TH:m:n');
     }
 
     /**

@@ -1,3 +1,4 @@
+
 .widthSelect {
     width: 155px;
 }
@@ -15,8 +16,7 @@
     width: 200px;
 }
 #base_order_report_type_type_row, #base_order_report_type_begin_row {
-    float: left;
-    width: 325px;
+    width: 335px;
 }
 
 #base_order_report_type_begin_row>label{

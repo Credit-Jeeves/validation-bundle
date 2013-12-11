@@ -36,8 +36,6 @@ abstract class Operation
      *     type="integer",
      *     nullable=false
      * )
-     * @Serializer\Groups({"xmlReport"})
-     * @Serializer\SerializedName("Amount")
      */
     protected $amount = 0;
 

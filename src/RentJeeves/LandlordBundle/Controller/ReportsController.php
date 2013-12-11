@@ -14,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use \Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -29,15 +30,26 @@ class ReportsController extends Controller
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $user = $this->get('security.context')->getToken()->getUser();
         if (!$user->haveAccessToReports()) {
             throw new Exception("Don't have access");
         }
 
+        if ($request->getMethod() == 'POST') {
+            $form = $request->request->get('base_order_report_type');
+            $validationRule = array(
+                $form['type']
+            );
+        } else {
+            $validationRule = array('xml');
+        }
+
         $group = $this->get('core.session.landlord')->getGroup();
-        $formBaseOrder = $this->createForm(new BaseOrderReportType($user, $group));
+        $formBaseOrder = $this->createForm(
+            new BaseOrderReportType($user, $group, $validationRule)
+        );
 
         $formBaseOrder->handleRequest($this->get('request'));
         if ($formBaseOrder->isValid()) {
