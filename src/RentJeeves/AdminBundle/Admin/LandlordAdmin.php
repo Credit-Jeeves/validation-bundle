@@ -158,8 +158,7 @@ class LandlordAdmin extends Admin
             ->add('is_active')
             ->add('first_name')
             ->add('last_name')
-            ->add('email')
-        ;
+            ->add('email');
     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)

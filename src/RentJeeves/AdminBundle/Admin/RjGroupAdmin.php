@@ -142,8 +142,7 @@ class RjGroupAdmin extends Admin
     {
         $datagridMapper
             ->add('name')
-            ->add('deposit_account.status', null, array('label' => 'Merchant status'))
-        ;
+            ->add('deposit_account.status', null, array('label' => 'Merchant status'));
     }
 
     
