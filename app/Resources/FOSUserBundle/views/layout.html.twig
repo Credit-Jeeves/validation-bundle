@@ -17,3 +17,12 @@
         {{ render(controller('RjComponentBundle:Blocks:info' )) }}
     {% endif %}
 {% endblock %}
+
+{% block footer %}
+    {{ parent() }}
+    {% if 'rj' == application %}
+        <div class="accreditations">
+            {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': true}) }}
+        </div>
+    {% endif  %}
+{% endblock %}
