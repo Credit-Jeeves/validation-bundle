@@ -71,6 +71,15 @@ class RjGroupAdmin extends Admin
             ->add('groupPhones')
             ->add('count_properties')
             ->add(
+                'deposit_account',
+                'sonata_type_model',
+                array(
+                    'empty_value' => 'None',
+                    'required' => false,
+                    'label' => 'Merchant status'
+                )
+            )
+            ->add(
                 '_action',
                 'actions',
                 array(
@@ -132,7 +141,8 @@ class RjGroupAdmin extends Admin
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name');
+            ->add('name')
+            ->add('deposit_account.status', null, array('label' => 'Merchant status'));
     }
 
     

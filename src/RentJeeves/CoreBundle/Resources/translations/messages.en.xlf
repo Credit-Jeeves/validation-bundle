@@ -1118,7 +1118,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-                <target>*We'll waive your eCheck fee if the tenant enrolls in any one of our monthly </target>
+                <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly </target>
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
