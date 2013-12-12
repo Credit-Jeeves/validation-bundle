@@ -327,7 +327,6 @@ abstract class Group
 
     /**
      * @ORM\OneToMany(
-<<<<<<< HEAD
      *     targetEntity="RentJeeves\DataBundle\Entity\GroupPhone",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"}
@@ -336,9 +335,7 @@ abstract class Group
     protected $groupPhones;
 
     /**
-     * @ORM\OneToOne(
-=======
->>>>>>> Initial commit
+     * @ORM\ManyToOne(
      *     targetEntity="\RentJeeves\DataBundle\Entity\BillingAccount",
      *     mappedBy="group"
      * )
