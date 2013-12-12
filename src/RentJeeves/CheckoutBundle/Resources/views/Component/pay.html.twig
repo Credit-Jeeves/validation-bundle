@@ -291,6 +291,6 @@
         <a href="#" class="link removePropertyConfirm" data-bind="visible: 'details' == step() && payment.id(), click: cancelDialog">
             {{ 'checkout.payment.cancel' | trans | raw }}
         </a>
-        {{ include('RjCoreBundle::nortonSecured.html.twig') }}
+        {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
     </div>
 </div>

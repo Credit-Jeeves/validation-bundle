@@ -1,1 +1,14 @@
-<a class="banner-ns" title="{{ 'norton_secured' | trans }}" href="#">{{ 'norton_secured' | trans }}</a>
+{% if flash is not defined %}
+    {% set flash = false %}
+{% endif %}
+
+{% if flash %}
+    <script type="text/javascript"
+            src="https://seal.verisign.com/getseal?host_name=my.renttrack.com&size=S&use_flash=YES&use_transparent=YES&lang=en">
+    </script>
+{% else %}
+    <a class="banner-ns" title="{{ 'norton_secured' | trans }}" target="_blank"
+       href="{{ 'http://'~external_urls['main_site']~'/security' }}">
+        {{ 'norton_secured' | trans }}
+    </a>
+{% endif %}
