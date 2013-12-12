@@ -29,6 +29,12 @@ class RefreshToken extends BaseRefreshToken
     protected $user;
 
     /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Client")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    protected $client;
+
+    /**
      * @return mixed
      */
     public function getId()
