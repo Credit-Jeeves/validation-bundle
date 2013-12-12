@@ -336,8 +336,9 @@ abstract class Group
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="\RentJeeves\DataBundle\Entity\BillingAccount",
-     *     mappedBy="group"
+     *     targetEntity="RentJeeves\DataBundle\Entity\BillingAccount",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"}
      * )
      */
     protected $billingAccounts;

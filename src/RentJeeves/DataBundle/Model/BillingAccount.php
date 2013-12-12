@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -20,12 +21,14 @@ abstract class BillingAccount
     /**
      * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="billingAccount"
+     *     inversedBy="billingAccounts",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="group_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Exclude
      */
     protected $group;
 
@@ -35,6 +38,7 @@ abstract class BillingAccount
      *      type="string",
      *      length=255
      * )
+     * @Serializer\Exclude
      */
     protected $token;
 

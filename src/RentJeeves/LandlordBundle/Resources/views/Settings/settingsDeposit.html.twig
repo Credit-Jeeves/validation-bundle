@@ -9,12 +9,13 @@
                 <hr />
                 <p>{{'settings.deposit.description'|trans}}</p>
                 <br />
-                <div>
-                    {% for payment_account in payment_accounts %}
-                        <label for="payment_account_{{ payment_account.getId }}">{{ payment_account.getNickname }}</label>
-                        <input type="radio" value="{{ payment_account.getId }}" id="payment_account_{{ payment_account.getId }}">
+                {#<div data-bind="foreach: billingAccount">#}
+                    {% for billingAccount in billingAccounts %}
+                    {#<span data-bind="text: nickname"></span>#}
+                        <label for="payment_account_{{ billingAccount.getId }}">{{ billingAccount.getNickname }}</label>
+                        <input type="radio" value="{{ billingAccount.getId }}" id="payment_account_{{ billingAccount.getId }}">
                     {% endfor %}
-                </div>
+                {#</div>#}
                 <hr>
                 <a href="#" class="add-account">{{ 'add.account'|trans }}</a>
             </section>
@@ -49,12 +50,12 @@
         </div>
     </div>
 
-    {#<script type="text/javascript">#}
-        {#$(document).ready(function() {#}
-            {#var viewModel = new BillingAccountViewModel();#}
-            {#ko.applyBindings(paymentSources, $('#payment-accounts').get(0));#}
-        {#});#}
-    {#</script>#}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var viewModel = new BillingAccountViewModel({{ billingAccounts|json_encode }});
+            ko.applyBindings(viewModel);
+        });
+    </script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -68,6 +69,7 @@
     {{ parent() }}
     {% javascripts  '@LandlordBundle/Resources/public/js/settings.deposit.js'
                     '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+                    '@LandlordBundle/Resources/public/js/BillingAccount/BillingAccountViewModel.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

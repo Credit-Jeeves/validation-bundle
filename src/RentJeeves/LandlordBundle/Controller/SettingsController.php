@@ -63,10 +63,12 @@ class SettingsController extends Controller
     {
         /** @var Group $group */
         $group = $this->getCurrentGroup();
-        $paymentAccounts = $group->getBillingAccounts();
+        $billingAccounts = $group->getBillingAccounts();
+
+        $data = $this->get('jms_serializer')->serialize($billingAccounts, 'json');
 
         return array(
-            'payment_accounts' => $paymentAccounts,
+            'billingAccounts' => $data,
         );
     }
 
