@@ -62,10 +62,10 @@ class XMLSignatureManagerCase extends \PHPUnit_Framework_TestCase
         $result = $signatureManager->sign($dom);
         $signatureValue = $result->getElementsByTagName('SignatureValue')->item(0)->nodeValue;
 
-        $expected = 'qabGaqfEbJH9MIfndn9xaHg1j+FUXIeB66LhRVGE1NZ15/ctxW7MF4RWm3E7UFEjC/LbT/ejEQj5UrROrMD/Xrea3tecn' .
-            'LuBx+dj4omE7Xmb+V2yu9JTgV0jKU5iIsb8U/HOr+WgCLiVUtUluvzjRRuFGuW8iOtokPb0bC6Do+d5Ys3L7zLbElF/IICuBod0' .
-            'eWEAMRAXVuT4HwsDCD44xkJPM0g95KEjHfdXUnTG4HC2+h6HwQLBg3Qv/enhUVHnpskkmJoxzPebzYFkvJ+O57E0bF80d4OBkYP' .
-            'p8SOZbExKkmHMVo71IUGfdQHkbVxv9rflT80pWrE9t14b4kr55A==';
+        $expected = 'X4FZRCAGrWKsvqOYsO3dTm4rSmbrdr+XHLHDgow5z1uiR+DjXpgA5g57Kts8gD9TD7GaAKtqRo33Nvgt1igBFMJWEJjvg' .
+            'XCcr/zP6Mi2LhtxBfpKWYDmT3FafGfnaKEK1HmWqqIkOC9QZ5kXh1Oc+n5ckMw3q4vr9fz6478sfv9ZKvuN3yGr/LEanVCVYLrlrtXtB' .
+            'GwctB8da9Isyg+9JvtNcT4iu1fpaB9kCh8m9fosAYps8sZhi6S7xWJo43raG3DroXpDPc2d8lkAwr51TMlqSZgRKZ7vn/uFGvx3uZXb' .
+            't8wvQIwKEvHQrjjIdOw9WBiwqjVvvfq03YXUAgOgTQ==';
 
         $this->assertEquals($expected, $signatureValue);
     }
