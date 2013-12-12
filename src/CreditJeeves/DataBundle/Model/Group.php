@@ -335,7 +335,7 @@ abstract class Group
     protected $groupPhones;
 
     /**
-     * @ORM\ManyToOne(
+     * @ORM\OneToMany(
      *     targetEntity="\RentJeeves\DataBundle\Entity\BillingAccount",
      *     mappedBy="group"
      * )
