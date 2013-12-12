@@ -54,7 +54,7 @@ class Operation extends Base
      */
     public function getAccountId()
     {
-        return $this->accountId;
+        return (isset($this->accountId))? $this->accountId : null;
     }
 
     public function setAccountId($accountId)
@@ -74,7 +74,7 @@ class Operation extends Base
      */
     public function getArAccountId()
     {
-        return $this->arAccountId;
+        return (isset($this->arAccountId))? $this->arAccountId : null;
     }
 
     public function setArAccountId($arAccountId)
@@ -93,7 +93,7 @@ class Operation extends Base
      */
     public function getPropertyId()
     {
-        return $this->propertyId;
+        return (isset($this->propertyId))? $this->propertyId : null;
     }
 
     public function setPropertyId($propertyId)

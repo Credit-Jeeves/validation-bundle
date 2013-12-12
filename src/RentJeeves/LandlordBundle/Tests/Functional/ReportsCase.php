@@ -52,12 +52,18 @@ class ReportsCase extends BaseTestCase
         $this->assertNotNull($isCash = $receipt->IsCash);
         $this->assertNotNull($checkNumber = $receipt->CheckNumber);
         $this->assertNotNull($notes = $receipt->Notes);
+        $this->assertNotNull($propertyId = $receipt->PropertyId);
         $this->assertNotNull($payerName = $receipt->PayerName);
         $this->assertNotNull($postMonth = $receipt->PostMonth);
         $this->assertNotNull($details = $receipt->Details->Detail);
         $this->assertNotNull($amount = $details->Amount);
         $this->assertNotNull($notesDetail = $details->Notes);
+        $this->assertNotNull($accountId = $details->AccountId);
+        $this->assertNotNull($arAccountId = $details->ArAccountId);
 
+        $this->assertEquals(100, (int) $propertyId);
+        $this->assertEquals(88, (int) $accountId);
+        $this->assertEquals(77, (int) $arAccountId);
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 456123', (string) $checkNumber);
@@ -101,7 +107,7 @@ class ReportsCase extends BaseTestCase
         $this->assertTrue(isset($csvArr[0]));
         $header = 'Property,Unit,Date,TotalAmount,First_Name,Last_Name,Code,Description';
         $this->assertEquals($header, $csvArr[0]);
-        
+
         $this->assertNotNull($csvArr = str_getcsv($csvArr[1]));
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[0]);
         $this->assertEquals('2-a', $csvArr[1]);

@@ -33,7 +33,7 @@ class Order extends BaseOrder
      */
     public function getPropertyId()
     {
-        return $this->propertyId;
+        return (isset($this->propertyId))? $this->propertyId : null;
     }
 
     public function setPropertyId($propertyId)
