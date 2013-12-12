@@ -101,7 +101,7 @@ class ReportsCase extends BaseTestCase
         $this->assertTrue(isset($csvArr[0]));
         $header = 'Property,Unit,Date,TotalAmount,First_Name,Last_Name,Code,Description';
         $this->assertEquals($header, $csvArr[0]);
-
+        
         $this->assertNotNull($csvArr = str_getcsv($csvArr[1]));
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003', $csvArr[0]);
         $this->assertEquals('2-a', $csvArr[1]);
