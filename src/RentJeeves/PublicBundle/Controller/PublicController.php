@@ -115,9 +115,11 @@ class PublicController extends Controller
         $propertyIdForm = (int)$request->request->get('propertyId');
         
         if ($propertyIdForm <= 0) {
-            $Property = $em->getRepository('RjDataBundle:Property')->findOneWithUnitAndAlphaNumericSort($propertyId);
+            $Property = $em->getRepository('RjDataBundle:Property')
+                ->findOneWithUnitAndAlphaNumericSort($propertyId);
         } else {
-            $Property = $em->getRepository('RjDataBundle:Property')->findOneWithUnitAndAlphaNumericSort($propertyIdForm);
+            $Property = $em->getRepository('RjDataBundle:Property')
+                ->findOneWithUnitAndAlphaNumericSort($propertyIdForm);
         }
 
         if (!$Property) {
