@@ -90,6 +90,7 @@ class IframeCase extends BaseTestCase
         );
         $url = $this->session->getCurrentUrl();
         $propertySearch->click();
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
