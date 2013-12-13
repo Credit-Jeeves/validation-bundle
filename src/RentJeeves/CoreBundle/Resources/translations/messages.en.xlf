@@ -1667,6 +1667,18 @@
                 <source>landlord.alert.verify_email</source>
                 <target><![CDATA[Verify your email address. <a href="#" id="landlord-verify-email">Resend Verification Email</a> <span id="landlord-verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
             </trans-unit>
+            <trans-unit id="property.id">
+                <source>property.id</source>
+                <target>PropertyID</target>
+            </trans-unit>
+            <trans-unit id="account.id">
+                <source>account.id</source>
+                <target>AccountID</target>
+            </trans-unit>
+            <trans-unit id="ar.account.id">
+                <source>ar.account.id</source>
+                <target>ArAccountID</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -1,19 +1,19 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Model\Reports\BaseOrderReport;
+namespace RentJeeves\LandlordBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @Serializer\XmlRoot("YsiTran")
  */
-class YsiTran
+class OrderReport
 {
     /**
      * @Serializer\SerializedName("Receipts")
      * @Serializer\XmlList(inline = false, entry="Receipt")
      * @Serializer\XmlKeyValuePairs
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport", "csvReport"})
      */
     protected $receipts = array();
 
