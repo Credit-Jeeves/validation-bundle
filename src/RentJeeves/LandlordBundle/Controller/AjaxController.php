@@ -296,54 +296,52 @@ class AjaxController extends Controller
             return new JsonResponse($data);
         }
         $units = (isset($data['units']))? $data['units'] : array();
-        $unitKeys = array();
+        $unitCome = array();
         foreach ($units as $key => $unit) {
-            if (empty($unit['id']) & !empty($unit['name'])) {
-                continue;
-            } else {
-                $names[] = $unit['name'];
-                $unitKeys[$unit['id']] = $key;
-            }
+            $id = (!empty($unit['id']))? $unit['id'] : uniqid();
+            $unitCome[$id] = array(
+                'id'    => $unit['id'],
+                'name'  => $unit['name'],
+                'isNew' => (empty($unit['id']))? true : false,
+            );
         }
-        ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
         $em = $this->getDoctrine()->getManager();
 
-        /** @var $entity Unit */
-        foreach ($records as $entity) {
-            if (isset($unitKeys[$entity->getId()]) & !in_array($entity->getName(), $existingNames)) {
-                $key = $unitKeys[$entity->getId()];
-                if (!empty($units[$key]['name']) & !in_array($units[$key]['name'], $existingNames)) {
-                    $existingNames[] = $units[$key]['name'];
-                    if ($units[$key]['name'] != $entity->getName()) {
-                        $entity->setName($units[$key]['name']);
-                        $em->persist($entity);
-                    }
-                } else {
-                    $errorNames[] = $units[$key]['name'];
-                    $this->checkContract($entity);
-                    $em->remove($entity);
+        //Update Current Unit
+        foreach ($records as $key => $entity) {
+            foreach($unitCome as $unitId => $unitData) {
+                if ($entity->getId() == $unitId && !empty($unitData['name'])) {
+                    $existingNames[] = $unitData['name'];
+                    $entity->setName($unitData['name']);
+                    $em->persist($entity);
+                    unset($unitCome[$unitId]);
+                    unset($records[$key]);
                 }
-                unset($unitKeys[$key]);
-            } else {
-                $this->checkContract($entity);
-                $em->remove($entity);
             }
-
         }
-        foreach ($units as $unit) {
-            if (empty($unit['id']) & !empty($unit['name']) & !in_array($unit['name'], $names)) {
+
+        //Remove unit each does not exist anymore
+        foreach ($records as $entity) {
+            $this->checkContract($entity);
+            $em->remove($entity);
+        }
+
+        //Create new Unit
+        foreach ($unitCome as $unit) {
+            if ($unit['isNew'] & !empty($unit['name']) & !in_array($unit['name'], $existingNames)) {
                 $entity = new Unit();
                 $entity->setProperty($parent);
                 $entity->setHolding($holding);
                 $entity->setGroup($group);
                 $entity->setName($unit['name']);
                 $em->persist($entity);
-                $names[] = $unit['name'];
+                $existingNames[] = $unit['name'];
             } else {
                 $errorNames[] = $unit['name'];
             }
         }
+
         $em->flush();
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
         return new JsonResponse($data);
