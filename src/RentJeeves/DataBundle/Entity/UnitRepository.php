@@ -20,7 +20,9 @@ class UnitRepository extends EntityRepository
 
     public function getUnits($property, $holding = null, $group = null)
     {
+
         $query = $this->createQueryBuilder('u');
+        $query->select('LENGTH(u.name) as co,u');
         $query->where('u.property = :property');
         $query->setParameter('property', $property);
         if ($holding) {
@@ -31,8 +33,23 @@ class UnitRepository extends EntityRepository
             $query->andWhere('u.group = :group');
             $query->setParameter('group', $group);
         }
-        $query->orderBy('u.name');
+        $query->addOrderBy('co', 'ASC');
+        $query->addOrderBy('u.name', 'ASC');
         $query = $query->getQuery();
-        return $query->execute();
+
+        $data = $query->execute();
+        /**
+         * Remove co and make simple array object
+         */
+        $result = array();
+        if (empty($data)) {
+            return $result;
+        }
+
+        foreach ($data as $unit) {
+            $result[] = reset($unit);
+        }
+
+        return $result;
     }
 }
