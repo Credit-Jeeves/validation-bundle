@@ -9,6 +9,7 @@ use RentJeeves\TestBundle\Functional\BaseTestCase;
 class PropertiesCase extends BaseTestCase
 {
     protected $timeout = 20000;
+
     /**
      * @test
      */
@@ -126,6 +127,9 @@ class PropertiesCase extends BaseTestCase
      */
     public function manageUnits()
     {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -134,23 +138,43 @@ class PropertiesCase extends BaseTestCase
         $propertyEdit->click();
         $this->session->wait($this->timeout, "$('#blockPopupEditProperty').is(':visible')");
         $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
-        $propertyEdit->setValue(5);
+        $propertyEdit->setValue(150);
         $this->assertNotNull($propertyAdd = $this->page->find('css', '#addEditUnit'));
         $propertyAdd->click();
         $this->assertNotNull($unitNames = $this->page->findAll('css', '.unit-input-edit'));
-        
-        $unitNames[0]->setValue('1A');
-        $unitNames[1]->setValue('1B');
-        $unitNames[2]->setValue('1C');
-        $unitNames[3]->setValue('1D');
-        $unitNames[4]->setValue('1T');
+
+        for ($i=0; $i < 150; $i++) {
+            $unitNames[$i]->setValue($i+1);
+        }
 
         $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
         $saveManageUnits->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($td = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
-        $this->assertEquals('5', $td[5]->getText(), 'wrong number of unit');
+        $this->assertEquals('150', $td[5]->getText(), 'wrong number of unit');
+
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
+        $propertyEdit->click();
+        $this->session->wait($this->timeout, "$('#blockPopupEditProperty').is(':visible')");
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
+        $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
+        $saveManageUnits->click();
+        $this->session->wait($this->timeout, "!$('#blockPopupEditProperty').is(':visible')");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '.property-edit'));
+        $propertyEdit->click();
+        $this->session->wait($this->timeout, "$('#blockPopupEditProperty').is(':visible')");
+        $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
+        $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
+        $saveManageUnits->click();
+        $this->session->wait($this->timeout, "!$('#blockPopupEditProperty').is(':visible')");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+        $this->assertEquals('150', $td[5]->getText(), 'wrong number of unit');
+
         $this->logout();
     }
 
