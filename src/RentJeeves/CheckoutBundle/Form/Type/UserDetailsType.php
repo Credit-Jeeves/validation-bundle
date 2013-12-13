@@ -60,7 +60,7 @@ class UserDetailsType extends AbstractType
             array(
                 'class' => 'CreditJeeves\DataBundle\Entity\Address',
                 'mapped' => false,
-                'label' => 'common.address',
+                'label' => 'address.on_credit_file',
                 'expanded' => true,
                 'choices' => $this->user->getAddresses(),
                 'attr' => array(
