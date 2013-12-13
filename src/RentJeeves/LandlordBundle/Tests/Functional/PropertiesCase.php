@@ -160,6 +160,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
         $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
         $saveManageUnits->click();
+        $this->session->wait($this->timeout, "!$('#blockPopupEditProperty').is(':visible')");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
 
@@ -169,6 +170,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($propertyEdit = $this->page->find('css', '#inputEditAddUnit'));
         $this->assertNotNull($saveManageUnits = $this->page->find('css', '#saveManageUnits'));
         $saveManageUnits->click();
+        $this->session->wait($this->timeout, "!$('#blockPopupEditProperty').is(':visible')");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertEquals('150', $td[5]->getText(), 'wrong number of unit');
