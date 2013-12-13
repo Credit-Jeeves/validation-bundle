@@ -132,9 +132,10 @@ class PropertyRepository extends EntityRepository
         $query->addOrderBy('co', 'ASC');
         $query->addOrderBy('u.name', 'ASC');
         $query = $query->getQuery();
-        $result = $query->getSingleResult();
-        if (isset($result[0])) {
-            return $result[0];
+        $result = $query->getResult();
+
+        if (isset($result[0][0])) {
+            return $result[0][0];
         }
         return null;
     }
@@ -145,16 +146,18 @@ class PropertyRepository extends EntityRepository
             ->select('LENGTH(u.name) as co,p,u');
         $query->leftJoin('p.units', 'u');
         $query->where('p.jb = :jb');
-        $query->where('p.kb = :kb');
+        $query->andWhere('p.kb = :kb');
         $query->setParameter('jb', $jb);
         $query->setParameter('kb', $kb);
         $query->addOrderBy('co', 'ASC');
         $query->addOrderBy('u.name', 'ASC');
         $query = $query->getQuery();
-        $result = $query->getSingleResult();
-        if (isset($result[0])) {
-            return $result[0];
+        $result = $query->getResult();
+
+        if (isset($result[0][0])) {
+            return $result[0][0];
         }
+
         return null;
     }
 }

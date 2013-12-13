@@ -51,7 +51,7 @@ class PropertyController extends Controller
             );
         }
 
-        $property = $em->getRepository('RjDataBundle:Property')->find($propertyId);
+        $property = $em->getRepository('RjDataBundle:Property')->findOneWithUnitAndAlphaNumericSort($propertyId);
         if (!$property) {
             throw $this->createNotFoundException('The property does not exist');
         }

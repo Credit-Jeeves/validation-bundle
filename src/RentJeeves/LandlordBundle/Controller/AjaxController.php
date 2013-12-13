@@ -241,12 +241,27 @@ class AjaxController extends Controller
         return new JsonResponse($result);
     }
 
+    private function isEnableSoftDeleteable()
+    {
+        $filters = $this->get('doctrine')->getManager()->getFilters();
+
+        if (array_key_exists('softdeleteable', $filters->getEnabledFilters())) {
+            return true;
+        }
+
+        return false;
+    }
+
     //@TODO find best way for this implementation
     private function checkContract($entity)
     {
-        if ($entity->getContracts()->count() <= 0) {
+
+        if ($entity->getContracts()->count() <= 0 && $this->isEnableSoftDeleteable()) {
             $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
-        } else {
+            return;
+        }
+
+        if($entity->getContracts()->count() > 0 && !$this->isEnableSoftDeleteable()) {
             $this->get('doctrine')->getManager()->getFilters()->enable('softdeleteable');
         }
     }
