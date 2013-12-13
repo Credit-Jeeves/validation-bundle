@@ -11,7 +11,7 @@ class PropertiesCase extends BaseTestCase
     protected $timeout = 20000;
 
     /**
-     * test
+     * @test
      */
     public function sorting()
     {
@@ -35,7 +35,7 @@ class PropertiesCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function search()
     {
@@ -67,7 +67,7 @@ class PropertiesCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function addProperty()
     {
@@ -179,7 +179,7 @@ class PropertiesCase extends BaseTestCase
     }
 
     /**
-    * test
+    * @test
     */
     public function removeProperty()
     {
