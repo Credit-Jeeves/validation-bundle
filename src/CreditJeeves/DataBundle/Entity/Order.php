@@ -18,9 +18,7 @@ class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
 
-
     /**
-     * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PropertyId")
      * @Serializer\Groups({"xmlReport"})
      * @Serializer\Type("integer")
@@ -31,9 +29,12 @@ class Order extends BaseOrder
      *
      * @return integer
      */
+    protected $propertyId = null;
+
+
     public function getPropertyId()
     {
-        return (isset($this->propertyId))? $this->propertyId : null;
+        return $this->propertyId;
     }
 
     public function setPropertyId($propertyId)

@@ -14,6 +14,36 @@ use JMS\Serializer\Annotation as Serializer;
 class Operation extends Base
 {
     /**
+     * @Serializer\SerializedName("AccountId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    protected $accountId = null;
+
+    /**
+     * @Serializer\SerializedName("ArAccountId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    protected $arAccountId = null;
+
+    /**
+     * @Serializer\SerializedName("PropertyId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    protected $propertyId = null;
+
+    /**
      *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"xmlReport"})
@@ -43,18 +73,10 @@ class Operation extends Base
         return $this->getCreatedAt()->format('Y-m-d\TH:m:n');
     }
 
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("AccountId")
-     * @Serializer\Groups({"xmlReport"})
-     * @Serializer\Type("integer")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return integer
-     */
+
     public function getAccountId()
     {
-        return (isset($this->accountId))? $this->accountId : null;
+        return $this->accountId;
     }
 
     public function setAccountId($accountId)
@@ -63,18 +85,9 @@ class Operation extends Base
         return $this;
     }
 
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("ArAccountId")
-     * @Serializer\Groups({"xmlReport"})
-     * @Serializer\Type("integer")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return integer
-     */
     public function getArAccountId()
     {
-        return (isset($this->arAccountId))? $this->arAccountId : null;
+        return $this->arAccountId;
     }
 
     public function setArAccountId($arAccountId)
@@ -82,18 +95,10 @@ class Operation extends Base
         $this->arAccountId = $arAccountId;
         return $this;
     }
-    /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("PropertyId")
-     * @Serializer\Groups({"xmlReport"})
-     * @Serializer\Type("integer")
-     * @Serializer\XmlElement(cdata=false)
-     *
-     * @return integer
-     */
+
     public function getPropertyId()
     {
-        return (isset($this->propertyId))? $this->propertyId : null;
+        return $this->propertyId;
     }
 
     public function setPropertyId($propertyId)

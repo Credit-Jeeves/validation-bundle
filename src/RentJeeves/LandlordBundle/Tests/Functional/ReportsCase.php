@@ -58,12 +58,12 @@ class ReportsCase extends BaseTestCase
         $this->assertNotNull($details = $receipt->Details->Detail);
         $this->assertNotNull($amount = $details->Amount);
         $this->assertNotNull($notesDetail = $details->Notes);
-        $this->assertNotNull($accountId = $details->AccountId);
-        $this->assertNotNull($arAccountId = $details->ArAccountId);
 
-        $this->assertEquals(100, (int) $propertyId);
-        $this->assertEquals(88, (int) $accountId);
-        $this->assertEquals(77, (int) $arAccountId);
+        $this->assertEquals(100, (int) $receipt->PropertyId);
+        $this->assertEquals(88, (int) $details->AccountId);
+        $this->assertEquals(77, (int) $details->ArAccountId);
+        $this->assertEquals(100, (int) $details->PropertyId);
+
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
         $this->assertEquals('PMTCRED 456123', (string) $checkNumber);
