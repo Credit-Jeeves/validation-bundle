@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\CoreBundle\Command;
 
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -123,9 +125,14 @@ class EmailLandlordCommand extends ContainerAwareCommand
             case self::OPTION_TYPE_PENDING: //Email:landlord --type=pending
                 $repo = $doctrine->getRepository('RjDataBundle:Contract');
                 $contracts = $repo->findByStatus(ContractStatus::PENDING);
+                /**
+                 * @var Contract $contract
+                 */
                 foreach ($contracts as $contract) {
                     $holding = $contract->getHolding();
-                    $landlords = $this->getHoldingAdmins($holding);
+                    $group = $contract->getGroup();
+                    //RT-92
+                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
                     }
@@ -242,6 +249,36 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 $result[] = $landlord;
             }
         }
+        return $result;
+    }
+
+    private function getLandlordByHoldingAndGroup($holding, $group)
+    {
+        $result = array();
+        $landlords = $this->getContainer()
+            ->get('doctrine')
+            ->getRepository('DataBundle:User')
+            ->findBy(array('holding' => $holding));
+        /**
+         * @var Landlord $landlord
+         */
+        foreach ($landlords as $landlord) {
+            if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
+                $result[] = $landlord;
+                continue;
+            }
+
+            $groups = $landlord->getGroups();
+            if (empty($groups)) {
+                continue;
+            }
+
+            if ($groups->contains($group)) {
+                $result[] = $landlord;
+                continue;
+            }
+        }
+
         return $result;
     }
 }
