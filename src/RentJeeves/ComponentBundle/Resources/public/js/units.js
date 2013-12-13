@@ -46,7 +46,7 @@ function Units() {
     };
     this.saveUnits = function() {
       if (self.isValid()) {
-        $('#edit-property-popup').dialog('close');
+        self.process(true);
         $.ajax({
           url: Routing.generate('landlord_units_save'),
           type: 'POST',
@@ -55,6 +55,7 @@ function Units() {
           success: function(response) {
             self.clearUnits();
             PropertiesViewModel.ajaxAction();
+            $('#edit-property-popup').dialog('close');
           }
         });
       }
