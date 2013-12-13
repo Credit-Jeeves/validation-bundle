@@ -241,6 +241,8 @@ class AjaxController extends Controller
         return new JsonResponse($result);
     }
 
+
+
     private function isEnableSoftDeleteable()
     {
         $filters = $this->get('doctrine')->getManager()->getFilters();
@@ -302,7 +304,7 @@ class AjaxController extends Controller
                 $names[] = $unit['name'];
                 $unitKeys[$unit['id']] = $key;
             }
-            
+
         }
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
@@ -332,7 +334,7 @@ class AjaxController extends Controller
                 $em->remove($entity);
                 $em->flush();
             }
-            
+
         }
         foreach ($units as $unit) {
             if (empty($unit['id']) & !empty($unit['name']) & !in_array($unit['name'], $names)) {
