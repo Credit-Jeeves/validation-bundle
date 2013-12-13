@@ -310,7 +310,7 @@ class AjaxController extends Controller
 
         //Update Current Unit
         foreach ($records as $key => $entity) {
-            foreach($unitCome as $unitId => $unitData) {
+            foreach ($unitCome as $unitId => $unitData) {
                 if ($entity->getId() == $unitId && !empty($unitData['name'])) {
                     $existingNames[] = $unitData['name'];
                     $entity->setName($unitData['name']);
