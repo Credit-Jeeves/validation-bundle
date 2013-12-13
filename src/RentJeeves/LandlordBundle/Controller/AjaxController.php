@@ -304,7 +304,6 @@ class AjaxController extends Controller
                 $names[] = $unit['name'];
                 $unitKeys[$unit['id']] = $key;
             }
-
         }
         ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
@@ -312,27 +311,23 @@ class AjaxController extends Controller
 
         /** @var $entity Unit */
         foreach ($records as $entity) {
-            if (in_array($entity->getId(), array_keys($unitKeys)) & !in_array($entity->getName(), $existingNames)) {
+            if (isset($unitKeys[$entity->getId()]) & !in_array($entity->getName(), $existingNames)) {
                 $key = $unitKeys[$entity->getId()];
                 if (!empty($units[$key]['name']) & !in_array($units[$key]['name'], $existingNames)) {
                     $existingNames[] = $units[$key]['name'];
                     if ($units[$key]['name'] != $entity->getName()) {
                         $entity->setName($units[$key]['name']);
                         $em->persist($entity);
-                        $em->flush();
-                        
                     }
                 } else {
                     $errorNames[] = $units[$key]['name'];
                     $this->checkContract($entity);
                     $em->remove($entity);
-                    $em->flush();
                 }
                 unset($unitKeys[$key]);
             } else {
                 $this->checkContract($entity);
                 $em->remove($entity);
-                $em->flush();
             }
 
         }
@@ -344,12 +339,12 @@ class AjaxController extends Controller
                 $entity->setGroup($group);
                 $entity->setName($unit['name']);
                 $em->persist($entity);
-                $em->flush();
                 $names[] = $unit['name'];
             } else {
                 $errorNames[] = $unit['name'];
             }
         }
+        $em->flush();
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
         return new JsonResponse($data);
     }
