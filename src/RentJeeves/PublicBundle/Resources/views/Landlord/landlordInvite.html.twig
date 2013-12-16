@@ -1,14 +1,31 @@
 {% extends "RjPublicBundle::base.html.twig" %}
 
 {% form_theme form ':Form:form_errors.html.twig' %}
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
 
 {% block content %}
 <section class="form-content">
     {{ include('RjComponentBundle:Invite:_popupLandlord.html.twig') }}
 <form action="{{ path('landlord_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="landlordInviteRegister" >
-    <div class="box type1">
-      {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form, "inviteCodeLandlord": code }) }}
+
+    {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form.landlord, "inviteCodeLandlord": code, "showTos": false }) }}
+    {{ include('RjPublicBundle:Public:bankAccount.html.twig', {"form": form.deposit }) }}
+
+    <div class="accept-terms-box pie-el">
+        <div class="form-row checkboxes clearfix">
+            <label id="checkboxterms"class="checkbox">
+                {{ form_widget(form.landlord.tos, {'attr': {'class': 'tos-input-field'}}) }}
+                <i class="tos-label"> </i>
+                <span class="big">
+                    {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
+                    {{ 'landlord.register.terms'|trans({'%link%': link })|raw }}
+                </span>
+            </label>
+        </div>
+        {{ form_errors(form.landlord.tos) }}
+        <p>{{ 'landlord.register.text2'|trans }}</p>
     </div>
+
     <div class="buttons-box clearfix">
       <div class="buttons left">
         <button id="submitForm" type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>

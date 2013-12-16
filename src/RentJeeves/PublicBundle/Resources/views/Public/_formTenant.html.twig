@@ -52,29 +52,35 @@
   </div>
 </div>
 
-<div class="accept-terms-box pie-el">
-  <div class="form-row checkboxes clearfix">
-    <label id="checkboxterms"class="checkbox">
-      {{ form_widget(form.tos, {'attr': {'class': 'tos-input-field'}}) }}
-      <i class="tos-label"> </i>
-      <span class="big">
-          {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
-          {% if inviteCodeLandlord is defined  %}
-              {{ 'landlord.register.terms'|trans({'%link%': link })|raw }}
-          {% else %}
-              {{'terms.service.pre-link'|trans }}
-              <a href="{{ link }}" title="{{ 'terms.service.link.text'|trans }}">{{'terms.service.link.text'|trans }}
-              </a>
-          {% endif %}
-      </span>
-    </label>
-  </div>
-  {{ form_errors(form.tos) }}
-  <p>
-    {% if inviteCodeLandlord is defined  %}
-        {{ 'landlord.register.text2'|trans }}
-    {% else %}
-        {{ 'terms.service'|trans }}
-    {% endif %}
-  </p>
-</div>
+{% if showTos is not defined %}
+    {% set showTos = true %}
+{% endif %}
+
+{% if showTos %}
+    <div class="accept-terms-box pie-el">
+      <div class="form-row checkboxes clearfix">
+        <label id="checkboxterms"class="checkbox">
+          {{ form_widget(form.tos, {'attr': {'class': 'tos-input-field'}}) }}
+          <i class="tos-label"> </i>
+          <span class="big">
+              {% set link = 'http://'~external_urls['main_site']~'/terms-of-service' %}
+              {% if inviteCodeLandlord is defined  %}
+                  {{ 'landlord.register.terms'|trans({'%link%': link })|raw }}
+              {% else %}
+                  {{'terms.service.pre-link'|trans }}
+                  <a href="{{ link }}" title="{{ 'terms.service.link.text'|trans }}">{{'terms.service.link.text'|trans }}
+                  </a>
+              {% endif %}
+          </span>
+        </label>
+      </div>
+      {{ form_errors(form.tos) }}
+      <p>
+        {% if inviteCodeLandlord is defined  %}
+            {{ 'landlord.register.text2'|trans }}
+        {% else %}
+            {{ 'terms.service'|trans }}
+        {% endif %}
+      </p>
+    </div>
+{% endif %}
