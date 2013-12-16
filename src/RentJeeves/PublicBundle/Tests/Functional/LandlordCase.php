@@ -82,8 +82,7 @@ class LandlordCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#main-content-wrapper').is(':visible')");
 
         $this->assertNotNull($title = $this->page->find('css', 'h1'));
-        $expected = 'RentTrack - Online Merchant Agreement ' .
-            '<img src="/Content/images/HPY_logo.png" alt="Heartland Payment Systems Logo">';
+        $expected = '<img src="/Content/images/HPY_logo.png" alt="Heartland Payment Systems Logo">';
         $this->assertEquals($expected, $title->getHtml());
     }
 

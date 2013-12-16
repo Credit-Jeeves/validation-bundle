@@ -12,7 +12,6 @@ function Pay(parent, contractId) {
     };
 
     var steps = ['details', 'source', 'user', 'questions', 'pay'];
-
     this.passedSteps = ko.observableArray([]);
 
     if ('passed' == parent.verification) {
@@ -94,8 +93,7 @@ function Pay(parent, contractId) {
     }
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
-
-    this.payment = new Payment(this, new Date(contract.startAt));
+    this.payment = new Payment(this, new Date(contract.startAt), new Date(contract.paidTo));
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
