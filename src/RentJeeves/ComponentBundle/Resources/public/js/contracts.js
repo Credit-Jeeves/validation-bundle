@@ -609,7 +609,7 @@ $(document).ready(function(){
                 $.each($('.userInfo').find('input'), function(index, value) {
                   var val = $.trim($(this).val());
                   if (val.length <= 0) {
-                    $(this).val('none');
+                    $(this).val('');
                   }
                 });
               }
@@ -619,7 +619,7 @@ $(document).ready(function(){
               $.each($('.userInfo').find('input'), function(index, value) {
                   var val = $.trim($(this).val());
                   if (val.length <= 0) {
-                    $(this).val('none');
+                    $(this).val('');
                   }
               });
            }

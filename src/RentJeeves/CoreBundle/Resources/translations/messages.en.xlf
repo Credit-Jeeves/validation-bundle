@@ -178,6 +178,10 @@
                 <source>required</source>
                 <target>Required</target>
             </trans-unit>
+            <trans-unit id="email.required">
+                <source>email.required</source>
+                <target>Email is required</target>
+            </trans-unit>
             <trans-unit id="property.add">
                 <source>property.add</source>
                 <target>Add your Rental Property</target>
