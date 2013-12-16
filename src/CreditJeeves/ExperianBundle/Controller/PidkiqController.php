@@ -50,7 +50,7 @@ class PidkiqController extends Controller
      */
     protected function getSession()
     {
-        return $this->container->get('session');
+        return $this->get('session');
     }
 
     /**
@@ -245,10 +245,23 @@ class PidkiqController extends Controller
             }
             $em->persist($this->getUser());
             $em->flush();
-            $this->error = $this->get('translator')->trans(
-                'pidkiq.error.answers-%SUPPORT_EMAIL%',
-                array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
-            );
+            $twig = $this->container->get('twig');
+            $globals = $twig->getGlobals();
+
+            if (isset($globals['application']) && $globals['application'] === 'rj') {
+                $this->error = $this->get('translator')->trans(
+                    'rj.pidkiq.error.answers-%SUPPORT_EMAIL%',
+                    array(
+                        '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
+                        '%MAIN_LINK%'     => $globals['external_urls']['main_site'],
+                    )
+                );
+            } else {
+                $this->error = $this->get('translator')->trans(
+                    'pidkiq.error.answers-%SUPPORT_EMAIL%',
+                    array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                );
+            }
         }
         return false;
     }
