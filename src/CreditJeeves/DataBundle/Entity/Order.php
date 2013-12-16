@@ -53,7 +53,17 @@ class Order extends BaseOrder
      */
     public function getPropertyAddress()
     {
-        $property = $this->getContract()->getProperty();
+        $contract = $this->getContract();
+        if (!$contract) {
+            return null;
+        }
+
+        $property = $contract->getProperty();
+
+        if (!$property) {
+            return null;
+        }
+
         return $property->getFullAddress();
     }
 
@@ -67,8 +77,14 @@ class Order extends BaseOrder
      */
     public function getUnitName()
     {
-        $unit = $this->getContract()->getUnit();
         $unitName = '';
+        $contract = $this->getContract();
+        if (!$contract) {
+            return $unitName;
+        }
+
+        $unit = $contract->getUnit();
+
         if ($unit) {
             $unitName = $unit->getName();
         }
@@ -336,7 +352,15 @@ class Order extends BaseOrder
      */
     public function getFirstNameTenant()
     {
-        $tenant = $this->getContract()->getTenant();
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $tenant = $contract->getTenant();
+
+        if (!$tenant) {
+            return null;
+        }
+
         return $tenant->getFirstName();
     }
 
@@ -351,7 +375,14 @@ class Order extends BaseOrder
      */
     public function getLastNameTenant()
     {
-        $tenant = $this->getContract()->getTenant();
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $tenant = $contract->getTenant();
+
+        if (!$tenant) {
+            return null;
+        }
         return $tenant->getLastName();
     }
 
@@ -453,8 +484,15 @@ class Order extends BaseOrder
      */
     public function getNotes()
     {
-        $property = $this->getContract()->getProperty();
-        $unit = $this->getContract()->getUnit();
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $property = $contract->getProperty();
+        if (!$property) {
+            return null;
+        }
+
+        $unit = $contract->getUnit();
         $unitName = '';
         if ($unit) {
             $unitName = ' #'.$unit->getName();
@@ -475,7 +513,14 @@ class Order extends BaseOrder
      */
     public function getPayerName()
     {
-        $tenant = $this->getContract()->getTenant();
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $tenant = $contract->getTenant();
+        if (!$tenant) {
+            return null;
+        }
+
         return $tenant->getFullName();
     }
 
