@@ -323,6 +323,7 @@ class Contract extends Base
         $orders = $repo->getContractHistory($this);
         foreach ($orders as $order) {
             $orderDate = $order->getCreatedAt();
+            $lastPaymentDate = $orderDate->format('m/d/Y');
             $late = $order->getDaysLate();
             if ($late < 0) {
                 $late--;
@@ -343,7 +344,7 @@ class Contract extends Base
                 case OrderStatus::COMPLETE:
                     if ($interval >= $lastDate) {
                         $result['last_amount'] = $order->getAmount();
-                        $result['last_date'] = $order->getCreatedAt()->format('m/d/Y');
+                        $result['last_date'] = $lastPaymentDate;
                     }
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
                     $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
