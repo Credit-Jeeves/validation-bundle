@@ -328,7 +328,7 @@ class Contract extends Base
             if ($late < 0) {
                 $late--;
                 $orderDate = $orderDate->modify('+'.(-1)*$late.' days');
-            } else {
+            } elseif ($late > 0) {
                 $late++;
                 $orderDate = $orderDate->modify('-'.$late.' days');
             }
