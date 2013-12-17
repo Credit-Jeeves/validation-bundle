@@ -169,17 +169,21 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#landlordType').is(':visible')");
-        $this->assertNotNull($form = $this->page->find('css', '#landlordType'));
+        $this->session->wait($this->timeout, "$('#invitelandlordtype').is(':visible')");
+        $this->assertNotNull($form = $this->page->find('css', '#invitelandlordtype'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(2, $errorList, 'Wrong number of pending');
+        $this->assertCount(6, $errorList, 'Wrong number of pending');
         $this->fillForm(
             $form,
             array(
-                'landlordType_password_Password'          => 'pass',
-                'landlordType_password_Verify_Password'   => 'pass',
-                'landlordType_tos'                        => true,
+                'invitelandlordtype_landlord_password_Password'          => 'pass',
+                'invitelandlordtype_landlord_password_Verify_Password'   => 'pass',
+                'invitelandlordtype_deposit_nickname'                    => 'nickname',
+                'invitelandlordtype_deposit_AccountNumber'               => '12345678',
+                'invitelandlordtype_deposit_RoutingNumber'               => '12345678',
+                'invitelandlordtype_deposit_ACHDepositType_1'            => true,
+                'invitelandlordtype_landlord_tos'                        => true,
             )
         );
         $form->pressButton('continue');
