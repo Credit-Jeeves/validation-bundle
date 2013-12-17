@@ -6,7 +6,7 @@
 {% block content %}
 <section class="form-content">
     {{ include('RjComponentBundle:Invite:_popupLandlord.html.twig') }}
-<form action="{{ path('landlord_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} id="landlordInviteRegister" >
+<form action="{{ path('landlord_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} >
 
     {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form.landlord, "inviteCodeLandlord": code, "showTos": false }) }}
     {{ include('RjPublicBundle:Public:bankAccount.html.twig', {"form": form.deposit }) }}

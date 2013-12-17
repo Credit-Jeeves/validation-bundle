@@ -33,6 +33,6 @@ class InviteLandlordType extends AbstractType
 
     public function getName()
     {
-        return 'rentjeeves_publicbundle_invitelandlordtype';
+        return 'invitelandlordtype';
     }
 }
