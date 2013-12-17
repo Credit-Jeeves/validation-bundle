@@ -1,6 +1,6 @@
-function Payment(parent, startDate, paidTo) {
+function Payment(parent, startDate) {
     var self = this;
-    var day = paidTo.toString("d");
+
     this.id = ko.observable(null);
     this.contractId = null;
     this.paymentAccountId = ko.observable(null);
@@ -12,11 +12,11 @@ function Payment(parent, startDate, paidTo) {
         if ('month_last_date' == newValue) {
             this.dueDate(31);
         } else {
-            this.dueDate(day);
+            this.dueDate(startDate.getDate());
         }
     }, this);
 
-    this.dueDate = ko.observable(day);
+    this.dueDate = ko.observable(startDate.toString("d"));
     this.startMonth = ko.observable(startDate.toString("M"));
     this.startYear = ko.observable(startDate.toString("yyyy"));
     this.startDate = ko.computed({
@@ -38,7 +38,7 @@ function Payment(parent, startDate, paidTo) {
             self.startDate(Date.today().toString("M/d/yyyy"));
         }
         if ('recurring' == newValue) {
-            self.dueDate(day);
+            self.dueDate(startDate.toString("d"));
             self.startMonth(startDate.toString("M"));
             self.startYear(startDate.toString("yyyy"));
         }
