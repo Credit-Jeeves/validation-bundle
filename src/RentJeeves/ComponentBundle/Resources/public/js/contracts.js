@@ -8,6 +8,7 @@ function ContractDetails() {
   this.due = ko.observableArray(['1th', '5th', '10th', '15th', '20th', '25th']);
   this.errorsApprove = ko.observableArray([]);
   this.errorsEdit = ko.observableArray([]);
+  this.statusBeforeTriedSave = ko.observable();
 
   this.cancelEdit = function(data)
   {
@@ -50,16 +51,16 @@ function ContractDetails() {
       return false;
   }
 
-  this.editContract = function(data) {
+  this.editContract = function(contract) {
     self.errorsApprove([]);
     self.errorsEdit([]);
     $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('close');
     $('#tenant-edit-property-popup').dialog('open');
-
-    if (data.first_name) {
-      self.contract(data);
+    if (contract.first_name) {
+        self.contract(contract);
     }
+    console.info(self.contract().status);
     self.getUnits(self.contract().property_id);
     var flag = false;
     if(self.approve()) {
@@ -69,17 +70,6 @@ function ContractDetails() {
     self.edit(true);
     self.approve(flag);
     window.jQuery.curCSS = window.jQuery.css;
-
-    $('#contractEditStart').attr('readonly', true);
-    $('#contractEditFinish').attr('readonly', true);
-    if ($('#contractApproveStart').val().length > 0) {
-      var start = $('#contractApproveStart').val();
-    } else {
-      var today = new Date();
-      var start = today.toString('MM/dd/yyyy');
-    }
-
-    $('#contractEditStart').val(start);
     $('#contractEditStart').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
@@ -95,14 +85,6 @@ function ContractDetails() {
         $('#contractEditStart').DatePickerHide();
       }
     });
-    if ($('#contractApproveFinish').val().length > 0) {
-      var finish = $('#contractApproveFinish').val();
-    } else {
-      var today = new Date();
-      today.setFullYear(today.getFullYear()+1);
-      var finish = today.toString('MM/dd/yyyy');
-    }
-    $('#contractEditFinish').val(finish);
     $('#contractEditFinish').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
@@ -119,13 +101,14 @@ function ContractDetails() {
       }
     });
   };
-  this.approveContract = function(data) {
+  this.approveContract = function(contract) {
+    self.contract(contract);
     self.errorsApprove([]);
     self.errorsEdit([]);
     $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('open');
     self.clearDetails();
-    self.contract(data);
+
     self.approve(true);
     $('#contractApproveStart').attr('readonly', true);
     $('#contractApproveFinish').attr('readonly', true);
@@ -137,7 +120,18 @@ function ContractDetails() {
         var start = today.toString('MM/dd/yyyy');
     }
 
-    $('#contractApproveStart').val(start);
+    if ($('#contractApproveFinish').val().length > 0) {
+        var finish = $('#contractApproveFinish').val();
+    } else {
+        var today = new Date();
+        today.setFullYear(today.getFullYear()+1);
+        var finish = today.toString('MM/dd/yyyy');
+    }
+
+    contract.start = start;
+    contract.finish = finish;
+    self.contract(contract);
+
     $('#contractApproveStart').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png", 
@@ -150,15 +144,6 @@ function ContractDetails() {
         $('#contractApproveStart').DatePickerHide();
       }
     });
-
-    if ($('#contractApproveFinish').val().length > 0) {
-       var finish = $('#contractApproveFinish').val();
-    } else {
-       var today = new Date();
-       today.setFullYear(today.getFullYear()+1);
-       var finish = today.toString('MM/dd/yyyy');
-    }
-    $('#contractApproveFinish').val(finish)
     $('#contractApproveFinish').datepicker({
       showOn: "both",
       buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
@@ -171,7 +156,6 @@ function ContractDetails() {
         $('#contractApproveFinish').DatePickerHide();
       }
     });
-    
   };
 
   this.countErrorsEdit = ko.computed(function(){
@@ -192,6 +176,7 @@ function ContractDetails() {
   };
   this.approveSave = function() {
     var data = self.contract();
+    self.statusBeforeTriedSave(data.status);
     data.status = 'approved';
     self.contract(data);
     self.saveContract();
@@ -213,10 +198,9 @@ function ContractDetails() {
     } else {
         var id = '#tenant-approve-property-popup';
     }
+
     jQuery(id).showOverlay();
     var contract = self.contract();
-    contract.finish = $('#contract-edit-finish').val() || contract.finish;
-    contract.start = $('#contract-edit-start').val() || contract.start;
     var unitId = $("#unit-edit :selected").val();
 
     if (typeof unitId != 'undefined') {
@@ -245,12 +229,12 @@ function ContractDetails() {
               self.errorsEdit(response.errors);
           } else {
               if (self.contract().status == 'approved') {
+                  self.contract().status = self.statusBeforeTriedSave();
                   self.approveContract(self.contract());
               }
               self.errorsApprove(response.errors);
           }
         }
-
       }
     });
   };

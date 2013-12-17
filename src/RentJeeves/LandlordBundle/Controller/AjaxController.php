@@ -525,12 +525,13 @@ class AjaxController extends Controller
         if (isset($details['action'])) {
             $action = $details['action'];
         }
-        if (empty($details['amount'])) {
+        if (empty($details['amount']) || $details['amount'] <= 0) {
             $errors[] = $translator->trans('contract.error.rent');
         }
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
+
         $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
         $tenant->setFirstName($details['first_name']);
@@ -562,14 +563,17 @@ class AjaxController extends Controller
                 $contract
             );
             $em->remove($contract);
-        } else {
-            $em->persist($contract);
+            return new JsonResponse($response);
         }
 
-        $em->flush();
-        if (!empty($errors) & 'edit' == $action) {
+        if (!empty($errors)) {
             $response['errors'] = $errors;
+            return new JsonResponse($response);
         }
+
+        $em->persist($contract);
+        $em->flush();
+
         return new JsonResponse($response);
     }
 
