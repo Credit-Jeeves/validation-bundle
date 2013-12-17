@@ -1695,6 +1695,14 @@
                         ]]>
                 </target>
             </trans-unit>
+            <trans-unit id="remove.unit.confirm">
+                <source>remove.unit.confirm</source>
+                <target>Are you sure you want to delete this unit? Any associated contracts will be closed as finished. You will not lose any payment history.</target>
+            </trans-unit>
+            <trans-unit id="remove.property.confirm">
+                <source>remove.property.confirm</source>
+                <target>Are you sure you want to delete this property?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

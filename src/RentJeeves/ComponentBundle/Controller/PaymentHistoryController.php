@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\ComponentBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -22,6 +23,9 @@ class PaymentHistoryController extends Controller
         $em = $this->get('doctrine.orm.default_entity_manager');
         $translator = $this->get('translator.default');
         $contracts = $user->getContracts();
+        /**
+         * @var $contract Contract
+         */
         foreach ($contracts as $contract) {
             $status = $contract->getStatus();
             if (in_array($status, array(ContractStatus::PENDING, ContractStatus::DELETED, ContractStatus::INVITE))) {
@@ -29,7 +33,9 @@ class PaymentHistoryController extends Controller
             }
             $currentDate = new \DateTime('now');
             $startDate = $contract->getStartAt();
-            
+            if (!$startDate || !$contract->getFinishAt()) {
+                continue;
+            }
             $interval = $startDate->diff($currentDate)->format('%r%a');
             $item = array();
             $item['id'] = $contract->getId();
