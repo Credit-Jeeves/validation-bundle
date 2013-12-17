@@ -34,10 +34,15 @@ function ContractDetails() {
               }
 
               var html = '';
+              console.info();
               $.each(response.units, function(index, value) {
                   var id = $(this).get(0).id;
                   var name = $(this).get(0).name;
-                  var option = '<option value="'+id+'">'+name+'</option>';
+                  var selected = '';
+                  if (id == self.contract().unit_id) {
+                      var selected = 'selected="selected"';
+                  }
+                  var option = '<option value="'+id+'" '+selected+'>'+name+'</option>';
                   html += option;
               });
 
@@ -60,7 +65,6 @@ function ContractDetails() {
     if (contract.first_name) {
         self.contract(contract);
     }
-    console.info(self.contract().status);
     self.getUnits(self.contract().property_id);
     var flag = false;
     if(self.approve()) {
