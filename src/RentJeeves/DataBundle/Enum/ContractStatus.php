@@ -15,7 +15,12 @@ use CreditJeeves\CoreBundle\Enum;
  * 4. INVITE -> DELETED FROM DB
  * 5. INVITE -> APPROVED -> DELETED
  * 6. INVITE -> APPROVED -> CURRENT -> FINISHED
- * 
+ *
+ * One notice if Landlord remove unit and this unit have contract
+ * all this contract change status to FINISHED
+ * This logic on src/RentJeeves/LandlordBundle/Controller/AjaxController.php
+ * Method checkContractBeforeRemove
+ *
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
  */
 class ContractStatus extends \CreditJeeves\CoreBundle\Enum

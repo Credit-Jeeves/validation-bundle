@@ -46,7 +46,7 @@ function properties() {
           'sortColumn': self.sortColumn(),
           'isSortAsc': self.isSortAsc(),
           'searchCollum': self.searchCollum(),
-          'searchText': self.searchText(),
+          'searchText': self.searchText()
         }
       },
       success: function(response) {

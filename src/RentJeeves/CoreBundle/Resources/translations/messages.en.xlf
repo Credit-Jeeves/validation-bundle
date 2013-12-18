@@ -178,6 +178,10 @@
                 <source>required</source>
                 <target>Required</target>
             </trans-unit>
+            <trans-unit id="email.required">
+                <source>email.required</source>
+                <target>Email is required</target>
+            </trans-unit>
             <trans-unit id="property.add">
                 <source>property.add</source>
                 <target>Add your Rental Property</target>
@@ -1680,6 +1684,26 @@
             <trans-unit id="ar.account.id">
                 <source>ar.account.id</source>
                 <target>ArAccountID</target>
+            </trans-unit>
+            <trans-unit id="rj.pidkiq.error.answers">
+                <source>rj.pidkiq.error.answers-%SUPPORT_EMAIL%</source>
+                <target><![CDATA[
+                    Some of the answers you provided to the questions are incorrect.
+                    We're sorry but we cannot verify your identity at this time.
+                    Please try again in one hour, or contact %SUPPORT_EMAIL%
+                    <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                    target="_blank" class="underline">
+                    to manually verify your identity.</a>
+                        ]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.unit.confirm">
+                <source>remove.unit.confirm</source>
+                <target>Are you sure you want to delete this unit? Any associated contracts will be closed as finished. You will not lose any payment history.</target>
+            </trans-unit>
+            <trans-unit id="remove.property.confirm">
+                <source>remove.property.confirm</source>
+                <target>Are you sure you want to delete this property?</target>
             </trans-unit>
         </body>
     </file>

@@ -178,3 +178,6 @@ button.contract-delete {
 .font-helvetica {
     font-family: "Helvetica Neue",HelveticaNeue,helvetica !important;
 }
+.underline {
+    text-decoration: underline;
+}

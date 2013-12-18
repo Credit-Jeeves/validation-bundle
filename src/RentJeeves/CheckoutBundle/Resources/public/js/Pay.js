@@ -88,14 +88,20 @@ function Pay(parent, contractId) {
     this.propertyFullAddress.district(contract.property.district);
     this.propertyFullAddress.area(contract.property.area);
     if (typeof contract.unit == 'undefined') {
-      this.propertyFullAddress.unit('');
+        this.propertyFullAddress.unit('');
     } else {
-      this.propertyFullAddress.unit(contract.unit.name);
+        this.propertyFullAddress.unit(contract.unit.name);
     }
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 
-    this.payment = new Payment(this, new Date(contract.startAt));
+    if (contract.paidTo.length > 0) {
+        var paymentDate = contract.paidTo;
+    } else  {
+        var paymentDate = contract.startAt;
+    }
+
+    this.payment = new Payment(this, new Date(paymentDate));
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
