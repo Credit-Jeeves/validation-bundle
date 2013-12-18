@@ -563,6 +563,7 @@ class AjaxController extends Controller
                 $contract
             );
             $em->remove($contract);
+            $em->flush();
             return new JsonResponse($response);
         }
 

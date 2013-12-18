@@ -9,6 +9,7 @@ function Units() {
     this.name = ko.observable();
     this.process = ko.observable(true);
     this.ajaxAction = function(nPropertyId) {
+        self.errors([]);
         $('#edit-property-popup').dialog('open');
         self.property(nPropertyId);
         self.process(true);
@@ -27,6 +28,7 @@ function Units() {
         });
     };
     this.cancelEdit = function() {
+      self.errors([]);
       $('#edit-property-popup').dialog('close');
     };
     this.clearUnits = function() {
