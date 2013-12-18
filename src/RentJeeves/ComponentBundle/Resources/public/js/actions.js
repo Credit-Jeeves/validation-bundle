@@ -21,6 +21,7 @@ function Resolve() {
       },
       success: function() {
         ActionsViewModel.ajaxAction();
+        PaymentsViewModel.ajaxAction();
         self.closeForm();
       }
     });
