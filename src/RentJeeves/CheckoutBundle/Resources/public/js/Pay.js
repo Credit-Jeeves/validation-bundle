@@ -357,8 +357,6 @@ function Pay(parent, contractId) {
 
     if (contract.payment) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
-        var paidTo = new Date(contract.paidTo)
-        this.payment.dueDate(paidTo.toString('d'));
     }
 
     $('#pay-popup').dialog({

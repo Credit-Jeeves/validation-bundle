@@ -1,6 +1,5 @@
-function Payment(parent, startDate) {
+function Payment(parent, paidTo) {
     var self = this;
-
     this.id = ko.observable(null);
     this.contractId = null;
     this.paymentAccountId = ko.observable(null);
@@ -16,9 +15,9 @@ function Payment(parent, startDate) {
         }
     }, this);
 
-    this.dueDate = ko.observable(startDate.toString("d"));
-    this.startMonth = ko.observable(startDate.toString("M"));
-    this.startYear = ko.observable(startDate.toString("yyyy"));
+    this.dueDate = ko.observable(paidTo.toString("d"));
+    this.startMonth = ko.observable(paidTo.toString("M"));
+    this.startYear = ko.observable(paidTo.toString("yyyy"));
     this.startDate = ko.computed({
         read: function() {
             return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
@@ -35,12 +34,12 @@ function Payment(parent, startDate) {
     this.type.subscribe(function(newValue) {
         if ('one_time' == newValue) {
             self.ends('cancelled');
-            self.startDate(startDate.toString("M/d/yyyy"));
+            self.startDate(paidTo.toString("M/d/yyyy"));
         }
         if ('recurring' == newValue) {
-            self.dueDate(startDate.toString("d"));
-            self.startMonth(startDate.toString("M"));
-            self.startYear(startDate.toString("yyyy"));
+            self.dueDate(paidTo.toString("d"));
+            self.startMonth(paidTo.toString("M"));
+            self.startYear(paidTo.toString("yyyy"));
         }
     });
 
