@@ -1715,11 +1715,12 @@ label.error b {
 
 .tooltip-box .secure-text {
   position:absolute;
-  top:110%;
-  left:25px;
+  top:232px;
+  left:120px;
+  width:190px;
   min-height:40px;
   padding-top:15px;
-  padding-left:100px;
+  padding-left:10px;
   color:#693;
   font-size:10px;
   line-height:normal;

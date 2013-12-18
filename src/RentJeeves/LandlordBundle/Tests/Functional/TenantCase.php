@@ -30,7 +30,7 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('approve.tenant');
         $this->session->wait($this->timeout, "$('div.attention-box').is(':visible')");
         $this->assertNotNull($errors = $this->page->findAll('css', 'div.attention-box ul.default li'));
-        $this->assertCount(2, $errors, 'Wrong number of errors');
+        $this->assertCount(1, $errors, 'Wrong number of errors');
         $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
         $amount->setValue('200');
         $start = $this->page->find('css', '#contractApproveStart');

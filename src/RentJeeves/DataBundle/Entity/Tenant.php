@@ -135,6 +135,21 @@ class Tenant extends User
         return $result;
     }
 
+    public function getContractsHomePage()
+    {
+        $result = array();
+        $contracts = $this->getContracts();
+
+        foreach ($contracts as $contract) {
+            $status = $contract->getStatus();
+            if (in_array($status, array(ContractStatus::DELETED))) {
+                continue;
+            }
+            $result[] = $contract;
+        }
+        return $result;
+    }
+
     public function getItem()
     {
         $result = array();

@@ -34,7 +34,7 @@ class AddPropertyCase extends BaseTestCase
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(3, $tr, 'List of property');
+        $this->assertCount(4, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
@@ -53,7 +53,7 @@ class AddPropertyCase extends BaseTestCase
         $register->click();
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(5, $tr, 'List of property');
+        $this->assertCount(6, $tr, 'List of property');
         $this->logout();
     }
 
@@ -66,7 +66,7 @@ class AddPropertyCase extends BaseTestCase
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(3, $tr, 'List of property');
+        $this->assertCount(4, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
@@ -117,7 +117,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->pressButton('add.property');
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(4, $tr, 'List of property');
+        $this->assertCount(5, $tr, 'List of property');
     }
 
     /**
@@ -138,17 +138,21 @@ class AddPropertyCase extends BaseTestCase
         $this->clearEmail();
         $this->setDefaultSession('selenium2');
         $this->session->visit($url);
-        $this->session->wait($this->timeout, '$("#landlordType").length > 0');
-        $this->assertNotNull($form = $this->page->find('css', '#landlordType'));
+        $this->session->wait($this->timeout, '$("#invitelandlordtype").length > 0');
+        $this->assertNotNull($form = $this->page->find('css', '#invitelandlordtype'));
         $form->pressButton('continue');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(2, $errorList, 'Wrong number of pending');
+        $this->assertCount(6, $errorList, 'Wrong number of pending');
         $this->fillForm(
             $form,
             array(
-                'landlordType_password_Password'          => 'pass',
-                'landlordType_password_Verify_Password'   => 'pass',
-                'landlordType_tos'                        => true,
+                'invitelandlordtype_landlord_password_Password'          => 'pass',
+                'invitelandlordtype_landlord_password_Verify_Password'   => 'pass',
+                'invitelandlordtype_deposit_nickname'                    => 'nickname',
+                'invitelandlordtype_deposit_AccountNumber'               => '12345678',
+                'invitelandlordtype_deposit_RoutingNumber'               => '12345678',
+                'invitelandlordtype_deposit_ACHDepositType_1'            => true,
+                'invitelandlordtype_landlord_tos'                        => true,
             )
         );
         $form->pressButton('continue');
@@ -173,7 +177,7 @@ class AddPropertyCase extends BaseTestCase
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(3, $tr, 'List of property');
+        $this->assertCount(4, $tr, 'List of property');
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
@@ -200,7 +204,7 @@ class AddPropertyCase extends BaseTestCase
         $this->page->pressButton('add.property');
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(4, $tr, 'List of property');
+        $this->assertCount(5, $tr, 'List of property');
     }
 
     /**

@@ -468,9 +468,10 @@ table.properties-table th {
     width: 20px !important;
 }
 a.linkselect-link .linkselect-link-text {
-    padding: 6px 14px;
+    padding: 6px 9px;
     height: 16px;
     padding-top: 4px !important;
+    line-height: 14px;
 }
 #properties-block {
     display: none;
