@@ -9,13 +9,13 @@
                 <hr />
                 <p>{{'settings.deposit.description'|trans}}</p>
                 <br />
-                {#<div data-bind="foreach: billingAccount">#}
-                    {% for billingAccount in billingAccounts %}
-                    {#<span data-bind="text: nickname"></span>#}
-                        <label for="payment_account_{{ billingAccount.getId }}">{{ billingAccount.getNickname }}</label>
-                        <input type="radio" value="{{ billingAccount.getId }}" id="payment_account_{{ billingAccount.getId }}">
-                    {% endfor %}
-                {#</div>#}
+                <div data-bind="foreach: billingAccounts">
+                    {#{% for billingAccount in billingAccounts %}#}
+                    <span data-bind="text: nickname"></span>
+                        {#<label for="payment_account_{{ billingAccount.getId }}">{{ billingAccount.getNickname }}</label>#}
+                        {#<input type="radio" value="{{ billingAccount.getId }}" id="payment_account_{{ billingAccount.getId }}">#}
+                    {#{% endfor %}#}
+                </div>
                 <hr>
                 <a href="#" class="add-account">{{ 'add.account'|trans }}</a>
             </section>
@@ -52,7 +52,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            var viewModel = new BillingAccountViewModel({{ billingAccounts|json_encode }});
+            var viewModel = new BillingAccountViewModel({{ billingAccounts|raw }});
             ko.applyBindings(viewModel);
         });
     </script>
@@ -69,6 +69,8 @@
     {{ parent() }}
     {% javascripts  '@LandlordBundle/Resources/public/js/settings.deposit.js'
                     '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+                    '@LandlordBundle/Resources/public/js/BillingAccount/Model/BillingAccount.js'
+                    '@LandlordBundle/Resources/public/js/BillingAccount/Mapping.js'
                     '@LandlordBundle/Resources/public/js/BillingAccount/BillingAccountViewModel.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>

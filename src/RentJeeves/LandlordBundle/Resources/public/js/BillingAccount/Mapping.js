@@ -1,6 +1,6 @@
-this.mapping = (function() {
+this.Mapping = (function() {
 
-    function mapping() {
+    function Mapping() {
         var _this = this;
         this.billingAccount = {
             create: function(options) {
@@ -9,6 +9,6 @@ this.mapping = (function() {
         };
     }
 
-    return mapping;
+    return Mapping;
 
 })();
