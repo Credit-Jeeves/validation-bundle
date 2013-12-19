@@ -253,7 +253,7 @@ class PidkiqController extends Controller
                     'rj.pidkiq.error.answers-%SUPPORT_EMAIL%',
                     array(
                         '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
-                        '%MAIN_LINK%'     => $globals['external_urls']['main_site'],
+                        '%MAIN_LINK%'     => $globals['external_urls']['user_voice'],
                     )
                 );
             } else {
