@@ -390,6 +390,10 @@
                 <source>checkout.questions.tooltip.line1</source>
                 <target>Please answer the questions carefully – they contain information only you should know that relates to your credit history.</target>
             </trans-unit>
+            <trans-unit id="checkout.questions.tooltip.question">
+                <source>checkout.questions.tooltip.question</source>
+                <target>Why do I have to do this?</target>
+            </trans-unit>
             <trans-unit id="checkout.questions.tooltip.line2">
                 <source>checkout.questions.tooltip.line2</source>
                 <target>Please note that the correct answer may not be listed and some information information on your credit file may be from past addresses and employers.</target>
@@ -443,6 +447,10 @@
             <trans-unit id="checkout.billing_address.new">
                 <source>checkout.billing_address.new</source>
                 <target>Card Billing Address</target>
+            </trans-unit>
+            <trans-unit id="checkout.bank_name">
+                <source>checkout.bank_name</source>
+                <target>Bank Name</target>
             </trans-unit>
         </body>
     </file>

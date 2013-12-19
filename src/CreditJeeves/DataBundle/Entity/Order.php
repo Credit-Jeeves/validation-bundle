@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -16,6 +17,535 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 class Order extends BaseOrder
 {
     use \RentJeeves\CoreBundle\Traits\DateCommon;
+
+    /**
+     * @Serializer\SerializedName("PropertyId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * It's not property ID from DB, it's property id from user form
+     * For generate correct report xml
+     *
+     * @return integer
+     */
+    protected $propertyId = null;
+
+
+    public function getPropertyId()
+    {
+        return $this->propertyId;
+    }
+
+    public function setPropertyId($propertyId)
+    {
+        $this->propertyId = $propertyId;
+        return $this;
+    }
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Property")
+     * @Serializer\Groups({"csvReport"})
+     *
+     * @return string
+     */
+    public function getPropertyAddress()
+    {
+        $contract = $this->getContract();
+        if (!$contract) {
+            return null;
+        }
+
+        $property = $contract->getProperty();
+
+        if (!$property) {
+            return null;
+        }
+
+        return $property->getFullAddress();
+    }
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Unit")
+     * @Serializer\Groups({"csvReport"})
+     *
+     * @return string
+     */
+    public function getUnitName()
+    {
+        $unitName = '';
+        $contract = $this->getContract();
+        if (!$contract) {
+            return $unitName;
+        }
+
+        $unit = $contract->getUnit();
+
+        if ($unit) {
+            $unitName = $unit->getName();
+        }
+
+        return $unitName;
+    }
+
+    /**
+     * Date time of actual payment transaction with Heartland
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Date")
+     * @Serializer\Groups({"xmlReport", "csvReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return DateTime
+     */
+    public function getActualPaymentTransactionDate()
+    {
+        return $this->getUpdatedAt()->format('Y-m-d\TH:m:n');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Id")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getReportId()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CashAccountId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getCashAccountId()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PersonId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getPersonId()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("HasOpenPrepayDetails")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getHasOpenPrepayDetails()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PaymentType")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getPaymentType()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UnitId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getUnitId()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_1")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields1()
+    {
+        return null;
+    }
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_2")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields2()
+    {
+        return null;
+    }
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_3")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields3()
+    {
+        return null;
+    }
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_4")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields4()
+    {
+        return null;
+    }
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_5")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields5()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_6")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields6()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_7")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields7()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("UserDefinedFields_8")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getUserDefinedFields8()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("DateCreated")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getDateCreated()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("DateLastModified")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getDateLastModified()
+    {
+        return null;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("TotalAmount")
+     * @Serializer\Groups({"xmlReport", "csvReport"})
+     * @Serializer\Type("double")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return float
+     */
+    public function getTotalAmount()
+    {
+        return number_format($this->getAmount(), 2, '.', '');
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("First_Name")
+     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Type("string")
+     *
+     * @return string
+     */
+    public function getFirstNameTenant()
+    {
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $tenant = $contract->getTenant();
+
+        if (!$tenant) {
+            return null;
+        }
+
+        return $tenant->getFirstName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Last_Name")
+     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getLastNameTenant()
+    {
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $tenant = $contract->getTenant();
+
+        if (!$tenant) {
+            return null;
+        }
+        return $tenant->getLastName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Code")
+     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+            $code = 'PMTCRED';
+        } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
+            $code = 'PMTCHECK';
+        } else {
+            $code = '';
+        }
+
+        return $code;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Description")
+     * @Serializer\Groups({"csvReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return sprintf(
+            '%s #%s %s %d',
+            $this->getPropertyAddress(),
+            $this->getUnitName(),
+            $this->getCode(),
+            $this->getHeartlandTransactionId()
+        );
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("IsCash")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("boolean")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getIsCash()
+    {
+        if ($this->getType() === OrderType::CASH) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("CheckNumber")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getCheckNumber()
+    {
+        if ($this->getIsCash()) {
+            return null;
+        }
+
+        if ($this->getType() === OrderType::HEARTLAND_CARD) {
+            $code = 'PMTCRED';
+        } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
+            $code = 'PMTCHECK';
+        } else {
+            $code = '';
+        }
+
+        return sprintf('%s %d', $code, $this->getHeartlandTransactionId());
+    }
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("Notes")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getNotes()
+    {
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $property = $contract->getProperty();
+        if (!$property) {
+            return null;
+        }
+
+        $unit = $contract->getUnit();
+        $unitName = '';
+        if ($unit) {
+            $unitName = ' #'.$unit->getName();
+        }
+        $address = $property->getFullAddress().$unitName;
+
+        return $address;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PayerName")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return DateTime
+     */
+    public function getPayerName()
+    {
+        if (!$contract = $this->getContract()) {
+            return null;
+        }
+        $tenant = $contract->getTenant();
+        if (!$tenant) {
+            return null;
+        }
+
+        return $tenant->getFullName();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("PostMonth")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return DateTime
+     */
+    public function getPostMonth()
+    {
+        $date = $this->getUpdatedAt();
+        $daysLate = $this->getDaysLate();
+        if ($daysLate < 0) {
+            $date->modify('-'.$daysLate.' day');
+        } elseif ($daysLate > 0) {
+            $daysLate = $daysLate * -1;
+            $date->modify($daysLate.' day');
+        }
+
+        return $date->format('Y-m-d\TH:m:n');
+    }
 
     /**
      * @ORM\PrePersist

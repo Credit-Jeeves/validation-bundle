@@ -33,6 +33,11 @@
     width: 950px;
 }
 
+.footer .accreditations {
+    text-align: center;
+    margin-top: 20px;
+}
+
 .footer .experian-data {
     color: #BBBBBB;
     font-family: arial,helvetica,sans-serif;

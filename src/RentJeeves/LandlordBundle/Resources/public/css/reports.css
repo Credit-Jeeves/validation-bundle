@@ -1,0 +1,54 @@
+
+.widthSelect {
+    width: 155px;
+}
+.begin, .end {
+    width: 65px !important;
+}
+.none {
+    display: none;
+}
+
+.form-row label {
+    clear: both;
+}
+.form-row {
+    width: 200px;
+}
+#base_order_report_type_type_row, #base_order_report_type_begin_row {
+    width: 335px;
+}
+
+#base_order_report_type_begin_row>label{
+    clear: none;
+    width: 35px;
+    margin: 16px 0 0 10px;
+}
+
+#base_order_report_type_begin_row>div{
+    width: 120px;
+}
+#base_order_report_type_begin_row {
+    padding-left: 25px;
+}
+.submitBaseReport {
+    margin-left: 130px;
+    clear: both;
+    margin-top: 18px;
+}
+.form-content {
+    height: auto;
+}
+.helpContainer{
+    margin-left: 286px;
+    margin-top: -15px;
+}
+.int {
+    width: 50px !important;
+}
+
+.type-date {
+    float: right !important;
+    margin-right: 140px;
+    margin-top: -175px;
+}

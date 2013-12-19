@@ -68,7 +68,17 @@ class RjGroupAdmin extends Admin
             ->addIdentifier('name')
             ->add('holding')
             ->add('affiliate')
+            ->add('groupPhones')
             ->add('count_properties')
+            ->add(
+                'deposit_account',
+                'sonata_type_model',
+                array(
+                    'empty_value' => 'None',
+                    'required' => false,
+                    'label' => 'Merchant status'
+                )
+            )
             ->add(
                 '_action',
                 'actions',
@@ -93,26 +103,46 @@ class RjGroupAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add(
-                'holding',
-                'sonata_type_model'
-            )
-            ->add(
-                'affiliate',
-                'sonata_type_model',
-                array(
-                    'empty_value' => 'None',
-                    'required' => false
+            ->with('Details')
+                ->add(
+                    'holding',
+                    'sonata_type_model'
                 )
-            )
-            ->add('name')
-            ->add('merchant_name', 'text');
+                ->add(
+                    'affiliate',
+                    'sonata_type_model',
+                    array(
+                        'empty_value' => 'None',
+                        'required' => false
+                    )
+                )
+                ->add('name')
+                ->add('merchant_name', 'text')
+            ->end()
+            ->with('Group Phones')
+                ->add(
+                    'groupPhones',
+                    'sonata_type_collection',
+                    array(
+                        // Prevents the "Delete" option from being displayed
+                        'type_options' => array(
+                            'delete' => false
+                        )
+                    ),
+                    array(
+                        'edit' => 'inline',
+                        'inline' => 'table',
+                        'sortable' => 'position',
+                    )
+                )
+            ->end();
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('name');
+            ->add('name')
+            ->add('deposit_account.status', null, array('label' => 'Merchant status'));
     }
 
     

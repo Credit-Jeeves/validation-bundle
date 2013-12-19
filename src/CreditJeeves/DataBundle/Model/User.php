@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
+use RentJeeves\DataBundle\Entity\UserSettings;
 
 /**
  * @ORM\MappedSuperclass
@@ -108,7 +109,7 @@ abstract class User extends BaseUser
 
     /**
      * @Assert\NotBlank(
-     *     message="error.user.last_name.empty",
+     *     message="email.required",
      *     groups={
      *         "user_admin",
      *         "invite",
@@ -573,6 +574,16 @@ abstract class User extends BaseUser
      */
     protected $apiUpdate;
 
+    /**
+     * @ORM\OneToOne(
+     *      targetEntity="\RentJeeves\DataBundle\Entity\UserSettings",
+     *      mappedBy="user",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $settings;
+
     public function __construct()
     {
         parent::__construct();
@@ -592,6 +603,35 @@ abstract class User extends BaseUser
         $this->authCodes = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
+    }
+
+    /**
+     * @param mixed $settings
+     */
+    public function setSettings(UserSettings $settings)
+    {
+        $this->settings = $settings;
+    }
+
+    /**
+     * @return UserSettings
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    public function haveAccessToReports()
+    {
+        if (!$this->getSettings()) {
+            return false;
+        }
+
+        if ($this->getSettings()->getIsBaseOrderReport()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

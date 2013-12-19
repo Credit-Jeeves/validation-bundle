@@ -9,7 +9,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Doctrine\ORM\QueryBuilder;
-
+use RentJeeves\AdminBundle\Form\UserSettings;
 
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
@@ -136,13 +136,29 @@ class LandlordAdmin extends Admin
                        'query' => $query,
                     )
                 )
+            ->end()
+            ->with('Settings')
+                ->add(
+                    'settings',
+                    new UserSettings(),
+                    array(
+                    ),
+                    array(
+                        'edit'      => 'inline',
+                        'inline'    => 'table',
+                        'sortable'  => 'position',
+                    )
+                )
             ->end();
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('is_active');
+            ->add('is_active')
+            ->add('first_name')
+            ->add('last_name')
+            ->add('email');
     }
 
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
@@ -203,6 +219,8 @@ class LandlordAdmin extends Admin
     public function preUpdate($user)
     {
         $user = $this->checkPassword($user);
+        $settings = $user->getSettings();
+        $settings->setUser($user);
     }
 
     /**
@@ -212,6 +230,8 @@ class LandlordAdmin extends Admin
     {
         $user->setType(self::TYPE);
         $user = $this->checkPassword($user);
+        $settings = $user->getSettings();
+        $settings->setUser($user);
     }
 
     private function checkPassword($user)

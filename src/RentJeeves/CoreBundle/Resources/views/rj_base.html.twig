@@ -1,11 +1,5 @@
 {% extends "::base.html.twig" %}
 
-{% block google_analytics %}
-    {% javascripts '@RjCoreBundle/Resources/public/js/google-analytics.js' %}
-        <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-{% endblock %}
-
 {% block title %}
     {{ 'project.renttrack'|trans }}
 {% endblock %}

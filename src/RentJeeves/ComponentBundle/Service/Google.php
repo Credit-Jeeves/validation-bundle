@@ -132,12 +132,7 @@ class Google
                 $jb = $value['geometry']['location']['lat'];
                 $kb = $value['geometry']['location']['lng'];
 
-                $nearProperty = $propertyRepository->findOneBy(
-                    array(
-                        'jb' => $jb,
-                        'kb' => $kb,
-                    )
-                );
+                $nearProperty = $propertyRepository->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb);
 
                 if (empty($nearProperty)) {
                     continue;

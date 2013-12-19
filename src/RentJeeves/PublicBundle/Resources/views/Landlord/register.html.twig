@@ -1,6 +1,7 @@
 {% extends "RjPublicBundle::base.html.twig" %}
 
 {% form_theme form ':Form:form_errors.html.twig' %}
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
 
 {% block content %}
 <section class="form-content">
@@ -15,7 +16,7 @@
             <div class="col">
                 <h4>{{ 'setup.your.rent'|trans }}</h4>
                 <div class="form-row clearfix">
-                    <label>{{ 'name'|trans }}<b>*</b></label>
+                    {{ form_label(form.landlord.first_name) }}
                     <div class="fields-box">
                         {{ form_widget(form.landlord.first_name, { 'attr': {'class': 'half-width', 'placeholder':"first"} }) }}
                         {{ form_widget(form.landlord.last_name, { 'attr': {'class': 'half-width', 'placeholder':"last"} }) }}
@@ -112,6 +113,9 @@
             </div>
         </div>
     </div>
+
+    {{ include('RjPublicBundle:Public:bankAccount.html.twig', {"form": form.deposit }) }}
+
     <div class="accept-terms-box pie-el">
         <div class="form-row checkboxes clearfix">
             <label class="checkbox register-tos">

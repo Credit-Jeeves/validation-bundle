@@ -51,7 +51,7 @@ class EmailLandlordCommandTest extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(2, $count);
+        $this->assertCount(5, $count);
         $this->assertRegExp('/Story-2042/', $commandTester->getDisplay());
     }
 

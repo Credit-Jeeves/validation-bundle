@@ -1,0 +1,6 @@
+model: RentJeeves\DataBundle\Entity\UserSettings
+fixtures:
+    Landlord1Setting:
+      isBaseOrderReport: true
+      user: Landlord_1
+

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\ComponentBundle\Controller;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -22,6 +23,9 @@ class PaymentHistoryController extends Controller
         $em = $this->get('doctrine.orm.default_entity_manager');
         $translator = $this->get('translator.default');
         $contracts = $user->getContracts();
+        /**
+         * @var $contract Contract
+         */
         foreach ($contracts as $contract) {
             $status = $contract->getStatus();
             if (in_array($status, array(ContractStatus::PENDING, ContractStatus::DELETED, ContractStatus::INVITE))) {
@@ -29,22 +33,26 @@ class PaymentHistoryController extends Controller
             }
             $currentDate = new \DateTime('now');
             $startDate = $contract->getStartAt();
-            
+            $finishedDate = $contract->getFinishAt();
+
+            if (!$startDate || !$finishedDate) {
+                continue;
+            }
+
             $interval = $startDate->diff($currentDate)->format('%r%a');
             $item = array();
             $item['id'] = $contract->getId();
             $item['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
             $item['rent'] = $contract->getRent();
             $item['start'] = $contract->getStartAt()->format('m/d/Y');
-            $item['finish'] = $contract->getFinishAt();
+            $item['finish'] = $finishedDate;
             $item['updated'] = $contract->getUpdatedAt()->format('F d, Y');
             $item['balance_year'] = '-';
             $item['balance_month'] = '-';
-            
-            $finishedDate = $contract->getFinishAt();
+
             if ($finishedDate) {
-                $item['balance_year'] = $contract->getFinishAt()->format('Y');
-                $item['balance_month'] = $contract->getFinishAt()->format('m');
+                $item['balance_year'] = $finishedDate->format('Y');
+                $item['balance_month'] = $finishedDate->format('m');
             }
             $item['tenant'] = $contract->getTenant()->getFullName();
             switch ($status = $contract->getStatus()) {
