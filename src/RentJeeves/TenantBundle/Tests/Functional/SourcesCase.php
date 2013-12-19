@@ -157,7 +157,7 @@ class SourcesCase extends BaseTestCase
         $this->load(false);
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(3, $rows);
+        $this->assertCount(4, $rows);
 
         $this->assertNotNull($contract = $this->page->findAll('css', '.contract-delete'));
         $contract[0]->click();
@@ -166,7 +166,7 @@ class SourcesCase extends BaseTestCase
         $delete->click();
         $this->session->wait($this->timeout, "2 == jQuery('.properties-table tbody tr').length");
         $this->assertNotNull($rows = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(2, $rows);
+        $this->assertCount(3, $rows);
         $this->logout();
 
         //Check email notify landlord about removed contract by tenant

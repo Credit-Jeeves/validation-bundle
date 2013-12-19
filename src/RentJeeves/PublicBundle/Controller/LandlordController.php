@@ -9,6 +9,7 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\LandlordBundle\Registration\MerchantAccountModel;
 use RentJeeves\LandlordBundle\Registration\SAMLEnvelope;
+use RentJeeves\PublicBundle\Form\InviteLandlordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LandlordAddressType;
@@ -152,63 +153,54 @@ class LandlordController extends Controller
         }
 
         $form = $this->createForm(
-            new LandlordType(),
-            $landlord
+            new InviteLandlordType(),
+            array('landlord' => $landlord)
         );
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $landlord = $form->getData();
-                $aForm = $request->request->get($form->getName());
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $landlord = $form->getData()['landlord'];
+            $formData = $request->request->get($form->getName());
 
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['password']['Password'], $landlord->getSalt());
+            $password = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($formData['landlord']['password']['Password'], $landlord->getSalt());
 
-                $landlord->setPassword($password);
-                $landlord->setCulture($this->container->parameters['kernel.default_locale']);
-                $em = $this->getDoctrine()->getManager();
-                $group = $landlord->getCurrentGroup();
-                $contracts = $group->getContracts();
-                if (!empty($contracts)) {
-                    foreach ($contracts as $contract) {
-                        $tenant = $contract->getTenant();
-                        $this->get('project.mailer')->sendRjLandlordComeFromInvite(
-                            $tenant,
-                            $landlord,
-                            $contract
-                        );
-                    }
+            $landlord->setPassword($password);
+            $landlord->setCulture($this->container->parameters['kernel.default_locale']);
+            $em = $this->getDoctrine()->getManager();
+            $group = $landlord->getCurrentGroup();
+            $contracts = $group->getContracts();
+            if (!empty($contracts)) {
+                foreach ($contracts as $contract) {
+                    $tenant = $contract->getTenant();
+                    $this->get('project.mailer')->sendRjLandlordComeFromInvite(
+                        $tenant,
+                        $landlord,
+                        $contract
+                    );
                 }
-
-                $landlord->setInviteCode(null);
-                $em->persist($landlord);
-                $em->flush();
-                return $this->login($landlord);
             }
+
+            $landlord->setInviteCode(null);
+            $em->persist($landlord);
+            $em->flush();
+
+            try {
+                $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
+                $this->savePaymentAccount($form->get('deposit'), $landlord, $group);
+            } catch (Exception $e) {
+                // do nothing, just prevent user from seeing broken app
+            }
+
+            return $this->get('common.login.manager')->loginAndRedirect(
+                $landlord,
+                $this->generateUrl('landlord_tenants')
+            );
         }
 
         return array(
-            'code'      => $code,
-            'form'      => $form->createView(),
+            'code' => $code,
+            'form' => $form->createView(),
         );
-    }
-
-    private function login($landlord)
-    {
-        $response = new RedirectResponse($this->generateUrl('landlord_tenants'));
-        $this->container->get('fos_user.security.login_manager')->loginUser(
-            $this->container->getParameter('fos_user.firewall_name'),
-            $landlord,
-            $response
-        );
-
-        $this->container->get('user.service.login_success_handler')
-                ->onAuthenticationSuccess(
-                    $this->container->get('request'),
-                    $this->container->get('security.context')->getToken()
-                );
-
-        return $response;
     }
 }

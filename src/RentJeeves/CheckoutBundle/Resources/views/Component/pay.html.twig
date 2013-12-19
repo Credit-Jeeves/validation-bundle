@@ -116,6 +116,11 @@
                     <p class="verify">
                         {{ 'checkout.questions.tooltip.line2' | trans }}
                     </p>
+                    <p class="verify">
+                        <a target="_blank" class="underline" href="{{ 'http://'~external_urls['main_site']~'/knowledgebase/articles/269425-why-do-i-have-to-verify-my-identity-' }}">
+                            {{ 'checkout.questions.tooltip.question'|trans }}
+                        </a>
+                    </p>
                 </div>
             </div>
             {{ JSFV(questionsType) }}
@@ -246,7 +251,7 @@
                         <div class="form-row clearfix">
                             <label>{{ 'common.address' | trans }}</label>
                             <div class="fields-box">
-                                <span class="value" data-bind="text: paymentSource.address.current()"></span>
+                                <span class="value" data-bind="text: currentAddress()"></span>
                             </div>
                         </div>
                     </div>

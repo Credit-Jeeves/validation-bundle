@@ -109,7 +109,7 @@ abstract class User extends BaseUser
 
     /**
      * @Assert\NotBlank(
-     *     message="error.user.last_name.empty",
+     *     message="email.required",
      *     groups={
      *         "user_admin",
      *         "invite",
