@@ -83,8 +83,9 @@ class ResolveCase extends BaseTestCase
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
+        $this->session->wait($this->timeout, "!jQuery('#actions-block .processPayment').is(':visible')");
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
-        $this->assertCount(0, $contracts);
+        $this->assertCount(1, $contracts);
         $this->logout();
     }
 

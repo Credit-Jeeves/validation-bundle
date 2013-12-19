@@ -214,12 +214,26 @@ function Pay(parent, contractId) {
     var addNewAddress = function(newAddress) {
         var address = new Address(null);
         ko.mapping.fromJS(newAddress, {}, address);
+        window.addressesViewModels.push(address);
         self.address.clear();
         self.address.addressChoice(newAddress.id);
         self.paymentSource.address.clear();
         self.paymentSource.address.addressChoice(newAddress.id);
         self.newUserAddress.push(address);
     };
+
+    this.currentAddress = ko.computed(function() {
+        if (self.paymentSource) {
+            var result = ko.utils.arrayFirst(window.addressesViewModels, function(address) {
+                return address.id() == self.paymentSource.address.addressChoice();
+            });
+            if (result) {
+                return result.toString();
+            }
+        }
+
+        return '';
+    }, this);
 
     var onSuccessStep = function(data) {
         var currentStep = steps[current];

@@ -90,10 +90,10 @@ class SAMLEnvelope
         $application->appendChild($doc->createElement('MerchantNumberOfLocations', 1));
 
         $userAddress = $this->user->getAddresses()->last();
-        $street = $doc->createElement('Street', $userAddress->getStreet());
-        $city = $doc->createElement('City', $userAddress->getCity());
-        $zip = $doc->createElement('Zip', $userAddress->getZip());
-        $state = $doc->createElement('UsState', $userAddress->getArea());
+        $street = $doc->createElement('Street', $userAddress? $userAddress->getStreet() : '');
+        $city = $doc->createElement('City', $userAddress? $userAddress->getCity() : '');
+        $zip = $doc->createElement('Zip', $userAddress? $userAddress->getZip() : '');
+        $state = $doc->createElement('UsState', $userAddress? $userAddress->getArea() : '');
 
         $merchantAddress = $doc->createElement('MerchantAddress');
         $merchantAddress->appendChild($street);
