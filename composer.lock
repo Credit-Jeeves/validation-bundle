@@ -303,10 +303,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "51a1fde4ccb28648b8776430c76a788343e0e79b"
+                "reference": "e33d2d2d4d56811c5d6c26d2499bd1f0df85268c"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
+                "credit-jeeves/core-bundle": "dev-master",
                 "credit-jeeves/simulation-bundle": "dev-master",
                 "friendsofsymfony/rest-bundle": "dev-master",
                 "nelmio/api-doc-bundle": "dev-master",
@@ -337,7 +338,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-11-05 09:29:55"
+            "time": "2013-12-19 12:17:08"
         },
         {
             "name": "credit-jeeves/arf-bundle",
