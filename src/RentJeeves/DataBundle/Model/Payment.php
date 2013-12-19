@@ -79,7 +79,11 @@ class Payment
     protected $status = PaymentStatus::ACTIVE;
 
     /**
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2
+     * )
      * @Assert\NotBlank(
      *      message="checkout.error.amount.empty"
      * )
