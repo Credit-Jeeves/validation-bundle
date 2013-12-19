@@ -102,9 +102,10 @@ class AlertController extends Controller
                     array('%heartland_msg%' => $deposit->getMessage())
                 );
             }
-            if (empty($billing)) {
+            /* TODO: uncomment it when payment accounts management is added
+             * if (empty($billing)) {
                 $alerts[] = $translator->trans('landlord.payment_account.set_up_message');
-            }
+            }*/
 
             if ($pending > 0) {
                 $text = $translator->trans('landlord.alert.pending-one');
