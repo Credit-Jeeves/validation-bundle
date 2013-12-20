@@ -1,4 +1,5 @@
 {% extends "LandlordBundle::base.html.twig" %}
+{% form_theme bankAccountType 'RjCoreBundle::form.html.twig' %}
 
 {% block content %}
     {% include 'LandlordBundle:Settings:_menu.html.twig' %}
@@ -10,14 +11,10 @@
                 <p>{{'settings.deposit.description'|trans}}</p>
                 <br />
                 <div data-bind="foreach: billingAccounts">
-                    {#{% for billingAccount in billingAccounts %}#}
-                    <span data-bind="text: nickname"></span>
-                        {#<label for="payment_account_{{ billingAccount.getId }}">{{ billingAccount.getNickname }}</label>#}
-                        {#<input type="radio" value="{{ billingAccount.getId }}" id="payment_account_{{ billingAccount.getId }}">#}
-                    {#{% endfor %}#}
+                    <p data-bind="text: nickname"></p>
                 </div>
                 <hr>
-                <a href="#" class="add-account">{{ 'add.account'|trans }}</a>
+                <a href="#" class="add-account" data-bind="click: showDialog">{{ 'add.account'|trans }}</a>
             </section>
             <div class="col-box clearfix"></div>
         </div>
@@ -27,27 +24,60 @@
 
 
     <!-- Action Add deposit account -->
-    <div id="billing-account-edit" class="pricing-popup dashboard-popup">
+    <div id="billing-account-edit" data-bind="with: newBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
         <h1>{{ 'add.account.popup.title.edit'|trans }}</h1>
         <div class="clearfix col-box">
-            <div class="col">
+            <div class="col long-label">
                 <p class="clearfix">
                     <span>{{'add.account.popup.desc'|trans}}</span>
                 </p>
-                {{ render(controller('LandlordBundle:Settings:bankAccount')) }}
-            </div>
 
+                <div class="form-row clearfix">
+                    {{ form_label(bankAccountType.nickname) }}
+                    <div class="fields-box">
+                        <input type="text" data-bind="value: nickname" id="directDepositType_nickname" name="directDepositType[nickname]" required="required">
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(bankAccountType.AccountNumber) }}
+                    <div class="fields-box">
+                        <input type="text" data-bind="value: accountNumber" id="directDepositType_AccountNumber" name="directDepositType[AccountNumber]" required="required">
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(bankAccountType.RoutingNumber) }}
+                    <div class="fields-box">
+                        <input type="text" data-bind="value: routingNumber" id="directDepositType_RoutingNumber" name="directDepositType[RoutingNumber]" required="required">
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    {{ form_label(bankAccountType.ACHDepositType) }}
+                    <div class="fields-box">
+                        <label class="checkbox radio"><input type="radio" id="directDepositType_ACHDepositType_0" data-bind="checked: accountType" name="directDepositType[ACHDepositType]" required="required" value="Checking"><i></i><span>Checking</span></label>
+                        <label class="checkbox radio"><input type="radio" id="directDepositType_ACHDepositType_1" data-bind="checked: accountType" name="directDepositType[ACHDepositType]" required="required" value="Savings"><i></i><span>Savings</span></label>
+                        <label class="checkbox radio"><input type="radio" id="directDepositType_ACHDepositType_2" data-bind="checked: accountType" name="directDepositType[ACHDepositType]" required="required" value="Unassigned"><i></i><span>Business Checking</span></label>
+                    </div>
+                </div>
+                <div class="form-row checkboxes clearfix">
+                    <label class="checkbox">
+                        <input type="checkbox" id="directDepositType_isActive" data-bind="checked: isActive" name="directDepositType[isActive]" required="required" value="1"><i></i>
+                        <i></i>
+                        <span class="big">Active</span>
+                    </label>
+                </div>
+            </div>
             <div class="footer-button-box">
-                <button class="button" onclick="saveBillingAccount()">
+                <button class="button" data-bind="click: $root.save">
                     <span>{{'add.account'|trans}}</span>
                 </button>
                 <div class="with-seperator-box">
-                    <button class="button grey" onclick="$('#deposit-landlord-popup').dialog( 'close' ); return false;">
+                    <button class="button grey" data-bind="click: $root.closeDialog">
                         <span>{{ 'cancel'|trans}}</span>
                     </button>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script type="text/javascript">

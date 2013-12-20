@@ -64,11 +64,13 @@ class SettingsController extends Controller
         /** @var Group $group */
         $group = $this->getCurrentGroup();
         $billingAccounts = $group->getBillingAccounts();
+        $form = $this->createForm(new BankAccountType());
 
         $data = $this->get('jms_serializer')->serialize($billingAccounts, 'json');
 
         return array(
             'billingAccounts' => $data,
+            'bankAccountType' => $form->createView()
         );
     }
 
@@ -88,12 +90,18 @@ class SettingsController extends Controller
      * @Route(
      *     "/billing/save/",
      *     name="landlord_billing_save",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
      *     options={"expose"=true}
      * )
      * @Method({"POST"})
      */
     public function saveBillingAction(Request $request)
     {
+        $content = $request->getContent();
+
+        return new JsonResponse();
+
         $em = $this->getDoctrine()->getManager();
         $form = new BankAccountType();
 
