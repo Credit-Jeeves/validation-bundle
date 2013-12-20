@@ -14,16 +14,111 @@ use JMS\Serializer\Annotation as Serializer;
 class Operation extends Base
 {
     /**
+     * @Serializer\SerializedName("AccountId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    protected $accountId = null;
+
+    /**
+     * @Serializer\SerializedName("ArAccountId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    protected $arAccountId = null;
+
+    /**
+     * @Serializer\SerializedName("PropertyId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    protected $propertyId = null;
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\SerializedName("Amount")
+     * @Serializer\Type("float")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return string
+     */
+    public function getFormatedAmount()
+    {
+        return number_format($this->getAmount(), 2, '.', '');
+    }
+
+    /**
      *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Notes")
-     * @Serializer\Groups({"xmlBaseReport"})
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("string")
+     * @Serializer\XmlElement(cdata=false)
      *
-     * @return DateTime
+     * @return string
      */
     public function getNotes()
     {
-        return $this->getCreatedAt();
+        return $this->getCreatedAt()->format('Y-m-d\TH:m:n');
+    }
+
+
+    public function getAccountId()
+    {
+        return $this->accountId;
+    }
+
+    public function setAccountId($accountId)
+    {
+        $this->accountId = $accountId;
+        return $this;
+    }
+
+    public function getArAccountId()
+    {
+        return $this->arAccountId;
+    }
+
+    public function setArAccountId($arAccountId)
+    {
+        $this->arAccountId = $arAccountId;
+        return $this;
+    }
+
+    public function getPropertyId()
+    {
+        return $this->propertyId;
+    }
+
+    public function setPropertyId($propertyId)
+    {
+        $this->propertyId = $propertyId;
+        return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("ChargeId")
+     * @Serializer\Groups({"xmlReport"})
+     * @Serializer\Type("integer")
+     * @Serializer\XmlElement(cdata=false)
+     *
+     * @return integer
+     */
+    public function getChargeId()
+    {
+        return null;
     }
 
     /**

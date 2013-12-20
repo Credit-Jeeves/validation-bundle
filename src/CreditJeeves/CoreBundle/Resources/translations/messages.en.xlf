@@ -1315,6 +1315,10 @@
                 <source>action_delete_cannot</source>
                 <target>Please reassign leads before deleting a dealer.</target>
             </trans-unit>
+            <trans-unit id="address.on_credit_file">
+                <source>address.on_credit_file</source>
+                <target>Address on Credit File</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

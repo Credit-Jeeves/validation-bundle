@@ -6,6 +6,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\PropertyAccess\Exception\RuntimeException;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class BaseOrderReportType extends AbstractType
 {
@@ -13,17 +17,40 @@ class BaseOrderReportType extends AbstractType
 
     protected $group;
 
-    public function __construct($user, $group = null)
+    protected $validationGroups;
+
+    protected $aviableValidationGroups = array(
+        'xml', 'csv'
+    );
+
+    public function __construct($user, $group = null, $validationGroups = array('xml'))
     {
-        $this->user = $user;
+        $this->user  = $user;
         $this->group = $group;
+        $this->setValidationGroup($validationGroups);
+
+    }
+
+    protected function setValidationGroup($validationGroups)
+    {
+        if (empty($validationGroups)) {
+            throw new RuntimeException("Empty validation group");
+        }
+
+        foreach ($validationGroups as $group) {
+            if (!in_array($group, $this->aviableValidationGroups)) {
+                throw new RuntimeException(sprintf('Wrong validation group:%s', $group));
+            }
+        }
+
+        $this->validationGroups = $validationGroups;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($isAdmin = $this->user->getIsSuperAdmin()) {
             $holding = $this->user->getHolding();
-            $groups = $holding->getGroups() ? $holding->getGroups() : null;
+            $groups  = $holding->getGroups() ? $holding->getGroups() : null;
         } else {
             $groups = $this->user->getAgentGroups() ? $this->user->getAgentGroups() : null;
         }
@@ -32,14 +59,17 @@ class BaseOrderReportType extends AbstractType
             'type',
             'choice',
             array(
-                'choices'   => array(
+                'choices'     => array(
                     'xml' => 'base.order.report.type.yardi',
                     'csv' => 'base.order.report.type.realpage'
                 ),
-                'required'  => true,
-                'attr'      => array(
-                    'class'     => 'original widthSelect'
-                )
+                'required'    => true,
+                'attr'        => array(
+                    'class' => 'original widthSelect'
+                ),
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('xml', 'csv')))
+                ),
             )
         );
 
@@ -47,12 +77,15 @@ class BaseOrderReportType extends AbstractType
             'property',
             'entity',
             array(
-                'class'             => 'RjDataBundle:Property',
-                'error_bubbling'    => true,
-                'attr'              => array(
-                    'class'         =>  'original widthSelect',
+                'class'          => 'RjDataBundle:Property',
+                'error_bubbling' => true,
+                'attr'           => array(
+                    'class' => 'original widthSelect',
                 ),
-                'query_builder'     => function (EntityRepository $er) use ($groups) {
+                'constraints'    => array(
+                    new NotBlank(array('groups' => array('xml', 'csv'))),
+                ),
+                'query_builder'  => function (EntityRepository $er) use ($groups) {
 
                     if ($this->group) {
                         $query = $er->createQueryBuilder('p');
@@ -74,7 +107,7 @@ class BaseOrderReportType extends AbstractType
                         $ids[$group->getId()] = $group->getId();
                     }
                     $groupsIds = implode("','", $ids);
-                    $query = $er->createQueryBuilder('p');
+                    $query     = $er->createQueryBuilder('p');
                     $query->innerJoin('p.property_groups', 'g');
                     $query->where('g.id IN (:groupsIds)');
                     $query->setParameter('groupsIds', $groupsIds);
@@ -85,15 +118,81 @@ class BaseOrderReportType extends AbstractType
         );
 
         $builder->add(
+            'propertyId',
+            'integer',
+            array(
+                'label'       => 'property.id',
+                'attr'        => array(
+                    'class' => 'int',
+                ),
+                'constraints' => array(
+                    new Regex(
+                        array(
+                            'pattern' => '/^[0-9]{1,10}$/',
+                            'groups'  => array('xml')
+                        )
+                    ),
+                    new NotBlank(array('groups' => array('xml')))
+                )
+            )
+        );
+
+
+        $builder->add(
+            'accountId',
+            'text',
+            array(
+                'label'       => 'account.id',
+                'attr'        => array(
+                    'class' => 'int',
+                ),
+                'constraints' => array(
+                    new Regex(
+                        array(
+                            'pattern' => '/^[0-9\-]{1,10}$/',
+                            'groups'  => array('xml')
+                        )
+                    ),
+                    new NotBlank(array('groups' => array('xml')))
+                )
+            )
+        );
+
+        $builder->add(
+            'arAccountId',
+            'text',
+            array(
+                'label'       => 'ar.account.id',
+                'attr'        => array(
+                    'class' => 'int',
+                ),
+                'constraints' => array(
+                    new Regex(
+                        array(
+                            'pattern' => '/^[0-9\-]{1,10}$/',
+                            'groups'  => array('xml')
+                        )
+                    ),
+                    new NotBlank(array('groups' => array('xml')))
+                )
+            )
+        );
+
+        $builder->add(
             'begin',
             'date',
             array(
-                'input'             => 'string',
-                'widget'            => 'single_text',
-                'format'            => 'MM/dd/yyyy',
-                'attr'              => array(
-                    'class'     =>  'begin calendar',
+                'required'    => true,
+                'input'       => 'string',
+                'widget'      => 'single_text',
+                'format'      => 'MM/dd/yyyy',
+                'attr'        => array(
+                    'class'     => 'begin calendar',
                     'force_row' => true
+                ),
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('xml', 'csv'))),
+                    new Date(array('groups' => array('xml', 'csv'))),
                 )
             )
         );
@@ -102,12 +201,16 @@ class BaseOrderReportType extends AbstractType
             'end',
             'date',
             array(
-                'input'             => 'string',
-                'required'          => true,
-                'widget'            => 'single_text',
-                'format'            => 'MM/dd/yyyy',
-                'attr'              => array(
-                    'class' =>  'end calendar'
+                'input'       => 'string',
+                'required'    => true,
+                'widget'      => 'single_text',
+                'format'      => 'MM/dd/yyyy',
+                'attr'        => array(
+                    'class' => 'end calendar'
+                ),
+                'constraints' => array(
+                    new NotBlank(array('groups' => array('xml', 'csv'))),
+                    new Date(array('groups' => array('xml', 'csv'))),
                 )
             )
         );
@@ -120,6 +223,7 @@ class BaseOrderReportType extends AbstractType
                 'csrf_protection'    => true,
                 'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
+                'validation_groups'  => $this->validationGroups,
             )
         );
     }

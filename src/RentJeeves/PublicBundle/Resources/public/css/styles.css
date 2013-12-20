@@ -1708,11 +1708,22 @@ label.error b {
   right:22px;
   min-height:40px;
   padding-top:15px;
-  padding-left:95px;
   color:#693;
   font-size:10px;
   line-height:normal;
-  background:url(/bundles/rjpublic/images/logo-norton-secured.png) 0 10px no-repeat;
+}
+
+.tooltip-box .secure-text {
+  position:absolute;
+  top:232px;
+  left:120px;
+  width:190px;
+  min-height:40px;
+  padding-top:15px;
+  padding-left:10px;
+  color:#693;
+  font-size:10px;
+  line-height:normal;
 }
 
 .tooltip-box h4,
@@ -1763,7 +1774,6 @@ label.error b {
   -webkit-border-radius:8px;
   -moz-border-radius:8px;
   border-radius:8px;
-  width: 450px;
 }
 
 .checkboxes.form-row, .type-checkbox.form-row {
@@ -4331,3 +4341,4 @@ form label {
 .form-row-custom label {
     margin-top: 16px;
 }
+

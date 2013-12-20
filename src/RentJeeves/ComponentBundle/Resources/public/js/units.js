@@ -9,6 +9,7 @@ function Units() {
     this.name = ko.observable();
     this.process = ko.observable(true);
     this.ajaxAction = function(nPropertyId) {
+        self.errors([]);
         $('#edit-property-popup').dialog('open');
         self.property(nPropertyId);
         self.process(true);
@@ -27,6 +28,7 @@ function Units() {
         });
     };
     this.cancelEdit = function() {
+      self.errors([]);
       $('#edit-property-popup').dialog('close');
     };
     this.clearUnits = function() {
@@ -46,7 +48,7 @@ function Units() {
     };
     this.saveUnits = function() {
       if (self.isValid()) {
-        $('#edit-property-popup').dialog('close');
+        self.process(true);
         $.ajax({
           url: Routing.generate('landlord_units_save'),
           type: 'POST',
@@ -55,6 +57,7 @@ function Units() {
           success: function(response) {
             self.clearUnits();
             PropertiesViewModel.ajaxAction();
+            $('#edit-property-popup').dialog('close');
           }
         });
       }
@@ -86,7 +89,7 @@ function Units() {
       return parseInt(self.errors().length);
     });
     this.removeUnit = function(unit) {
-        if (confirm('Are you sure?')) {
+        if (confirm(Translator.get('remove.unit.confirm'))) {
             self.aUnits.remove(unit);
         }
     };

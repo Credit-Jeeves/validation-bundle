@@ -1,3 +1,4 @@
+
 .widthSelect {
     width: 155px;
 }
@@ -15,8 +16,7 @@
     width: 200px;
 }
 #base_order_report_type_type_row, #base_order_report_type_begin_row {
-    float: left;
-    width: 325px;
+    width: 335px;
 }
 
 #base_order_report_type_begin_row>label{
@@ -34,14 +34,21 @@
 .submitBaseReport {
     margin-left: 130px;
     clear: both;
-    position: absolute;
-    margin-top: 85px;
+    margin-top: 18px;
 }
 .form-content {
-    height: 115px;
+    height: auto;
 }
 .helpContainer{
-    position: absolute;
     margin-left: 286px;
-    margin-top: 103px;
+    margin-top: -15px;
+}
+.int {
+    width: 50px !important;
+}
+
+.type-date {
+    float: right !important;
+    margin-right: 140px;
+    margin-top: -175px;
 }

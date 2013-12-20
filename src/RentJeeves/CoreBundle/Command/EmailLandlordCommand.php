@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\CoreBundle\Command;
 
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -123,9 +125,14 @@ class EmailLandlordCommand extends ContainerAwareCommand
             case self::OPTION_TYPE_PENDING: //Email:landlord --type=pending
                 $repo = $doctrine->getRepository('RjDataBundle:Contract');
                 $contracts = $repo->findByStatus(ContractStatus::PENDING);
+                /**
+                 * @var Contract $contract
+                 */
                 foreach ($contracts as $contract) {
                     $holding = $contract->getHolding();
-                    $landlords = $this->getHoldingAdmins($holding);
+                    $group = $contract->getGroup();
+                    //RT-92
+                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
                     }
@@ -145,7 +152,9 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 );
                 foreach ($payments as $payment) {
                     $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
-                    $landlords = $this->getHoldingAdmins($holding);
+                    $group = $doctrine->getRepository('DataBundle:Group')->find($payment['group_id']);
+                    //RT-92
+                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendTodayPayments($landlord, $payment['amount'], 'rjTodayNotPaid');
                     }
@@ -158,7 +167,9 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 $payments = $repo->getPaymentsToLandlord();
                 foreach ($payments as $payment) {
                     $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
-                    $landlords = $this->getHoldingAdmins($holding);
+                    $group = $doctrine->getRepository('DataBundle:Group')->find($payment['group_id']);
+                    //RT-92
+                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendTodayPayments($landlord, $payment['amount']);
                     }
@@ -186,7 +197,9 @@ class EmailLandlordCommand extends ContainerAwareCommand
                             $repo->getPaymentsByStatus($holding, OrderStatus::RETURNED),
                         'LATE' => $repo->getLateAmount($holding),
                     );
-                    $landlords = $this->getHoldingAdmins($holding);
+                    $group = $contract->getGroup();
+                    //RT-92
+                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
                     foreach ($landlords as $landlord) {
                         $mailer->sendRjDailyReport($landlord, $report);
                     }
@@ -201,7 +214,9 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 foreach ($contracts as $row) {
                     $contract = $row[0];
                     $holding = $contract->getHolding();
-                    $landlords = $this->getHoldingAdmins($holding);
+                    $group = $contract->getGroup();
+                    //RT-92
+                    $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
                     $late = $repo->getAllLateContracts($holding);
                     $tenants = array();
                     foreach ($late as $object) {
@@ -230,18 +245,33 @@ class EmailLandlordCommand extends ContainerAwareCommand
         }
     }
 
-    private function getHoldingAdmins($holding)
+    private function getLandlordByHoldingAndGroup($holding, $group)
     {
         $result = array();
         $landlords = $this->getContainer()
             ->get('doctrine')
             ->getRepository('DataBundle:User')
             ->findBy(array('holding' => $holding));
+        /**
+         * @var Landlord $landlord
+         */
         foreach ($landlords as $landlord) {
             if ($isSuperAdmin = $landlord->getIsSuperAdmin()) {
                 $result[] = $landlord;
+                continue;
+            }
+
+            $groups = $landlord->getGroups();
+            if (empty($groups)) {
+                continue;
+            }
+
+            if ($groups->contains($group)) {
+                $result[] = $landlord;
+                continue;
             }
         }
+
         return $result;
     }
 }

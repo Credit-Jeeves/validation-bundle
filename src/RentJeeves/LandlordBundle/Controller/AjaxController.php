@@ -241,13 +241,43 @@ class AjaxController extends Controller
         return new JsonResponse($result);
     }
 
-    //@TODO find best way for this implementation
-    private function checkContract($entity)
+
+
+    private function isEnableSoftDeleteable()
     {
-        if ($entity->getContracts()->count() <= 0) {
+        $filters = $this->get('doctrine')->getManager()->getFilters();
+
+        if (array_key_exists('softdeleteable', $filters->getEnabledFilters())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    //@TODO find best way for this implementation
+    private function checkContractBeforeRemove($unit)
+    {
+        if ($unit->getContracts()->count() > 0) {
+            $contracts = $unit->getContracts();
+            $em = $this->getDoctrine()->getManager();
+            /**
+             * @var Contract $contract
+             */
+            foreach ($contracts as $contract) {
+                $contract->setStatus(ContractStatus::FINISHED);
+                $em->persist($contract);
+            }
+            $em->flush();
+        }
+
+        if ($unit->getContracts()->count() <= 0 && $this->isEnableSoftDeleteable()) {
             $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
-        } else {
+            return;
+        }
+
+        if ($unit->getContracts()->count() > 0 && !$this->isEnableSoftDeleteable()) {
             $this->get('doctrine')->getManager()->getFilters()->enable('softdeleteable');
+            return;
         }
     }
 
@@ -278,60 +308,53 @@ class AjaxController extends Controller
             return new JsonResponse($data);
         }
         $units = (isset($data['units']))? $data['units'] : array();
-        $unitKeys = array();
+        $unitCome = array();
         foreach ($units as $key => $unit) {
-            if (empty($unit['id']) & !empty($unit['name'])) {
-                continue;
-            } else {
-                $names[] = $unit['name'];
-                $unitKeys[$unit['id']] = $key;
-            }
-            
+            $id = (!empty($unit['id']))? $unit['id'] : uniqid();
+            $unitCome[$id] = array(
+                'id'    => $unit['id'],
+                'name'  => $unit['name'],
+                'isNew' => (empty($unit['id']))? true : false,
+            );
         }
-        ksort($unitKeys);
         $records = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnits($parent, $holding, $group);
         $em = $this->getDoctrine()->getManager();
 
-        /** @var $entity Unit */
-        foreach ($records as $entity) {
-            if (in_array($entity->getId(), array_keys($unitKeys)) & !in_array($entity->getName(), $existingNames)) {
-                $key = $unitKeys[$entity->getId()];
-                if (!empty($units[$key]['name']) & !in_array($units[$key]['name'], $existingNames)) {
-                    $existingNames[] = $units[$key]['name'];
-                    if ($units[$key]['name'] != $entity->getName()) {
-                        $entity->setName($units[$key]['name']);
-                        $em->persist($entity);
-                        $em->flush();
-                        
-                    }
-                } else {
-                    $errorNames[] = $units[$key]['name'];
-                    $this->checkContract($entity);
-                    $em->remove($entity);
-                    $em->flush();
+        //Update Current Unit
+        foreach ($records as $key => $entity) {
+            foreach ($unitCome as $unitId => $unitData) {
+                if ($entity->getId() == $unitId && !empty($unitData['name'])) {
+                    $existingNames[] = $unitData['name'];
+                    $entity->setName($unitData['name']);
+                    $em->persist($entity);
+                    unset($unitCome[$unitId]);
+                    unset($records[$key]);
                 }
-                unset($unitKeys[$key]);
-            } else {
-                $this->checkContract($entity);
-                $em->remove($entity);
-                $em->flush();
             }
-            
         }
-        foreach ($units as $unit) {
-            if (empty($unit['id']) & !empty($unit['name']) & !in_array($unit['name'], $names)) {
+
+        //Remove unit each does not exist anymore
+        foreach ($records as $entity) {
+            $this->checkContractBeforeRemove($entity);
+            $em->remove($entity);
+        }
+
+        //Create new Unit
+        foreach ($unitCome as $unit) {
+            if ($unit['isNew'] & !empty($unit['name']) & !in_array($unit['name'], $existingNames)) {
                 $entity = new Unit();
                 $entity->setProperty($parent);
                 $entity->setHolding($holding);
                 $entity->setGroup($group);
                 $entity->setName($unit['name']);
                 $em->persist($entity);
-                $em->flush();
-                $names[] = $unit['name'];
+                $existingNames[] = $unit['name'];
             } else {
                 $errorNames[] = $unit['name'];
             }
         }
+
+        $em->flush();
         $data = $this->getDoctrine()->getRepository('RjDataBundle:Unit')->getUnitsArray($parent, $holding, $group);
         return new JsonResponse($data);
     }
@@ -502,12 +525,13 @@ class AjaxController extends Controller
         if (isset($details['action'])) {
             $action = $details['action'];
         }
-        if (empty($details['amount'])) {
+        if (empty($details['amount']) || $details['amount'] <= 0) {
             $errors[] = $translator->trans('contract.error.rent');
         }
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
+
         $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
         $tenant->setFirstName($details['first_name']);
@@ -539,14 +563,18 @@ class AjaxController extends Controller
                 $contract
             );
             $em->remove($contract);
-        } else {
-            $em->persist($contract);
+            $em->flush();
+            return new JsonResponse($response);
         }
 
-        $em->flush();
-        if (!empty($errors) & 'edit' == $action) {
+        if (!empty($errors)) {
             $response['errors'] = $errors;
+            return new JsonResponse($response);
         }
+
+        $em->persist($contract);
+        $em->flush();
+
         return new JsonResponse($response);
     }
 

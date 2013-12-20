@@ -69,17 +69,18 @@ class ContractsListController extends Controller
     {
         /** @var Tenant $tenant */
         $tenant = $this->getUser();
-        $contracts = $tenant->getActiveContracts();
+        $contracts = $tenant->getContractsHomePage();
         $em = $this->get('doctrine.orm.default_entity_manager');
         $data = array();
         /** @var $contract Contract */
         foreach ($contracts as $contract) {
             $data[] = $contract->getDatagridRow($em);
         }
+
         return array(
-            'contractsRaw' => $contracts,
-            'contracts' => $data,
-            'user' => $tenant,
+            'contractsRaw' => $tenant->getActiveContracts(),
+            'contracts'    => $data,
+            'user'         => $tenant,
         );
     }
 }

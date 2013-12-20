@@ -114,54 +114,7 @@
         </div>
     </div>
 
-    <div class="box type1">
-        <h3 class="clearfix">
-            <span>{{ 'direct_deposit.info'|trans}}</span>
-        </h3>
-        <div class="col-box clearfix">
-            <div class="col">
-                <h4>{{ 'landlord.register.text6'|trans }}</h4>
-
-                <div class="form-row clearfix">
-                    {{ form_label(form.deposit.nickname) }}
-                    <div class="fields-box">
-                        {{ form_widget(form.deposit.nickname) }}
-                        {{ form_errors(form.deposit.nickname) }}
-                    </div>
-                </div>
-
-                <div class="form-row clearfix">
-                    {{ form_label(form.deposit.AccountNumber) }}
-                    <div class="fields-box">
-                        {{ form_widget(form.deposit.AccountNumber) }}
-                        {{ form_errors(form.deposit.AccountNumber) }}
-                    </div>
-                </div>
-
-                <div class="form-row clearfix">
-                    {{ form_label(form.deposit.RoutingNumber) }}
-                    <div class="fields-box">
-                        {{ form_widget(form.deposit.RoutingNumber) }}
-                        {{ form_errors(form.deposit.RoutingNumber) }}
-                    </div>
-                </div>
-
-                <div class="form-row clearfix">
-                    {{ form_label(form.deposit.ACHDepositType) }}
-                    <div class="fields-box">
-                        {{ form_widget(form.deposit.ACHDepositType) }}
-                        {{ form_errors(form.deposit.ACHDepositType) }}
-                    </div>
-                </div>
-
-                <div class="tooltip-box with-header pie-el">
-                    <p>{{ 'landlord.register.text5'|trans }}</p>
-                    <div class="banking-numbers clearfix">{{ 'landlord.register.where_to_find_numbers'|trans }}</div>
-                    <div class="secure-box">{{ 'landlord.register.text7'|trans|raw }}</div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ include('RjPublicBundle:Public:bankAccount.html.twig', {"form": form.deposit }) }}
 
     <div class="accept-terms-box pie-el">
         <div class="form-row checkboxes clearfix">

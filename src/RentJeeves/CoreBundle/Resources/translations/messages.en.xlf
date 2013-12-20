@@ -178,6 +178,10 @@
                 <source>required</source>
                 <target>Required</target>
             </trans-unit>
+            <trans-unit id="email.required">
+                <source>email.required</source>
+                <target>Email is required</target>
+            </trans-unit>
             <trans-unit id="property.add">
                 <source>property.add</source>
                 <target>Add your Rental Property</target>
@@ -400,6 +404,7 @@
                 <source>landlord.register.text1</source>
                 <target><![CDATA[
                         <p>This information is used to help tenants find you in the RentTrack system.</p>
+                        <p>If you have no units, just leave that field blank.</p>
                         <p> 
                           You will be able to add additional properties and invite tenants to pay you directly through RentTrack after you have created your account.
                         </p>]]>
@@ -421,7 +426,7 @@
             </trans-unit>
             <trans-unit id="landlord.register.text4">
                 <source>landlord.register.text4</source>
-                <target>Tell us a bit about the property you’re renting.</target>
+                <target>Set up one of your properties.</target>
             </trans-unit>
             <trans-unit id="landlord.register.text5">
                 <source>landlord.register.text5</source>
@@ -433,11 +438,11 @@
             </trans-unit>
             <trans-unit id="landlord.register.text6">
                 <source>landlord.register.text6</source>
-                <target>Please provide a bank account for payment.</target>
+                <target>Provide an account for payment of RentTrack services.</target>
             </trans-unit>
             <trans-unit id="landlord.register.text7">
                 <source>landlord.register.text7</source>
-                <target><![CDATA[Still have questions? Learn more about the <a href="http://www.renttrack.com/security" target="_blank">RentTrack's secure payment process</a>]]></target>
+                <target><![CDATA[You're safe with us! Learn more about <a href="http://www.renttrack.com/security" target="_blank">RentTrack's commitment to security</a>.]]></target>
             </trans-unit>
             <trans-unit id="tenant.found.match">
                 <source>tenant.found.match</source>
@@ -1066,11 +1071,11 @@
             </trans-unit>
             <trans-unit id="popup.landlord.title.note_1">
                 <source>popup.landlord.title.note_1</source>
-                <target>We're waiving our monthly minimum of $9.95 during this introductory period!</target>
+                <target>Sign up online today without any paper or faxing!</target>
             </trans-unit>
             <trans-unit id="popup.landlord.title.info">
                 <source>popup.landlord.title.info</source>
-                <target>RentTrack Manager</target>
+                <target>RentTrack Landlord</target>
             </trans-unit>
             <trans-unit id="popup.landlord.unit">
                 <source>popup.landlord.unit</source>
@@ -1118,7 +1123,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.footer.note_1">
                 <source>popup.landlord.footer.note_1</source>
-                <target>*We'll waive your eCheck fee if the tenant enrolls in any one of our monthly </target>
+                <target>*We'll waive your eCheck fee if the tenant enrolls in one of our monthly </target>
             </trans-unit>
             <trans-unit id="popup.landlord.footer.link">
                 <source>popup.landlord.footer.link</source>
@@ -1126,7 +1131,8 @@
             </trans-unit>
             <trans-unit id="popup.landlord.per_screen">
                 <source>popup.landlord.per_screen</source>
-                <target>%landlord_per_screen% per screen</target>
+                <!-- <target>%landlord_per_screen% per screen</target> -->
+                <target>Call Us!</target>
             </trans-unit>
             <!-- Pay box -->
             <trans-unit id="paybox.landlord.title">
@@ -1198,7 +1204,7 @@
             </trans-unit>
             <trans-unit id="benefit.landlord.text">
                 <source>benefit.landlord.text</source>
-                <target>Sign up before December to get our introductory pricing!</target>
+                <target>Sign up online - no paperwork or faxing!</target>
             </trans-unit>
             <trans-unit id="benefit.landlord.el.free">
                 <source>benefit.landlord.el.free</source>
@@ -1605,7 +1611,7 @@
             </trans-unit>
             <trans-unit id="direct_deposit.info">
                 <source>direct_deposit.info</source>
-                <target>Payment information</target>
+                <target>Payment Information</target>
             </trans-unit>
             <trans-unit id="help.popup">
                 <source>help.popup</source>
@@ -1666,6 +1672,38 @@
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
                 <target><![CDATA[Verify your email address. <a href="#" id="landlord-verify-email">Resend Verification Email</a> <span id="landlord-verify-resent" style="display: none">Verification email re-sent.</span>]]></target>
+            </trans-unit>
+            <trans-unit id="property.id">
+                <source>property.id</source>
+                <target>PropertyID</target>
+            </trans-unit>
+            <trans-unit id="account.id">
+                <source>account.id</source>
+                <target>AccountID</target>
+            </trans-unit>
+            <trans-unit id="ar.account.id">
+                <source>ar.account.id</source>
+                <target>ArAccountID</target>
+            </trans-unit>
+            <trans-unit id="rj.pidkiq.error.answers">
+                <source>rj.pidkiq.error.answers-%SUPPORT_EMAIL%</source>
+                <target><![CDATA[
+                    Some of the answers you provided to the questions are incorrect.
+                    We're sorry but we cannot verify your identity at this time.
+                    Please try again in one hour, or contact %SUPPORT_EMAIL%
+                    <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                    target="_blank" class="underline">
+                    to manually verify your identity.</a>
+                        ]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.unit.confirm">
+                <source>remove.unit.confirm</source>
+                <target>Are you sure you want to delete this unit? Any associated contracts will be closed as finished. You will not lose any payment history.</target>
+            </trans-unit>
+            <trans-unit id="remove.property.confirm">
+                <source>remove.property.confirm</source>
+                <target>Are you sure you want to delete this property?</target>
             </trans-unit>
         </body>
     </file>
