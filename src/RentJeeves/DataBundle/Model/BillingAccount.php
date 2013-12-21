@@ -5,6 +5,7 @@ namespace RentJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\MappedSuperclass
@@ -15,6 +16,7 @@ abstract class BillingAccount
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Type("integer")
      */
     protected $id;
 
@@ -48,6 +50,7 @@ abstract class BillingAccount
      *      type="string",
      *      length=255
      * )
+     * @Type("string")
      */
     protected $nickname;
 
@@ -59,6 +62,8 @@ abstract class BillingAccount
      *         "default"="0"
      *     }
      * )
+     * @Type("boolean")
+     * @Serializer\SerializedName("isActive")
      */
     protected $isActive = 0;
 
@@ -135,7 +140,7 @@ abstract class BillingAccount
     /**
      * @return boolean
      */
-    public function isActive()
+    public function getIsActive()
     {
         return $this->isActive;
     }

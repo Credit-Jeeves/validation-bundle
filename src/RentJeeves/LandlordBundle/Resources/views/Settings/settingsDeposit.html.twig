@@ -5,67 +5,74 @@
     {% include 'LandlordBundle:Settings:_menu.html.twig' %}
     <div class="column-middle floatright">
         <div class="pod-middle pod-border pod-padding shadow">
-            <section class="form-content">
-                <h3>{{'settings.deposit'|trans}}</h3>
-                <hr />
-                <p>{{'settings.deposit.description'|trans}}</p>
-                <br />
-                <div data-bind="foreach: billingAccounts">
-                    <p data-bind="text: nickname"></p>
+            <h1>{{'settings.deposit'|trans}}</h1>
+            <div class="row-20"></div>
+            <p>{{'settings.deposit.description'|trans}}</p>
+            <div class="row-20"></div>
+
+
+            <div class="properties-table-block table-wrap">
+                <div class="table-margin zebra-grid">
+                    <table class="properties-table">
+                        <thead>
+                            <tr class="contracts">
+                                <th class="font-helvetica">{{ 'settings.payment_account.name.title' | trans }}</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: billingAccounts">
+                            <tr>
+                                <td class="font-helvetica">
+                                    <span data-bind="text: nickname"></span>
+                                    <em class="default-address" data-bind="visible: isActive()">(default)</em>
+                                </td>
+                                <td class="font-helvetica">
+                                    <a title="{{ 'edit' | trans }}" class="type-ico pie-el edit" data-bind="click: $root.showDialog">
+                                        &nbsp;
+                                    </a>
+
+                                    <a title="{{ 'delete' | trans }}" class="type-ico pie-el delete" data-bind="visible: !isActive(), click: $root.showDeleteDialog">
+                                        &nbsp;
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <hr>
-                <a href="#" class="add-account" data-bind="click: showDialog">{{ 'add.account'|trans }}</a>
-            </section>
-            <div class="col-box clearfix"></div>
+            </div>
+
+            <div class="row-20"></div>
+            <a class="button add-accoun" data-bind="click: showDialog" href="#">
+                <span>{{ 'add.account' | trans }}</span>
+            </a>
+
         </div>
     </div>
+
     <div class="col-box clearfix"></div>
 
 
 
-    <!-- Action Add deposit account -->
-    <div id="billing-account-edit" data-bind="with: newBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
+    <!-- Popups -->
+    <div id="billing-account-edit" data-bind="with: currentBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
         <h1>{{ 'add.account.popup.title.edit'|trans }}</h1>
-        <div class="clearfix col-box">
+        <div class="clearfix col-box attention-container">
+            <div class="attention-box pie-el" style="display: none">
+                <h3>{{ 'pay_popup.errors.title' | trans }}</h3>
+                <ul class="default">
+                </ul>
+            </div>
             <div class="col long-label">
                 <p class="clearfix">
                     <span>{{'add.account.popup.desc'|trans}}</span>
                 </p>
 
-                <div class="form-row clearfix">
-                    {{ form_label(bankAccountType.nickname) }}
-                    <div class="fields-box">
-                        <input type="text" data-bind="value: nickname" id="directDepositType_nickname" name="directDepositType[nickname]" required="required">
-                    </div>
-                </div>
-                <div class="form-row clearfix">
-                    {{ form_label(bankAccountType.AccountNumber) }}
-                    <div class="fields-box">
-                        <input type="text" data-bind="value: accountNumber" id="directDepositType_AccountNumber" name="directDepositType[AccountNumber]" required="required">
-                    </div>
-                </div>
-                <div class="form-row clearfix">
-                    {{ form_label(bankAccountType.RoutingNumber) }}
-                    <div class="fields-box">
-                        <input type="text" data-bind="value: routingNumber" id="directDepositType_RoutingNumber" name="directDepositType[RoutingNumber]" required="required">
-                    </div>
-                </div>
-                <div class="form-row clearfix">
-                    {{ form_label(bankAccountType.ACHDepositType) }}
-                    <div class="fields-box">
-                        <label class="checkbox radio"><input type="radio" id="directDepositType_ACHDepositType_0" data-bind="checked: accountType" name="directDepositType[ACHDepositType]" required="required" value="Checking"><i></i><span>Checking</span></label>
-                        <label class="checkbox radio"><input type="radio" id="directDepositType_ACHDepositType_1" data-bind="checked: accountType" name="directDepositType[ACHDepositType]" required="required" value="Savings"><i></i><span>Savings</span></label>
-                        <label class="checkbox radio"><input type="radio" id="directDepositType_ACHDepositType_2" data-bind="checked: accountType" name="directDepositType[ACHDepositType]" required="required" value="Unassigned"><i></i><span>Business Checking</span></label>
-                    </div>
-                </div>
-                <div class="form-row checkboxes clearfix">
-                    <label class="checkbox">
-                        <input type="checkbox" id="directDepositType_isActive" data-bind="checked: isActive" name="directDepositType[isActive]" required="required" value="1"><i></i>
-                        <i></i>
-                        <span class="big">Active</span>
-                    </label>
-                </div>
+                <form {{ form_enctype(bankAccountType) }} novalidate method="post">
+                    {{ form_widget(bankAccountType) }}
+                    {{ JSFV(bankAccountType) }}
+                </form>
             </div>
+
             <div class="footer-button-box">
                 <button class="button" data-bind="click: $root.save">
                     <span>{{'add.account'|trans}}</span>
@@ -77,8 +84,30 @@
                 </div>
             </div>
         </div>
-
     </div>
+
+    <div id="billing-account-delete" data-bind="with: currentBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
+        <h1>{{ 'settings.payment_account.delete.title'|trans }}</h1>
+        <div class="clearfix col-box  attention-container">
+            <div class="attention-box pie-el">
+                {{ 'settings.payment_account.delete.text'|trans }}
+                <ul class="default">
+                </ul>
+            </div>
+            <div class="row-20"></div>
+            <div class="footer-button-box">
+                <form id="billing-account-delete-form">
+                    <a class="button" href="#" data-bind="click: $root.delete" style="display: inline-block;">
+                        <span>{{ 'settings.payment_account.delete.yes'|trans }}</span>
+                    </a>
+                    <button data-bind="click: $root.closeDeleteDialog" class="button grey buttonFix">
+                        <span>{{ 'settings.payment_account.delete.no'|trans }}</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Popups -->
 
     <script type="text/javascript">
         $(document).ready(function() {

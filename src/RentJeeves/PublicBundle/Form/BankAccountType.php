@@ -18,6 +18,9 @@ class BankAccountType extends AbstractType
             array(
                 'mapped' => true,
                 'label' => 'checkout.account_nickname',
+                'attr' => array(
+                    'data-bind' => 'value: nickname'
+                ),
                 'constraints' => array(
                     new NotBlank(
                         array(
@@ -34,6 +37,9 @@ class BankAccountType extends AbstractType
             array(
                 'mapped' => false,
                 'label' => 'checkout.account_number',
+                'attr' => array(
+                    'data-bind' => 'value: accountNumber'
+                ),
                 'constraints' => array(
                     new NotBlank(
                         array(
@@ -50,6 +56,9 @@ class BankAccountType extends AbstractType
             array(
                 'mapped' => false,
                 'label' => 'checkout.routing_number',
+                'attr' => array(
+                    'data-bind' => 'value: routingNumber'
+                ),
                 'constraints' => array(
                     new NotBlank(
                         array(
@@ -66,6 +75,9 @@ class BankAccountType extends AbstractType
             array(
                 'mapped' => false,
                 'label' => 'checkout.account_type',
+                'attr' => array(
+                    'data-bind' => 'checked: accountType'
+                ),
                 'expanded' => true,
                 'choices' => array(
                     ACHDepositType::CHECKING => 'checkout.account_type.checking',
@@ -80,6 +92,25 @@ class BankAccountType extends AbstractType
                             'message' => 'checkout.error.account_type.empty',
                         )
                     ),
+                ),
+            )
+        );
+        $builder->add(
+            'isActive',
+            'checkbox',
+            array(
+                'label' => 'settings.payment_account.active',
+                'attr' => array(
+                    'data-bind' => 'checked: isActive'
+                ),
+            )
+        );
+        $builder->add(
+            'id',
+            'hidden',
+            array(
+                'attr' => array(
+                    'data-bind' => 'value: id'
                 ),
             )
         );

@@ -11,11 +11,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use CreditJeeves\ApplicantBundle\Form\Type\PasswordType;
 use RentJeeves\LandlordBundle\Form\AccountInfoType;
-use RentJeeves\LandlordBundle\Form\DepositType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
+use \RuntimeException;
 
 class SettingsController extends Controller
 {
@@ -98,30 +98,24 @@ class SettingsController extends Controller
      */
     public function saveBillingAction(Request $request)
     {
-        $content = $request->getContent();
-
-        return new JsonResponse();
-
         $em = $this->getDoctrine()->getManager();
-        $form = new BankAccountType();
-
-        $id = null;
-        $formData = $request->get($form->getName());
-
+        $formType = new BankAccountType();
+        $formData = $this->getRequest()->get($formType->getName());
         /** @var BillingAccount $billingAccount */
+        $billingAccount = null;
         if (!empty($formData['id'])) {
-            $id = $formData['id'];
-            $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($id);
+            $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($formData['id']);
+        }
+        if (!empty($billingAccount) &&
+            $billingAccount->getGroup()->getId() != $this->getUser()->getCurrentGroup()->getId()
+        ) {
+            throw $this->createNotFoundException("Payment account #'{$formData['id']}' not found");
         }
 
-        if (empty($billingAccount)) {
-            throw $this->createNotFoundException("Payment Account with ID '{$id}' not found");
-        }
-
-        $billingAccountType = $this->createForm($form, $billingAccount);
-        $billingAccountType->handleRequest($this->get('request'));
+        $billingAccountType = $this->createForm($formType, $billingAccount);
+        $billingAccountType->handleRequest($request);
         if (!$billingAccountType->isValid()) {
-            return $this->renderErrors($billingAccountType);
+            return $this->renderErrors($billingAccountType, 400);
         }
 
         try {
@@ -134,18 +128,48 @@ class SettingsController extends Controller
                     $billingAccountType->getName() => array(
                         '_globals' => explode('|', $e->getMessage())
                     )
-                )
+                ), 400
             );
         }
 
+        return new JsonResponse($this->get('jms_serializer')->serialize($billing, 'array'));
+    }
+
+    /**
+     * @Route(
+     *     "/billing/delete/{accountId}",
+     *     name="landlord_billing_delete",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function deleteBillingAction($accountId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var BillingAccount $billingAccount */
+        $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($accountId);
+
+        if (!empty($billingAccount) &&
+            $billingAccount->getGroup()->getId() != $this->getUser()->getCurrentGroup()->getId()
+        ) {
+            return new JsonResponse(
+                array('error' => "Payment account #'{$accountId}' not found"),
+                400
+            );
+        }
+
+        if ($billingAccount && !$billingAccount->getIsActive()) {
+            $em->remove($billingAccount);
+            $em->flush();
+
+            return new JsonResponse();
+        }
+
         return new JsonResponse(
-            array(
-                'success' => true,
-                'billingAccount' => $this->get('jms_serializer')->serialize(
-                    $billing,
-                    'array'
-                )
-            )
+            array('error' => 'No available payments to remove'),
+            400
         );
     }
 }
