@@ -50,13 +50,16 @@ class PayCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
 
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-        $this->assertCount(1, $errors);
+        $this->assertCount(2, $errors);
         $this->assertEquals('checkout.error.amount.min', $errors[0]->getText());
+        $this->assertEquals('payment.start_date.error', $errors[1]->getText());
+
 
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '1500'
+                'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
             )
         );
 
