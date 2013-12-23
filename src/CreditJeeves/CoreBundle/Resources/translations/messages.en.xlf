@@ -865,15 +865,13 @@
                 <source>leads.user.exists</source>
                 <target>You are already associated with this dealership. Please contact the dealership at %GROUP_NAME% if you wish to change your salesperson.</target>
             </trans-unit>
-
-
             <trans-unit id="pidkiq.error.timeout">
                 <source>pidkiq.error.timeout-%SUPPORT_EMAIL%</source>
                 <target>We are unable to contact Experian at this time due to connectivity issues. Please email %SUPPORT_EMAIL% to let us know you were unable to authenticate with Experian.</target>
             </trans-unit>
             <trans-unit id="pidkiq.error.attempts">
                 <source>pidkiq.error.attempts</source>
-                <target>You have attempted to authenticate too many times recently. Please try again in an hour.</target>
+                <target>You have tried to verify your identity too many times recently. Please wait for an hour and try again. If you still see this message, please try again in 24 hours.</target>
             </trans-unit>
             <trans-unit id="pidkiq.error.connection">
                 <source>pidkiq.error.connection-%SUPPORT_EMAIL%</source>
@@ -881,7 +879,7 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.questions">
                 <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
-                <target>We could not find your profile at Experian. Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
+               <target><![CDATA[We're sorry but we are unable to generate verification questions from your credit profile. Please <a href="http://renttrack.uservoice.com/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-">follow this guide</a> to send us the information required to verify your identity.]]></target>
             </trans-unit>
             <trans-unit id="pidkiq.error.generic">
                 <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>
