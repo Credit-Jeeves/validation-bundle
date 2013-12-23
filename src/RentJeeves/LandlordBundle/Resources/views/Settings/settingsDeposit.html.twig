@@ -4,7 +4,7 @@
 {% block content %}
     {% include 'LandlordBundle:Settings:_menu.html.twig' %}
     <div class="column-middle floatright">
-        <div class="pod-middle pod-border pod-padding shadow">
+        <div id="payment-accounts-list" class="pod-middle pod-border pod-padding shadow">
             <h1>{{'settings.deposit'|trans}}</h1>
             <div class="row-20"></div>
             <p>{{'settings.deposit.description'|trans}}</p>
@@ -24,7 +24,7 @@
                             <tr>
                                 <td class="font-helvetica">
                                     <span data-bind="text: nickname"></span>
-                                    <em class="default-address" data-bind="visible: isActive()">(default)</em>
+                                    <em class="default-address" data-bind="visible: isActive()">({{ 'settings.payment_account.active'|trans }})</em>
                                 </td>
                                 <td class="font-helvetica">
                                     <a title="{{'edit'|trans}}" class="type-ico pie-el edit" data-bind="click: $root.showEditPopup">

@@ -14,6 +14,8 @@ BillingAccount = (function() {
 
         var data = $.extend(defaults, data);
         ko.mapping.fromJS(data, {}, this);
+
+        this.allowActive = !this.isActive();
     }
 
     return BillingAccount;

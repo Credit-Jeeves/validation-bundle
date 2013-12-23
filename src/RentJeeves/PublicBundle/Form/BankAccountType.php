@@ -115,7 +115,25 @@ class BankAccountType extends AbstractType
             array(
                 'label' => 'settings.payment_account.active',
                 'attr' => array(
-                    'data-bind' => 'checked: isActive'
+                    'data-bind' => 'checked: isActive',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: allowActive'
+                    )
+                ),
+            )
+        );
+
+        $builder->add(
+            'isFakeActive',
+            'checkbox',
+            array(
+                'label' => 'settings.payment_account.current_active',
+                'mapped' => false,
+                'attr' => array(
+                    'data-bind' => 'checked: isActive, disable: !allowActive',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: !allowActive'
+                    )
                 ),
             )
         );

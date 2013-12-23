@@ -29,7 +29,7 @@ BillingAccountViewModel = (function() {
 
                 },
                 success: function(data) {
-                    self.billingAccounts.push(ko.observable(new BillingAccount(data)));
+                    self.refresh();
                     $('#billing-account-edit').hideOverlay();
                     self.closeDialog();
                 }
@@ -54,8 +54,25 @@ BillingAccountViewModel = (function() {
 
                 },
                 success: function(data) {
+                    self.refresh();
                     $('#billing-account-edit').hideOverlay();
                     self.closeDialog();
+                }
+            });
+        }
+
+        this.refresh = function() {
+            $('#payment-accounts-list').showOverlay();
+            var self = this;
+
+            $.ajax({
+                url: Routing.generate('landlord_billing_refresh'),
+                type: 'GET',
+                timeout: 30000,
+                dataType: 'json',
+                success: function(data) {
+                    ko.mapping.fromJS(data, mapping.billingAccount, self.billingAccounts);
+                    $('#payment-accounts-list').hideOverlay();
                 }
             });
         }

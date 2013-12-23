@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use \RuntimeException;
+use Symfony\Component\HttpFoundation\Response;
 
 class SettingsController extends Controller
 {
@@ -72,6 +73,25 @@ class SettingsController extends Controller
             'billingAccounts' => $data,
             'bankAccountType' => $form->createView()
         );
+    }
+
+    /**
+     * @Route(
+     *     "/billing/refresh/",
+     *     name="landlord_billing_refresh",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     */
+    public function refreshAction()
+    {
+        /** @var Group $group */
+        $group = $this->getCurrentGroup();
+        $billingAccounts = $group->getBillingAccounts();
+        $data = $this->get('jms_serializer')->serialize($billingAccounts, 'json');
+
+        return new Response($data, 200, array('content-type' => 'application/json'));
     }
 
     /**

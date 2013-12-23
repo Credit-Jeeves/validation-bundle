@@ -1327,6 +1327,10 @@
                 <source>settings.payment_account.active</source>
                 <target>Active</target>
             </trans-unit>
+            <trans-unit id="settings.payment_account.current_active">
+                <source>settings.payment_account.current_active</source>
+                <target>Is Active</target>
+            </trans-unit>
             <trans-unit id="settings.payment_account.name.title">
                 <source>settings.payment_account.name.title</source>
                 <target>Name</target>
