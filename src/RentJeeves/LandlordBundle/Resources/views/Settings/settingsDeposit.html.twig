@@ -27,11 +27,11 @@
                                     <em class="default-address" data-bind="visible: isActive()">(default)</em>
                                 </td>
                                 <td class="font-helvetica">
-                                    <a title="{{ 'edit' | trans }}" class="type-ico pie-el edit" data-bind="click: $root.showDialog">
+                                    <a title="{{'edit'|trans}}" class="type-ico pie-el edit" data-bind="click: $root.showEditPopup">
                                         &nbsp;
                                     </a>
 
-                                    <a title="{{ 'delete' | trans }}" class="type-ico pie-el delete" data-bind="visible: !isActive(), click: $root.showDeleteDialog">
+                                    <a title="{{'delete'|trans}}" class="type-ico pie-el delete" data-bind="visible: !isActive(), click: $root.showDeletePopup">
                                         &nbsp;
                                     </a>
                                 </td>
@@ -42,7 +42,7 @@
             </div>
 
             <div class="row-20"></div>
-            <a class="button add-accoun" data-bind="click: showDialog" href="#">
+            <a class="button add-accoun" data-bind="click: showCreatePopup" href="#">
                 <span>{{ 'add.account' | trans }}</span>
             </a>
 
@@ -67,7 +67,7 @@
                     <span>{{'add.account.popup.desc'|trans}}</span>
                 </p>
 
-                <form {{ form_enctype(bankAccountType) }} novalidate method="post">
+                <form {{ form_enctype(bankAccountType) }} method="post">
                     {{ form_widget(bankAccountType) }}
                     {{ JSFV(bankAccountType) }}
                 </form>
@@ -75,7 +75,7 @@
 
             <div class="footer-button-box">
                 <button class="button" data-bind="click: $root.save">
-                    <span>{{'add.account'|trans}}</span>
+                    <span>{{'payment.account.button.save'|trans}}</span>
                 </button>
                 <div class="with-seperator-box">
                     <button class="button grey" data-bind="click: $root.closeDialog">

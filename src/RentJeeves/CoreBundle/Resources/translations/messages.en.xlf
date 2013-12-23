@@ -971,13 +971,17 @@
                 <source>add.account</source>
                 <target>Add Account</target>
             </trans-unit>
+            <trans-unit id="payment.account.button.save">
+                <source>payment.account.button.save</source>
+                <target>Save Payment Account</target>
+            </trans-unit>
             <trans-unit id="add.account.popup.desc">
                 <source>add.account.popup.desc</source>
                 <target>This account will be used to pay any RentTrack service fees. You will receive a receipt detailing all fees.</target>
             </trans-unit>
             <trans-unit id="add.account.popup.title.edit">
                 <source>add.account.popup.title.edit</source>
-                <target>Add direct deposit account</target>
+                <target>Payment account</target>
             </trans-unit>
             <!-- Tenant Invite popup -->
             <trans-unit id="popup.invite.tenant.title_1">

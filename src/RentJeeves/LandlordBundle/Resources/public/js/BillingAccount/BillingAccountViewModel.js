@@ -9,10 +9,62 @@ BillingAccountViewModel = (function() {
         ko.mapping.fromJS(data, mapping.billingAccount, this.billingAccounts);
 
         this.currentBillingAccount = ko.observable(new BillingAccount());
+        this.isCreateMode = ko.observable(false);
+
+        this.create = function() {
+            var self = this;
+            var data = $('#directDepositType').serializeArray();
+
+            $.ajax({
+                url: Routing.generate('landlord_billing_create'),
+                type: 'POST',
+                timeout: 30000,
+                dataType: 'json',
+                data: data,
+                error: function(data) {
+                    window.formProcess.removeAllErrors('#billing-account-edit ');
+                    $('#billing-account-edit  .error').removeClass('error');
+                    window.formProcess.applyErrors(JSON.parse(data.responseText));
+                    $('#billing-account-edit').hideOverlay();
+
+                },
+                success: function(data) {
+                    self.billingAccounts.push(ko.observable(new BillingAccount(data)));
+                    $('#billing-account-edit').hideOverlay();
+                    self.closeDialog();
+                }
+            });
+        }
+
+        this.edit = function() {
+            var self = this;
+            var data = $('#directDepositType').serializeArray();
+
+            $.ajax({
+                url: Routing.generate('landlord_billing_edit'),
+                type: 'POST',
+                timeout: 30000,
+                dataType: 'json',
+                data: data,
+                error: function(data) {
+                    window.formProcess.removeAllErrors('#billing-account-edit ');
+                    $('#billing-account-edit  .error').removeClass('error');
+                    window.formProcess.applyErrors(JSON.parse(data.responseText));
+                    $('#billing-account-edit').hideOverlay();
+
+                },
+                success: function(data) {
+                    $('#billing-account-edit').hideOverlay();
+                    self.closeDialog();
+                }
+            });
+        }
 
         this.save = __bind(this.save, this);
         this.delete = __bind(this.delete, this);
-        this.edit = __bind(this.edit, this);
+        this.showEditPopup = __bind(this.showEditPopup, this);
+        this.showCreatePopup = __bind(this.showCreatePopup, this);
+        this.showDeletePopup = __bind(this.showDeletePopup, this);
         this.showDialog = __bind(this.showDialog, this);
         this.closeDialog = __bind(this.closeDialog, this);
         this.showDeleteDialog = __bind(this.showDeleteDialog, this);
@@ -21,12 +73,24 @@ BillingAccountViewModel = (function() {
         jsfv['directDepositType'].addError = window.formProcess.addFormError;
     }
 
-    BillingAccountViewModel.prototype.showDialog = function(account) {
-        if (account instanceof BillingAccount) {
-            this.currentBillingAccount(account);
-        } else {
-            this.currentBillingAccount(new BillingAccount())
-        }
+    BillingAccountViewModel.prototype.showEditPopup = function(account) {
+        this.currentBillingAccount(account);
+        this.isCreateMode(false);
+        this.showDialog();
+    }
+
+    BillingAccountViewModel.prototype.showCreatePopup = function() {
+        this.currentBillingAccount(new BillingAccount());
+        this.isCreateMode(true);
+        this.showDialog();
+    }
+
+    BillingAccountViewModel.prototype.showDeletePopup = function(account) {
+        this.currentBillingAccount(account);
+        this.showDeleteDialog();
+    }
+
+    BillingAccountViewModel.prototype.showDialog = function() {
         $('#billing-account-edit').dialog('open');
     }
 
@@ -34,8 +98,7 @@ BillingAccountViewModel = (function() {
         $('#billing-account-edit').dialog('close');
     }
 
-    BillingAccountViewModel.prototype.showDeleteDialog = function(account) {
-        this.currentBillingAccount(account);
+    BillingAccountViewModel.prototype.showDeleteDialog = function() {
         $('#billing-account-delete').dialog('open');
     }
 
@@ -44,30 +107,13 @@ BillingAccountViewModel = (function() {
     }
 
     BillingAccountViewModel.prototype.save = function() {
-        var self = this;
         $('#billing-account-edit').showOverlay();
 
-        var data = $('#directDepositType').serializeArray();
-
-        $.ajax({
-            url: Routing.generate('landlord_billing_save'),
-            type: 'POST',
-            timeout: 30000, // 30 secs
-            dataType: 'json',
-            data: data,
-            error: function(data) {
-                window.formProcess.removeAllErrors('#billing-account-edit ');
-                $('#billing-account-edit  .error').removeClass('error');
-                window.formProcess.applyErrors(JSON.parse(data.responseText));
-                $('#billing-account-edit').hideOverlay();
-
-            },
-            success: function(data) {
-                self.billingAccounts.push(ko.observable(new BillingAccount(data)));
-                $('#billing-account-edit').hideOverlay();
-                self.closeDialog();
-            }
-        });
+        if (this.isCreateMode()) {
+            this.create();
+        } else {
+            this.edit();
+        }
     }
 
     BillingAccountViewModel.prototype.delete = function(billingAccount) {
@@ -76,7 +122,7 @@ BillingAccountViewModel = (function() {
         $.ajax({
             url: Routing.generate('landlord_billing_delete', {'accountId': billingAccount.id()}),
             type: 'POST',
-            timeout: 30000, // 30 secs
+            timeout: 30000,
             dataType: 'json',
             error: function(data) {
                 window.formProcess.removeAllErrors('#billing-account-delete ');

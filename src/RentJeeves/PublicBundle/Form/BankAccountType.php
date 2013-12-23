@@ -4,6 +4,7 @@ namespace RentJeeves\PublicBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Payum\Heartland\Soap\Base\ACHDepositType;
@@ -24,6 +25,7 @@ class BankAccountType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
+                            'groups' => array('create_billing', 'edit_billing'),
                             'message' => 'checkout.error.account_nickname.empty',
                         )
                     ),
@@ -38,11 +40,15 @@ class BankAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'checkout.account_number',
                 'attr' => array(
-                    'data-bind' => 'value: accountNumber'
+                    'data-bind' => 'value: accountNumber',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: $parent.isCreateMode'
+                    )
                 ),
                 'constraints' => array(
                     new NotBlank(
                         array(
+                            'groups' => array('create_billing'),
                             'message' => 'checkout.error.account_number.empty',
                         )
                     ),
@@ -57,11 +63,15 @@ class BankAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'checkout.routing_number',
                 'attr' => array(
-                    'data-bind' => 'value: routingNumber'
+                    'data-bind' => 'value: routingNumber',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: $parent.isCreateMode'
+                    )
                 ),
                 'constraints' => array(
                     new NotBlank(
                         array(
+                            'groups' => array('create_billing'),
                             'message' => 'checkout.error.routing_number.empty',
                         )
                     ),
@@ -76,7 +86,10 @@ class BankAccountType extends AbstractType
                 'mapped' => false,
                 'label' => 'checkout.account_type',
                 'attr' => array(
-                    'data-bind' => 'checked: accountType'
+                    'data-bind' => 'checked: accountType',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: $parent.isCreateMode'
+                    )
                 ),
                 'expanded' => true,
                 'choices' => array(
@@ -89,6 +102,7 @@ class BankAccountType extends AbstractType
                 'constraints' => array(
                     new NotBlank(
                         array(
+                            'groups' => array('create_billing'),
                             'message' => 'checkout.error.account_type.empty',
                         )
                     ),
@@ -109,6 +123,7 @@ class BankAccountType extends AbstractType
             'id',
             'hidden',
             array(
+                'mapped' => false,
                 'attr' => array(
                     'data-bind' => 'value: id'
                 ),
@@ -122,6 +137,14 @@ class BankAccountType extends AbstractType
             array(
                 'cascade_validation' => true,
                 'data_class' => 'RentJeeves\DataBundle\Entity\BillingAccount',
+                'validation_groups' => function(FormInterface $form){
+                    $data = $form->getData();
+                    if ($data->getId()) {
+                        return array('edit_billing');
+                    } else {
+                        return array('create_billing');
+                    }
+                }
             )
         );
     }

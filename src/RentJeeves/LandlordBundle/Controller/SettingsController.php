@@ -88,24 +88,26 @@ class SettingsController extends Controller
 
     /**
      * @Route(
-     *     "/billing/save/",
-     *     name="landlord_billing_save",
+     *     "/billing/create/",
+     *     name="landlord_billing_create",
      *     defaults={"_format"="json"},
      *     requirements={"_format"="json"},
      *     options={"expose"=true}
      * )
      * @Method({"POST"})
      */
-    public function saveBillingAction(Request $request)
+    public function createBillingAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
         $formType = new BankAccountType();
         $formData = $this->getRequest()->get($formType->getName());
+
+        $em = $this->getDoctrine()->getManager();
         /** @var BillingAccount $billingAccount */
         $billingAccount = null;
         if (!empty($formData['id'])) {
             $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($formData['id']);
         }
+
         if (!empty($billingAccount) &&
             $billingAccount->getGroup()->getId() != $this->getUser()->getCurrentGroup()->getId()
         ) {
@@ -133,6 +135,48 @@ class SettingsController extends Controller
         }
 
         return new JsonResponse($this->get('jms_serializer')->serialize($billing, 'array'));
+    }
+
+    /**
+     * @Route(
+     *     "/billing/edit/",
+     *     name="landlord_billing_edit",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function editBillingAction(Request $request)
+    {
+        $formType = new BankAccountType();
+        $formData = $request->get($formType->getName());
+
+        $em = $this->getDoctrine()->getManager();
+        /** @var BillingAccount $billingAccount */
+        $billingAccount = null;
+        if (!empty($formData['id'])) {
+            $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($formData['id']);
+        }
+
+        if (!$billingAccount) {
+            return new JsonResponse(
+                array('error' => "Payment account #'{$formData['id']}' not found"),
+                400
+            );
+        }
+
+        $billingAccountType = $this->createForm($formType, $billingAccount);
+        $billingAccountType->handleRequest($request);
+        if (!$billingAccountType->isValid()) {
+            return $this->renderErrors($billingAccountType, 400);
+        }
+
+        $billingAccount->setNickname($formData['nickname']);
+        $billingAccount->setIsActive($formData['isActive']);
+        $em->flush();
+
+        return new JsonResponse($this->get('jms_serializer')->serialize($billingAccount, 'array'));
     }
 
     /**

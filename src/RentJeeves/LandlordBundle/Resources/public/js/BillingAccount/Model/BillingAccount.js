@@ -1,5 +1,4 @@
-var BillingAccount,
-    __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+var BillingAccount;
 
 BillingAccount = (function() {
 
@@ -16,6 +15,7 @@ BillingAccount = (function() {
         var data = $.extend(defaults, data);
         ko.mapping.fromJS(data, {}, this);
     }
+
     return BillingAccount;
 
 })();
