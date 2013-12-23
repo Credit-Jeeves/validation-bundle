@@ -95,13 +95,15 @@ function Pay(parent, contractId) {
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 
-    if (contract.paidTo === undefined) {
-        var paymentDate = contract.startAt;
-    } else  {
-        var paymentDate = contract.paidTo;
+    if (contract.paidTo !== undefined) {
+        var paymentDate = new Date(contract.paidTo);
+    } else if(contract.startAt !== undefined) {
+        var paymentDate = new Date(contract.startAt);
+    } else {
+        var paymentDate = new Date();
     }
 
-    this.payment = new Payment(this, new Date(paymentDate));
+    this.payment = new Payment(this, paymentDate);
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
