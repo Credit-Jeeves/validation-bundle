@@ -26,4 +26,10 @@ class AccessToken extends BaseAccessToken
      * )
      */
     protected $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="CreditJeeves\DataBundle\Entity\Client")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    protected $client;
 }

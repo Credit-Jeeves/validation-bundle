@@ -77,13 +77,13 @@ class LandlordCase extends BaseTestCase
         $unitNames[2]->setValue('1C');
 
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
+        $currentUrl = $this->session->getCurrentUrl();
         $submit->click();
 
         $this->session->wait($this->timeout, "$('#main-content-wrapper').is(':visible')");
 
-        $this->assertNotNull($title = $this->page->find('css', '.intro>h2'));
-        $expected = 'Payment processing application for RentTrack';
-        $this->assertEquals($expected, $title->getHtml());
+        $this->assertNotNull($title = $this->page->find('css', 'h1'));
+        $this->assertNotEquals($currentUrl, $this->session->getCurrentUrl());
     }
 
     /**
