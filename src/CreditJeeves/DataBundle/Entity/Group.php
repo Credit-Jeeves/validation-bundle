@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Entity\DepositAccount;
@@ -69,11 +70,15 @@ class Group extends BaseGroup
 
     public function setMerchantName($name)
     {
-        if (!$this->deposit_account) {
-            $this->deposit_account = new DepositAccount();
-            $this->deposit_account->setGroup($this);
+        if (!empty($name)) {
+            if (!$this->deposit_account) {
+                $this->deposit_account = new DepositAccount();
+                $this->deposit_account->setGroup($this);
+            }
+            $this->deposit_account->setMerchantName($name);
+            $this->deposit_account->setStatus(DepositAccountStatus::DA_COMPLETE);
         }
-        $this->deposit_account->setMerchantName($name);
+
         return $this;
     }
 

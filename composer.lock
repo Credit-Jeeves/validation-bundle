@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c8b4103da151ad42ae05930a399a4318",
+    "hash": "2de90b1278ff20943924f1e01b7a30dd",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -1208,6 +1208,47 @@
                 "orm"
             ],
             "time": "2013-05-11 07:51:12"
+        },
+        {
+            "name": "formapro/xmlseclibs",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:formapro/xmlseclib.git",
+                "reference": "5045813f341d24fe57843d5a5fde8e2bc4eaba6d"
+            },
+            "suggest": {
+                "ext/mcrypt": "MCrypt extension",
+                "ext/openssl": "OpenSSL extension"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "XMLSecurityDSig.php",
+                    "XMLSecurityKey.php",
+                    "XMLSecEnc.php"
+                ]
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Rob Richards"
+                }
+            ],
+            "description": "A PHP library for XML Security",
+            "homepage": "http://code.google.com/p/xmlseclibs/",
+            "keywords": [
+                "certificate",
+                "security",
+                "signature",
+                "signing",
+                "x.509",
+                "xml",
+                "xmlsec"
+            ],
+            "time": "2013-11-28 10:05:46"
         },
         {
             "name": "fp/badaboom",
@@ -2462,16 +2503,16 @@
         },
         {
             "name": "jms/serializer",
-            "version": "0.13.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "0.13.0"
+                "reference": "22daa254e54f4b69292bd8679d7a6f3a78dc85d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/0.13.0",
-                "reference": "0.13.0",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/22daa254e54f4b69292bd8679d7a6f3a78dc85d4",
+                "reference": "22daa254e54f4b69292bd8679d7a6f3a78dc85d4",
                 "shasum": ""
             },
             "require": {
@@ -2483,6 +2524,9 @@
             },
             "require-dev": {
                 "doctrine/orm": ">=2.1,<2.4-dev",
+                "doctrine/phpcr-odm": "~1.0.1",
+                "jackalope/jackalope-doctrine-dbal": "1.0.*",
+                "propel/propel1": "~1.7",
                 "symfony/filesystem": "2.*",
                 "symfony/form": ">=2.1,<2.2-dev",
                 "symfony/translation": ">=2.0,<2.2-dev",
@@ -2496,7 +2540,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.13-dev"
+                    "dev-master": "0.14-dev"
                 }
             },
             "autoload": {
@@ -2525,7 +2569,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-07-29 13:39:49"
+            "time": "2013-12-04 16:46:05"
         },
         {
             "name": "jms/serializer-bundle",
@@ -2534,12 +2578,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSSerializerBundle.git",
-                "reference": "0c98dc74502b729ce473d387cf72fd294dae5b0e"
+                "reference": "bb15db3e661168f4310fad48b86915ff1ca33795"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/0c98dc74502b729ce473d387cf72fd294dae5b0e",
-                "reference": "0c98dc74502b729ce473d387cf72fd294dae5b0e",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/bb15db3e661168f4310fad48b86915ff1ca33795",
+                "reference": "bb15db3e661168f4310fad48b86915ff1ca33795",
                 "shasum": ""
             },
             "require": {
@@ -2595,7 +2639,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-09-09 07:25:33"
+            "time": "2013-12-05 14:36:11"
         },
         {
             "name": "knplabs/knp-menu",
@@ -5118,6 +5162,7 @@
         "credit-jeeves/arf-bundle": 20,
         "credit-jeeves/simulation-bundle": 20,
         "credit-jeeves/api-bundle": 20,
+        "formapro/xmlseclibs": 20,
         "friendsofsymfony/rest-bundle": 20,
         "nelmio/api-doc-bundle": 20,
         "friendsofsymfony/oauth-server-bundle": 20,
@@ -5134,6 +5179,7 @@
         "fp/badaboom": 20,
         "fp/badaboom-bundle": 20,
         "jms/serializer-bundle": 20,
+        "jms/serializer": 20,
         "stof/doctrine-extensions-bundle": 20,
         "a2lix/translation-form-bundle": 20,
         "rj/email-bundle": 20,

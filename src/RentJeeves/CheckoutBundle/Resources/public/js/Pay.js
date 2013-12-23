@@ -88,14 +88,20 @@ function Pay(parent, contractId) {
     this.propertyFullAddress.district(contract.property.district);
     this.propertyFullAddress.area(contract.property.area);
     if (typeof contract.unit == 'undefined') {
-      this.propertyFullAddress.unit('');
+        this.propertyFullAddress.unit('');
     } else {
-      this.propertyFullAddress.unit(contract.unit.name);
+        this.propertyFullAddress.unit(contract.unit.name);
     }
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 
-    this.payment = new Payment(this, new Date(contract.startAt));
+    if (contract.paidTo === undefined) {
+        var paymentDate = contract.startAt;
+    } else  {
+        var paymentDate = contract.paidTo;
+    }
+
+    this.payment = new Payment(this, new Date(paymentDate));
     this.payment.contractId = contract.id;
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
@@ -208,12 +214,26 @@ function Pay(parent, contractId) {
     var addNewAddress = function(newAddress) {
         var address = new Address(null);
         ko.mapping.fromJS(newAddress, {}, address);
+        window.addressesViewModels.push(address);
         self.address.clear();
         self.address.addressChoice(newAddress.id);
         self.paymentSource.address.clear();
         self.paymentSource.address.addressChoice(newAddress.id);
         self.newUserAddress.push(address);
     };
+
+    this.currentAddress = ko.computed(function() {
+        if (self.paymentSource) {
+            var result = ko.utils.arrayFirst(window.addressesViewModels, function(address) {
+                return address.id() == self.paymentSource.address.addressChoice();
+            });
+            if (result) {
+                return result.toString();
+            }
+        }
+
+        return '';
+    }, this);
 
     var onSuccessStep = function(data) {
         var currentStep = steps[current];

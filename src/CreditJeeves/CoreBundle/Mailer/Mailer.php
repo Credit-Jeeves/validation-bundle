@@ -14,6 +14,24 @@ use CreditJeeves\CoreBundle\Mailer\BaseMailer;
  */
 class Mailer extends BaseMailer implements MailerInterface
 {
+
+    /**
+     * @param User $user
+     * @param string $sTemplate
+     * @param array $vars
+     *
+     * @return bool
+     */
+    public function sendEmail($user, $sTemplate, array $vars = array())
+    {
+        if (empty($user) || empty($sTemplate)) {
+            return false;
+        }
+        $vars['user'] = $this->prepareUser($user);
+
+        return $this->sendBaseLetter($sTemplate, $vars, $user->getEmail(), $user->getCulture());
+    }
+
     public function sendConfirmationEmailMessage(UserInterface $user)
     {
         $url = $this->container->get('router')->generate(
@@ -98,5 +116,28 @@ class Mailer extends BaseMailer implements MailerInterface
                 'number' => $order->getAuthorizes()->last()->getTransactionId(),
             )
         );
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function prepareUser($user)
+    {
+        $aResult = array();
+        $aResult['first_name'] = $user->getFirstName();
+        $aResult['middle_initial'] = $user->getMiddleInitial();
+        $aResult['last_name'] = $user->getLastName();
+        $aResult['full_name'] = $user->getFullName();
+        $aResult['email'] = $user->getEmail();
+        $score = $user->getScores()->last();
+        if (!empty($score)) {
+            $aResult['score'] = $score->getScore();
+        }
+        $aResult['culture'] = $user->getCulture();
+        $aResult['ssn'] = $user->displaySsn();
+        $aResult['code'] = $user->getInviteCode();
+
+        return $aResult;
     }
 }

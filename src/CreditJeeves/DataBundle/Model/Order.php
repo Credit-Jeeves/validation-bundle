@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -61,8 +62,10 @@ abstract class Order
 
     /**
      * @ORM\Column(
-     *     type="integer",
-     *     nullable=true
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
      * )
      */
     protected $amount;
@@ -132,6 +135,12 @@ abstract class Order
      *          )
      *      }
      * )
+     *
+     * @Serializer\SerializedName("Details")
+     * @Serializer\XmlList(inline = false, entry="Detail")
+     * @Serializer\XmlKeyValuePairs
+     * @Serializer\Groups({"xmlReport"})
+     *
      * @var ArrayCollection
      */
     protected $operations;

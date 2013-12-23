@@ -2,96 +2,136 @@
 
 namespace RentJeeves\PublicBundle\Controller;
 
+use RentJeeves\CheckoutBundle\Controller\Traits\PaymentProcess;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\DataBundle\Entity\DepositAccount;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use RentJeeves\LandlordBundle\Registration\MerchantAccountModel;
+use RentJeeves\LandlordBundle\Registration\SAMLEnvelope;
+use RentJeeves\PublicBundle\Form\InviteLandlordType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\LandlordAddressType;
-use RentJeeves\DataBundle\Entity\Landlord;
-use CreditJeeves\DataBundle\Entity\Group;
-use CreditJeeves\DataBundle\Entity\Holding;
-use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\PublicBundle\Form\LandlordType;
-use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use CreditJeeves\DataBundle\Enum\Grouptype;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface as UrlGenerator;
+use Exception;
 
 class LandlordController extends Controller
 {
+    use PaymentProcess;
+
     /**
      * @Route("/landlord/register/", name="landlord_register")
      * @Template()
      *
      * @return array
      */
-    public function registerAction()
+    public function registerAction(Request $request)
     {
         $form = $this->createForm(
             new LandlordAddressType()
         );
 
-        $request = $this->get('request');
-        $propertyName = $request->get('searsh-field');
+        $form->handleRequest($request);
+        if ($form->isValid()) {
 
-        if ($request->getMethod() == 'POST') {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $landlord = $form->getData()['landlord'];
-                $address = $form->getData()['address'];
-                $aForm = $request->request->get($form->getName());
+            $formData = $request->request->get($form->getName());
+            $landlord = $this->get('landlord.registration')->register($form, $formData);
+            $this->get('project.mailer')->sendRjCheckEmail($landlord);
 
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['landlord']['password']['Password'], $landlord->getSalt());
+            // Login a user to be able to show his dashboard when he comes back from HPS
+            $this->get('common.login.manager')->login($landlord);
 
-                $landlord->setPassword($password);
-                $address->setUser($landlord);
-                $landlord->setCulture($this->container->parameters['kernel.default_locale']);
+            try {
+                $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
+                $this->savePaymentAccount($form->get('deposit'), $landlord, $landlord->getCurrentGroup());
 
-                $holding = new Holding();
-                $holding->setName($landlord->getUsername());
-                $landlord->setHolding($holding);
-                $group = new Group();
-                $group->setType(GroupType::RENT);
-                $group->setName($landlord->getUsername());
-                $group->setHolding($holding);
-                $holding->addGroup($group);
-                $landlord->setAgentGroups($group);
+                $merchantAccount = new MerchantAccountModel(
+                    $formData['deposit']['RoutingNumber'],
+                    $formData['deposit']['AccountNumber'],
+                    $formData['deposit']['ACHDepositType']
+                );
+                $saml = new SAMLEnvelope(
+                    $landlord,
+                    $merchantAccount,
+                    $this->generateUrl('landlord_hps_success', array(), UrlGenerator::ABSOLUTE_URL),
+                    $this->generateUrl('landlord_hps_error', array(), UrlGenerator::ABSOLUTE_URL)
+                );
+                $signedSaml = $this->get('signature.manager')->sign($saml->getAssertionResponse());
+
+                // Init DepositAccount before redirecting to HPS
+                $depositAccount = new DepositAccount($landlord->getCurrentGroup());
                 $em = $this->getDoctrine()->getManager();
-
-                $property = $em->getRepository('RjDataBundle:Property')->find($aForm['property']);
-                if ($property) {
-                    $units = (isset($aForm['units']))? $aForm['units'] : array();
-                    $property->addPropertyGroup($group);
-                    $group->addGroupProperty($property);
-                    if (!empty($units)) {
-                        foreach ($units as $name) {
-                            if (empty($name)) {
-                                continue;
-                            }
-                            $unit = new Unit();
-                            $unit->setProperty($property);
-                            $unit->setHolding($holding);
-                            $unit->setGroup($group);
-                            $unit->setName($name);
-                            $em->persist($unit);
-                        }
-                    }
-                }
-
-                $em->persist($address);
-                $em->persist($holding);
-                $em->persist($group);
-                $em->persist($landlord);
+                $em->persist($depositAccount);
                 $em->flush();
 
-                $this->get('project.mailer')->sendRjCheckEmail($landlord);
-                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$landlord->getId())));
+                return $this->render(
+                    'RjPublicBundle:Landlord:redirectHeartland.html.twig',
+                    array(
+                        'saml' => $saml->encodeAssertionResponse($signedSaml),
+                        'url' => $saml::ONLINE_BOARDING
+                    )
+                );
+            } catch (Exception $e) {
+                return $this->get('common.login.manager')->loginAndRedirect(
+                    $landlord,
+                    $this->generateUrl('landlord_tenants')
+                );
             }
         }
 
         return array(
             'form'          => $form->createView(),
-            'propertyName'  => $propertyName,
+            'propertyName'  => $request->get('searsh-field'),
         );
+    }
+
+    /**
+     * @Route("/landlord/app/success/", name="landlord_hps_success")
+     *
+     * @return RedirectResponse
+     */
+    public function successAction(Request $request)
+    {
+        $currentUser = $this->container->get('security.context')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
+            array(
+                'group' => $currentUser->getCurrentGroup()->getId()
+            )
+        );
+
+        $depositAccount->setStatus(DepositAccountStatus::HPS_SUCCESS);
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('landlord_tenants'));
+    }
+
+    /**
+     * @Route("/landlord/app/error/", name="landlord_hps_error")
+     *
+     * @return RedirectResponse
+     */
+    public function errorAction(Request $request)
+    {
+        $currentUser = $this->container->get('security.context')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneBy(
+            array(
+                'group' => $currentUser->getActiveGroup()->getId()
+            )
+        );
+
+        $depositAccount->setStatus(DepositAccountStatus::HPS_ERROR);
+        $depositAccount->setMessage($request->query->get('msg', ''));
+        $em->flush();
+
+        return $this->redirect($this->generateUrl('landlord_tenants'));
     }
 
     /**
@@ -113,63 +153,54 @@ class LandlordController extends Controller
         }
 
         $form = $this->createForm(
-            new LandlordType(),
-            $landlord
+            new InviteLandlordType(),
+            array('landlord' => $landlord)
         );
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $landlord = $form->getData();
-                $aForm = $request->request->get($form->getName());
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $landlord = $form->getData()['landlord'];
+            $formData = $request->request->get($form->getName());
 
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['password']['Password'], $landlord->getSalt());
+            $password = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($formData['landlord']['password']['Password'], $landlord->getSalt());
 
-                $landlord->setPassword($password);
-                $landlord->setCulture($this->container->parameters['kernel.default_locale']);
-                $em = $this->getDoctrine()->getManager();
-                $group = $landlord->getCurrentGroup();
-                $contracts = $group->getContracts();
-                if (!empty($contracts)) {
-                    foreach ($contracts as $contract) {
-                        $tenant = $contract->getTenant();
-                        $this->get('project.mailer')->sendRjLandlordComeFromInvite(
-                            $tenant,
-                            $landlord,
-                            $contract
-                        );
-                    }
+            $landlord->setPassword($password);
+            $landlord->setCulture($this->container->parameters['kernel.default_locale']);
+            $em = $this->getDoctrine()->getManager();
+            $group = $landlord->getCurrentGroup();
+            $contracts = $group->getContracts();
+            if (!empty($contracts)) {
+                foreach ($contracts as $contract) {
+                    $tenant = $contract->getTenant();
+                    $this->get('project.mailer')->sendRjLandlordComeFromInvite(
+                        $tenant,
+                        $landlord,
+                        $contract
+                    );
                 }
-
-                $landlord->setInviteCode(null);
-                $em->persist($landlord);
-                $em->flush();
-                return $this->login($landlord);
             }
+
+            $landlord->setInviteCode(null);
+            $em->persist($landlord);
+            $em->flush();
+
+            try {
+                $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
+                $this->savePaymentAccount($form->get('deposit'), $landlord, $group);
+            } catch (Exception $e) {
+                // do nothing, just prevent user from seeing broken app
+            }
+
+            return $this->get('common.login.manager')->loginAndRedirect(
+                $landlord,
+                $this->generateUrl('landlord_tenants')
+            );
         }
 
         return array(
-            'code'      => $code,
-            'form'      => $form->createView(),
+            'code' => $code,
+            'form' => $form->createView(),
         );
-    }
-
-    private function login($landlord)
-    {
-        $response = new RedirectResponse($this->generateUrl('landlord_tenants'));
-        $this->container->get('fos_user.security.login_manager')->loginUser(
-            $this->container->getParameter('fos_user.firewall_name'),
-            $landlord,
-            $response
-        );
-
-        $this->container->get('user.service.login_success_handler')
-                ->onAuthenticationSuccess(
-                    $this->container->get('request'),
-                    $this->container->get('security.context')->getToken()
-                );
-
-        return $response;
     }
 }

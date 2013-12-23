@@ -121,4 +121,43 @@ class PropertyRepository extends EntityRepository
         }
         return false;
     }
+
+    public function findOneWithUnitAndAlphaNumericSort($propertyId)
+    {
+        $query = $this->createQueryBuilder('p')
+                      ->select('LENGTH(u.name) as co,p,u');
+        $query->leftJoin('p.units', 'u');
+        $query->where('p.id = :propertyId');
+        $query->setParameter('propertyId', $propertyId);
+        $query->addOrderBy('co', 'ASC');
+        $query->addOrderBy('u.name', 'ASC');
+        $query = $query->getQuery();
+        $result = $query->getResult();
+
+        if (isset($result[0][0])) {
+            return $result[0][0];
+        }
+        return null;
+    }
+
+    public function findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb)
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('LENGTH(u.name) as co,p,u');
+        $query->leftJoin('p.units', 'u');
+        $query->where('p.jb = :jb');
+        $query->andWhere('p.kb = :kb');
+        $query->setParameter('jb', $jb);
+        $query->setParameter('kb', $kb);
+        $query->addOrderBy('co', 'ASC');
+        $query->addOrderBy('u.name', 'ASC');
+        $query = $query->getQuery();
+        $result = $query->getResult();
+
+        if (isset($result[0][0])) {
+            return $result[0][0];
+        }
+
+        return null;
+    }
 }

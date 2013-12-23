@@ -20,6 +20,9 @@
     <![endif]-->
     {% block stylesheets %}
     {% endblock %}
+    {% block google_analytics %}
+      {% include 'RjCoreBundle::google_analytics.html.twig' %}
+    {% endblock %}
     {% javascripts '@RjPublicBundle/Resources/public/js/modernizr-2.6.2.min.js' %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

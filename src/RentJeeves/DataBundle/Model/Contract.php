@@ -120,7 +120,9 @@ abstract class Contract
 
     /**
      * @ORM\Column(
-     *     type="integer",
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
      *     nullable=true
      * )
      * @Assert\NotBlank(

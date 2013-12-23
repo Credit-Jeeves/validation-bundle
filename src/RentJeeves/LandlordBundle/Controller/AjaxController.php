@@ -255,15 +255,27 @@ class AjaxController extends Controller
     }
 
     //@TODO find best way for this implementation
-    private function checkContract($entity)
+    private function checkContractBeforeRemove($unit)
     {
+        if ($unit->getContracts()->count() > 0) {
+            $contracts = $unit->getContracts();
+            $em = $this->getDoctrine()->getManager();
+            /**
+             * @var Contract $contract
+             */
+            foreach ($contracts as $contract) {
+                $contract->setStatus(ContractStatus::FINISHED);
+                $em->persist($contract);
+            }
+            $em->flush();
+        }
 
-        if ($entity->getContracts()->count() <= 0 && $this->isEnableSoftDeleteable()) {
+        if ($unit->getContracts()->count() <= 0 && $this->isEnableSoftDeleteable()) {
             $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
             return;
         }
 
-        if ($entity->getContracts()->count() > 0 && !$this->isEnableSoftDeleteable()) {
+        if ($unit->getContracts()->count() > 0 && !$this->isEnableSoftDeleteable()) {
             $this->get('doctrine')->getManager()->getFilters()->enable('softdeleteable');
             return;
         }
@@ -323,7 +335,7 @@ class AjaxController extends Controller
 
         //Remove unit each does not exist anymore
         foreach ($records as $entity) {
-            $this->checkContract($entity);
+            $this->checkContractBeforeRemove($entity);
             $em->remove($entity);
         }
 
@@ -477,6 +489,7 @@ class AjaxController extends Controller
                 $searchText
             );
             foreach ($contracts as $contract) {
+                $contract->setStatusShowLateForce(true);
                 $item = $contract->getItem();
                 $items[] = $item;
             }
@@ -512,12 +525,13 @@ class AjaxController extends Controller
         if (isset($details['action'])) {
             $action = $details['action'];
         }
-        if (empty($details['amount'])) {
+        if (empty($details['amount']) || $details['amount'] <= 0) {
             $errors[] = $translator->trans('contract.error.rent');
         }
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
+
         $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
         $tenant->setFirstName($details['first_name']);
@@ -549,14 +563,18 @@ class AjaxController extends Controller
                 $contract
             );
             $em->remove($contract);
-        } else {
-            $em->persist($contract);
+            $em->flush();
+            return new JsonResponse($response);
         }
 
-        $em->flush();
-        if (!empty($errors) & 'edit' == $action) {
+        if (!empty($errors)) {
             $response['errors'] = $errors;
+            return new JsonResponse($response);
         }
+
+        $em->persist($contract);
+        $em->flush();
+
         return new JsonResponse($response);
     }
 
@@ -834,6 +852,24 @@ class AjaxController extends Controller
         $session->set('landlord_reminder', json_encode($landlordReminder));
 
         return new JsonResponse(array());
+    }
+
+    /**
+     * @Route(
+     *     "/verify/",
+     *     name="landlord_resend_verification",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function sendVerificationAction()
+    {
+        $landlord = $this->getUser();
+        $this->get('project.mailer')->sendRjCheckEmail($landlord);
+
+        return new JsonResponse();
     }
 
 

@@ -31,7 +31,7 @@ class PayCase extends BaseTestCase
         $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
         $closeButton->click();
 
-        $this->page->pressButton('contract-pay-2');
+        $this->page->pressButton('contract-pay-3');
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 
@@ -146,7 +146,7 @@ class PayCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(1, $errors);
-        $this->assertEquals('pidkiq.error.answers-help@renttrack.com', $errors[0]->getText());
+        $this->assertEquals('rj.pidkiq.error.answers-help@renttrack.com', $errors[0]->getText());
 
 
         $this->fillForm(

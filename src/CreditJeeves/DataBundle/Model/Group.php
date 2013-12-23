@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\BillingAccount;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -324,6 +325,25 @@ abstract class Group
      */
     protected $paymentAccounts;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\GroupPhone",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     */
+    protected $groupPhones;
+
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="\RentJeeves\DataBundle\Entity\BillingAccount",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $billingAccount;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -337,6 +357,7 @@ abstract class Group
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
         $this->paymentAccounts = new ArrayCollection();
+        $this->groupPhones = new ArrayCollection();
     }
 
     /**
@@ -1054,5 +1075,53 @@ abstract class Group
     public function getDealer()
     {
         return $this->dealers;
+    }
+
+    /**
+     * @param BillingAccount $billingAccount
+     */
+    public function setBillingAccount(BillingAccount $billingAccount)
+    {
+        $this->billingAccount = $billingAccount;
+    }
+
+    /**
+     * @return BillingAccount
+     */
+    public function getBillingAccount()
+    {
+        return $this->billingAccount;
+    }
+
+    /**
+     * Add phone number for the group
+     *
+     * @param \RentJeeves\DataBundle\Entity\GroupPhone $phone
+     * @return Group
+     */
+    public function addGroupPhone(\RentJeeves\DataBundle\Entity\GroupPhone $phone)
+    {
+        $this->groupPhones[] = $phone;
+        return $this;
+    }
+
+    /**
+     * Remove Group phone
+     *
+     * @param \RentJeeves\DataBundle\Entity\GroupPhone $phone
+     */
+    public function removeGroupPhone(\RentJeeves\DataBundle\Entity\GroupPhone $phone)
+    {
+        $this->groupPhones->removeElement($phone);
+    }
+
+    /**
+     * Get group phones
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroupPhones()
+    {
+        return $this->groupPhones;
     }
 }

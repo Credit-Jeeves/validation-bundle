@@ -149,6 +149,10 @@
         {
             "type": "git",
             "url": "git@github.com:Credit-Jeeves/ApiBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:formapro/xmlseclib.git"
         }
     ],
     "require": {
@@ -171,6 +175,7 @@
         "credit-jeeves/arf-bundle": "dev-master",
         "credit-jeeves/simulation-bundle": "dev-master",
         "credit-jeeves/api-bundle": "dev-master",
+        "formapro/xmlseclibs": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
         "friendsofsymfony/oauth-server-bundle": "dev-master",
@@ -202,7 +207,8 @@
         "fp/badaboom": "dev-ton as dev-not-approved",
         "fp/universal-error-catcher": "1.0.*",
         "fp/badaboom-bundle": "dev-ton",
-        "jms/serializer-bundle": "0.13.*@dev",
+        "jms/serializer-bundle": "dev-master",
+        "jms/serializer": "dev-master",
         "stof/doctrine-extensions-bundle": "dev-master",
         "a2lix/translation-form-bundle": "dev-master",
         "rj/email-bundle": "dev-master",
