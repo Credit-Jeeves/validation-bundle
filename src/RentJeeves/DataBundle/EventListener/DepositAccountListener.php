@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\EventListener;
 
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
@@ -19,6 +20,13 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
  *         "method"="prePersist"
  *     }
  * )
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="preUpdate",
+ *         "method"="preUpdate"
+ *     }
+ * )
  */
 class DepositAccountListener
 {
@@ -32,13 +40,30 @@ class DepositAccountListener
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
-        $em = $eventArgs->getEntityManager();
         /** @var $entity DepositAccount */
         $entity = $eventArgs->getEntity();
         if (!$entity instanceof DepositAccount) {
             return;
         }
 
+        $this->sendEmail($entity);
+    }
+
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        /** @var $entity DepositAccount */
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof DepositAccount) {
+            return;
+        }
+
+        if ($eventArgs->hasChangedField('merchantName') && !$eventArgs->getOldValue('merchantName')) {
+            $this->sendEmail($entity);
+        }
+    }
+
+    private function sendEmail($entity)
+    {
         if (!$entity->isComplete()) {
             return;
         }
