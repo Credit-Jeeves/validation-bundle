@@ -57,21 +57,20 @@ class SettingsController extends Controller
 
 
     /**
-     * @Route("/settings/deposit", name="settings_deposit")
+     * @Route("/settings/payment_accounts", name="settings_payment_accounts")
      * @Template()
      */
-    public function settingsDepositAction()
+    public function settingsPaymentAccountsAction()
     {
         /** @var Group $group */
         $group = $this->getCurrentGroup();
         $billingAccounts = $group->getBillingAccounts();
         $form = $this->createForm(new BankAccountType());
 
-        $data = $this->get('jms_serializer')->serialize($billingAccounts, 'json');
-
         return array(
-            'billingAccounts' => $data,
-            'bankAccountType' => $form->createView()
+            'billingAccounts' => $this->get('jms_serializer')->serialize($billingAccounts, 'json'),
+            'bankAccountType' => $form->createView(),
+            'nGroups' => $this->getGroups()->count(),
         );
     }
 
@@ -118,23 +117,7 @@ class SettingsController extends Controller
      */
     public function createBillingAction(Request $request)
     {
-        $formType = new BankAccountType();
-        $formData = $this->getRequest()->get($formType->getName());
-
-        $em = $this->getDoctrine()->getManager();
-        /** @var BillingAccount $billingAccount */
-        $billingAccount = null;
-        if (!empty($formData['id'])) {
-            $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($formData['id']);
-        }
-
-        if (!empty($billingAccount) &&
-            $billingAccount->getGroup()->getId() != $this->getUser()->getCurrentGroup()->getId()
-        ) {
-            throw $this->createNotFoundException("Payment account #'{$formData['id']}' not found");
-        }
-
-        $billingAccountType = $this->createForm($formType, $billingAccount);
+        $billingAccountType = $this->createForm(new BankAccountType());
         $billingAccountType->handleRequest($request);
         if (!$billingAccountType->isValid()) {
             return $this->renderErrors($billingAccountType, 400);
@@ -143,7 +126,7 @@ class SettingsController extends Controller
         try {
             $landlord = $this->getUser();
             $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
-            $billing = $this->savePaymentAccount($billingAccountType, $landlord, $landlord->getCurrentGroup());
+            $billing = $this->savePaymentAccount($billingAccountType, $landlord, $this->getCurrentGroup());
         } catch (\Exception $e) {
             return new JsonResponse(
                 array(
@@ -181,7 +164,7 @@ class SettingsController extends Controller
 
         if (!$billingAccount) {
             return new JsonResponse(
-                array('error' => "Payment account #'{$formData['id']}' not found"),
+                array('error' => "Payment account #{$formData['id']} not found"),
                 400
             );
         }
@@ -216,10 +199,10 @@ class SettingsController extends Controller
         $billingAccount = $em->getRepository('RjDataBundle:BillingAccount')->find($accountId);
 
         if (!empty($billingAccount) &&
-            $billingAccount->getGroup()->getId() != $this->getUser()->getCurrentGroup()->getId()
+            $billingAccount->getGroup()->getId() != $this->getCurrentGroup()->getId()
         ) {
             return new JsonResponse(
-                array('error' => "Payment account #'{$accountId}' not found"),
+                array('error' => "Payment account #{$accountId} not found"),
                 400
             );
         }

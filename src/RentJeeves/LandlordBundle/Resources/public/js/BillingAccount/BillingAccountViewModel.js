@@ -10,6 +10,7 @@ BillingAccountViewModel = (function() {
 
         this.currentBillingAccount = ko.observable(new BillingAccount());
         this.isCreateMode = ko.observable(false);
+        this.isLoading = ko.observable(false);
 
         this.create = function() {
             var self = this;
@@ -18,7 +19,7 @@ BillingAccountViewModel = (function() {
             $.ajax({
                 url: Routing.generate('landlord_billing_create'),
                 type: 'POST',
-                timeout: 30000,
+                timeout: 60000,
                 dataType: 'json',
                 data: data,
                 error: function(data) {
@@ -62,7 +63,8 @@ BillingAccountViewModel = (function() {
         }
 
         this.refresh = function() {
-            $('#payment-accounts-list').showOverlay();
+//            $('#payment-accounts-list').showOverlay();
+            this.isLoading(true);
             var self = this;
 
             $.ajax({
@@ -72,7 +74,8 @@ BillingAccountViewModel = (function() {
                 dataType: 'json',
                 success: function(data) {
                     ko.mapping.fromJS(data, mapping.billingAccount, self.billingAccounts);
-                    $('#payment-accounts-list').hideOverlay();
+//                    $('#payment-accounts-list').hideOverlay();
+                    self.isLoading(false);
                 }
             });
         }

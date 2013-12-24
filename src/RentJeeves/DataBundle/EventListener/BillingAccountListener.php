@@ -36,14 +36,20 @@ class BillingAccountListener
             return;
         }
 
-        if (!$entity->getIsActive()) {
-            return;
-        }
-
         $em = $eventArgs->getEntityManager();
         $billingAccounts = $em->getRepository('RjDataBundle:BillingAccount')->findBy(
             array('group' => $entity->getGroup(), 'isActive' => true)
         );
+
+        // first payment account has to be active
+        if (count($billingAccounts) == 0) {
+            $entity->setIsActive(true);
+            return;
+        }
+
+        if (!$entity->getIsActive()) {
+            return;
+        }
 
         foreach ($billingAccounts as $account) {
             $account->setIsActive(false);

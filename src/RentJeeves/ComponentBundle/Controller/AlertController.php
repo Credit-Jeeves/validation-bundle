@@ -106,7 +106,7 @@ class AlertController extends Controller
             if (empty($billing)) {
                 $alerts[] = $translator->trans(
                     'landlord.payment_account.set_up_message',
-                    array('%payment_account_url%' => $this->generateUrl('settings_deposit'))
+                    array('%payment_account_url%' => $this->generateUrl('settings_payment_accounts'))
                 );
             }
 
