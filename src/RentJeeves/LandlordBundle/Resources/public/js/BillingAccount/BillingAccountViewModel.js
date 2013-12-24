@@ -63,7 +63,6 @@ BillingAccountViewModel = (function() {
         }
 
         this.refresh = function() {
-//            $('#payment-accounts-list').showOverlay();
             this.isLoading(true);
             var self = this;
 
@@ -74,7 +73,6 @@ BillingAccountViewModel = (function() {
                 dataType: 'json',
                 success: function(data) {
                     ko.mapping.fromJS(data, mapping.billingAccount, self.billingAccounts);
-//                    $('#payment-accounts-list').hideOverlay();
                     self.isLoading(false);
                 }
             });
@@ -89,8 +87,6 @@ BillingAccountViewModel = (function() {
         this.closeDialog = __bind(this.closeDialog, this);
         this.showDeleteDialog = __bind(this.showDeleteDialog, this);
         this.closeDeleteDialog = __bind(this.closeDeleteDialog, this);
-
-        jsfv['directDepositType'].addError = window.formProcess.addFormError;
     }
 
     BillingAccountViewModel.prototype.showEditPopup = function(account) {
@@ -160,10 +156,6 @@ BillingAccountViewModel = (function() {
                 self.closeDeleteDialog();
             }
         });
-    }
-
-    BillingAccountViewModel.prototype.edit = function() {
-
     }
 
     return BillingAccountViewModel;

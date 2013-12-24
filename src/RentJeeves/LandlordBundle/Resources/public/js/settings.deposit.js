@@ -13,4 +13,6 @@ $(document).ready(function(){
         modal: true,
         width:'520px'
     });
+
+    jsfv['directDepositType'].addError = window.formProcess.addFormError;
 });
