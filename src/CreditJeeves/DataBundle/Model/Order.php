@@ -62,8 +62,10 @@ abstract class Order
 
     /**
      * @ORM\Column(
-     *     type="integer",
-     *     nullable=true
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
      * )
      */
     protected $amount;
