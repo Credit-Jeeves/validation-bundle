@@ -111,7 +111,7 @@ class Group extends BaseGroup
     public function getActiveBillingAccount()
     {
         foreach ($this->getBillingAccounts() as $account) {
-            if ($account->isActive()) {
+            if ($account->getIsActive()) {
                 return $account;
             }
         }
