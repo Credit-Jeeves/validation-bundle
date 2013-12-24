@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2de90b1278ff20943924f1e01b7a30dd",
+    "hash": "0aeb0d4b739639e05cce7803573d08a8",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -2056,7 +2056,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "9919d779d87acff17b965909a0849b257d5bd238"
+                "reference": "05e7bc95f34a180b35f5bbf419bcf761a4a895cb"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -2089,7 +2089,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2013-04-16 15:36:30"
+            "time": "2013-12-24 09:27:28"
         },
         {
             "name": "incenteev/composer-parameter-handler",
