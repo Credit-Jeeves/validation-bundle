@@ -48,6 +48,7 @@ abstract class BaseTestCase extends Base
     public function setUp()
     {
         $this->session = $this->getMink()->getSession();
+        $this->session->visit($this->getUrl() . 'page_not_found');
         $this->page = $this->session->getPage();
         $this->initTestCoverage();
     }
@@ -93,8 +94,6 @@ abstract class BaseTestCase extends Base
      */
     protected function login($user, $password)
     {
-        $this->session->visit($this->getUrl() . 'login');
-        $this->setUp(); // Set cookie for selenium test coverage!!!
         $this->session->visit($this->getUrl() . 'login');
         $this->assertNotNull($mainEl = $this->page->find('css', '#login_form'), 'Login form does not found');
         $this->assertNotNull($usernameEl = $this->page->find('css', '#username'));
