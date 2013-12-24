@@ -654,6 +654,11 @@ abstract class User extends BaseUser
 
     public function getRoles()
     {
+
+        if (!empty($this->roles)) {
+            return $this->roles;
+        }
+
         switch ($this->getType()) {
             case UserType::APPLICANT:
                 return array('ROLE_USER');
