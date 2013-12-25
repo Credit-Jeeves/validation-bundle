@@ -1787,7 +1787,6 @@ label.checkbox {
   line-height:18px;
 }
 
-/*input[type="checkbox"],*/
 input[type="radio"] {
   display:none;
 }
@@ -1803,10 +1802,6 @@ label.checkbox input[type="radio"] + i {
   overflow:hidden;
   text-indent:-999px;
 }
-
-/*label.checkbox input[type="checkbox"] + i {
-  background:url(/bundles/rjpublic/images/bg-chechbox.png) 0 0 no-repeat;
-}*/
 
 label.checkbox input[type="radio"] + i {
   background:url(/bundles/rjpublic/images/bg-radio.png) 0 0 no-repeat;
