@@ -3,12 +3,6 @@
 {% form_theme form ':Form:form_errors.html.twig' %}
 {% form_theme form 'RjCoreBundle::form.html.twig' %}
 
-{% block checkbox_widget %}
-    {% spaceless %}
-        <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
-    {% endspaceless %}
-{% endblock checkbox_widget %}
-
 {% block content %}
 <section class="form-content">
 {{ include('RjComponentBundle:Invite:_popupLandlord.html.twig') }}
@@ -142,7 +136,7 @@
             <img src="/bundles/rjpublic/images/ajax-loader.gif" class="loader">
         </div>
     </div>
-    <div style="display: none;">
+    <div style="display:none;">
         {{ form_rest(form) }}
     </div>
 </form>
