@@ -1619,7 +1619,7 @@
             </trans-unit>
             <trans-unit id="order.type.cash">
                 <source>order.type.cash</source>
-                <target>Cash</target>
+                <target>External</target>
             </trans-unit>
             <trans-unit id="base.order.report">
                 <source>base.order.report</source>

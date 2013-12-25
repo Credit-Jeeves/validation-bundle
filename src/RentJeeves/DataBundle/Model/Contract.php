@@ -137,10 +137,11 @@ abstract class Contract
     /**
      * @ORM\Column(
      *     name="paid_to",
-     *     type="datetime",
+     *     type="date",
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
+     * @Serializer\Accessor(getter="getPaidToFormated")
      */
     protected $paidTo;
 
@@ -158,7 +159,7 @@ abstract class Contract
     /**
      * @ORM\Column(
      *     name="start_at",
-     *     type="datetime",
+     *     type="date",
      *     nullable=true
      * )
      * @Assert\NotBlank(
@@ -168,13 +169,14 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
+     * @Serializer\Accessor(getter="getStartAtFormated")
      */
     protected $startAt;
 
     /**
      * @ORM\Column(
      *     name="finish_at",
-     *     type="datetime",
+     *     type="date",
      *     nullable=true
      * )
      * @Assert\NotBlank(
@@ -184,6 +186,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
+     * @Serializer\Accessor(getter="getFinishAtFormated")
      */
     protected $finishAt;
     
