@@ -88,30 +88,6 @@ class Contract extends Base
      */
     protected $statusShowLateForce = false;
 
-    protected function formatDateField($field, $format = 'm/d/Y')
-    {
-        if ($this->$field instanceof DateTime) {
-            return $this->$field->format($format);
-        }
-
-        return null;
-    }
-
-    public function getPaidToFormated($format = 'm/d/Y')
-    {
-        return $this->formatDateField($field = 'paidTo', $format);
-    }
-
-    public function getStartAtFormated($format = 'm/d/Y')
-    {
-        return $this->formatDateField($field = 'startAt', $format);
-    }
-
-    public function getFinishAtFormated($format = 'm/d/Y')
-    {
-        return $this->formatDateField($field = 'finishAt', $format);
-    }
-
     /**
      * @param boolean $statusShowLateForce
      */
