@@ -22,8 +22,6 @@ services:
         - [ setAnnotationReader, [ @annotation_reader ] ]
 
 api:
-  client_id: %api_client_id%
-  client_secret: %api_client_secret%
   username: %api_username%
   password: %api_password%
   admin_dealer_code: %api_admin_dealer_code%
