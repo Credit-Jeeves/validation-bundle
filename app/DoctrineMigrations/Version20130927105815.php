@@ -89,7 +89,7 @@ class Version20130927105815 extends AbstractMigration implements ContainerAwareI
                     "support@700credit.com",
                     1,
                     "g2rgfwn58nc4kkc8gow4ccgo80ocgck",
-                    "7b3e63c45d5cb6859f325ab1447321ef",
+                    "1a1dc91c907325c69271ddf0c944bc72",
                     NULL,
                     "false",
                     "false",
