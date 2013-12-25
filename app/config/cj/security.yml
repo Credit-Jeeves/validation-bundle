@@ -34,9 +34,10 @@ security:
 
 
     access_control:
-        - { path: ^/oauth/v2/token, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/applicant/*",  roles: [ IS_AUTHENTICATED_FULLY, CREDIT_API ] }
-        - { path: ^/api/applicants/verify",  roles: [ IS_AUTHENTICATED_FULLY, USE_QUITY_API ] }
+        - { path: ^/oauth/v2/token,           role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/applicant/*,          roles: [IS_AUTHENTICATED_FULLY, CREDIT_API]}
+        - { path: ^/api/enroll,               roles: [IS_AUTHENTICATED_FULLY, CREDIT_API]}
+        - { path: ^/api/applicants/verify,    roles: [IS_AUTHENTICATED_FULLY, USE_QUITY_API]}
         - { path: ^/back_to_admin$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_behat/tests/,  role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/_profiler/,     role: IS_AUTHENTICATED_ANONYMOUSLY }
