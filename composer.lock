@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "dd870bf29b73e990135c1efc3f5db487bac070d2"
+                "reference": "4b879f95e39c1cd64b75bd13f16ba39c9415b612"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -338,7 +338,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-12-25 13:06:12"
+            "time": "2013-12-25 13:36:43"
         },
         {
             "name": "credit-jeeves/arf-bundle",

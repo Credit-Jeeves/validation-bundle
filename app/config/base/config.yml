@@ -22,6 +22,6 @@ services:
         - [ setAnnotationReader, [ @annotation_reader ] ]
 
 api:
-  username: %api_username%
-  password: %api_password%
-  admin_dealer_code: %api_admin_dealer_code%
+  username: '9ZKHHdEa47nzF9O0Of+vv1cKXGQUAOd/xJ6UcsY1Hxw='
+  password: '1SgQfQvenIhG3URtUOBrkN8DEO4ZAeb284cMEVL5E7k='
+  admin_dealer_code: 1a1dc91c9073
