@@ -17,15 +17,15 @@ class PaymentAccountCase extends BaseTestCase
         $this->page->clickLink('common.account');
         $this->page->clickLink('settings.deposit');
         $this->page->clickLink('add.account');
-        $this->assertNotNull($form = $this->page->find('css', '#directDepositType'));
+        $this->assertNotNull($form = $this->page->find('css', '#billingAccountType'));
         $this->fillForm(
             $form,
             array(
-                'directDepositType_nickname'         => "mary",
-                'directDepositType_AccountNumber'    => "1234",
-                'directDepositType_RoutingNumber'    => "1234",
-                'directDepositType_ACHDepositType_0' => true,
-                'directDepositType_isActive'         => true,
+                'billingAccountType_nickname'         => "mary",
+                'billingAccountType_AccountNumber'    => "1234",
+                'billingAccountType_RoutingNumber'    => "1234",
+                'billingAccountType_ACHDepositType_0' => true,
+                'billingAccountType_isActive'         => true,
             )
         );
         $this->assertNotNull($save = $this->page->find('css', '#save_payment'));
@@ -39,11 +39,11 @@ class PaymentAccountCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'directDepositType_nickname'         => "gary",
-                'directDepositType_AccountNumber'    => "1234",
-                'directDepositType_RoutingNumber'    => "1234",
-                'directDepositType_ACHDepositType_0' => true,
-                'directDepositType_isActive'         => true,
+                'billingAccountType_nickname'         => "gary",
+                'billingAccountType_AccountNumber'    => "1234",
+                'billingAccountType_RoutingNumber'    => "1234",
+                'billingAccountType_ACHDepositType_0' => true,
+                'billingAccountType_isActive'         => true,
             )
         );
         $save->click();
@@ -65,12 +65,12 @@ class PaymentAccountCase extends BaseTestCase
         $this->assertNotNull($edit = $this->page->findAll('css', '.properties-table>tbody>tr>td>a'));
         $this->assertEquals(4, count($edit));
         $edit[0]->click();
-        $this->assertNotNull($form = $this->page->find('css', '#directDepositType'));
+        $this->assertNotNull($form = $this->page->find('css', '#billingAccountType'));
         $this->fillForm(
             $form,
             array(
-                'directDepositType_nickname'         => "mary less",
-                'directDepositType_isActive'         => true,
+                'billingAccountType_nickname'         => "mary less",
+                'billingAccountType_isActive'         => true,
             )
         );
         $this->assertNotNull($save = $this->page->find('css', '#save_payment'));

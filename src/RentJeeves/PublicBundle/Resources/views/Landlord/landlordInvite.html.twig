@@ -31,7 +31,9 @@
         <button id="submitForm" type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>
       </div>
     </div>
-    {{ form_widget(form._token) }}
+    <div style="display: none;">
+        {{ form_rest(form) }}
+    </div>
   </form>
 </section>
 {% endblock %}

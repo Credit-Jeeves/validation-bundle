@@ -14,5 +14,5 @@ $(document).ready(function(){
         width:'520px'
     });
 
-    jsfv['directDepositType'].addError = window.formProcess.addFormError;
+    jsfv['billingAccountType'].addError = window.formProcess.addFormError;
 });

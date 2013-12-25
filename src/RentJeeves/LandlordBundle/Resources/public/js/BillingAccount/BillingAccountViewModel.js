@@ -14,7 +14,7 @@ BillingAccountViewModel = (function() {
 
         this.create = function() {
             var self = this;
-            var data = $('#directDepositType').serializeArray();
+            var data = $('#billingAccountType').serializeArray();
 
             $.ajax({
                 url: Routing.generate('landlord_billing_create'),
@@ -39,7 +39,7 @@ BillingAccountViewModel = (function() {
 
         this.edit = function() {
             var self = this;
-            var data = $('#directDepositType').serializeArray();
+            var data = $('#billingAccountType').serializeArray();
 
             $.ajax({
                 url: Routing.generate('landlord_billing_edit'),

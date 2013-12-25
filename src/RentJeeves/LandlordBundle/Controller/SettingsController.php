@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Controller;
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\BillingAccount;
-use RentJeeves\PublicBundle\Form\BankAccountType;
+use RentJeeves\LandlordBundle\Form\BillingAccountType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -65,11 +65,11 @@ class SettingsController extends Controller
         /** @var Group $group */
         $group = $this->getCurrentGroup();
         $billingAccounts = $group->getBillingAccounts();
-        $form = $this->createForm(new BankAccountType());
+        $form = $this->createForm(new BillingAccountType());
 
         return array(
             'billingAccounts' => $this->get('jms_serializer')->serialize($billingAccounts, 'json'),
-            'bankAccountType' => $form->createView(),
+            'billingAccountType' => $form->createView(),
             'nGroups' => $this->getGroups()->count(),
         );
     }
@@ -98,7 +98,7 @@ class SettingsController extends Controller
      */
     public function bankAccountAction()
     {
-        $form = $this->createForm(new BankAccountType());
+        $form = $this->createForm(new BillingAccountType());
 
         return array(
             'bankAccountType' => $form->createView()
@@ -117,7 +117,7 @@ class SettingsController extends Controller
      */
     public function createBillingAction(Request $request)
     {
-        $billingAccountType = $this->createForm(new BankAccountType());
+        $billingAccountType = $this->createForm(new BillingAccountType());
         $billingAccountType->handleRequest($request);
         if (!$billingAccountType->isValid()) {
             return $this->renderErrors($billingAccountType, 400);
@@ -152,7 +152,7 @@ class SettingsController extends Controller
      */
     public function editBillingAction(Request $request)
     {
-        $formType = new BankAccountType();
+        $formType = new BillingAccountType();
         $formData = $request->get($formType->getName());
 
         $em = $this->getDoctrine()->getManager();
@@ -169,14 +169,17 @@ class SettingsController extends Controller
             );
         }
 
+        $originalIsActive = $billingAccount->getIsActive();
         $billingAccountType = $this->createForm($formType, $billingAccount);
         $billingAccountType->handleRequest($request);
         if (!$billingAccountType->isValid()) {
             return $this->renderErrors($billingAccountType, 400);
         }
 
-        $billingAccount->setNickname($formData['nickname']);
-        $billingAccount->setIsActive($formData['isActive']);
+        // switching off isActive status is not allowed for active account
+        if ($originalIsActive) {
+            $billingAccount->setIsActive(true);
+        }
         $em->flush();
 
         return new JsonResponse($this->get('jms_serializer')->serialize($billingAccount, 'array'));

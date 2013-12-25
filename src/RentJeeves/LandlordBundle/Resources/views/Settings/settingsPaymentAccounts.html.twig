@@ -1,5 +1,5 @@
 {% extends "LandlordBundle::base.html.twig" %}
-{% form_theme bankAccountType 'RjCoreBundle::form.html.twig' %}
+{% form_theme billingAccountType 'RjCoreBundle::form.html.twig' %}
 
 {% block content %}
     {% include 'LandlordBundle:Settings:_menu.html.twig' %}
@@ -67,9 +67,9 @@
                     <span>{{'add.account.popup.desc'|trans}}</span>
                 </p>
 
-                <form {{ form_enctype(bankAccountType) }} method="post">
-                    {{ form_widget(bankAccountType) }}
-                    {{ JSFV(bankAccountType) }}
+                <form {{ form_enctype(billingAccountType) }} method="post">
+                    {{ form_widget(billingAccountType) }}
+                    {{ JSFV(billingAccountType) }}
                 </form>
             </div>
 
