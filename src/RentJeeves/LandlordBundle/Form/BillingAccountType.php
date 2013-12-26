@@ -158,7 +158,7 @@ class BillingAccountType extends AbstractType
             array(
                 'cascade_validation' => true,
                 'data_class' => 'RentJeeves\DataBundle\Entity\BillingAccount',
-                'validation_groups' => function(FormInterface $form){
+                'validation_groups' => function (FormInterface $form) {
                     $data = $form->getData();
                     if ($data->getId()) {
                         return array('edit_billing');

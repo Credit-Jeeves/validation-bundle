@@ -133,7 +133,8 @@ class SettingsController extends Controller
                     $billingAccountType->getName() => array(
                         '_globals' => explode('|', $e->getMessage())
                     )
-                ), 400
+                ),
+                400
             );
         }
 

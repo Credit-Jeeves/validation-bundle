@@ -27,7 +27,7 @@ use RentJeeves\DataBundle\Entity\BillingAccount;
  *     }
  * )
  */
-class BillingAccountListener 
+class BillingAccountListener
 {
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
