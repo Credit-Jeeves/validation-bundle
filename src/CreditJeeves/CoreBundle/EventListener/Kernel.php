@@ -25,7 +25,7 @@ class Kernel
 
     /**
      * @InjectParams({
-     *     "em"           = @Inject("doctrine")
+     *     "em"           = @Inject("doctrine.orm.entity_manager")
      * })
      */
     public function __construct($em)
@@ -58,14 +58,14 @@ class Kernel
             return;
         }
 
-        $clients = $this->em->getManager()->getRepository('DataBundle:Client')->findAll();
+        $clients = $this->em->getRepository('DataBundle:Client')->findAll();
 
         if (!$clients || !isset($clients[0])) {
-            throw new HttpException('Clients empty for api. Please configure correct.');
+            throw new HttpException('API clients are empty. Please, configure them.');
         }
 
         if (count($clients) != 1) {
-            throw new HttpException('Clients more than one for api. Please configure correct.');
+            throw new HttpException('There are more than one API client. Please, configure it correctly.');
         }
 
         /**
