@@ -1062,7 +1062,7 @@ abstract class Group
      * @param BillingAccount $billingAccount
      * @return $this
      */
-    public function addBillingAccount(\RentJeeves\DataBundle\Entity\BillingAccount $billingAccount)
+    public function addBillingAccount(BillingAccount $billingAccount)
     {
         $this->billingAccounts[] = $billingAccount;
 
@@ -1072,7 +1072,7 @@ abstract class Group
     /**
      * @param \RentJeeves\DataBundle\Entity\BillingAccount $billingAccount
      */
-    public function removeBillingAccount(\RentJeeves\DataBundle\Entity\BillingAccount $billingAccount)
+    public function removeBillingAccount(BillingAccount $billingAccount)
     {
         $this->billingAccounts->removeElement($billingAccount);
     }
