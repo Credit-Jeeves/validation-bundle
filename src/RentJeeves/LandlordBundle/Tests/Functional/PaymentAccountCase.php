@@ -16,6 +16,7 @@ class PaymentAccountCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('common.account');
         $this->page->clickLink('settings.deposit');
+        $this->session->wait($this->timeout, "$('.add-accoun').is(':visible')");
         $this->page->clickLink('add.account');
         $this->assertNotNull($form = $this->page->find('css', '#billingAccountType'));
         $this->fillForm(
