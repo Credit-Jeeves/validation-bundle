@@ -947,6 +947,14 @@
                 <source>error.user.first_name.long</source>
                 <target>First name is too long.</target>
             </trans-unit>
+            <trans-unit id="error.user.middleInitial.short">
+                <source>error.user.middleInitial.short</source>
+                <target>Middle initial is too short.</target>
+            </trans-unit>
+            <trans-unit id="error.user.middleInitial.long">
+                <source>error.user.middleInitial.long</source>
+                <target>Middle initial is too long.</target>
+            </trans-unit>
             <trans-unit id="error.user.last_name.empty">
                 <source>error.user.last_name.empty</source>
                 <target>Last name is required.</target>

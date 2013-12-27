@@ -1,8 +1,13 @@
 <?php
 namespace CreditJeeves\TestBundle\Experian;
 
+use CreditJeeves\DataBundle\Entity\Applicant;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
+use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
+use JMS\Serializer\SerializerBuilder;
+use JMS\Serializer\Naming\CamelCaseNamingStrategy;
+use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 
 require_once __DIR__ . '/../../ExperianBundle/Pidkiq.php';
 require_once __DIR__ . '/../../../../vendor/credit-jeeves/credit-jeeves/lib/experian/pidkiq/PidkiqTest.class.php';
@@ -14,6 +19,7 @@ class PidkiqTest extends \PidkiqTest
 {
     public function __construct()
     {
+        parent::__construct();
     }
 
     /**
@@ -43,5 +49,34 @@ class PidkiqTest extends \PidkiqTest
     public function execute()
     {
         parent::__construct();
+    }
+
+    /**
+     * @param cjApplicant $applicant
+     *
+     * @return NetConnectResponse
+     */
+    public function getObjectOnUserData(Applicant $applicant)
+    {
+        $userData = $this->modelToData($applicant);
+        $this->composeRequest($this->xml->userRequestXML($userData));
+        $responce = file_get_contents($this->fixturesDir . 'QuestionsResponse.xml');
+        $serializer = SerializerBuilder::create()
+            ->setPropertyNamingStrategy(
+                new SerializedNameAnnotationStrategy(
+                    new CamelCaseNamingStrategy('', false)
+                )
+            )
+            ->build();
+
+        /**
+         * @var NetConnectResponse $netConnectResponse
+         */
+        $netConnectResponse = $serializer->deserialize(
+            $responce,
+            'CreditJeeves\ExperianBundle\Model\NetConnectResponse',
+            'xml'
+        );
+        return $netConnectResponse;
     }
 }

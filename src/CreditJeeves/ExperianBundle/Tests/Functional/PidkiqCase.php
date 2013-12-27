@@ -3,6 +3,7 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
+use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\ExperianBundle\Pidkiq;
@@ -208,7 +209,8 @@ class PidkiqCase extends BaseTestCase
             try {
                 $resp = $this->getResponseOnUserData($this->users[$i]);
                 $this->assertTrue(is_array($resp));
-
+                $resp = $this->getObjectOnUserData($this->users[$i]);
+                $this->assertTrue(($resp instanceof NetConnectResponse));
                 return;
             } catch (\ExperianException $e) {
                 if ('No questions returned due to excessive use' == $e->getMessage()) {
@@ -239,5 +241,31 @@ class PidkiqCase extends BaseTestCase
     public function getResponseOnUserDataTimeout()
     {
         $this->getResponseOnUserData($this->users[0]);
+    }
+
+    /**
+     * @expectedException \ExperianException
+     * @expectedExceptionMessage No questions returned due to excessive use
+     */
+    protected function getObjectOnUserData($data)
+    {
+        $pidkiq = new Pidkiq();
+        $pidkiq->execute(self::getContainer());
+
+        $aplicant = new Applicant();
+        $aplicant->setFirstName($data['Name']['First']);
+        $aplicant->setLastName($data['Name']['Surname']);
+        $aplicant->setMiddleInitial($data['Name']['Middle']);
+        $aplicant->setSsn($data['SSN']);
+        $aplicant->setPhone($data['Phone']['Number']);
+        $address = new Address();
+        $address->setStreet($data['CurrentAddress']['Street']);
+        $address->setCity($data['CurrentAddress']['City']);
+        $address->setArea($data['CurrentAddress']['State']);
+        $address->setZip($data['CurrentAddress']['Zip']);
+        $address->setUser($aplicant);
+        $aplicant->addAddress($address);
+
+        return $pidkiq->getObjectOnUserData($aplicant);
     }
 }
