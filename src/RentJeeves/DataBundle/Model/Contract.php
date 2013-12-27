@@ -141,7 +141,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * @Serializer\Accessor(getter="getPaidToFormated")
+     * @Serializer\Type("DateTime<'d/m/Y'>")
      */
     protected $paidTo;
 
@@ -169,7 +169,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * @Serializer\Accessor(getter="getStartAtFormated")
+     * @Serializer\Type("DateTime<'d/m/Y'>")
      */
     protected $startAt;
 
@@ -186,7 +186,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-     * @Serializer\Accessor(getter="getFinishAtFormated")
+     * @Serializer\Type("DateTime<'d/m/Y'>")
      */
     protected $finishAt;
     
