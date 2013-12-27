@@ -16,6 +16,7 @@ use JMS\DiExtraBundle\Annotation\Inject;
  * @Service("core.event_listener.kernel")
  *
  * @Tag("kernel.event_listener", attributes = { "event" = "kernel.request", "method" = "request" })
+ * @Tag("kernel.event_listener", attributes = { "event" = "kernel.request", "method" = "processApi" })
  */
 class Kernel
 {
@@ -35,7 +36,6 @@ class Kernel
 
     public function request(GetResponseEvent $event)
     {
-        $request = $event->getRequest();
         $controller = $event->getRequest()->attributes->get('_controller');
         if (preg_match('/.*Jeeves\\\\(.*)Bundle\\\\Controller/i', $controller, $matches)) {
             $eventName = strtolower($matches[1]) . '.filter';
@@ -47,13 +47,14 @@ class Kernel
 
             $dispatcher->dispatch($eventName, $newEvent);
         }
-
-        $this->processApi($controller, $request);
     }
 
 
-    private function processApi($controller, $request)
+    public function processApi(GetResponseEvent $event)
     {
+        $request = $event->getRequest();
+        $controller = $event->getRequest()->attributes->get('_controller');
+
         if ($controller !== self::API_CONTROLLER) {
             return;
         }
