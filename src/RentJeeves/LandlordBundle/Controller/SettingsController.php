@@ -179,7 +179,7 @@ class SettingsController extends Controller
 
         // switching off isActive status is not allowed for active account
         if ($originalIsActive) {
-            $billingAccount->setIsActive(true);
+            $billingAccount->setIsActive(1);
         }
         $em->flush();
 

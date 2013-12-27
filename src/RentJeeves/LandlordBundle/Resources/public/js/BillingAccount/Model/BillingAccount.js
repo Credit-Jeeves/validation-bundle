@@ -1,23 +1,12 @@
-var BillingAccount;
+function BillingAccount(data) {
+    this.id = ko.observable(null);
+    this.nickname = ko.observable(null);
+    this.routingNumber = ko.observable(null);
+    this.accountNumber = ko.observable(null);
+    this.accountType = ko.observable(null);
+    this.isActive = ko.observable(false);
 
-BillingAccount = (function() {
+    ko.mapping.fromJS(data, {}, this);
 
-    function BillingAccount(data) {
-        var defaults = {
-            id: null,
-            nickname: null,
-            routingNumber: null,
-            accountNumber: null,
-            accountType: null,
-            isActive: false
-        }
-
-        var data = $.extend(defaults, data);
-        ko.mapping.fromJS(data, {}, this);
-
-        this.allowActive = !this.isActive();
-    }
-
-    return BillingAccount;
-
-})();
+    this.allowActive = !this.isActive();
+}
