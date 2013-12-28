@@ -5,6 +5,8 @@ use CreditJeeves\CoreBundle\Event\Filter;
 use CreditJeeves\DataBundle\Entity\Client;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -17,10 +19,13 @@ use JMS\DiExtraBundle\Annotation\Inject;
  *
  * @Tag("kernel.event_listener", attributes = { "event" = "kernel.request", "method" = "request" })
  * @Tag("kernel.event_listener", attributes = { "event" = "kernel.request", "method" = "processApi" })
+ * @Tag("kernel.event_listener", attributes = { "event" = "kernel.response", "method" = "setAffiliateCookies" })
  */
 class Kernel
 {
     const API_CONTROLLER = 'CreditJeeves\ApiBundle\Controller\TokenController::tokenAction';
+    const AFFILIATE_SOURCE_PARAM = 'af';
+    const AFFILIATE_CODE_PARAM = 'ac';
 
     protected $em;
 
@@ -82,5 +87,18 @@ class Kernel
 
         $request->query->set('client_id', $client->getPublicId());
         $request->query->set('client_secret', $client->getSecret());
+    }
+
+    public function setAffiliateCookies(FilterResponseEvent $event)
+    {
+        $request = $event->getRequest();
+        $response = $event->getResponse();
+        $affiliateSource = $request->query->get(self::AFFILIATE_SOURCE_PARAM);
+        $affiliateCode = $request->query->get(self::AFFILIATE_CODE_PARAM);
+        $isAffiliateCookieExist = $response->headers->get('affiliateSource');
+        if ($affiliateSource && $affiliateCode && !$isAffiliateCookieExist) {
+            $response->headers->setCookie(new Cookie('affiliateSource', $affiliateSource));
+            $response->headers->setCookie(new Cookie('affiliateCode', $affiliateCode));
+        }
     }
 }

@@ -615,6 +615,16 @@ abstract class User extends BaseUser
      */
     protected $settings;
 
+    /**
+     * @ORM\OneToOne(
+     *      targetEntity="\CreditJeeves\DataBundle\Entity\PartnerCode",
+     *      mappedBy="user",
+     *      cascade={"all"},
+     *      orphanRemoval=true
+     * )
+     */
+    protected $partnerCode;
+
     public function __construct()
     {
         parent::__construct();
@@ -1872,5 +1882,21 @@ abstract class User extends BaseUser
     public function getAuthCodes()
     {
         return $this->authCodes;
+    }
+
+    /**
+     * @param PartnerCode $partnerCode
+     */
+    public function setPartnerCode(PartnerCode $partnerCode)
+    {
+        $this->partnerCode = $partnerCode;
+    }
+
+    /**
+     * @return PartnerCode
+     */
+    public function getPartnerCode()
+    {
+        return $this->partnerCode;
     }
 }
