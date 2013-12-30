@@ -4,6 +4,8 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\Type;
 
 /**
  * @ORM\MappedSuperclass
@@ -14,18 +16,21 @@ abstract class BillingAccount
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Type("integer")
      */
     protected $id;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="billingAccount"
+     *     inversedBy="billingAccounts",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="group_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Exclude
      */
     protected $group;
 
@@ -35,6 +40,7 @@ abstract class BillingAccount
      *      type="string",
      *      length=255
      * )
+     * @Serializer\Exclude
      */
     protected $token;
 
@@ -44,8 +50,22 @@ abstract class BillingAccount
      *      type="string",
      *      length=255
      * )
+     * @Type("string")
      */
     protected $nickname;
+
+    /**
+     * @ORM\Column(
+     *     name="active",
+     *     type="boolean",
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     * @Type("boolean")
+     * @Serializer\SerializedName("isActive")
+     */
+    protected $isActive = 0;
 
     /**
      * @return int
@@ -107,5 +127,21 @@ abstract class BillingAccount
     public function getNickname()
     {
         return $this->nickname;
+    }
+
+    /**
+     * @param boolean $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
     }
 }
