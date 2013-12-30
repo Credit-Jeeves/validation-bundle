@@ -97,14 +97,8 @@ class PidkiqCase extends BaseTestCase
         )
     );
 
-    /**
-     * Tests Pidkiq->getResponseOnUserData()
-     */
-    protected function getResponseOnUserData($data)
+    protected function getApplicant($data)
     {
-        $pidkiq = new Pidkiq();
-        $pidkiq->execute(self::getContainer());
-
         $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
@@ -117,9 +111,28 @@ class PidkiqCase extends BaseTestCase
         $address->setArea($data['CurrentAddress']['State']);
         $address->setZip($data['CurrentAddress']['Zip']);
         $address->setUser($aplicant);
+        $address->setIsDefault(true);
         $aplicant->addAddress($address);
 
-        return $pidkiq->getResponseOnUserData($aplicant);
+        return $aplicant;
+    }
+
+    protected function getPidkiq()
+    {
+        $pidkiq = new Pidkiq();
+        $pidkiq->execute(self::getContainer());
+
+        return $pidkiq;
+    }
+
+    /**
+     * Tests Pidkiq->getResponseOnUserData()
+     */
+    protected function getResponseOnUserData($data)
+    {
+        $aplicant = $this->getApplicant($data);
+
+        return $this->getPidkiq()->getResponseOnUserData($aplicant);
     }
 
     /**
@@ -244,28 +257,14 @@ class PidkiqCase extends BaseTestCase
     }
 
     /**
+     * Tests Pidkiq->getObjectOnUserData()
+     *
      * @expectedException \ExperianException
      * @expectedExceptionMessage No questions returned due to excessive use
      */
     protected function getObjectOnUserData($data)
     {
-        $pidkiq = new Pidkiq();
-        $pidkiq->execute(self::getContainer());
-
-        $aplicant = new Applicant();
-        $aplicant->setFirstName($data['Name']['First']);
-        $aplicant->setLastName($data['Name']['Surname']);
-        $aplicant->setMiddleInitial($data['Name']['Middle']);
-        $aplicant->setSsn($data['SSN']);
-        $aplicant->setPhone($data['Phone']['Number']);
-        $address = new Address();
-        $address->setStreet($data['CurrentAddress']['Street']);
-        $address->setCity($data['CurrentAddress']['City']);
-        $address->setArea($data['CurrentAddress']['State']);
-        $address->setZip($data['CurrentAddress']['Zip']);
-        $address->setUser($aplicant);
-        $aplicant->addAddress($address);
-
-        return $pidkiq->getObjectOnUserData($aplicant);
+        $applicant = $this->getApplicant($data);
+        return $this->getPidkiq()->getObjectOnUserData($applicant);
     }
 }
