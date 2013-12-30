@@ -65,7 +65,7 @@ trait FormErrors
      *
      * @return JsonResponse
      */
-    protected function renderErrors($forms)
+    protected function renderErrors($forms, $statusCode = 200)
     {
         if (!is_array($forms)) {
             $forms = array($forms);
@@ -78,7 +78,7 @@ trait FormErrors
             }
             $return = arrayMergeRecursive($return, $this->getFormErrors($form));
         }
-        return new JsonResponse($return);
+        return new JsonResponse($return, $statusCode);
     }
 
 }

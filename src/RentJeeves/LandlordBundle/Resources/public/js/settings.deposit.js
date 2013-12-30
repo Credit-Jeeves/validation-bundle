@@ -1,14 +1,18 @@
-
 $(document).ready(function(){
 
-    $('#deposit-landlord-popup').dialog({ 
+    $('#billing-account-edit').dialog({
         autoOpen: false,
         resizable: false,
         modal: true,
         width:'520px'
     });
 
-    $('.add-account').click(function(){
-        $('#deposit-landlord-popup').dialog('open');
+    $('#billing-account-delete').dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width:'520px'
     });
+
+    jsfv['billingAccountType'].addError = window.formProcess.addFormError;
 });

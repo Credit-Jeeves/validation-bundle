@@ -1787,7 +1787,6 @@ label.checkbox {
   line-height:18px;
 }
 
-input[type="checkbox"],
 input[type="radio"] {
   display:none;
 }
@@ -1802,10 +1801,6 @@ label.checkbox input[type="radio"] + i {
   line-height:0;
   overflow:hidden;
   text-indent:-999px;
-}
-
-label.checkbox input[type="checkbox"] + i {
-  background:url(/bundles/rjpublic/images/bg-chechbox.png) 0 0 no-repeat;
 }
 
 label.checkbox input[type="radio"] + i {
@@ -4329,8 +4324,6 @@ form label {
     position: absolute;
     margin-left: -24px;
     margin-top: 3px;
-    width: 1px;
-    height: 1px;
     -ms-transform: scale(0.1); /* IE */
     -moz-transform: scale(0.1); /* FF */
     /*

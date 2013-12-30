@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Model\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -102,5 +103,19 @@ class Group extends BaseGroup
             }
         }
         return $dealer;
+    }
+
+    /**
+     * @return BillingAccount|null
+     */
+    public function getActiveBillingAccount()
+    {
+        foreach ($this->getBillingAccounts() as $account) {
+            if ($account->getIsActive()) {
+                return $account;
+            }
+        }
+
+        return null;
     }
 }

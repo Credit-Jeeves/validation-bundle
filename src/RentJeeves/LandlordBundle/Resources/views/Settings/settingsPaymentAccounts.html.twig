@@ -1,0 +1,137 @@
+{% extends "LandlordBundle::base.html.twig" %}
+{% form_theme billingAccountType 'RjCoreBundle::form.html.twig' %}
+
+{% block content %}
+    {% include 'LandlordBundle:Settings:_menu.html.twig' %}
+    <div class="column-middle floatright">
+        <div id="payment-accounts-list" class="pod-middle pod-border pod-padding shadow">
+            <h1>{{'settings.deposit'|trans}}</h1>
+            <div class="row-20"></div>
+            <p>{{'settings.deposit.description'|trans}}</p>
+            <div class="row-20"></div>
+
+
+            <div class="properties-table-block table-wrap" data-bind="visible: !isLoading()">
+                <div class="table-margin zebra-grid" data-bind="visible: billingAccounts().length">
+                    <table class="properties-table">
+                        <thead>
+                            <tr class="contracts">
+                                <th class="font-helvetica">{{ 'settings.payment_account.name.title' | trans }}</th>
+                                <th style="width: 60px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: billingAccounts">
+                            <tr>
+                                <td class="font-helvetica">
+                                    <span data-bind="text: nickname"></span>
+                                    <em class="default-address" data-bind="visible: isActive()">({{ 'settings.payment_account.active'|trans }})</em>
+                                </td>
+                                <td class="font-helvetica">
+                                    <a title="{{'edit'|trans}}" class="type-ico pie-el edit" data-bind="click: $root.showEditPopup">
+                                        &nbsp;
+                                    </a>
+
+                                    <a title="{{'delete'|trans}}" class="type-ico pie-el delete" data-bind="visible: !isActive(), click: $root.showDeletePopup">
+                                        &nbsp;
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <img src="{{ asset('bundles/core/images/img_loading.gif') }}" class="processPayment" data-bind="visible: isLoading">
+            <div class="row-20"></div>
+            <a class="button add-accoun" data-bind="click: showCreatePopup" href="#">
+                <span>{{ 'add.account' | trans }}</span>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="col-box clearfix"></div>
+
+
+
+    <!-- Popups -->
+    <div id="billing-account-edit" data-bind="with: currentBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
+        <h1>{{ 'add.account.popup.title.edit'|trans }}</h1>
+        <div class="clearfix col-box attention-container">
+            <div class="attention-box pie-el" style="display: none">
+                <h3>{{ 'pay_popup.errors.title' | trans }}</h3>
+                <ul class="default">
+                </ul>
+            </div>
+            <div class="col long-label">
+                <p class="clearfix">
+                    <span>{{'add.account.popup.desc'|trans}}</span>
+                </p>
+
+                <form {{ form_enctype(billingAccountType) }} method="post">
+                    {{ form_widget(billingAccountType) }}
+                    {{ JSFV(billingAccountType) }}
+                </form>
+            </div>
+
+            <div class="footer-button-box">
+                <button class="button" id="save_payment" data-bind="click: $root.save">
+                    <span>{{'payment.account.button.save'|trans}}</span>
+                </button>
+                <div class="with-seperator-box">
+                    <button class="button grey" data-bind="click: $root.closeDialog">
+                        <span>{{ 'cancel'|trans}}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="billing-account-delete" data-bind="with: currentBillingAccount" class="pricing-popup dashboard-popup properties-popup payments-popup ui-dialog-content ui-widget-content">
+        <h1>{{ 'settings.payment_account.delete.title'|trans }}</h1>
+        <div class="clearfix col-box  attention-container">
+            <div class="attention-box pie-el">
+                {{ 'settings.payment_account.delete.text'|trans }}
+                <ul class="default">
+                </ul>
+            </div>
+            <div class="row-20"></div>
+            <div class="footer-button-box">
+                <form id="billing-account-delete-form">
+                    <a class="button" href="#" id="delete_payment" data-bind="click: $root.delete" style="display: inline-block;">
+                        <span>{{ 'settings.payment_account.delete.yes'|trans }}</span>
+                    </a>
+                    <button data-bind="click: $root.closeDeleteDialog" class="button grey buttonFix">
+                        <span>{{ 'settings.payment_account.delete.no'|trans }}</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Popups -->
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var viewModel = new BillingAccountViewModel({{ billingAccounts|raw }});
+            ko.applyBindings(viewModel);
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/settings.deposit.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts  '@LandlordBundle/Resources/public/js/settings.deposit.js'
+                    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+                    '@LandlordBundle/Resources/public/js/BillingAccount/Model/BillingAccount.js'
+                    '@LandlordBundle/Resources/public/js/BillingAccount/Mapping.js'
+                    '@LandlordBundle/Resources/public/js/BillingAccount/BillingAccountViewModel.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
