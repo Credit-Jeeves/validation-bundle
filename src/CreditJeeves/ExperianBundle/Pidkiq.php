@@ -1,7 +1,6 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
-use CreditJeeves\DataBundle\Entity\Applicant;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
@@ -93,13 +92,13 @@ class Pidkiq extends \Pidkiq
     }
 
     /**
-     * @param cjApplicant $applicant
+     * @param User $user
      *
      * @return NetConnectResponse
      */
-    public function getObjectOnUserData(Applicant $applicant)
+    public function getObjectOnUserData($user)
     {
-        $userData = $this->modelToData($applicant);
+        $userData = $this->modelToData($user);
         $xml = $this->xml->userRequestXML($userData);
         if ($this->isLogging) {
             file_put_contents(

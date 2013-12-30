@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "4b879f95e39c1cd64b75bd13f16ba39c9415b612"
+                "reference": "0921bae75c8e6f1054757457489896bc26a7aad3"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -314,7 +314,8 @@
                 "php": ">=5.3.2"
             },
             "require-dev": {
-                "symfony/framework-bundle": ">=2.1,<2.2-dev"
+                "fp/badaboom": "dev-ton as dev-not-approved",
+                "symfony/symfony": ">=2.3,<2.4-dev"
             },
             "type": "symfony-bundle",
             "autoload": {
@@ -338,7 +339,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2013-12-25 13:36:43"
+            "time": "2013-12-30 12:52:32"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -2508,12 +2509,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "22daa254e54f4b69292bd8679d7a6f3a78dc85d4"
+                "reference": "cf70eea85b616175c96c525dde977ed5dceef26c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/22daa254e54f4b69292bd8679d7a6f3a78dc85d4",
-                "reference": "22daa254e54f4b69292bd8679d7a6f3a78dc85d4",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/cf70eea85b616175c96c525dde977ed5dceef26c",
+                "reference": "cf70eea85b616175c96c525dde977ed5dceef26c",
                 "shasum": ""
             },
             "require": {
@@ -2570,7 +2571,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-12-04 16:46:05"
+            "time": "2013-12-28 12:57:12"
         },
         {
             "name": "jms/serializer-bundle",
