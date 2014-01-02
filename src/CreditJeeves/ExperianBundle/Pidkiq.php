@@ -36,6 +36,8 @@ class Pidkiq extends \Pidkiq
 
     protected $serializer = null;
 
+    protected $lastResponse;
+
     public function __construct()
     {
         parent::__construct();
@@ -113,6 +115,8 @@ class Pidkiq extends \Pidkiq
                 $responce
             );
         }
+
+        $this->lastResponse = $responce;
         /**
          * @var NetConnectResponse $netConnectResponse
          */
@@ -136,5 +140,10 @@ class Pidkiq extends \Pidkiq
         }
 
         return $netConnectResponse;
+    }
+
+    public function getLastResponce()
+    {
+        return $this->lastResponse;
     }
 }

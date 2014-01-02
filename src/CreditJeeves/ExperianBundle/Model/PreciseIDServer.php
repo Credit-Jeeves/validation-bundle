@@ -11,6 +11,14 @@ use CreditJeeves\ExperianBundle\Model\Error;
 class PreciseIDServer
 {
     /**
+     * @Serializer\Type("string")
+     * @Serializer\SerializedName("SessionID")
+     * @Serializer\Groups({"CreditJeeves"})
+     * @var string
+     */
+    protected $sessionId;
+
+    /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Summary")
      * @Serializer\SerializedName("Summary")
      * @Serializer\Groups({"CreditJeeves"})
@@ -23,6 +31,23 @@ class PreciseIDServer
      * @Serializer\Groups({"CreditJeeves"})
      */
     protected $error;
+
+    /**
+     * @param mixed $sessionId
+     */
+    public function setSessionId($sessionId)
+    {
+        $this->sessionId = $sessionId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessionId()
+    {
+        return $this->sessionId;
+    }
+
 
     /**
      * @param Summary $summary

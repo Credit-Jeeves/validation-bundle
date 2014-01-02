@@ -1,6 +1,6 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
-class Exception extends \Exception
+class Exception extends \ExperianException
 {
 }
