@@ -1319,6 +1319,34 @@
                 <source>address.on_credit_file</source>
                 <target>Address on Credit File</target>
             </trans-unit>
+            <trans-unit id="settings.payment_account.delete.title">
+                <source>settings.payment_account.delete.title</source>
+                <target>Remove Payment Account</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.active">
+                <source>settings.payment_account.active</source>
+                <target>Active</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.current_active">
+                <source>settings.payment_account.current_active</source>
+                <target>Is Active</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.name.title">
+                <source>settings.payment_account.name.title</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.delete.text">
+                <source>settings.payment_account.delete.text</source>
+                <target>Are you sure you want to remove this payment account?</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.delete.yes">
+                <source>settings.payment_account.delete.yes</source>
+                <target>Yes, remove account</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.delete.no">
+                <source>settings.payment_account.delete.no</source>
+                <target>No, cancel</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -6,3 +6,11 @@
 button, .button {
     padding-left: 0px;
 }
+
+.payment-account-checkbox .fields-box .checkbox{
+    margin-left: -37px;
+}
+
+.payment-account-checkbox .fields-box .checkbox span{
+    margin-left: -140px;
+}

@@ -407,3 +407,18 @@ fixtures:
     source: office
     created_at: '-10 days'
     updated_at: '-50 days'
+  cjLead_700CreditAPI:
+    user: cjDealerAccount700creditAPI
+    dealer: cjDealerAccount700credit
+    group: 700CreditGroup
+    target_score: '670'
+    target_name: 'Hunday'
+    target_url: 'https://carimg.s3.amazonaws.com/8354_st0640_037.jpg'
+    state: '1'
+    trade_in: false
+    down_payment: null
+    fraction: '25'
+    status: active
+    source: office
+    created_at: '-10 days'
+    updated_at: '-50 days'

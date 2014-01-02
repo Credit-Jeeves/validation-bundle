@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="rj_billing_account")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\BillingAccountRepository")
  */
 class BillingAccount extends Base
 {

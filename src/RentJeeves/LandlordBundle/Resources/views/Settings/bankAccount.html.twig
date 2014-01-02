@@ -1,0 +1,6 @@
+{% form_theme bankAccountType 'RjCoreBundle::form.html.twig' %}
+
+<form {{ form_enctype(bankAccountType) }} novalidate method="post">
+    {{ form_widget(bankAccountType) }}
+    {{ JSFV(bankAccountType) }}
+</form>

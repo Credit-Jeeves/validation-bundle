@@ -72,7 +72,7 @@ class BankAccountType extends AbstractType
                     ACHDepositType::SAVINGS => 'checkout.account_type.savings',
                     ACHDepositType::UNASSIGNED => 'checkout.account_type.business_checking'
                 ),
-                'empty_value'  => false,
+                'empty_value' => false,
                 'invalid_message' => 'checkout.error.account_type.invalid',
                 'constraints' => array(
                     new NotBlank(
