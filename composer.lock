@@ -2056,7 +2056,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "05e7bc95f34a180b35f5bbf419bcf761a4a895cb"
+                "reference": "e0571175e4ee7d3e6d7867354cc141972520fb14"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -2065,9 +2065,6 @@
                 "mikey179/vfsstream": "1.2.*",
                 "mockery/mockery": "dev-master"
             },
-            "bin": [
-                "bin/environment"
-            ],
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -2089,7 +2086,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2013-12-24 09:27:28"
+            "time": "2013-12-24 11:17:40"
         },
         {
             "name": "incenteev/composer-parameter-handler",
