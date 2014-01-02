@@ -9,5 +9,4 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class Reason1 extends Reason
 {
-
 }
