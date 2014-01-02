@@ -25,6 +25,29 @@ class InitialResults
     protected $reasons;
 
     /**
+     * @Serializer\Type("string")
+     * @Serializer\SerializedName("InitialDecision")
+     * @Serializer\Groups({"CreditJeeves"})
+     */
+    protected $InitialDecision;
+
+    /**
+     * @param string $InitialDecision
+     */
+    public function setInitialDecision($InitialDecision)
+    {
+        $this->InitialDecision = $InitialDecision;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInitialDecision()
+    {
+        return $this->InitialDecision;
+    }
+
+    /**
      * @param string $mostLikelyFraudType
      */
     public function setMostLikelyFraudType($mostLikelyFraudType)

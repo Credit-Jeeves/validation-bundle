@@ -47,13 +47,14 @@ class AddPropertyCase extends BaseTestCase
         $register->click();
         $this->assertNotNull($errorMessage = $this->page->find('css', '#errorMessage'));
         $this->assertEquals('select.rental', $errorMessage->getText());
+        $this->session->visit($this->session->getCurrentUrl());
         $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
         $thisIsMyRental->click();
         $this->assertNotNull($register = $this->page->find('css', '#register'));
         $register->click();
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(6, $tr, 'List of property');
+        $this->assertCount(5, $tr, 'List of property');
         $this->logout();
     }
 
@@ -95,10 +96,12 @@ class AddPropertyCase extends BaseTestCase
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"
         );
-        $this->fillGoogleAddress('710 Broadway, Manhattan, New York, NY 10003');
+        $this->fillGoogleAddress('560 Broadway, Manhattan, New York, NY 10012');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $propertySearch->click();
-        
+        $this->fillGoogleAddress('770 Broadway, Manhattan, New York, NY 10003');
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
+        $this->page->pressButton('find.your.rental');
         $this->session->wait($this->timeout, "$('.inviteLandlord').length > 0");
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();

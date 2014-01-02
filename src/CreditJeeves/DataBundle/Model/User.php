@@ -66,7 +66,6 @@ abstract class User extends BaseUser
      *     }
      * )
      * @Serializer\Type("string")
-     * @Serializer\Groups({"CreditJeeves"})
      *
      * @var string
      */
@@ -86,7 +85,6 @@ abstract class User extends BaseUser
      *          "api_identity_check"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeeves"})
      * @Serializer\Type("string")
      */
     protected $middle_initial;
@@ -123,7 +121,6 @@ abstract class User extends BaseUser
      *         "api_identity_check"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeeves"})
      * @Serializer\Type("string")
      */
     protected $last_name;
@@ -151,7 +148,6 @@ abstract class User extends BaseUser
      *         "invite",
      *     }
      * )
-     * @Serializer\Groups({"CreditJeeves"})
      * @Serializer\Type("string")
      */
     protected $email;
@@ -170,8 +166,7 @@ abstract class User extends BaseUser
      *     max=255,
      *     groups={
      *         "user_address",
-     *         "buy_report",
-     *         "api_identity_check"
+     *         "buy_report"
      *     }
      * )
      *
@@ -256,12 +251,6 @@ abstract class User extends BaseUser
     protected $zip;
 
     /**
-     * @ORM\Column(type="bigint", nullable=true)
-     */
-    protected $phone_type;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
      * @Assert\Length(
      *     min=2,
      *     max=255,
@@ -269,7 +258,12 @@ abstract class User extends BaseUser
      *         "api_identity_check"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeeves"})
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    protected $phone_type;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
      * @Serializer\Type("string")
      */
     protected $phone;
@@ -280,8 +274,7 @@ abstract class User extends BaseUser
      *     message="error.user.date",
      *     groups={
      *         "user_profile",
-     *         "invite_short",
-     *         "api_identity_check"
+     *         "invite_short"
      *     }
      * )
      * @Assert\NotBlank(
@@ -292,9 +285,7 @@ abstract class User extends BaseUser
      *         "birth_and_ssn"
      *     }
      * )
-     * @Serializer\Type("string")
-     * @Serializer\Accessor(setter="setDateOfBirth")
-     * @Serializer\Groups({"CreditJeeves"})
+     *
      */
     protected $date_of_birth;
 
@@ -1033,13 +1024,7 @@ abstract class User extends BaseUser
      */
     public function setDateOfBirth($dateOfBirth)
     {
-        if (is_string($dateOfBirth) && !empty($dateOfBirth)) {
-            $this->dateOfBirth = DateTime::createFromFormat('mdY', $dateOfBirth);
-            return;
-        }
-
         $this->date_of_birth = $dateOfBirth;
-
         return $this;
     }
 

@@ -17,7 +17,9 @@ class PayCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->page->pressButton('contract-pay-1');
+        $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
+        $this->assertCount(3, $payButtons, 'Wrong number of contracts');
+        $payButtons[2]->click();
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
         $this->assertNotNull($payPopup = $payPopup->getParent());
 
