@@ -87,8 +87,8 @@ class Order
 
     public function setupData($dataFromForm)
     {
-        $this->begin = $dataFromForm['begin'];
-        $this->end = $dataFromForm['end'];
+        $this->begin = $dataFromForm['begin'].' 00:00:00';;
+        $this->end = $dataFromForm['end'].' 23:59:59';
         $this->property = $dataFromForm['property'];
         $this->type = $dataFromForm['type'];
         $this->propertyId = $dataFromForm['propertyId'];
