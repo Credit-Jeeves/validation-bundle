@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use RentJeeves\CoreBundle\Validator\InviteEmail;
 use RentJeeves\DataBundle\Entity\UserSettings;
+use JMS\Serializer\Annotation as Serializer;
+use \DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -44,7 +46,8 @@ abstract class User extends BaseUser
      *         "user_admin",
      *         "invite",
      *         "tenant_invite",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
      * @Assert\Length(
@@ -58,10 +61,13 @@ abstract class User extends BaseUser
      *         "user_admin",
      *         "invite",
      *         "tenant_invite",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
+     * @Serializer\Type("string")
      *
+     * @var string
      */
     protected $first_name;
 
@@ -70,6 +76,16 @@ abstract class User extends BaseUser
      *     type="string",
      *     nullable=true
      * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     minMessage="error.user.middleInitial.short",
+     *     maxMessage="error.user.middleInitial.long",
+     *     groups={
+     *          "api_identity_check"
+     *     }
+     * )
+     * @Serializer\Type("string")
      */
     protected $middle_initial;
 
@@ -86,7 +102,8 @@ abstract class User extends BaseUser
      *         "user_admin",
      *         "invite",
      *         "tenant_invite",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
      * @Assert\Length(
@@ -100,10 +117,11 @@ abstract class User extends BaseUser
      *         "user_admin",
      *         "invite",
      *         "tenant_invite",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
-     *
+     * @Serializer\Type("string")
      */
     protected $last_name;
 
@@ -121,7 +139,8 @@ abstract class User extends BaseUser
      *         "user_admin",
      *         "invite",
      *         "tenant_invite",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
      * @InviteEmail(
@@ -129,6 +148,7 @@ abstract class User extends BaseUser
      *         "invite",
      *     }
      * )
+     * @Serializer\Type("string")
      */
     protected $email;
 
@@ -231,12 +251,20 @@ abstract class User extends BaseUser
     protected $zip;
 
     /**
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     groups={
+     *         "api_identity_check"
+     *     }
+     * )
      * @ORM\Column(type="bigint", nullable=true)
      */
     protected $phone_type;
 
     /**
      * @ORM\Column(type="string", nullable=true)
+     * @Serializer\Type("string")
      */
     protected $phone;
 
@@ -257,6 +285,7 @@ abstract class User extends BaseUser
      *         "birth_and_ssn"
      *     }
      * )
+     *
      */
     protected $date_of_birth;
 
@@ -275,9 +304,11 @@ abstract class User extends BaseUser
      *     exactMessage="error.user.ssn.exact",
      *     groups={
      *         "user_profile",
-     *         "birth_and_ssn"
+     *         "birth_and_ssn",
+     *         "api_identity_check"
      *     }
      * )
+     * @Serializer\Type("string")
      */
     protected $ssn;
 
@@ -994,7 +1025,6 @@ abstract class User extends BaseUser
     public function setDateOfBirth($dateOfBirth)
     {
         $this->date_of_birth = $dateOfBirth;
-
         return $this;
     }
 

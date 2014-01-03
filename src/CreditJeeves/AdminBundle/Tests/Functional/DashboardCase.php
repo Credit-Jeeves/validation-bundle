@@ -89,7 +89,7 @@ class DashboardCase extends \CreditJeeves\TestBundle\Functional\BaseTestCase
         $this->assertNotNull($tables = $this->page->findAll('css', '.cms-block table'));
         $this->assertCount(2, $tables, 'Wrong number of blocks');
         $this->assertNotNull($list = $this->page->findAll('css', 'a i.icon-list'));
-        $this->assertCount(7, $list, 'Wrong number of blocks');
+        $this->assertCount(8, $list, 'Wrong number of blocks');
         $link = $list[1]->getParent();
         $link->click();
         $this->assertNotNull($admins = $this->page->findAll('css', 'a.edit_link'));

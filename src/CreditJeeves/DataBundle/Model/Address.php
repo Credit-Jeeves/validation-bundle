@@ -85,7 +85,8 @@ abstract class Address
      *     groups={
      *         "user_address_new",
      *         "buy_report_new",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
      * @Assert\Length(
@@ -94,7 +95,8 @@ abstract class Address
      *     groups={
      *         "user_address_new",
      *         "buy_report_new",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
      * @Serializer\Expose
@@ -109,7 +111,8 @@ abstract class Address
      *     message="error.user.zip.empty",
      *     groups={
      *         "user_address_new",
-     *         "buy_report_new"
+     *         "buy_report_new",
+     *         "api_identity_check"
      *     }
      * )
      * @Assert\Length(
@@ -118,7 +121,8 @@ abstract class Address
      *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length",
      *     groups={
      *         "user_address_new",
-     *         "buy_report_new"
+     *         "buy_report_new",
+     *         "api_identity_check"
      *     }
      * )
      * @Serializer\Expose
@@ -151,7 +155,8 @@ abstract class Address
      *     groups={
      *         "user_address_new",
      *         "buy_report_new",
-     *         "account_landlord"
+     *         "account_landlord",
+     *         "api_identity_check"
      *     }
      * )
      * @Serializer\Expose
@@ -166,7 +171,8 @@ abstract class Address
      *     message="error.user.state.empty",
      *     groups={
      *         "user_address_new",
-     *         "buy_report_new"
+     *         "buy_report_new",
+     *         "api_identity_check"
      *     }
      * )
      * @Assert\Length(
@@ -174,7 +180,8 @@ abstract class Address
      *     max=255,
      *     groups={
      *         "user_address_new",
-     *         "buy_report_new"
+     *         "buy_report_new",
+     *         "api_identity_check"
      *     }
      * )
      * @Serializer\Expose
