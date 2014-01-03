@@ -127,12 +127,34 @@
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}<b>*</b></label>
+                    <!-- ko ifnot: status == 'INVITE' -->
                     <div class="fields-box addressDiv"  data-bind="text: address"></div>
+                    <!-- /ko -->
+                    <!-- ko if:status == 'INVITE' -->
+                    <div class="fields-box">
+                        <select id="property-edit"
+                                data-bind="
+                                options: $root.propertiesList,
+                                optionsText: 'address',
+                                optionsValue: 'id',
+                                selectedOptions: $root.getPropertyId,
+                                event:{ change: $parent.propertyChanged}
+                                "
+                                class="original" name="property_id">
+                        </select>
+                        <img src="/bundles/rjpublic/images/ajax-loader-small.gif" style="display: none;" class="loader">
+                    </div>
+                    <!-- /ko -->
                 </div>
-                <!-- ko if: status == 'PENDING' -->
+                <!-- ko if: status == 'PENDING' || status == 'INVITE' -->
                 <div class="form-row clearfix">
                     <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
-                    <select id="unit-edit" class="original" name="unit_id">
+                    <select id="unit-edit" data-bind="
+                                options: $root.unitsList,
+                                optionsText: 'name',
+                                optionsValue: 'id',
+                                selectedOptions: $root.getUnitId"
+                    class="original" name="unit_id">
                     </select>
                     <img src="/bundles/rjpublic/images/ajax-loader-small.gif" style="display: none;" class="loader">
                 </div>
@@ -531,7 +553,7 @@
                 <td align="center"   data-bind="text: last_payment"></td>
                 <td align="center"  data-bind="text: paid_to"></td>
                 <td class="type-box">
-                    <!-- ko if: 'CURRENT' == status -->
+                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status -->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
@@ -544,7 +566,7 @@
                     >&nbsp;</a>
                     {% endif %}
                     <!-- /ko -->
-                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status -->
+                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status-->
                     <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                 </td>

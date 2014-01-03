@@ -32,6 +32,30 @@ class AjaxController extends Controller
     /**
      * @Route(
      *     "/property/list",
+     *     name="landlord_properties_list_all",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="html|json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST", "GET"})
+     */
+    public function getPropertiesListAll()
+    {
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
+        $properties = $repo->getPropetiesAll($group);
+
+        foreach ($properties as $property) {
+            $item = $property->getItem($group);
+            $items[] = $item;
+        }
+
+        return new JsonResponse($items);
+    }
+
+    /**
+     * @Route(
+     *     "/property/list",
      *     name="landlord_properties_list",
      *     defaults={"_format"="json"},
      *     requirements={"_format"="html|json"},
