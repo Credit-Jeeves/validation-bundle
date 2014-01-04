@@ -204,7 +204,7 @@ class IframeCase extends BaseTestCase
         $this->clearEmail();
         $this->logout();
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
         $this->session->visit($this->getUrl() . 'iframe');
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
@@ -273,7 +273,7 @@ class IframeCase extends BaseTestCase
     {
         $this->setDefaultSession('selenium2');
         $this->session->visit($this->getUrl() . 'iframe');
-        $fillAddress = '770 Broadway, Manhattan, New York City, NY 10003';
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('#formNewUser').length > 0");
@@ -286,10 +286,6 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
         $propertySearch->setValue($fillAddress);
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('div.pac-container').children().length > 0");
-        $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', 'div.pac-container div'));
-        $item->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit>span'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('.inviteLandlord').is(':visible')");
