@@ -278,14 +278,14 @@ function ContractDetails() {
       });
   };
   this.closeRevokeInvitation = function() {
-      $('#tenant-review-property-popup').dialog('open');
+      $('#tenant-edit-property-popup').dialog('open');
       $('#tenant-revoke-invotation').dialog('close');
       return false;
   }
 
   this.closeReminderRevoke = function() {
+    $('#tenant-edit-property-popup').dialog('close');
     $('#tenant-revoke-invotation').dialog('open');
-    $('#tenant-review-property-popup').dialog('close');
     return false;
   }
   this.closeTenantReviewPropertyPopup = function() {
@@ -293,19 +293,21 @@ function ContractDetails() {
       return false;
   }
   this.sendReminderInvition = function() {
-     jQuery('#tenant-review-property-popup').showOverlay();
+     jQuery('#tenant-edit-property-popup').showOverlay();
      $.ajax({
         url: Routing.generate('send_reminder_invitation', {'contractId': self.contract().id }),
         type: 'GET',
         dataType: 'json',
         success: function(response) {
             jQuery('#tenant-review-property-popup').hideOverlay();
+            var arr = new Array();
             if (typeof response.error !== 'undefined') {
-               $('#tenant-review-property-popup').find('.error').html(response.error);
-               $('#tenant-review-property-popup').find('.error').show();
+                arr.push(response.error);
+                self.errorsEdit(arr);
             } else {
-               $('#tenant-review-property-popup').find('.error').hide();
+                self.errorsEdit(arr);
             }
+            jQuery('#tenant-edit-property-popup').hideOverlay();
         }
      });
   };

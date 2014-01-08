@@ -127,10 +127,10 @@
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}<b>*</b></label>
-                    <!-- ko ifnot: status == 'INVITE' -->
+                    <!-- ko ifnot: status == 'INVITE'  || 'APPROVED' == status -->
                     <div class="fields-box addressDiv"  data-bind="text: address"></div>
                     <!-- /ko -->
-                    <!-- ko if:status == 'INVITE' -->
+                    <!-- ko if:status == 'INVITE' || 'APPROVED' == status -->
                     <div class="fields-box">
                         <select id="property-edit"
                                 data-bind="
@@ -146,7 +146,7 @@
                     </div>
                     <!-- /ko -->
                 </div>
-                <!-- ko if: status == 'PENDING' || status == 'INVITE' -->
+                <!-- ko if: status == 'PENDING' || status == 'INVITE' || 'APPROVED' == status -->
                 <div class="form-row clearfix">
                     <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
                     <select id="unit-edit" data-bind="
@@ -175,10 +175,22 @@
                 </div>
             </div>
         </div>
-        <div class="footer-button-box">
-            <button class="button" data-bind="click: saveContract"><span>{{'savechanges'|trans}}</span></button>
-            <button class="button grey"  data-bind="click: cancelEdit"><span>{{'cancel'|trans}}</span></button>
-            <a href="#" class="link" data-bind="click: removeTenant">{{'remove.tenant'|trans|raw}}</a>
+        <div class="footer-button-box" data-bind="with: contract">
+            <!-- ko if: reminder_revoke -->
+            <button class="button sendReminder" data-bind="click: $root.sendReminderInvition">
+                <span>{{ 'send.reminder'|trans }}</span>
+            </button>
+            <!-- /ko -->
+            <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
+            <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
+            <!-- ko ifnot: reminder_revoke  -->
+                <a href="#" class="link" data-bind="click: $root.removeTenant">{{'remove.tenant'|trans|raw}}</a>
+            <!-- /ko -->
+            <!-- ko if: reminder_revoke  -->
+            <a href="#" class="link" data-bind="click: $root.closeReminderRevoke" onclick="false;">
+                {{ 'revoke.inv'|trans|raw}}
+            </a>
+            <!-- /ko -->
         </div>
     </div>
     <!-- End Action Edit -->
@@ -553,7 +565,7 @@
                 <td align="center"   data-bind="text: last_payment"></td>
                 <td align="center"  data-bind="text: paid_to"></td>
                 <td class="type-box">
-                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status -->
+                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status -->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
@@ -566,7 +578,7 @@
                     >&nbsp;</a>
                     {% endif %}
                     <!-- /ko -->
-                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status-->
+                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status -->
                     <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                 </td>

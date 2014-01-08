@@ -5,7 +5,8 @@ use Doctrine\ORM\EntityRepository;
 
 class PropertyRepository extends EntityRepository
 {
-    public function getPropetiesAll($group) {
+    public function getPropetiesAll($group)
+    {
         $query = $this->createQueryBuilder('p');
         $query->innerJoin('p.property_groups', 'g');
         $query->where('g.id = :group_id');
