@@ -31,7 +31,7 @@ class AjaxController extends Controller
 
     /**
      * @Route(
-     *     "/property/list",
+     *     "/property/all/list",
      *     name="landlord_properties_list_all",
      *     defaults={"_format"="json"},
      *     requirements={"_format"="html|json"},
