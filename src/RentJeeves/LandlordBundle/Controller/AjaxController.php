@@ -37,9 +37,8 @@ class AjaxController extends Controller
      *     requirements={"_format"="html|json"},
      *     options={"expose"=true}
      * )
-     * @Method({"POST", "GET"})
      */
-    public function getPropertiesListAll()
+    public function getAllProperties()
     {
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');

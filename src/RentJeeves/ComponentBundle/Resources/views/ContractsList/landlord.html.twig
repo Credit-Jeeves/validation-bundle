@@ -127,36 +127,36 @@
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}<b>*</b></label>
-                    <!-- ko ifnot: status == 'INVITE'  || 'APPROVED' == status -->
+                    <!-- ko ifnot: status == 'INVITE'  || status == 'APPROVED' -->
                     <div class="fields-box addressDiv"  data-bind="text: address"></div>
                     <!-- /ko -->
-                    <!-- ko if:status == 'INVITE' || 'APPROVED' == status -->
+                    <!-- ko if:status == 'INVITE' || status == 'APPROVED' -->
                     <div class="fields-box">
                         <select id="property-edit"
                                 data-bind="
                                 options: $root.propertiesList,
                                 optionsText: 'address',
                                 optionsValue: 'id',
-                                selectedOptions: $root.getPropertyId,
-                                event:{ change: $parent.propertyChanged}
+                                selectedOptions: $root.currentPropertyId,
+                                event:{ change: $parent.onPropertyChange}
                                 "
                                 class="original" name="property_id">
                         </select>
-                        <img src="/bundles/rjpublic/images/ajax-loader-small.gif" style="display: none;" class="loader">
+                        <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}"  class="loader">
                     </div>
                     <!-- /ko -->
                 </div>
-                <!-- ko if: status == 'PENDING' || status == 'INVITE' || 'APPROVED' == status -->
+                <!-- ko if: status == 'PENDING' || status == 'INVITE' || status == 'APPROVED' -->
                 <div class="form-row clearfix">
                     <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
                     <select id="unit-edit" data-bind="
                                 options: $root.unitsList,
                                 optionsText: 'name',
                                 optionsValue: 'id',
-                                selectedOptions: $root.getUnitId"
+                                selectedOptions: $root.currentUnitId"
                     class="original" name="unit_id">
                     </select>
-                    <img src="/bundles/rjpublic/images/ajax-loader-small.gif" style="display: none;" class="loader">
+                    <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" class="loader">
                 </div>
                 <!-- /ko -->
                 <div class="form-row clearfix">
@@ -176,21 +176,15 @@
             </div>
         </div>
         <div class="footer-button-box" data-bind="with: contract">
-            <!-- ko if: reminder_revoke -->
-            <button class="button sendReminder" data-bind="click: $root.sendReminderInvition">
+            <button class="button sendReminder" data-bind="if: reminder_revoke, click: $root.sendReminderInvition">
                 <span>{{ 'send.reminder'|trans }}</span>
             </button>
-            <!-- /ko -->
             <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
             <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
-            <!-- ko ifnot: reminder_revoke  -->
-                <a href="#" class="link" data-bind="click: $root.removeTenant">{{'remove.tenant'|trans|raw}}</a>
-            <!-- /ko -->
-            <!-- ko if: reminder_revoke  -->
-            <a href="#" class="link" data-bind="click: $root.closeReminderRevoke" onclick="false;">
+            <a href="#" class="link" data-bind="ifnot: reminder_revoke, click: $root.removeTenant">{{'remove.tenant'|trans|raw}}</a>
+            <a href="#" class="link" data-bind="if: reminder_revoke, click: $root.closeReminderRevoke">
                 {{ 'revoke.inv'|trans|raw}}
             </a>
-            <!-- /ko -->
         </div>
     </div>
     <!-- End Action Edit -->
