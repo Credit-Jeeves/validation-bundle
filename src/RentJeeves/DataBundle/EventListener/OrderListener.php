@@ -2,10 +2,12 @@
 namespace RentJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class OrderListener
@@ -50,7 +52,6 @@ class OrderListener
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
             $status = $entity->getStatus();
-            $status = $entity->getStatus();
             if ($status == OrderStatus::COMPLETE) {
                 $entity->checkOrderProperties();
             }
@@ -71,6 +72,7 @@ class OrderListener
                     switch ($status) {
                         case OrderStatus::COMPLETE:
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
+                            $this->chargePartner($entity);
                             break;
                         case OrderStatus::ERROR:
                             $this->container->get('project.mailer')->sendRentError($entity);
@@ -91,6 +93,25 @@ class OrderListener
                     }
                     break;
             }
+        }
+    }
+
+    private function chargePartner(Order $chargeOrder)
+    {
+        /** @var User $user */
+        $user = $chargeOrder->getUser();
+        $userOrders = $user->getOrders();
+        $isFirstOrder = true;
+        /** @var Order $order */
+        foreach ($userOrders as $order) {
+            if ((OrderStatus::COMPLETE == $order->getStatus()) && ($chargeOrder->getId() != $order->getId())) {
+                $isFirstOrder = false;
+            }
+        }
+
+        if ($isFirstOrder && ($user instanceof Tenant)) {
+            $this->container->get('partner.charging_manager')->charge($chargeOrder);
+            $this->container->get('request')->cookies->set('clearAffiliate', true);
         }
     }
 }

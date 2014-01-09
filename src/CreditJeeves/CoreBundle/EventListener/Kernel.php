@@ -93,12 +93,19 @@ class Kernel
     {
         $request = $event->getRequest();
         $response = $event->getResponse();
+
+        if ($request->cookies->get('clearAffiliate')) {
+            $response->headers->clearCookie('affiliateSource');
+            $response->headers->clearCookie('affiliateCode');
+            return;
+        }
+
         $affiliateSource = $request->query->get(self::AFFILIATE_SOURCE_PARAM);
         $affiliateCode = $request->query->get(self::AFFILIATE_CODE_PARAM);
-        $isAffiliateCookieExist = $response->headers->get('affiliateSource');
+        $isAffiliateCookieExist = $request->cookies->get('affiliateSource');
         if ($affiliateSource && $affiliateCode && !$isAffiliateCookieExist) {
-            $response->headers->setCookie(new Cookie('affiliateSource', $affiliateSource));
-            $response->headers->setCookie(new Cookie('affiliateCode', $affiliateCode));
+            $response->headers->setCookie(new Cookie('affiliateSource', $affiliateSource, 0));
+            $response->headers->setCookie(new Cookie('affiliateCode', $affiliateCode, 0));
         }
     }
 }

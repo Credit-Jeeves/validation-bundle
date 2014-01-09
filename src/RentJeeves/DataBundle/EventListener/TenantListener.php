@@ -46,5 +46,7 @@ class TenantListener
         $partnerCode->setUser($entity);
         $partnerCode->setCode($affiliateCode);
         $em->persist($partnerCode);
+
+        $this->request->cookies->set('clearAffiliate', true);
     }
 } 

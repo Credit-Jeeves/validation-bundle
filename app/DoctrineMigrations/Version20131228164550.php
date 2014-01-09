@@ -20,6 +20,11 @@ class Version20131228164550 extends AbstractMigration
                 request_name VARCHAR(255) NOT NULL,
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
+
+        $this->addSql(
+            "CREATE UNIQUE INDEX partner_name ON partner (name)"
+        );
+
         $this->addSql(
             "CREATE TABLE partner_code (id INT AUTO_INCREMENT NOT NULL,
                 partner_id BIGINT DEFAULT NULL,
@@ -40,6 +45,10 @@ class Version20131228164550 extends AbstractMigration
                 ADD CONSTRAINT FK_27210380A76ED395
                 FOREIGN KEY (user_id)
                 REFERENCES cj_user (id)"
+        );
+
+        $this->addSql(
+            "INSERT INTO partner SET name= 'creditcom', request_name = 'CREDITCOM'"
         );
     }
 
