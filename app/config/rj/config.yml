@@ -30,8 +30,8 @@ parameters:
         user_voice: 'renttrack.uservoice.com'
 
     partners:
-            price: 10
-            product: 'registration'
+        price: 10
+        product: 'registration'
 
 # parameters for twig
     payment_bank_fee: 0 # Fee would be processed on heartland side
