@@ -225,7 +225,7 @@ function ContractDetails() {
         contract.unit_id = $("#unit-edit :selected").val();
     }
     var propertyId = $("#property-edit :selected").val();
-    if (typeof unitId != 'undefined') {
+    if (typeof propertyId != 'undefined') {
         contract.property_id = propertyId;
     }
 
