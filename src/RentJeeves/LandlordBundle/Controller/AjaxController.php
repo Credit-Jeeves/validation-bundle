@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -19,6 +20,8 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * 
@@ -28,6 +31,59 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 class AjaxController extends Controller
 {
     /* Property */
+
+
+
+    /**
+     * @Route(
+     *     "/landlord/contract/end/{contractId}",
+     *     name="landlord_end_contract",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function contractEnd($contractId)
+    {
+        $translator = $this->get('translator');
+        $group = $this->getCurrentGroup();
+        $repositoryContract = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+        /**
+         * @var $contract Contract
+         */
+        $contract = $repositoryContract->find($contractId);
+        if (empty($contract)) {
+            throw new NotFoundHttpException(
+                $translator->trans(
+                    "outstanding.validate.contract.not.exist",
+                    array(
+                        '%%CONTRACTID%%' => $contractId
+                    )
+                )
+            );
+        }
+        /**
+         * @var $user User
+         */
+        $user = $this->getUser();
+        $group = $contract->getGroup();
+
+        if ($user->getGroups()->contains($group)) {
+            throw new NotFoundHttpException(
+                $translator->trans(
+                    "outstanding.validate.contract.not.your",
+                    array(
+                        '%%CONTRACTID%%' => $contractId
+                    )
+                )
+            );
+        }
+
+        return new JsonResponse(array(
+            'status'  => 'successful',
+        ));
+    }
 
     /**
      * @Route(
