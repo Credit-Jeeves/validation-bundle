@@ -242,10 +242,16 @@
             </button>
             <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
             <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
-            <a href="#" class="link" data-bind="ifnot: reminder_revoke,  click: $root.endContract">
-                {{'end.br.contract'|trans|raw}}
-            </a>
+<<<<<<< Updated upstream
+            <a href="#" class="link" data-bind="ifnot: reminder_revoke, click: $root.removeTenant">{{'remove.tenant'|trans|raw}}</a>
             <a href="#" class="link" data-bind="if: reminder_revoke, click: $root.closeReminderRevoke">
+=======
+            <!-- ko ifnot: reminder_revoke  -->
+                <a href="#" class="link" data-bind="click: $root.endContract">{{'end.br.contract'|trans|raw}}</a>
+            <!-- /ko -->
+            <!-- ko if: reminder_revoke  -->
+            <a href="#" class="link" data-bind="click: $root.closeReminderRevoke" onclick="false;">
+>>>>>>> Stashed changes
                 {{ 'revoke.inv'|trans|raw}}
             </a>
         </div>

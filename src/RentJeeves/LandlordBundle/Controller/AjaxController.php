@@ -33,7 +33,6 @@ class AjaxController extends Controller
     /* Property */
 
 
-
     /**
      * @Route(
      *     "/landlord/contract/end/{contractId}",
@@ -79,6 +78,8 @@ class AjaxController extends Controller
                 )
             );
         }
+
+        $contract->setStatus(ContractStatus::FINISHED);
 
         return new JsonResponse(array(
             'status'  => 'successful',
