@@ -27,6 +27,8 @@ class CreditcomPartner
     public function charge($code, $price, $productName, $transactionId)
     {
         $url = sprintf(self::CREDITCOM_URL_TEMPLATE, $code, $price, $productName, $transactionId);
+
+        return true;
 //        $this->browser->get($url);
     }
 } 

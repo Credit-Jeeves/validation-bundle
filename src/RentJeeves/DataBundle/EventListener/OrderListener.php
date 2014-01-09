@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -72,7 +73,7 @@ class OrderListener
                     switch ($status) {
                         case OrderStatus::COMPLETE:
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
-                            $this->chargePartner($entity);
+                            $this->chargePartner($entity, $eventArgs->getEntityManager());
                             break;
                         case OrderStatus::ERROR:
                             $this->container->get('project.mailer')->sendRentError($entity);
@@ -96,7 +97,7 @@ class OrderListener
         }
     }
 
-    private function chargePartner(Order $chargeOrder)
+    private function chargePartner(Order $chargeOrder, EntityManager $em)
     {
         /** @var User $user */
         $user = $chargeOrder->getUser();
@@ -109,9 +110,13 @@ class OrderListener
             }
         }
 
-        if ($isFirstOrder && ($user instanceof Tenant)) {
-            $this->container->get('partner.charging_manager')->charge($chargeOrder);
-            $this->container->get('request')->cookies->set('clearAffiliate', true);
+        $partnerCode = $user->getPartnerCode();
+        if ($isFirstOrder && $partnerCode) {
+            $partner = $this->container->get('partner.charging_manager');
+            if ($partner->charge($chargeOrder)) {
+                $em->remove($partnerCode);
+                $em->flush($partnerCode);
+            }
         }
     }
 }

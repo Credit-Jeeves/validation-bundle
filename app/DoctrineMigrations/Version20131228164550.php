@@ -48,7 +48,7 @@ class Version20131228164550 extends AbstractMigration
         );
 
         $this->addSql(
-            "INSERT INTO partner SET name= 'creditcom', request_name = 'CREDITCOM'"
+            "INSERT INTO partner SET name = 'creditcom', request_name = 'CREDITCOM'"
         );
     }
 
