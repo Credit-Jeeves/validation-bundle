@@ -29,3 +29,7 @@
 .accept-terms-box {
     width: 890px;
 }
+.col .creditcom-logo .search-box {
+    background: #eee url(/bundles/rjpublic/images/creditcom.png) right 30px center no-repeat;
+    width: 650px;
+}
