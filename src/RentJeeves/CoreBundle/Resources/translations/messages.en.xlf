@@ -1721,6 +1721,10 @@
                 <source>yes.end.contract</source>
                 <target>Yes, End Contract</target>
             </trans-unit>
+            <trans-unit id="yes.remove.contract">
+                <source>yes.remove.contract</source>
+                <target>Yes, Remove Contract</target>
+            </trans-unit>
             <trans-unit id="no.leave.intact">
                 <source>no.leave.intact</source>
                 <target>No, Leave Intact</target>
@@ -1736,6 +1740,18 @@
                     Please enter any uncollected balance, or $0 if lease was paid
                     in full. Tenant payment history will be reported to credit service
                     agencies.
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.contract.description">
+                <source>remove.contract.description</source>
+                <target>
+                    Are you sure want to remove this contract?
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.contract">
+                <source>remove.contract</source>
+                <target>
+                    Remove Contract Confirm
                 </target>
             </trans-unit>
             <trans-unit id="outstanding.description">

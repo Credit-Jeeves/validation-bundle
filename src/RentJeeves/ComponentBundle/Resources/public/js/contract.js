@@ -119,6 +119,7 @@ function Contract() {
             }
         });
     };
+
     this.approveContract = function (contract) {
         self.contract(contract);
         self.errorsApprove([]);
@@ -192,6 +193,7 @@ function Contract() {
         self.contract(data);
         self.review(true);
     };
+
     this.approveSave = function () {
         var data = self.contract();
         self.statusBeforeTriedSave(data.status);
@@ -199,18 +201,37 @@ function Contract() {
         self.contract(data);
         self.saveContract();
     };
-    this.removeTenant = function () {
+
+    this.removeContractConfirm = function () {
+        $('#contract-remove-popup').hideOverlay();
+        $('#contract-remove-popup').dialog('open');
+        $('#tenant-edit-property-popup').dialog('close');
+    };
+
+    this.cancelRemove = function() {
+        $('#contract-remove-popup').dialog('close');
+        $('#tenant-edit-property-popup').dialog('open');
+    };
+
+    this.removeContract = function() {
+        $('#contract-remove-popup').showOverlay();
         var data = self.contract();
         data.action = 'remove';
         self.contract(data);
-        self.saveContract();
+        self.saveContract(function(){
+            $('#contract-remove-popup').hideOverlay();
+            $('#contract-remove-popup').dialog('close');
+        });
     };
+
     this.clearDetails = function () {
         self.edit(false);
         self.review(false);
         self.approve(false);
     };
-    this.saveContract = function () {
+
+    this.saveContract = function (callback) {
+        callback = typeof callback !== 'undefined' ? callback : function(){};
         if (self.edit()) {
             var id = '#tenant-edit-property-popup';
         } else {
@@ -257,6 +278,7 @@ function Contract() {
                         self.errorsApprove(response.errors);
                     }
                 }
+                callback();
             }
         });
     };
