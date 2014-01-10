@@ -242,8 +242,11 @@
             </button>
             <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
             <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
-            <a href="#" class="link" data-bind="ifnot: reminder_revoke,  click: $root.endContract">
+            <a href="#" class="link" data-bind="if: status == 'CURRENT' ,  click: $root.endContract">
                 {{'end.br.contract'|trans|raw}}
+            </a>
+            <a href="#" class="link" data-bind="if: status != 'CURRENT' && !reminder_revoke,  click: $root.endContract">
+                {{'remove.tenant'|trans|raw}}
             </a>
             <a href="#" class="link" data-bind="if: reminder_revoke, click: $root.closeReminderRevoke">
                 {{ 'revoke.inv'|trans|raw}}
