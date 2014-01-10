@@ -258,6 +258,7 @@ function Contract() {
                 'contract': self.contract()
             },
             success: function (response) {
+                //TODO remove this code and use callback
                 jQuery(id).hideOverlay();
                 self.errorsApprove([]);
                 self.errorsEdit([]);
@@ -278,7 +279,8 @@ function Contract() {
                         self.errorsApprove(response.errors);
                     }
                 }
-                callback();
+                //end TODO
+                callback(response);
             }
         });
     };
@@ -353,6 +355,7 @@ function Contract() {
                 self.clearDetails();
                 $('#tenant-end-contract').dialog('close');
                 ContractsViewModel.ajaxAction();
+                self.outstandingBalance(0);
             }
         });
     }

@@ -88,6 +88,10 @@ class AjaxController extends Controller
         $em->persist($contract);
         $em->flush($contract);
 
+        $landlord = $this->getUser();
+        $tenant = $contract->getTenant();
+        $this->get('project.mailer')->endContractByLandlord($contract, $landlord, $tenant);
+
         return new JsonResponse(array(
             'status'  => 'successful',
         ));
