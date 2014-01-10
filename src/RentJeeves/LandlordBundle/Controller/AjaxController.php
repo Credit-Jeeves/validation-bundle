@@ -43,11 +43,13 @@ class AjaxController extends Controller
      * )
      * @Method({"POST"})
      */
-    public function contractEnd($contractId)
+    public function contractEnd($contractId, Request $request)
     {
         $translator = $this->get('translator');
         $group = $this->getCurrentGroup();
         $repositoryContract = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+        $uncollectedBalance = $request->request->get('uncollectedBalance', 0);
+        $uncollectedBalance = floatval($uncollectedBalance);
         /**
          * @var $contract Contract
          */
@@ -80,6 +82,7 @@ class AjaxController extends Controller
         }
 
         $contract->setStatus(ContractStatus::FINISHED);
+        $contract->setUncollectedBalance($uncollectedBalance);
 
         return new JsonResponse(array(
             'status'  => 'successful',
