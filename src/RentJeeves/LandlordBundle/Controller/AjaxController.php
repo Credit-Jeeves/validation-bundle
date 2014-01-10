@@ -92,9 +92,11 @@ class AjaxController extends Controller
         $tenant = $contract->getTenant();
         $this->get('project.mailer')->endContractByLandlord($contract, $landlord, $tenant);
 
-        return new JsonResponse(array(
-            'status'  => 'successful',
-        ));
+        return new JsonResponse(
+            array(
+                'status'  => 'successful',
+            )
+        );
     }
 
     /**

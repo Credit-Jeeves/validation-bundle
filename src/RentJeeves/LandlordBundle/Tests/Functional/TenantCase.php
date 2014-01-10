@@ -232,11 +232,13 @@ class TenantCase extends BaseTestCase
         $this->assertCount(1, $email, 'Wrong number of emails');
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(array(
-            'uncollectedBalance' => 223.21,
-            'status'             => 'finished',
-        ));
-        $this->assertEquals('1', count($contracts), 'Wrong count contract');
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'uncollectedBalance' => 223.21,
+                'status'             => 'finished',
+            )
+        );
+        $this->assertCount(1, $contracts, 'Wrong count contract');
     }
 
     /**
