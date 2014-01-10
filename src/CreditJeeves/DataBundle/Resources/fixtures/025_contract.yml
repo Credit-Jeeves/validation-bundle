@@ -209,4 +209,16 @@ fixtures:
         status:   pending
         createdAt: '-50 days'
         updatedAt: '-50 days'        
-        
+    Contract_18:
+        tenant:   Tenant_9
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_11
+        rent:     199.10
+        status:   current
+        paidTo:  '1 days'
+        startAt:   '-90 days'
+        finishAt: '-10 days'
+        createdAt: '-150 days'
+        updatedAt: '-150 days'
