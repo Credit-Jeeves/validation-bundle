@@ -2,8 +2,8 @@ function ContractDetails() {
   var self = this;
   this.propertiesList = ko.observableArray([]);
   this.unitsList = ko.observableArray([]);
-  this.currentPropertyId = ko.observableArray([]);
-  this.currentUnitId = ko.observableArray([]);
+  this.currentPropertyId = ko.observable();
+  this.currentUnitId = ko.observable();
   this.contract = ko.observable();
   this.approve = ko.observable(false);
   this.review = ko.observable(false);
@@ -39,8 +39,9 @@ function ContractDetails() {
   };
 
   this.onPropertyChange = function(property, event) {
-     var id = $("#property-edit :selected").val();
-     self.getUnits(id);
+     if (self.currentPropertyId() != undefined) {
+         self.getUnits(self.currentPropertyId());
+     }
   };
 
   this.getProperties = function (propertyId) {
@@ -63,8 +64,6 @@ function ContractDetails() {
   }
 
   this.editContract = function(contract) {
-    self.currentPropertyId([]);
-    self.currentUnitId([]);
     self.errorsApprove([]);
     self.errorsEdit([]);
     $('#unit-edit').html(' ');
@@ -75,10 +74,11 @@ function ContractDetails() {
       self.contract(contract);
     }
 
-    self.currentPropertyId.push(self.contract().property_id);
-    self.currentUnitId.push(self.contract().unit_id);
+    self.currentPropertyId(self.contract().property_id);
     self.getProperties(self.contract().property_id);
+    self.currentUnitId(self.contract().unit_id);
     self.getUnits(self.contract().property_id);
+
 
     var flag = false;
     if(self.approve()) {
@@ -219,14 +219,13 @@ function ContractDetails() {
 
     jQuery(id).showOverlay();
     var contract = self.contract();
-    var unitId = $("#unit-edit :selected").val();
 
-    if (typeof unitId != 'undefined') {
-        contract.unit_id = $("#unit-edit :selected").val();
+    if (self.currentUnitId() != undefined) {
+        contract.unit_id = self.currentUnitId();
     }
-    var propertyId = $("#property-edit :selected").val();
-    if (typeof propertyId != 'undefined') {
-        contract.property_id = propertyId;
+
+    if (self.currentPropertyId() != undefined) {
+        contract.property_id = self.currentPropertyId();
     }
 
     self.contract(contract);

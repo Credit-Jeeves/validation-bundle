@@ -137,7 +137,7 @@
                                 options: $root.propertiesList,
                                 optionsText: 'address',
                                 optionsValue: 'id',
-                                selectedOptions: $root.currentPropertyId,
+                                value: $root.currentPropertyId,
                                 event:{ change: $parent.onPropertyChange}
                                 "
                                 class="original" name="property_id">
@@ -153,7 +153,7 @@
                                 options: $root.unitsList,
                                 optionsText: 'name',
                                 optionsValue: 'id',
-                                selectedOptions: $root.currentUnitId"
+                                value: $root.currentUnitId"
                     class="original" name="unit_id">
                     </select>
                     <img src="{{ asset('/bundles/rjpublic/images/ajax-loader-small.gif') }}" class="loader">
