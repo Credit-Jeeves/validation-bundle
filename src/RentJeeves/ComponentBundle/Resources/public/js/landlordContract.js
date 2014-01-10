@@ -45,6 +45,15 @@ $(document).ready(function () {
         modal: true,
         width: '520px'
     });
+
+    $('#tenant-end-contract').dialog({
+        position: "center",
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        width: '520px'
+    });
+
     ContractsViewModel.ajaxAction();
     $('#searchFilter').linkselect("destroy");
     $('#searchFilter').linkselect({

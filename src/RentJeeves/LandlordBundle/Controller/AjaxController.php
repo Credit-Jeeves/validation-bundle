@@ -22,6 +22,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * 
@@ -70,7 +71,7 @@ class AjaxController extends Controller
         $user = $this->getUser();
         $group = $contract->getGroup();
 
-        if ($user->getGroups()->contains($group)) {
+        if (!$user->getGroups()->contains($group)) {
             throw new NotFoundHttpException(
                 $translator->trans(
                     "outstanding.validate.contract.not.your",
@@ -83,6 +84,9 @@ class AjaxController extends Controller
 
         $contract->setStatus(ContractStatus::FINISHED);
         $contract->setUncollectedBalance($uncollectedBalance);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($contract);
+        $em->flush($contract);
 
         return new JsonResponse(array(
             'status'  => 'successful',

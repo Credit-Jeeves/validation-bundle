@@ -313,7 +313,7 @@ function Contract() {
         });
     };
 
-    this.endContract = function (contract) {
+    this.openEndContractPopup = function (contract) {
         $('#tenant-edit-property-popup').dialog('close');
         $('#tenant-end-contract').dialog('open');
         return false;
@@ -324,11 +324,12 @@ function Contract() {
         $.ajax({
             url: Routing.generate('landlord_end_contract', {'contractId': self.contract().id }),
             type: 'POST',
-            data: {'amount': self.outstandingBalance() },
+            data: {'uncollectedBalance': self.outstandingBalance() },
             dataType: 'json',
             success: function (response) {
                 jQuery('#tenant-end-contract').hideOverlay();
                 self.clearDetails();
+                $('#tenant-end-contract').dialog('close');
                 ContractsViewModel.ajaxAction();
             }
         });
