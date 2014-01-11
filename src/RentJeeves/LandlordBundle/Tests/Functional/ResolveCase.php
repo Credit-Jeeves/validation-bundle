@@ -115,7 +115,9 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve-ended .checkbox'));
         $this->assertCount(3, $checkboxes, 'Wrong number of checkboxes');
         $checkboxes[0]->click();
-        $this->assertNotNull($buttons = $this->page->findAll('css', '#contract-resolve-ended .footer-button-box button'));
+        $this->assertNotNull(
+            $buttons = $this->page->findAll('css', '#contract-resolve-ended .footer-button-box button')
+        );
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
@@ -148,7 +150,9 @@ class ResolveCase extends BaseTestCase
         $date = new \DateTime();
         $date->modify('+18 year');
         $inputs[0]->setValue($date->format('m/d/Y'));
-        $this->assertNotNull($buttons = $this->page->findAll('css', '#contract-resolve-ended .footer-button-box button'));
+        $this->assertNotNull(
+            $buttons = $this->page->findAll('css', '#contract-resolve-ended .footer-button-box button')
+        );
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
@@ -184,10 +188,14 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve-ended .checkbox'));
         $this->assertCount(3, $checkboxes, 'Wrong number of checkboxes');
         $checkboxes[2]->click();
-        $this->assertNotNull($inputs = $this->page->findAll('css', '#contract-resolve-ended input[type=text]'));
+        $this->assertNotNull(
+            $inputs = $this->page->findAll('css', '#contract-resolve-ended input[type=text]')
+        );
         $this->assertCount(2, $inputs, 'Wrong number of inputs');
         $inputs[1]->setValue(7000);
-        $this->assertNotNull($buttons = $this->page->findAll('css', '#contract-resolve-ended .footer-button-box button'));
+        $this->assertNotNull(
+            $buttons = $this->page->findAll('css', '#contract-resolve-ended .footer-button-box button')
+        );
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
