@@ -1,9 +1,11 @@
 #! /bin/sh
 
+BUILD="dev"
 DIR="$(cd `dirname $0` ; pwd)"
 BUILDS_DIR="$WORKSPACE/../../jobs/$JOB_NAME/builds"
 BUILD_DIR="$DIR/../app/logs/build"
 PHPUNIT_PATH=`which phpunit`
+PHPUNIT_PARAMS=""
 
 #DB_DUMP="$DIR/../data/sql/dump_20130328.sql"
 #DB_NAME=cj2_migration
@@ -15,26 +17,25 @@ rm -rf $BUILD_DIR/*
 mkdir $BUILD_DIR/coverage
 mkdir $BUILD_DIR/coverage/html
 
-if [ ! -f $DIR/vendor/autoload.php ]; then
-     php bin/composer.phar install
+if [ $1 ]; then
+    BUILD=$1
 fi
 
-php bin/environment.php --dev || exit 1
+if [ ! -f $DIR/vendor/autoload.php ]; then
+     php bin/composer.phar install --no-scripts
+fi
+
+php bin/environment.php --$BUILD || exit 1
+
+if [ "master" = $BUILD ]; then
+    PHPUNIT_PARAMS="--coverage-clover=$BUILD_DIR/coverage/clover.xml --coverage-html=$BUILD_DIR/coverage/html"
+fi
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
 #nice -n 5
 php -C -q -d memory_limit=1024M $PHPUNIT_PATH -v \
+  $PHPUNIT_PARAMS \
   --log-junit=$BUILD_DIR/allTests.xml
-#  --coverage-clover=$BUILD_DIR/coverage/clover.xml \
-#  --coverage-html=$BUILD_DIR/coverage/html \
-
-#echo "##### RUN QUNIT TESTS #####"
-#if nice -n 5 sh bin/js.sh ; then
-#  echo 'OK' > $BUILD_DIR/js.res
-#else
-#  echo 'FAIL' > $BUILD_DIR/js.res
-#fi
-#cat $BUILD_DIR/js.res
 
 #echo "##### RUN MIGRATION TEST #####"
 
