@@ -276,8 +276,19 @@
                     <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
-                        <label class="fixed">{{ 'end'|trans }}</label>
-                        <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
+                        <label class="checkbox radio">
+                            <input type="radio" name="optionsFinishAt" value="monthToMonth" data-bind="checked: $root.optionsFinishAt" >
+                            <i></i>
+                            <span>{{ 'when.cancelled' | trans }}</span>
+                            <div class="clearboth"></div>
+                        </label>
+                        <label class="checkbox radio finishAtLabel">
+                            <input type="radio" name="optionsFinishAt" value="finishAt" data-bind="checked: $root.optionsFinishAt" >
+                            <i></i>
+                            <span class="onFinishAt">{{ 'on' | trans }}</span>
+                            <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
+                            <div class="clearboth"></div>
+                        </label>
                     </div>
                 </div>
             </div>

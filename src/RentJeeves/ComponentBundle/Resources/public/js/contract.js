@@ -5,6 +5,7 @@ function Contract() {
     this.unitsList = ko.observableArray([]);
     this.currentPropertyId = ko.observable();
     this.currentUnitId = ko.observable();
+    this.optionsFinishAt = ko.observable('finishAt');
     this.contract = ko.observable();
     this.approve = ko.observable(false);
     this.review = ko.observable(false);
@@ -64,6 +65,7 @@ function Contract() {
     }
 
     this.editContract = function (contract) {
+
         self.errorsApprove([]);
         self.errorsEdit([]);
         $('#unit-edit').html(' ');
@@ -72,6 +74,12 @@ function Contract() {
 
         if (contract.first_name) {
             self.contract(contract);
+        }
+
+        if (self.contract().finish.length > 0) {
+            self.optionsFinishAt('finishAt');
+        } else {
+            self.optionsFinishAt('monthToMonth');
         }
 
         self.currentPropertyId(self.contract().property_id);
@@ -231,7 +239,6 @@ function Contract() {
     };
 
     this.saveContract = function (callback) {
-        callback = typeof callback !== 'undefined' ? callback : function(){};
         if (self.edit()) {
             var id = '#tenant-edit-property-popup';
         } else {
@@ -247,6 +254,10 @@ function Contract() {
 
         if (self.currentPropertyId() != undefined) {
             contract.property_id = self.currentPropertyId();
+        }
+
+        if (self.optionsFinishAt() === 'monthToMonth') {
+            contract.finish = null;
         }
 
         self.contract(contract);
@@ -280,7 +291,9 @@ function Contract() {
                     }
                 }
                 //end TODO
-                callback(response);
+                if (typeof callback === 'function' ) {
+                    callback(response);
+                }
             }
         });
     };

@@ -1790,6 +1790,14 @@
                     and specify any outstanding balance:
                 </target>
             </trans-unit>
+            <trans-unit id="on">
+                <source>on</source>
+                <target>On</target>
+            </trans-unit>
+            <trans-unit id="when.cancelled">
+                <source>when.cancelled</source>
+                <target>When cancelled</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -18,16 +18,9 @@ function Resolve() {
     };
 
     this.openFormContractEnded = function(data) {
-        $('.datepicker').datepicker({
-            showOn: "both",
-            buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
-            buttonImageOnly: true,
-            showOtherMonths: true,
-            selectOtherMonths: true,
-            dateFormat: 'm/d/yy',
-            minDate: new Date()
-        });
+        $(".datepicker").datepicker("disable");
         $('#contract-resolve-ended').dialog('open');
+        $(".datepicker").datepicker("enable");
     };
 
     this.closeForm = function() {
@@ -39,7 +32,6 @@ function Resolve() {
     };
 
     this.countErrorsEnded = function() {
-        console.info(self.errorsEnded().length);
         return parseInt(self.errorsEnded().length);
     }
 

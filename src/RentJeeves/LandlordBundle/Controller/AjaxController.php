@@ -165,6 +165,11 @@ class AjaxController extends Controller
         $contract = $this->getContract($contractId);
         $contract->setStatus(ContractStatus::FINISHED);
         $contract->setUncollectedBalance($uncollectedBalance);
+        // Not sure about this need ask Darryl
+        //$finishAt = $contract->getFinishAt();
+        //if (empty($finishAt)) {
+        //    $contract->setFinishAt(new DateTime());
+        //}
         $em = $this->getDoctrine()->getManager();
         $em->persist($contract);
         $em->flush($contract);
@@ -716,7 +721,11 @@ class AjaxController extends Controller
         $unit = $em->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
         $contract->setStartAt(new \Datetime($details['start']));
-        $contract->setFinishAt(new \Datetime($details['finish']));
+        if (!empty($details['finish'])) {
+            $contract->setFinishAt(new \Datetime($details['finish']));
+        } else {
+            $contract->setFinishAt(null);
+        }
         $contract->setTenant($tenant);
         $contract->setProperty($property);
         $contract->setUnit($unit);

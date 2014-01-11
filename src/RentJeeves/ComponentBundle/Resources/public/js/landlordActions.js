@@ -17,4 +17,13 @@ $(document).ready(function(){
         modal: true,
         width:'520px'
     });
+    $('.datepicker').datepicker({
+        showOn: "both",
+        buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+        buttonImageOnly: true,
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        dateFormat: 'm/d/yy',
+        minDate: new Date()
+    });
 });
