@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2e5e4cfeb6329dbc4788b3b0cc527919",
+    "hash": "17dbda51e39a27fb2a6824f1d6f711eb",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -2349,6 +2349,69 @@
             "time": "2013-06-08 13:13:40"
         },
         {
+            "name": "jms/job-queue-bundle",
+            "version": "dev-master",
+            "target-dir": "JMS/JobQueueBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/JMSJobQueueBundle.git",
+                "reference": "0604bf53a099639a56133a9ad84c550b7c0ca434"
+            },
+            "require": {
+                "doctrine/common": ">=2.3,<3.0",
+                "jms/di-extra-bundle": ">=1.1,<2.0",
+                "symfony/framework-bundle": ">=2.1,<3.0-dev"
+            },
+            "require-dev": {
+                "doctrine/doctrine-bundle": "*",
+                "doctrine/doctrine-fixtures-bundle": "*",
+                "doctrine/orm": "*",
+                "pagerfanta/pagerfanta": "dev-master",
+                "sensio/framework-extra-bundle": "*",
+                "symfony/browser-kit": "*",
+                "symfony/class-loader": "*",
+                "symfony/css-selector": "*",
+                "symfony/finder": "*",
+                "symfony/form": "*",
+                "symfony/process": "*",
+                "symfony/twig-bundle": "*",
+                "symfony/validator": "*",
+                "symfony/yaml": "*"
+            },
+            "suggest": {
+                "pagerfanta/pagerfanta": "Required when using the webinterface.",
+                "sensio/framework-extra-bundle": "Required when using the webinterface.",
+                "symfony/twig-bundle": "Required when using the webinterface."
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "JMS\\JobQueueBundle": ""
+                }
+            },
+            "license": [
+                "Apache2"
+            ],
+            "authors": [
+                {
+                    "name": "Johannes M. Schmitt",
+                    "email": "schmittjoh@gmail.com"
+                }
+            ],
+            "description": "Allows to schedule Symfony2 console commands as jobs.",
+            "homepage": "http://jmsyst.com/bundles/JMSJobQueueBundle",
+            "keywords": [
+                "job",
+                "queue"
+            ],
+            "time": "2013-11-20 10:37:02"
+        },
+        {
             "name": "jms/metadata",
             "version": "1.4.2",
             "source": {
@@ -3007,6 +3070,72 @@
                 "rest"
             ],
             "time": "2013-09-12 08:51:49"
+        },
+        {
+            "name": "pagerfanta/pagerfanta",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/whiteoctober/Pagerfanta.git",
+                "reference": "431c22dbc515c81379c8235e633de721e9cb74f2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/whiteoctober/Pagerfanta/zipball/431c22dbc515c81379c8235e633de721e9cb74f2",
+                "reference": "431c22dbc515c81379c8235e633de721e9cb74f2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "doctrine/mongodb-odm": "1.0.*@dev",
+                "doctrine/orm": "2.3.*",
+                "doctrine/phpcr-odm": "1.0.*",
+                "jmikola/geojson": "1.0.*",
+                "mandango/mandango": "1.0.*@dev",
+                "phpunit/phpunit": "3.7.*",
+                "propel/propel1": "~1.6",
+                "solarium/solarium": "3.1.*"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "To use the DoctrineODMMongoDBAdapter.",
+                "doctrine/orm": "To use the DoctrineORMAdapter.",
+                "doctrine/phpcr-odm": "To use the DoctrineODMPhpcrAdapter. >= 1.1.0",
+                "mandango/mandango": "To use the MandangoAdapter.",
+                "propel/propel1": "To use the PropelAdapter",
+                "solarium/solarium": "To use the SolariumAdapter."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pagerfanta\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pablo Díez",
+                    "email": "pablodip@gmail.com",
+                    "homepage": "http://github.com/pablodip"
+                }
+            ],
+            "description": "Pagination for PHP 5.3",
+            "keywords": [
+                "page",
+                "pagination",
+                "paginator",
+                "paging"
+            ],
+            "time": "2014-01-06 01:39:45"
         },
         {
             "name": "payum/authorize-net-aim",
@@ -5195,6 +5324,8 @@
         "doctrine/doctrine-migrations-bundle": 20,
         "apy/jsfv-bundle": 20,
         "willdurand/expose-translation-bundle": 20,
+        "jms/job-queue-bundle": 20,
+        "pagerfanta/pagerfanta": 20,
         "behat/mink-bundle": 20,
         "doctrine/data-fixtures": 20,
         "doctrine/doctrine-fixtures-bundle": 15,

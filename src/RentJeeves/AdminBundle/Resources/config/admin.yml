@@ -1,4 +1,26 @@
 services:
+    sonata.admin.jobs:
+        class: RentJeeves\AdminBundle\Admin\JobAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Jobs" }
+        arguments:
+            - ~
+            - JMS\JobQueueBundle\Entity\Job
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.payments:
+        class: RentJeeves\AdminBundle\Admin\PaymentAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Paymnets" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\Payment
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
     sonata.admin.rj_email:
         class: RentJeeves\AdminBundle\Admin\EmailTemplateAdmin
         tags:
@@ -74,17 +96,6 @@ services:
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\Contract
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
-    sonata.admin.orders:
-        class: RentJeeves\AdminBundle\Admin\OrderAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Payments" }
-        arguments:
-            - ~
-            - CreditJeeves\DataBundle\Entity\Order
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]

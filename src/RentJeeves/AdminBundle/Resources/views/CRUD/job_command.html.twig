@@ -1,0 +1,7 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+{% import "JMSJobQueueBundle:Job:macros.html.twig" as macros %}
+{% block field %}
+    <a href="{{ path('jms_jobs_details', { "id": object.id }) }}">
+        {{ macros.command(object) }}
+    </a>
+{% endblock %}

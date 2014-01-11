@@ -153,6 +153,10 @@
         {
             "type": "git",
             "url": "git@github.com:formapro/xmlseclib.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/JMSJobQueueBundle.git"
         }
     ],
     "require": {
@@ -219,7 +223,9 @@
         "doctrine/doctrine-migrations-bundle": "dev-master",
         "guzzle/http": "v3.5.0",
         "apy/jsfv-bundle":"dev-master",
-        "willdurand/expose-translation-bundle": "dev-master"
+        "willdurand/expose-translation-bundle": "dev-master",
+        "jms/job-queue-bundle": "dev-master",
+        "pagerfanta/pagerfanta": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",

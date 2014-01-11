@@ -99,3 +99,14 @@ _bazinga_exposetranslation:
 fos_security:
     resource: "@UserBundle/Controller/SecurityController.php"
     type:     annotation
+
+jms_jobs_details:
+    defaults: { _controller: JMSJobQueueBundle:Job:details }
+    path: /admin/job/{id}
+
+jms_jobs_overview:
+    path: /admin/job/list
+
+jms_jobs_retry_job:
+    defaults: { _controller: JMSJobQueueBundle:Job:retryJob }
+    path: /admin/job/{id}/retryJob

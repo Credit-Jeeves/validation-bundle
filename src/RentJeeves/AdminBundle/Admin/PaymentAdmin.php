@@ -9,29 +9,29 @@ use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 
-class OrderAdmin extends Admin
+class PaymentAdmin extends Admin
 {
     /**
      * {@inheritdoc}
      */
     public function createQuery($context = 'list')
     {
-        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
+//        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
+//        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
         $query = parent::createQuery($context);
-        $alias = $query->getRootAlias();
-        if (!empty($nUserId)) {
-            $this->request->getSession()->set('user_id', $nUserId);
-            $query->andWhere($alias.'.cj_applicant_id = :user_id');
-            $query->setParameter('user_id', $nUserId);
-        }
-        if (!empty($nContractId)) {
-            $contract =  $this->getModelManager()->find('RjDataBundle:Contract', $nContractId);
-            $this->request->getSession()->set('contract_id', $nContractId);
-            $query->innerJoin($alias.'.operations', $alias.'_o');
-            $query->andWhere($alias.'_o.contract = :contract');
-            $query->setParameter('contract', $contract);
-        }
+//        $alias = $query->getRootAlias();
+//        if (!empty($nUserId)) {
+//            $this->request->getSession()->set('user_id', $nUserId);
+//            $query->andWhere($alias.'.cj_applicant_id = :user_id');
+//            $query->setParameter('user_id', $nUserId);
+//        }
+//        if (!empty($nContractId)) {
+//            $contract =  $this->getModelManager()->find('RjDataBundle:Contract', $nContractId);
+//            $this->request->getSession()->set('contract_id', $nContractId);
+//            $query->innerJoin($alias.'.operations', $alias.'_o');
+//            $query->andWhere($alias.'_o.contract = :contract');
+//            $query->setParameter('contract', $contract);
+//        }
         return $query;
     }
 
@@ -47,43 +47,16 @@ class OrderAdmin extends Admin
             ->add('created_at', 'date')
             ->add('updated_at', 'date')
             ->add('type')
-            ->add('status', 'string', ['template' => 'AdminBundle:CRUD:payments_status_choice.html.twig'])
-            ->add('heartland_transaction_ids')
-            ->add('operation_type')
-            ->add('amount', 'money')
-            ->add('group_name', 'string', ['template' => 'AdminBundle:CRUD:payments_group_landlords.html.twig'])
-            ->add('user.full_name', 'string', ['template' => 'AdminBundle:CRUD:payments_show_tenant.html.twig'])
-            ->add('user.email');
+            ->add('status')
+            ->add('amount', 'money');
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('user.email')
+            ->add('id')
             ->add('type')
             ->add('amount')
-            ->add(
-                'transaction_id',
-                'doctrine_orm_callback',
-                [
-                    'callback' => function ($queryBuilder, $alias, $field, $value) {
-                        if (empty($value['value'])) {
-                            return;
-                        }
-                        $queryBuilder
-                            ->innerJoin($alias.'.heartlands', $alias.'_h')
-                            ->where($alias.'_h.transactionId = :id')
-                            ->setParameter('id', $value['value']);
-
-                        if ($queryBuilder->getQuery()->getResult()) {
-                            return true;
-                        }
-
-                        return false;
-                    },
-                    'field_type' => 'text'
-                ]
-            )
             ->add('status')
             ->add(
                 'created_at',
@@ -149,7 +122,7 @@ class OrderAdmin extends Admin
         $menu = $menu->addChild(
             $this->trans(
                 $this->getLabelTranslatorStrategy()->getLabel(
-                    'Orders List',
+                    'Payments List',
                     'breadcrumb',
                     'link'
                 ),
@@ -157,7 +130,7 @@ class OrderAdmin extends Admin
                 'SonataAdminBundle'
             ),
             array(
-                'uri' => $this->routeGenerator->generate('admin_creditjeeves_data_order_list')
+                'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_payment_list')
             )
         );
         return $this->breadcrumbs[$action] = $menu;

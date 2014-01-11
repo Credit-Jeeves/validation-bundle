@@ -84,3 +84,17 @@ Selenium server (RC) version 2.33.0 does not work with Firefox 23.x
 STG
 ---
 Last DB 20130924_credit_jeeves_2_before_RT.sql
+
+
+Merge Live-RT into master
+-------------------------
+composer' updates:
+
+jms/serializer
+formapro/xmlseclibs
+hat/environment dev-ton
+credit-jeeves/api-bundle
+jms/job-queue-bundle
+pagerfanta/pagerfanta
+
+sensio/generator-bundle

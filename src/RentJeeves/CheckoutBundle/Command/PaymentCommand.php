@@ -100,7 +100,7 @@ class PaymentCommand extends ContainerAwareCommand
                 $fee = (double)$this->getContainer()->getParameter('payment_bank_fee');
                 $order->setType(OrderType::HEARTLAND_BANK);
             }
-            $operation->setAmount($amount);
+
             $order->addOperation($operation);
             $order->setUser($paymentAccount->getUser());
             $order->setAmount($amount); // TODO findout about fee

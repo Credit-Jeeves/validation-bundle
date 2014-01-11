@@ -40,6 +40,7 @@ class AppRjKernel extends AppKernel
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
             new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
+            new JMS\JobQueueBundle\JMSJobQueueBundle(),
 
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
