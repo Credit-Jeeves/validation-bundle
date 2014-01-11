@@ -204,7 +204,7 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where('c.group = :group AND c.paidTo < :date AND c.status <> :status');
-        $query->orWhere('c.group = :group AND c.finishAt < :today AND c.status <> :status');
+        $query->orWhere('c.group = :group AND c.finishAt < :today AND c.status <> :status AND c.finishAt IS NOT NULL');
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
         $query->setParameter('today', new \Datetime());

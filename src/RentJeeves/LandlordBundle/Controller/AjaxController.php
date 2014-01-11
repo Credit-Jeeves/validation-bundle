@@ -23,6 +23,8 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
+use \DateTime;
+use \Exception;
 
 /**
  * 
@@ -34,27 +36,17 @@ class AjaxController extends Controller
     /* Property */
 
 
-    /**
-     * @Route(
-     *     "/landlord/contract/end/{contractId}",
-     *     name="landlord_end_contract",
-     *     defaults={"_format"="json"},
-     *     requirements={"_format"="json"},
-     *     options={"expose"=true}
-     * )
-     * @Method({"POST"})
-     */
-    public function contractEnd($contractId, Request $request)
+    private function getContract($contractId)
     {
-        $translator = $this->get('translator');
-        $group = $this->getCurrentGroup();
         $repositoryContract = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $uncollectedBalance = $request->request->get('uncollectedBalance', 0);
-        $uncollectedBalance = floatval($uncollectedBalance);
         /**
          * @var $contract Contract
          */
         $contract = $repositoryContract->find($contractId);
+        $translator = $this->get('translator');
+        /**
+         * @var $contract Contract
+         */
         if (empty($contract)) {
             throw new NotFoundHttpException(
                 $translator->trans(
@@ -82,6 +74,95 @@ class AjaxController extends Controller
             );
         }
 
+        return $contract;
+    }
+
+    /**
+     * @Route(
+     *     "/landlord/contract/monthToMonth/{contractId}",
+     *     name="landlord_month_to_month",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     */
+    public function contractMonthToMonth($contractId, Request $request)
+    {
+        $translator = $this->get('translator');
+        $group = $this->getCurrentGroup();
+        $contract = $this->getContract($contractId);
+        $contract->setFinishAt(null);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($contract);
+        $em->flush($contract);
+
+        return new JsonResponse(
+            array(
+                'status'  => 'successful',
+            )
+        );
+    }
+
+    /**
+     * @Route(
+     *     "/landlord/contract/changeEndDate/{contractId}",
+     *     name="landlord_change_end_date_contract",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function contractChangeEndDate($contractId, Request $request)
+    {
+        $translator = $this->get('translator');
+        $group = $this->getCurrentGroup();
+
+        $finishAt = $request->request->get('finishAt', null);
+        $finishAt = DateTime::createFromFormat('m/d/Y', $finishAt);
+        $errors = DateTime::getLastErrors();
+
+        if ($errors['warning_count'] > 0 || $errors['error_count'] > 0) {
+            return new JsonResponse(
+                array(
+                    'status'  => 'error',
+                    'errors'  => array(
+                        'Invalid date',
+                    )
+                )
+            );
+        }
+        $contract = $this->getContract($contractId);
+        $contract->setFinishAt($finishAt);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($contract);
+        $em->flush($contract);
+
+        return new JsonResponse(
+            array(
+                'status'  => 'successful',
+            )
+        );
+    }
+
+    /**
+     * @Route(
+     *     "/landlord/contract/end/{contractId}",
+     *     name="landlord_end_contract",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function contractEnd($contractId, Request $request)
+    {
+        $translator = $this->get('translator');
+        $group = $this->getCurrentGroup();
+        $uncollectedBalance = $request->request->get('uncollectedBalance', 0);
+        $uncollectedBalance = floatval($uncollectedBalance);
+
+        $contract = $this->getContract($contractId);
         $contract->setStatus(ContractStatus::FINISHED);
         $contract->setUncollectedBalance($uncollectedBalance);
         $em = $this->getDoctrine()->getManager();

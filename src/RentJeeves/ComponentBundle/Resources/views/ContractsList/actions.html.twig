@@ -1,62 +1,122 @@
-<!-- Resolve Popup -->
-<div id="contract-resolve" class="pricing-popup dashboard-popup properties-popup">
-    <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
-    <div class="clearfix halfs-box">
-        <div class="grey-half-box" data-bind="with: details">
-            <h4>{{ 'tenant.info' | trans() }}</h4>
-            <div class="sub-box">
-                <p data-bind="text: tenant"></p>
-                <p data-bind="text: full_address"></p>
-            </div>
-            <div class="sub-box">
-                <p>{{ 'conflict.due.date' | trans() }}:&nbsp;<strong data-bind="text: late_date"></strong></p>
-                <p class="late" data-bind="text: late"></p>
+<div id="contract-resolve">
+    <!-- Resolve Popup Late -->
+    <div id="contract-resolve-late" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
+        <div class="clearfix halfs-box">
+            {% include 'RjComponentBundle:ContractsList:_tenantInfoBlock.html.twig' %}
+            <div class="half-box right">
+                <h4>{{ 'conflict.resolve.options' | trans() }}</h4>
+                <ul class="type_checkbox">
+                    <li>
+                        <label class="checkbox radio">
+                            <input type="radio" name="ResolutionOptions" title="email" checked>
+                            <i></i>
+                            <span>{{ 'conflict.resolve.email' | trans() }}</span>
+                        </label>
+                        <div class="row-10"></div>
+                    </li>
+                    <li>
+                        <label class="checkbox radio">
+                            <input type="radio" name="ResolutionOptions" title="paid">
+                            <i></i>
+                            <span>{{ 'conflict.resolve.paid' | trans() }}</span>
+                        </label>
+                        <div class="row-10"></div>
+                    </li>
+                    <li>
+                        <div class="amount-paid-label floatleft">{{ 'contract.paid.cash' | trans }}</div>
+                        <div class="amount-paid-input floatleft"><input type="text" id="amount-paid"></div>
+                        <div class="clearboth"></div>
+                    </li>
+                    <li>
+                        <div class="row-10"></div>
+                        {{ 'contract.resolve.warning' | trans }}
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="half-box right">
-            <h4>{{ 'conflict.resolve.options' | trans() }}</h4>
-            <ul class="type_checkbox">
-                <li>
-                    <label class="checkbox radio">
-                        <input type="radio" name="ResolutionOptions" title="email" checked>
-                        <i></i>
-                        <span>{{ 'conflict.resolve.email' | trans() }}</span>
-                    </label>
-                    <div class="row-10"></div>
-                </li>
-                <li>
-                    <label class="checkbox radio">
-                        <input type="radio" name="ResolutionOptions" title="paid">
-                        <i></i>
-                        <span>{{ 'conflict.resolve.paid' | trans() }}</span>
-                    </label>
-                    <div class="row-10"></div>
-                </li>
-                <li>
-                    <div class="amount-paid-label floatleft">{{ 'contract.paid.cash' | trans }}</div>
-                    <div class="amount-paid-input floatleft"><input type="text" id="amount-paid"></div>
-                    <div class="clearboth"></div>
-                </li>
-                <li>
-                    <div class="row-10"></div>
-                    {{ 'contract.resolve.warning' | trans }}
-                </li>
-            </ul>
+        <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
+            <div class="footer-button-box">
+                <button class="button buttonFix" data-bind="click: resolve">
+                    <span>{{ 'conflict.resolve.action' | trans() }}</span>
+                </button>
+                <button class="button grey buttonFix" data-bind="click: closeForm">
+                    <span>{{ 'cancel' | trans() }}</span>
+                </button>
+            </div>
         </div>
     </div>
-    <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
-        <div class="footer-button-box">
-            <button class="button buttonFix" data-bind="click: resolve">
-                <span>{{ 'conflict.resolve.action' | trans() }}</span>
-            </button>
-            <button class="button grey buttonFix" data-bind="click: closeForm">
-                <span>{{ 'cancel' | trans() }}</span>
-            </button>
-        </div>
-    </div>
-</div>
-<!-- End Resolve Popup -->
+    <!-- End Resolve Popup Late -->
 
+    <!-- Resolve Popup Ended -->
+    <div id="contract-resolve-ended" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'conflict.resolve.title' | trans() }}</h1>
+        <div class="clearfix halfs-box">
+            <div class="attention-box pie-el" data-bind="visible: countErrorsEnded() > 0">
+                <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
+                <ul class="default">
+                    <!-- ko foreach: $root.errorsEnded -->
+                    <li data-bind="text: $data"></li>
+                    <!-- /ko -->
+                </ul>
+            </div>
+            <div class="row-20"></div>
+            {% include 'RjComponentBundle:ContractsList:_tenantInfoBlock.html.twig' %}
+            <div class="half-box right">
+                <h4>{{ 'conflict.resolve.options' | trans() }}</h4>
+                <ul class="type_checkbox">
+                    <li>
+                        <label class="checkbox radio">
+                            <input type="radio" name="ResolutionOptions" value="monthToMonth" data-bind="checked: resolutionOptionsEnded" title='{{ 'month.to.month'|trans }}' checked>
+                            <i></i>
+                            <span>{{ 'month.to.month' | trans() }}</span>
+                        </label>
+                        <div class="row-10"></div>
+                    </li>
+                    <li class="resolutionRadio">
+                        <label class="checkbox radio">
+                            <input type="radio" name="ResolutionOptions" value="changeDate" data-bind="checked: resolutionOptionsEnded"  title='{{ 'change.end.date'|trans()  }}'>
+                            <i></i>
+                            <span>{{ 'change.end.date' | trans() }}</span>
+                            <div class="clearboth"></div>
+                            <div class="input-end-contract floatleft">
+                                <input type="text" name="endDate" class="half-of-right datepicker" value="" data-bind="value: endedContractDate" />
+                            </div>
+                        </label>
+                        <div class="row-20"></div>
+                    </li>
+                    <li class="resolutionRadio">
+                        <label class="checkbox radio">
+                            <input type="radio" name="ResolutionOptions" value="markFinished" data-bind="checked: resolutionOptionsEnded"  title='{{ 'mark.as.finished' | trans }}'>
+                            <i></i>
+                            <span>{{ 'mark.as.finished' | trans }}</span>
+                            <div class="clearboth"></div>
+                            <div class="input-end-contract floatleft">
+                                <input type="text" value="" data-bind="value: outstandingBalance" class="half-of-right">
+                            </div>
+                        </label>
+                        <div class="row-20"></div>
+                    </li>
+                    <li>
+                        <div class="row-20"></div>
+                        {{ 'outstanding.description' | trans }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="clearfix col-box">
+            <div class="footer-button-box">
+                <button class="button buttonFix" data-bind="click: resolveEnded">
+                    <span>{{ 'conflict.resolve.action' | trans() }}</span>
+                </button>
+                <button class="button grey buttonFix" data-bind="click: closeFormEnded">
+                    <span>{{ 'cancel' | trans() }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- End Resolve Popup Ended -->
+</div>
 <div id="actions-block" class="landrord-box contracts-block">
     <div class="title-box clearfix">
       <h2 data-bind="text: '{{'action.required'|trans}} (' + $root.total() + ')'"></h2>

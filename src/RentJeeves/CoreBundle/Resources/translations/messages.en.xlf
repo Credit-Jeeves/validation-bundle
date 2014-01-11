@@ -1775,6 +1775,21 @@
                     Contract by id %%CONTRACTID%% does not your!
                 </target>
             </trans-unit>
+            <trans-unit id="month.to.month">
+                <source>month.to.month</source>
+                <target>Go "Month to Month"</target>
+            </trans-unit>
+            <trans-unit id="change.end.date">
+                <source>change.end.date</source>
+                <target>Change end date:</target>
+            </trans-unit>
+            <trans-unit id="mark.as.finished">
+                <source>mark.as.finished</source>
+                <target>
+                    Mark as "Finished" (tenant moved out)
+                    and specify any outstanding balance:
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

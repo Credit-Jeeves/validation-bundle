@@ -50,3 +50,10 @@
 .column-order-type {
     width: 30px;
 }
+.resolutionRadio {
+    height: 60px;
+}
+.input-end-contract input {
+    width: 98px;
+    float: left;
+}
