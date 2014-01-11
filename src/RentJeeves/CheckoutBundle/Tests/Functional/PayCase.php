@@ -204,14 +204,14 @@ class PayCase extends BaseTestCase
         $payPopup->pressButton('checkout.make_payment');
 
         $this->session->wait(
-            $this->timeout,
+            $this->timeout+5000,
             "false" // FIXME
         );
 
         $this->page->clickLink('tabs.summary');
 
         $this->session->wait(
-            $this->timeout,
+            $this->timeout+5000,
             "jQuery('#component-card-utilization-box:visible').length"
         );
         $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));

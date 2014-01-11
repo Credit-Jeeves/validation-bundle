@@ -426,7 +426,7 @@ class TenantCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         //Check created contracts
@@ -443,19 +443,20 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
 
-        $this->assertNotNull($review = $this->page->find('css', 'a.review'));
+        $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
         $review->click();
+        $this->assertNotNull($sendReminder = $this->page->find('css', '.sendReminder'));
+        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
+        $sendReminder->click();
+        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.overlay-trigger').is(':visible')");
+        $sendReminder->click();
 
-        $this->page->pressButton('send.reminder');
         $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay-trigger')");
 
-        $this->page->pressButton('send.reminder');
-
-        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.overlay-trigger')");
-
-        $this->assertNotNull($error = $this->page->find('css', '#tenant-review-property-popup .error'));
+        $this->assertNotNull($error = $this->page->find('css', '.default>li'));
         $this->assertEquals('contract.reminder.error.already.send', $error->getText(), 'Wrong text error');
         $this->logout();
         // check email
@@ -564,7 +565,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
 
-        $this->assertNotNull($review = $this->page->find('css', 'a.review'));
+        $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
         $review->click();
         
         $this->page->clickLink('revoke.inv');
