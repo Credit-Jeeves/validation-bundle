@@ -3,6 +3,113 @@
 
 <div id="contract-actions">
 
+    <!-- Action Remove Contract Confirm-->
+    <div id="contract-remove-popup" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'remove.contract'|trans }}</h1>
+        <div class="clearfix col-box"  data-bind="with: contract">
+            <div class="attention-box pie-el">
+                {{ 'remove.contract.description'|trans }}
+            </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'tenant.info'|trans }}</span>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'name'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: tenant"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: address"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'phone'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value"  data-bind="text: phone"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'email'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: email"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-button-box">
+            <button class="button dark" data-bind="click: $root.removeContract">
+                <span>{{ 'yes.remove.contract'|trans }}</span>
+            </button>
+            <button class="button grey" data-bind="click: $root.cancelRemove">
+                <span>{{ 'cancel'|trans }}</span>
+            </button>
+        </div>
+    </div>
+    <!-- Remove Contract Confirm-->
+    <!-- Action End Contract-->
+    <div id="tenant-end-contract" class="pricing-popup dashboard-popup properties-popup">
+        <h1>{{ 'end.contract'|trans }}</h1>
+        <div class="clearfix col-box"  data-bind="with: contract">
+            <div class="attention-box pie-el">
+                {{ 'end.contract.description'|trans }}
+            </div>
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'tenant.info'|trans }}</span>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'name'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: tenant"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'property'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: address"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'phone'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value"  data-bind="text: phone"></span>
+                    </div>
+                </div>
+                <div class="form-row clearfix">
+                    <label>{{ 'email'|trans }}</label>
+                    <div class="fields-box">
+                        <span class="value" data-bind="text: email"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <h4 class="clearfix">
+                    <span>{{ 'uncollected.outstanding.balance'|trans }}</span>
+                    <i class="help pie-el tooltip-link" title="{{ 'outstanding.description'|trans }}">?</i>
+                </h4>
+                <div class="form-row clearfix">
+                    <label>{{ 'amount'|trans }}</label>
+                    <div class="fields-box">
+                        <input type="text" data-bind="value: $root.outstandingBalance" value="" class="half-of-right outstandingBalance" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-button-box">
+            <button class="button dark" data-bind="click: $root.endContractExecute">
+                <span>{{ 'yes.end.contract'|trans }}</span>
+            </button>
+            <button class="button grey" data-bind="click: $root.leaveIntact">
+                <span>{{ 'no.leave.intact'|trans }}</span>
+            </button>
+        </div>
+    </div>
+    <!-- End Contract -->
     <!-- Action Revoke-->
     <div id="tenant-revoke-invotation" class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'Information'|trans }}</h1>
@@ -45,7 +152,7 @@
             <div class="col">
                 <h4 class="clearfix">
                     <span>{{ 'request.payments'|trans }}</span>
-                    <i class="help pie-el tooltip-link" title="Enter the monthly amount for rent. The start and end dates will be used to calculate when rent is due, and if rent is late.">?</i>
+                    <i class="help pie-el tooltip-link" title="{{ 'help.popup'|trans }}">?</i>
                 </h4>
                 <div class="form-row clearfix">
                     <label>{{ 'property'|trans }}</label>
@@ -81,7 +188,7 @@
     <!-- Action Revoke -->
     <!-- Action Edit -->
     <div id="tenant-edit-property-popup" class="pricing-popup dashboard-popup properties-popup">
-        <h1>{{ 'edit.tenant.info'|trans }}</h1>
+        <h1>{{ 'edit.contract'|trans }}</h1>
         <div class="clearfix col-box" data-bind="with: contract">
             <div style="" class="attention-box pie-el" data-bind="visible: $root.countErrorsEdit() > 0">
                 <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
@@ -169,8 +276,19 @@
                     <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
                     <div class="fields-box">
                         <input type="text" value="" class="datepicker-field" data-bind="value: start" id="contractEditStart">
-                        <label class="fixed">{{ 'end'|trans }}</label>
-                        <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
+                        <label class="checkbox radio">
+                            <input type="radio" name="optionsFinishAt" value="monthToMonth" data-bind="checked: $root.optionsFinishAt" >
+                            <i></i>
+                            <span>{{ 'when.cancelled' | trans }}</span>
+                            <div class="clearboth"></div>
+                        </label>
+                        <label class="checkbox radio finishAtLabel">
+                            <input type="radio" name="optionsFinishAt" value="finishAt" data-bind="checked: $root.optionsFinishAt" >
+                            <i></i>
+                            <span class="onFinishAt">{{ 'on' | trans }}</span>
+                            <input type="text" value="" class="datepicker-field" data-bind="value: finish" id="contractEditFinish">
+                            <div class="clearboth"></div>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -181,7 +299,12 @@
             </button>
             <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
             <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
-            <a href="#" class="link" data-bind="ifnot: reminder_revoke, click: $root.removeTenant">{{'remove.tenant'|trans|raw}}</a>
+            <a href="#" class="link" data-bind="if: status == 'CURRENT' ,  click: $root.openEndContractPopup">
+                {{'end.br.contract'|trans|raw}}
+            </a>
+            <a href="#" class="link" data-bind="if: status != 'CURRENT' && !reminder_revoke,  click: $root.removeContractConfirm">
+                {{'remove.tenant'|trans|raw}}
+            </a>
             <a href="#" class="link" data-bind="if: reminder_revoke, click: $root.closeReminderRevoke">
                 {{ 'revoke.inv'|trans|raw}}
             </a>

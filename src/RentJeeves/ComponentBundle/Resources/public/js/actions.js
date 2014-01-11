@@ -1,33 +1,3 @@
-function Resolve() {
-  var self = this;
-  this.details = ko.observable();
-  this.openForm = function(data) {
-    $('#contract-resolve').dialog('open');
-    $('#amount-paid').val(data.amount);
-    self.details(data);
-  };
-  this.closeForm = function() {
-    $('#contract-resolve').dialog('close');
-  };
-  this.resolve = function() {
-    $.ajax({
-      url: Routing.generate('landlord_conflict_resolve'),
-      type: 'POST',
-      dataType: 'json',
-      data: {
-          'contract_id' : self.details().id,
-          'amount': $('#amount-paid').val(),
-          'action' : $('input[name=ResolutionOptions]:checked').attr('title')
-      },
-      success: function() {
-        ActionsViewModel.ajaxAction();
-        PaymentsViewModel.ajaxAction();
-        self.closeForm();
-      }
-    });
-  };
-};
-
 function Actions() {
   var limit = 10;
   var current = 1;
@@ -152,18 +122,3 @@ function Actions() {
      self.ajaxAction();
   };
 }
-
-var ActionsViewModel = new Actions();
-var ResolveViewModel = new Resolve();
-
-$(document).ready(function(){
-  ko.applyBindings(ActionsViewModel, $('#actions-block').get(0));
-  ko.applyBindings(ResolveViewModel, $('#contract-resolve').get(0));
-  ActionsViewModel.ajaxAction();
-  $('#contract-resolve').dialog({ 
-    autoOpen: false,
-    resizable: false,
-    modal: true,
-    width:'520px'
-});  
-});

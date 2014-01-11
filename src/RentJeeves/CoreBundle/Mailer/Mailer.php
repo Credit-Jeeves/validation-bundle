@@ -285,4 +285,18 @@ class Mailer extends BaseMailer
 
         return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
+
+    public function endContractByLandlord($contract, $landlord, $tenant, $template = 'rjEndContract')
+    {
+        $unit = $contract->getUnit();
+        $vars = array(
+            'tenantFullName'      => $tenant->getFullName(),
+            'landlordFullName'    => $landlord->getFullName(),
+            'uncollectedBalance' => $contract->getUncollectedBalance(),
+            'address'             => $contract->getProperty()->getAddress(),
+            'unitName'            => $unit ? $unit->getName() : '',
+        );
+
+        return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
 }

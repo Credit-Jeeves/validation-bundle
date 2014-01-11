@@ -163,3 +163,17 @@ height: 23px;
 .approve.grey {
     background-color: #999999;
 }
+#contractEditFinish {
+    margin-left: 8px;
+    margin-top: 0px;
+}
+.onFinishAt {
+    float: left;
+}
+.fields-box input.datepicker-field {
+    width: 75px;
+}
+.finishAtLabel {
+    margin-left: 33px !important;
+    width: 175px !important;
+}

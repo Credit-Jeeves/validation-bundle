@@ -64,3 +64,5 @@ fixtures:
     name: rjMerchantNameSetuped.html
   email_32:
     name: rj_resetting.html
+  email_33:
+    name: rjEndContract.html

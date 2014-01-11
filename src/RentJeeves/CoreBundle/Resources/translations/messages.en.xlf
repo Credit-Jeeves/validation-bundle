@@ -1705,6 +1705,99 @@
                 <source>remove.property.confirm</source>
                 <target>Are you sure you want to delete this property?</target>
             </trans-unit>
+            <trans-unit id="edit.contract">
+                <source>edit.contract</source>
+                <target>Edit Contract</target>
+            </trans-unit>
+            <trans-unit id="end.contract">
+                <source>end.contract</source>
+                <target>End Contract</target>
+            </trans-unit>
+            <trans-unit id="end.br.contract">
+                <source>end.br.contract</source>
+                <target><![CDATA[End <br />Contract]]></target>
+            </trans-unit>
+            <trans-unit id="yes.end.contract">
+                <source>yes.end.contract</source>
+                <target>Yes, End Contract</target>
+            </trans-unit>
+            <trans-unit id="yes.remove.contract">
+                <source>yes.remove.contract</source>
+                <target>Yes, Remove Contract</target>
+            </trans-unit>
+            <trans-unit id="no.leave.intact">
+                <source>no.leave.intact</source>
+                <target>No, Leave Intact</target>
+            </trans-unit>
+            <trans-unit id="uncollected.outstanding.balance">
+                <source>uncollected.outstanding.balance</source>
+                <target>Uncollected Outstanding Balance</target>
+            </trans-unit>
+            <trans-unit id="end.contract.description">
+                <source>end.contract.description</source>
+                <target>
+                    Are you sure want to end this contract?
+                    Please enter any uncollected balance, or $0 if lease was paid
+                    in full. Tenant payment history will be reported to credit service
+                    agencies.
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.contract.description">
+                <source>remove.contract.description</source>
+                <target>
+                    Are you sure want to remove this contract?
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.contract">
+                <source>remove.contract</source>
+                <target>
+                    Remove Contract Confirm
+                </target>
+            </trans-unit>
+            <trans-unit id="outstanding.description">
+                <source>outstanding.description</source>
+                <target>
+                    When you provide outstanding balance information, you understand
+                    that this information will be reported to a credit service agency.
+                    You therefore agree to handle any associated disputes arising from the
+                    information you provide.
+                </target>
+            </trans-unit>
+            <trans-unit id="outstanding.validate.contract.not.exist">
+                <source>outstanding.validate.contract.not.exist</source>
+                <target>
+                    Contract by id %%CONTRACTID%% does not exist
+                </target>
+            </trans-unit>
+            <trans-unit id="outstanding.validate.contract.not.your">
+                <source>outstanding.validate.contract.not.your</source>
+                <target>
+                    Contract by id %%CONTRACTID%% does not your!
+                </target>
+            </trans-unit>
+            <trans-unit id="month.to.month">
+                <source>month.to.month</source>
+                <target>Go "Month to Month"</target>
+            </trans-unit>
+            <trans-unit id="change.end.date">
+                <source>change.end.date</source>
+                <target>Change end date:</target>
+            </trans-unit>
+            <trans-unit id="mark.as.finished">
+                <source>mark.as.finished</source>
+                <target>
+                    Mark as "Finished" (tenant moved out)
+                    and specify any outstanding balance:
+                </target>
+            </trans-unit>
+            <trans-unit id="on">
+                <source>on</source>
+                <target>On</target>
+            </trans-unit>
+            <trans-unit id="when.cancelled">
+                <source>when.cancelled</source>
+                <target>When cancelled</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
