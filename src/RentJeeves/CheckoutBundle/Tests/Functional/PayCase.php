@@ -17,7 +17,9 @@ class PayCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
-        $this->page->pressButton('contract-pay-1');
+        $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
+        $this->assertCount(3, $payButtons, 'Wrong number of contracts');
+        $payButtons[2]->click();
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
         $this->assertNotNull($payPopup = $payPopup->getParent());
 
@@ -202,14 +204,14 @@ class PayCase extends BaseTestCase
         $payPopup->pressButton('checkout.make_payment');
 
         $this->session->wait(
-            $this->timeout,
+            $this->timeout+5000,
             "false" // FIXME
         );
 
         $this->page->clickLink('tabs.summary');
 
         $this->session->wait(
-            $this->timeout,
+            $this->timeout+5000,
             "jQuery('#component-card-utilization-box:visible').length"
         );
         $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));

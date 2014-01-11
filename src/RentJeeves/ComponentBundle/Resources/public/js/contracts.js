@@ -1,5 +1,9 @@
 function ContractDetails() {
   var self = this;
+  this.propertiesList = ko.observableArray([]);
+  this.unitsList = ko.observableArray([]);
+  this.currentPropertyId = ko.observable();
+  this.currentUnitId = ko.observable();
   this.contract = ko.observable();
   this.approve = ko.observable(false);
   this.review = ko.observable(false);
@@ -20,7 +24,7 @@ function ContractDetails() {
   };
 
   this.getUnits = function(propertyId) {
-      $('#unit-edit').html(' ');
+      self.unitsList([]);
       $('#unit-edit').parent().find('.loader').show();
       $.ajax({
           url: Routing.generate('landlord_units_list'),
@@ -29,26 +33,29 @@ function ContractDetails() {
           data: {'property_id': propertyId },
           success: function(response) {
               $('#unit-edit').parent().find('.loader').hide();
-              if(response.units.length <= 0) {
-                  return;
-              }
-
-              var html = '';
-              console.info();
-              $.each(response.units, function(index, value) {
-                  var id = $(this).get(0).id;
-                  var name = $(this).get(0).name;
-                  var selected = '';
-                  if (id == self.contract().unit_id) {
-                      var selected = 'selected="selected"';
-                  }
-                  var option = '<option value="'+id+'" '+selected+'>'+name+'</option>';
-                  html += option;
-              });
-
-              $('#unit-edit').html(html);
+              self.unitsList(response.units);
           }
       });
+  };
+
+  this.onPropertyChange = function(property, event) {
+     if (self.currentPropertyId() != undefined) {
+         self.getUnits(self.currentPropertyId());
+     }
+  };
+
+  this.getProperties = function (propertyId) {
+     self.propertiesList([]);
+     $('#property-edit').parent().find('.loader').show();
+     $.ajax({
+         url: Routing.generate('landlord_properties_list_all'),
+         type: 'POST',
+         dataType: 'json',
+         success: function (response) {
+             $('#property-edit').parent().find('.loader').hide();
+             self.propertiesList(response);
+         }
+     });
   };
 
   this.closeApprove = function(data) {
@@ -62,10 +69,17 @@ function ContractDetails() {
     $('#unit-edit').html(' ');
     $('#tenant-approve-property-popup').dialog('close');
     $('#tenant-edit-property-popup').dialog('open');
+
     if (contract.first_name) {
-        self.contract(contract);
+      self.contract(contract);
     }
+
+    self.currentPropertyId(self.contract().property_id);
+    self.getProperties(self.contract().property_id);
+    self.currentUnitId(self.contract().unit_id);
     self.getUnits(self.contract().property_id);
+
+
     var flag = false;
     if(self.approve()) {
       flag = true;
@@ -205,11 +219,15 @@ function ContractDetails() {
 
     jQuery(id).showOverlay();
     var contract = self.contract();
-    var unitId = $("#unit-edit :selected").val();
 
-    if (typeof unitId != 'undefined') {
-        contract.unit_id = $("#unit-edit :selected").val();
+    if (self.currentUnitId() != undefined) {
+        contract.unit_id = self.currentUnitId();
     }
+
+    if (self.currentPropertyId() != undefined) {
+        contract.property_id = self.currentPropertyId();
+    }
+
     self.contract(contract);
     $.ajax({
       url: Routing.generate('landlord_contract_save'),
@@ -263,14 +281,14 @@ function ContractDetails() {
       });
   };
   this.closeRevokeInvitation = function() {
-      $('#tenant-review-property-popup').dialog('open');
+      $('#tenant-edit-property-popup').dialog('open');
       $('#tenant-revoke-invotation').dialog('close');
       return false;
   }
 
   this.closeReminderRevoke = function() {
+    $('#tenant-edit-property-popup').dialog('close');
     $('#tenant-revoke-invotation').dialog('open');
-    $('#tenant-review-property-popup').dialog('close');
     return false;
   }
   this.closeTenantReviewPropertyPopup = function() {
@@ -278,7 +296,7 @@ function ContractDetails() {
       return false;
   }
   this.sendReminderInvition = function() {
-     jQuery('#tenant-review-property-popup').showOverlay();
+     jQuery('#tenant-edit-property-popup').showOverlay();
      $.ajax({
         url: Routing.generate('send_reminder_invitation', {'contractId': self.contract().id }),
         type: 'GET',
@@ -286,11 +304,11 @@ function ContractDetails() {
         success: function(response) {
             jQuery('#tenant-review-property-popup').hideOverlay();
             if (typeof response.error !== 'undefined') {
-               $('#tenant-review-property-popup').find('.error').html(response.error);
-               $('#tenant-review-property-popup').find('.error').show();
+                self.errorsEdit.push(response.error);
             } else {
-               $('#tenant-review-property-popup').find('.error').hide();
+                self.errorsEdit([]);
             }
+            jQuery('#tenant-edit-property-popup').hideOverlay();
         }
      });
   };
@@ -391,6 +409,7 @@ function Contracts() {
         self.processLoading(false);
         self.aContracts([]);
         self.aContracts(response.contracts);
+
         self.total(response.total);
         self.pages(response.pagination);
         if(self.countContracts() <= 0) {

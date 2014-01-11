@@ -277,7 +277,7 @@ class OrderRepository extends EntityRepository
         $query->innerJoin('t.tenant', 'ten');
         $query->innerJoin('t.property', 'prop');
         $query->innerJoin('t.unit', 'unit');
-        $query->where('o.created_at BETWEEN :start AND :end');
+        $query->where("o.updated_at BETWEEN :start AND :end");
         $query->andWhere('prop.id = :propId');
         $query->andWhere('o.status = :status');
         $query->setParameter('end', $end);
