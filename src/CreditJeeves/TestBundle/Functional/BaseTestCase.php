@@ -48,11 +48,8 @@ abstract class BaseTestCase extends Base
     public function setUp()
     {
         $this->session = $this->getMink()->getSession();
-        if ('selenium2' == $this->getMink()->getDefaultSessionName()) {
-            $this->session->visit($this->getUrl() . 'page_not_found');
-        }
-        $this->page = $this->session->getPage();
         $this->initTestCoverage();
+        $this->page = $this->session->getPage();
     }
 
     /**
