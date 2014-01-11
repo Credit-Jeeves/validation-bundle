@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "0aeb0d4b739639e05cce7803573d08a8",
+    "hash": "2e5e4cfeb6329dbc4788b3b0cc527919",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -303,7 +303,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "c40b1b07724394e1b68f483b29a53d9c22aff53c"
+                "reference": "668bcbdd00c7796600a1d437f7edfad728572f46"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -339,7 +339,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2014-01-08 11:54:38"
+            "time": "2014-01-10 16:20:54"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -348,9 +348,10 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "ab4742070f6499d4994ced0c885c80727a9dd190"
+                "reference": "a58b40ee7c9cd0b2e7062412596692895815f707"
             },
             "require": {
+                "credit-jeeves/core-bundle": "dev-master",
                 "php": ">=5.3.3"
             },
             "type": "symfony-bundle",
@@ -369,7 +370,7 @@
                 }
             ],
             "description": "CreditJeeves ARF Bundle",
-            "time": "2013-08-13 17:15:33"
+            "time": "2014-01-10 16:22:25"
         },
         {
             "name": "credit-jeeves/core-bundle",
@@ -378,9 +379,10 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "6550b67e5dc47dbc385d209e5d30a236302f5f99"
+                "reference": "8cc6457a35e395e8d6c589bf2b267467fba71c97"
             },
             "require": {
+                "doctrine/dbal": ">=2.2.3,<2.4",
                 "ext-mcrypt": "*",
                 "php": ">=5.3.3"
             },
@@ -388,7 +390,11 @@
             "autoload": {
                 "psr-0": {
                     "CreditJeeves\\CoreBundle": ""
-                }
+                },
+                "files": [
+                    "functions.php",
+                    "crypt.php"
+                ]
             },
             "license": [
                 "MIT"
@@ -400,7 +406,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2013-10-11 13:57:32"
+            "time": "2014-01-10 16:16:02"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -412,7 +418,7 @@
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-11-18 15:48:36"
+            "time": "2014-01-10 11:06:15"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -2506,12 +2512,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "cf70eea85b616175c96c525dde977ed5dceef26c"
+                "reference": "3f411c4aef20c485a073b4aa7e055b1ccef05202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/cf70eea85b616175c96c525dde977ed5dceef26c",
-                "reference": "cf70eea85b616175c96c525dde977ed5dceef26c",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/3f411c4aef20c485a073b4aa7e055b1ccef05202",
+                "reference": "3f411c4aef20c485a073b4aa7e055b1ccef05202",
                 "shasum": ""
             },
             "require": {
@@ -2568,7 +2574,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-12-28 12:57:12"
+            "time": "2014-01-10 11:07:09"
         },
         {
             "name": "jms/serializer-bundle",
@@ -3059,7 +3065,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/Heartland.git",
-                "reference": "800673c86a866d972d04d345c887c86bcb510942"
+                "reference": "46d38f9387eebd79eca16da5f72d3642d0aa2974"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -3099,7 +3105,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2013-10-01 14:40:32"
+            "time": "2014-01-10 13:43:43"
         },
         {
             "name": "payum/payum",

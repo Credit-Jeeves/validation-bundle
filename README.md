@@ -1,5 +1,4 @@
-Credit-Jeeves & Rent-Track
-============================
+./============================
 
 http://symfony.com/doc/2.2/contributing/code/standards.html - Default coding standard for this project
 
