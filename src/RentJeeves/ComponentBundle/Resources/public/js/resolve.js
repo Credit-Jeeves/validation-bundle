@@ -41,7 +41,7 @@ function Resolve() {
             case 'monthToMonth':
                 $.ajax({
                     url: Routing.generate('landlord_month_to_month', {'contractId': self.details().id }),
-                    type: 'GET',
+                    type: 'POST',
                     dataType: 'json',
                     success: function (response) {
                         jQuery('#contract-resolve-ended').hideOverlay();

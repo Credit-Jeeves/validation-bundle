@@ -38,11 +38,10 @@ class AjaxController extends Controller
 
     private function getContract($contractId)
     {
-        $repositoryContract = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
         /**
          * @var $contract Contract
          */
-        $contract = $repositoryContract->find($contractId);
+        $contract = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Contract')->find($contractId);
         $translator = $this->get('translator');
         /**
          * @var $contract Contract
@@ -85,10 +84,10 @@ class AjaxController extends Controller
      *     requirements={"_format"="json"},
      *     options={"expose"=true}
      * )
+     * @Method({"POST"})
      */
     public function contractMonthToMonth($contractId, Request $request)
     {
-        $translator = $this->get('translator');
         $group = $this->getCurrentGroup();
         $contract = $this->getContract($contractId);
         $contract->setFinishAt(null);
@@ -115,9 +114,6 @@ class AjaxController extends Controller
      */
     public function contractChangeEndDate($contractId, Request $request)
     {
-        $translator = $this->get('translator');
-        $group = $this->getCurrentGroup();
-
         $finishAt = $request->request->get('finishAt', null);
         $finishAt = DateTime::createFromFormat('m/d/Y', $finishAt);
         $errors = DateTime::getLastErrors();
@@ -157,19 +153,16 @@ class AjaxController extends Controller
      */
     public function contractEnd($contractId, Request $request)
     {
-        $translator = $this->get('translator');
-        $group = $this->getCurrentGroup();
         $uncollectedBalance = $request->request->get('uncollectedBalance', 0);
         $uncollectedBalance = floatval($uncollectedBalance);
 
         $contract = $this->getContract($contractId);
         $contract->setStatus(ContractStatus::FINISHED);
         $contract->setUncollectedBalance($uncollectedBalance);
-        // Not sure about this need ask Darryl
-        //$finishAt = $contract->getFinishAt();
-        //if (empty($finishAt)) {
-        //    $contract->setFinishAt(new DateTime());
-        //}
+        $finishAt = $contract->getFinishAt();
+        if (empty($finishAt)) {
+            $contract->setFinishAt(new DateTime());
+        }
         $em = $this->getDoctrine()->getManager();
         $em->persist($contract);
         $em->flush($contract);

@@ -299,10 +299,13 @@
             </button>
             <button class="button" data-bind="click: $root.saveContract"><span>{{'savechanges'|trans}}</span></button>
             <button class="button grey"  data-bind="click: $root.cancelEdit"><span>{{'cancel'|trans}}</span></button>
-            <a href="#" class="link" data-bind="if: status == 'CURRENT' ,  click: $root.openEndContractPopup">
+            <a href="#" class="link"
+               data-bind="if: (status == 'CURRENT' || status == 'CONTRACT ENDED') && reminder_revoke == false,
+               click: $root.openEndContractPopup"
+             >
                 {{'end.br.contract'|trans|raw}}
             </a>
-            <a href="#" class="link" data-bind="if: status != 'CURRENT' && !reminder_revoke,  click: $root.removeContractConfirm">
+            <a href="#" class="link" data-bind="if: (status != 'CURRENT' && status != 'CONTRACT ENDED') && !reminder_revoke,  click: $root.removeContractConfirm">
                 {{'remove.tenant'|trans|raw}}
             </a>
             <a href="#" class="link" data-bind="if: reminder_revoke, click: $root.closeReminderRevoke">
@@ -682,7 +685,7 @@
                 <td align="center"   data-bind="text: last_payment"></td>
                 <td align="center"  data-bind="text: paid_to"></td>
                 <td class="type-box">
-                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status -->
+                    <!-- ko if: 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status  || 'CONTRACT ENDED' == status-->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
                      data-bind="click: $root.editContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
@@ -695,7 +698,7 @@
                     >&nbsp;</a>
                     {% endif %}
                     <!-- /ko -->
-                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status -->
+                    <!-- ko ifnot: 'PENDING' == status || 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status || 'CONTRACT ENDED' == status -->
                     <a title="{{'review'|trans}}" class="type-ico pie-el review" href="#" data-bind="click: $root.reviewContract, attr:{'id': 'edit-' + id}">&nbsp;</a>
                     <!-- /ko -->
                 </td>

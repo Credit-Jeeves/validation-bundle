@@ -54,10 +54,8 @@
         <div class="clearfix halfs-box">
             <div class="attention-box pie-el" data-bind="visible: countErrorsEnded() > 0">
                 <h3>{{ 'pay_popup.errors.title'|trans }}</h3>
-                <ul class="default">
-                    <!-- ko foreach: $root.errorsEnded -->
+                <ul class="default" data-bind="foreach: $root.errorsEnded">
                     <li data-bind="text: $data"></li>
-                    <!-- /ko -->
                 </ul>
             </div>
             <div class="row-20"></div>
@@ -80,7 +78,7 @@
                             <span>{{ 'change.end.date' | trans() }}</span>
                             <div class="clearboth"></div>
                             <div class="input-end-contract floatleft">
-                                <input type="text" name="endDate" class="half-of-right datepicker" value="" data-bind="value: endedContractDate" />
+                                <input type="text" name="endDate" class="half-of-right datepicker" placeholder="mm/dd/YYYY" value="" data-bind="value: endedContractDate" />
                             </div>
                         </label>
                         <div class="row-20"></div>

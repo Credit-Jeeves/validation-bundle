@@ -194,7 +194,7 @@ class Contract extends Base
         $result['finish'] = '';
         if ($finish = $this->getFinishAt()) {
             $today = new DateTime();
-            if ($today > $finish) {
+            if ($today > $finish && $this->getStatus() !== ContractStatus::FINISHED) {
                 $result['style'] = 'contract-pending';
                 $result['status'] = self::CONTRACT_ENDED;
             }
