@@ -57,14 +57,8 @@ class PaymentAccountCase extends BaseTestCase
 
         $this->assertEquals('mary', $accounts[0]->getText());
         $this->assertEquals('gary (settings.payment_account.active)', $accounts[2]->getText());
-    }
 
-    /**
-     * @test
-     * @depends createPaymentAccount
-     */
-    public function editPaymentAccount()
-    {
+        //createPaymentAccount
         $this->assertNotNull($edit = $this->page->findAll('css', '.properties-table>tbody>tr>td>a'));
         $this->assertEquals(4, count($edit));
         $edit[0]->click();

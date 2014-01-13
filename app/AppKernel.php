@@ -159,6 +159,7 @@ abstract class AppKernel extends Kernel
             $filter = new ExceptionClassFilter();
             $filter->allow('Exception');
             $filter->deny('SuppressedErrorException');
+            $filter->deny('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
 
             $this->chainNodeManager->addFilter('default', $filter);
 

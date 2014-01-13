@@ -1,0 +1,11 @@
+imports:
+    - { resource: parameters_dev_base.yml }
+
+parameters:
+    database_name: credit_jeeves2
+    database_user: credit_jeeves2_master
+    database_password: 'passw0rd'
+
+    server_name_cj: master.creditjeeves.com
+    server_name_rj: master.renttrack.com
+    mink.selenium2.wd_host: 'http://10.190.122.196:4444/wd/hub'

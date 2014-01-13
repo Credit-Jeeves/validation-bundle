@@ -179,17 +179,8 @@ class DashboardCase extends BaseTestCase
         $this->assertCount(1, $steps);
         $this->assertNotNull($stepsTitle = $this->page->find('css', '#simulation-container #steps-title'));
         $this->assertEquals('score-reach-title-message-0', $stepsTitle->getText());
-//        $this->logout();
-    }
 
-    /**
-     * @test
-     * @depends getReportPrequalAndAutoSimulation
-     */
-    public function manualSimulation()
-    {
-//        $this->load($this->fixtures, false);
-//        $this->login('emilio@example.com', 'pass');
+        // manualSimulation
         $this->assertNotNull($form = $this->page->find('css', '#simulator_form'));
         $this->fillForm($form, array('money' => '700'));
         $this->assertNotNull($submit = $form->findButton('re-score'));
