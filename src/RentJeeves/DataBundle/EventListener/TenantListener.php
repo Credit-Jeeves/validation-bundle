@@ -28,8 +28,8 @@ class TenantListener
             return;
         }
 
-        $affiliateSource = $this->request->cookies->get('affiliateSource');
-        $affiliateCode = $this->request->cookies->get('affiliateCode');
+        $affiliateSource = $this->request ? $this->request->cookies->get('affiliateSource') : null;
+        $affiliateCode = $this->request ? $this->request->cookies->get('affiliateCode') : null;
 
         if (!$affiliateSource || !$affiliateCode) {
             return;
