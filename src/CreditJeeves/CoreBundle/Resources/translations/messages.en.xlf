@@ -1357,7 +1357,7 @@
             </trans-unit>
             <trans-unit id="scorexplus.score">
                 <source>scorexplus.score</source>
-                <target>ScorexPLUS Score</target>
+                <target>Experian ScorexPLUS Score</target>
             </trans-unit>
         </body>
     </file>
