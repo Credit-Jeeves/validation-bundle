@@ -1,8 +1,6 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
-use RentJeeves\AdminBundle\Form\Terminal;
-use RentJeeves\AdminBundle\Form\UserSettings;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;

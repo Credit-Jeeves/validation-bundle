@@ -1,10 +1,3 @@
-{#{% block form %}#}
-    {#{% if admin.id(object) %}#}
-        {#{% if admin.hasroute('dummy') %}#}
-            {#<a class="btn" target="_blank" href="{{ admin.generateObjectUrl('dummy', object) }}">{% trans from 'SonataAdminBundle' %}link_dummy{% endtrans %}</a>#}
-        {#{% endif %}#}
-    {#{% endif %}#}
-{#{% endblock %}#}
 {% block form %}
     {% set url = admin.id(object) is not null ? 'edit' : 'create' %}
 
