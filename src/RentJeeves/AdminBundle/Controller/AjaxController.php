@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use RentJeeves\DataBundle\Entity\BillingAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,6 +15,36 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AjaxController extends Controller
 {
+    /**
+     * @Route(
+     *     "/rj/group/{id}/terminal",
+     *     name="admin_rj_group_terminal",
+     *     options={"expose"=true}
+     * )
+     */
+    public function terminalAction($id)
+    {
+        $group = $this->getDoctrine()->getManager()->find('DataBundle:Group', $id);
+        /** @var BillingAccount $billingAccount */
+        $billingAccount = $group->getActiveBillingAccount();
+
+        if (!$billingAccount) {
+            return new JsonResponse(
+                array(
+                    'message' => 'Payment account not found'
+                )
+            );
+        }
+
+        $token = $billingAccount->getToken();
+
+        return new JsonResponse(
+            array(
+                'message' => $token
+            )
+        );
+    }
+
     /**
      * @Route("/admin/order/status", name="admin_order_status", options={"expose"=true})
      * @Method({"POST"})

@@ -1,12 +1,15 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
+use RentJeeves\AdminBundle\Form\Terminal;
+use RentJeeves\AdminBundle\Form\UserSettings;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
+use Sonata\AdminBundle\Route\RouteCollection;
 
 class RjGroupAdmin extends Admin
 {
@@ -26,6 +29,13 @@ class RjGroupAdmin extends Admin
     public function getBaseRouteName()
     {
         return 'admin_rj_'.self::TYPE;
+    }
+
+    protected function configureRoutes(RouteCollection $collection) {
+        $collection->add(
+            'terminal',
+            $this->getRouterIdParameter().'/terminal'
+        );
     }
 
     /**
@@ -94,7 +104,7 @@ class RjGroupAdmin extends Admin
                         ),
                         'properties' => array(
                              'template' => 'AdminBundle:CRUD:list__action_properties.html.twig'
-                        ),
+                        )
                     )
                 )
             );
@@ -133,6 +143,18 @@ class RjGroupAdmin extends Admin
                         'edit' => 'inline',
                         'inline' => 'table',
                         'sortable' => 'position',
+                    )
+                )
+            ->end()
+            ->with('Virtual terminal')
+                ->add(
+                    'amount',
+                    'text',
+                    array(
+                        'mapped' => false,
+                        'attr' => array(
+                            'class' => 'charge_amount'
+                        )
                     )
                 )
             ->end();

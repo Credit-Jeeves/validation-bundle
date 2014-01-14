@@ -1369,6 +1369,10 @@
                 <source>scorexplus.score</source>
                 <target>Experian ScorexPLUS Score</target>
             </trans-unit>
+            <trans-unit id="admin.action.charge">
+                <source>admin.action.charge</source>
+                <target>Charge</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
