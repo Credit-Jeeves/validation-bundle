@@ -2,6 +2,7 @@
 namespace RentJeeves\CoreBundle\Mailer;
 
 use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
+use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -298,5 +299,19 @@ class Mailer extends BaseMailer
         );
 
         return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
+    }
+
+    public function sendOrderCancel(Order $order, $template = 'rjOrderCancel')
+    {
+        $tenant = $order->getContract()->getTenant();
+
+        $vars = array(
+            'tenantFullName' => $tenant->getFullName(),
+            'orderStatus' => $order->getStatus(),
+            'rentAmount' => $order->getAmount(),
+            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s')
+        );
+
+        return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 }

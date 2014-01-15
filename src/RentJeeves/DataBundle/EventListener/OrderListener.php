@@ -75,6 +75,11 @@ class OrderListener
                         case OrderStatus::ERROR:
                             $this->container->get('project.mailer')->sendRentError($entity);
                             break;
+                        case OrderStatus::REFUNDED:
+                        case OrderStatus::CANCELLED:
+                        case OrderStatus::RETURNED:
+                            $this->container->get('project.mailer')->sendOrderCancel($entity);
+                            break;
                     }
                     break;
                 case OperationType::REPORT:
