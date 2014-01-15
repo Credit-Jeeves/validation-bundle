@@ -64,3 +64,9 @@
     margin-top: 15px;
     height: 192px;
 }
+.scoreType {
+    color: #ff6600;
+    font-weight: bold;
+    padding-top: 10px;
+    font-size: 12px;
+}
