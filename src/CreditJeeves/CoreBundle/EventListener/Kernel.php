@@ -96,16 +96,24 @@ class Kernel
 
         if ($request->cookies->get('clearAffiliate')) {
             $response->headers->clearCookie('affiliateSource');
+
+            /** TODO: uncomment when affiliateCode is needed
             $response->headers->clearCookie('affiliateCode');
+             */
+
             return;
         }
 
-        $affiliateSource = $request->query->get(self::AFFILIATE_SOURCE_PARAM);
+        /** TODO: uncomment when affiliateCode is needed
         $affiliateCode = $request->query->get(self::AFFILIATE_CODE_PARAM);
+         */
+        $affiliateSource = $request->query->get(self::AFFILIATE_SOURCE_PARAM);
         $isAffiliateCookieExist = $request->cookies->get('affiliateSource');
-        if ($affiliateSource && $affiliateCode && !$isAffiliateCookieExist) {
+        if ($affiliateSource && !$isAffiliateCookieExist) {
             $response->headers->setCookie(new Cookie('affiliateSource', $affiliateSource, 0));
+            /** TODO: uncomment when affiliateCode is needed
             $response->headers->setCookie(new Cookie('affiliateCode', $affiliateCode, 0));
+             */
         }
     }
 }

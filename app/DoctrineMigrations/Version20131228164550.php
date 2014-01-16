@@ -13,23 +13,21 @@ class Version20131228164550 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
+
         $this->addSql(
             "CREATE TABLE partner (id BIGINT AUTO_INCREMENT NOT NULL,
                 name VARCHAR(255) NOT NULL,
                 request_name VARCHAR(255) NOT NULL,
+                UNIQUE INDEX UNIQ_312B3E165E237E06 (name),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
-
-        $this->addSql(
-            "CREATE UNIQUE INDEX partner_name ON partner (name)"
-        );
-
         $this->addSql(
             "CREATE TABLE partner_code (id INT AUTO_INCREMENT NOT NULL,
                 partner_id BIGINT DEFAULT NULL,
                 user_id BIGINT DEFAULT NULL,
-                code VARCHAR(255) NOT NULL,
+                code VARCHAR(255) DEFAULT NULL,
+                payment_date DATE DEFAULT NULL,
+                is_charged TINYINT(1) DEFAULT '0' NOT NULL,
                 INDEX IDX_272103809393F8FE (partner_id),
                 UNIQUE INDEX UNIQ_27210380A76ED395 (user_id),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
@@ -58,7 +56,7 @@ class Version20131228164550 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
+
         $this->addSql(
             "ALTER TABLE partner_code
                 DROP

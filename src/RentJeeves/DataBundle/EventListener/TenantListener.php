@@ -29,9 +29,9 @@ class TenantListener
         }
 
         $affiliateSource = $this->request ? $this->request->cookies->get('affiliateSource') : null;
-        $affiliateCode = $this->request ? $this->request->cookies->get('affiliateCode') : null;
+//         $affiliateCode = $this->request ? $this->request->cookies->get('affiliateCode') : null;
 
-        if (!$affiliateSource || !$affiliateCode) {
+        if (!$affiliateSource) {
             return;
         }
 
@@ -44,7 +44,7 @@ class TenantListener
         $partnerCode = new PartnerCode();
         $partnerCode->setPartner($partner);
         $partnerCode->setUser($entity);
-        $partnerCode->setCode($affiliateCode);
+//        $partnerCode->setCode($affiliateCode);
         $em->persist($partnerCode);
 
         $this->request->cookies->set('clearAffiliate', true);

@@ -30,7 +30,7 @@ parameters:
         user_voice: 'renttrack.uservoice.com'
 
     partners:
-        price: 10
+        price: 0
         product: 'registration'
 
 # parameters for twig

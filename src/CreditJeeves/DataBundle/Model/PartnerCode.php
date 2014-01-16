@@ -3,6 +3,7 @@
 namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -29,9 +30,32 @@ abstract class PartnerCode
     protected $user;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(
+     *     type="string",
+     *     nullable=true
+     * )
      */
     protected $code;
+
+    /**
+     * @ORM\Column(
+     *     name="payment_date",
+     *     type="date",
+     *     nullable=true
+     * )
+     */
+    protected $firstPaymentDate;
+
+    /**
+     * @ORM\Column(
+     *     name="is_charged",
+     *     type="boolean",
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     */
+    protected $isCharged = false;
 
     /**
      * @return mixed
@@ -87,5 +111,37 @@ abstract class PartnerCode
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param DateTime $firstPaymentDate
+     */
+    public function setFirstPaymentDate(DateTime $firstPaymentDate)
+    {
+        $this->firstPaymentDate = $firstPaymentDate;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getFirstPaymentDate()
+    {
+        return $this->firstPaymentDate;
+    }
+
+    /**
+     * @param boolean $isCharged
+     */
+    public function setIsCharged($isCharged)
+    {
+        $this->isCharged = $isCharged;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsCharged()
+    {
+        return $this->isCharged;
     }
 } 

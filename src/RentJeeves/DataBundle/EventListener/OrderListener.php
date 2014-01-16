@@ -10,6 +10,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use DateTime;
 
 class OrderListener
 {
@@ -28,9 +29,10 @@ class OrderListener
     }
 
     /**
-     * Two main goals for this method:
+     * Three main goals for this method:
      * 1. Set paidTo for contract
      * 2. Set daysLate for order
+     * 3. Mark tenant as ready for charge
      * @param LifecycleEventArgs $eventArgs
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -38,6 +40,7 @@ class OrderListener
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
             $entity->countDaysLate();
+            $this->chargePartner($entity, $eventArgs->getEntityManager());
         }
     }
 
@@ -71,9 +74,11 @@ class OrderListener
                 case OperationType::RENT:
                     $status = $entity->getStatus();
                     switch ($status) {
+                        case OrderStatus::NEWONE:
+                            $this->chargePartner($entity, $eventArgs->getEntityManager());
+                            break;
                         case OrderStatus::COMPLETE:
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
-                            $this->chargePartner($entity, $eventArgs->getEntityManager());
                             break;
                         case OrderStatus::ERROR:
                             $this->container->get('project.mailer')->sendRentError($entity);
@@ -97,25 +102,18 @@ class OrderListener
         }
     }
 
-    private function chargePartner(Order $chargeOrder, EntityManager $em)
+    private function chargePartner(Order $order, EntityManager $em)
     {
-        /** @var User $user */
-        $user = $chargeOrder->getUser();
-        $userOrders = $user->getOrders();
-        $isFirstOrder = true;
-        /** @var Order $order */
-        foreach ($userOrders as $order) {
-            if ((OrderStatus::COMPLETE == $order->getStatus()) && ($chargeOrder->getId() != $order->getId())) {
-                $isFirstOrder = false;
-            }
-        }
+        $operation = $order->getOperations()->last();
+        if ($operation && $operation->getType() == OperationType::RENT) {
+            /** @var User $user */
+            $user = $order->getUser();
+            $countOrders = count($user->getOrders());
+            $partnerCode = $user->getPartnerCode();
 
-        $partnerCode = $user->getPartnerCode();
-        if ($isFirstOrder && $partnerCode) {
-            $partner = $this->container->get('partner.charging_manager');
-            if ($partner->charge($chargeOrder)) {
-                $em->remove($partnerCode);
-                $em->flush($partnerCode);
+            if ($countOrders == 0 && $partnerCode) {
+                $partnerCode->setFirstPaymentDate(new DateTime());
+//                $em->flush($partnerCode);
             }
         }
     }
