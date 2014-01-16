@@ -1,6 +1,12 @@
 <?php
 namespace RentJeeves\PublicBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
@@ -298,5 +304,68 @@ class IframeCase extends BaseTestCase
             "$('#rentjeeves_publicbundle_invitetenanttype_invite_first_name').length > 0"
         );
         $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+    }
+
+    /**
+     * @test
+     */
+    public function publicIframe()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->clearEmail();
+        $this->logout();
+        $fillAddress = '960 Andante Rd, Santa Barbara, CA 93105';
+        $this->session->visit($this->getUrl() . 'public_iframe?af=CREDITCOM');
+        $this->fillGoogleAddress($fillAddress);
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/new\/[0-9]') != null");
+        $this->session->wait($this->timeout, "$('#register').length > 0");
+        $this->assertNotNull($this->page->find('css', '.creditcom-logo'));
+        $this->assertNotNull($cookie = $this->session->getCookie('affiliateSource'));
+        $this->assertEquals('CREDITCOM', $cookie);
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+
+        $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_tenanttype_first_name'                => "Gary",
+                'rentjeeves_publicbundle_tenanttype_last_name'                 => "Steel",
+                'rentjeeves_publicbundle_tenanttype_email'                     => "email10@com.com",
+                'rentjeeves_publicbundle_tenanttype_password_Password'         => '111',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => '111',
+                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+            )
+        );
+        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $thisIsMyRental->click();
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+        $submit->click();
+
+        $this->assertNull($cookie = $this->session->getCookie('affiliateSource'));
+        $doctrine = $this->getContainer()->get('doctrine');
+        $em = $doctrine->getManager();
+        /** @var User $user  */
+        $this->assertNotNull(
+            $user = $em->getRepository('DataBundle:User')->findOneBy(array('email' => 'email10@com.com'))
+        );
+        $this->assertNotNull($partnerCode = $user->getPartnerCode());
+        $this->assertNull($partnerCode->getFirstPaymentDate());
+        $this->assertFalse($partnerCode->getIsCharged());
+        $this->assertEquals('CREDITCOM', $partnerCode->getPartner()->getRequestName());
+
+        $order = new Order();
+        $operation = new Operation();
+        $contract = new Contract();
+        $contract->setPaidTo(new \DateTime());
+        $operation->setType(OperationType::RENT);
+        $operation->setContract($contract);
+        $order->addOperation($operation);
+        $order->setUser($user);
+        $order->setStatus(OrderStatus::NEWONE);
+        $em->persist($order);
+        $date = new \DateTime();
+        $this->assertEquals($date->format('Y-m-d'), $partnerCode->getFirstPaymentDate()->format('Y-m-d'));
+        $this->assertFalse($partnerCode->getIsCharged());
+        $em->detach($order);
     }
 }
