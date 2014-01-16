@@ -144,4 +144,4 @@ abstract class PartnerCode
     {
         return $this->isCharged;
     }
-} 
+}

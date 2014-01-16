@@ -31,4 +31,4 @@ class CreditcomPartner
         $url = sprintf(self::CREDITCOM_URL_TEMPLATE, $code, $price, $productName, $transactionId);
         $this->browser->get($url);
     }
-} 
+}

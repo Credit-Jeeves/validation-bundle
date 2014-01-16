@@ -49,4 +49,4 @@ class TenantListener
 
         $this->request->cookies->set('clearAffiliate', true);
     }
-} 
+}

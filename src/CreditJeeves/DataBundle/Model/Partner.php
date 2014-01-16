@@ -71,4 +71,4 @@ abstract class Partner
     {
         return $this->requestName;
     }
-} 
+}

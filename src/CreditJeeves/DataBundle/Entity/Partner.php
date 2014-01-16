@@ -11,5 +11,4 @@ use CreditJeeves\DataBundle\Model\Partner as BasePartner;
  */
 class Partner extends BasePartner
 {
-
-} 
+}

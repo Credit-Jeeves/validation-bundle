@@ -45,4 +45,4 @@ class PartnerChargingManager
 
         return $partner->charge($partnerCode->getCode(), $this->price, $this->product, $order->getId());
     }
-} 
+}
