@@ -74,9 +74,6 @@ class OrderListener
                 case OperationType::RENT:
                     $status = $entity->getStatus();
                     switch ($status) {
-                        case OrderStatus::NEWONE:
-                            $this->chargePartner($entity, $eventArgs->getEntityManager());
-                            break;
                         case OrderStatus::COMPLETE:
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
                             break;
@@ -113,7 +110,6 @@ class OrderListener
 
             if ($countOrders == 0 && $partnerCode) {
                 $partnerCode->setFirstPaymentDate(new DateTime());
-//                $em->flush($partnerCode);
             }
         }
     }
