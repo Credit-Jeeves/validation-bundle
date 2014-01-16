@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Exception;
 
 class AjaxController extends Controller
 {
@@ -22,27 +23,27 @@ class AjaxController extends Controller
      *     options={"expose"=true}
      * )
      */
-    public function terminalAction($id)
+    public function terminalAction($id, Request $request)
     {
-        $group = $this->getDoctrine()->getManager()->find('DataBundle:Group', $id);
+        $em = $this->getDoctrine()->getManager();
+        /** @var Group $group */
+        $group = $em->find('DataBundle:Group', $id);
         /** @var BillingAccount $billingAccount */
         $billingAccount = $group->getActiveBillingAccount();
 
         if (!$billingAccount) {
-            return new JsonResponse(
-                array(
-                    'message' => 'Payment account not found'
-                )
-            );
+            return new JsonResponse(array('message' => 'Payment account not found'));
         }
 
-        $token = $billingAccount->getToken();
+        $amount = $request->request->get('amount');
 
-        return new JsonResponse(
-            array(
-                'message' => $token
-            )
-        );
+        try {
+            $this->get('payment_terminal')->pay($group, $amount);
+        } catch (Exception $e) {
+            return new JsonResponse(array('message' => 'Payment failed ' . $e->getMessage()), 400);
+        }
+
+        return new JsonResponse(array('message' => 'Payment succeed'), 200);
     }
 
     /**

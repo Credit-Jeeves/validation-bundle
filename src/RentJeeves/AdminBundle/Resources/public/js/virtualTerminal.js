@@ -16,7 +16,7 @@ function charge(groupId) {
             },
             timeout: 30000, // 30 secs
             error: function(response) {
-                alert('error' + response);
+                alert('error is ' + response.message);
             },
             success: function(response) {
                 alert('success ' + response.message);

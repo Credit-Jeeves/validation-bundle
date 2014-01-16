@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
+//use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -98,6 +99,13 @@ abstract class Operation
      * )
      */
     protected $contract;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group"
+     * )
+     */
+    protected $group;
 
     public function __construct()
     {
@@ -279,5 +287,21 @@ abstract class Operation
     public function getContract()
     {
         return $this->contract;
+    }
+
+    /**
+     * @param CreditJeeves\DataBundle\Entity\Group $group
+     */
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
+
+    /**
+     * @return CreditJeeves\DataBundle\Entity\Group
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 }
