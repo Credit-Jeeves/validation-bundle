@@ -1,8 +1,13 @@
 function charge(groupId) {
-    var amount = parseInt($('.charge_amount').val());
+    var amount = parseInt($('.terminal_amount').val());
+    var customData = $('.terminal_custom').val();
 
     if (isNaN(amount) || amount <= 0) {
         alert('Amount should be greater than 0');
+        return false;
+    }
+    if (customData.length == 0 || customData.length > 14) {
+        alert('ID4 field is required and should not contain more than 14 characters');
         return false;
     }
 
@@ -12,14 +17,12 @@ function charge(groupId) {
             type: 'POST',
             dataType: 'json',
             data: {
-                amount: amount
+                amount: amount,
+                customData: customData
             },
             timeout: 30000, // 30 secs
-            error: function(response) {
-                alert('error is ' + response.message);
-            },
             success: function(response) {
-                alert('success ' + response.message);
+                alert(response.message);
             }
         });
     }

@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\Heartland;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -36,14 +37,18 @@ class AjaxController extends Controller
         }
 
         $amount = $request->request->get('amount');
+        $id4Field = $request->request->get('customData');
 
         try {
-            $this->get('payment_terminal')->pay($group, $amount);
+            /** @var Heartland $result */
+            $result = $this->get('payment_terminal')->pay($group, $amount, $id4Field);
         } catch (Exception $e) {
-            return new JsonResponse(array('message' => 'Payment failed ' . $e->getMessage()), 400);
+            return new JsonResponse(array('message' => 'Payment failed ' . $e->getMessage()), 200);
         }
 
-        return new JsonResponse(array('message' => 'Payment succeed'), 200);
+        $message = $result->getIsSuccessful() ? 'Payment succeed' : 'Payment failed: ' . $result->getMessages();
+
+        return new JsonResponse(array('message' => $message), 200);
     }
 
     /**

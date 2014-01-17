@@ -18,6 +18,7 @@ use Payum\Heartland\Soap\Base\Transaction;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RuntimeException;
 
 /**
  * @DI\Service("payment_terminal")
@@ -41,7 +42,7 @@ class Terminal
         $this->merchantName = $merchantName;
     }
 
-    public function pay(Group $group, $amount)
+    public function pay(Group $group, $amount, $id4)
     {
         $order = new Order();
         $operation = new Operation();
@@ -52,12 +53,8 @@ class Terminal
 
         $users = $group->getGroupAgents();
         $groupUser = $users->first();
-        /** @var Landlord $user */
-        foreach ($users as $user) {
-            if ($user->isSuperAdmin()) {
-                $groupUser = $user;
-                break;
-            }
+        if (!$groupUser) {
+            throw new RuntimeException("Group user not found");
         }
 
         $order->setType(OrderType::HEARTLAND_BANK);
@@ -68,7 +65,9 @@ class Terminal
         $paymentRequest = new MakePaymentRequest();
 
         $billTransaction = new BillTransaction();
-        $billTransaction->setID4($group->getName());
+        $billTransaction->setID1($group->getName());
+        $billTransaction->setID4($id4);
+        $billTransaction->setBillType('Subscription Services');
         $billTransaction->setAmountToApplyToBill($amount);
         $paymentRequest->getBillTransactions()->setBillTransaction(array($billTransaction));
 
@@ -109,5 +108,7 @@ class Terminal
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $this->em->persist($paymentDetails);
         $this->em->flush();
+
+        return $statusRequest->getModel();
     }
 } 

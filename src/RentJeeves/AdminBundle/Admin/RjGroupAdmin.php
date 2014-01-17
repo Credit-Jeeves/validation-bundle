@@ -151,7 +151,19 @@ class RjGroupAdmin extends Admin
                     array(
                         'mapped' => false,
                         'attr' => array(
-                            'class' => 'charge_amount'
+                            'class' => 'terminal_amount'
+                        )
+                    )
+                )
+                ->add(
+                    'custom',
+                    'text',
+                    array(
+                        'mapped' => false,
+                        'label' => 'ID4 field',
+                        'attr' => array(
+                            'class' => 'terminal_custom',
+                            'pattern' => '^.{1,14}$'
                         )
                     )
                 )

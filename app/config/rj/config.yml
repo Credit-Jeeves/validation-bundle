@@ -23,7 +23,7 @@ parameters:
     email_from: no-reply@renttrack.com
     email_name: RentTrack
 
-    rt_merchant_name: 'RentTrack'
+    rt_merchant_name: 'RentTrackCorp'
 
     external_urls:
         main_site: 'www.renttrack.com'
