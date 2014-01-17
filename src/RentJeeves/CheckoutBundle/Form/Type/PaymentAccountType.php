@@ -74,8 +74,15 @@ class PaymentAccountType extends AbstractType
                             'message' => 'checkout.error.payor_name.empty',
                         )
                     ),
+                    new Regex(
+                        array(
+                            'message' => 'checkout.error.payor_name.invalid',
+                            'pattern' => '/^(\w+\s){1,2}\w+$/'
+                        )
+                    )
                 ),
                 'attr' => array(
+                    'placeholder' => 'checkout.payor_name.placeholder',
                     'data-bind' => 'value: paymentSource.PayorName',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'bank\' == paymentSource.type()'

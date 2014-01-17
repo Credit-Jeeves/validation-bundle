@@ -123,6 +123,13 @@ trait PaymentProcess
                 $paymentAccountEntity->setAddress(null);
             }
 
+            $fullName = trim($paymentAccountType->get('PayorName')->getData());
+            $lastSpacePosition = strrpos($fullName, ' ');
+            $firstName = substr($fullName, 0, $lastSpacePosition);
+            $lastName = substr($fullName, $lastSpacePosition + 1);
+
+            $request->getAccountHolderData()->setFirstName($firstName);
+            $request->getAccountHolderData()->setLastName($lastName);
             $request->setRoutingNumber($paymentAccountType->get('RoutingNumber')->getData());
             $request->setAccountNumber($paymentAccountType->get('AccountNumber')->getData());
             $ACHDepositType = $paymentAccountType->get('ACHDepositType')->getData();
