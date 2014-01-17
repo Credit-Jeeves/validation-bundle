@@ -25,6 +25,17 @@ class PublicController extends Controller
     }
 
     /**
+     * @Route("/public_iframe", name="public_iframe")
+     * @Template()
+     *
+     * @return array
+     */
+    public function publicIframeAction()
+    {
+        return array();
+    }
+
+    /**
      * @Route("/checkProperty/{propertyId}", name="iframe_search_check", options={"expose"=true})
      * @Template()
      *
