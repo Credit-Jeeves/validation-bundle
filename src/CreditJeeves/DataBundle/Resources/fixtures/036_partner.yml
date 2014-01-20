@@ -1,0 +1,5 @@
+model: CreditJeeves\DataBundle\Entity\Partner
+fixtures:
+  partner_1:
+    name: creditcom
+    request_name: CREDITCOM

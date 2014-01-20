@@ -13,10 +13,15 @@
       <div class="col-box clearfix">
         <div class="col all">
           <h4>{{ 'property.add'|trans }}</h4>
-          {{ include(
-            'RjComponentBundle:Google:formSearch.html.twig',
-            { 'property': property }
-          ) }}
+            <div
+                {% if app.request.cookies.get("affiliateSource") %}
+                    class="{{ app.request.cookies.get("affiliateSource")|lower ~ '-logo' }}"
+                {% endif %}>
+                {{ include(
+                    'RjComponentBundle:Google:formSearch.html.twig',
+                        { 'property': property }
+                ) }}
+            </div>
           <div class="errorsGoogleSearch"></div>
           <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
            method="post" {{ form_enctype(form) }}>

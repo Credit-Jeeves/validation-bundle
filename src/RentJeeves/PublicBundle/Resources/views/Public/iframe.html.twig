@@ -3,7 +3,7 @@
 {% block content %}
 <div class="mainform" style="width: 545px;">
   <h1>{{ 'iframe.title'|trans }}</h1>
-  <h4>{{ 'iframe.description'|trans }}</h4>
+  {% block subtitle %}<h4>{{ 'iframe.description'|trans }}</h4>{% endblock %}
   <form action="#" id="formSearch">
     <div class="clearfix">
       <div class="field-box">
@@ -18,13 +18,15 @@
     </div>
     <div class="errorsGoogleSearch"></div>
   </form>
-  <div class="property-rent-box">
-    <div class="property-rent">
-      <i> </i>
-      <p>{{ 'iframe.haveProperty'|trans }}</p>
-      <a target="_parent" href="http://www.renttrack.com/property-management">{{ 'iframe.findOut'|trans }}</a>
-    </div>
-  </div>
+  {% block footer %}
+      <div class="property-rent-box">
+        <div class="property-rent">
+          <i> </i>
+          <p>{{ 'iframe.haveProperty'|trans }}</p>
+          <a target="_parent" href="http://www.renttrack.com/property-management">{{ 'iframe.findOut'|trans }}</a>
+        </div>
+      </div>
+  {% endblock %}
 </div>
 <div id="map-canvas" style="display:none;"></div>
 {% endblock %}

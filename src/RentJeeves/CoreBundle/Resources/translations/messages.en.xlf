@@ -1798,6 +1798,10 @@
                 <source>when.cancelled</source>
                 <target>When cancelled</target>
             </trans-unit>
+            <trans-unit id="iframe.public_subtitle">
+                <source>iframe.public_subtitle</source>
+                <target>Enter your Rental Address to Get Started</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

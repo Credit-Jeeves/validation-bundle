@@ -19,3 +19,7 @@
     position: absolute;
     margin-top: -15px;
 }
+
+.col .creditcom-logo .search-box {
+    background: #eee url(/bundles/rjpublic/images/creditcom.png) right 30px center no-repeat;
+}

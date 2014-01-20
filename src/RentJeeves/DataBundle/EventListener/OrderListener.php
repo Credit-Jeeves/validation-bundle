@@ -2,11 +2,15 @@
 namespace RentJeeves\DataBundle\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use DateTime;
 
 class OrderListener
 {
@@ -25,9 +29,10 @@ class OrderListener
     }
 
     /**
-     * Two main goals for this method:
+     * Three main goals for this method:
      * 1. Set paidTo for contract
      * 2. Set daysLate for order
+     * 3. Mark tenant as ready for charge
      * @param LifecycleEventArgs $eventArgs
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
@@ -35,6 +40,7 @@ class OrderListener
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
             $entity->countDaysLate();
+            $this->chargePartner($entity, $eventArgs->getEntityManager());
         }
     }
 
@@ -49,7 +55,6 @@ class OrderListener
     {
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $status = $entity->getStatus();
             $status = $entity->getStatus();
             if ($status == OrderStatus::COMPLETE) {
                 $entity->checkOrderProperties();
@@ -90,6 +95,21 @@ class OrderListener
                             break;
                     }
                     break;
+            }
+        }
+    }
+
+    private function chargePartner(Order $order, EntityManager $em)
+    {
+        $operation = $order->getOperations()->last();
+        if ($operation && $operation->getType() == OperationType::RENT) {
+            /** @var User $user */
+            $user = $order->getUser();
+            $countOrders = count($user->getOrders());
+            $partnerCode = $user->getPartnerCode();
+
+            if ($countOrders == 0 && $partnerCode) {
+                $partnerCode->setFirstPaymentDate(new DateTime());
             }
         }
     }
