@@ -37,7 +37,7 @@ class PaymentRepository extends EntityRepository
         $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
     ) {
         $query = $this->createQueryBuilder('p');
-        $query->select('p, c, g, d');
+        $query->select("p, c, g, d");
         $query->innerJoin('p.contract', 'c');
         $query->innerJoin('c.group', 'g');
         $query->leftJoin('c.operation', 'oper');
@@ -45,15 +45,26 @@ class PaymentRepository extends EntityRepository
         $query->where('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere('c.status IN (:contract)');
-        $query->andWhere('p.startMonth <= :month');
-        $query->andWhere('p.startYear <= :year');
-        $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
+        $query->andWhere("DATE_FORMAT(CONCAT(CONCAT(CONCAT(CONCAT(p.startYear, '-'), p.startMonth), '-'), p.dueDate), '%Y-%m-%d') <= DATE_FORMAT(:startDate, '%Y-%m-%d')");
+        $query->andWhere('
+            (p.endYear IS NULL AND p.endMonth IS NULL)
+            OR
+            (p.endYear > :year)
+            OR
+            (p.endYear = :year AND p.endMonth >= :month)
+        ');
 
+        if (count($days) === 1) {
+            $day = array_values($days)[0];
+        } else {
+            $day = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        }
         $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
         $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
+        $query->setParameter('startDate', implode('-', array($year, $month, $day)));
 
         $query = $query->getQuery();
         return $query->iterate();
