@@ -108,6 +108,7 @@ trait PaymentProcess
             }
             $paymentAccountEntity->getAddress()->setUser($user);
 
+            $request->getAccountHolderData()->setNameOnCard($paymentAccountType->get('CardAccountName')->getData());
             $request->getAccountHolderData()->setAddress($paymentAccountEntity->getAddress()->getAddress());
             $request->getAccountHolderData()->setCity($paymentAccountEntity->getAddress()->getCity());
             $request->getAccountHolderData()->setState($paymentAccountEntity->getAddress()->getArea());

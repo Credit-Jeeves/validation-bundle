@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Valid;
 
 class PaymentAccountType extends AbstractType
@@ -165,6 +166,28 @@ class PaymentAccountType extends AbstractType
                     'data-bind' => 'checked: paymentSource.ACHDepositType',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'bank\' == paymentSource.type()'
+                    )
+                )
+            )
+        );
+        $builder->add(
+            'CardAccountName',
+            'text',
+            array(
+                'mapped' => false,
+                'label' => 'checkout.card.account_name',
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => array('card'),
+                            'message' => 'checkout.error.card_account_name.empty',
+                        )
+                    ),
+                ),
+                'attr' => array(
+                    'data-bind' => 'value: paymentSource.CardAccountName',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: \'card\' == paymentSource.type()'
                     )
                 )
             )
