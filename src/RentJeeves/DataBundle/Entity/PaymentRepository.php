@@ -19,6 +19,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
  */
 class PaymentRepository extends EntityRepository
 {
+
     /**
      * @param array $days
      * @param int $month
