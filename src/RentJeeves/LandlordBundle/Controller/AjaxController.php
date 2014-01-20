@@ -159,10 +159,7 @@ class AjaxController extends Controller
         $contract = $this->getContract($contractId);
         $contract->setStatus(ContractStatus::FINISHED);
         $contract->setUncollectedBalance($uncollectedBalance);
-        $finishAt = $contract->getFinishAt();
-        if (empty($finishAt)) {
-            $contract->setFinishAt(new DateTime());
-        }
+        $contract->setFinishAt(new DateTime());
         $em = $this->getDoctrine()->getManager();
         $em->persist($contract);
         $em->flush($contract);
