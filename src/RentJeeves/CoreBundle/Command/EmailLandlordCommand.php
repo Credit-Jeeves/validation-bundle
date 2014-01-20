@@ -133,8 +133,14 @@ class EmailLandlordCommand extends ContainerAwareCommand
                     $group = $contract->getGroup();
                     //RT-92
                     $landlords = $this->getLandlordByHoldingAndGroup($holding, $group);
+                    /**
+                     * @var Landlord $landlord
+                     */
                     foreach ($landlords as $landlord) {
-                        $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
+                        // TODO: in future we should discover another way of getting registered landlords
+                        if (!$landlord->getInviteCode()) {
+                            $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
+                        }
                     }
                 }
                 $output->writeln('Story-2042');
