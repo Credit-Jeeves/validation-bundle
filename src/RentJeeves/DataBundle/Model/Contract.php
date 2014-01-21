@@ -219,6 +219,7 @@ abstract class Contract
      *     orphanRemoval=true
      * )
      * @var \CreditJeeves\DataBundle\Entity\Operation
+     * @Serializer\Exclude
      */
     protected $operation;
 
