@@ -66,6 +66,7 @@ class TenantAdmin extends Admin
             ->add('last_name')
             ->add('email')
             ->add('phone')
+            ->add('is_verified', 'string', ['template' => 'AdminBundle:CRUD:tenant_verification_status_choice.html.twig'])
             ->add('is_active')
             ->add(
                 '_action',
