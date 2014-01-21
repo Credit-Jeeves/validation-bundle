@@ -62,6 +62,11 @@ class Contract extends Base
     /**
      * @var string
      */
+    const CONTRACT_ENDED = 'CONTRACT ENDED';
+
+    /**
+     * @var string
+     */
     const STATUS_PAY = 'auto';
 
     /**
@@ -188,6 +193,11 @@ class Contract extends Base
         }
         $result['finish'] = '';
         if ($finish = $this->getFinishAt()) {
+            $today = new DateTime();
+            if ($today > $finish && $this->getStatus() !== ContractStatus::FINISHED) {
+                $result['style'] = 'contract-pending';
+                $result['status'] = self::CONTRACT_ENDED;
+            }
             $result['finish'] = $finish->format('m/d/Y');
         }
         $payments = $this->getPayments();

@@ -8,6 +8,9 @@ doctrine:
         password: %database_password%
         charset:  UTF8
     orm:
+        dql:
+            datetime_functions:
+                date_format: RentJeeves\CoreBundle\DQL\DateFormat
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

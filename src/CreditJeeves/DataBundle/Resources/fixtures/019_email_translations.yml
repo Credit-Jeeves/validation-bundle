@@ -929,3 +929,49 @@ fixtures:
 
         Thank you for using RentTrack!
       {% endblock %}
+# rjEndContract.html email
+  translation_33_subject:
+    translatable: email_33
+    locale: %locale%
+    property: subject
+    value: End Contract
+  translation_33_body:
+    translatable: email_33
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Hi {{ tenantFullName }}!{% endblock %}
+      {% block email %}
+         Your landlord {{landlordFullName}}, has ended contract by address: {{ address }} #{{ unitName }}.
+         {% if uncollectedBalance > 0%}
+            And you have uncollected balance on this contract {{ uncollectedBalance }}$.
+         {% else %}
+
+         {% endif %}
+      {% endblock %}
+
+# rjOrderCancel.html
+  translation_34_subject:
+    translatable: email_34
+    locale: %locale%
+    property: subject
+    value: RentTrack.com - Your order status has been changed
+  translation_34_body:
+    translatable: email_34
+    locale: %locale%
+    property: body
+    value: |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block h1 %}Dear {{ tenantFullName }},{% endblock %}
+      {% block email %}
+        {% if orderStatus == 'refunded' %}
+        Per your request, your rent of {{ rentAmount }} sent on {{ orderDate }} was refunded and should appear in your account within a few days.
+        {% elseif orderStatus == 'cancelled' %}
+        Your payment of {{ rentAmount }} sent on {{ orderDate }} was cancelled.
+        {% else %}
+        Your payment of {{ rentAmount }} sent on {{ orderDate }} was returned. Your rent is currently not paid.
+        You will receive a follow up from RentTrack customer support with the reason for return and ways to fix it.
+        {% endif %}
+        If you have any other questions, please contact help@renttrack.com or call 866-841-9090 x2.
+      {% endblock %}

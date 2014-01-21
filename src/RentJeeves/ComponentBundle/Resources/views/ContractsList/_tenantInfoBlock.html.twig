@@ -1,0 +1,11 @@
+<div class="grey-half-box" data-bind="with: details">
+    <h4>{{ 'tenant.info' | trans() }}</h4>
+    <div class="sub-box">
+        <p data-bind="text: tenant"></p>
+        <p data-bind="text: full_address"></p>
+    </div>
+    <div class="sub-box">
+        <p>{{ 'conflict.due.date' | trans() }}:&nbsp;<strong data-bind="text: late_date"></strong></p>
+        <p class="late" data-bind="text: late"></p>
+    </div>
+</div>

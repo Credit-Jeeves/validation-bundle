@@ -15,3 +15,9 @@
     color: red;
     margin-top: 5px;
 }
+.mainform form {
+    padding-bottom: 34px;
+}
+.property-rent-box {
+    margin-top: 0;
+}

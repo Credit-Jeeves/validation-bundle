@@ -219,6 +219,7 @@ abstract class Contract
      *     orphanRemoval=true
      * )
      * @var \CreditJeeves\DataBundle\Entity\Operation
+     * @Serializer\Exclude
      */
     protected $operation;
 
@@ -234,12 +235,41 @@ abstract class Contract
      */
     protected $payments;
 
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=true,
+     *     name="uncollected_balance"
+     * )
+     */
+    protected $uncollectedBalance;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
     }
-    
+
+    /**
+     * @param float $uncollectedBalance
+     */
+    public function setUncollectedBalance($uncollectedBalance)
+    {
+        $this->uncollectedBalance = $uncollectedBalance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUncollectedBalance()
+    {
+        return $this->uncollectedBalance;
+    }
+
+
     /**
      * Get id
      *
