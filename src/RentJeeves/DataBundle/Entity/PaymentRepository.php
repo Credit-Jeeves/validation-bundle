@@ -46,14 +46,25 @@ class PaymentRepository extends EntityRepository
         $query->where('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere('c.status IN (:contract)');
-        $query->andWhere("DATE_FORMAT(CONCAT(CONCAT(CONCAT(CONCAT(p.startYear, '-'), p.startMonth), '-'), p.dueDate), '%Y-%m-%d') <= DATE_FORMAT(:startDate, '%Y-%m-%d')");
-        $query->andWhere('
-            (p.endYear IS NULL AND p.endMonth IS NULL)
+        $query->andWhere(
+            "DATE_FORMAT(
+                CONCAT(
+                    CONCAT(
+                        CONCAT(
+                            CONCAT(p.startYear, '-'),
+                            p.startMonth
+                         ),
+                     '-'),
+                p.dueDate),
+            '%Y-%m-%d') <= DATE_FORMAT(:startDate, '%Y-%m-%d')"
+        );
+        $query->andWhere(
+            '(p.endYear IS NULL AND p.endMonth IS NULL)
             OR
             (p.endYear > :year)
             OR
-            (p.endYear = :year AND p.endMonth >= :month)
-        ');
+            (p.endYear = :year AND p.endMonth >= :month)'
+        );
 
         if (count($days) === 1) {
             $day = array_values($days)[0];
