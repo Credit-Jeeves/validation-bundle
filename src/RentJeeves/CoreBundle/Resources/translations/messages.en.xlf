@@ -1802,6 +1802,10 @@
                 <source>iframe.public_subtitle</source>
                 <target>Enter your Rental Address to Get Started</target>
             </trans-unit>
+            <trans-unit id="payment.start_date.error">
+                <source>payment.start_date.error</source>
+                <target>Please check your dates. It appears you have set up a recurring payment to start in the past. You must start it today or in the future.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
