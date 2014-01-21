@@ -46,7 +46,6 @@ class LandlordController extends Controller
 
             // Login a user to be able to show his dashboard when he comes back from HPS
             $this->get('common.login.manager')->login($landlord);
-            $landlord->setInviteCode(null);
 
             try {
                 $this->setMerchantName($this->container->getParameter('rt_merchant_name'));

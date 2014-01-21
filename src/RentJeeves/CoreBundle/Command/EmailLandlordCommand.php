@@ -137,8 +137,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
                      * @var Landlord $landlord
                      */
                     foreach ($landlords as $landlord) {
-                        // TODO: in future we should discover another way of getting registered landlords
-                        if (!$landlord->getInviteCode()) {
+                        if ($landlord->getIsActive()) {
                             $mailer->sendPendingContractToLandlord($landlord, $contract->getTenant(), $contract);
                         }
                     }
