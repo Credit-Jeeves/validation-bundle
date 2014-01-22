@@ -448,6 +448,22 @@
                 <source>checkout.billing_address.new</source>
                 <target>Card Billing Address</target>
             </trans-unit>
+            <trans-unit id="checkout.payor_name.placeholder">
+                <source>checkout.payor_name.placeholder</source>
+                <target>First Last Name of Authorized Signer</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.payor_name.invalid">
+                <source>checkout.error.payor_name.invalid</source>
+                <target>Account name is invalid: please, specify first and last name</target>
+            </trans-unit>
+            <trans-unit id="checkout.card.account_name">
+                <source>checkout.card.account_name</source>
+                <target>Name On Card</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.card_account_name.empty">
+                <source>checkout.error.card_account_name.empty</source>
+                <target>Name On Card can not be empty</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

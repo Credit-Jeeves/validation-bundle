@@ -15,6 +15,14 @@
             </div>
 
             <div class="form-row clearfix">
+                {{ form_label(form.PayorName) }}
+                <div class="fields-box">
+                    {{ form_widget(form.PayorName) }}
+                    {{ form_errors(form.PayorName) }}
+                </div>
+            </div>
+
+            <div class="form-row clearfix">
                 {{ form_label(form.AccountNumber) }}
                 <div class="fields-box">
                     {{ form_widget(form.AccountNumber) }}

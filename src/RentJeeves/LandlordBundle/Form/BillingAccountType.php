@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Payum\Heartland\Soap\Base\ACHDepositType;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class BillingAccountType extends AbstractType
 {
@@ -30,6 +31,37 @@ class BillingAccountType extends AbstractType
                         )
                     ),
                 ),
+            )
+        );
+
+        $builder->add(
+            'PayorName',
+            'text',
+            array(
+                'mapped' => false,
+                'label' => 'checkout.payor_name',
+                'constraints' => array(
+                    new NotBlank(
+                        array(
+                            'groups' => array('create_billing'),
+                            'message' => 'checkout.error.payor_name.empty',
+                        )
+                    ),
+                    new Regex(
+                        array(
+                            'groups' => array('create_billing'),
+                            'message' => 'checkout.error.payor_name.invalid',
+                            'pattern' => '/^(\w+\s){1,2}\w+$/'
+                        )
+                    )
+                ),
+                'attr' => array(
+                    'placeholder' => 'checkout.payor_name.placeholder',
+                    'data-bind' => 'value: payerName',
+                    'row_attr' => array(
+                        'data-bind' => 'visible: $parent.isCreateMode'
+                    )
+                )
             )
         );
 

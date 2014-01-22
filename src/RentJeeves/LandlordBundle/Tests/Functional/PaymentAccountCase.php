@@ -25,6 +25,7 @@ class PaymentAccountCase extends BaseTestCase
             $form,
             array(
                 'billingAccountType_nickname'         => "mary",
+                'billingAccountType_PayorName'        => "mary stone",
                 'billingAccountType_AccountNumber'    => "1234",
                 'billingAccountType_RoutingNumber'    => "1234",
                 'billingAccountType_ACHDepositType_0' => true,
@@ -43,6 +44,7 @@ class PaymentAccountCase extends BaseTestCase
             $form,
             array(
                 'billingAccountType_nickname'         => "gary",
+                'billingAccountType_PayorName'        => "mary stone",
                 'billingAccountType_AccountNumber'    => "1234",
                 'billingAccountType_RoutingNumber'    => "1234",
                 'billingAccountType_ACHDepositType_0' => true,
@@ -83,7 +85,7 @@ class PaymentAccountCase extends BaseTestCase
 
     /**
      * @test
-     * @depends editPaymentAccount
+     * @depends createPaymentAccount
      */
     public function deletePaymentAccount()
     {

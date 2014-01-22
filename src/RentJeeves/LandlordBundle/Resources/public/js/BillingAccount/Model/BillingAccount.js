@@ -1,6 +1,7 @@
 function BillingAccount(data) {
     this.id = ko.observable(null);
     this.nickname = ko.observable(null);
+    this.payerName = ko.observable(null);
     this.routingNumber = ko.observable(null);
     this.accountNumber = ko.observable(null);
     this.accountType = ko.observable(null);

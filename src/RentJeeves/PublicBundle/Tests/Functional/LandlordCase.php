@@ -64,6 +64,7 @@ class LandlordCase extends BaseTestCase
                 'LandlordAddressType_address_zip'                        =>'1231',
                 'numberOfUnit'                                           => 3,
                 'LandlordAddressType_deposit_nickname'                   => 'Nick',
+                'LandlordAddressType_deposit_PayorName'                  => 'Nick Staut',
                 'LandlordAddressType_deposit_AccountNumber'              => '12345678',
                 'LandlordAddressType_deposit_RoutingNumber'              => '12345678',
                 'LandlordAddressType_deposit_ACHDepositType_0'           => true,
