@@ -27,6 +27,12 @@ class Version20140116185950 extends AbstractMigration
         $this->addSql(
             "CREATE INDEX IDX_21F5D92DFE54D947 ON cj_operation (group_id)"
         );
+
+        $this->addSql(
+            "ALTER TABLE cj_operation
+                CHANGE type type ENUM('report','rent','charge')
+                DEFAULT 'report' NOT NULL"
+        );
     }
 
     public function down(Schema $schema)
@@ -47,6 +53,11 @@ class Version20140116185950 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE cj_operation
                 DROP group_id"
+        );
+        $this->addSql(
+            "ALTER TABLE cj_operation
+                CHANGE type type ENUM('report','rent')
+                DEFAULT 'report' NOT NULL"
         );
     }
 }
