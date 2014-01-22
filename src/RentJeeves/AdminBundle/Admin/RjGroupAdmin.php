@@ -29,7 +29,8 @@ class RjGroupAdmin extends Admin
         return 'admin_rj_'.self::TYPE;
     }
 
-    protected function configureRoutes(RouteCollection $collection) {
+    protected function configureRoutes(RouteCollection $collection)
+    {
         $collection->add(
             'terminal',
             $this->getRouterIdParameter().'/terminal'
@@ -150,6 +151,7 @@ class RjGroupAdmin extends Admin
                     'text',
                     array(
                         'mapped' => false,
+                        'required' => false,
                         'attr' => array(
                             'class' => 'terminal_amount'
                         )
@@ -160,6 +162,7 @@ class RjGroupAdmin extends Admin
                     'text',
                     array(
                         'mapped' => false,
+                        'required' => false,
                         'label' => 'ID4 field',
                         'attr' => array(
                             'class' => 'terminal_custom',

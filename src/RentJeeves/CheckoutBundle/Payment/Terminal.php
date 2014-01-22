@@ -112,4 +112,4 @@ class Terminal
 
         return $statusRequest->getModel();
     }
-} 
+}
