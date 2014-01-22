@@ -43,7 +43,7 @@ class AjaxController extends Controller
             /** @var Heartland $result */
             $result = $this->get('payment_terminal')->pay($group, $amount, $id4Field);
         } catch (Exception $e) {
-            return new JsonResponse(array('message' => 'Payment failed ' . $e->getMessage()), 200);
+            return new JsonResponse(array('message' => 'Payment failed: ' . $e->getMessage()), 200);
         }
 
         $message = $result->getIsSuccessful() ? 'Payment succeed' : 'Payment failed: ' . $result->getMessages();

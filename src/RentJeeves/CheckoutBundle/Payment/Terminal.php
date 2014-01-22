@@ -52,10 +52,11 @@ class Terminal
         $order->addOperation($operation);
 
         $users = $group->getGroupAgents();
-        $groupUser = $users->first();
-        if (!$groupUser) {
+        if ($users->count() == 0) {
             throw new RuntimeException("Group user not found");
         }
+
+        $groupUser = $users->first();
 
         $order->setType(OrderType::HEARTLAND_BANK);
         $order->setUser($groupUser);

@@ -1,7 +1,6 @@
 <?php
 namespace CreditJeeves\DataBundle\Model;
 
-//use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
