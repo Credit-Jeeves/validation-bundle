@@ -85,7 +85,7 @@ class PayCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Test payment',
-                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => '????????',
+                'rentjeeves_checkoutbundle_paymentaccounttype_PayorName' => 'Timothy APPLEGATE',
                 'rentjeeves_checkoutbundle_paymentaccounttype_RoutingNumber' => '062202574',
                 'rentjeeves_checkoutbundle_paymentaccounttype_AccountNumber' => '123245678',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ACHDepositType_0' => true,

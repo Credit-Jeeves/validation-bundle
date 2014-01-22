@@ -237,6 +237,12 @@
                     </div>
                     <div data-bind="visible: 'card' == paymentSource.type()">
                         <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                            <label>{{ 'checkout.card.account_name' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.CardAccountName"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
                             <label>{{ 'checkout.card_number' | trans }}</label>
                             <div class="fields-box">
                                 <span class="value" data-bind="text: paymentSource.getCardNumber"></span>
