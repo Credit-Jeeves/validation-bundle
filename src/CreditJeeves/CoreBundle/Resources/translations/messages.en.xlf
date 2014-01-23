@@ -1025,6 +1025,14 @@
                 <source>error.user.tos</source>
                 <target>Please accept the Terms and Conditions to register.</target>
             </trans-unit>
+            <trans-unit id="error.user.street.invalid">
+                <source>error.user.street.invalid</source>
+                <target>Please use only alphanumeric, space, period, # and - characters in your street.</target>
+            </trans-unit>
+            <trans-unit id="error.user.city.invalid">
+                <source>error.user.city.invalid</source>
+                <target>Please use only letters, space and - characters in your city.</target>
+            </trans-unit>
 
             <trans-unit id="user.welcome">
                 <source>user.welcome</source>
