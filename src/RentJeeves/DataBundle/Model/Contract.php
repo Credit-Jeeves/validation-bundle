@@ -141,7 +141,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * @Serializer\Type("DateTime<'d/m/Y'>")
+     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $paidTo;
 
@@ -169,7 +169,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * @Serializer\Type("DateTime<'d/m/Y'>")
+     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $startAt;
 
@@ -186,7 +186,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-     * @Serializer\Type("DateTime<'d/m/Y'>")
+     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $finishAt;
     
