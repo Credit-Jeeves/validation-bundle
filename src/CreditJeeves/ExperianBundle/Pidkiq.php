@@ -8,6 +8,7 @@ use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\Naming\CamelCaseNamingStrategy;
 use JMS\Serializer\Naming\SerializedNameAnnotationStrategy;
 use \ExperianException;
+use \Xml;
 
 require_once __DIR__.'/../CoreBundle/sfConfig.php';
 require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/curl/Curl.class.php';
@@ -145,5 +146,31 @@ class Pidkiq extends \Pidkiq
     public function getLastResponce()
     {
         return $this->lastResponse;
+    }
+
+    /**
+     * Check XML on errors
+     *
+     * @param Xml $doc
+     *
+     * @throws ExperianException
+     */
+    protected function checkErrors(Xml $doc)
+    {
+        $dom = $doc->getDom();
+        for ($i = 1; $i <= 20; $i++) {
+            $GLBRule = $dom->getElementsByTagName('GLBRule' . $i);
+            if (!$GLBRule && !is_object($GLBRule->item(0))) {
+                continue;
+            }
+            $GLBRule = $GLBRule->item(0);
+            $code    = $GLBRule->getAttribute('code');
+            $value   = $GLBRule->nodeValue;
+            if ($code === '3001') {
+                throw new ExperianException($value, E_ALL);
+            }
+        }
+
+        return parent::checkErrors($doc);
     }
 }

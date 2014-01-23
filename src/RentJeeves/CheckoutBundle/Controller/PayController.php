@@ -163,7 +163,9 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
-        if (UserIsVerified::PASSED != $this->getUser()->getIsVerified()) {
+        $session = $request->getSession();
+        $isValidUser = $session->get('isValidUser', false);
+        if (UserIsVerified::PASSED != $this->getUser()->getIsVerified() && !$isValidUser) {
             throw $this->createNotFoundException('Verification not passed');
         }
 
