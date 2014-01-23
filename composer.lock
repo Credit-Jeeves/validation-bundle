@@ -348,9 +348,10 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "ab4742070f6499d4994ced0c885c80727a9dd190"
+                "reference": "a58b40ee7c9cd0b2e7062412596692895815f707"
             },
             "require": {
+                "credit-jeeves/core-bundle": "dev-master",
                 "php": ">=5.3.3"
             },
             "type": "symfony-bundle",
@@ -369,7 +370,7 @@
                 }
             ],
             "description": "CreditJeeves ARF Bundle",
-            "time": "2013-08-13 17:15:33"
+            "time": "2014-01-10 16:22:25"
         },
         {
             "name": "credit-jeeves/core-bundle",
@@ -378,9 +379,10 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "b9dc4b58abbf61fd41f2f727ecc7a066d8edb8ea"
+                "reference": "8cc6457a35e395e8d6c589bf2b267467fba71c97"
             },
             "require": {
+                "doctrine/dbal": ">=2.2.3,<2.4",
                 "ext-mcrypt": "*",
                 "php": ">=5.3.3"
             },
@@ -388,7 +390,11 @@
             "autoload": {
                 "psr-0": {
                     "CreditJeeves\\CoreBundle": ""
-                }
+                },
+                "files": [
+                    "functions.php",
+                    "crypt.php"
+                ]
             },
             "license": [
                 "MIT"
@@ -400,7 +406,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-01-23 14:30:26"
+            "time": "2014-01-10 16:16:02"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -408,11 +414,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "b1c9b0992a2c333da8dcc6735ffaa858451cc49b"
+                "reference": "d22e3bd69c106c07994f4367abf0703f0eef97f9"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2013-11-18 15:48:36"
+            "time": "2014-01-10 11:06:15"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -2058,7 +2064,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/environment.git",
-                "reference": "9919d779d87acff17b965909a0849b257d5bd238"
+                "reference": "e0571175e4ee7d3e6d7867354cc141972520fb14"
             },
             "require": {
                 "php": ">=5.3.2"
@@ -2067,9 +2073,6 @@
                 "mikey179/vfsstream": "1.2.*",
                 "mockery/mockery": "dev-master"
             },
-            "bin": [
-                "bin/environment"
-            ],
             "type": "library",
             "autoload": {
                 "psr-0": {
@@ -2091,7 +2094,7 @@
                 "test",
                 "testing"
             ],
-            "time": "2013-04-16 15:36:30"
+            "time": "2013-12-24 11:17:40"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -2509,12 +2512,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/serializer.git",
-                "reference": "cf70eea85b616175c96c525dde977ed5dceef26c"
+                "reference": "3f411c4aef20c485a073b4aa7e055b1ccef05202"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/cf70eea85b616175c96c525dde977ed5dceef26c",
-                "reference": "cf70eea85b616175c96c525dde977ed5dceef26c",
+                "url": "https://api.github.com/repos/schmittjoh/serializer/zipball/3f411c4aef20c485a073b4aa7e055b1ccef05202",
+                "reference": "3f411c4aef20c485a073b4aa7e055b1ccef05202",
                 "shasum": ""
             },
             "require": {
@@ -2571,7 +2574,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-12-28 12:57:12"
+            "time": "2014-01-10 11:07:09"
         },
         {
             "name": "jms/serializer-bundle",
@@ -2580,12 +2583,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSSerializerBundle.git",
-                "reference": "bb15db3e661168f4310fad48b86915ff1ca33795"
+                "reference": "0c98dc74502b729ce473d387cf72fd294dae5b0e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/bb15db3e661168f4310fad48b86915ff1ca33795",
-                "reference": "bb15db3e661168f4310fad48b86915ff1ca33795",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSerializerBundle/zipball/0c98dc74502b729ce473d387cf72fd294dae5b0e",
+                "reference": "0c98dc74502b729ce473d387cf72fd294dae5b0e",
                 "shasum": ""
             },
             "require": {
@@ -2641,7 +2644,7 @@
                 "serialization",
                 "xml"
             ],
-            "time": "2013-12-05 14:36:11"
+            "time": "2013-09-09 07:25:33"
         },
         {
             "name": "knplabs/knp-menu",
