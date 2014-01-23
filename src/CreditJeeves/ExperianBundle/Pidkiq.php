@@ -163,11 +163,12 @@ class Pidkiq extends \Pidkiq
             if (!$GLBRule && !is_object($GLBRule->item(0))) {
                 continue;
             }
-            $GLBRule = $GLBRule->item(0);
-            $code    = $GLBRule->getAttribute('code');
-            $value   = $GLBRule->nodeValue;
-            if ($code === '3001') {
-                throw new ExperianException($value, E_ALL);
+            if ($GLBRule = $GLBRule->item(0)) {
+                $code    = $GLBRule->getAttribute('code');
+                $value   = $GLBRule->nodeValue;
+                if ($code === '3001') {
+                    throw new ExperianException($value, E_ALL);
+                }
             }
         }
 
