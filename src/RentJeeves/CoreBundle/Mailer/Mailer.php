@@ -289,13 +289,18 @@ class Mailer extends BaseMailer
 
     public function endContractByLandlord($contract, $landlord, $tenant, $template = 'rjEndContract')
     {
-        $unit = $contract->getUnit();
+        // Unit is a Doctrine Proxy, it always exists, but it throws an exception when we try to get unit's name
+        try {
+            $unitName = $contract->getUnit()->getName();
+        } catch (Exception $e) {
+            $unitName = '';
+        }
         $vars = array(
             'tenantFullName'      => $tenant->getFullName(),
             'landlordFullName'    => $landlord->getFullName(),
             'uncollectedBalance' => $contract->getUncollectedBalance(),
             'address'             => $contract->getProperty()->getAddress(),
-            'unitName'            => $unit ? $unit->getName() : '',
+            'unitName'            => $unitName,
         );
 
         return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());

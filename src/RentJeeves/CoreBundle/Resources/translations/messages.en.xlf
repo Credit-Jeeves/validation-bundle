@@ -749,6 +749,10 @@
                 <source>conflict.resolve.unpaid</source>
                 <target>Mark as “Unpaid” (this will report to credit bureau as an unpaid account - this cannot be undone)</target>
             </trans-unit>
+            <trans-unit id="conflict.resolve.ended">
+                <source>conflict.resolve.ended</source>
+                <target>Update this contract</target>
+            </trans-unit>
             
            <trans-unit id="error.email.already.use">
                 <source>error.email.already.use</source>
