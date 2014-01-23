@@ -173,6 +173,12 @@ class Payment
     protected $updatedAt;
 
     /**
+     * @ORM\OneToMany(targetEntity = "JobRelatedPayment", mappedBy = "payment")
+     * @Serializer\Exclude
+     */
+    protected $jobs;
+
+    /**
      * Get id
      *
      * @return integer

@@ -36,14 +36,9 @@ class LinkGenerator implements LinkGeneratorInterface
     function generate($entity)
     {
         return $this->routeGenerator->generate(
-            'admin_rentjeeves_data_payment_list',
+            'admin_rentjeeves_data_payment_show',
             array(
-                'filter' => array(
-                    'id' => array(
-                        'type' => '3',
-                        'value' => $entity->getId()
-                    )
-                )
+                'id' => $entity->getId()
             )
         );
     }

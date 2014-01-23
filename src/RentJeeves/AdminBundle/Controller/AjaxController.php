@@ -10,10 +10,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @Route("/")
+ */
 class AjaxController extends Controller
 {
     /**
-     * @Route("/admin/order/status", name="admin_order_status", options={"expose"=true})
+     * @Route("order/status", name="admin_order_status", options={"expose"=true})
      * @Method({"POST"})
      */
     public function changeOrderStatusAction(Request $request)

@@ -8,3 +8,6 @@ jms_di_extra:
 jms_security_extra:
     secure_all_services: false
     expressions: true
+
+jms_job_queue:
+    statistics: false

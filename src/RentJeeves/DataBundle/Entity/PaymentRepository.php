@@ -27,15 +27,13 @@ class PaymentRepository extends EntityRepository
      * @param PaymentType $type
      * @param PaymentStatus $status
      *
-     * @fixme add joins
-     *
      * @return \Doctrine\ORM\Internal\Hydration\IterableResult
      */
     public function getActivePayments(
         $days = array(),
         $month = 1,
-        $year = 2000,
-        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
+        $year = 2000/*,
+        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)*/
     ) {
         $query = $this->createQueryBuilder('p');
         $query->select("p, c, g, d");
@@ -45,7 +43,7 @@ class PaymentRepository extends EntityRepository
         $query->innerJoin('g.deposit_account', 'd');
         $query->where('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
-        $query->andWhere('c.status IN (:contract)');
+//        $query->andWhere('c.status IN (:contract)');
         $query->andWhere(
             "DATE_FORMAT(
                 CONCAT(
@@ -73,12 +71,13 @@ class PaymentRepository extends EntityRepository
         }
         $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
-        $query->setParameter('contract', $contract);
+//        $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
         $query->setParameter('startDate', implode('-', array($year, $month, $day)));
 
         $query = $query->getQuery();
+//        echo($query->getSQL());die('OK');
         return $query->iterate();
     }
 

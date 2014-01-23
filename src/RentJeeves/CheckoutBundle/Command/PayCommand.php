@@ -47,26 +47,18 @@ class PayCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->write('Start ');
+
+        $routeGenerator = $this->getContainer()->get('sonata.admin.route.default_generator');
+
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $jobId = $input->getOption('jms-job-id');
 
-        $rsm = new ResultSetMappingBuilder($em);
-        $rsm->addRootEntityFromClassMetadata('JMSJobQueueBundle:Job', 'j');
         /** @var Job $job */
-        $job = $em->createNativeQuery(
-                "SELECT j.* FROM jms_jobs j
-                    INNER JOIN jms_job_related_entities r ON r.job_id = j.id
-                    WHERE j.executeAfter < :now AND j.state = :state AND j.id = :id
-                    ORDER BY j.id ASC",
-                $rsm
-            )
-            ->setParameter('state', Job::STATE_RUNNING)
-            ->setParameter('now', new DateTime())
-            ->setParameter('id', $jobId)
-            ->getOneOrNullResult();
+        $job = $em->getRepository('JMSJobQueueBundle:Job')->findOneBy(array('id' => $jobId));
         if (empty($job)) {
-            throw new RuntimeException("Option can not fid --jms-job-id={$jobId}");
+            throw new RuntimeException("Can not fid --jms-job-id={$jobId}");
         }
 
         $date = new DateTime();
@@ -77,7 +69,6 @@ class PayCommand extends ContainerAwareCommand
                 $date->format('n'),
                 $date->format('Y')
             );
-        $output->write('Start ');
         /** @var Payum $payum */
         $payum = $this->getContainer()->get('payum')->getPayment('heartland');
 
@@ -96,7 +87,7 @@ class PayCommand extends ContainerAwareCommand
             $orders[$contract->getId()]['updated'] == $date->format('Y-m-d')
         ) {
             $output->writeln('Payment already executed.');
-            exit(3);
+            exit(1);
         }
         $operation = $contract->getOperation();
         if (empty($operation)) {
@@ -144,10 +135,9 @@ class PayCommand extends ContainerAwareCommand
 
         $request->getTokensToCharge()->setTokenToCharge(array($tokenToCharge));
 
-        $transaction = new Transaction();
-        $transaction->setAmount($amount);
-        $transaction->setFeeAmount($fee);
-        $request->setTransaction($transaction);
+        $request->getTransaction()
+            ->setAmount($amount)
+            ->setFeeAmount($fee);
 
         $paymentDetails = new PaymentDetails();
         $paymentDetails->setMerchantName($contract->getGroup()->getMerchantName());
@@ -162,7 +152,10 @@ class PayCommand extends ContainerAwareCommand
         }
         $em->persist($order);
         $em->persist($operation);
+//        $job->addRelatedEntity($order); // it does not work
+//        $em->persist($job);
         $em->flush();
+
 
         $captureRequest = new CaptureRequest($paymentDetails);
         $payum->execute($captureRequest);

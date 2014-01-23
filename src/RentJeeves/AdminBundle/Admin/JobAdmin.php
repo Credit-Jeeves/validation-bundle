@@ -13,6 +13,16 @@ class JobAdmin extends Admin
     protected $baseRouteName = 'job';
     protected $baseRoutePattern = 'job';
 
+    /**
+     * {@inheritdoc}
+     */
+    public function configure()
+    {
+        parent::configure();
+
+        $this->datagridValues['_sort_by']    = 'id';
+        $this->datagridValues['_sort_order'] = 'DESC';
+    }
 
     public function configureRoutes(RouteCollection $collection)
     {
@@ -40,25 +50,4 @@ class JobAdmin extends Admin
                 'doctrine_orm_date'
             );
     }
-
-//    public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
-//    {
-//        $menu = $this->menuFactory->createItem('root');
-//        $menu = $menu->addChild(
-//            $this->trans(
-//                $this->getLabelTranslatorStrategy()->getLabel(
-//                    'Jobs',
-//                    'breadcrumb',
-//                    'link'
-//                ),
-//                array(),
-//                'SonataAdminBundle'
-//            ),
-//            array(
-//                'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
-//            )
-//        );
-//
-//        return $this->breadcrumbs[$action] = $menu;
-//    }
 }

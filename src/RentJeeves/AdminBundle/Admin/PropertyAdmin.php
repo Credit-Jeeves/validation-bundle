@@ -163,4 +163,43 @@ class PropertyAdmin extends Admin
         );
         return $this->breadcrumbs[$action] = $menu;
     }
+
+    protected function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->add('country')
+            ->add('area')
+            ->add('city')
+            ->add('district')
+            ->add('street')
+            ->add('number')
+            ->add('zip')
+            ->add('google_reference')
+            ->add('jb')
+            ->add('kb')
+        ;
+    }
+
+    protected function configureShowField(ShowMapper $showMapper)
+    {
+        parent::configureShowField($showMapper);
+        $showMapper
+            ->add('country')
+            ->add('area')
+            ->add('city')
+            ->add('district')
+            ->add('street')
+            ->add('number')
+            ->add('zip')
+            ->add('google_reference')
+            ->add('jb')
+            ->add('kb')
+            ->add('createdAt')
+            ->add('updatedAt')
+            ->add('units', null, array('route' => array('name' => 'show')))
+            ->add('invite', null, array('route' => array('name' => 'show')))
+            ->add('property_groups', null, array('route' => array('name' => 'show')))
+            ->add('contracts', null, array('route' => array('name' => 'show')))
+        ;
+    }
 }

@@ -1,6 +1,9 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
+use Doctrine\ORM\QueryBuilder;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
+use RentJeeves\DataBundle\Enum\PaymentType;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -16,62 +19,146 @@ class PaymentAdmin extends Admin
      */
     public function createQuery($context = 'list')
     {
-//        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-//        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
         $query = parent::createQuery($context);
 //        $alias = $query->getRootAlias();
-//        if (!empty($nUserId)) {
-//            $this->request->getSession()->set('user_id', $nUserId);
-//            $query->andWhere($alias.'.cj_applicant_id = :user_id');
-//            $query->setParameter('user_id', $nUserId);
-//        }
-//        if (!empty($nContractId)) {
-//            $contract =  $this->getModelManager()->find('RjDataBundle:Contract', $nContractId);
-//            $this->request->getSession()->set('contract_id', $nContractId);
-//            $query->innerJoin($alias.'.operations', $alias.'_o');
-//            $query->andWhere($alias.'_o.contract = :contract');
-//            $query->setParameter('contract', $contract);
-//        }
+//        $query->
         return $query;
     }
 
     public function configureRoutes(RouteCollection $collection)
     {
+//        $collection->remove('edit');// https://github.com/sonata-project/SonataDoctrineORMAdminBundle/issues/276
         $collection->remove('delete');
         $collection->remove('create');
+        $collection->add('run', $this->getRouterIdParameter().'/run');
     }
 
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->add('created_at', 'date')
-            ->add('updated_at', 'date')
+            ->addIdentifier('id', null, array('route' => array('name' => 'show')))
+            ->add('start_date', 'date')
             ->add('type')
             ->add('status')
-            ->add('amount', 'money');
+            ->add('amount', 'money')
+            ->add('created_at', 'date')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'run' => array(
+                            'template' => 'AdminBundle:CRUD:list__payment_run.html.twig'
+                        )
+                    )
+                )
+            )
+        ;
+    }
+
+    public function getFilterParameters()
+    {
+        $return = parent::getFilterParameters();
+
+        if (!isset($return['startDate']['value']['month']) &&
+            !isset($return['startDate']['value']['day']) &&
+            !isset($return['startDate']['value']['year'])
+        ) {
+            $return['startDate'] = array(
+                'value' => array(
+                    'month' => date('n'),
+                    'day' => date('j'),
+                    'year' => date('Y'),
+                ),
+            );
+        }
+
+        if (!isset($return['status']['value'])) {
+            $return['status']['type'] = '3';
+            $return['status']['value'] = PaymentStatus::ACTIVE;
+        }
+
+
+        if (!isset($return['type']['value'])) {
+            $return['type']['type'] = '2';
+            $return['type']['value'] = PaymentType::IMMEDIATE;
+        }
+
+        return $return;
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('id')
-            ->add('type')
-            ->add('amount')
+            ->add(
+                'startDate',
+                'doctrine_orm_callback', array(
+                    'callback' => function($queryBuilder, $alias, $field, $value) {
+                        if (empty($value['value'])) {
+                            return;
+                        }
+                        /** @var QueryBuilder $queryBuilder */
+                        $alias = $queryBuilder->getRootAliases()[0];
+                        $queryBuilder->andWhere($alias . '.dueDate = :due_date');
+
+                        // TODO UPDATE it when doctrine >= 2.4.0-BETA1 PR #583 or after refactoring
+                        $queryBuilder->andWhere(
+                            sprintf(
+                                "STR_TO_DATE(" .
+                                    "CONCAT(" .
+                                        "CONCAT(" .
+                                            "CONCAT(" .
+                                                "CONCAT(%s.startYear, '-')" .
+                                                ", %s.startMonth" .
+                                            ")," .
+                                            "'-'" .
+                                        ")," .
+                                        "%s.dueDate" .
+                                    ")," .
+                                    "'%%Y-%%c-%%e'" .
+                                ") <= :start_date",
+                                $alias,
+                                $alias,
+                                $alias
+                            )
+                        );
+                        $queryBuilder->setParameter('due_date', $value['value']->format('d'));
+                        $queryBuilder->setParameter('start_date', $value['value']);
+
+                        return true;
+                    },
+                    'field_type' => 'date'
+                )
+            )
             ->add('status')
+            ->add('type')
+            ->add('id')
+            ->add('amount')
             ->add(
                 'created_at',
-                'doctrine_orm_date'
-            )
-            ->add(
-                'updated_at',
                 'doctrine_orm_date'
             );
     }
 
+    protected function configureShowFields(ShowMapper $formMapper)
+    {
+        $formMapper
+            ->add('contract', null, array('route' => array('name' => 'show')))
+            ->add('paymentAccount', null, array('route' => array('name' => 'show')))
+            ->add('type')
+            ->add('status')
+            ->add('amount')
+            ->add('start_date', 'date')
+            ->add('endYear')
+            ->add('endMonth')
+            ->add('createdAt')
+            ->add('updatedAt')
+        ;
+
+    }
+
     public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
     {
-        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
         $menu = $this->menuFactory->createItem('root');
         $menu = $menu->addChild(
             $this->trans(
@@ -87,38 +174,6 @@ class PaymentAdmin extends Admin
                 'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
             )
         );
-        if ('list' == $action & !empty($nUserId)) {
-            $menu = $menu->addChild(
-                $this->trans(
-                    $this->getLabelTranslatorStrategy()->getLabel(
-                        'Tenant List',
-                        'breadcrumb',
-                        'link'
-                    ),
-                    array(),
-                    'SonataAdminBundle'
-                ),
-                array(
-                    'uri' => $this->routeGenerator->generate('admin_tenant_list')
-                )
-            );
-        }
-        if ('list' == $action & !empty($nContractId)) {
-            $menu = $menu->addChild(
-                $this->trans(
-                    $this->getLabelTranslatorStrategy()->getLabel(
-                        'Contracts List',
-                        'breadcrumb',
-                        'link'
-                    ),
-                    array(),
-                    'SonataAdminBundle'
-                ),
-                array(
-                    'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
-                )
-            );
-        }
         $menu = $menu->addChild(
             $this->trans(
                 $this->getLabelTranslatorStrategy()->getLabel(
@@ -134,5 +189,19 @@ class PaymentAdmin extends Admin
             )
         );
         return $this->breadcrumbs[$action] = $menu;
+    }
+
+    public function getBatchActions()
+    {
+        $actions = parent::getBatchActions();
+
+        if ($this->isGranted('RUN')) {
+            $actions['run'] = array(
+                'label'            => $this->trans('Run', array(), 'SonataAdminBundle'),
+                'ask_confirmation' => true, // by default always true
+            );
+        }
+
+        return $actions;
     }
 }

@@ -317,7 +317,7 @@ function Pay(parent, contractId) {
 
                 jQuery('#pay-popup').hideOverlay();
                 if (!data.success) {
-                    window.formProcess.applyErrors(data);
+                    window.formProcess.applyErrors([[data.error]]);
                     return;
                 }
                 onSuccessStep(data);

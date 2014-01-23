@@ -33,6 +33,7 @@ class AppRjKernel extends AppKernel
             new Rj\EmailBundle\RjEmailBundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),

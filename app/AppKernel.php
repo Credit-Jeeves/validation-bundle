@@ -152,7 +152,6 @@ abstract class AppKernel extends Kernel
             $recipients = array(
                 'forma@66ton99.org.ua' .
                 ', systems@creditjeeves.com' .
-                ', alex.emelyanov.ua@gmail.com' .
                 ', alexandr.sharamko@gmail.com'
             );
 

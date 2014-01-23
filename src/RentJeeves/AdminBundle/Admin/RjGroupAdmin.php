@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
+use Sonata\AdminBundle\Show\ShowMapper;
 
 class RjGroupAdmin extends Admin
 {
@@ -195,5 +196,35 @@ class RjGroupAdmin extends Admin
             )
         );
         return $this->breadcrumbs[$action] = $menu;
+    }
+
+
+
+    protected function configureShowField(ShowMapper $showMapper)
+    {
+        $showMapper
+            ->add('cj_affiliate', null, array('route' => array('name' => 'show')))
+            ->add('holding', null, array('route' => array('name' => 'show')))
+            ->add('parent', null, array('route' => array('name' => 'show')))
+            ->add('dealer', null, array('route' => array('name' => 'show')))
+            ->add('name')
+            ->add('code')
+            ->add('description')
+            ->add('website_url')
+            ->add('logo_url')
+            ->add('phone')
+            ->add('fax')
+            ->add('street_address_1')
+            ->add('street_address_2')
+            ->add('city')
+            ->add('state')
+            ->add('zip')
+//            ->add('fee_type')
+            ->add('contract')
+            ->add('contract_date')
+            ->add('type')
+            ->add('created_at')
+            ->add('updated_at')
+        ;
     }
 }

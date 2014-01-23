@@ -180,4 +180,43 @@ class TenantAdmin extends Admin
         }
         return $user;
     }
+
+    protected function configureShowFields(ShowMapper $formMapper)
+    {
+        $formMapper
+            ->add('holding', null, array('route' => array('name' => 'show')))
+            ->add('type')
+            ->add('username')
+            ->add('usernameCanonical')
+            ->add('email')
+            ->add('emailCanonical')
+            ->add('enabled')
+            ->add('lastLogin')
+            ->add('locked')
+            ->add('expired')
+            ->add('expiresAt')
+            ->add('confirmationToken')
+            ->add('passwordRequestedAt')
+            ->add('roles')
+            ->add('credentialsExpired')
+            ->add('credentialsExpireAt')
+            ->add('firstName')
+            ->add('middleInitial')
+            ->add('lastName')
+            ->add('date_of_birth')
+            ->add('ssh')
+            ->add('isActive')
+            ->add('inviteCode')
+            ->add('scoreChangedNotification')
+            ->add('offerNotification')
+            ->add('culture')
+            ->add('hasData') // Sets to 0 when user left
+            ->add('isVerified')
+            ->add('hasReport')
+            ->add('isHoldingAdmin')
+            ->add('isSuperAdmin')
+            ->add('created_at')
+            ->add('updated_at')
+        ;
+    }
 }

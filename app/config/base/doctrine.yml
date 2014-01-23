@@ -11,6 +11,7 @@ doctrine:
         dql:
             datetime_functions:
                 date_format: RentJeeves\CoreBundle\DQL\DateFormat
+                str_to_date: 'RentJeeves\DataBundle\DQL\StrToDate'
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

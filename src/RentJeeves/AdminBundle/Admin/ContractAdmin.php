@@ -118,4 +118,40 @@ class ContractAdmin extends Admin
         );
         return $this->breadcrumbs[$action] = $menu;
     }
+
+    protected function configureShowField(ShowMapper $showMapper)
+    {
+        $showMapper
+            ->add('tenant', null, array('route' => array('name' => 'show')))
+            ->add('holding', null, array('route' => array('name' => 'show')))
+            ->add('group', null, array('route' => array('name' => 'show')))
+            ->add('property', null, array('route' => array('name' => 'show')))
+            ->add('unit', null, array('route' => array('name' => 'show')))
+            ->add('search')
+            ->add('status')
+            ->add('paidTo')
+            ->add('reporting')
+            ->add('startAt')
+            ->add('finishAt')
+            ->add('createdAt')
+            ->add('updatedAt')
+        ;
+    }
+
+    protected function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->add('tenant')
+            ->add('holding')
+            ->add('group')
+            ->add('property')
+            ->add('unit')
+            ->add('search')
+            ->add('status')
+            ->add('paidTo')
+            ->add('reporting')
+            ->add('startAt')
+            ->add('finishAt')
+        ;
+    }
 }

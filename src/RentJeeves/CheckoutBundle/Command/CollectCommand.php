@@ -1,10 +1,11 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Command;
 
-use JMS\JobQueueBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\Job;
 use Doctrine\ORM\EntityManager;
 use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
+use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -47,7 +48,11 @@ class CollectCommand extends ContainerAwareCommand
             /** @var Payment $payment */
             $payment = $row[0];
             $job = new Job('payment:pay', array('--app=rj'));
-            $job->addRelatedEntity($payment);
+            $jobRelatedPayment = new JobRelatedPayment();
+            $jobRelatedPayment->setJob($job);
+            $jobRelatedPayment->setPayment($payment);
+            $job->addRelatedEntity($jobRelatedPayment);
+            $em->persist($jobRelatedPayment);
             $em->persist($job);
             $em->flush();
             $em->clear();

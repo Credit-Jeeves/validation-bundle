@@ -31,6 +31,7 @@ class AppCjKernel extends AppKernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
             new Rj\EmailBundle\RjEmailBundle(),
+            new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),
@@ -41,6 +42,7 @@ class AppCjKernel extends AppKernel
             new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new JMS\JobQueueBundle\JMSJobQueueBundle(),
 
             // Must be last in the list
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),

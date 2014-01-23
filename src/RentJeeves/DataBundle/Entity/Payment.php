@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use DateTime;
 
 /**
  * @ORM\Table(name="rj_payment")
@@ -33,16 +34,26 @@ class Payment extends Base
 
     public function setStartDate($date = 'now')
     {
-        $dateTime = new \DateTime($date);
+        $dateTime = new DateTime($date);
         $this->setDueDate($dateTime->format('d'));
         $this->setStartMonth($dateTime->format('m'));
         $this->setStartYear($dateTime->format('Y'));
     }
 
+    public function getStartDate()
+    {
+        return new DateTime($this->getDueDate() . '-' . $this->getStartMonth() . '-' . $this->getStartYear());
+    }
+
     public function setEndDate($date = '+ 9 months')
     {
-        $dateTime = new \DateTime($date);
+        $dateTime = new DateTime($date);
         $this->setEndMonth($dateTime->format('m'));
         $this->setEndYear($dateTime->format('Y'));
+    }
+
+    public function __toString()
+    {
+        return $this->getStartDate()->format('m/d/Y') . ' ' . $this->getType();
     }
 }

@@ -6,7 +6,7 @@ fixtures:
         type: recurring
         status: active
         amount: 1500
-        startDate: 'now'
+        startDate: '-3 month'
         endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
@@ -36,7 +36,7 @@ fixtures:
         type: recurring
         status: active
         amount: 1700
-        startDate: 'now'
+        startDate: '1 year -2 months'
         endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
@@ -46,7 +46,7 @@ fixtures:
         type: recurring
         status: active
         amount: 2100
-        startDate: 'now'
+        startDate: '+1 year +1 month +1 day'
         endDate: '+9 months'
         createdAt: '-50 days'
         updatedAt: '-50 days'

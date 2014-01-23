@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "d22e3bd69c106c07994f4367abf0703f0eef97f9"
+                    "reference": "8ff7712b1da6712d13a5919c448f200783a8868a"
                 }
             }
         },
@@ -216,15 +216,14 @@
         "stof/doctrine-extensions-bundle": "dev-master",
         "a2lix/translation-form-bundle": "dev-master",
         "rj/email-bundle": "dev-master",
-        "sonata-project/block-bundle": "dev-master",
-        "sonata-project/admin-bundle": "dev-master",
-        "sonata-project/doctrine-orm-admin-bundle": "dev-master",
+        "sonata-project/admin-bundle": "2.2.9",
+        "sonata-project/doctrine-orm-admin-bundle": "2.2.*@dev",
         "doctrine/migrations": "dev-master",
         "doctrine/doctrine-migrations-bundle": "dev-master",
         "guzzle/http": "v3.5.0",
         "apy/jsfv-bundle":"dev-master",
         "willdurand/expose-translation-bundle": "dev-master",
-        "jms/job-queue-bundle": "dev-master",
+        "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
         "pagerfanta/pagerfanta": "dev-master"
     },
     "require-dev": {

@@ -524,4 +524,9 @@ class Contract extends Base
         }
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
+    }
 }

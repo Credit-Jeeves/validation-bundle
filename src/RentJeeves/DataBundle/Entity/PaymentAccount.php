@@ -12,4 +12,9 @@ use RentJeeves\DataBundle\Entity\UserAwareInterface;
  */
 class PaymentAccount extends Base implements UserAwareInterface
 {
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }

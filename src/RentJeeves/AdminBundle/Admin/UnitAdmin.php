@@ -194,4 +194,21 @@ class UnitAdmin extends Admin
         );
         return $this->breadcrumbs[$action] = $menu;
     }
+
+    protected function configureShowField(ShowMapper $showMapper)
+    {
+        parent::configureShowField($showMapper);
+        $showMapper
+            ->add('property', null, array('route' => array('name' => 'show')))
+            ->add('holding', null, array('route' => array('name' => 'show')))
+            ->add('group', null, array('route' => array('name' => 'show')))
+            ->add('name')
+            ->add('rent')
+            ->add('beds')
+            ->add('createdAt')
+            ->add('updatedAt')
+            ->add('deletedAt')
+            ->add('contracts', null, array('route' => array('name' => 'show')))
+        ;
+    }
 }
