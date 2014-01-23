@@ -1,8 +1,3 @@
-function savePreviousStatus(sel) {
-    var jSel = $(sel);
-    jSel.attr('prev', jSel.val());
-}
-
 function changeStatus(sel) {
     var jSel = $(sel);
     var prev = jSel.attr('prev');

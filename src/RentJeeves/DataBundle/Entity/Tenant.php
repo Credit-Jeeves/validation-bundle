@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Mapping as ORM;
@@ -196,5 +197,10 @@ class Tenant extends User
     public function getPaymentAccounts()
     {
         return $this->payment_accounts;
+    }
+
+    public function getAvailableVerificationStatuses()
+    {
+        return UserIsVerified::all();
     }
 }
