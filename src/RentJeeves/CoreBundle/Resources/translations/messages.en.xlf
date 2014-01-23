@@ -981,7 +981,7 @@
             </trans-unit>
             <trans-unit id="add.account.popup.title.edit">
                 <source>add.account.popup.title.edit</source>
-                <target>Payment account</target>
+                <target>Payment Account</target>
             </trans-unit>
             <!-- Tenant Invite popup -->
             <trans-unit id="popup.invite.tenant.title_1">

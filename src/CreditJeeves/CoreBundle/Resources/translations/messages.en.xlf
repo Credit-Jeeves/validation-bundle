@@ -1333,6 +1333,10 @@
                 <source>settings.payment_account.active</source>
                 <target>Active</target>
             </trans-unit>
+            <trans-unit id="settings.payment_account.make_active">
+                <source>settings.payment_account.make_active</source>
+                <target>Make Active</target>
+            </trans-unit>
             <trans-unit id="settings.payment_account.current_active">
                 <source>settings.payment_account.current_active</source>
                 <target>Is Active</target>
