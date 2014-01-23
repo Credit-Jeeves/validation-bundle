@@ -240,9 +240,6 @@ class PayCase extends BaseTestCase
             $this->timeout,
             "!jQuery('#pay-popup:visible').length"
         );
-        $paysButton = $this->page->findAll('css', '.button-contract-pay>span');
-        $this->assertEquals(3, count($paysButton));
-        $this->assertEquals('contract.edit', $paysButton[2]->getText());
 
         if ($summary) {
             $this->page->clickLink('tabs.summary');

@@ -174,6 +174,7 @@ class PayController extends Controller
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
+
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         /** @var Payment $paymentEntity */
@@ -207,6 +208,7 @@ class PayController extends Controller
                 'success' => true
             )
         );
+
     }
 
     /**
