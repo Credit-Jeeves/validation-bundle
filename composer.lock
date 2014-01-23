@@ -379,7 +379,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "8cc6457a35e395e8d6c589bf2b267467fba71c97"
+                "reference": "b9dc4b58abbf61fd41f2f727ecc7a066d8edb8ea"
             },
             "require": {
                 "doctrine/dbal": ">=2.2.3,<2.4",
@@ -406,7 +406,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-01-10 16:16:02"
+            "time": "2014-01-23 14:30:26"
         },
         {
             "name": "credit-jeeves/credit-jeeves",

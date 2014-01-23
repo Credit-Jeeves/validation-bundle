@@ -26,13 +26,11 @@ class TestController extends Controller
 
     /**
      * @Route("/error", name="core_test_error")
-     * @Template()
      *
      * @return array
      */
     public function errorAction()
     {
         sdfgsdfgdsg();
-        return array();
     }
 }
