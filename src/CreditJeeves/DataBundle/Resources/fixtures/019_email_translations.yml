@@ -956,7 +956,7 @@ fixtures:
     translatable: email_34
     locale: %locale%
     property: subject
-    value: RentTrack.com - Your order status has been changed
+    value: Your Rent Payment was Reversed
   translation_34_body:
     translatable: email_34
     locale: %locale%
