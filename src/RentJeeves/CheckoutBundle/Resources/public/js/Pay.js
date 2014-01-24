@@ -5,7 +5,7 @@ function Pay(parent, contractId) {
     var contract = parent.getContractById(contractId);
     var current = 0;
     this.isValidUser = ko.observable(true);
-    this.isProcessQuestion = ko.observable(false);
+    this.isProcessQuestion = false;
 
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
@@ -73,7 +73,7 @@ function Pay(parent, contractId) {
                         }
                         if (data['status'] && 'error' == data['status']) {
                             window.formProcess.addFormError('#vi-questions', data['error']);
-                            self.isProcessQuestion(true);
+                            self.isProcessQuestion = true;
                             return;
                         }
                         parent.questions = data; //TODO add identity check
@@ -358,16 +358,16 @@ function Pay(parent, contractId) {
                 }
                 break;
             case 'user':
-                self.isProcessQuestion(false);
+                self.isProcessQuestion = false;
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 break;
             case 'questions':
                 //User is valid and we have question so we can try process it
-                if (self.isValidUser() && !self.isProcessQuestion()) {
+                if (self.isValidUser() && !self.isProcessQuestion) {
                     sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
-                    self.isProcessQuestion(true);
+                    self.isProcessQuestion = true;
                 //Wrong answer for question, but we have user and we can move to next step
-                } else if(self.isValidUser() && self.isProcessQuestion()) {
+                } else if(self.isValidUser() && self.isProcessQuestion) {
                     window.formProcess.removeAllErrors('#pay-popup ');
                     jQuery.each(forms, function(key, formName) {
                         $('#' + formName + ' .error').removeClass('error');
