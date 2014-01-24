@@ -469,7 +469,7 @@
             </trans-unit>
             <trans-unit id="tenant.info">
                 <source>tenant.info</source>
-                <target>Tenant Information</target>
+                <target>Tenant (Must be Listed on Lease Agreement)</target>
             </trans-unit>
             <trans-unit id="request.payments">
                 <source>request.payments</source>
@@ -884,7 +884,7 @@
             </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
-                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to handle any associated disputes arising from the information you provide.</target>
+                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to assist RentTrack with any associated disputes arising from the information you provide.</target>
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
@@ -1763,7 +1763,7 @@
                 <target>
                     When you provide outstanding balance information, you understand
                     that this information will be reported to a credit service agency.
-                    You therefore agree to handle any associated disputes arising from the
+                    You therefore agree to assist RentTrack with any associated disputes arising from the
                     information you provide.
                 </target>
             </trans-unit>
