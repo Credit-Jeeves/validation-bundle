@@ -99,6 +99,16 @@ abstract class Address
      *         "api_identity_check"
      *     }
      * )
+     * @Assert\Regex(
+     *     pattern="/^([-a-zA-Z0-9\/\. #]{2,68})$/",
+     *     message="error.user.street.invalid",
+     *     groups={
+     *         "user_address_new",
+     *         "buy_report_new",
+     *         "account_landlord",
+     *         "api_identity_check"
+     *     }
+     * )
      * @Serializer\Expose
      */
     protected $street;
@@ -152,6 +162,16 @@ abstract class Address
      * )
      * @Assert\NotBlank(
      *     message="error.user.city.empty",
+     *     groups={
+     *         "user_address_new",
+     *         "buy_report_new",
+     *         "account_landlord",
+     *         "api_identity_check"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern="/(^[-a-zA-Z ]{2,38})$/",
+     *     message="error.user.city.invalid",
      *     groups={
      *         "user_address_new",
      *         "buy_report_new",

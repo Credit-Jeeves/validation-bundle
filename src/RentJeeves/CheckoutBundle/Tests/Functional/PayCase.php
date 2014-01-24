@@ -120,6 +120,21 @@ class PayCase extends BaseTestCase
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
         $this->assertCount(3, $errors);
 
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_street' => 'Street with wrong symbols @#$%',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_city' => 'City with wrong symbols :"|',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_zip' => '65487',
+            )
+        );
+        $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length == 2");
+        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+        $this->assertCount(2, $errors);
+        $this->assertEquals('error.user.street.invalid', $errors[0]->getText());
+        $this->assertEquals('error.user.city.invalid', $errors[1]->getText());
+
 
         $this->fillForm(
             $form,

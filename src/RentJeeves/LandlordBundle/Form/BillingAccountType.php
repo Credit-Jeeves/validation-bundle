@@ -145,7 +145,7 @@ class BillingAccountType extends AbstractType
             'isActive',
             'checkbox',
             array(
-                'label' => 'settings.payment_account.active',
+                'label' => 'settings.payment_account.make_active',
                 'attr' => array(
                     'data-bind' => 'checked: isActive, disable: !allowActive',
                     'row_attr' => array(

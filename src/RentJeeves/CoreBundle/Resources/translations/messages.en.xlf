@@ -469,7 +469,7 @@
             </trans-unit>
             <trans-unit id="tenant.info">
                 <source>tenant.info</source>
-                <target>Tenant Information</target>
+                <target>Tenant (Must be Listed on Lease Agreement)</target>
             </trans-unit>
             <trans-unit id="request.payments">
                 <source>request.payments</source>
@@ -749,6 +749,10 @@
                 <source>conflict.resolve.unpaid</source>
                 <target>Mark as “Unpaid” (this will report to credit bureau as an unpaid account - this cannot be undone)</target>
             </trans-unit>
+            <trans-unit id="conflict.resolve.ended">
+                <source>conflict.resolve.ended</source>
+                <target>Update this contract</target>
+            </trans-unit>
             
            <trans-unit id="error.email.already.use">
                 <source>error.email.already.use</source>
@@ -880,7 +884,7 @@
             </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
-                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to handle any associated disputes arising from the information you provide.</target>
+                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to assist RentTrack with any associated disputes arising from the information you provide.</target>
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
@@ -981,7 +985,7 @@
             </trans-unit>
             <trans-unit id="add.account.popup.title.edit">
                 <source>add.account.popup.title.edit</source>
-                <target>Payment account</target>
+                <target>Payment Account</target>
             </trans-unit>
             <!-- Tenant Invite popup -->
             <trans-unit id="popup.invite.tenant.title_1">
@@ -1759,7 +1763,7 @@
                 <target>
                     When you provide outstanding balance information, you understand
                     that this information will be reported to a credit service agency.
-                    You therefore agree to handle any associated disputes arising from the
+                    You therefore agree to assist RentTrack with any associated disputes arising from the
                     information you provide.
                 </target>
             </trans-unit>

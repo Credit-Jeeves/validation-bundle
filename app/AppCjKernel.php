@@ -42,13 +42,15 @@ class AppCjKernel extends AppKernel
             new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new JMS\JobQueueBundle\JMSJobQueueBundle(),
 
             // Must be last in the list
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
-            new RentJeeves\DataBundle\RjDataBundle(),
+            new RentJeeves\PublicBundle\RjPublicBundle(), // TODO remove
+            new RentJeeves\DataBundle\RjDataBundle(), // TODO remove
             new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
@@ -57,7 +59,6 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\DealerBundle\DealerBundle(),
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
-            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
             new CreditJeeves\UserBundle\UserBundle(),
         );

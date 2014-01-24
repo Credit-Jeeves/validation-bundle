@@ -379,7 +379,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "8cc6457a35e395e8d6c589bf2b267467fba71c97"
+                "reference": "b9dc4b58abbf61fd41f2f727ecc7a066d8edb8ea"
             },
             "require": {
                 "doctrine/dbal": ">=2.2.3,<2.4",
@@ -406,7 +406,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-01-10 16:16:02"
+            "time": "2014-01-23 14:30:26"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -2355,7 +2355,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/JMSJobQueueBundle.git",
-                "reference": "a38f137bdadca9f9e4068c061d1cc029c9d3adfb"
+                "reference": "a05e3b42a7e17a62edef5dd4741bf89c54311d21"
             },
             "require": {
                 "doctrine/common": ">=2.3,<3.0",
@@ -2409,7 +2409,7 @@
                 "job",
                 "queue"
             ],
-            "time": "2014-01-13 19:47:16"
+            "time": "2014-01-24 17:03:11"
         },
         {
             "name": "jms/metadata",

@@ -15,7 +15,7 @@ class LinkGenerator implements LinkGeneratorInterface
     protected $routeGenerator;
 
     protected $entities = array(
-       'RentJeeves\DataBundle\Entity\Payment'
+       'RentJeeves\DataBundle\Entity\JobRelatedPayment'
     );
 
     /**
@@ -38,7 +38,7 @@ class LinkGenerator implements LinkGeneratorInterface
         return $this->routeGenerator->generate(
             'admin_rentjeeves_data_payment_show',
             array(
-                'id' => $entity->getId()
+                'id' => $entity->getPayment()->getId()
             )
         );
     }
