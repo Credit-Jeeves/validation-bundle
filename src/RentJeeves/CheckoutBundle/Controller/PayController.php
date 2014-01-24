@@ -163,7 +163,9 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
-        if (UserIsVerified::PASSED != $this->getUser()->getIsVerified()) {
+        $session = $request->getSession();
+        $isValidUser = $session->get('isValidUser', false);
+        if (UserIsVerified::PASSED != $this->getUser()->getIsVerified() && !$isValidUser) {
             throw $this->createNotFoundException('Verification not passed');
         }
 
@@ -172,6 +174,7 @@ class PayController extends Controller
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
+
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         /** @var Payment $paymentEntity */
@@ -205,6 +208,7 @@ class PayController extends Controller
                 'success' => true
             )
         );
+
     }
 
     /**

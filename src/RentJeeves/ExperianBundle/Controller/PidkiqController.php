@@ -33,18 +33,26 @@ class PidkiqController extends Base
         parent::setPidkiqApi($pidkiqApi);
     }
 
+    protected function setupUserIsValidUserIntoSession(Request $request)
+    {
+        $session = $request->getSession();
+        $session->set('isValidUser', $this->isValidUser);
+    }
+
     /**
      * @Route("/get", name="experian_pidkiq_get", options={"expose"=true})
      * @Template()
      *
      * @return JsonResponse | array
      */
-    public function getAction()
+    public function getAction(Request $request)
     {
         if (!$this->processQuestions()) {
+            $this->setupUserIsValidUserIntoSession($request);
             $response = array(
-                'status' => 'error',
-                'error' => $this->error
+                'status'          => 'error',
+                'error'           => $this->error,
+                'isValidUser'     => $this->isValidUser,
             );
             return new JsonResponse($response);
         }
@@ -56,7 +64,13 @@ class PidkiqController extends Base
                 'form' => $this->form->createView()
             );
         } else {
-            return new JsonResponse(array('status' => 'error', 'error' => 'Can not get questions'));
+            return new JsonResponse(
+                array(
+                    'status'            => 'error',
+                    'error'             => $this->getErrorMessageQuestionNotFound(),
+                    'isValidUser'       => $this->isValidUser,
+                )
+            );
         }
     }
 
@@ -66,12 +80,20 @@ class PidkiqController extends Base
      */
     public function executeAction(Request $request)
     {
+        $this->isValidUser = true;
         if ($questions = $this->retrieveQuestions()) {
             $this->form = $this->createForm(new QuestionsType($questions));
         } else {
-            return new JsonResponse(array('status' => 'error', 'error' => 'Can not get questions'));
+            $this->setupUserIsValidUserIntoSession($request);
+            return new JsonResponse(
+                array(
+                    'status'          => 'error',
+                    'error'           => $this->getErrorMessageQuestionNotFound(),
+                    'isValidUser'     => $this->isValidUser,
+                )
+            );
         }
-
+        $this->setupUserIsValidUserIntoSession($request);
         $this->form->handleRequest($request);
         if ($this->form->isValid()) {
             if ($this->processForm()) {
@@ -89,5 +111,20 @@ class PidkiqController extends Base
         } else {
             return $this->renderErrors($this->form);
         }
+    }
+
+    protected function getErrorMessageQuestionNotFound()
+    {
+        $supportEmail = $this->container->getParameter('support_email');
+        $externalUrls = $this->container->getParameter('external_urls');
+        $userVoice   = $externalUrls['user_voice'];
+
+        return $this->get('translator')->trans(
+            'pidkiq.error.questions-%SUPPORT_EMAIL%',
+            array(
+                '%SUPPORT_EMAIL%' => $supportEmail,
+                '%MAIN_LINK%'     => $userVoice,
+            )
+        );
     }
 }
