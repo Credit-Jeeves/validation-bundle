@@ -47,6 +47,7 @@ function Pay(parent, contractId) {
             case 'source':
                 break;
             case 'user':
+                self.isValidUser(true);
                 break;
             case 'questions':
                 if (parent.questions) {
@@ -65,12 +66,11 @@ function Pay(parent, contractId) {
                     },
                     success: function(data, textStatus, jqXHR) {
                         jQuery('#pay-popup').hideOverlay();
-                        if (data['isValidUser'] !== undefined && data['isValidUser'] === false) {                          console.info('We setup user as false');
+                        if (data['isValidUser'] !== undefined && data['isValidUser'] === false) {
                             self.isValidUser(false);
                         } else {
                             self.isValidUser(true);
                         }
-
                         if (data['status'] && 'error' == data['status']) {
                             window.formProcess.addFormError('#vi-questions', data['error']);
                             self.isProcessQuestion(true);
@@ -366,7 +366,6 @@ function Pay(parent, contractId) {
                 if (self.isValidUser() && !self.isProcessQuestion()) {
                     sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
                     self.isProcessQuestion(true);
-                    break;
                 //Wrong answer for question, but we have user and we can move to next step
                 } else if(self.isValidUser() && self.isProcessQuestion()) {
                     window.formProcess.removeAllErrors('#pay-popup ');
@@ -374,11 +373,9 @@ function Pay(parent, contractId) {
                         $('#' + formName + ' .error').removeClass('error');
                     });
                     onSuccessStep([]);
-                    break;
-                //User is invalid so we don't do any think and live error
-                } else {
-                    break;
                 }
+                //User is invalid so we don't do any think and live error
+                break;
             case 'pay':
                 sendData(Routing.generate('checkout_pay_exec'), forms['details']);
                 break;

@@ -33,6 +33,12 @@ class PidkiqController extends Base
         parent::setPidkiqApi($pidkiqApi);
     }
 
+    protected function setupUserIsValidUserIntoSession(Request $request)
+    {
+        $session = $request->getSession();
+        $session->set('isValidUser', $this->isValidUser);
+    }
+
     /**
      * @Route("/get", name="experian_pidkiq_get", options={"expose"=true})
      * @Template()
@@ -42,8 +48,7 @@ class PidkiqController extends Base
     public function getAction(Request $request)
     {
         if (!$this->processQuestions()) {
-            $session = $request->getSession();
-            $session->set('isValidUser', $this->isValidUser);
+            $this->setupUserIsValidUserIntoSession($request);
             $response = array(
                 'status'          => 'error',
                 'error'           => $this->error,
@@ -63,7 +68,7 @@ class PidkiqController extends Base
                 array(
                     'status'            => 'error',
                     'error'             => $this->getErrorMessageQuestionNotFound(),
-                    'isValidUser'   => $this->isValidUser,
+                    'isValidUser'       => $this->isValidUser,
                 )
             );
         }
@@ -75,11 +80,11 @@ class PidkiqController extends Base
      */
     public function executeAction(Request $request)
     {
-        $session = $request->getSession();
+        $this->isValidUser = true;
         if ($questions = $this->retrieveQuestions()) {
             $this->form = $this->createForm(new QuestionsType($questions));
         } else {
-            $session->set('isValidUser', $this->isValidUser);
+            $this->setupUserIsValidUserIntoSession($request);
             return new JsonResponse(
                 array(
                     'status'          => 'error',
@@ -88,7 +93,7 @@ class PidkiqController extends Base
                 )
             );
         }
-        $session->set('isValidUser', $this->isValidUser);
+        $this->setupUserIsValidUserIntoSession($request);
         $this->form->handleRequest($request);
         if ($this->form->isValid()) {
             if ($this->processForm()) {
@@ -111,14 +116,13 @@ class PidkiqController extends Base
     protected function getErrorMessageQuestionNotFound()
     {
         $supportEmail = $this->container->getParameter('support_email');
-        $supportEmailTag = "<a href=\"mailto:{$supportEmail}\">{$supportEmail}</a>";
         $externalUrls = $this->container->getParameter('external_urls');
         $userVoice   = $externalUrls['user_voice'];
 
         return $this->get('translator')->trans(
             'pidkiq.error.questions-%SUPPORT_EMAIL%',
             array(
-                '%SUPPORT_EMAIL%' => $supportEmailTag,
+                '%SUPPORT_EMAIL%' => $supportEmail,
                 '%MAIN_LINK%'     => $userVoice,
             )
         );

@@ -202,7 +202,7 @@ class PidkiqCase extends BaseTestCase
      * @test
      *
      * @expectedException \ExperianException
-     * @expectedExceptionMessage Cannot formulate questions for this consumer.
+     * @expectedExceptionMessage Consumer Not Found on File One
      */
     public function getResponseOnUserDataIncorrect()
     {
