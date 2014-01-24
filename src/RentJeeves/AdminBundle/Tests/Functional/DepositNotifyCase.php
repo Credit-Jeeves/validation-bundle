@@ -27,7 +27,7 @@ class DepositNotifyCase extends BaseTestCase
 
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($fields = $this->page->findAll('css', 'form input'));
-        $this->assertCount(5, $fields, 'wrong number of inputs');
+        $this->assertCount(7, $fields, 'wrong number of inputs');
         $this->fillForm(
             $form,
             array(

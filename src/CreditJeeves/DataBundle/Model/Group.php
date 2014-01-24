@@ -1135,4 +1135,12 @@ abstract class Group
     {
         return $this->groupPhones;
     }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getGroupAgents()
+    {
+        return $this->group_agents;
+    }
 }
