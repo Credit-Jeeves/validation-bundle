@@ -12,6 +12,7 @@ class StartDateTest extends BaseTestCase
 {
     /**
      * @test
+     * @expectedException \Exception
      */
     public function wrong()
     {
@@ -27,7 +28,7 @@ class StartDateTest extends BaseTestCase
 
         $context->expects($this->any())
             ->method('addViolation')
-            ->will($this->returnValue(null));
+            ->will($this->throwException(new Exception));
 
         $constraint = new StartDate();
         $constraint->oneTimeUntilValue = '18:00';
@@ -42,7 +43,7 @@ class StartDateTest extends BaseTestCase
     /**
      * @test
      */
-    public function correct()
+    public function correctPlusMonth()
     {
         $context = $this->getMock(
             'Symfony\Component\Validator\ExecutionContext',
@@ -61,6 +62,31 @@ class StartDateTest extends BaseTestCase
         $validator = new $class();
         $date = new DateTime();
         $date->modify("+1 month");
+        $validator->initialize($context);
+        $validator->validate($date->format('Y-m-d'), $constraint);
+    }
+
+    /**
+     * @test
+     */
+    public function correctToday()
+    {
+        $context = $this->getMock(
+            'Symfony\Component\Validator\ExecutionContext',
+            array(
+            ),
+            array(),
+            '',
+            false
+        );
+        $context->expects($this->any())
+            ->method('addViolation')
+            ->will($this->throwException(new Exception));
+        $constraint = new StartDate();
+        $constraint->oneTimeUntilValue = '23:59';
+        $class = $constraint->validatedBy();
+        $validator = new $class();
+        $date = new DateTime();
         $validator->initialize($context);
         $validator->validate($date->format('Y-m-d'), $constraint);
     }

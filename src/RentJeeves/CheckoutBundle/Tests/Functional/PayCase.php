@@ -42,7 +42,7 @@ class PayCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
-                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING
             )
         );
         $this->page->pressButton('pay_popup.step.next');
@@ -50,9 +50,8 @@ class PayCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
 
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-        $this->assertCount(2, $errors);
+        $this->assertCount(1, $errors);
         $this->assertEquals('checkout.error.amount.min', $errors[0]->getText());
-        $this->assertEquals('payment.start_date.error', $errors[1]->getText());
 
 
         $this->fillForm(
@@ -178,6 +177,7 @@ class PayCase extends BaseTestCase
                 'questions_OutWalletAnswer4_3' => true,
             )
         );
+        
         $this->page->pressButton('pay_popup.step.next');
 
 
