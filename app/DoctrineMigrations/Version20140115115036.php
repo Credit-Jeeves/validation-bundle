@@ -49,7 +49,7 @@ class Version20140115115036 extends AbstractMigration
                 SET translatable_id = (SELECT id FROM email WHERE name = "rjOrderCancel.html"),
                 locale = "en",
                 property = "subject",
-                value = "RentTrack.com - Your order status has been changed"'
+                value = "Your Rent Payment was Reversed"'
         );
     }
 
