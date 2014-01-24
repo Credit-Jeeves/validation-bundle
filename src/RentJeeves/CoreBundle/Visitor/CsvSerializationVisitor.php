@@ -155,7 +155,9 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
             fputcsv($this->fp, array_keys($this->currentLine), self::DELIMITER, self::ENCLOSURE);
             $this->headerFlag = true;
         }
+
         fputcsv($this->fp, $this->currentLine, self::DELIMITER, self::ENCLOSURE);
+        $this->currentLine = array();
     }
 
     /**
