@@ -772,6 +772,14 @@ class Order extends BaseOrder
 
     public function getAvailableOrderStatuses()
     {
-        return OrderStatus::all();
+        $restrictedStatuses = array_diff(
+            array(OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR),
+            array($this->getStatus())
+        );
+
+        return array_diff(
+            OrderStatus::all(),
+            $restrictedStatuses
+        );
     }
 }

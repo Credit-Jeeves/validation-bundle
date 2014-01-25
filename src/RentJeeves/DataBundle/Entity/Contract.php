@@ -62,6 +62,11 @@ class Contract extends Base
     /**
      * @var string
      */
+    const CONTRACT_ENDED = 'CONTRACT ENDED';
+
+    /**
+     * @var string
+     */
     const STATUS_PAY = 'auto';
 
     /**
@@ -87,30 +92,6 @@ class Contract extends Base
      * @var bool
      */
     protected $statusShowLateForce = false;
-
-    protected function formatDateField($field, $format = 'm/d/Y')
-    {
-        if ($this->$field instanceof DateTime) {
-            return $this->$field->format($format);
-        }
-
-        return null;
-    }
-
-    public function getPaidToFormated($format = 'm/d/Y')
-    {
-        return $this->formatDateField($field = 'paidTo', $format);
-    }
-
-    public function getStartAtFormated($format = 'm/d/Y')
-    {
-        return $this->formatDateField($field = 'startAt', $format);
-    }
-
-    public function getFinishAtFormated($format = 'm/d/Y')
-    {
-        return $this->formatDateField($field = 'finishAt', $format);
-    }
 
     /**
      * @param boolean $statusShowLateForce
@@ -212,6 +193,11 @@ class Contract extends Base
         }
         $result['finish'] = '';
         if ($finish = $this->getFinishAt()) {
+            $today = new DateTime();
+            if ($today > $finish && $this->getStatus() !== ContractStatus::FINISHED) {
+                $result['style'] = 'contract-pending';
+                $result['status'] = self::CONTRACT_ENDED;
+            }
             $result['finish'] = $finish->format('m/d/Y');
         }
         $payments = $this->getPayments();

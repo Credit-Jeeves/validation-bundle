@@ -92,6 +92,13 @@ ApiBundle:
     defaults:
         _format: xml
 
+ApiBundle2:
+    resource: "@ApiBundle/Controller/USEquity"
+    type:     annotation
+    prefix:   /api
+    defaults:
+        _format: xml
+
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /documentation/api

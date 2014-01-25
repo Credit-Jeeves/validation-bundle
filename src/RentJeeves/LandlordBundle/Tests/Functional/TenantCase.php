@@ -170,21 +170,75 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count of tenants');
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count of tenants');
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('edit.Info');
         $this->page->clickLink('remove.tenant');
+        $this->page->pressButton('yes.remove.contract');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (12)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
         $this->assertCount(1, $email, 'Wrong number of emails');
+    }
+
+    /**
+     * @test
+     */
+    public function endContract()
+    {
+        $this->clearEmail();
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tabs.tenants');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count of tenants');
+
+        $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchField->click();
+        $this->assertNotNull($current = $this->page->find('css', '#searchPaymentsStatus_li_4'));
+        $current->click();
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (6)', $allh2->getText(), 'Wrong count of tenants');
+        $this->assertNotNull($approve = $this->page->find('css', '.edit'));
+        $approve->click();
+        $this->page->clickLink('end.br.contract');
+        $this->assertNotNull($outstandingBalance = $this->page->find('css', '.outstandingBalance'));
+        $outstandingBalance->setValue(223.21);
+        $this->page->pressButton('yes.end.contract');
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (5)', $allh2->getText(), 'Wrong count');
+        $this->logout();
+        //Check email notify tenant about removed contract by landlord
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'uncollectedBalance' => 223.21,
+                'status'             => 'finished',
+            )
+        );
+        $this->assertCount(1, $contracts, 'Wrong count contract');
     }
 
     /**
@@ -200,7 +254,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.pending');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
@@ -226,7 +280,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
@@ -271,7 +325,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (15)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.invite');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
@@ -324,7 +378,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
@@ -372,7 +426,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (15)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.approved');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
@@ -405,7 +459,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
@@ -426,7 +480,7 @@ class TenantCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         //Check created contracts
@@ -443,19 +497,20 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
 
-        $this->assertNotNull($review = $this->page->find('css', 'a.review'));
+        $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
         $review->click();
+        $this->assertNotNull($sendReminder = $this->page->find('css', '.sendReminder'));
+        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
+        $sendReminder->click();
+        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.overlay-trigger').is(':visible')");
+        $sendReminder->click();
 
-        $this->page->pressButton('send.reminder');
         $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay-trigger')");
 
-        $this->page->pressButton('send.reminder');
-
-        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.overlay-trigger')");
-
-        $this->assertNotNull($error = $this->page->find('css', '#tenant-review-property-popup .error'));
+        $this->assertNotNull($error = $this->page->find('css', '.default>li'));
         $this->assertEquals('contract.reminder.error.already.send', $error->getText(), 'Wrong text error');
         $this->logout();
         // check email
@@ -465,6 +520,7 @@ class TenantCase extends BaseTestCase
         $this->assertCount($nCountEmails, $email, 'Wrong number of emails');
         // end
     }
+
     /**
      * @test
      */
@@ -479,7 +535,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (13)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (14)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype'));
         $this->page->pressButton('invite.tenant');
@@ -564,7 +620,7 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
 
-        $this->assertNotNull($review = $this->page->find('css', 'a.review'));
+        $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
         $review->click();
         
         $this->page->clickLink('revoke.inv');

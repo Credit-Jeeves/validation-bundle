@@ -7,11 +7,24 @@
 
     <parameters>
         <parameter key="project.mailer.class">CreditJeeves\CoreBundle\Mailer\Mailer</parameter>
+        <parameter key="buzz.browser.class">Buzz\Browser</parameter>
+        <parameter key="buzz.client.class">Buzz\Client\Curl</parameter>
+        <parameter key="buzz.message_factory.class">Buzz\Message\Factory\Factory</parameter>
     </parameters>
     <services>
         <service id="project.mailer" class="%project.mailer.class%">
             <argument type="service" id="service_container" />
             <argument type="service" id="fp_badaboom.exception_catcher" />
+        </service>
+        <service id="buzz.client" class="%buzz.client.class%">
+            <call method="setTimeout">
+                <argument type="string">30</argument>
+            </call>
+        </service>
+        <service id="buzz.message_factory" class="%buzz.message_factory.class%"></service>
+        <service id="buzz.browser" class="%buzz.browser.class%">
+            <argument type="service" id="buzz.client" />
+            <argument type="service" id="buzz.message_factory" />
         </service>
     </services>
 

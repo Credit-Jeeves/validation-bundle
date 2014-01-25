@@ -865,27 +865,65 @@
                 <source>leads.user.exists</source>
                 <target>You are already associated with this dealership. Please contact the dealership at %GROUP_NAME% if you wish to change your salesperson.</target>
             </trans-unit>
-
-
             <trans-unit id="pidkiq.error.timeout">
                 <source>pidkiq.error.timeout-%SUPPORT_EMAIL%</source>
                 <target>We are unable to contact Experian at this time due to connectivity issues. Please email %SUPPORT_EMAIL% to let us know you were unable to authenticate with Experian.</target>
             </trans-unit>
             <trans-unit id="pidkiq.error.attempts">
                 <source>pidkiq.error.attempts</source>
-                <target>You have attempted to authenticate too many times recently. Please try again in an hour.</target>
+                <target>You have tried to verify your identity too many times recently. Please wait for an hour and try again. If you still see this message, please try again in 24 hours.</target>
             </trans-unit>
             <trans-unit id="pidkiq.error.connection">
                 <source>pidkiq.error.connection-%SUPPORT_EMAIL%</source>
-                <target>Connection Error. Please contact %SUPPORT_EMAIL%</target>
+                <target><![CDATA[
+                    Connection Error. Please contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                    ]]>
+                </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.questions">
-                <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
-                <target>We could not find your profile at Experian. Please contact %SUPPORT_EMAIL% if you feel this is an error.</target>
+               <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
+               <target><![CDATA[
+                    We found your identity at the credit bureau, so you WILL be able to set up
+                    your payment. However, we were unable to generate versification questions
+                    from your credit profile, so you will not be able to see your credit score or
+                    profile just yet. Please click Next to set up your payment than contact
+                    <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                    <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                    target="_blank" class="underline">
+                    to manually verify your identity.</a>
+                 ]]>
+               </target>
+            </trans-unit>
+           <trans-unit id="pidkiq.error.could.not.find.profile">
+               <source>pidkiq.error.could.not.find.profile-%SUPPORT_EMAIL%</source>
+               <target><![CDATA[
+                We're sorry, but we could not find your profile at the credit bureau.
+                You will not be able to set up your payment until you verify your identity.
+                Please contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+                ]]></target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.incorrect.answer">
+               <source>pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%</source>
+               <target><![CDATA[We found your identity at the credit bureau, so you WILL be able
+                to set up your payment. However, some of the answers you provided to the
+                questions are incorrect, so you will not be able to see your credit score or
+                profile just yet. Please click Next to set up your payment, than contact
+                <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+                ]]>
+                </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.generic">
                 <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>
-                <target>We encountered an error when contacting Experian: '%ERROR%'. Please contact %SUPPORT_EMAIL%.</target>
+                <target><![CDATA[
+                We encountered an error when contacting Experian: '%ERROR%'. Please contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>.
+                ]]>
+                </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.answers">
                 <source>pidkiq.error.answers-%SUPPORT_EMAIL%</source>
@@ -946,6 +984,14 @@
             <trans-unit id="error.user.first_name.long">
                 <source>error.user.first_name.long</source>
                 <target>First name is too long.</target>
+            </trans-unit>
+            <trans-unit id="error.user.middleInitial.short">
+                <source>error.user.middleInitial.short</source>
+                <target>Middle initial is too short.</target>
+            </trans-unit>
+            <trans-unit id="error.user.middleInitial.long">
+                <source>error.user.middleInitial.long</source>
+                <target>Middle initial is too long.</target>
             </trans-unit>
             <trans-unit id="error.user.last_name.empty">
                 <source>error.user.last_name.empty</source>
@@ -1018,6 +1064,14 @@
             <trans-unit id="error.user.tos">
                 <source>error.user.tos</source>
                 <target>Please accept the Terms and Conditions to register.</target>
+            </trans-unit>
+            <trans-unit id="error.user.street.invalid">
+                <source>error.user.street.invalid</source>
+                <target>Please use only alphanumeric, space, period, # and - characters in your street.</target>
+            </trans-unit>
+            <trans-unit id="error.user.city.invalid">
+                <source>error.user.city.invalid</source>
+                <target>Please use only letters, space and - characters in your city.</target>
             </trans-unit>
 
             <trans-unit id="user.welcome">
@@ -1318,6 +1372,46 @@
             <trans-unit id="address.on_credit_file">
                 <source>address.on_credit_file</source>
                 <target>Address on Credit File</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.delete.title">
+                <source>settings.payment_account.delete.title</source>
+                <target>Remove Payment Account</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.active">
+                <source>settings.payment_account.active</source>
+                <target>Active</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.make_active">
+                <source>settings.payment_account.make_active</source>
+                <target>Make Active</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.current_active">
+                <source>settings.payment_account.current_active</source>
+                <target>Is Active</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.name.title">
+                <source>settings.payment_account.name.title</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.delete.text">
+                <source>settings.payment_account.delete.text</source>
+                <target>Are you sure you want to remove this payment account?</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.delete.yes">
+                <source>settings.payment_account.delete.yes</source>
+                <target>Yes, remove account</target>
+            </trans-unit>
+            <trans-unit id="settings.payment_account.delete.no">
+                <source>settings.payment_account.delete.no</source>
+                <target>No, cancel</target>
+            </trans-unit>
+            <trans-unit id="scorexplus.score">
+                <source>scorexplus.score</source>
+                <target>Experian ScorexPLUS Score</target>
+            </trans-unit>
+            <trans-unit id="admin.action.charge">
+                <source>admin.action.charge</source>
+                <target>Charge</target>
             </trans-unit>
         </body>
     </file>

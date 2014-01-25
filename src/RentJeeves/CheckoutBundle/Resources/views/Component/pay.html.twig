@@ -237,6 +237,12 @@
                     </div>
                     <div data-bind="visible: 'card' == paymentSource.type()">
                         <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
+                            <label>{{ 'checkout.card.account_name' | trans }}</label>
+                            <div class="fields-box">
+                                <span class="value" data-bind="text: paymentSource.CardAccountName"></span>
+                            </div>
+                        </div>
+                        <div class="form-row clearfix" data-bind="visible: newPaymentAccount()">
                             <label>{{ 'checkout.card_number' | trans }}</label>
                             <div class="fields-box">
                                 <span class="value" data-bind="text: paymentSource.getCardNumber"></span>
@@ -287,7 +293,7 @@
         <button class="button grey fixed" data-bind="visible: 'details' != step(), click: previous">
             <span>{{ 'pay_popup.step.previous' | trans }}</span>
         </button>
-        <button class="button fixed" data-bind="visible: 'pay' != step(), click: next">
+        <button class="button fixed" data-bind="visible: 'pay' != step(), click: next, css: {'grey': !$root.isValidUser() }">
             <span>{{ 'pay_popup.step.next' | trans }}</span>
         </button>
         <button class="button" data-bind="visible: 'pay' == step(), click: next">

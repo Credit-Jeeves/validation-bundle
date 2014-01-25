@@ -36,12 +36,13 @@ class SourcesCase extends BaseTestCase
 
         $this->session->wait($this->timeout, "jQuery('#payment-account-edit .attention-box li').length");
         $this->assertNotNull($errors = $this->page->findAll('css', '#payment-account-edit .attention-box li'));
-        $this->assertCount(5, $errors);
+        $this->assertCount(6, $errors);
 
         $this->fillForm(
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'New Card',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
                 'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),
@@ -94,6 +95,7 @@ class SourcesCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymentaccounttype_name' => 'Edited',
+                'rentjeeves_checkoutbundle_paymentaccounttype_CardAccountName' => 'Timothy Applegate',
                 'rentjeeves_checkoutbundle_paymentaccounttype_CardNumber' => '5473500000000014',
                 'rentjeeves_checkoutbundle_paymentaccounttype_VerificationCode' => '123',
                 'rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth' => date('n'),

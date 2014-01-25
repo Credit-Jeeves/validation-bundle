@@ -7,6 +7,7 @@ function PaymentSource(parent, isForceSave, newAddress) {
     this.RoutingNumber = ko.observable('');
     this.AccountNumber = ko.observable('');
     this.ACHDepositType = ko.observable(null);
+    this.CardAccountName = ko.observable('');
     this.CardNumber = ko.observable('');
     this.VerificationCode = ko.observable('');
     this.ExpirationMonth = ko.observable(null);
@@ -36,6 +37,7 @@ function PaymentSource(parent, isForceSave, newAddress) {
         self.RoutingNumber('');
         self.AccountNumber('');
         self.ACHDepositType(null);
+        self.CardAccountName('');
         self.CardNumber('');
         self.VerificationCode('');
         self.ExpirationMonth(null);

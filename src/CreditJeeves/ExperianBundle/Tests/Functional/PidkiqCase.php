@@ -3,6 +3,7 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
+use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\ExperianBundle\Pidkiq;
@@ -96,14 +97,8 @@ class PidkiqCase extends BaseTestCase
         )
     );
 
-    /**
-     * Tests Pidkiq->getResponseOnUserData()
-     */
-    protected function getResponseOnUserData($data)
+    protected function getApplicant($data)
     {
-        $pidkiq = new Pidkiq();
-        $pidkiq->execute(self::getContainer());
-
         $aplicant = new Applicant();
         $aplicant->setFirstName($data['Name']['First']);
         $aplicant->setLastName($data['Name']['Surname']);
@@ -116,9 +111,28 @@ class PidkiqCase extends BaseTestCase
         $address->setArea($data['CurrentAddress']['State']);
         $address->setZip($data['CurrentAddress']['Zip']);
         $address->setUser($aplicant);
+        $address->setIsDefault(true);
         $aplicant->addAddress($address);
 
-        return $pidkiq->getResponseOnUserData($aplicant);
+        return $aplicant;
+    }
+
+    protected function getPidkiq()
+    {
+        $pidkiq = new Pidkiq();
+        $pidkiq->execute(self::getContainer());
+
+        return $pidkiq;
+    }
+
+    /**
+     * Tests Pidkiq->getResponseOnUserData()
+     */
+    protected function getResponseOnUserData($data)
+    {
+        $aplicant = $this->getApplicant($data);
+
+        return $this->getPidkiq()->getResponseOnUserData($aplicant);
     }
 
     /**
@@ -188,7 +202,7 @@ class PidkiqCase extends BaseTestCase
      * @test
      *
      * @expectedException \ExperianException
-     * @expectedExceptionMessage Cannot formulate questions for this consumer.
+     * @expectedExceptionMessage Consumer Not Found on File One
      */
     public function getResponseOnUserDataIncorrect()
     {
@@ -208,7 +222,8 @@ class PidkiqCase extends BaseTestCase
             try {
                 $resp = $this->getResponseOnUserData($this->users[$i]);
                 $this->assertTrue(is_array($resp));
-
+                $resp = $this->getObjectOnUserData($this->users[$i]);
+                $this->assertTrue(($resp instanceof NetConnectResponse));
                 return;
             } catch (\ExperianException $e) {
                 if ('No questions returned due to excessive use' == $e->getMessage()) {
@@ -239,5 +254,17 @@ class PidkiqCase extends BaseTestCase
     public function getResponseOnUserDataTimeout()
     {
         $this->getResponseOnUserData($this->users[0]);
+    }
+
+    /**
+     * Tests Pidkiq->getObjectOnUserData()
+     *
+     * @expectedException \ExperianException
+     * @expectedExceptionMessage No questions returned due to excessive use
+     */
+    protected function getObjectOnUserData($data)
+    {
+        $applicant = $this->getApplicant($data);
+        return $this->getPidkiq()->getObjectOnUserData($applicant);
     }
 }

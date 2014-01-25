@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
+use RentJeeves\CheckoutBundle\Constraint\StartDate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -174,7 +175,8 @@ class PaymentType extends AbstractType
                 'label' => 'checkout.date',
                 'input' => 'string',
                 'widget' => 'single_text',
-                'format' => 'M/d/yyyy',
+                'format' => 'MM/dd/yyyy',
+                'mapped' => false,
                 'empty_data' => '',
                 'attr' => array(
                     'class' => 'datepicker-field',
@@ -208,6 +210,12 @@ class PaymentType extends AbstractType
                         array(
                             'groups' => array('one_time'),
                             'methods' => array(array($this, 'isInTime')),
+                        )
+                    ),
+                    new StartDate(
+                        array(
+                            'groups' => array('recurring'),
+                            'oneTimeUntilValue'   => $this->oneTimeUntilValue,
                         )
                     ),
                     new Callback(

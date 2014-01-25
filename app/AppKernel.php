@@ -10,13 +10,13 @@ use BadaBoom\ChainNode\Provider\ExceptionSummaryProvider;
 use BadaBoom\ChainNode\Provider\ServerProvider;
 use BadaBoom\ChainNode\Sender\LogSender;
 use BadaBoom\ChainNode\Sender\MailSender;
-use BadaBoom\Serializer\Encoder\TextEncoder;
 use BadaBoom\DataHolder\DataHolder;
 use Fp\BadaBoomBundle\ChainNode\Provider\SessionProvider;
 use Fp\BadaBoomBundle\ChainNode\SafeChainNodeManager;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ExceptionCatcher;
 //use Fp\BadaBoomBundle\ChainNode\SymfonyExceptionHandlerChainNode;
 use Fp\BadaBoomBundle\Bridge\UniversalErrorCatcher\ChainNode\SymfonyExceptionHandlerChainNode;
+use CreditJeeves\CoreBundle\Serializer\Encoder\HtmlEncoder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel;
@@ -152,19 +152,20 @@ abstract class AppKernel extends Kernel
             $recipients = array(
                 'forma@66ton99.org.ua' .
                 ', systems@creditjeeves.com' .
-                ', alex.emelyanov.ua@gmail.com' .
+                ', rentmailformapro@yandex.ru' .
                 ', alexandr.sharamko@gmail.com'
             );
 
             $filter = new ExceptionClassFilter();
             $filter->allow('Exception');
             $filter->deny('SuppressedErrorException');
+            $filter->deny('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
 
             $this->chainNodeManager->addFilter('default', $filter);
 
             $serializer = new Serializer(
                 array(/*new DataHolderNormalizer()*/),
-                array(new TextEncoder())
+                array(new HtmlEncoder())
             );
 
 //            touch($logFile = $this->getRootDir().'/logs/'.$this->getEnvironment().'-exceptions.log');
@@ -191,8 +192,10 @@ abstract class AppKernel extends Kernel
                         'sender' => 'noreply@'.$domain,
                         'recipients' => $recipients,
                         'subject' => 'Whoops, looks like something went wrong.',
-                        'format' => 'text',
-                        'headers' => array()
+                        'format' => 'html',
+                        'headers' => array(
+                            'Content-type' => 'text/html; charset=utf-8',
+                        )
                     ))
                 )
             );

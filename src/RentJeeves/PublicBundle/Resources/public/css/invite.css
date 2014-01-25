@@ -9,8 +9,6 @@
     position: absolute;
     margin-left: -24px;
     margin-top: 3px;
-    width: 1px;
-    height: 1px;
     -ms-transform: scale(0.1); /* IE */
     -moz-transform: scale(0.1); /* FF */
     /*
@@ -30,4 +28,8 @@
 }
 .accept-terms-box {
     width: 890px;
+}
+.col .creditcom-logo .search-box {
+    background: #eee url(/bundles/rjpublic/images/creditcom.png) right 30px center no-repeat;
+    width: 910px;
 }

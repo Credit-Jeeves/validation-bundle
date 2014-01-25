@@ -106,3 +106,12 @@ services:
             - ~
             - CreditJeeves\DataBundle\Entity\Report
             - 'SonataAdminBundle:CRUD'
+
+    sonata.admin.pidkiq:
+        class: CreditJeeves\AdminBundle\Admin\PidkiqAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Pidkiq Requests" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\Pidkiq
+            - 'SonataAdminBundle:CRUD'

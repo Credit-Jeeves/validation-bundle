@@ -6,3 +6,12 @@
 button, .button {
     padding-left: 0px;
 }
+
+.payment-account-checkbox .fields-box .checkbox{
+    margin-left: -37px;
+}
+
+#billingAccountType_isActive_box input[type="checkbox"] {
+    width: 20px;
+    margin-left: 150px;
+}

@@ -17,4 +17,9 @@ class OperationType extends Enum
      * @var string
      */
     const RENT = 'rent';
+
+    /**
+     * @var string
+     */
+    const CHARGE = 'charge';
 }

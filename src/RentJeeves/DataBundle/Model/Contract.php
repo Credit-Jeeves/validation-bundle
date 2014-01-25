@@ -141,7 +141,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * @Serializer\Accessor(getter="getPaidToFormated")
+     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $paidTo;
 
@@ -169,7 +169,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * @Serializer\Accessor(getter="getStartAtFormated")
+     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $startAt;
 
@@ -186,7 +186,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-     * @Serializer\Accessor(getter="getFinishAtFormated")
+     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $finishAt;
     
@@ -219,6 +219,7 @@ abstract class Contract
      *     orphanRemoval=true
      * )
      * @var \CreditJeeves\DataBundle\Entity\Operation
+     * @Serializer\Exclude
      */
     protected $operation;
 
@@ -234,12 +235,41 @@ abstract class Contract
      */
     protected $payments;
 
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=true,
+     *     name="uncollected_balance"
+     * )
+     */
+    protected $uncollectedBalance;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
     }
-    
+
+    /**
+     * @param float $uncollectedBalance
+     */
+    public function setUncollectedBalance($uncollectedBalance)
+    {
+        $this->uncollectedBalance = $uncollectedBalance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUncollectedBalance()
+    {
+        return $this->uncollectedBalance;
+    }
+
+
     /**
      * Get id
      *

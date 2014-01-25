@@ -5,19 +5,24 @@
   </h3>
   <div class="col-box clearfix">
     <div class="col">
-    <h4>{{ 'property.add'|trans }}</h4>
-    <form action="#" name="searchRentalsForm" id="formSearch">
-      <div class="search-box pie-el">
-        <label for="searsh-field">{{ 'verify.rental'|trans }}</label>
-        <div class="clearfix">
-          <input type="text" id="property-search" name="searsh-field" value="{{ address }}">
-          <a href="#" id="delete" class="pie-el">x</a>
-          <button type="submit" id="search-submit" class="pie-el">{{ 'search'|trans }}</button>
-          <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." class="loadingSpinner">
+        <h4>{{ 'property.add'|trans }}</h4>
+        <div
+            {% if app.request.cookies.get("affiliateSource") %}
+                class="{{ app.request.cookies.get("affiliateSource")|lower ~ '-logo' }}"
+            {% endif %}>
+            <form action="#" name="searchRentalsForm" id="formSearch">
+              <div class="search-box pie-el">
+                <label for="searsh-field">{{ 'verify.rental'|trans }}</label>
+                <div class="clearfix">
+                  <input type="text" id="property-search" name="searsh-field" value="{{ address }}">
+                  <a href="#" id="delete" class="pie-el">x</a>
+                  <button type="submit" id="search-submit" class="pie-el">{{ 'search'|trans }}</button>
+                  <img src="{{ asset('/bundles/rjpublic/images/spinner-grey-ajax-loader.gif') }}" title="{{'loading'|trans}}..." class="loadingSpinner">
+                </div>
+                <div id="map-canvas"></div>
+              </div>
+            </form>
         </div>
-        <div id="map-canvas"></div>
-      </div>
-    </form>
     </div>
   </div>
 </div>

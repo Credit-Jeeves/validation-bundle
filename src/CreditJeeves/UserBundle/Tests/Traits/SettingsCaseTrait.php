@@ -71,6 +71,22 @@ trait SettingsCaseTrait
             ]
         );
 
+        $form->pressButton('common.add');
+        $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
+        $this->assertCount(1, $errorList, 'Wrong number of received errors');
+
+        $testStreetName = 'NEW ADDED STREET';
+        $this->fillForm(
+            $form,
+            [
+                'creditjeeves_userbundle_useraddresstype_street' => $testStreetName,
+                'creditjeeves_userbundle_useraddresstype_city' => 'BELTSVILLE',
+                'creditjeeves_userbundle_useraddresstype_area' => 'MD',
+                'creditjeeves_userbundle_useraddresstype_zip' => '207041563',
+                'creditjeeves_userbundle_useraddresstype_unit' => '116TH 1'
+            ]
+        );
+
         $this->assertNotNull(
             $checkbox = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype_isDefault'),
             'The isDefault checkbox was not found.'
@@ -125,7 +141,7 @@ trait SettingsCaseTrait
             'Cant find form'
         );
 
-        $testStreetName = 'NEW_ADDED_STREET';
+        $testStreetName = 'NEW ADDED STREET';
         $this->fillForm(
             $form,
             [

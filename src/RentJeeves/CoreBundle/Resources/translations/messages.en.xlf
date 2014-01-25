@@ -469,7 +469,7 @@
             </trans-unit>
             <trans-unit id="tenant.info">
                 <source>tenant.info</source>
-                <target>Tenant Information</target>
+                <target>Tenant (Must be Listed on Lease Agreement)</target>
             </trans-unit>
             <trans-unit id="request.payments">
                 <source>request.payments</source>
@@ -749,6 +749,10 @@
                 <source>conflict.resolve.unpaid</source>
                 <target>Mark as “Unpaid” (this will report to credit bureau as an unpaid account - this cannot be undone)</target>
             </trans-unit>
+            <trans-unit id="conflict.resolve.ended">
+                <source>conflict.resolve.ended</source>
+                <target>Update this contract</target>
+            </trans-unit>
             
            <trans-unit id="error.email.already.use">
                 <source>error.email.already.use</source>
@@ -880,7 +884,7 @@
             </trans-unit>
             <trans-unit id="contract.resolve.warning">
                 <source>contract.resolve.warning</source>
-                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to handle any associated disputes arising from the information you provide.</target>
+                <target>When you provide missing payment information, you understand that this information will be reported to a credit service agency. You therefore agree to assist RentTrack with any associated disputes arising from the information you provide.</target>
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
@@ -960,28 +964,28 @@
             </trans-unit>
             <trans-unit id="settings.deposit">
                 <source>settings.deposit</source>
-                <target>Direct Deposit Accounts</target>
+                <target>Payment Accounts</target>
             </trans-unit>
             <trans-unit id="settings.deposit.description">
                 <source>settings.deposit.description</source>
-                <target>
-                    Specify where you wold like us to deposit incoming rent payments.
-                    Any RentTrack fees will also be withdrawn from this account.
+                <target>Specify how you would like to pay for RentTrack service fees.
                 </target>
             </trans-unit>
             <trans-unit id="add.account">
                 <source>add.account</source>
                 <target>Add Account</target>
             </trans-unit>
+            <trans-unit id="payment.account.button.save">
+                <source>payment.account.button.save</source>
+                <target>Save Payment Account</target>
+            </trans-unit>
             <trans-unit id="add.account.popup.desc">
                 <source>add.account.popup.desc</source>
-                <target>This information is only used to direct payments to you.
-                        Deposit will be initiate on you "Rent Due Date" and typically
-                        take 1-3 days to show up in you chosen account.</target>
+                <target>This account will be used to pay any RentTrack service fees. You will receive a receipt detailing all fees.</target>
             </trans-unit>
             <trans-unit id="add.account.popup.title.edit">
                 <source>add.account.popup.title.edit</source>
-                <target>Add direct deposit account</target>
+                <target>Payment Account</target>
             </trans-unit>
             <!-- Tenant Invite popup -->
             <trans-unit id="popup.invite.tenant.title_1">
@@ -1667,7 +1671,7 @@
             </trans-unit>
             <trans-unit id="landlord.payment_account.set_up_message">
                 <source>landlord.payment_account.set_up_message</source>
-                <target><![CDATA[Please visit your <a href="#">account settings</a> to set up a payment account.]]></target>
+                <target><![CDATA[Please visit your <a href="%payment_account_url%">account settings</a> to set up a payment account.]]></target>
             </trans-unit>
             <trans-unit id="landlord.alert.verify_email">
                 <source>landlord.alert.verify_email</source>
@@ -1685,18 +1689,6 @@
                 <source>ar.account.id</source>
                 <target>ArAccountID</target>
             </trans-unit>
-            <trans-unit id="rj.pidkiq.error.answers">
-                <source>rj.pidkiq.error.answers-%SUPPORT_EMAIL%</source>
-                <target><![CDATA[
-                    Some of the answers you provided to the questions are incorrect.
-                    We're sorry but we cannot verify your identity at this time.
-                    Please try again in one hour, or contact %SUPPORT_EMAIL%
-                    <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
-                    target="_blank" class="underline">
-                    to manually verify your identity.</a>
-                        ]]>
-                </target>
-            </trans-unit>
             <trans-unit id="remove.unit.confirm">
                 <source>remove.unit.confirm</source>
                 <target>Are you sure you want to delete this unit? Any associated contracts will be closed as finished. You will not lose any payment history.</target>
@@ -1704,6 +1696,107 @@
             <trans-unit id="remove.property.confirm">
                 <source>remove.property.confirm</source>
                 <target>Are you sure you want to delete this property?</target>
+            </trans-unit>
+            <trans-unit id="edit.contract">
+                <source>edit.contract</source>
+                <target>Edit Contract</target>
+            </trans-unit>
+            <trans-unit id="end.contract">
+                <source>end.contract</source>
+                <target>End Contract</target>
+            </trans-unit>
+            <trans-unit id="end.br.contract">
+                <source>end.br.contract</source>
+                <target><![CDATA[End <br />Contract]]></target>
+            </trans-unit>
+            <trans-unit id="yes.end.contract">
+                <source>yes.end.contract</source>
+                <target>Yes, End Contract</target>
+            </trans-unit>
+            <trans-unit id="yes.remove.contract">
+                <source>yes.remove.contract</source>
+                <target>Yes, Remove Contract</target>
+            </trans-unit>
+            <trans-unit id="no.leave.intact">
+                <source>no.leave.intact</source>
+                <target>No, Leave Intact</target>
+            </trans-unit>
+            <trans-unit id="uncollected.outstanding.balance">
+                <source>uncollected.outstanding.balance</source>
+                <target>Uncollected Outstanding Balance</target>
+            </trans-unit>
+            <trans-unit id="end.contract.description">
+                <source>end.contract.description</source>
+                <target>
+                    Are you sure want to end this contract?
+                    Please enter any uncollected balance, or $0 if lease was paid
+                    in full. Tenant payment history will be reported to credit service
+                    agencies.
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.contract.description">
+                <source>remove.contract.description</source>
+                <target>
+                    Are you sure want to remove this contract?
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.contract">
+                <source>remove.contract</source>
+                <target>
+                    Remove Contract Confirm
+                </target>
+            </trans-unit>
+            <trans-unit id="outstanding.description">
+                <source>outstanding.description</source>
+                <target>
+                    When you provide outstanding balance information, you understand
+                    that this information will be reported to a credit service agency.
+                    You therefore agree to assist RentTrack with any associated disputes arising from the
+                    information you provide.
+                </target>
+            </trans-unit>
+            <trans-unit id="outstanding.validate.contract.not.exist">
+                <source>outstanding.validate.contract.not.exist</source>
+                <target>
+                    Contract by id %%CONTRACTID%% does not exist
+                </target>
+            </trans-unit>
+            <trans-unit id="outstanding.validate.contract.not.your">
+                <source>outstanding.validate.contract.not.your</source>
+                <target>
+                    Contract by id %%CONTRACTID%% does not your!
+                </target>
+            </trans-unit>
+            <trans-unit id="month.to.month">
+                <source>month.to.month</source>
+                <target>Go "Month to Month"</target>
+            </trans-unit>
+            <trans-unit id="change.end.date">
+                <source>change.end.date</source>
+                <target>Change end date:</target>
+            </trans-unit>
+            <trans-unit id="mark.as.finished">
+                <source>mark.as.finished</source>
+                <target>
+                    Mark as "Finished" (tenant moved out)
+                    and specify any outstanding balance:
+                </target>
+            </trans-unit>
+            <trans-unit id="on">
+                <source>on</source>
+                <target>On</target>
+            </trans-unit>
+            <trans-unit id="when.cancelled">
+                <source>when.cancelled</source>
+                <target>When cancelled</target>
+            </trans-unit>
+            <trans-unit id="iframe.public_subtitle">
+                <source>iframe.public_subtitle</source>
+                <target>Enter your Rental Address to Get Started</target>
+            </trans-unit>
+            <trans-unit id="payment.start_date.error">
+                <source>payment.start_date.error</source>
+                <target>Please check your dates. It appears you have set up a recurring payment to start in the past, or you are beyond the cutoff time for payments today.</target>
             </trans-unit>
         </body>
     </file>
