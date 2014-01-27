@@ -1800,7 +1800,7 @@
             </trans-unit>
             <trans-unit id="payment.start_date.error.cutoff.time">
                 <source>payment.start_date.error.cutoff.time</source>
-                <target>Please check your dates. It appears you have set up a recurring payment to beyond the cutoff time for payments today.</target>
+                <target>It is past the payment cutoff time for today, please set the date to tomorrow or later.</target>
             </trans-unit>
         </body>
     </file>
