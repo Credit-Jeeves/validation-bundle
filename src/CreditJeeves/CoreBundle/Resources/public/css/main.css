@@ -558,11 +558,6 @@ ul.error_list {
     position: absolute;
     margin-left: -24px;
     margin-top: 3px;
-    -ms-transform: scale(0.1); /* IE */
-    -moz-transform: scale(0.1); /* FF */
-    /*
-    -webkit-transform: scale(0.1); /* Safari and Chrome */
-    -o-transform: scale(0.1); /* Opera */
 }
 
 .linkselect-link {

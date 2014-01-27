@@ -3,7 +3,11 @@
 {% block title "project_name" | trans %}
 
 {% block stylesheets %}
-    <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
+    {% stylesheets  '@UserBundle/Resources/public/css/user.css'
+                    '@PublicBundle/Resources/public/css/invite.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
 {% endblock %}
 
 {% block tabs %}
