@@ -1784,11 +1784,11 @@
             </trans-unit>
             <trans-unit id="on">
                 <source>on</source>
-                <target>On</target>
+                <target>End:</target>
             </trans-unit>
             <trans-unit id="when.cancelled">
                 <source>when.cancelled</source>
-                <target>When cancelled</target>
+                <target>End Lease When Cancelled</target>
             </trans-unit>
             <trans-unit id="iframe.public_subtitle">
                 <source>iframe.public_subtitle</source>
