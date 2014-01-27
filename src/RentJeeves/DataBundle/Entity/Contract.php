@@ -57,19 +57,12 @@ class Contract extends Base
     /**
      * @var string
      */
-    const PAYMENT_LATE_MONTH = ' MONTHS LATE';
-
-    /**
-     * @var string
-     */
     const STATUS_EMPTY = 'empty-month';
 
     /**
      * @var string
      */
     const CONTRACT_ENDED = 'CONTRACT ENDED';
-
-
 
     /**
      * @var string
@@ -223,11 +216,8 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new \DateTime();
             $interval = $now->diff($date);
-            if ($interval->m === 0 && $interval->y === 0) {
+            if ($interval->days > 0) {
                 $result = $interval->days.self::PAYMENT_LATE;
-            } else {
-                $month = $interval->y*12+$interval->m;
-                $result = $month.self::PAYMENT_LATE_MONTH;
             }
         }
         return $result;
@@ -277,14 +267,7 @@ class Contract extends Base
              */
             if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
-                if ($interval->m === 0 && $interval->y === 0) {
-                    $result['status'] = 'LATE ('.$interval->days.' days)';
-                } else {
-                    $month = $interval->y*12+$interval->m;
-                    $result['status'] = 'LATE ('.$month.self::PAYMENT_LATE_MONTH.')';
-                }
-
-
+                $result['status'] = 'LATE ('.$interval->days.' days)';
                 $result['class'] = 'contract-late';
                 return $result;
             }
