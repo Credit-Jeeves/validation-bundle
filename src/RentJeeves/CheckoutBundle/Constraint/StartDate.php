@@ -8,5 +8,7 @@ class StartDate extends Constraint
 {
     public $oneTimeUntilValue;
 
-    public $message = 'payment.start_date.error';
+    public $messageDateInPast = 'payment.start_date.error.past';
+
+    public $messageDateCutoffTime = 'payment.start_date.error.cutoff.time';
 }

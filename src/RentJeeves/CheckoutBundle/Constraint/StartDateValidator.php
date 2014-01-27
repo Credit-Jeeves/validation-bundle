@@ -28,8 +28,10 @@ class StartDateValidator extends ConstraintValidator
             if ($timeExecution > $timeValidation) {
                 return;
             }
+
+            return $this->context->addViolation($constraint->messageDateCutoffTime);
         }
 
-        $this->context->addViolation($constraint->message);
+        return $this->context->addViolation($constraint->messageDateInPast);
     }
 }
