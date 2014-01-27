@@ -236,13 +236,12 @@ class EmailLandlordCommand extends ContainerAwareCommand
                         $item['late'] = $diff->format('%d');
                         $tenants[] = $item;
                     }
-                    $doctrine->getManager()->detach($object);
+
                     if (count($tenants) > 0) {
                         foreach ($landlords as $landlord) {
                             $mailer->sendListLateContracts($landlord, $tenants);
                         }
                     }
-                    $doctrine->getManager()->detach($row[0]);
                     $output->write('.');
                 }
                 $output->writeln('OK');

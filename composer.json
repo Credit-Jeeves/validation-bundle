@@ -219,7 +219,8 @@
         "doctrine/doctrine-migrations-bundle": "dev-master",
         "guzzle/http": "v3.5.0",
         "apy/jsfv-bundle":"dev-master",
-        "willdurand/expose-translation-bundle": "dev-master"
+        "willdurand/expose-translation-bundle": "dev-master",
+        "beberlei/DoctrineExtensions": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",
