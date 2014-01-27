@@ -47,6 +47,7 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
             new RentJeeves\DataBundle\RjDataBundle(),
+            new RentJeeves\PublicBundle\RjPublicBundle(),
             new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
