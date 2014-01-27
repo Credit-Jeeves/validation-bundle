@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "2e5e4cfeb6329dbc4788b3b0cc527919",
+    "hash": "df1d5d4ffb2ea7cc9889cb71e188f425",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -206,6 +206,32 @@
                 "xml"
             ],
             "time": "2013-07-18 19:52:20"
+        },
+        {
+            "name": "beberlei/DoctrineExtensions",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/DoctrineExtensions.git",
+                "reference": "5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/DoctrineExtensions/zipball/5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc",
+                "reference": "5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "DoctrineExtensions": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2013-12-20 22:02:19"
         },
         {
             "name": "besimple/soap-common",
@@ -5195,6 +5221,7 @@
         "doctrine/doctrine-migrations-bundle": 20,
         "apy/jsfv-bundle": 20,
         "willdurand/expose-translation-bundle": 20,
+        "beberlei/doctrineextensions": 20,
         "behat/mink-bundle": 20,
         "doctrine/data-fixtures": 20,
         "doctrine/doctrine-fixtures-bundle": 15,
