@@ -51,6 +51,7 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\UserBundle\UserBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
             new CreditJeeves\AdminBundle\AdminBundle(),
+            new CreditJeeves\ApplicantBundle\ApplicantBundle(),
 
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),
