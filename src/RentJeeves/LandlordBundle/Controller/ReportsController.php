@@ -69,7 +69,8 @@ class ReportsController extends Controller
 
         return array(
             'settings'           => $user->getSettings(),
-            'formBaseOrder'      => $formBaseOrder->createView()
+            'formBaseOrder'      => $formBaseOrder->createView(),
+            'nGroups' => $this->getGroups()->count(),
         );
     }
 }

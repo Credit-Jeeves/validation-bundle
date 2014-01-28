@@ -246,7 +246,19 @@
             </trans-unit>
             <trans-unit id="common.applicant.tos">
                 <source>common.applicant.tos</source>
-                <target>You understand that by clicking on the I AGREE button immediately following this notice, you are providing ‘written instructions’ to Credit Jeeves, LLC under the Fair Credit Reporting Act authorizing Credit Jeeves, LLC to obtain information from your personal credit profile or other information from Experian. You authorize Credit Jeeves, LLC to obtain such information solely to authenticate your identity, provide you with your score and aggregated credit information, and prequalify you for loan options. You understand that your authorization will permit Credit Jeeves, LLC to obtain your personal consumer credit profile at account set up, and periodically as needed for as long as you are deemed a member of this website for the aforementioned purposes. If at any time you desire to terminate your authorization and written instructions to permit Credit Jeeves, LLC to continue to obtain your personal consumer credit profile, you may do so by contacting Credit Jeeves Support at help@creditjeeves.com. </target>
+                <target>
+                    You understand that by clicking on the I AGREE button immediately following this notice, you are providing
+                    ‘written instructions’ to Credit Jeeves, LLC under the Fair Credit Reporting Act authorizing Credit Jeeves,
+                    LLC to obtain information from your personal credit profile or other information from Experian.
+                    You authorize Credit Jeeves, LLC to obtain such information solely to authenticate your identity, provide
+                    you with your score and aggregated credit information, prequalify you for loan options, and notify your dealer
+                    when you may be prequalified to buy a car.
+                    You understand that your authorization will permit Credit Jeeves, LLC to obtain your personal consumer
+                    credit profile at account set up, and periodically as needed for as long as you are deemed a member
+                    of this website for the aforementioned purposes. If at any time you desire to terminate
+                    your authorization and written instructions to permit Credit Jeeves, LLC to continue to obtain your
+                    personal consumer credit profile, you may do so by contacting Credit Jeeves Support at help@creditjeeves.com.
+                </target>
             </trans-unit>
             <trans-unit id="common.submit">
                 <source>common.submit</source>
@@ -875,15 +887,55 @@
             </trans-unit>
             <trans-unit id="pidkiq.error.connection">
                 <source>pidkiq.error.connection-%SUPPORT_EMAIL%</source>
-                <target>Connection Error. Please contact %SUPPORT_EMAIL%</target>
+                <target><![CDATA[
+                    Connection Error. Please contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                    ]]>
+                </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.questions">
-                <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
-               <target><![CDATA[We're sorry but we are unable to generate verification questions from your credit profile. Please <a href="http://renttrack.uservoice.com/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-">follow this guide</a> to send us the information required to verify your identity.]]></target>
+               <source>pidkiq.error.questions-%SUPPORT_EMAIL%</source>
+               <target><![CDATA[
+                    We found your identity at the credit bureau, so you WILL be able to set up
+                    your payment. However, we were unable to generate versification questions
+                    from your credit profile, so you will not be able to see your credit score or
+                    profile just yet. Please click Next to set up your payment than contact
+                    <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                    <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                    target="_blank" class="underline">
+                    to manually verify your identity.</a>
+                 ]]>
+               </target>
+            </trans-unit>
+           <trans-unit id="pidkiq.error.could.not.find.profile">
+               <source>pidkiq.error.could.not.find.profile-%SUPPORT_EMAIL%</source>
+               <target><![CDATA[
+                We're sorry, but we could not find your profile at the credit bureau.
+                You will not be able to set up your payment until you verify your identity.
+                Please contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+                ]]></target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.incorrect.answer">
+               <source>pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%</source>
+               <target><![CDATA[We found your identity at the credit bureau, so you WILL be able
+                to set up your payment. However, some of the answers you provided to the
+                questions are incorrect, so you will not be able to see your credit score or
+                profile just yet. Please click Next to set up your payment, than contact
+                <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+                ]]>
+                </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.generic">
                 <source>pidkiq.error.generic-%SUPPORT_EMAIL%</source>
-                <target>We encountered an error when contacting Experian: '%ERROR%'. Please contact %SUPPORT_EMAIL%.</target>
+                <target><![CDATA[
+                We encountered an error when contacting Experian: '%ERROR%'. Please contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>.
+                ]]>
+                </target>
             </trans-unit>
             <trans-unit id="pidkiq.error.answers">
                 <source>pidkiq.error.answers-%SUPPORT_EMAIL%</source>
@@ -1368,6 +1420,10 @@
             <trans-unit id="scorexplus.score">
                 <source>scorexplus.score</source>
                 <target>Experian ScorexPLUS Score</target>
+            </trans-unit>
+            <trans-unit id="admin.action.charge">
+                <source>admin.action.charge</source>
+                <target>Charge</target>
             </trans-unit>
         </body>
     </file>

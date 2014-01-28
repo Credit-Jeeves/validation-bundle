@@ -6,17 +6,54 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\Heartland;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use Exception;
 
 /**
  * @Route("/")
  */
 class AjaxController extends Controller
 {
+    /**
+     * @Route(
+     *     "/rj/group/{id}/terminal",
+     *     name="admin_rj_group_terminal",
+     *     options={"expose"=true}
+     * )
+     */
+    public function terminalAction($id, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var Group $group */
+        $group = $em->find('DataBundle:Group', $id);
+        /** @var BillingAccount $billingAccount */
+        $billingAccount = $group->getActiveBillingAccount();
+
+        if (!$billingAccount) {
+            return new JsonResponse(array('message' => 'Payment account not found'));
+        }
+
+        $amount = $request->request->get('amount');
+        $id4Field = $request->request->get('customData');
+
+        try {
+            /** @var Heartland $result */
+            $result = $this->get('payment_terminal')->pay($group, $amount, $id4Field);
+        } catch (Exception $e) {
+            return new JsonResponse(array('message' => 'Payment failed: ' . $e->getMessage()), 200);
+        }
+
+        $message = $result->getIsSuccessful() ? 'Payment succeed' : 'Payment failed: ' . $result->getMessages();
+
+        return new JsonResponse(array('message' => $message), 200);
+    }
+
     /**
      * @Route("order/status", name="admin_order_status", options={"expose"=true})
      * @Method({"POST"})

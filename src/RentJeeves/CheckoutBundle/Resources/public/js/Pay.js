@@ -4,6 +4,9 @@ function Pay(parent, contractId) {
     var self = this;
     var contract = parent.getContractById(contractId);
     var current = 0;
+    this.isValidUser = ko.observable(true);
+    this.isProcessQuestion = false;
+
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
         'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
@@ -44,6 +47,7 @@ function Pay(parent, contractId) {
             case 'source':
                 break;
             case 'user':
+                self.isValidUser(true);
                 break;
             case 'questions':
                 if (parent.questions) {
@@ -62,8 +66,14 @@ function Pay(parent, contractId) {
                     },
                     success: function(data, textStatus, jqXHR) {
                         jQuery('#pay-popup').hideOverlay();
+                        if (data['isValidUser'] !== undefined && data['isValidUser'] === false) {
+                            self.isValidUser(false);
+                        } else {
+                            self.isValidUser(true);
+                        }
                         if (data['status'] && 'error' == data['status']) {
                             window.formProcess.addFormError('#vi-questions', data['error']);
+                            self.isProcessQuestion = true;
                             return;
                         }
                         parent.questions = data; //TODO add identity check
@@ -257,7 +267,9 @@ function Pay(parent, contractId) {
                 }
                 break;
             case 'questions':
-                parent.verification = data.verification;
+                if (data.verification !== undefined) {
+                    parent.verification = data.verification;
+                }
                 steps.splice(2, 2);
                 current -= 2;
                 break;
@@ -327,7 +339,6 @@ function Pay(parent, contractId) {
 
     this.next = function() {
         var currentStep = steps[current];
-
         switch (currentStep) {
             case 'details':
                 sendData(Routing.generate('checkout_pay_payment'), forms[currentStep]);
@@ -347,10 +358,23 @@ function Pay(parent, contractId) {
                 }
                 break;
             case 'user':
+                self.isProcessQuestion = false;
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 break;
             case 'questions':
-                sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
+                //User is valid and we have question so we can try process it
+                if (self.isValidUser() && !self.isProcessQuestion) {
+                    sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
+                    self.isProcessQuestion = true;
+                //Wrong answer for question, but we have user and we can move to next step
+                } else if(self.isValidUser() && self.isProcessQuestion) {
+                    window.formProcess.removeAllErrors('#pay-popup ');
+                    jQuery.each(forms, function(key, formName) {
+                        $('#' + formName + ' .error').removeClass('error');
+                    });
+                    onSuccessStep([]);
+                }
+                //User is invalid so we don't do any think and live error
                 break;
             case 'pay':
                 sendData(Routing.generate('checkout_pay_exec'), forms['details']);

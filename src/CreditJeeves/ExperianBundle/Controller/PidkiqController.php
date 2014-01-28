@@ -26,6 +26,11 @@ use \Exception;
 class PidkiqController extends Controller
 {
     /**
+     * @var boolean
+     */
+    protected $isValidUser  = false;
+
+    /**
      * @var PidkiqApi
      */
     protected $pidkiqApi;
@@ -120,13 +125,17 @@ class PidkiqController extends Controller
     {
         $i18n = $this->get('translator');
         $supportEmail = $this->container->getParameter('support_email');
-        $supportEmailTag = "<a href=\"mailto:{$supportEmail}\">{$supportEmail}</a>";
+        $externalUrls = $this->container->getParameter('external_urls');
+        $userVoice   = $externalUrls['user_voice'];
+
         try {
             try {
                 if (false === $this->retrieveQuestions()) {
                     $this->error = $i18n->trans(
                         'pidkiq.error.timeout-%SUPPORT_EMAIL%',
-                        array('%SUPPORT_EMAIL%' => $supportEmailTag)
+                        array(
+                            '%SUPPORT_EMAIL%' => $supportEmail
+                        )
                     );
                 } else {
                     return true;
@@ -140,22 +149,37 @@ class PidkiqController extends Controller
                     case E_ERROR:
                         $this->error = $i18n->trans(
                             'pidkiq.error.connection-%SUPPORT_EMAIL%',
-                            array('%SUPPORT_EMAIL%' => $supportEmailTag)
+                            array(
+                                '%SUPPORT_EMAIL%' => $supportEmail
+                            )
                         );
                         break;
-                    default:
+                    case E_ALL:
+                        $this->error = $i18n->trans(
+                            'pidkiq.error.could.not.find.profile-%SUPPORT_EMAIL%',
+                            array(
+                                '%SUPPORT_EMAIL%' => $supportEmail,
+                                '%MAIN_LINK%'     => $userVoice,
+                            )
+                        );
+                        break;
                     case E_NOTICE:
+                    default:
                         if ('Cannot formulate questions for this consumer.' == $e->getMessage()) {
+                            $this->isValidUser = true;
                             $this->error = $i18n->trans(
                                 'pidkiq.error.questions-%SUPPORT_EMAIL%',
-                                array('%SUPPORT_EMAIL%' => $supportEmailTag)
+                                array(
+                                    '%SUPPORT_EMAIL%' => $supportEmail,
+                                    '%MAIN_LINK%'     => $userVoice,
+                                )
                             );
                             break;
                         }
                         $this->error = $i18n->trans(
                             "pidkiq.error.generic-%SUPPORT_EMAIL%",
                             array(
-                                '%SUPPORT_EMAIL%' => $supportEmailTag,
+                                '%SUPPORT_EMAIL%' => $supportEmail,
                                 '%ERROR%' => $e->getMessage()
                             )
                         );
@@ -163,6 +187,7 @@ class PidkiqController extends Controller
                 }
             }
         } catch (Exception $e) {
+            $this->isValidUser = false;
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
         }
         return false;
@@ -250,7 +275,7 @@ class PidkiqController extends Controller
 
             if (isset($globals['application']) && $globals['application'] === 'rj') {
                 $this->error = $this->get('translator')->trans(
-                    'rj.pidkiq.error.answers-%SUPPORT_EMAIL%',
+                    'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
                     array(
                         '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
                         '%MAIN_LINK%'     => $globals['external_urls']['user_voice'],

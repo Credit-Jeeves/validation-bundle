@@ -9,10 +9,19 @@ use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
  */
 class PayCase extends BaseTestCase
 {
+    public function provider()
+    {
+        return array(
+            array($summary = true),
+            array($summary = false),
+        );
+    }
+
     /**
+     * @dataProvider provider
      * @test
      */
-    public function recurring()
+    public function recurring($summary)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -50,9 +59,8 @@ class PayCase extends BaseTestCase
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
 
         $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-        $this->assertCount(2, $errors);
+        $this->assertCount(1, $errors);
         $this->assertEquals('checkout.error.amount.min', $errors[0]->getText());
-        $this->assertEquals('payment.start_date.error', $errors[1]->getText());
 
 
         $this->fillForm(
@@ -153,34 +161,37 @@ class PayCase extends BaseTestCase
         );
 
         $form = $this->page->find('css', '#questions');
-        $this->fillForm(
-            $form,
-            array(
-                'questions_OutWalletAnswer1_0' => true,
-                'questions_OutWalletAnswer2_0' => true,
-                'questions_OutWalletAnswer3_0' => true,
-                'questions_OutWalletAnswer4_0' => true,
-            )
-        );
+
+        if ($summary) {
+            //Fill correct answer
+            $this->fillForm(
+                $form,
+                array(
+                    'questions_OutWalletAnswer1_0' => true,
+                    'questions_OutWalletAnswer2_1' => true,
+                    'questions_OutWalletAnswer3_2' => true,
+                    'questions_OutWalletAnswer4_3' => true,
+                )
+            );
+        } else {
+            //Fill incorrect answer
+            $this->fillForm(
+                $form,
+                array(
+                    'questions_OutWalletAnswer1_0' => true,
+                    'questions_OutWalletAnswer2_0' => true,
+                    'questions_OutWalletAnswer3_0' => true,
+                    'questions_OutWalletAnswer4_0' => true,
+                )
+            );
+            $this->page->pressButton('pay_popup.step.next');
+            $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
+            $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
+            $this->assertCount(1, $errors);
+            $this->assertEquals('pidkiq.error.incorrect.answer-help@renttrack.com', $errors[0]->getText());
+        }
+
         $this->page->pressButton('pay_popup.step.next');
-        $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
-        $this->assertNotNull($errors = $this->page->findAll('css', '#pay-popup .attention-box li'));
-        $this->assertCount(1, $errors);
-        $this->assertEquals('rj.pidkiq.error.answers-help@renttrack.com', $errors[0]->getText());
-
-
-        $this->fillForm(
-            $form,
-            array(
-                'questions_OutWalletAnswer1_0' => true,
-                'questions_OutWalletAnswer2_1' => true,
-                'questions_OutWalletAnswer3_2' => true,
-                'questions_OutWalletAnswer4_3' => true,
-            )
-        );
-        $this->page->pressButton('pay_popup.step.next');
-
-
         $this->session->wait(
             $this->timeout,
             "jQuery('#checkout-payment-source:visible').length"
@@ -225,14 +236,23 @@ class PayCase extends BaseTestCase
             $this->timeout+5000,
             "false" // FIXME
         );
-
-        $this->page->clickLink('tabs.summary');
-
         $this->session->wait(
-            $this->timeout+5000,
-            "jQuery('#component-card-utilization-box:visible').length"
+            $this->timeout,
+            "!jQuery('#pay-popup:visible').length"
         );
-        $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));
+
+        if ($summary) {
+            $this->page->clickLink('tabs.summary');
+
+            $this->session->wait(
+                $this->timeout+5000,
+                "jQuery('#component-card-utilization-box:visible').length"
+            );
+            $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));
+        } else {
+            $this->assertNotNull($menu = $this->page->findAll('css', '.top-nav>ul>li'));
+            $this->assertEquals(1, count($menu));
+        }
 
         $this->logout();
     }

@@ -216,9 +216,8 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new \DateTime();
             $interval = $now->diff($date);
-            $days = $interval->format('%d');
-            if ($days > 1) {
-                $result = $days.self::PAYMENT_LATE;
+            if ($interval->days > 0) {
+                $result = $interval->days.self::PAYMENT_LATE;
             }
         }
         return $result;
@@ -268,8 +267,7 @@ class Contract extends Base
              */
             if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
-                $days = $interval->format('%d');
-                $result['status'] = 'LATE ('.$days.' days)';
+                $result['status'] = 'LATE ('.$interval->days.' days)';
                 $result['class'] = 'contract-late';
                 return $result;
             }
