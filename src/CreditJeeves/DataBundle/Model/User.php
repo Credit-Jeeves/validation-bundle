@@ -318,7 +318,7 @@ abstract class User extends BaseUser
     protected $is_active = false;
 
     /**
-     * @ORM\Column(type="string", length=128, nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true, unique=true)
      */
     protected $invite_code;
 

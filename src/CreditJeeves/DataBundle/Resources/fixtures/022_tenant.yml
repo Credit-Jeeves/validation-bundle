@@ -409,7 +409,7 @@ fixtures:
         date_of_birth: null
         ssn: null
         is_active: true
-        invite_code: TESTFULL
+        invite_code: TESTFULL_RJ
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
         score_changed_notification: true
