@@ -29,33 +29,7 @@ class Version20140128123138 extends AbstractMigration implements ContainerAwareI
         if (empty($dealerCode)) {
             throw new Exception("Error configuration. Don't have api.admin_dealer_code");
         }
-        $flag = true;
-        while($flag) {
-            $sql = 'SELECT * FROM cj_user GROUP BY invite_code HAVING count(id) > 1';
-            $stmt = $this->connection->prepare($sql);
-            $stmt->execute();
-            $sql = array();
-            $dontTouch = array(
-                'support@700credit.com'
-            );
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                if (in_array($row['email'], $dontTouch)) {
-                    continue;
-                }
-                $code = uniqid();
-                $sql[] = 'UPDATE  `cj_user` SET  `invite_code` = "'.$code.'" WHERE  `id` ="'.$row['id'].'"';
-            }
 
-            if (empty($sql)) {
-                $flag = false;
-                break;
-            }
-
-            foreach($sql as $query) {
-                $stmt = $this->connection->prepare($query);
-                $stmt->execute();
-            }
-        }
         $this->addSql(
             "CREATE UNIQUE INDEX UNIQ_98C9F4756F21F112 ON cj_user (invite_code)"
         );
