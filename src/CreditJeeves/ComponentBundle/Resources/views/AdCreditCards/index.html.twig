@@ -27,6 +27,12 @@
         googletag.pubads().setTargeting("inq6mo", "{{ sInquiries }}");
         googletag.pubads().setTargeting("brpt", "{{ sBankruptcy }}");
         googletag.pubads().setTargeting("sim", "20");
+        {% if application == 'rj' %}
+            googletag.pubads().setTargeting("source", "RT");
+        {% else %}
+            googletag.pubads().setTargeting("source", "CJ");
+        {% endif %}
+
         googletag.enableServices();
     });
 </script>
