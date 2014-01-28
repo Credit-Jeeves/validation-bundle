@@ -113,6 +113,14 @@ class ContractRepository extends EntityRepository
                 case 'due_dateA':
                     $query->orderBy('c.paidTo', $sortOrder);
                     break;
+                case 'status':
+                    $query->select(
+                        "FIELD(c.status, 'pending', 'approved', 'current', 'invite', 'finished', 'deleted')
+                            as HIDDEN status_sort_order,
+                         c"
+                    );
+                    $query->orderBy('status_sort_order');
+                    break;
                 default:
                     $sortField = 'c.'.$sortField;
                     $query->orderBy($sortField, $sortOrder);

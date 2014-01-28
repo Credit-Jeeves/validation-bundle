@@ -8,3 +8,9 @@ jms_di_extra:
 jms_security_extra:
     secure_all_services: false
     expressions: true
+
+jms_serializer:
+    handlers:
+        datetime:
+            default_format: "F d, Y"
+            default_timezone: "PST"
