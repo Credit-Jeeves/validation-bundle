@@ -1,3 +1,9 @@
+if (modelSelector === undefined) {
+    var modelSelector = '#creditjeeves_applicantbundle_leadnewtype_target_name_model';
+}
+if (makeNameSelector === undefined) {
+    var makeNameSelector = '#creditjeeves_applicantbundle_leadnewtype_target_name_make';
+}
 var Vehicles = {};
 var vehicles = [];
 
@@ -20,15 +26,15 @@ initMakeAndModel : function() {
       );
       key++;
     }
-      $('#creditjeeves_applicantbundle_leadnewtype_target_name_model').linkselect('replaceOptions', options);
+      $(modelSelector).linkselect('replaceOptions', options);
     };
-    $('#creditjeeves_applicantbundle_leadnewtype_target_name_make').linkselect({
+    $(makeNameSelector).linkselect({
       change : onChange
     });
   }
 };
 
 $(document).ready(function() {
-  $('#creditjeeves_applicantbundle_leadnewtype_target_name_make').linkselect('destroy');
+  $(makeNameSelector).linkselect('destroy');
   Vehicles.app.start();
 });
