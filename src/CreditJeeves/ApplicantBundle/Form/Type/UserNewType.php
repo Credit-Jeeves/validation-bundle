@@ -2,15 +2,14 @@
 namespace CreditJeeves\ApplicantBundle\Form\Type;
 
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\AddressesToAddressTransformer;
+use CreditJeeves\DataBundle\Enum\GroupType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Email;
-
 use CreditJeeves\DataBundle\Form\ChoiceList\StateChoiceList;
 use CreditJeeves\ApplicantBundle\Form\Type\SsnType;
 use CreditJeeves\ApplicantBundle\Form\DataTransformer\SsnToPartsTransformer;
@@ -60,6 +59,20 @@ class UserNewType extends UserType
                         )
                     ),
                 )
+            )
+        );
+
+        if ($options['currentGroupType'] !== GroupType::VEHICLE) {
+            return;
+        }
+
+        $builder->add(
+            'target_name',
+            new VehicleType(),
+            array(
+                'mapped'         => false,
+                'error_bubbling' => true,
+                'label'          => 'leads.select.target'
             )
         );
     }

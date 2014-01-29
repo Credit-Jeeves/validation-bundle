@@ -54,7 +54,7 @@ class AddPropertyCase extends BaseTestCase
         $register->click();
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(5, $tr, 'List of property');
+        $this->assertCount(6, $tr, 'List of property');
         $this->logout();
     }
 
@@ -105,7 +105,7 @@ class AddPropertyCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'property-search' => '770 Broadway, Manhattan, New York, NY 10003',
+                'property-search' => '710 Broadway, Manhattan, New York, NY 10003',
             )
         );
         $this->page->pressButton('find.your.rental');

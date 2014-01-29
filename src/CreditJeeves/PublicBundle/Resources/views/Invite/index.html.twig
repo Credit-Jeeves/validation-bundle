@@ -3,7 +3,11 @@
 {% block title "project_name" | trans %}
 
 {% block stylesheets %}
-    <link href="{{ asset('bundles/user/css/user.css') }}" rel="stylesheet" type="text/css" />
+    {% stylesheets  '@UserBundle/Resources/public/css/user.css'
+                    '@PublicBundle/Resources/public/css/invite.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
 {% endblock %}
 
 {% block tabs %}
@@ -57,6 +61,24 @@
                             <div class="clearboth"></div>
                             {% include 'ComponentBundle:User:dob.html.twig'      with { 'form' : form } %}
                             <div class="clearboth"></div>
+                            {% if type == 'vehicle' %}
+                                <div class="row-10"></div>
+                                {% include 'ComponentBundle:User:vehicle.html.twig'      with { 'form' : form.target_name } %}
+                                {% block javascripts %}
+                                    <script type="text/javascript">
+                                        var modelSelector = '#creditjeeves_applicantbundle_usernewtype_target_name_model';
+                                        var makeNameSelector = '#creditjeeves_applicantbundle_usernewtype_target_name_make';
+                                    </script>
+                                    {% javascripts '@ApplicantBundle/Resources/public/js/vehicle.js'
+                                    %}
+                                    <script type="text/javascript" src="{{ asset_url }}"></script>
+                                    {% endjavascripts %}
+                                    <script type="text/javascript">
+                                        vehicles = {% autoescape false %}{{ vehicles }}{% endautoescape %};
+                                    </script>
+                                {% endblock %}
+                                <div class="clearboth"></div>
+                            {% endif %}
                             <div class="row-20"></div>
                         {% else %}
                             {% include 'ComponentBundle:User:password.html.twig' with { 'form' : form } %}
