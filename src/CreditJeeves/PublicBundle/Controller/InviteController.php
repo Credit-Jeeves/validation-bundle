@@ -101,7 +101,6 @@ class InviteController extends Controller
                 $lead = $User->getActiveLead();
                 $lead->setTargetName($make.' '.$model[0]);
                 $lead->setTargetUrl($model[1]);
-                $lead->setTargetScore($group->getTargetScore());
                 $em->persist($lead);
             }
 
