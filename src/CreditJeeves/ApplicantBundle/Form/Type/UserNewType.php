@@ -72,7 +72,7 @@ class UserNewType extends UserType
             array(
                 'mapped'         => false,
                 'error_bubbling' => true,
-                'label'          => 'leads.select.target'
+                'label'          => 'desired.car'
             )
         );
     }
