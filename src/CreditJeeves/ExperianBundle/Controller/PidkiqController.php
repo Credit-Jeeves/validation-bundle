@@ -189,6 +189,7 @@ class PidkiqController extends Controller
         } catch (Exception $e) {
             $this->isValidUser = false;
             $this->get('fp_badaboom.exception_catcher')->handleException($e);
+            $this->error = $e->getMessage();
         }
         return false;
     }
@@ -214,10 +215,7 @@ class PidkiqController extends Controller
         if ($request->isXmlHttpRequest()) {
             if ($this->processQuestions()) {
                 return new JsonResponse('finished');
-            } else {
-                return new JsonResponse('error');
             }
-
         } elseif ($this->questionsData = $this->getPidkiq()->getQuestions()) {
             $this->form = $this->createForm(new QuestionsType($this->questionsData));
             if ($request->isMethod('POST')) {
@@ -240,6 +238,7 @@ class PidkiqController extends Controller
                 return $this->redirect($this->generateUrl('public_message_flash'));
             }
         }
+
         return array(
             'form' => $this->form,
             'url' => $this->generateUrl('core_pidkiq'),

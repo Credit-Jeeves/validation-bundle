@@ -146,7 +146,7 @@ abstract class Order
     protected $operations;
 
     /**
-     * @ORM\OneToMany(targetEntity = "\RentJeeves\DataBundle\Entity\JobRelatedPayment", mappedBy = "order")
+     * @ORM\OneToMany(targetEntity = "\RentJeeves\DataBundle\Entity\JobRelatedOrder", mappedBy = "order")
      * @Serializer\Exclude
      */
     protected $jobs;

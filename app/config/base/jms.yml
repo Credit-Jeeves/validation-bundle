@@ -11,3 +11,9 @@ jms_security_extra:
 
 jms_job_queue:
     statistics: false
+
+jms_serializer:
+    handlers:
+        datetime:
+            default_format: "F d, Y"
+            default_timezone: "PST"

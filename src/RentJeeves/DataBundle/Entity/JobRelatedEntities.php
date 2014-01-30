@@ -2,6 +2,8 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use \DateTime;
 
 /**
  * @ORM\Entity
@@ -20,11 +22,21 @@ class JobRelatedEntities
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity = "Job", inversedBy = "relatedEntities")
+     * @ORM\ManyToOne(targetEntity = "Job", inversedBy = "relatedEntities", fetch = "EAGER")
      * @ORM\JoinColumn(name="job_id", referencedColumnName="id")
      * @var Job
      */
     protected $job;
+
+    /**
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(
+     *     name="created_at",
+     *     type="datetime"
+     * )
+     * @var DateTime
+     */
+    protected $createdAt;
 
 //    protected $relatedClass;
 

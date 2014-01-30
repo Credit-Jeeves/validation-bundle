@@ -44,18 +44,17 @@ class CollectCommand extends ContainerAwareCommand
 
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        foreach ($payments as $row) {
-            /** @var Payment $payment */
-            $payment = $row[0];
+        /** @var Payment $payment */
+        foreach ($payments as $payment) {
             $job = new Job('payment:pay', array('--app=rj'));
             $jobRelatedPayment = new JobRelatedPayment();
             $jobRelatedPayment->setJob($job);
             $jobRelatedPayment->setPayment($payment);
             $job->addRelatedEntity($jobRelatedPayment);
-            $em->persist($jobRelatedPayment);
             $em->persist($job);
+            $em->persist($jobRelatedPayment);
             $em->flush();
-            $em->clear();
+//            $em->clear();
             $output->write('.');
         }
         $output->writeln('OK');

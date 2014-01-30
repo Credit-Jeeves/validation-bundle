@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "313b7feca2ee4181fc3987a5f1daa4d4",
+    "hash": "6d3a2ddda8a5baa35e10a3b94fc88c35",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -208,6 +208,32 @@
             "time": "2013-07-18 19:52:20"
         },
         {
+            "name": "beberlei/DoctrineExtensions",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/beberlei/DoctrineExtensions.git",
+                "reference": "5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/beberlei/DoctrineExtensions/zipball/5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc",
+                "reference": "5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/orm": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "DoctrineExtensions": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2013-12-20 22:02:19"
+        },
+        {
             "name": "besimple/soap-common",
             "version": "dev-ton",
             "target-dir": "BeSimple/SoapCommon",
@@ -303,7 +329,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "7cf565d6c174781740f8800c83bff45bd448c736"
+                "reference": "108adbbc7f056f26d4d129e3dd89abc636915783"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -339,7 +365,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2014-01-28 11:09:03"
+            "time": "2014-01-17 16:15:26"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -5391,6 +5417,7 @@
         "doctrine/doctrine-migrations-bundle": 20,
         "apy/jsfv-bundle": 20,
         "willdurand/expose-translation-bundle": 20,
+        "beberlei/doctrineextensions": 20,
         "jms/job-queue-bundle": 20,
         "pagerfanta/pagerfanta": 20,
         "behat/mink-bundle": 20,

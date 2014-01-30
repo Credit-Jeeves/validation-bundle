@@ -61,6 +61,7 @@ class TenantAdmin extends Admin
         $this->request->getSession()->set('contract_id', null);
         $this->request->getSession()->set('user_id', null);
         $listMapper
+            ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('first_name')
             ->add('middle_initial')
             ->add('last_name')

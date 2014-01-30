@@ -1,5 +1,5 @@
 function charge(groupId) {
-    var amount = parseInt($('.terminal_amount').val());
+    var amount = parseFloat($('.terminal_amount').val());
     var customData = $('.terminal_custom').val();
 
     if (isNaN(amount) || amount <= 0) {

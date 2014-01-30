@@ -10,8 +10,11 @@ doctrine:
     orm:
         dql:
             datetime_functions:
-                date_format: RentJeeves\CoreBundle\DQL\DateFormat
-                str_to_date: 'RentJeeves\DataBundle\DQL\StrToDate'
+                date: DoctrineExtensions\Query\Mysql\Date
+                date_format: DoctrineExtensions\Query\Mysql\DateFormat
+                str_to_date: DoctrineExtensions\Query\Mysql\StrToDate
+            string_functions:
+                field: DoctrineExtensions\Query\Mysql\Field
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

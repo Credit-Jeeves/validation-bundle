@@ -2,19 +2,22 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use \Doctrine_Expression;
+use \DateTime;
 
 /**
- * 
  * @author Alex Emelyanov
- * Aliases for this class
+ *
+ * Aliases for this class:
  * p - payment, table rj_payment, class Payment
  * c - contract, table rj_contract, class Contract
  * t - tenant, table cj_user, class Tenant
  * g - group, table cj_account_group, class Group
- * oper - Operation
+ * j - Job
  *
  */
 class PaymentRepository extends EntityRepository
@@ -39,10 +42,16 @@ class PaymentRepository extends EntityRepository
         $query->select("p, c, g, d");
         $query->innerJoin('p.contract', 'c');
         $query->innerJoin('c.group', 'g');
-        $query->leftJoin('c.operation', 'oper');
         $query->innerJoin('g.deposit_account', 'd');
-        $query->where('p.status = :status');
+        $query->leftJoin(
+            'p.jobs',
+            'j',
+            Expr\Join::WITH,
+            "DATE(j.createdAt) > :monthBefor"
+        );
+        $query->andWhere('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
+        $query->andWhere('j.id IS NULL');
 //        $query->andWhere('c.status IN (:contract)');
         $query->andWhere(
             "DATE_FORMAT(
@@ -69,16 +78,20 @@ class PaymentRepository extends EntityRepository
         } else {
             $day = cal_days_in_month(CAL_GREGORIAN, $month, $year);
         }
+        $date = new DateTime(implode('-', array($year, $month, $day)));
+        $monthBefor = clone $date;
+        $monthBefor->modify('-1 month');
         $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
 //        $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
+        $query->setParameter('monthBefor', $monthBefor->format('Y-m-d'));
         $query->setParameter('startDate', implode('-', array($year, $month, $day)));
 
         $query = $query->getQuery();
-//        echo($query->getSQL());die('OK');
-        return $query->iterate();
+//        echo $query->getSQL();die('OK');
+        return $query->execute();
     }
 
     public function getNonAutoPayments(
