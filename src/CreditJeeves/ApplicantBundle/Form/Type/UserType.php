@@ -133,9 +133,10 @@ class UserType extends AbstractType
         $resolver->setDefaults(
             array(
                 'cascade_validation' => true,
-                'currentGroupType' => null,
-                'data_class' => 'CreditJeeves\DataBundle\Entity\User',
-                'validation_groups' => array(
+                'currentGroupType'   => null,
+                'vehicles'           => array(),
+                'data_class'         => 'CreditJeeves\DataBundle\Entity\User',
+                'validation_groups'  => array(
                     'registration_tos',
                     'user_profile',
                     'user_address_new',
