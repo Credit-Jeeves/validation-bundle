@@ -88,7 +88,6 @@ class InviteController extends Controller
                 $markNameId = $dataTarget['make'];
                 $modelId = $dataTarget['model'];
 
-                $model = $dataTarget['model'];
                 $mark = array_keys($vehicles);
                 $models = array_values($vehicles);
                 $currentModels = $models[$markNameId];
