@@ -36,6 +36,15 @@ abstract class Heartland extends PaymentDetails
      */
     protected $order;
 
+    /**
+     * @ORM\Column(
+     *     name="batch_id",
+     *     type="bigint",
+     *     nullable=true
+     * )
+     */
+    protected $batchId;
+
 //     /**
 //      * @ORM\Column(
 //      *     type="text",
@@ -81,6 +90,22 @@ abstract class Heartland extends PaymentDetails
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * @param mixed $batchId
+     */
+    public function setBatchId($batchId)
+    {
+        $this->batchId = $batchId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBatchId()
+    {
+        return $this->batchId;
     }
 
 //     /**
