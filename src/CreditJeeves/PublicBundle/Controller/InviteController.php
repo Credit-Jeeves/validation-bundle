@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\GroupType;
+use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -101,6 +102,7 @@ class InviteController extends Controller
                 $lead = $User->getActiveLead();
                 $lead->setTargetName($make.' '.$model[0]);
                 $lead->setTargetUrl($model[1]);
+                $lead->setStatus(LeadStatus::ACTIVE);
                 $em->persist($lead);
             }
 
