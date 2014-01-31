@@ -6,7 +6,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use CreditJeeves\DataBundle\Utility\VehicleUtility;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class VehicleType extends AbstractType
