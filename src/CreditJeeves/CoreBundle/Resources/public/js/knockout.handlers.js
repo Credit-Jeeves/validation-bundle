@@ -1,6 +1,6 @@
 ko.bindingHandlers.i18n = function () {
     var translate = function(args, i18nKey) {
-        var str = Translator.get(i18nKey.replace(/^\s+|\s+$/g, ''));
+        var str = Translator.transChoice(i18nKey.replace(/^\s+|\s+$/g, ''));
         if (!str) {
             str = i18nKey;
         }

@@ -272,12 +272,12 @@
             function executeSearch(data)
             {
                 if (typeof data == 'undefined') {
-                    self.showError(Translator.get('select.from.drop.down.list'));
+                    self.showError(Translator.transChoice('select.from.drop.down.list'));
                     return false;
                 }
 
                 if (data.address.length < 5) {
-                    self.showError(Translator.get('fill.full.address'));
+                    self.showError(Translator.transChoice('fill.full.address'));
                     return false;
                 }
 
@@ -292,7 +292,7 @@
                     data: {'data': JSON.stringify(data, null)},
                     error: function(jqXHR, errorThrown, textStatus) {
                         afterAddProperty();
-                        self.showError(Translator.get('fill.full.address'));
+                        self.showError(Translator.transChoice('fill.full.address'));
                         settings.addPropertyCallbackNotValid.call(self, jqXHR, errorThrown, textStatus);
                         return false;
                     },
@@ -324,7 +324,7 @@
                 $('#'+settings.findButtonId).addClass('disabled grey');
 
                 if ('' == $('#'+settings.findInputId).val()) {
-                    self.showError(Translator.get('error.property.empty'));
+                    self.showError(Translator.transChoice('error.property.empty'));
                     return false;
                 }
 
@@ -359,7 +359,7 @@
                             self.data = {'address': results[0].address_components, 'geometry':results[0].geometry};
                             executeSearch(self.data);
                         } else {
-                            self.showError(Translator.get('select.from.drop.down.list'));
+                            self.showError(Translator.transChoice('select.from.drop.down.list'));
                         }
                     });
                 }

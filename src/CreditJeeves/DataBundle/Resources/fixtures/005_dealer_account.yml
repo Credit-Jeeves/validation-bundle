@@ -186,7 +186,6 @@ fixtures:
     first_name: 700CreditAPI
     last_name: 700CreditAPI
     email: support2@700credit.com
-    invite_code: 1a1dc91c9073
     password: 7b3e63c45d5cb6859f325ab1447321ef #Jhy289ayo2pam1234
     is_active: true
     is_holding_admin: true
@@ -201,7 +200,6 @@ fixtures:
     first_name: USEquityAPI
     last_name: USEquityAPI
     email: api@usequity.com
-    invite_code: 1a1dc91c9073
     password: 848c4abcaa73a1c14c273cf0d394d4a8 #Jhy289ayo2pam1ddd2
     is_active: true
     is_holding_admin: true

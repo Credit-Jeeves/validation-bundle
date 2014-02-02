@@ -15,7 +15,7 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain': 'messages'}) }}"></script>
 
     <!-- Call JsFormValidationBundle -->
     {{ JSFV(form) }}

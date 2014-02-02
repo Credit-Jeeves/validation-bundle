@@ -1,0 +1,8 @@
+.checkbox-tos {
+    margin-left: 25px;
+    height: 40px;
+}
+
+.checkbox-tos input[type=checkbox] {
+    margin-top: 7px;
+}

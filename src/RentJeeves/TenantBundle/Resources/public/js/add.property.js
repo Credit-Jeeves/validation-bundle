@@ -100,7 +100,7 @@ $(document).ready(function(){
     $('#register').click(function(){
       var propertyId = $('#propertyId').val();
       if(propertyId == '') {
-        showError(Translator.get('select.rental'));
+        showError(Translator.transChoice('select.rental'));
         return false;
       }
     });

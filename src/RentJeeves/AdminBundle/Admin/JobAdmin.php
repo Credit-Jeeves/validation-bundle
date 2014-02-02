@@ -7,10 +7,11 @@ use Sonata\AdminBundle\Admin\Admin;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
+use Doctrine\ORM\Query\Expr;
 
 class JobAdmin extends Admin
 {
-    protected $baseRouteName = 'job';
+    protected $baseRouteName = 'admin_job';
     protected $baseRoutePattern = 'job';
 
     /**
@@ -43,6 +44,28 @@ class JobAdmin extends Admin
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
+            ->add(
+                'payment', 'doctrine_orm_callback',
+                array(
+//                    'callback'   => array($this, 'getWithOpenCommentFilter'),
+                    'callback' => function($queryBuilder, $alias, $field, $value) {
+                            if (!$value) {
+                                return;
+                            }
+
+                            $queryBuilder->innerJoin(
+                                $alias . '.relatedEntities',
+                                'j',
+                                Expr\Join::WITH,
+                                "j.payment = :payment_id"
+                            );
+                            $queryBuilder->setParameter('payment_id', (int)$value);
+
+                            return true;
+                        },
+                    'field_type' => 'integer'
+                )
+            )
             ->add('id')
             ->add('state')
             ->add(

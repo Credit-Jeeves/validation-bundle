@@ -51,8 +51,7 @@ class PaymentAdmin extends Admin
                             'template' => 'AdminBundle:CRUD:list__payment_run.html.twig'
                         ),
                         'jobs' => array(
-                            'template' => 'AdminBundle:CRUD:list__link.html.twig',
-                            'dsfgdshahsdfhdsfh' => 'sdfgdsgfdsfgdsfg'
+                            'template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig',
                         )
                     )
                 )

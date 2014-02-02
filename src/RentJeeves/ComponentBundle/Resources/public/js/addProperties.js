@@ -58,7 +58,7 @@ function addProperties()
     };
 
     this.removeUnit = function(unit) {
-        if (confirm(Translator.get('remove.unit.confirm'))) {
+        if (confirm(Translator.transChoice('remove.unit.confirm'))) {
             self.aUnits.remove(unit);
         }
     };

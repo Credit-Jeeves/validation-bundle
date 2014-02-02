@@ -39,7 +39,7 @@ class AppCjKernel extends AppKernel
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
-            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
+            new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\RestBundle\FOSRestBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),

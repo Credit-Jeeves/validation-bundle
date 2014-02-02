@@ -109,6 +109,7 @@ class UserType extends AbstractType
                 'required' => false,
             )
         );
+
         $builder->add(
             'tos',
             'checkbox',
@@ -132,6 +133,7 @@ class UserType extends AbstractType
         $resolver->setDefaults(
             array(
                 'cascade_validation' => true,
+                'currentGroupType' => null,
                 'data_class' => 'CreditJeeves\DataBundle\Entity\User',
                 'validation_groups' => array(
                     'registration_tos',
