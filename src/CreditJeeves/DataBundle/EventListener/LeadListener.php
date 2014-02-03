@@ -39,7 +39,7 @@ class LeadListener
     }
 
     /**
-     * We need send email to Applicant when his Applicant change status from READY to ACTIVE
+     * We need send email to Applicant when his Applicant change status from ACTIVE to READY
      *
      * @param LifecycleEventArgs $eventArgs
      */

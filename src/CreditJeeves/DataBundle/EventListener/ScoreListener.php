@@ -64,7 +64,6 @@ class ScoreListener
                 continue;
             }
             $lead->setStatus(LeadStatus::READY);
-            $em->persist($lead);
         }
 
         $em->flush();
