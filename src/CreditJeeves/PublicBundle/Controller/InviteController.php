@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\GroupType;
+use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -30,14 +31,7 @@ class InviteController extends Controller
      */
     public function indexAction($code)
     {
-        $vehicles = array();
-        $makes = array();
-        $prepare = $this->get('data.utility.vehicle')->getVehicles();
-        foreach ($prepare as $make => $model) {
-            $makes[] = $make;
-            $vehicles[] = $model;
-        }
-
+        $vehicles = $this->get('data.utility.vehicle')->getVehicles();
         if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('applicant_homepage'));
         }
@@ -51,7 +45,6 @@ class InviteController extends Controller
             $this->get('session')->getFlashBag()->add('message_body', $i18n->trans('error.user.absent.text'));
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
-
 
         $date = $User->getDateOfBirth();
         /** @var Group $group */
@@ -78,7 +71,8 @@ class InviteController extends Controller
                 new UserNewType(),
                 $User,
                 array(
-                    'currentGroupType' => $type
+                    'currentGroupType'  => $type,
+                    'vehicles'          => $this->get('data.utility.vehicle')->getVehicles(),
                 )
             );
         }
@@ -91,16 +85,19 @@ class InviteController extends Controller
             if ($type === GroupType::VEHICLE) {
                 $targetNameForm = $form->get('target_name');
                 $dataTarget = $targetNameForm->getData();
-                $make = $makes[$dataTarget['make']];
-                $models = $vehicles[$dataTarget['make']];
-                $result = array();
-                foreach ($models as $name => $url) {
-                    $result[] = array($name, $url);
-                }
-                $model = $result[$dataTarget['model']];
+                $markNameId = $dataTarget['make'];
+                $modelId = $dataTarget['model'];
+
+                $mark = array_keys($vehicles);
+                $models = array_values($vehicles);
+                $currentModels = $models[$markNameId];
+                $currentModelsName = array_keys($currentModels);
+                $currentModelsLinks = array_values($currentModels);
+
                 $lead = $User->getActiveLead();
-                $lead->setTargetName($make.' '.$model[0]);
-                $lead->setTargetUrl($model[1]);
+                $lead->setTargetName($mark[$markNameId].' '.$currentModelsName[$modelId]);
+                $lead->setTargetUrl($currentModelsLinks[$modelId]);
+                $lead->setStatus(LeadStatus::ACTIVE);
                 $em->persist($lead);
             }
 
@@ -119,17 +116,16 @@ class InviteController extends Controller
                 $em->flush();
                 return $this->login($User);
             }
-
         }
 
 
         return array(
-            'code' => $code,
-            'form' => $form->createView(),
+            'code'       => $code,
+            'form'       => $form->createView(),
             'isFullForm' => $isFullForm,
-            'sName' => $User->getFirstName(),
-            'type'  => $type,
-            'vehicles' => json_encode($vehicles),
+            'sName'      => $User->getFirstName(),
+            'type'       => $type,
+            'vehicles'   => json_encode(array_values($vehicles)),
         );
     }
 

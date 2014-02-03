@@ -62,12 +62,12 @@ class PayCase extends BaseTestCase
         $this->assertCount(1, $errors);
         $this->assertEquals('checkout.error.amount.min', $errors[0]->getText());
 
-
+        $dueDate = cal_days_in_month(CAL_GREGORIAN, date('n'), date('Y'));
         $this->fillForm(
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
-                'rentjeeves_checkoutbundle_paymenttype_dueDate' => '31',
+                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
             )
         );
 
