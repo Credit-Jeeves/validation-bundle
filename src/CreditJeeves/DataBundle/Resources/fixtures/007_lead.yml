@@ -101,7 +101,7 @@ fixtures:
     trade_in: false
     down_payment: null
     fraction: '0'
-    status: new
+    status: active
     source: office
     created_at: '-5 days'
     updated_at: '-5 days'
