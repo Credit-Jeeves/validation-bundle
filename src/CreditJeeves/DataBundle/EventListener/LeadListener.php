@@ -6,13 +6,11 @@ use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Enum\LeadStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\DataBundle\Entity\Score;
-//use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Inject;
-
 
 /**
  * @Service("lead.event_listener.doctrine")

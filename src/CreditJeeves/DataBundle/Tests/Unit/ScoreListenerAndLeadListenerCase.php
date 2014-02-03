@@ -33,8 +33,7 @@ class ScoreListenerAndLeadCase extends BaseTestCase
         /**
          * @var Lead $lead
          */
-        foreach ($leads as $lead)
-        {
+        foreach ($leads as $lead) {
             $this->assertTrue(
                 ($lead->getStatus() === LeadStatus::ACTIVE),
                 'Status not active '.$lead->getStatus().' '.$lead->getId()
@@ -61,8 +60,7 @@ class ScoreListenerAndLeadCase extends BaseTestCase
         /**
          * @var Lead $lead
          */
-        foreach ($leads as $lead)
-        {
+        foreach ($leads as $lead) {
             $em->refresh($lead);
             $this->assertTrue(
                 ($lead->getStatus() === LeadStatus::READY),
