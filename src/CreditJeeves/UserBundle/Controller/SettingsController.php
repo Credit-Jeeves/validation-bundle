@@ -138,20 +138,14 @@ class SettingsController extends Controller
 
                     if ($globals['application'] == 'cj') {
                         $desc = $translator->trans('authorization.description.removed');
-                        try {
-                            $em->getConnection()->beginTransaction();
-                            $em->remove($User);
-                            $em->flush();
-                            $newUser->setLastLogin(new \DateTime());
-                            $em->persist($newUser);
-                            $em->flush();
-                            $em->getConnection()->commit();
-                        } catch (\Exception $e) {
-                            $em->getConnection()->rollback();
-                            $em->close();
-                            throw $e;
-                        }
-
+                        $em->transactional(
+                            function ($em) use ($User, $newUser) {
+                                $em->remove($User);
+                                $em->flush();
+                                $newUser->setLastLogin(new \DateTime());
+                                $em->persist($newUser);
+                            }
+                        );
                         $this->get('request')->getSession()->invalidate();
                     } else {
                         $desc = $translator->trans(
