@@ -147,6 +147,7 @@ class SettingsController extends Controller
                     );
                     $this->get('request')->getSession()->invalidate();
                 } else {
+                    //task RT-266
                     $desc = $translator->trans(
                         'authorization.description.removed',
                         array(
@@ -161,7 +162,7 @@ class SettingsController extends Controller
                     foreach ($scores as $score) {
                         $em->remove($score);
                     }
-                    //@TODO not sure about this line, need ask Ton or Darryl - task RT-266
+
                     $reportsD2c = $user->getReportsD2c();
                     $reportsPrequeal = $user->getReportsPrequal();
                     foreach ($reportsD2c as $report) {
@@ -173,7 +174,6 @@ class SettingsController extends Controller
                     // will be added new status in future for the tenant tab->payment
                     //$user->setIsVerified(UserIsVerified::NONE);
                     $user->setPassword($sPassword);
-                    //END TODO
                     $em->persist($user);
                     $em->flush();
                 }
