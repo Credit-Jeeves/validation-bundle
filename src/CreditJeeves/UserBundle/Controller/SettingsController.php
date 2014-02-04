@@ -170,7 +170,8 @@ class SettingsController extends Controller
                     foreach ($reportsPrequeal as $report) {
                         $em->remove($report);
                     }
-                    $user->setIsVerified(UserIsVerified::NONE);
+                    // will be added new status in future for the tenant tab->payment
+                    //$user->setIsVerified(UserIsVerified::NONE);
                     $user->setPassword($sPassword);
                     //END TODO
                     $em->persist($user);
