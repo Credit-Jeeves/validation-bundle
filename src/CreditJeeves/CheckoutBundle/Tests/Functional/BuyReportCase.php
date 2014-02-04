@@ -18,6 +18,10 @@ class BuyReportCase extends BaseTestCase
      */
     public function checkBuyReportBox()
     {
+        $this->markTestSkipped(
+            'RT-267 - https://credit.atlassian.net/browse/RT-267'
+        );
+
         $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('alex@example.com', 'pass');
@@ -70,6 +74,10 @@ class BuyReportCase extends BaseTestCase
      */
     public function authorizeNetAim()
     {
+        $this->markTestSkipped(
+            'RT-267 - https://credit.atlassian.net/browse/RT-267'
+        );
+
         $this->setDefaultSession('selenium2');
         $this->load(false);
 

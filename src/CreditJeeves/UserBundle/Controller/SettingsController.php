@@ -123,73 +123,72 @@ class SettingsController extends Controller
         $sEmail = $User->getEmail();
         $sPassword = $User->getPassword();
         $form = $this->createForm(new RemoveType(), $User);
-        if ($request->getMethod() == 'POST') {
-            $newUser = $User->getUserToRemove();
-            $form->bind($request);
-            if ($form->isValid()) {
-                $reEnteredPassword = $this->container->get('user.security.encoder.digest')
-                    ->encodePassword($User->getPassword(), $User->getSalt());
-                if ($sPassword == $reEnteredPassword) {
-                    $twig = $this->container->get('twig');
-                    $globals = $twig->getGlobals();
-                    $translator = $this->get('translator');
-                    $title = $translator->trans('authorization.removed');
-                    $em = $this->getDoctrine()->getManager();
+        $form->handleRequest($request);
+        $newUser = $User->getUserToRemove();
+        if ($form->isValid()) {
+            $reEnteredPassword = $this->container->get('user.security.encoder.digest')
+                ->encodePassword($User->getPassword(), $User->getSalt());
+            if ($sPassword == $reEnteredPassword) {
+                $twig = $this->container->get('twig');
+                $globals = $twig->getGlobals();
+                $translator = $this->get('translator');
+                $title = $translator->trans('authorization.removed');
+                $em = $this->getDoctrine()->getManager();
 
-                    if ($globals['application'] == 'cj') {
-                        $desc = $translator->trans('authorization.description.removed');
-                        $em->transactional(
-                            function ($em) use ($User, $newUser) {
-                                $em->remove($User);
-                                $em->flush();
-                                $newUser->setLastLogin(new \DateTime());
-                                $em->persist($newUser);
-                            }
-                        );
-                        $this->get('request')->getSession()->invalidate();
-                    } else {
-                        $desc = $translator->trans(
-                            'authorization.description.removed',
-                            array(
-                                '%%HOME_PAGE%%' => $this->get('router')->generate('tenant_homepage')
-                            )
-                        );
-                        /**
-                         * @var User $user
-                         */
-                        $user = $this->getUser();
-                        $scores = $user->getScores();
-                        foreach ($scores as $score) {
-                            $em->remove($score);
+                if ($globals['application'] == 'cj') {
+                    $desc = $translator->trans('authorization.description.removed');
+                    $em->transactional(
+                        function ($em) use ($User, $newUser) {
+                            $em->remove($User);
+                            $em->flush();
+                            $newUser->setLastLogin(new \DateTime());
+                            $em->persist($newUser);
                         }
-                        //@TODO not sure about this line, need ask Ton or Darryl - task RT-266
-                        $reportsD2c = $user->getReportsD2c();
-                        $reportsPrequeal = $user->getReportsPrequal();
-                        foreach ($reportsD2c as $report) {
-                            $em->remove($report);
-                        }
-                        foreach ($reportsPrequeal as $report) {
-                            $em->remove($report);
-                        }
-
-                        $user->setIsVerified(UserIsVerified::NONE);
-                        //END TODO
-                        $em->persist($user);
-                        $em->flush();
-                    }
-                    $this->get('session')->getFlashBag()->add('message_title', $title);
-                    $this->get('session')->getFlashBag()->add('message_body', $desc);
-                    // Commented for develop
-                    return $this->redirect($this->generateUrl('public_message_flash'));
+                    );
+                    $this->get('request')->getSession()->invalidate();
                 } else {
-                    $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
+                    $desc = $translator->trans(
+                        'authorization.description.removed',
+                        array(
+                            '%%HOME_PAGE%%' => $this->get('router')->generate('tenant_homepage')
+                        )
+                    );
+                    /**
+                     * @var User $user
+                     */
+                    $user = $this->getUser();
+                    $scores = $user->getScores();
+                    foreach ($scores as $score) {
+                        $em->remove($score);
+                    }
+                    //@TODO not sure about this line, need ask Ton or Darryl - task RT-266
+                    $reportsD2c = $user->getReportsD2c();
+                    $reportsPrequeal = $user->getReportsPrequal();
+                    foreach ($reportsD2c as $report) {
+                        $em->remove($report);
+                    }
+                    foreach ($reportsPrequeal as $report) {
+                        $em->remove($report);
+                    }
+                    //1a1dc91c907325c69271ddf0c944bc72
+                    $user->setIsVerified(UserIsVerified::NONE);
+                    $user->setPassword($sPassword);
+                    //END TODO
+                    $em->persist($user);
+                    $em->flush();
                 }
+                $this->get('session')->getFlashBag()->add('message_title', $title);
+                $this->get('session')->getFlashBag()->add('message_body', $desc);
+                // Commented for develop
+                return $this->redirect($this->generateUrl('public_message_flash'));
+            } else {
+                $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
             }
         }
 
         return array(
             'sEmail' => $sEmail,
-            'form' => $form->createView()
+            'form'   => $form->createView()
         );
     }
 
