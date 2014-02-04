@@ -1429,6 +1429,10 @@
                 <source>desired.car</source>
                 <target>Desired car</target>
             </trans-unit>
+            <trans-unit id="get.new.report">
+                <source>get.new.report</source>
+                <target>Get New Report</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

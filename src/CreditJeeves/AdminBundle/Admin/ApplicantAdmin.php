@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use JMS\DiExtraBundle\Annotation\Inject;
 
 class ApplicantAdmin extends Admin
 {
@@ -77,6 +78,9 @@ class ApplicantAdmin extends Admin
                         ),
                         'observe' => array(
                             'template' => 'AdminBundle:CRUD:list__applicant_observe.html.twig'
+                        ),
+                        'newReport' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_new_report.html.twig'
                         ),
                     )
                 )
