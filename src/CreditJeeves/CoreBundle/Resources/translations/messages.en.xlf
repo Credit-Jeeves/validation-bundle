@@ -1433,6 +1433,25 @@
                 <source>get.new.report</source>
                 <target>Get New Report</target>
             </trans-unit>
+            <trans-unit id="authorization.removed">
+                <source>authorization.removed</source>
+                <target>Authorization Removed</target>
+            </trans-unit>
+            <trans-unit id="are.you.sure">
+                <source>are.you.sure</source>
+                <target>Are you sure?</target>
+            </trans-unit>
+            <trans-unit id="authorization.description.removed">
+                <source>authorization.description.removed</source>
+                <target><![CDATA[
+                    You have been logged out. Credit Jeeeves will no longer store or
+                    monitor your credit information. We're sorry to see you go!
+                    Please <a href="#">send us any feedback</a> so
+                    we can continue to help others achieve  their dreams.
+                    You can restore your account anytime in the future simply by logging in.
+                    ]]>
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
