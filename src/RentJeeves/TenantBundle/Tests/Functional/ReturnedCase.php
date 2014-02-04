@@ -25,7 +25,6 @@ class ReturnedCase extends BaseTestCase
             )
         );
         $form->pressButton('common.remove');
-        $this->acceptAlert();
     }
 
     /**

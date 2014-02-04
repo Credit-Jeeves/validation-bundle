@@ -170,7 +170,6 @@ class SettingsController extends Controller
                     foreach ($reportsPrequeal as $report) {
                         $em->remove($report);
                     }
-                    //1a1dc91c907325c69271ddf0c944bc72
                     $user->setIsVerified(UserIsVerified::NONE);
                     $user->setPassword($sPassword);
                     //END TODO
