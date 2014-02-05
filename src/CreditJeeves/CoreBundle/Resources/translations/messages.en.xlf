@@ -1446,7 +1446,7 @@
                 <target><![CDATA[
                     You have been logged out. Credit Jeeeves will no longer store or
                     monitor your credit information. We're sorry to see you go!
-                    Please <a href="#">send us any feedback</a> so
+                    Please <a href="http://%%FEEDBACK_PAGE%%/">send us any feedback</a> so
                     we can continue to help others achieve  their dreams.
                     You can restore your account anytime in the future simply by logging in.
                     ]]>

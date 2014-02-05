@@ -136,7 +136,16 @@ class SettingsController extends Controller
                 $em = $this->getDoctrine()->getManager();
 
                 if ($globals['application'] == 'cj') {
-                    $desc = $translator->trans('authorization.description.removed');
+                    $externalUrls = $this->container->getParameter('external_urls');
+                    $helpLink = $externalUrls['user_voice'];
+
+                    $desc = $translator->trans(
+                        'authorization.description.removed',
+                        array(
+                            '%%FEEDBACK_PAGE%%' => $helpLink
+                        )
+                    );
+                    $newUser->setPassword($sPassword);
                     $em->transactional(
                         function ($em) use ($User, $newUser) {
                             $em->remove($User);
@@ -162,12 +171,7 @@ class SettingsController extends Controller
                     foreach ($scores as $score) {
                         $em->remove($score);
                     }
-
-                    $reportsD2c = $user->getReportsD2c();
                     $reportsPrequeal = $user->getReportsPrequal();
-                    foreach ($reportsD2c as $report) {
-                        $em->remove($report);
-                    }
                     foreach ($reportsPrequeal as $report) {
                         $em->remove($report);
                     }
