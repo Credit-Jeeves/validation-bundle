@@ -124,65 +124,12 @@ class SettingsController extends Controller
         $sPassword = $User->getPassword();
         $form = $this->createForm(new RemoveType(), $User);
         $form->handleRequest($request);
-        $newUser = $User->getUserToRemove();
+
         if ($form->isValid()) {
             $reEnteredPassword = $this->container->get('user.security.encoder.digest')
                 ->encodePassword($User->getPassword(), $User->getSalt());
             if ($sPassword == $reEnteredPassword) {
-                $twig = $this->container->get('twig');
-                $globals = $twig->getGlobals();
-                $translator = $this->get('translator');
-                $title = $translator->trans('authorization.removed');
-                $em = $this->getDoctrine()->getManager();
-
-                if ($globals['application'] == 'cj') {
-                    $externalUrls = $this->container->getParameter('external_urls');
-                    $helpLink = $externalUrls['user_voice'];
-
-                    $desc = $translator->trans(
-                        'authorization.description.removed',
-                        array(
-                            '%%FEEDBACK_PAGE%%' => $helpLink
-                        )
-                    );
-                    $newUser->setPassword($sPassword);
-                    $em->transactional(
-                        function ($em) use ($User, $newUser) {
-                            $em->remove($User);
-                            $em->flush();
-                            $newUser->setLastLogin(new \DateTime());
-                            $em->persist($newUser);
-                        }
-                    );
-                    $this->get('request')->getSession()->invalidate();
-                } else {
-                    //task RT-266
-                    $desc = $translator->trans(
-                        'authorization.description.removed',
-                        array(
-                            '%%HOME_PAGE%%' => $this->get('router')->generate('tenant_homepage')
-                        )
-                    );
-                    /**
-                     * @var User $user
-                     */
-                    $user = $this->getUser();
-                    $scores = $user->getScores();
-                    foreach ($scores as $score) {
-                        $em->remove($score);
-                    }
-                    $reportsPrequeal = $user->getReportsPrequal();
-                    foreach ($reportsPrequeal as $report) {
-                        $em->remove($report);
-                    }
-                    // will be added new status in future for the tenant tab->payment
-                    //$user->setIsVerified(UserIsVerified::NONE);
-                    $user->setPassword($sPassword);
-                    $em->persist($user);
-                    $em->flush();
-                }
-                $this->get('session')->getFlashBag()->add('message_title', $title);
-                $this->get('session')->getFlashBag()->add('message_body', $desc);
+                $this->get('remove.user')->remove($User);
                 // Commented for develop
                 return $this->redirect($this->generateUrl('public_message_flash'));
             } else {
