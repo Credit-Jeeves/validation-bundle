@@ -55,7 +55,7 @@ class LeadListener
             &&
             $eventArgs->getNewValue('status') === LeadStatus::READY
             &&
-            $eventArgs->getOldValue('status') !== LeadStatus::ACTIVE
+            $eventArgs->getOldValue('status') === LeadStatus::ACTIVE
         ) {
             //@todo send email to dealer, will be created seperated task
             $this->container->get('project.mailer')->sendTargetApplicant($lead);
