@@ -60,10 +60,10 @@ class ScoreListener
 
             $needScore = $lead->getTargetScore();
 
-            if ($score->getScore() <= $needScore) {
-                continue;
+            if ($score->getScore() > $needScore) {
+                $lead->setStatus(LeadStatus::READY);
             }
-            $lead->setStatus(LeadStatus::READY);
+
         }
 
         $em->flush();
