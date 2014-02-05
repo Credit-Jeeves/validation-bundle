@@ -1811,6 +1811,10 @@
                     ]]>
                 </target>
             </trans-unit>
+            <trans-unit id="remove.comment">
+                <source>remove.comment</source>
+                <target>To remove authorization for RentTrack to pull your credit profile, type your password below and click 'Remove'. Your score, credit profile data and any sensitive personal data will be removed from our database.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
