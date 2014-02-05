@@ -64,6 +64,10 @@ class RemoveUser
         foreach ($reportsPrequeal as $report) {
             $this->em->remove($report);
         }
+        $reportsD2c = $user->getReportsD2c();
+        foreach ($reportsD2c as $report) {
+            $this->em->remove($report);
+        }
         //will be added new status in future for the tenant tab->payment
         //$user->setIsVerified(UserIsVerified::NONE);
         $user->setPassword($this->encoder->encodePassword($user->getPassword(), $user->getSalt()));
