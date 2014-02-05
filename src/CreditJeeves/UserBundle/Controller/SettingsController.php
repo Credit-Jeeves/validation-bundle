@@ -9,6 +9,7 @@ use CreditJeeves\CoreBundle\Controller\ApplicantController;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\AddressRepository;
 use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\UserBundle\Form\Type\UserAddressType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -122,41 +123,23 @@ class SettingsController extends Controller
         $sEmail = $User->getEmail();
         $sPassword = $User->getPassword();
         $form = $this->createForm(new RemoveType(), $User);
-        if ($request->getMethod() == 'POST') {
-            $newUser = $User->getUserToRemove();
-            $form->bind($request);
-            if ($form->isValid()) {
-                $reEnteredPassword = $this->container->get('user.security.encoder.digest')
-                    ->encodePassword($User->getPassword(), $User->getSalt());
-                if ($sPassword == $reEnteredPassword) {
-                    $em = $this->getDoctrine()->getManager();
-                    try {
-                        $em->getConnection()->beginTransaction();
-                        $em->remove($User);
-                        $em->flush();
-                        $newUser->setLastLogin(new \DateTime());
-                        $em->persist($newUser);
-                        $em->flush();
-                        $em->getConnection()->commit();
-                        $this->get('session')->getFlashBag()->add('notice', 'Information has been updated');
-                    } catch (\Exception $e) {
-                        $em->getConnection()->rollback();
-                        $em->close();
-                        throw $e;
-                    }
-                    $this->get('request')->getSession()->invalidate();
+        $form->handleRequest($request);
 
-                    // Commented for develop
-                    return $this->redirect($this->generateUrl('fos_user_security_login'));
-                } else {
-                    $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
-                }
+        if ($form->isValid()) {
+            $reEnteredPassword = $this->container->get('user.security.encoder.digest')
+                ->encodePassword($User->getPassword(), $User->getSalt());
+            if ($sPassword == $reEnteredPassword) {
+                $this->get('remove.user')->remove($User);
+                // Commented for develop
+                return $this->redirect($this->generateUrl('public_message_flash'));
+            } else {
+                $this->get('session')->getFlashBag()->add('notice', 'Incorrect Password');
             }
         }
 
         return array(
             'sEmail' => $sEmail,
-            'form' => $form->createView()
+            'form'   => $form->createView()
         );
     }
 

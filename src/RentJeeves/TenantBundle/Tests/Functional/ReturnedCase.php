@@ -25,6 +25,8 @@ class ReturnedCase extends BaseTestCase
             )
         );
         $form->pressButton('common.remove');
+        $this->assertNotNull($messageBody = $this->page->find('css', '.message-body'));
+        $this->assertEquals('authorization.description.removed', $messageBody->getText());
     }
 
     /**
@@ -34,6 +36,8 @@ class ReturnedCase extends BaseTestCase
     public function returnedTenant()
     {
         $this->login('tenant11@example.com', 'pass');
+        $this->assertNotNull($contracts = $this->page->findAll('css', '.contracts'));
+        /*We don't have this form any more, because we don't remove user. RT-266
         $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_returnedtype'));
         $this->fillForm(
             $form,
@@ -43,7 +47,7 @@ class ReturnedCase extends BaseTestCase
             )
         );
         $form->pressButton('continue');
-        $this->page->clickLink('common.account');
+        $this->page->clickLink('common.account');*/
         $this->logout();
     }
 }

@@ -1802,6 +1802,15 @@
                 <source>payment.start_date.error.cutoff.time</source>
                 <target>It is past the payment cutoff time for today, please set the date to tomorrow or later.</target>
             </trans-unit>
+            <trans-unit id="authorization.description.removed">
+                <source>authorization.description.removed</source>
+                <target><![CDATA[
+                    RentTrack will no longer store or monitor your credit information and credit score.
+                    You can continue to pay your rent through our service.
+                    <a href="%%HOME_PAGE%%">Return to the Payments tab.</a>
+                    ]]>
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
