@@ -51,18 +51,14 @@ class LeadListener
             return;
         }
 
-        if (!$eventArgs->hasChangedField('status')) {
-            return;
+        if ($eventArgs->hasChangedField('status')
+            &&
+            $eventArgs->getNewValue('status') === LeadStatus::READY
+            &&
+            $eventArgs->getOldValue('status') !== LeadStatus::ACTIVE
+        ) {
+            //@todo send email to dealer, will be created seperated task
+            $this->container->get('project.mailer')->sendTargetApplicant($lead);
         }
-
-        if ($eventArgs->getNewValue('status') !== LeadStatus::READY) {
-            return;
-        }
-
-        if ($eventArgs->getOldValue('status') !== LeadStatus::ACTIVE) {
-            return;
-        }
-        //@todo send email to dealer, will be created seperated task
-        $this->container->get('project.mailer')->sendTargetApplicant($lead);
     }
 }
