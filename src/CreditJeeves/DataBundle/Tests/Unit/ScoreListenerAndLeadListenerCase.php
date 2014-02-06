@@ -66,6 +66,10 @@ class ScoreListenerAndLeadCase extends BaseTestCase
                 ($lead->getStatus() === LeadStatus::READY),
                 'Status not active '.$lead->getStatus().' '.$lead->getId()
             );
+            $this->assertTrue(
+                ($lead->getFraction() >= 100),
+                'Fraction != 100 it is == '.$lead->getFraction()
+            );
         }
     }
 
