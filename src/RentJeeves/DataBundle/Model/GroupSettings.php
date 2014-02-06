@@ -43,7 +43,7 @@ abstract class GroupSettings
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true
      * )
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false, unique=true)
      * @var Group
      */
     protected $group;
