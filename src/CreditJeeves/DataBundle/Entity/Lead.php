@@ -38,4 +38,19 @@ class Lead extends BaseLead
     {
         return $this->getUser()->getCurrentScore();
     }
+
+    /**
+     * Moved from symfony1
+     *
+     * /vendor/credit-jeeves/credit-jeeves/lib/model/doctrine/cjLead.class.php
+     *
+     * @param integer $currentScore
+     */
+    public function setNewFraction($currentScore)
+    {
+        $currentScore = intval($currentScore);
+        $targetScore = $this->getTargetScore();
+        $fraction = floor($currentScore * 100 / $targetScore);
+        $this->setFraction($fraction);
+    }
 }

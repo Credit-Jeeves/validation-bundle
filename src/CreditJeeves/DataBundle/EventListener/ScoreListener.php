@@ -54,6 +54,7 @@ class ScoreListener
 
         /** @var $lead Lead */
         foreach ($leads as $lead) {
+            $lead->setNewFraction($score->getScore());
             if ($lead->getStatus() !== LeadStatus::ACTIVE) {
                 continue;
             }

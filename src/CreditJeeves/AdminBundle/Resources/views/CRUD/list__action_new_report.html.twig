@@ -1,6 +1,6 @@
 
 {% if admin.isGranted('EDIT', object) %}
-    <a href="{{ path('admin_applicant_report', { "id": object.id }) }}" class="btn edit_link" title="{{ 'action_report'|trans({}) }}">
+    <a href="{{ path('admin_applicant_report', { "id": object.id }) }}" class="btn edit_link getNewReport" title="{{ 'action_report'|trans({}) }}">
         <i class="icon-report"></i>
         {{ 'get.new.report'|trans({}) }}
     </a>
