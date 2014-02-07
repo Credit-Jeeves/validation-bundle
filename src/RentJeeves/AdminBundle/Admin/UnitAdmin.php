@@ -16,16 +16,9 @@ class UnitAdmin extends Admin
      */
     public function configure()
     {
-        /**
-         * This executes everywhere in the admin and disables softdelete for everything, if you need something cleverer
-         * this should be rethought.
-         */
-        $filters = $this->getModelManager()->getEntityManager($this->getClass())->getFilters();
-
-        if (array_key_exists('softdeleteable', $filters->getEnabledFilters())) {
-            $filters->disable('softdeleteable');
-        }
-
+        //@TODO find best way for this implementation
+        $container = $this->getConfigurationPool()->getContainer();
+        $container->get('soft.deleteable.control')->disable();
     }
 
     public function configureRoutes(RouteCollection $collection)
