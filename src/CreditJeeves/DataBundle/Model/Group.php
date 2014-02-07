@@ -385,7 +385,6 @@ abstract class Group
     {
         if (empty($this->groupSettings)) {
             $this->groupSettings = new GroupSettings();
-            $this->groupSettings->setGroup($this);
         }
 
         return $this->groupSettings;
