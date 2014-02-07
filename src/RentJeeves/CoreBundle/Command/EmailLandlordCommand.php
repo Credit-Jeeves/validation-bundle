@@ -110,6 +110,10 @@ class EmailLandlordCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //@TODO find best way for this implementation
+        //For this functional need show unit which was removed
+        $this->getContainer()->get('soft.deleteable.control')->disable();
+        
         $type = $input->getOption('type');
         $days = $input->getOption('days');
         $auto = $input->getOption('auto');
