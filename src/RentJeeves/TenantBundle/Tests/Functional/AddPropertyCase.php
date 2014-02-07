@@ -54,7 +54,7 @@ class AddPropertyCase extends BaseTestCase
         $register->click();
         $this->session->wait($this->timeout, "$('.properties-table').length > 0");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
-        $this->assertCount(6, $tr, 'List of property');
+        $this->assertCount(5, $tr, 'List of property');
         $this->logout();
     }
 
@@ -92,15 +92,17 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
         $this->session->wait($this->timeout, "$('.search-result-text li').length > 0");
         $this->assertNotNull($searchResult = $this->page->findAll('css', '.search-result-text li'));
-        
+
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"
         );
         $this->fillGoogleAddress('560 Broadway, Manhattan, New York, NY 10012');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $propertySearch->click();
-        $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout+10000, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
+        $this->session->wait($this->timeout+15000, "typeof jQuery !== undefined");
+        $this->session->wait($this->timeout, "$('#formSearch').length > 0");
+
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->fillForm(
             $form,
