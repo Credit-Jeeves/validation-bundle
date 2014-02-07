@@ -1804,7 +1804,7 @@
             </trans-unit>
             <trans-unit id="is.pid.verification.skip">
                 <source>is.pid.verification.skip</source>
-                <target>Is PID Verification Skip?</target>
+                <target>Skip PID verification?</target>
             </trans-unit>
         </body>
     </file>
