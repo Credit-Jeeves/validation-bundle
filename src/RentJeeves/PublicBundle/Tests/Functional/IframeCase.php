@@ -96,7 +96,7 @@ class IframeCase extends BaseTestCase
         );
         $url = $this->session->getCurrentUrl();
         $propertySearch->click();
-        $this->session->wait($this->timeout+5000, "typeof $ !== 'undefined'");
+        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
         $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
@@ -128,7 +128,7 @@ class IframeCase extends BaseTestCase
                 'rentjeeves_publicbundle_invitetenanttype_tenant_tos'                       => true,
             )
         );
-        
+
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
         $fields = $this->page->findAll('css', '#inviteText>h4');
@@ -196,7 +196,7 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        
+
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(1, $contract, 'Wrong number of pending');
     }
@@ -297,7 +297,7 @@ class IframeCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.inviteLandlord').is(':visible')");
         $this->assertNotNull($inviteLandlord = $this->page->find('css', '.inviteLandlord'));
         $inviteLandlord->click();
-        
+
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait(
             $this->timeout,
