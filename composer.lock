@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "df1d5d4ffb2ea7cc9889cb71e188f425",
+    "hash": "2be54fea1bd926148f3e0d6fb8128f20",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -440,11 +440,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "d22e3bd69c106c07994f4367abf0703f0eef97f9"
+                "reference": "60b1578d187a555439a7e740bf0607dba6c8bab0"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2014-01-10 11:06:15"
+            "time": "2014-02-03 20:52:07"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
