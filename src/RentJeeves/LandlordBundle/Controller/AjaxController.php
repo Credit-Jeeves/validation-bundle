@@ -411,21 +411,10 @@ class AjaxController extends Controller
     }
 
 
-
-    private function isEnableSoftDeleteable()
-    {
-        $filters = $this->get('doctrine')->getManager()->getFilters();
-
-        if (array_key_exists('softdeleteable', $filters->getEnabledFilters())) {
-            return true;
-        }
-
-        return false;
-    }
-
     //@TODO find best way for this implementation
     private function checkContractBeforeRemove($unit)
     {
+
         if ($unit->getContracts()->count() > 0) {
             $contracts = $unit->getContracts();
             $em = $this->getDoctrine()->getManager();
@@ -439,13 +428,15 @@ class AjaxController extends Controller
             $em->flush();
         }
 
-        if ($unit->getContracts()->count() <= 0 && $this->isEnableSoftDeleteable()) {
-            $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
+        if ($unit->getContracts()->count() <= 0) {
+            //@TODO find best way for this implementation
+            $this->get('soft.deleteable.control')->disable();
             return;
         }
 
-        if ($unit->getContracts()->count() > 0 && !$this->isEnableSoftDeleteable()) {
-            $this->get('doctrine')->getManager()->getFilters()->enable('softdeleteable');
+        if ($unit->getContracts()->count() > 0) {
+            //@TODO find best way for this implementation
+            $this->get('soft.deleteable.control')->enable();
             return;
         }
     }
@@ -580,9 +571,9 @@ class AjaxController extends Controller
      */
     public function getContractsList()
     {
-        //For this page need show unit each was removed
         //@TODO find best way for this implementation
-        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
+        //For this functional need show unit which was removed
+        $this->get('soft.deleteable.control')->disable();
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -628,7 +619,7 @@ class AjaxController extends Controller
     {
         //For this page need show unit each was removed
         //@TODO find best way for this implementation
-        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
+        $this->get('soft.deleteable.control')->disable();
         $items = array();
         $total = 0;
         $request = $this->getRequest();
@@ -830,7 +821,8 @@ class AjaxController extends Controller
     {
         // Show all unit, even it removed
         //@TODO find best way for this implementation
-        $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
+        //For this functional need show unit which was removed
+        $this->get('soft.deleteable.control')->disable();
         $items = array();
         $total = 0;
         $request = $this->getRequest();

@@ -17,24 +17,8 @@ class IndexController extends Controller
     public function indexAction()
     {
         $tenant = $this->getUser();
-//         $contracts = $tenant->getContracts();
-//         foreach ($contracts as $contract) {
-//             $operations = $contract->getOperations();
-//             foreach ($operations as $operation) {
-//                 $orders = $operation->getOrders();
-//                 foreach ($orders as $order) {
-//                     echo $order->getOperations()->last()->getType();
-//                 }
-//             }
-//         }
-        //For this page need show unit each was removed
-        //@TODO find best way for this implementation
-        $filters = $this->get('doctrine')->getManager()->getFilters();
-        $filtersEnabled = $filters->getEnabledFilters();
-        if (!empty($filtersEnabled) && array_key_exists('softdeleteable', $filtersEnabled)) {
-            $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
-        }
-
+        //For this functional need show unit which was removed
+        $this->get('soft.deleteable.control')->disable();
         $isReporting = $this->get('doctrine')->getRepository('RjDataBundle:Contract')
                                 ->countReporting($tenant);
         return array(
