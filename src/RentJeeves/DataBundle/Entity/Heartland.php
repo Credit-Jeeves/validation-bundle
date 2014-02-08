@@ -10,4 +10,8 @@ use RentJeeves\DataBundle\Model\Heartland as Base;
  */
 class Heartland extends Base
 {
+    public function __toString()
+    {
+        return (string)$this->getId();
+    }
 }

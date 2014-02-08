@@ -22,11 +22,23 @@ class JobRelatedEntities
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity = "Job", inversedBy = "relatedEntities", fetch = "EAGER")
+     * @ORM\ManyToOne(
+     *      targetEntity = "Job",
+     *      inversedBy = "relatedEntities",
+     *      cascade = {"persist", "remove", "detach"},
+     *      fetch = "EAGER"
+     * )
      * @ORM\JoinColumn(name="job_id", referencedColumnName="id")
      * @var Job
      */
     protected $job;
+
+    /**
+     * @ORM\ManyToOne(targetEntity = "Payment", inversedBy = "jobs", fetch = "EAGER")
+     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id", nullable=true)
+     * @var Payment
+     */
+    protected $payment;
 
     /**
      * @Gedmo\Timestampable(on="create")
@@ -41,6 +53,11 @@ class JobRelatedEntities
 //    protected $relatedClass;
 
 //    protected $relatedId;
+
+    public function __clone()
+    {
+        $this->id = null;
+    }
 
     /**
      * @param Job $job

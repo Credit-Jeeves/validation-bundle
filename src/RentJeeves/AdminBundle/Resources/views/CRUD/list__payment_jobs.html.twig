@@ -1,7 +1,6 @@
-{% if admin.hasRoute('admin_job_list')%}
-    <a href="{{ path('admin_job_list', { "id": object.id }) }}" class="btn">
+{#% if admin.hasRoute('admin_job_list') %#}
+    <a href="{{ path('admin_job_list', {"filter": { "payment": {"value": object.id} } }) }}" class="btn">
         <i class="icon-list"></i>
         {{ 'Jobs'|trans({}) }}
-
     </a>
-{% endif %}
+{#% endif %#}

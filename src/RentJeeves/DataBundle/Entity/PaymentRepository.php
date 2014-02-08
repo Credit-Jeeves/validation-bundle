@@ -54,16 +54,15 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('j.id IS NULL');
 //        $query->andWhere('c.status IN (:contract)');
         $query->andWhere(
-            "DATE_FORMAT(
-                CONCAT(
-                    CONCAT(
-                        CONCAT(
-                            CONCAT(p.startYear, '-'),
-                            p.startMonth
-                         ),
-                     '-'),
-                p.dueDate),
-            '%Y-%m-%d') <= DATE_FORMAT(:startDate, '%Y-%m-%d')"
+            sprintf(
+                "STR_TO_DATE(" .
+                    "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
+                    "'%%Y-%%c-%%e'" .
+                ") <= :startDate",
+                'p',
+                'p',
+                'p'
+            )
         );
         $query->andWhere(
             '(p.endYear IS NULL AND p.endMonth IS NULL)

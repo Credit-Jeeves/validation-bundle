@@ -104,20 +104,10 @@ class PaymentAdmin extends Admin
                         $alias = $queryBuilder->getRootAliases()[0];
                         $queryBuilder->andWhere($alias . '.dueDate = :due_date');
 
-                        // TODO UPDATE it when doctrine >= 2.4.0-BETA1 PR #583 or after refactoring
                         $queryBuilder->andWhere(
                             sprintf(
                                 "STR_TO_DATE(" .
-                                    "CONCAT(" .
-                                        "CONCAT(" .
-                                            "CONCAT(" .
-                                                "CONCAT(%s.startYear, '-')" .
-                                                ", %s.startMonth" .
-                                            ")," .
-                                            "'-'" .
-                                        ")," .
-                                        "%s.dueDate" .
-                                    ")," .
+                                    "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
                                     "'%%Y-%%c-%%e'" .
                                 ") <= :start_date",
                                 $alias,
@@ -156,6 +146,7 @@ class PaymentAdmin extends Admin
             ->add('endMonth')
             ->add('createdAt')
             ->add('updatedAt')
+            ->add('jobs', null, array('template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig'))
         ;
 
     }

@@ -47,12 +47,8 @@ class CollectCommand extends ContainerAwareCommand
         /** @var Payment $payment */
         foreach ($payments as $payment) {
             $job = new Job('payment:pay', array('--app=rj'));
-            $jobRelatedPayment = new JobRelatedPayment();
-            $jobRelatedPayment->setJob($job);
-            $jobRelatedPayment->setPayment($payment);
-            $job->addRelatedEntity($jobRelatedPayment);
+            $job->addRelatedEntity($payment);
             $em->persist($job);
-            $em->persist($jobRelatedPayment);
             $em->flush();
 //            $em->clear();
             $output->write('.');

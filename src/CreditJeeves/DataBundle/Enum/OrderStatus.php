@@ -51,4 +51,17 @@ class OrderStatus extends Enum
      * @var string
      */
     const RETURNED = 'returned';
+
+    public static function getManualAvailableToSet($current)
+    {
+        $restrictedStatuses = array_diff(
+            array(OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR),
+            array($current)
+        );
+
+        return array_diff(
+            OrderStatus::all(),
+            $restrictedStatuses
+        );
+    }
 }

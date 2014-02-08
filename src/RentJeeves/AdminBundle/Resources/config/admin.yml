@@ -130,3 +130,14 @@ services:
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.heartland:
+        class: RentJeeves\AdminBundle\Admin\HeartlandAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Heartland logs" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\Heartland
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]

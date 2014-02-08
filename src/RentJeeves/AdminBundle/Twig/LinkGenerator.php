@@ -3,6 +3,8 @@ namespace RentJeeves\AdminBundle\Twig;
 
 use JMS\JobQueueBundle\Twig\LinkGeneratorInterface;
 use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\DataBundle\Entity\JobRelatedPayment;
+use RentJeeves\DataBundle\Entity\JobRelatedOrder;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -15,7 +17,8 @@ class LinkGenerator implements LinkGeneratorInterface
     protected $routeGenerator;
 
     protected $entities = array(
-       'RentJeeves\DataBundle\Entity\JobRelatedPayment'
+       'RentJeeves\DataBundle\Entity\JobRelatedPayment' => 'Payment',
+       'RentJeeves\DataBundle\Entity\JobRelatedOrder' => 'Order',
     );
 
     /**
@@ -30,22 +33,31 @@ class LinkGenerator implements LinkGeneratorInterface
 
     function supports($entity)
     {
-        return in_array(get_class($entity), $this->entities);
+        return (bool)isset($this->entities[get_class($entity)]);
     }
 
     function generate($entity)
     {
-        return $this->routeGenerator->generate(
-            'admin_rentjeeves_data_payment_show',
-            array(
-                'id' => $entity->getPayment()->getId()
-            )
-        );
+        if ($entity instanceof JobRelatedPayment) {
+            return $this->routeGenerator->generate(
+                'admin_rentjeeves_data_payment_show',
+                array(
+                    'id' => $entity->getPayment()->getId()
+                )
+            );
+        }
+        if ($entity instanceof JobRelatedOrder) {
+            return $this->routeGenerator->generate(
+                'admin_creditjeeves_data_order_show',
+                array(
+                    'id' => $entity->getOrder()->getId()
+                )
+            );
+        }
     }
 
     function getLinkname($entity)
     {
-        $namespace = get_class($entity);
-        return substr($namespace, strrpos($namespace, '\\') + 1);
+        return $this->entities[get_class($entity)];
     }
 } 

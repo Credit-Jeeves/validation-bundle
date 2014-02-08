@@ -49,17 +49,16 @@ class JobAdmin extends Admin
                 array(
 //                    'callback'   => array($this, 'getWithOpenCommentFilter'),
                     'callback' => function($queryBuilder, $alias, $field, $value) {
-                            if (!$value) {
-                                return;
+                            if (empty($value['value'])) {
+                                return false;
                             }
-
                             $queryBuilder->innerJoin(
                                 $alias . '.relatedEntities',
-                                'j',
+                                're',
                                 Expr\Join::WITH,
-                                "j.payment = :payment_id"
+                                "re.payment = :payment_id"
                             );
-                            $queryBuilder->setParameter('payment_id', (int)$value);
+                            $queryBuilder->setParameter('payment_id', (int)$value['value']);
 
                             return true;
                         },

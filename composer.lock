@@ -2387,7 +2387,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/JMSJobQueueBundle.git",
-                "reference": "a05e3b42a7e17a62edef5dd4741bf89c54311d21"
+                "reference": "e5a9e87719868dbb311b54ee43e3d9da71369af1"
             },
             "require": {
                 "doctrine/common": ">=2.3,<3.0",
@@ -2441,7 +2441,7 @@
                 "job",
                 "queue"
             ],
-            "time": "2014-01-24 17:03:11"
+            "time": "2014-02-08 00:01:20"
         },
         {
             "name": "jms/metadata",

@@ -7,7 +7,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
-use JMS\JobQueueBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\Job;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
@@ -56,7 +56,7 @@ class PayCommand extends ContainerAwareCommand
         $jobId = $input->getOption('jms-job-id');
 
         /** @var Job $job */
-        $job = $em->getRepository('JMSJobQueueBundle:Job')->findOneBy(array('id' => $jobId));
+        $job = $em->getRepository('RjDataBundle:Job')->findOneBy(array('id' => $jobId));
         if (empty($job)) {
             throw new RuntimeException("Can not fid --jms-job-id={$jobId}");
         }
@@ -74,11 +74,12 @@ class PayCommand extends ContainerAwareCommand
 
 
         /** @var Payment $payment */
-        $payment = $job->findRelatedEntity('RentJeeves\DataBundle\Entity\Payment');
+        $relatedPayment = $job->findRelatedEntity('RentJeeves\DataBundle\Entity\JobRelatedPayment');
 
-        if (empty($payment)) {
+        if (empty($relatedPayment)) {
             throw new RuntimeException("Job ID:'{$jobId}' must have related payment");
         }
+        $payment = $relatedPayment->getPayment();
 
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
@@ -152,8 +153,8 @@ class PayCommand extends ContainerAwareCommand
         }
         $em->persist($order);
         $em->persist($operation);
-//        $job->addRelatedEntity($order); // it does not work
-//        $em->persist($job);
+        $job->addRelatedEntity($order);
+        $em->persist($job);
         $em->flush();
 
 
@@ -163,6 +164,7 @@ class PayCommand extends ContainerAwareCommand
         $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
         $payum->execute($statusRequest);
         $order->addHeartland($paymentDetails);
+        $message = 'OK';
         if ($statusRequest->isSuccess()) {
             $order->setStatus(OrderStatus::COMPLETE);
             $contract->shiftPaidTo($amount);
@@ -172,7 +174,7 @@ class PayCommand extends ContainerAwareCommand
             }
         } else {
             $order->setStatus(OrderStatus::ERROR);
-            $output->write($statusRequest->getMessage());
+            $message = $statusRequest->getMessage();
         }
         $paymentDetails->setAmount($amount + $fee);
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
@@ -181,6 +183,9 @@ class PayCommand extends ContainerAwareCommand
         $em->persist($contract);
         $em->flush();
         $em->clear();
-        $output->writeln('OK');
+        $output->writeln($message);
+        if ('OK' != $message) {
+            exit(1);
+        }
     }
 }
