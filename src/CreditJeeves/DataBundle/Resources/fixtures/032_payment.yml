@@ -5,7 +5,7 @@ fixtures:
         paymentAccount: PaymentAccount_1
         type: recurring
         status: active
-        amount: 1500
+        amount: 1400
         startDate: '-3 month'
         endDate: '+9 months'
         createdAt: '-5 days'

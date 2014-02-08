@@ -68,4 +68,14 @@ class JobRelatedEntities
         $this->job = $job;
         return $this;
     }
+
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+//    public function __toString()
+//    {
+//        return (string)$this->job;
+//    }
 }

@@ -1,0 +1,10 @@
+model: RentJeeves\DataBundle\Entity\JobRelatedPayment
+fixtures:
+  job_payment_1:
+    job: job_1
+    payment: Payment_2
+    createdAt: now
+  job_payment_2:
+    job: job_2
+    payment: Payment_4
+    createdAt: '-1 month'

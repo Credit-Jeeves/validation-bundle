@@ -47,7 +47,7 @@ class PayCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->write('Start ');
+        $output->writeln('Start');
 
         $routeGenerator = $this->getContainer()->get('sonata.admin.route.default_generator');
 
@@ -161,7 +161,9 @@ class PayCommand extends ContainerAwareCommand
         $captureRequest = new CaptureRequest($paymentDetails);
         $payum->execute($captureRequest);
 
-        $statusRequest = new BinaryMaskStatusRequest($captureRequest->getModel());
+        /** @var PaymentDetails $model */
+        $model = $captureRequest->getModel();
+        $statusRequest = new BinaryMaskStatusRequest($model);
         $payum->execute($statusRequest);
         $order->addHeartland($paymentDetails);
         $message = 'OK';
@@ -174,7 +176,7 @@ class PayCommand extends ContainerAwareCommand
             }
         } else {
             $order->setStatus(OrderStatus::ERROR);
-            $message = $statusRequest->getMessage();
+            $message = $model->getMessages();
         }
         $paymentDetails->setAmount($amount + $fee);
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());

@@ -48,6 +48,11 @@ class Job extends Base
      */
     protected $dependencies;
 
+    public function __construct($command = '', array $args = array(), $confirmed = true)
+    {
+        parent::__construct($command, $args, $confirmed);
+    }
+
     public function setRelatedEntities(ArrayCollection $relatedEntities)
     {
         $this->relatedEntities = $relatedEntities;
@@ -86,5 +91,40 @@ class Job extends Base
         $jobRelated->setJob($this);
 
         $this->relatedEntities->add($jobRelated);
+    }
+
+    public function setStateRaw($state)
+    {
+        $this->state = $state;
+    }
+
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function setStartedAt($startedAt)
+    {
+        $this->startedAt = $startedAt;
+    }
+
+    public function setCheckedAt($checkedAt)
+    {
+        $this->checkedAt = $checkedAt;
+    }
+
+    public function setClosedAt($closedAt)
+    {
+        $this->closedAt = $closedAt;
+    }
+
+    public function setCommand($command)
+    {
+        $this->command = $command;
+    }
+
+    public function setArgs($args)
+    {
+        $this->args = $args;
     }
 }

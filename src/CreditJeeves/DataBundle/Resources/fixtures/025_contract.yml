@@ -15,7 +15,7 @@ fixtures:
         group:    RentGroup_1
         property: Property_1
         unit:     Unit_1_2
-        rent:     1500
+        rent:     1400
         status:   approved
         paidTo:  '60 days'
         startAt:   '60 days'
