@@ -10,7 +10,7 @@ class GroupSettings extends Base
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'isPidVerificationSkip',
+            'isPidVerificationSkipped',
             'checkbox',
             array(
                 'error_bubbling'    => true,
