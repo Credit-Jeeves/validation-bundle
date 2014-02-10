@@ -82,7 +82,7 @@ class InviteController extends Controller
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $User = $form->getData();
-            if ($type === GroupType::VEHICLE) {
+            if ($type === GroupType::VEHICLE && $isFullForm) {
                 $targetNameForm = $form->get('target_name');
                 $dataTarget = $targetNameForm->getData();
                 $markNameId = $dataTarget['make'];
