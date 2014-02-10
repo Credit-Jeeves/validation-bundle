@@ -23,6 +23,8 @@ class ReturnedCase extends BaseTestCase
             )
         );
         $form->pressButton('common.remove');
+        $this->assertNotNull($messageBody = $this->page->find('css', '.message-body'));
+        $this->assertEquals('authorization.description.removed', $messageBody->getText());
     }
 
     /**

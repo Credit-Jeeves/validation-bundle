@@ -22,9 +22,11 @@ class ReturnedController extends Controller
         $request = $this->get('request');
         /** @var User $User */
         $User = $this->get('core.session.applicant')->getUser();
-        $address = new Address();
-        $address->setUser($User);
-        $User->addAddress($address);
+        if ($User->getAddresses()->count() <= 0) {
+            $address = new Address();
+            $address->setUser($User);
+            $User->addAddress($address);
+        }
         $Lead = new Lead();
         
         $Lead->setUser($User);

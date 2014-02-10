@@ -18,7 +18,6 @@ class LeadNewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $entityManager = $options['em'];
-        $index = isset($options['attr']['index']) ? $options['attr']['index'] : 0;
         $groupTransformer = new CodeToGroupTransformer($entityManager);
         $builder->add(
             'user',
@@ -48,13 +47,10 @@ class LeadNewType extends AbstractType
         );
         $builder->add(
             'target_name',
-            new VehicleType(),
+            new VehicleType($options['vehicles']),
             array(
                 'error_bubbling' => true,
                 'label' => 'leads.select.target',
-                'attr' => array(
-                    'index' => $index
-                )
             )
         );
     }
@@ -73,6 +69,7 @@ class LeadNewType extends AbstractType
                 'csrf_field_name' => '_token',
                 // a unique key to help generate the secret token
                 'intention' => 'username',
+                'vehicles'  => array(),
             )
         );
 

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
+use RentJeeves\AdminBundle\Form\GroupSettings;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -169,6 +170,19 @@ class RjGroupAdmin extends Admin
                             'class' => 'terminal_custom',
                             'pattern' => '^.{1,14}$'
                         )
+                    )
+                )
+            ->end()
+            ->with('Settings')
+                ->add(
+                    'groupSettings',
+                    new GroupSettings(),
+                    array(
+                    ),
+                    array(
+                        'edit'      => 'inline',
+                        'inline'    => 'table',
+                        'sortable'  => 'position',
                     )
                 )
             ->end();
