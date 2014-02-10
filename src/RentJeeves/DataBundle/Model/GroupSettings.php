@@ -103,7 +103,7 @@ abstract class GroupSettings
     /**
      * @param boolean $pidVerification
      */
-    public function setIsPidVerificationSkip($pidVerification)
+    public function setIsPidVerificationSkipped($pidVerification)
     {
         $this->isPidVerificationSkip = (boolean) $pidVerification;
     }
@@ -111,7 +111,7 @@ abstract class GroupSettings
     /**
      * @return boolean
      */
-    public function getIsPidVerificationSkip()
+    public function getIsPidVerificationSkipped()
     {
         return $this->isPidVerificationSkip;
     }
