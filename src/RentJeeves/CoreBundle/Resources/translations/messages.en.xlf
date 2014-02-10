@@ -1806,6 +1806,19 @@
                 <source>is.pid.verification.skip</source>
                 <target>Skip PID verification?</target>
             </trans-unit>
+            <trans-unit id="authorization.description.removed">
+                <source>authorization.description.removed</source>
+                <target><![CDATA[
+                    RentTrack will no longer store or monitor your credit information and credit score.
+                    You can continue to pay your rent through our service.
+                    <a href="%%HOME_PAGE%%">Return to the Payments tab.</a>
+                    ]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.comment">
+                <source>remove.comment</source>
+                <target>To remove authorization for RentTrack to pull your credit profile, type your password below and click 'Remove'. Your score, credit profile data and any sensitive personal data will be removed from our database.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

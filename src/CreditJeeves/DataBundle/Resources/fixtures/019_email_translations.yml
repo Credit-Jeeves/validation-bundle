@@ -79,7 +79,23 @@ fixtures:
     translatable: email_4
     locale: %locale%
     property: body
-    value: '{% extends "CoreBundle:Mailer:base.html.twig" %}'
+    value: |
+         {% extends "CoreBundle:Mailer:base.html.twig" %}
+         {% block h1 %}Congratulations!{% endblock %}
+         {% block email %}
+           <div mc:edit="std_content00">
+               You have reached your dealer's target score of <strong>{{ targetScore }}</strong>
+           </div>
+           <div mc:edit="latest_score_button">
+               <br />
+               <hr />
+               Log into Credit Jeeves to find out what to do next. Your new car awaits!
+               <br />
+               <a class="button" href="{{ loginLink }}" id="viewLatestScoreButton">View Latest Score</a>
+               <br />
+               <hr />
+           </div>
+         {% endblock %}
 
 # finished.html email
   translation_5_subject:
