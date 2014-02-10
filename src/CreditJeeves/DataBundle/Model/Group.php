@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\GroupFeeType;
 use CreditJeeves\DataBundle\Enum\GroupType;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Entity\BillingAccount;
+use RentJeeves\DataBundle\Entity\GroupSettings;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -343,6 +344,15 @@ abstract class Group
      */
     protected $billingAccounts;
 
+    /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\GroupSettings",
+     *     mappedBy="group",
+     *     cascade={"persist", "remove", "merge"}
+     * )
+     */
+    protected $groupSettings;
+
     public function __construct()
     {
         $this->leads = new ArrayCollection();
@@ -358,6 +368,27 @@ abstract class Group
         $this->paymentAccounts = new ArrayCollection();
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
+    }
+
+    /**
+     * @param GroupSettings $groupSettings
+     */
+    public function setGroupSettings($groupSettings)
+    {
+        $this->groupSettings = $groupSettings;
+    }
+
+    /**
+     * @return GroupSettings
+     */
+    public function getGroupSettings()
+    {
+        if (empty($this->groupSettings)) {
+            $this->groupSettings = new GroupSettings();
+            $this->groupSettings->setGroup($this);
+        }
+
+        return $this->groupSettings;
     }
 
     /**
