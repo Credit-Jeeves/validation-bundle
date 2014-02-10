@@ -29,7 +29,7 @@ abstract class GroupSettings
 
     /**
      * @ORM\Column(
-     *     name="is_pid_verification_skip",
+     *     name="pid_verification",
      *     type="boolean"
      * )
      * @var boolean

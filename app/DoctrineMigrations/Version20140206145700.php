@@ -17,7 +17,7 @@ class Version20140206145700 extends AbstractMigration
         $this->addSql(
             "CREATE TABLE rj_group_settings (id BIGINT AUTO_INCREMENT NOT NULL,
                 group_id BIGINT NOT NULL,
-                is_pid_verification_skip TINYINT(1) NOT NULL,
+                pid_verification TINYINT(1) NOT NULL,
                 created_at DATETIME NOT NULL,
                 updated_at DATETIME NOT NULL,
                 UNIQUE INDEX UNIQ_534A2A70FE54D947 (group_id),
