@@ -34,7 +34,7 @@ abstract class GroupSettings
      * )
      * @var boolean
      */
-    protected $isPidVerificationSkip = false;
+    protected $isPidVerificationSkipped = false;
 
     /**
      * @ORM\OneToOne(
