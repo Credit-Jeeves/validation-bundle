@@ -65,14 +65,13 @@ class UserNewType extends UserType
         if ($options['currentGroupType'] !== GroupType::VEHICLE) {
             return;
         }
-
         $builder->add(
             'target_name',
-            new VehicleType(),
+            new VehicleType($options['vehicles']),
             array(
                 'mapped'         => false,
                 'error_bubbling' => true,
-                'label'          => 'desired.car'
+                'label'          => 'desired.car',
             )
         );
     }

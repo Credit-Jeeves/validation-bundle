@@ -26,6 +26,13 @@ class PreciseIDServer
     protected $summary;
 
     /**
+     * @Serializer\Type("CreditJeeves\ExperianBundle\Model\GLBDetail")
+     * @Serializer\SerializedName("GLBDetail")
+     * @Serializer\Groups({"CreditJeeves"})
+     */
+    protected $GLBDetail;
+
+    /**
      * @Serializer\Type("CreditJeeves\ExperianBundle\Model\Error")
      * @Serializer\SerializedName("Error")
      * @Serializer\Groups({"CreditJeeves"})
@@ -33,7 +40,27 @@ class PreciseIDServer
     protected $error;
 
     /**
-     * @param mixed $sessionId
+     * @param GLBDetail $GLBDetail
+     */
+    public function setGLBDetail($GLBDetail)
+    {
+        $this->GLBDetail = $GLBDetail;
+    }
+
+    /**
+     * @return GLBDetail
+     */
+    public function getGLBDetail()
+    {
+        if (empty($this->GLBDetail)) {
+            $this->GLBDetail = new GLBDetail();
+        }
+        return $this->GLBDetail;
+    }
+
+
+    /**
+     * @param string $sessionId
      */
     public function setSessionId($sessionId)
     {
@@ -41,7 +68,7 @@ class PreciseIDServer
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getSessionId()
     {

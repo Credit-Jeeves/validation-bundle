@@ -541,7 +541,9 @@ abstract class User extends BaseUser
      *
      * @ORM\OneToMany(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Pidkiq",
-     *      mappedBy="user"
+     *      mappedBy="user",
+     *      cascade={"persist", "remove", "merge"},
+     *      orphanRemoval=true
      * )
      */
     protected $pidkiqs;

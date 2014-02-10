@@ -21,7 +21,6 @@ class Lead extends BaseLead
     {
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
-        $this->status = 'new';
     }
     
     public function __toString()
@@ -38,5 +37,20 @@ class Lead extends BaseLead
     public function getCurrentScore()
     {
         return $this->getUser()->getCurrentScore();
+    }
+
+    /**
+     * Moved from symfony1
+     *
+     * /vendor/credit-jeeves/credit-jeeves/lib/model/doctrine/cjLead.class.php
+     *
+     * @param integer $currentScore
+     */
+    public function setNewFraction($currentScore)
+    {
+        $currentScore = intval($currentScore);
+        $targetScore = $this->getTargetScore();
+        $fraction = floor($currentScore * 100 / $targetScore);
+        $this->setFraction($fraction);
     }
 }

@@ -78,6 +78,9 @@ class ApplicantAdmin extends Admin
                         'observe' => array(
                             'template' => 'AdminBundle:CRUD:list__applicant_observe.html.twig'
                         ),
+                        'newReport' => array(
+                            'template' => 'AdminBundle:CRUD:list__action_new_report.html.twig'
+                        ),
                     )
                 )
             );

@@ -10,6 +10,12 @@ use Sonata\AdminBundle\Form\FormMapper;
 
 class ReportAdmin extends Admin
 {
+    protected $datagridValues = array(
+        '_page'       => 1,
+        '_sort_order' => 'DESC', // sort direction
+        '_sort_by'    => 'created_at' // field name
+    );
+
     /**
      *
      * @var string

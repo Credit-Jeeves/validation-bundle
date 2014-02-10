@@ -3,45 +3,73 @@ namespace CreditJeeves\ApplicantBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormEvent;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use CreditJeeves\DataBundle\Utility\VehicleUtility;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use JMS\DiExtraBundle\Annotation as DI;
 
 class VehicleType extends AbstractType
 {
+    protected $mark;
+
+    protected $model;
+
+    public function __construct(array $vehiclesFull)
+    {
+        $this->mark = array_keys($vehiclesFull);
+        $this->model = array_values($vehiclesFull);
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $index =  isset($options['attr']['index']) ? $options['attr']['index'] : 0;
-        // @todo replace by service
-        $vehicles = VehicleUtility::getInstance()->getVehicles();
-        $makes = array_keys($vehicles);
-        $make = $makes[$index];
-        $models = array_keys($vehicles[$make]);
         $builder->add(
             'make',
             'choice',
             array(
-               'choices' => array_keys($vehicles)
+                'choices' => $this->mark,
+                'data'    => 0,
             )
         );
         $builder->add(
             'model',
             'choice',
             array(
-                'choices' => $models
+                'choices' =>  array_keys($this->model[0]),
             )
         );
+
+        $self = $this;
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($self) {
+                $form = $event->getForm();
+                $data = $event->getData();
+                if (!isset($data['make'])) {
+                    return;
+                }
+
+                $make = $data['make'];
+
+                $form->add(
+                    'model',
+                    'choice',
+                    array(
+                        'choices' => (isset($self->model[$make]))? array_keys($self->model[$make]): array(),
+                    )
+                );
+            }
+        );
     }
-    
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
                 'cascade_validation' => true,
-                'csrf_protection' => true,
-                'csrf_field_name' => '_token',
-                'intention' => 'username',
+                'csrf_protection'    => true,
+                'csrf_field_name'    => '_token',
+                'intention'          => 'username'
             )
         );
     }

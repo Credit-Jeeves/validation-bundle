@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
+use CreditJeeves\ApiBundle\Util\ExceptionWrapper;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use CreditJeeves\ExperianBundle\Model\NetConnectResponse;
@@ -138,6 +139,12 @@ class Pidkiq extends \Pidkiq
         $error = $preciseIDServer->getError();
         if ($error && !$preciseIDServer->getSummary()) {
             throw new ExperianException($error->getErrorDescription(), $error->getErrorCode());
+        }
+
+        $sharedApplication = $preciseIDServer->getGLBDetail()->getSharedApplication();
+        $errors = $sharedApplication->getArrayOfErrors();
+        if (!empty($errors) && isset($errors['3001'])) {
+            throw new ExperianException(implode(ExceptionWrapper::SEPARATOR, $errors), 400);
         }
 
         return $netConnectResponse;
