@@ -31,12 +31,12 @@ class LinkGenerator implements LinkGeneratorInterface
         $this->routeGenerator = $routeGenerator;
     }
 
-    function supports($entity)
+    public function supports($entity)
     {
         return (bool)isset($this->entities[get_class($entity)]);
     }
 
-    function generate($entity)
+    public function generate($entity)
     {
         if ($entity instanceof JobRelatedPayment) {
             return $this->routeGenerator->generate(
@@ -56,8 +56,8 @@ class LinkGenerator implements LinkGeneratorInterface
         }
     }
 
-    function getLinkname($entity)
+    public function getLinkname($entity)
     {
         return $this->entities[get_class($entity)];
     }
-} 
+}

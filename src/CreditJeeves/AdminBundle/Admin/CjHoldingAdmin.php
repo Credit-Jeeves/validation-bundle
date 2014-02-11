@@ -71,7 +71,6 @@ class CjHoldingAdmin extends Admin
         $showMapper
             ->add('name')
             ->add('createdAt')
-            ->add('updatedAt')
-        ;
+            ->add('updatedAt');
     }
 }

@@ -45,23 +45,23 @@ class JobAdmin extends Admin
     {
         $datagridMapper
             ->add(
-                'payment', 'doctrine_orm_callback',
+                'payment',
+                'doctrine_orm_callback',
                 array(
-//                    'callback'   => array($this, 'getWithOpenCommentFilter'),
-                    'callback' => function($queryBuilder, $alias, $field, $value) {
-                            if (empty($value['value'])) {
-                                return false;
-                            }
-                            $queryBuilder->innerJoin(
-                                $alias . '.relatedEntities',
-                                're',
-                                Expr\Join::WITH,
-                                "re.payment = :payment_id"
-                            );
-                            $queryBuilder->setParameter('payment_id', (int)$value['value']);
+                    'callback' => function ($queryBuilder, $alias, $field, $value) {
+                        if (empty($value['value'])) {
+                            return false;
+                        }
+                        $queryBuilder->innerJoin(
+                            $alias . '.relatedEntities',
+                            're',
+                            Expr\Join::WITH,
+                            "re.payment = :payment_id"
+                        );
+                        $queryBuilder->setParameter('payment_id', (int)$value['value']);
 
-                            return true;
-                        },
+                        return true;
+                    },
                     'field_type' => 'integer'
                 )
             )

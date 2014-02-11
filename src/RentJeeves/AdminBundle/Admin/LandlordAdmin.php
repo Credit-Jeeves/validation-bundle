@@ -297,7 +297,6 @@ class LandlordAdmin extends Admin
             ->add('isSuperAdmin')
             ->add('created_at')
             ->add('updated_at')
-            ->add('agent_groups', null, array('route' => array('name' => 'show')))
-        ;
+            ->add('agent_groups', null, array('route' => array('name' => 'show')));
     }
 }

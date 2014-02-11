@@ -37,7 +37,6 @@ class RjHoldingAdmin extends Admin
             ->add('users', null, array('route' => array('name' => 'show')))
             ->add('groups', null, array('route' => array('name' => 'show')))
             ->add('units', null, array('route' => array('name' => 'show')))
-            ->add('contracts', null, array('route' => array('name' => 'show')))
-        ;
+            ->add('contracts', null, array('route' => array('name' => 'show')));
     }
 }

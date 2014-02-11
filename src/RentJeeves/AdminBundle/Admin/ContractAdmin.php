@@ -136,9 +136,7 @@ class ContractAdmin extends Admin
             ->add('uncollectedBalance')
             ->add('createdAt')
             ->add('updatedAt')
-            ->add('operation.orders', null, array('route' => array('name' => 'show')))
-            ->add('payments', null, array('route' => array('name' => 'show')))
-        ;
+            ->add('operation.orders', null, array('route' => array('name' => 'show')));
     }
 
     protected function configureFormFields(FormMapper $formMapper)
@@ -154,7 +152,6 @@ class ContractAdmin extends Admin
             ->add('paidTo')
             ->add('reporting')
             ->add('startAt')
-            ->add('finishAt')
-        ;
+            ->add('finishAt');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -27,16 +28,15 @@ class PaymentRepository extends EntityRepository
      * @param array $days
      * @param int $month
      * @param int $year
-     * @param PaymentType $type
-     * @param PaymentStatus $status
+     * @param array $ids
      *
-     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     * @return ArrayCollection
      */
     public function getActivePayments(
         $days = array(),
         $month = 1,
-        $year = 2000/*,
-        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)*/
+        $year = 2000,
+        array $ids = array()
     ) {
         $query = $this->createQueryBuilder('p');
         $query->select("p, c, g, d");
@@ -52,12 +52,11 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere('j.id IS NULL');
-//        $query->andWhere('c.status IN (:contract)');
         $query->andWhere(
             sprintf(
                 "STR_TO_DATE(" .
-                    "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
-                    "'%%Y-%%c-%%e'" .
+                "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
+                "'%%Y-%%c-%%e'" .
                 ") <= :startDate",
                 'p',
                 'p',
@@ -71,6 +70,10 @@ class PaymentRepository extends EntityRepository
             OR
             (p.endYear = :year AND p.endMonth >= :month)'
         );
+        if (!empty($ids)) {
+            $query->andWhere('p.id IN (:ids)');
+            $query->setParameter('ids', $ids);
+        }
 
         if (count($days) === 1) {
             $day = array_values($days)[0];

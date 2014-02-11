@@ -4,6 +4,9 @@ namespace RentJeeves\AdminBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use DateTime;
+use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Entity\PaymentRepository;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
@@ -25,10 +28,25 @@ class PaymentAdminController extends CRUDController
      */
     private $request;
 
+    /**
+     * @param $id
+     * @return RedirectResponse
+     *
+     * FIXME add warning message with approval
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
     public function runAction($id)
     {
         $object = $this->admin->getModelManager()->find($this->admin->getClass(), $id);
 
+        if (empty($object)) {
+            throw $this->createNotFoundException("Payment with id '{$id}' not found");
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($object->createJob());
+        $em->flush();
 
         $this->request->getSession()->getFlashBag()->add(
             'sonata_flash_success',
@@ -49,33 +67,32 @@ class PaymentAdminController extends CRUDController
             $this->admin->generateUrl('list', array('filter' => $this->admin->getFilterParameters()))
         );
 
-        $modelManager = $this->admin->getModelManager();
+        $em = $this->getDoctrine()->getManager();
+        /** @var PaymentRepository $repository */
+        $repository = $this->getDoctrine()->getRepository($this->admin->getClass());
 
-        var_dump($this->request->get('idx'));die('OK');
-        $target = $modelManager->find($this->admin->getClass(), $this->request->get('targetId'));
+        $day = date('d');
+        $month = date('m');
+        $year = date('Y');
 
-        if ($target === null) {
-            $this->request->getSession()->getFlashBag()->add('sonata_flash_info', 'flash_batch_merge_no_target');
-
-            return $redirectResponse;
+        $filter = $this->request->get('filter');
+        if (!empty($filter['startDate']['value'])) {
+            $day = $filter['startDate']['value']['day']?:$day;
+            $month = $filter['startDate']['value']['month']?:$month;
+            $year = $filter['startDate']['value']['year']?:$year;
         }
-        $selectedModels = $selectedModelQuery->execute();
-
-        // do the merge work here
-
-        try {
-//            foreach ($selectedModels as $selectedModel) {
-//                $modelManager->delete($selectedModel);
-//            }
-//
-//            $modelManager->update($selectedModel);
-        } catch (Exception $e) {
-            $this->request->getSession()->getFlashBag()->add('sonata_flash_error', 'flash_batch_merge_error');
-
-            return $redirectResponse;
+        $i = 0;
+        /** @var Payment $payment */
+        foreach ($repository->getActivePayments(array($day), $month, $year, $this->request->get('idx')) as $payment) {
+            $em->persist($payment->createJob());
+            $i++;
         }
-
-        $this->request->getSession()->getFlashBag()->add('sonata_flash_success', 'flash_batch_merge_success');
+        if (0 == $i) {
+            $this->request->getSession()->getFlashBag()->add('sonata_flash_error', 'None payments added to job list');
+        } else {
+            $em->flush();
+            $this->request->getSession()->getFlashBag()->add('sonata_flash_success', "{$i} payments added to job list");
+        }
 
         return $redirectResponse;
     }

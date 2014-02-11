@@ -176,8 +176,7 @@ class PropertyAdmin extends Admin
             ->add('zip')
             ->add('google_reference')
             ->add('jb')
-            ->add('kb')
-        ;
+            ->add('kb');
     }
 
     protected function configureShowField(ShowMapper $showMapper)
@@ -199,7 +198,6 @@ class PropertyAdmin extends Admin
             ->add('units', null, array('route' => array('name' => 'show')))
             ->add('invite', null, array('route' => array('name' => 'show')))
             ->add('property_groups', null, array('route' => array('name' => 'show')))
-            ->add('contracts', null, array('route' => array('name' => 'show')))
-        ;
+            ->add('contracts', null, array('route' => array('name' => 'show')));
     }
 }

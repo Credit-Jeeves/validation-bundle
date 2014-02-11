@@ -201,7 +201,6 @@ class UnitAdmin extends Admin
             ->add('createdAt')
             ->add('updatedAt')
             ->add('deletedAt')
-            ->add('contracts', null, array('route' => array('name' => 'show')))
-        ;
+            ->add('contracts', null, array('route' => array('name' => 'show')));
     }
 }

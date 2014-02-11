@@ -56,4 +56,11 @@ class Payment extends Base
     {
         return $this->getStartDate()->format('m/d/Y') . ' ' . $this->getType();
     }
+
+    public function createJob()
+    {
+        $job = new Job('payment:pay', array('--app=rj'));
+        $job->addRelatedEntity($this);
+        return $job;
+    }
 }

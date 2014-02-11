@@ -55,8 +55,7 @@ class PaymentAdmin extends Admin
                         )
                     )
                 )
-            )
-        ;
+            );
     }
 
     public function getFilterParameters()
@@ -95,8 +94,9 @@ class PaymentAdmin extends Admin
         $datagridMapper
             ->add(
                 'startDate',
-                'doctrine_orm_callback', array(
-                    'callback' => function($queryBuilder, $alias, $field, $value) {
+                'doctrine_orm_callback',
+                array(
+                    'callback' => function ($queryBuilder, $alias, $field, $value) {
                         if (empty($value['value'])) {
                             return;
                         }
@@ -107,8 +107,8 @@ class PaymentAdmin extends Admin
                         $queryBuilder->andWhere(
                             sprintf(
                                 "STR_TO_DATE(" .
-                                    "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
-                                    "'%%Y-%%c-%%e'" .
+                                "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
+                                "'%%Y-%%c-%%e'" .
                                 ") <= :start_date",
                                 $alias,
                                 $alias,
@@ -146,8 +146,7 @@ class PaymentAdmin extends Admin
             ->add('endMonth')
             ->add('createdAt')
             ->add('updatedAt')
-            ->add('jobs', null, array('template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig'))
-        ;
+            ->add('jobs', null, array('template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig'));
 
     }
 

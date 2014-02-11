@@ -27,8 +27,7 @@ class PaymentAccountAdmin extends Admin
             ->add('name')
             ->add('token')
             ->add('ccExpiration')
-            ->add('createdAt')
-        ;
+            ->add('createdAt');
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -57,8 +56,6 @@ class PaymentAccountAdmin extends Admin
             ->add('ccExpiration')
             ->add('createdAt')
             ->add('updatedAt')
-            ->add('payments', null, array('route' => array('name' => 'show')))
-        ;
-
+            ->add('payments', null, array('route' => array('name' => 'show')));
     }
 }

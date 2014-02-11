@@ -273,7 +273,6 @@ class RjGroupAdmin extends Admin
             ->add('contract_date')
             ->add('type')
             ->add('created_at')
-            ->add('updated_at')
-        ;
+            ->add('updated_at');
     }
 }

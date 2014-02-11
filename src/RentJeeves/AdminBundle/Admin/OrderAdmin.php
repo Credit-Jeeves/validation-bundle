@@ -202,7 +202,6 @@ class OrderAdmin extends Admin
             ->add('heartlands', null, array('route' => array('name' => 'show')))
             // FIXME these do not work correctly
             ->add('operations', null, array('route' => array('name' => 'show')))
-            ->add('jobs', null, array('route' => array('name' => 'show')))
-        ;
+            ->add('jobs', null, array('route' => array('name' => 'show')));
     }
 }

@@ -224,7 +224,6 @@ class TenantAdmin extends Admin
             ->add('isHoldingAdmin')
             ->add('isSuperAdmin')
             ->add('created_at')
-            ->add('updated_at')
-        ;
+            ->add('updated_at');
     }
 }

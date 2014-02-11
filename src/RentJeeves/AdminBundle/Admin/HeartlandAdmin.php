@@ -32,15 +32,14 @@ class HeartlandAdmin extends Admin
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('id',  null, array('route' => array('name' => 'show')))
-            ->add('order_id',  null, array('route' => array('name' => 'show')))
+            ->addIdentifier('id', null, array('route' => array('name' => 'show')))
+            ->add('order_id', null, array('route' => array('name' => 'show')))
             ->add('messages')
             ->add('isSuccessful')
             ->add('amount', 'money')
             ->add('transaction_id')
             ->add('merchant_name')
-            ->add('createdAt', 'date')
-        ;
+            ->add('createdAt', 'date');
     }
 
     protected function configureShowFields(ShowMapper $formMapper)
@@ -52,7 +51,6 @@ class HeartlandAdmin extends Admin
             ->add('amount', 'money')
             ->add('transactionId')
             ->add('merchantName')
-            ->add('createdAt')
-        ;
+            ->add('createdAt');
     }
 }

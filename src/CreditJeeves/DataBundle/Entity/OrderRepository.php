@@ -228,8 +228,7 @@ class OrderRepository extends EntityRepository
     public function getLastOrdersArray(
         $days = array(),
         $month = 1,
-        $year = 2000,
-        $contractStatus = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
+        $year = 2000
     ) {
         $result = array();
 
@@ -249,7 +248,6 @@ class OrderRepository extends EntityRepository
 
         $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
-        $query->setParameter('contract', $contractStatus);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
         
