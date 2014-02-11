@@ -466,7 +466,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/SimulationBundle.git",
-                "reference": "184eafd8845df3b3fed0e31675804eb62c500693"
+                "reference": "39abd58a5b16d882ced7f17d6076d57583a668ca"
             },
             "require": {
                 "credit-jeeves/arf-bundle": "dev-master",
@@ -496,7 +496,7 @@
                 }
             ],
             "description": "CreditJeeves Simulation Bundle",
-            "time": "2014-01-31 10:29:26"
+            "time": "2014-02-11 14:35:57"
         },
         {
             "name": "dflydev/markdown",
