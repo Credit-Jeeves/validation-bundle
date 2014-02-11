@@ -33,7 +33,7 @@ fi
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
 #nice -n 5
-php -C -q -d memory_limit=1024M $PHPUNIT_PATH -v \
+php -C -q -d memory_limit=1024M $PHPUNIT_PATH --debug --process-isolation \
   $PHPUNIT_PARAMS \
   --log-junit=$BUILD_DIR/allTests.xml
 
