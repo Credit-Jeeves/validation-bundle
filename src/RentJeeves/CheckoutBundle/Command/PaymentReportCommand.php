@@ -17,10 +17,11 @@ class PaymentReportCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $filename = __DIR__ . '/report.csv';
-        $data = $this
+        $result = $this
             ->getContainer()
             ->get('payment.report')
-            ->synchronize($filename);
+            ->synchronize();
+
+        $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
     }
 } 

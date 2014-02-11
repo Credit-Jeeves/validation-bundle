@@ -306,7 +306,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    public function sendOrderCancel(Order $order, $template = 'rjOrderCancel')
+    public function sendOrderCancelToTenant(Order $order, $template = 'rjOrderCancel')
     {
         $tenant = $order->getContract()->getTenant();
 
@@ -319,4 +319,16 @@ class Mailer extends BaseMailer
 
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
+
+    /*public function sendOrderCancelToLandlord(Order $order, $template = 'rjOrderCancelToLandlord')
+    {
+        $vars = array(
+            'landlordFirstName' => '',
+            'orderStatus' => $order->getStatus(),
+            'rentAmount' => $order->getAmount(),
+            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s')
+        );
+
+        return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }*/
 }

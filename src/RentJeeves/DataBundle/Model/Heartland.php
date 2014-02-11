@@ -45,6 +45,15 @@ abstract class Heartland extends PaymentDetails
      */
     protected $batchId;
 
+    /**
+     * @ORM\Column(
+     *     name="batch_date",
+     *     type="date",
+     *     nullable=true
+     * )
+     */
+    protected $batchDate;
+
 //     /**
 //      * @ORM\Column(
 //      *     type="text",
@@ -164,5 +173,21 @@ abstract class Heartland extends PaymentDetails
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $batchDate
+     */
+    public function setBatchDate($batchDate)
+    {
+        $this->batchDate = $batchDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBatchDate()
+    {
+        return $this->batchDate;
     }
 }

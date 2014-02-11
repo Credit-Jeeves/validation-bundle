@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\SerializationContext;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -20,6 +21,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -838,6 +840,7 @@ class AjaxController extends Controller
         $result = array();
         $group = $this->getCurrentGroup();
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
+
         $total = $repo->countOrders($group, $searchCollum, $searchText);
         $total = count($total);
 
@@ -863,6 +866,50 @@ class AjaxController extends Controller
         $result['sort'] = $sortType;
 
         return new JsonResponse($result);
+    }
+
+    /**
+     * @Route(
+     *     "/deposit/list",
+     *     name="landlord_deposits_list",
+     *     defaults={"_format"="json"},
+     *     requirements={"_format"="json"},
+     *     options={"expose"=true}
+     * )
+     * @Method({"POST"})
+     */
+    public function getDepositsList(Request $request)
+    {
+        if ($this->isEnableSoftDeleteable()) {
+            $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
+        }
+
+        $page = $request->request->get('page');
+        $limit = $request->request->get('limit');
+        $filter = $request->request->get('filter');
+
+        $group = $this->getCurrentGroup();
+        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
+
+        $total = $repo->getCountDeposits($group, $filter);
+        $deposits = array();
+        if ($total) {
+            $deposits = $repo->getDepositedOrders($group, $filter, $page, $limit);
+        }
+
+        $result = array(
+            'deposits' => $deposits,
+            'total' => $total,
+            'pagination' => $this->datagridPagination($total, $limit)
+        );
+
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('payment');
+
+        $content = $this->get('jms_serializer')->serialize($result, 'json', $context);
+
+        return new Response($content, 200, array('Content-type' => 'application/json'));
     }
 
     /* Service methods */

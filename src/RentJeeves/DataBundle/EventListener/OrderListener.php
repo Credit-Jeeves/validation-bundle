@@ -83,7 +83,9 @@ class OrderListener
                         case OrderStatus::REFUNDED:
                         case OrderStatus::CANCELLED:
                         case OrderStatus::RETURNED:
-                            $this->container->get('project.mailer')->sendOrderCancel($entity);
+                            $this->container->get('project.mailer')->sendOrderCancelToTenant($entity);
+                            // TODO: figure out how to find certain landlord
+                            // $this->container->get('project.mailer')->sendOrderCancelToLandlord($entity);
                             break;
                     }
                     break;
