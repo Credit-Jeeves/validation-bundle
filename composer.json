@@ -190,6 +190,7 @@
         "braincrafted/validation-bundle": "dev-ton as dev-master",
         "doctrine/orm": "2.4.*",
         "doctrine/doctrine-bundle": "dev-master",
+        "twig/twig": "dev-master",
         "twig/extensions": "1.*",
         "kriswallsmith/assetic": "1.1.*",
         "symfony/symfony": "2.4.*",

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "61094b037b013c3983b36bfaf6614398",
+    "hash": "4296ae98caae8432750cc00c3f49bef1",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -4615,16 +4615,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.15.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "85e4ff98000157ff753d934b9f13659a953f5666"
+                "reference": "cea2143465149c8ea4c29b227b2958989c5696d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/85e4ff98000157ff753d934b9f13659a953f5666",
-                "reference": "85e4ff98000157ff753d934b9f13659a953f5666",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/cea2143465149c8ea4c29b227b2958989c5696d6",
+                "reference": "cea2143465149c8ea4c29b227b2958989c5696d6",
                 "shasum": ""
             },
             "require": {
@@ -4648,11 +4648,19 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Armin Ronacher",
-                    "email": "armin.ronacher@active-4.com"
+                    "email": "armin.ronacher@active-4.com",
+                    "role": "Project Founder"
+                },
+                {
+                    "name": "Twig Team",
+                    "homepage": "https://github.com/fabpot/Twig/graphs/contributors",
+                    "role": "Contributors"
                 }
             ],
             "description": "Twig, the flexible, fast, and secure template language for PHP",
@@ -4660,7 +4668,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-12-06 07:47:10"
+            "time": "2014-02-10 07:40:03"
         },
         {
             "name": "willdurand/js-translation-bundle",
@@ -5504,6 +5512,7 @@
         "friendsofsymfony/oauth-server-bundle": 20,
         "braincrafted/validation-bundle": 20,
         "doctrine/doctrine-bundle": 20,
+        "twig/twig": 20,
         "jms/security-extra-bundle": 20,
         "payum/payum": 20,
         "payum/payum-bundle": 20,
