@@ -1,0 +1,23 @@
+{% extends "TenantBundle::base.html.twig" %}
+
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+    '@TenantBundle/Resources/public/css/questions.css'
+    '@RjPublicBundle/Resources/public/css/styles.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block content %}
+    {{ include(
+    'TenantBundle:Summary:_pidkiq.html.twig',
+    {
+    'step': 'step1',
+    'form': form
+    }
+    ) }}
+{% endblock %}

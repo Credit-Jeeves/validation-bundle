@@ -55,7 +55,7 @@ class PidkiqQuestions
      *     "catcher"            = @Inject("fp_badaboom.exception_catcher"),
      *     "translator"         = @Inject("translator"),
      *     "supportEmail"       = @Inject("%support_email%"),
-     *     "externalUrls"       = @Inject("%external_urls%),
+     *     "externalUrls"       = @Inject("%external_urls%"),
      *     "em"                 = @Inject("doctrine.orm.entity_manager")
      * })
      */

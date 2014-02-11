@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -72,7 +73,22 @@ class SummaryController extends Controller
      */
     public function questionsAction()
     {
+        /**
+         * @var $user Tenant
+         */
+        $user = $this->getUser();
+        $address = $user->getDefaultAddress();
+        $ssn = $user->getSsn();
+        $dateOfBirthday = $user->getDateOfBirth();
 
-        return array();
+        if (empty($ssn) || empty($address) || empty($dateOfBirthday)) {
+            return $this->redirect($this->generateUrl('personal_info_fill_pidkiq'));
+        }
+
+
+
+        return array(
+
+        );
     }
 }

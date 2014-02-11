@@ -61,7 +61,7 @@ class PidkiqController extends Controller
 
     /**
      * @DI\InjectParams({
-     *     "pidkiqQuestions" = @DI\Inject('pidkiq.questions')
+     *     "pidkiqQuestions" = @DI\Inject("pidkiq.questions")
      * })
      */
     public function setPidkiqQuestions($pidkiqQuestions)
@@ -84,9 +84,6 @@ class PidkiqController extends Controller
             $this->redirect($this->generateUrl('applicant_homepage'));
         }
 
-        $i18n = $this->get('translator');
-
-
         if ($request->isXmlHttpRequest()) {
             if ($this->pidkiqQuestions->processQuestions()) {
                 return new JsonResponse('finished');
@@ -105,7 +102,10 @@ class PidkiqController extends Controller
         $error = $this->pidkiqQuestions->getError();
 
         if (!empty($error)) {
-            $this->getSession()->getFlashBag()->add('message_title', $i18n->trans('pidkiq.title'));
+            $this->getSession()->getFlashBag()->add(
+                'message_title',
+                $this->get('translator')->trans('pidkiq.title')
+            );
             $this->getSession()->getFlashBag()->add('message_body', $error);
             if ($request->isXmlHttpRequest()) {
                 return new JsonResponse(array('url' => $this->generateUrl('public_message_flash')));
