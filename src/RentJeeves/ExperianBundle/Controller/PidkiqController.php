@@ -3,6 +3,7 @@ namespace RentJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\ExperianBundle\Controller\PidkiqController as Base;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
+use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -36,7 +37,7 @@ class PidkiqController extends Base
     protected function setupUserIsValidUserIntoSession(Request $request)
     {
         $session = $request->getSession();
-        $session->set('isValidUser', $this->isValidUser);
+        $session->set('isValidUser', $this->pidkiqQuestions->isValidUser());
     }
 
     /**
@@ -47,28 +48,28 @@ class PidkiqController extends Base
      */
     public function getAction(Request $request)
     {
-        if (!$this->processQuestions()) {
+        if (!$this->pidkiqQuestions->processQuestions()) {
             $this->setupUserIsValidUserIntoSession($request);
             $response = array(
                 'status'          => 'error',
-                'error'           => $this->error,
-                'isValidUser'     => $this->isValidUser,
+                'error'           => $this->pidkiqQuestions->getError(),
+                'isValidUser'     => $this->pidkiqQuestions->isValidUser(),
             );
             return new JsonResponse($response);
         }
 
-        if ($this->questionsData) {
-            $this->form = $this->createForm(new QuestionsType($this->questionsData));
+        if ($questionsData = $this->pidkiqQuestions->getQuestionsData()) {
+            $this->form = $this->createForm(new QuestionsType($questionsData));
             return array(
-                'status' => 'ok',
-                'form' => $this->form->createView()
+                'status'    => 'ok',
+                'form'      => $this->form->createView()
             );
         } else {
             return new JsonResponse(
                 array(
                     'status'            => 'error',
                     'error'             => $this->getErrorMessageQuestionNotFound(),
-                    'isValidUser'       => $this->isValidUser,
+                    'isValidUser'       => $this->pidkiqQuestions->isValidUser(),
                 )
             );
         }
@@ -81,7 +82,7 @@ class PidkiqController extends Base
     public function executeAction(Request $request)
     {
         $this->isValidUser = true;
-        if ($questions = $this->retrieveQuestions()) {
+        if ($questions = $this->pidkiqQuestions->retrieveQuestions()) {
             $this->form = $this->createForm(new QuestionsType($questions));
         } else {
             $this->setupUserIsValidUserIntoSession($request);
@@ -89,7 +90,7 @@ class PidkiqController extends Base
                 array(
                     'status'          => 'error',
                     'error'           => $this->getErrorMessageQuestionNotFound(),
-                    'isValidUser'     => $this->isValidUser,
+                    'isValidUser'     => $this->pidkiqQuestions->isValidUser(),
                 )
             );
         }
@@ -105,7 +106,7 @@ class PidkiqController extends Base
                 );
             }
             $response = array(
-                $this->form->getName() => array('_globals' => array($this->error))
+                $this->form->getName() => array('_globals' => array($this->pidkiqQuestions->getError()))
             );
             return new JsonResponse($response);
         } else {

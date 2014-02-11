@@ -4,10 +4,12 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
+use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class SummaryController extends Controller
 {
@@ -19,7 +21,9 @@ class SummaryController extends Controller
     {
         $user = $this->getUser();
         if (UserIsVerified::PASSED != $user->getIsVerified()) {
-            throw $this->createNotFoundException('Verification do not passed');
+            return new RedirectResponse(
+                $this->get('router')->generate('personal_info_fill_pidkiq')
+            );
         }
 
         $sEmail = $user->getEmail();
@@ -36,5 +40,39 @@ class SummaryController extends Controller
             'Score' => $Score,
             'User' => $user,
         );
+    }
+
+    /**
+     * @Route("/pidkiq/personal/info", name="personal_info_fill_pidkiq")
+     * @Template()
+     */
+    public function personalInfoFillPidkiqAction(Request $request)
+    {
+        $personalInfoForm = $this->createForm(new UserDetailsType($this->getUser()), $this->getUser());
+
+        $personalInfoForm->handleRequest($request);
+
+        if ($personalInfoForm->isValid()) {
+            list($isNewAddress, $address) = $this->get('process.user.details.type')->process(
+                $personalInfoForm,
+                $this->getUser()
+            );
+            return $this->redirect($this->generateUrl('pidkiq_questions'));
+        }
+
+        return array(
+            'form'      => $personalInfoForm->createView(),
+            'addresses' => $this->getUser()->getAddresses(),
+        );
+    }
+
+    /**
+     * @Route("/pidkiq/questions", name="pidkiq_questions")
+     * @Template()
+     */
+    public function questionsAction()
+    {
+
+        return array();
     }
 }

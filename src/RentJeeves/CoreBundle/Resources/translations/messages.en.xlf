@@ -1819,6 +1819,28 @@
                 <source>remove.comment</source>
                 <target>To remove authorization for RentTrack to pull your credit profile, type your password below and click 'Remove'. Your score, credit profile data and any sensitive personal data will be removed from our database.</target>
             </trans-unit>
+            <trans-unit id="verify.your.identity">
+                <source>verify.your.identity</source>
+                <target>Verify Your Identity</target>
+            </trans-unit>
+            <trans-unit id="verify.your.identity.desc">
+                <source>verify.your.identity.desc</source>
+                <target>
+                    In order to show you your credit score
+                    and profile, as well as to report your
+                    rent payments to credit bureaus, we need
+                    to locate your credit file and verify your identity.
+                    This soft inquiry will not impact your credit score.
+                </target>
+            </trans-unit>
+            <trans-unit id="personal.information">
+                <source>personal.information</source>
+                <target>Personal Information</target>
+            </trans-unit>
+            <trans-unit id="verify.identity">
+                <source>verify.identity</source>
+                <target>Verify Identity</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

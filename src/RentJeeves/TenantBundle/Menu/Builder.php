@@ -23,14 +23,14 @@ class Builder extends ContainerAware
                 'route' => 'tenant_homepage'
             )
         );
-        if (UserIsVerified::PASSED == $user->getIsVerified()) {
-            $menu->addChild(
-                'tabs.summary',
-                array(
-                    'route' => 'tenant_summary'
-                )
-            );
-        }
+
+        $menu->addChild(
+            'tabs.summary',
+            array(
+                'route' => 'tenant_summary'
+            )
+        );
+
         if ($isCompleteOrder) {
             $menu->addChild(
                 'tabs.report',
@@ -39,12 +39,7 @@ class Builder extends ContainerAware
                 )
             );
         }
-//         $menu->addChild(
-//             'tabs.settings',
-//             array(
-//                 'route' => 'user_password'
-//             )
-//         );
+
         switch ($sRoute) {
             case 'tenant_homepage':
             case 'tenant_payment_history':
@@ -55,6 +50,7 @@ class Builder extends ContainerAware
                 $menu['tabs.rent']->setAttribute('class', 'active');
                 break;
             case 'core_report_get':
+            case 'personal_info_fill_pidkiq':
             case 'tenant_summary':
                 $menu['tabs.summary']->setAttribute('class', 'active');
                 break;

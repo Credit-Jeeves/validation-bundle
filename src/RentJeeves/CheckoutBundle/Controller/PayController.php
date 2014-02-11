@@ -124,26 +124,8 @@ class PayController extends Controller
         if (!$userType->isValid()) {
             return $this->renderErrors($userType);
         }
-        $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var Address $address */
-        $address = null;
-        $isNewAddress = false;
-        $em->getRepository('DataBundle:Address')->resetDefaults($this->getUser()->getId());
-        /** @var Address $addressChose */
-        /** @var Address $newAddress */
-        if ($addressChose = $userType->get('address_choice')->getData()) {
-            $address = $addressChose;
-        } elseif ($newAddress = $userType->get('new_address')->getData()) {
-            $address = $newAddress;
-            $address->setUser($this->getUser());
-            $isNewAddress = true;
-        }
-        $address->setIsDefault(1);
-        $data = $userType->getData();
-        $em->persist($address);
-        $em->persist($data);
-        $em->flush();
+        list($isNewAddress, $address) = $this->get('process.user.details.type')->process($userType, $this->getUser());
 
         return new JsonResponse(
             array(

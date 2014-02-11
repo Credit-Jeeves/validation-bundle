@@ -1,0 +1,36 @@
+.steps>li>.step {
+    width: 290px;
+}
+.steps>li>.step>span{
+    width: 245px;
+}
+
+.tooltip-box {
+    right: -15px;
+    width: 200px;
+}
+#rentjeeves_checkoutbundle_userdetailstype_address_choice_box {
+    margin-left: 135px;
+    padding-top: 5px;
+}
+label.checkbox {
+    width: 100% !important;
+    height: 5px !important;
+}
+
+#rentjeeves_checkoutbundle_userdetailstype_address_choice_box>.fields-box {
+    margin-top: 20px;
+    float: right;
+    position: relative;
+    left: -120px;
+}
+#rentjeeves_checkoutbundle_userdetailstype_new_address {
+    margin-top: 20px;
+}
+.next {
+    margin-left: 250px;
+}
+.tooltip-box {
+    right: -10px !important;
+    width: 130px !important;
+}
