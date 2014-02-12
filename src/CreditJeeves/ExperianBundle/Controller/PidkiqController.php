@@ -96,7 +96,7 @@ class PidkiqController extends Controller
                 $this->pidkiqQuestions->setError(
                     $this->get('translator')->trans(
                         'pidkiq.error.answers-%SUPPORT_EMAIL%',
-                         array(
+                        array(
                             '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')
                         )
                     )
@@ -123,9 +123,7 @@ class PidkiqController extends Controller
         return array(
             'form'     => $form,
             'url'      => $this->generateUrl('core_pidkiq'),
-            'redirect' => null //$this->getRequest()->headers->get('referer'),
+            'redirect' => null,
         );
     }
-
-
 }
