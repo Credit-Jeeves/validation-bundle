@@ -63,8 +63,7 @@ class SummaryController extends Controller
             return $this->redirect($this->generateUrl('pidkiq_questions'));
         }
 
-        if (
-            $personalInfoForm->isSubmitted() &&
+        if ($personalInfoForm->isSubmitted() &&
             $addressChose = $personalInfoForm->get('address_choice')->getData()
         ) {
             $defaultAddressId = $addressChose->getId();
