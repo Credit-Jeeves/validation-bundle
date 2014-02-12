@@ -1,0 +1,36 @@
+<form {{ form_enctype(form) }} method="post" novalidate>
+    {% if error %}
+        <div class="attention-box pie-el">
+            {{ error|raw }}
+        </div>
+    {% endif %}
+    <div class="scroll-box" style="padding-top: 0;">
+        <div id="vi-questions" class="scroll" style="padding-top: 0;">
+            <div class="vi-questions-content">
+                {{ form_widget(form) }}
+            </div>
+        </div>
+        <div class="tooltip-box type3 pie-el">
+            <p class="verify">
+                {{ 'checkout.questions.tooltip.line1' | trans }}
+            </p>
+            <p class="verify">
+                {{ 'checkout.questions.tooltip.line2' | trans }}
+            </p>
+            <p class="verify">
+                <a target="_blank" class="underline" href="{{ 'http://'~external_urls['user_voice']~'/knowledgebase/articles/269425-why-do-i-have-to-verify-my-identity-' }}">
+                    {{ 'checkout.questions.tooltip.question'|trans }}
+                </a>
+            </p>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div>
+        <a href="{{ path("personal_info_fill_pidkiq") }}" class="button fixed next grey prev">
+            <span>{{ 'previous'|trans }}</span>
+        </a>
+        <button class="button fixed next verify-button">
+            <span>{{ 'verify'|trans }}</span>
+        </button>
+    </div>
+</form>

@@ -4,6 +4,8 @@ namespace RentJeeves\TenantBundle\Controller;
 
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
+use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
+use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -71,7 +73,7 @@ class SummaryController extends Controller
      * @Route("/pidkiq/questions", name="pidkiq_questions")
      * @Template()
      */
-    public function questionsAction()
+    public function questionsAction(Request $request)
     {
         /**
          * @var $user Tenant
@@ -85,10 +87,39 @@ class SummaryController extends Controller
             return $this->redirect($this->generateUrl('personal_info_fill_pidkiq'));
         }
 
+        if (UserIsVerified::PASSED == $this->getUser()->getIsVerified()) {
+            return $this->redirect($this->generateUrl('applicant_homepage'));
+        }
 
+        /**
+         * @var $pidkiqQuestions PidkiqQuestions
+         */
+        $pidkiqQuestions = $this->get('pidkiq.questions');
+
+        if ($questions = $pidkiqQuestions->retrieveQuestions()) {
+            $form = $this->createForm(new QuestionsType($questions));
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                if ($pidkiqQuestions->processForm($form)) {
+                    return $this->redirect($this->generateUrl('tenant_summary'));
+                }
+                //Setup not valid answer
+                $pidkiqQuestions->setError(
+                    $this->get('translator')->trans(
+                        'pidkiq.error.incorrect.answer2',
+                        array(
+                            '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
+                            '%MAIN_LINK%'     => $this->container->getParameter('external_urls')['user_voice'],
+                        )
+                    )
+                );
+
+            }
+        }
 
         return array(
-
+            'form'  => $form->createView(),
+            'error' => $pidkiqQuestions->getError(),
         );
     }
 }

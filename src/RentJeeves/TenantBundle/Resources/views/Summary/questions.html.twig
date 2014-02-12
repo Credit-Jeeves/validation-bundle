@@ -5,6 +5,7 @@
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets
+    '@TenantBundle/Resources/public/css/personalInfoFillPidkiq.css'
     '@TenantBundle/Resources/public/css/questions.css'
     '@RjPublicBundle/Resources/public/css/styles.css'
     %}
@@ -16,7 +17,7 @@
     {{ include(
     'TenantBundle:Summary:_pidkiq.html.twig',
     {
-    'step': 'step1',
+    'step': 'step2',
     'form': form
     }
     ) }}

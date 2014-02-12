@@ -51,6 +51,7 @@ class Builder extends ContainerAware
                 break;
             case 'core_report_get':
             case 'personal_info_fill_pidkiq':
+            case 'pidkiq_questions':
             case 'tenant_summary':
                 $menu['tabs.summary']->setAttribute('class', 'active');
                 break;

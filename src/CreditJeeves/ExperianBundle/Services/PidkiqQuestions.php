@@ -2,6 +2,7 @@
 
 namespace CreditJeeves\ExperianBundle\Services;
 
+use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\ExperianBundle\Pidkiq as ServicePidkiq;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -87,6 +88,11 @@ class PidkiqQuestions
         return $this->error;
     }
 
+    public function setError($error)
+    {
+        $this->error = $error;
+    }
+
     public function getQuestionsData()
     {
         return $this->questionsData;
@@ -145,7 +151,7 @@ class PidkiqQuestions
             $this->em->persist($pidiqModel);
             $this->em->flush();
 
-            $this->pidkiqApi->execute($this->container);
+            $this->pidkiqApi->execute();
             $questions = $this->pidkiqApi->getResponseOnUserData($this->getUser());
 
             $pidiqModel->setQuestions($questions);
@@ -227,6 +233,33 @@ class PidkiqQuestions
             $this->catcher->handleException($e);
             $this->error = $e->getMessage();
         }
+        return false;
+    }
+
+    /**
+     * Process form
+     */
+    public function processForm($form)
+    {
+        $this->pidkiqApi->execute();
+        if ($this->pidkiqApi->getResult(
+            $this->getUser()->getPidkiqs()->last()->getSessionId(),
+            $form->getData()
+        )) {
+            $this->getUser()->setIsVerified(UserIsVerified::PASSED);
+            $this->em->persist($this->getUser());
+            $this->em->flush();
+            return true;
+        }
+
+        if (UserIsVerified::NONE == $this->getUser()->getIsVerified()) {
+            $this->getUser()->setIsVerified(UserIsVerified::FAILED);
+        } else {
+            $this->getUser()->setIsVerified(UserIsVerified::LOCKED);
+        }
+        $this->em->persist($this->getUser());
+        $this->em->flush();
+
         return false;
     }
 }

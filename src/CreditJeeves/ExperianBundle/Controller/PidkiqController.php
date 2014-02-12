@@ -27,11 +27,6 @@ use \Exception;
 class PidkiqController extends Controller
 {
     /**
-     * @var \Symfony\Component\Form\Form
-     */
-    protected $form;
-
-    /**
      * @var $pidkiqQuestions PidkiqQuestions
      */
     protected $pidkiqQuestions;
@@ -68,6 +63,7 @@ class PidkiqController extends Controller
     {
         $this->pidkiqQuestions = $pidkiqQuestions;
     }
+
     /**
      * @Route("/check", name="core_pidkiq")
      * @Template()
@@ -77,6 +73,7 @@ class PidkiqController extends Controller
     public function indexAction(Request $request)
     {
         $user = $this->getUser();
+
         if (empty($user)) {
             throw $this->createNotFoundException('Account does not found');
         }
@@ -89,14 +86,23 @@ class PidkiqController extends Controller
                 return new JsonResponse('finished');
             }
         } elseif ($this->pidkiqQuestions->getQuestionsData()) {
-            $this->form = $this->createForm(new QuestionsType($this->pidkiqQuestions->getQuestionsData()));
-            $this->form->handleRequest($request);
-            if ($this->form->isValid()) {
-                if ($this->processForm()) {
+            $form = $this->createForm(new QuestionsType($this->pidkiqQuestions->getQuestionsData()));
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                if ($this->pidkiqQuestions->processForm($form)) {
                     return $this->redirect($this->generateUrl('applicant_homepage'));
                 }
+                //Setup not valid answer
+                $this->pidkiqQuestions->setError(
+                    $this->get('translator')->trans(
+                        'pidkiq.error.answers-%SUPPORT_EMAIL%',
+                         array(
+                            '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')
+                        )
+                    )
+                );
             }
-            $this->form = $this->form->createView();
+            $form = $this->form->createView();
         }
 
         $error = $this->pidkiqQuestions->getError();
@@ -115,53 +121,11 @@ class PidkiqController extends Controller
         }
 
         return array(
-            'form'     => $this->form,
+            'form'     => $form,
             'url'      => $this->generateUrl('core_pidkiq'),
             'redirect' => null //$this->getRequest()->headers->get('referer'),
         );
     }
 
-    /**
-     * Process form
-     */
-    public function processForm()
-    {
-        $this->pidkiqApi->execute();
-        $em = $this->getDoctrine()->getManager();
-        if ($this->pidkiqApi->getResult(
-            $this->getUser()->getPidkiqs()->last()->getSessionId(),
-            $this->form->getData()
-        )) {
-            $this->getUser()->setIsVerified(UserIsVerified::PASSED);
-            $em->persist($this->getUser());
-            $em->flush();
-            return true;
-        } else {
-            if (UserIsVerified::NONE == $this->getUser()->getIsVerified()) {
-                $this->getUser()->setIsVerified(UserIsVerified::FAILED);
-            } else {
-                $this->getUser()->setIsVerified(UserIsVerified::LOCKED);
-            }
-            $em->persist($this->getUser());
-            $em->flush();
-            $twig = $this->container->get('twig');
-            $globals = $twig->getGlobals();
 
-            if (isset($globals['application']) && $globals['application'] === 'rj') {
-                $this->error = $this->get('translator')->trans(
-                    'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
-                    array(
-                        '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
-                        '%MAIN_LINK%'     => $globals['external_urls']['user_voice'],
-                    )
-                );
-            } else {
-                $this->error = $this->get('translator')->trans(
-                    'pidkiq.error.answers-%SUPPORT_EMAIL%',
-                    array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
-                );
-            }
-        }
-        return false;
-    }
 }

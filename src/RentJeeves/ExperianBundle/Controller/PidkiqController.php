@@ -59,10 +59,10 @@ class PidkiqController extends Base
         }
 
         if ($questionsData = $this->pidkiqQuestions->getQuestionsData()) {
-            $this->form = $this->createForm(new QuestionsType($questionsData));
+            $form = $this->createForm(new QuestionsType($questionsData));
             return array(
                 'status'    => 'ok',
-                'form'      => $this->form->createView()
+                'form'      => $form->createView()
             );
         } else {
             return new JsonResponse(
@@ -81,9 +81,8 @@ class PidkiqController extends Base
      */
     public function executeAction(Request $request)
     {
-        $this->isValidUser = true;
         if ($questions = $this->pidkiqQuestions->retrieveQuestions()) {
-            $this->form = $this->createForm(new QuestionsType($questions));
+            $form = $this->createForm(new QuestionsType($questions));
         } else {
             $this->setupUserIsValidUserIntoSession($request);
             return new JsonResponse(
@@ -95,9 +94,9 @@ class PidkiqController extends Base
             );
         }
         $this->setupUserIsValidUserIntoSession($request);
-        $this->form->handleRequest($request);
-        if ($this->form->isValid()) {
-            if ($this->processForm()) {
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($this->pidkiqQuestions->processForm($form)) {
                 return new JsonResponse(
                     array(
                         'success' => true,
@@ -105,12 +104,26 @@ class PidkiqController extends Base
                     )
                 );
             }
+
+            //Setup not valid answer
             $response = array(
-                $this->form->getName() => array('_globals' => array($this->pidkiqQuestions->getError()))
+                $form->getName() => array(
+                    '_globals' => array(
+                        $this->pidkiqQuestions->setError(
+                            $this->get('translator')->trans(
+                                'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
+                                array(
+                                    '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
+                                    '%MAIN_LINK%'     => $this->container->getParameter('external_urls')['user_voice'],
+                                )
+                            )
+                        )
+                    )
+                )
             );
             return new JsonResponse($response);
         } else {
-            return $this->renderErrors($this->form);
+            return $this->renderErrors($form);
         }
     }
 
