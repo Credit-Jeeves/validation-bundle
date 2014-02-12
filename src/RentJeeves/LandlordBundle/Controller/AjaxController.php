@@ -880,9 +880,7 @@ class AjaxController extends Controller
      */
     public function getDepositsList(Request $request)
     {
-        if ($this->isEnableSoftDeleteable()) {
-            $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
-        }
+        $this->get('soft.deleteable.control')->disable();
 
         $page = $request->request->get('page');
         $limit = $request->request->get('limit');

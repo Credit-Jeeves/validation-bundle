@@ -33,7 +33,6 @@ parameters:
         price: 0
         product: 'registration'
 
-    payment_report_path: /home/heartland
     business_days_cc: 1
     business_days_ach: 3
 

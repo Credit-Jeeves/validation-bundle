@@ -41,7 +41,7 @@ class PaymentReport
      *
      * @return int
      */
-    public function synchronize()
+    public function synchronize($makeArchive = false)
     {
         if ($file = $this->fileFinder->find()) {
 
@@ -58,7 +58,9 @@ class PaymentReport
                 }
             }
 
-            $this->fileFinder->archive($file);
+            if ($makeArchive) {
+                $this->fileFinder->archive($file);
+            }
 
             return count($data);
         }
