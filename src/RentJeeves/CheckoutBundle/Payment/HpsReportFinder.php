@@ -12,7 +12,7 @@ use DateTime;
 /**
  * @DI\Service("payment.report.finder")
  */
-class HpsReportFinder 
+class HpsReportFinder
 {
     protected $reportPath;
 
@@ -65,4 +65,4 @@ class HpsReportFinder
 
         return true;
     }
-} 
+}

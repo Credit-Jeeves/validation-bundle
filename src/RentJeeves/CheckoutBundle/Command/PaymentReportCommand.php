@@ -34,4 +34,4 @@ class PaymentReportCommand extends ContainerAwareCommand
 
         $output->writeln(sprintf('Amount of synchronized payments: %s', $result));
     }
-} 
+}

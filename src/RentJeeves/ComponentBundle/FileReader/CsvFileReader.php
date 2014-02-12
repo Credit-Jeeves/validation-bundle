@@ -117,4 +117,4 @@ class CsvFileReader
 
         return range(0, count($file->current()));
     }
-} 
+}

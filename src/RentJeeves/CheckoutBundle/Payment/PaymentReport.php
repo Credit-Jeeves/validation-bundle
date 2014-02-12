@@ -11,7 +11,7 @@ use DateTime;
 /**
  * @DI\Service("payment.report")
  */
-class PaymentReport 
+class PaymentReport
 {
     protected $em;
     protected $repo;
@@ -115,4 +115,4 @@ class PaymentReport
                 return $batchDate;
         }
     }
-} 
+}
