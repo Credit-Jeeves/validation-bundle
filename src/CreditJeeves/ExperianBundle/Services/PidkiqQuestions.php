@@ -183,7 +183,7 @@ class PidkiqQuestions
                     return true;
                 }
             } catch (ExperianException $e) {
-                $this->catcher->handleException($e);
+                //$this->catcher->handleException($e);
                 switch ($e->getCode()) {
                     case E_USER_ERROR:
                         $this->error = $this->translator->trans('pidkiq.error.attempts');
@@ -230,7 +230,7 @@ class PidkiqQuestions
             }
         } catch (Exception $e) {
             $this->isValidUser = false;
-            $this->catcher->handleException($e);
+            //$this->catcher->handleException($e);
             $this->error = $e->getMessage();
         }
         return false;

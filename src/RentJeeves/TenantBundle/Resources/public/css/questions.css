@@ -12,13 +12,13 @@
     height: 335px !important;
 }
 .prev {
-    margin-left: 100px;
+    margin-left: 135px;
     margin-top: 15px;
     width: 150px;
     position: absolute;
 }
 .verify-button {
-    margin-left: 260px;
+    margin-left: 295px;
     margin-top: 15px;
 }
 
@@ -39,3 +39,8 @@ label.checkbox {
 .attention-box {
    margin-top: -10px !important;
 }
+
+.button-box {
+    height: 50px;
+}
+

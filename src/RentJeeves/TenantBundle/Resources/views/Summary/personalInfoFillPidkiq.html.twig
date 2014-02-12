@@ -27,8 +27,10 @@
             ko.mapping.fromJS({{ address | serialize('json') | raw }}, {}, address);
             window.addressesViewModels.push(address);
         {% endfor %}
-        console.info(window.addressesViewModels);
-        var PersonalInfoFillPidkiqModel = new PersonalInfoFillPidkiq();
+        {% if defaultAddressId %}
+            window.defaultAddress = {{ defaultAddressId }};
+        {% endif %}
+        var PersonalInfoFillPidkiqModel = new PersonalInfoFillPidkiq('{{ defaultAddressId }}');
         $(document).ready(function(){
             ko.applyBindings(PersonalInfoFillPidkiqModel, $('#rentjeeves_checkoutbundle_userdetailstype').get(0));
         });

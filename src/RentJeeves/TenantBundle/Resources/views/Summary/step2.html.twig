@@ -1,4 +1,6 @@
-<form {{ form_enctype(form) }} method="post" novalidate>
+{% if form %}
+    <form {{ form_enctype(form) }}  method="post" novalidate>
+{% endif %}
     {% if error %}
         <div class="attention-box pie-el">
             {{ error|raw }}
@@ -7,7 +9,9 @@
     <div class="scroll-box" style="padding-top: 0;">
         <div id="vi-questions" class="scroll" style="padding-top: 0;">
             <div class="vi-questions-content">
-                {{ form_widget(form) }}
+                {% if form %}
+                    {{ form_widget(form) }}
+                {% endif %}
             </div>
         </div>
         <div class="tooltip-box type3 pie-el">
@@ -25,12 +29,17 @@
         </div>
     </div>
     <div class="clear"></div>
-    <div>
+    <div class="button-box">
         <a href="{{ path("personal_info_fill_pidkiq") }}" class="button fixed next grey prev">
-            <span>{{ 'previous'|trans }}</span>
+            <span>{{ 'pay_popup.step.previous'|trans }}</span>
         </a>
-        <button class="button fixed next verify-button">
-            <span>{{ 'verify'|trans }}</span>
-        </button>
+        {% if form %}
+            <button class="button fixed next verify-button">
+                <span>{{ 'pay_popup.step.3'|trans }}</span>
+            </button>
+        {% endif %}
+        <div class="clear"></div>
     </div>
-</form>
+{% if form %}
+    </form>
+{% endif %}

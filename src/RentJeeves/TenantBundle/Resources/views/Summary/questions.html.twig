@@ -1,6 +1,8 @@
 {% extends "TenantBundle::base.html.twig" %}
 
-{% form_theme form 'RjCoreBundle::form.html.twig' %}
+{% if form %}
+    {% form_theme form 'RjCoreBundle::form.html.twig' %}
+{% endif %}
 
 {% block stylesheets %}
     {{ parent() }}

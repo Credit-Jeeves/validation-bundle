@@ -63,9 +63,18 @@ class SummaryController extends Controller
             return $this->redirect($this->generateUrl('pidkiq_questions'));
         }
 
+        if (
+            $personalInfoForm->isSubmitted() &&
+            $addressChose = $personalInfoForm->get('address_choice')->getData()
+        ) {
+            $defaultAddressId = $addressChose->getId();
+        } else {
+            $defaultAddressId = ($address = $this->getUser()->getDefaultAddress()) ? $address->getId() : null;
+        }
         return array(
-            'form'      => $personalInfoForm->createView(),
-            'addresses' => $this->getUser()->getAddresses(),
+            'form'             => $personalInfoForm->createView(),
+            'addresses'        => $this->getUser()->getAddresses(),
+            'defaultAddressId' => $defaultAddressId,
         );
     }
 
@@ -96,8 +105,8 @@ class SummaryController extends Controller
          */
         $pidkiqQuestions = $this->get('pidkiq.questions');
 
-        if ($questions = $pidkiqQuestions->retrieveQuestions()) {
-            $form = $this->createForm(new QuestionsType($questions));
+        if ($pidkiqQuestions->processQuestions()) {
+            $form = $this->createForm(new QuestionsType($pidkiqQuestions->getQuestionsData()));
             $form->handleRequest($request);
             if ($form->isValid()) {
                 if ($pidkiqQuestions->processForm($form)) {
@@ -115,11 +124,17 @@ class SummaryController extends Controller
                 );
 
             }
+
+            return array(
+                'form'  => $form->createView(),
+                'error' => $pidkiqQuestions->getError(),
+            );
         }
 
         return array(
-            'form'  => $form->createView(),
+            'form'  => null,
             'error' => $pidkiqQuestions->getError(),
         );
+
     }
 }
