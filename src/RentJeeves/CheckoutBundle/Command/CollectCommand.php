@@ -1,26 +1,12 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Command;
 
-use RentJeeves\DataBundle\Entity\Job;
-use Doctrine\ORM\EntityManager;
-use Payum\Request\BinaryMaskStatusRequest;
-use Payum\Request\CaptureRequest;
-use RentJeeves\DataBundle\Entity\JobRelatedPayment;
-use RentJeeves\DataBundle\Entity\Payment;
-use RentJeeves\DataBundle\Entity\PaymentRepository;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use RentJeeves\CoreBundle\Traits\DateCommon;
-use Payum\Payment as Payum;
-use \DateTime;
 
 class CollectCommand extends ContainerAwareCommand
 {
-    use DateCommon;
-
     protected function configure()
     {
         $this
@@ -30,26 +16,9 @@ class CollectCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $date = new DateTime();
-        $days = $this->getDueDays();
-        /** @var PaymentRepository $repo */
-        $doctrine = $this->getContainer()->get('doctrine');
-        $payments = $doctrine->getRepository('RjDataBundle:Payment')
-            ->getActivePayments(
-                $days,
-                $date->format('n'),
-                $date->format('Y')
-            );
-        $output->write('Start:');
-
-        /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /** @var Payment $payment */
-        foreach ($payments as $payment) {
-            $em->persist($payment->createJob());
-            $em->flush();
-            $output->write('.');
-        }
+        $output->writeln('Start:');
+        $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $output->writeln(sprintf('%d payments added to queue', count($jobs)));
         $output->writeln('OK');
     }
 }

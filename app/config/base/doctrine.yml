@@ -15,6 +15,7 @@ doctrine:
                 str_to_date: DoctrineExtensions\Query\Mysql\StrToDate
             string_functions:
                 field: DoctrineExtensions\Query\Mysql\Field
+                concat_ws: DoctrineExtensions\Query\Mysql\ConcatWs
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

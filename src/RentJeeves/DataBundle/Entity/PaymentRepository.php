@@ -2,8 +2,10 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
+use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -23,21 +25,22 @@ use \DateTime;
  */
 class PaymentRepository extends EntityRepository
 {
+    use DateCommon;
 
     /**
-     * @param array $days
-     * @param int $month
-     * @param int $year
+     * @param DateTime $date
      * @param array $ids
      *
      * @return ArrayCollection
      */
     public function getActivePayments(
-        $days = array(),
-        $month = 1,
-        $year = 2000,
+        DateTime $date,
         array $ids = array()
     ) {
+        $month = $date->format('n');
+        $year = $date->format('Y');
+        $days = $this->getDueDays(0, $date);
+
         $query = $this->createQueryBuilder('p');
         $query->select("p, c, g, d");
         $query->innerJoin('p.contract', 'c');
@@ -47,21 +50,16 @@ class PaymentRepository extends EntityRepository
             'p.jobs',
             'j',
             Expr\Join::WITH,
-            "DATE(j.createdAt) > :monthBefor"
+            "DATE(j.createdAt) <> :startDate"
         );
         $query->andWhere('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere('j.id IS NULL');
         $query->andWhere(
-            sprintf(
-                "STR_TO_DATE(" .
-                "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
-                "'%%Y-%%c-%%e'" .
-                ") <= :startDate",
-                'p',
-                'p',
-                'p'
-            )
+            "STR_TO_DATE(" .
+            "CONCAT_WS('-', p.startYear, p.startMonth, p.dueDate)," .
+            "'%%Y-%%c-%%e'" .
+            ") <= :startDate"
         );
         $query->andWhere(
             '(p.endYear IS NULL AND p.endMonth IS NULL)
@@ -74,25 +72,14 @@ class PaymentRepository extends EntityRepository
             $query->andWhere('p.id IN (:ids)');
             $query->setParameter('ids', $ids);
         }
-
-        if (count($days) === 1) {
-            $day = array_values($days)[0];
-        } else {
-            $day = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        }
-        $date = new DateTime(implode('-', array($year, $month, $day)));
-        $monthBefor = clone $date;
-        $monthBefor->modify('-1 month');
         $query->setParameter('status', PaymentStatus::ACTIVE);
         $query->setParameter('days', $days);
-//        $query->setParameter('contract', $contract);
         $query->setParameter('month', $month);
         $query->setParameter('year', $year);
-        $query->setParameter('monthBefor', $monthBefor->format('Y-m-d'));
-        $query->setParameter('startDate', implode('-', array($year, $month, $day)));
+        $query->setParameter('startDate', $date->format('Y-m-d'));
 
         $query = $query->getQuery();
-//        echo $query->getSQL();die('OK');
+        var_dump(getDqlWithParams($query));die('OK');
         return $query->execute();
     }
 
@@ -124,5 +111,23 @@ class PaymentRepository extends EntityRepository
     
         $query = $query->getQuery();
         return $query->iterate();
+    }
+
+    /**
+     * @return array
+     */
+    public function collectToJobs()
+    {
+        $payments = $this->getActivePayments(new DateTime());
+
+        /** @var EntityManager $em */
+        $em = $this->getEntityManager();
+        $jobs = array();
+        /** @var Payment $payment */
+        foreach ($payments as $payment) {
+            $em->persist($jobs[] = $payment->createJob());
+        }
+        $em->flush();
+        return $jobs;
     }
 }
