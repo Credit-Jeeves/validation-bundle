@@ -1,5 +1,5 @@
 <!-- Popup Delete Contract -->
-<div id="contract-delete" class="pricing-popup dashboard-popup properties-popup">
+{#<div id="contract-delete" class="pricing-popup dashboard-popup properties-popup">
     <h1>{{ 'contract.delete' | trans() }}</h1>
     <div class="clearfix col-box">
         <div class="col" id="contract-address"></div>
@@ -12,16 +12,16 @@
             </button>
         </div>
     </div>
-</div>
+</div>#}
 <!-- end Delete Contract -->
 <!-- Loader -->
-<div id="contract-loader" class="pricing-popup dashboard-popup properties-popup">
+{#<div id="contract-loader" class="pricing-popup dashboard-popup properties-popup">
     <div class="clearfix col-box popup-loader">
         <center>
             <img src="{{ asset('/bundles/core/images/img_loading.gif') }}" alt="Loading" />
         </center>
     </div>
-</div>
+</div>#}
 <!-- endloader -->
 <div class="pod-large pod-border pod-padding shadow" id="current-payments">
     <h1>{{ 'current_payments.title' | trans() }}</h1>
@@ -81,9 +81,9 @@
                                     <button class="button small button-contract-pay grey floatleft">
                                         <span>{{ 'contract.pay' | trans() }}</span>
                                     </button>
-                                    <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                    {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>
+                                    </div>#}
                                 </div>
                             {% elseif contract.status == 'approved' or contract.status == 'invite' %}
                                 <div class="contract-potential">
@@ -94,9 +94,9 @@
 
                                         <span>{{ buttonText }}</span>
                                     </button>
-                                    <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                    {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>
+                                    </div>#}
                                 </div>
                             {% elseif contract.status == 'current' %}
                                 <div class="contract-potential">
@@ -106,9 +106,9 @@
                                             >
                                         <span>{{ buttonText }}</span>
                                     </button>
-                                    <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
+                                    {#<div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>
+                                    </div>#}
                                 </div>
                             {% endif %}
                         </td>
