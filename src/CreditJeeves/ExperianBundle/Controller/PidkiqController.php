@@ -73,6 +73,7 @@ class PidkiqController extends Controller
     public function indexAction(Request $request)
     {
         $user = $this->getUser();
+        $form = null;
 
         if (empty($user)) {
             throw $this->createNotFoundException('Account does not found');
@@ -85,7 +86,7 @@ class PidkiqController extends Controller
             if ($this->pidkiqQuestions->processQuestions()) {
                 return new JsonResponse('finished');
             }
-        } elseif ($this->pidkiqQuestions->getQuestionsData()) {
+        } elseif ($this->pidkiqQuestions->retrieveQuestions()) {
             $form = $this->createForm(new QuestionsType($this->pidkiqQuestions->getQuestionsData()));
             $form->handleRequest($request);
             if ($form->isValid()) {
@@ -102,7 +103,7 @@ class PidkiqController extends Controller
                     )
                 );
             }
-            $form = $this->form->createView();
+            $form = $form->createView();
         }
 
         $error = $this->pidkiqQuestions->getError();

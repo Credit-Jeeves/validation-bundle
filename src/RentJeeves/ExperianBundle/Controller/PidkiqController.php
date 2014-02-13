@@ -109,13 +109,11 @@ class PidkiqController extends Base
             $response = array(
                 $form->getName() => array(
                     '_globals' => array(
-                        $this->pidkiqQuestions->setError(
-                            $this->get('translator')->trans(
-                                'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
-                                array(
-                                    '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
-                                    '%MAIN_LINK%'     => $this->container->getParameter('external_urls')['user_voice'],
-                                )
+                        $this->get('translator')->trans(
+                            'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
+                            array(
+                                '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
+                                '%MAIN_LINK%'     => $this->container->getParameter('external_urls')['user_voice'],
                             )
                         )
                     )
