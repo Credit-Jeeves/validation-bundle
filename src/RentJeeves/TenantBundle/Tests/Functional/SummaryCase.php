@@ -15,10 +15,12 @@ class SummaryCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
         $this->assertNotNull(
             $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
         );
         $this->page->pressButton('pay_popup.step.next');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
         $this->page->pressButton('pay_popup.step.3');
         $this->assertNotNull(
             $error = $this->page->find('css', '.attention-box')
@@ -50,6 +52,7 @@ class SummaryCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
         $this->assertNotNull(
             $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
         );

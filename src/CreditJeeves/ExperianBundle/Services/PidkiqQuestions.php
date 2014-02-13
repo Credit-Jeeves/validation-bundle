@@ -166,6 +166,7 @@ class PidkiqQuestions
             $this->em->flush();
         }
 
+        $this->isValidUser = true;
         return $this->questionsData = $pidiqModel->getQuestions();
     }
 

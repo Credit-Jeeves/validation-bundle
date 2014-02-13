@@ -34,6 +34,17 @@ class PidkiqController extends Base
         parent::setPidkiqApi($pidkiqApi);
     }
 
+    /**
+     * // Do not remove it!!!
+     * @DI\InjectParams({
+     *     "pidkiqQuestions" = @DI\Inject("pidkiq.questions")
+     * })
+     */
+    public function setPidkiqQuestions($pidkiqQuestions)
+    {
+        parent::setPidkiqQuestions($pidkiqQuestions);
+    }
+
     protected function setupUserIsValidUserIntoSession(Request $request)
     {
         $session = $request->getSession();
