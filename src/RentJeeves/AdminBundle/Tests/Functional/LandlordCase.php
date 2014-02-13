@@ -43,7 +43,7 @@ class LandlordCase extends BaseTestCase
         //$this->page->clickLink('Landlord List');
         $this->assertNotNull($landlords = $this->page->findAll('css', 'a.delete_link'));
         $this->assertCount(8, $landlords);
-        $landlords[1]->click();
+        $landlords[7]->click();
         $this->assertNotNull($form = $this->page->find('css', 'form'));
         $this->assertNotNull($delete = $form->findButton('btn_delete'));
         $delete->click();

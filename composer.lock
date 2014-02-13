@@ -342,7 +342,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "c3603d3476855f7fd4bf5b14648fbd79a2afe023"
+                "reference": "ffff64c878a9eb5e343d195b70b33c6703a63ef8"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -378,7 +378,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2014-02-07 16:04:15"
+            "time": "2014-02-13 17:39:13"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -2538,12 +2538,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/JMSSecurityExtraBundle.git",
-                "reference": "802b05e30b069e5003805cd246ecbb343c91383c"
+                "reference": "66d9c79607a7261e4ce1423b9d6fdc78256a911e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/schmittjoh/JMSSecurityExtraBundle/zipball/802b05e30b069e5003805cd246ecbb343c91383c",
-                "reference": "802b05e30b069e5003805cd246ecbb343c91383c",
+                "url": "https://api.github.com/repos/schmittjoh/JMSSecurityExtraBundle/zipball/66d9c79607a7261e4ce1423b9d6fdc78256a911e",
+                "reference": "66d9c79607a7261e4ce1423b9d6fdc78256a911e",
                 "shasum": ""
             },
             "require": {
@@ -2600,7 +2600,7 @@
                 "secure",
                 "security"
             ],
-            "time": "2013-12-17 23:05:58"
+            "time": "2014-02-11 15:23:43"
         },
         {
             "name": "jms/serializer",
@@ -3048,12 +3048,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nelmio/NelmioApiDocBundle.git",
-                "reference": "5bd455f955dfa0ad66527a078ba1c718be39c590"
+                "reference": "ee68eabe0cfd4529aa473d853020fa2cc70ee85a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/5bd455f955dfa0ad66527a078ba1c718be39c590",
-                "reference": "5bd455f955dfa0ad66527a078ba1c718be39c590",
+                "url": "https://api.github.com/repos/nelmio/NelmioApiDocBundle/zipball/ee68eabe0cfd4529aa473d853020fa2cc70ee85a",
+                "reference": "ee68eabe0cfd4529aa473d853020fa2cc70ee85a",
                 "shasum": ""
             },
             "require": {
@@ -3085,7 +3085,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.4.x-dev"
+                    "dev-master": "2.5.x-dev"
                 }
             },
             "autoload": {
@@ -3114,7 +3114,7 @@
                 "documentation",
                 "rest"
             ],
-            "time": "2014-02-07 00:05:59"
+            "time": "2014-02-11 15:44:12"
         },
         {
             "name": "pagerfanta/pagerfanta",
@@ -4455,16 +4455,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.4.1",
+            "version": "v2.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "377a5fb23bfdc2fb616610b7b7ab7cc9a50e614d"
+                "reference": "b70633f92ff71ef490af4c17e7ca3f3bf3d0f304"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/377a5fb23bfdc2fb616610b7b7ab7cc9a50e614d",
-                "reference": "377a5fb23bfdc2fb616610b7b7ab7cc9a50e614d",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/b70633f92ff71ef490af4c17e7ca3f3bf3d0f304",
+                "reference": "b70633f92ff71ef490af4c17e7ca3f3bf3d0f304",
                 "shasum": ""
             },
             "require": {
@@ -4552,7 +4552,9 @@
             "authors": [
                 {
                     "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
                     "name": "Symfony Community",
@@ -4564,7 +4566,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-01-05 02:12:11"
+            "time": "2014-02-12 19:27:03"
         },
         {
             "name": "twig/extensions",
@@ -4619,12 +4621,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "cea2143465149c8ea4c29b227b2958989c5696d6"
+                "reference": "b0ee99d6d69b30a512064c8b4fac536f862a0d23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/cea2143465149c8ea4c29b227b2958989c5696d6",
-                "reference": "cea2143465149c8ea4c29b227b2958989c5696d6",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/b0ee99d6d69b30a512064c8b4fac536f862a0d23",
+                "reference": "b0ee99d6d69b30a512064c8b4fac536f862a0d23",
                 "shasum": ""
             },
             "require": {
@@ -4668,7 +4670,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-02-10 07:40:03"
+            "time": "2014-02-13 10:36:05"
         },
         {
             "name": "willdurand/js-translation-bundle",
@@ -4770,16 +4772,16 @@
         },
         {
             "name": "willdurand/negotiation",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willdurand/Negotiation.git",
-                "reference": "8b32a05c2cfd41c0b350de5ea03aba8b35dfc13c"
+                "reference": "84c855a0a9318b29b2535ca88a86e899d7ac4bda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willdurand/Negotiation/zipball/8b32a05c2cfd41c0b350de5ea03aba8b35dfc13c",
-                "reference": "8b32a05c2cfd41c0b350de5ea03aba8b35dfc13c",
+                "url": "https://api.github.com/repos/willdurand/Negotiation/zipball/84c855a0a9318b29b2535ca88a86e899d7ac4bda",
+                "reference": "84c855a0a9318b29b2535ca88a86e899d7ac4bda",
                 "shasum": ""
             },
             "require": {
@@ -4816,7 +4818,7 @@
                 "header",
                 "negotiation"
             ],
-            "time": "2014-01-09 22:50:05"
+            "time": "2014-02-11 15:51:10"
         }
     ],
     "packages-dev": [

@@ -153,7 +153,7 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -163,9 +163,7 @@
 {% endblock %}
 
 {% block payBox %}
-    {{ include(
-    'RjPublicBundle::_landlordMarketing.html.twig'
-    ) }}
+    {{ include('RjPublicBundle::_landlordMarketing.html.twig') }}
 {% endblock %}
 
 {% block pricingBenefitStatement %}
