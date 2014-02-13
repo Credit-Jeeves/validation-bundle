@@ -111,14 +111,19 @@ class PidkiqQuestions
         return $user;
     }
 
+    protected function checkSumm()
+    {
+        return md5(serialize($this->getUser()->getArrayForPidkiq()));
+    }
+
     /**
      * @return Pidkiq
      */
-    protected function getPidkiq()
+    protected function getPidkiqModel()
     {
         /** @var $model Pidkiq */
         $model = $this->getUser()->getPidkiqs()->last();
-        $checkSum = md5(serialize($this->getUser()->getArrayForPidkiq()));
+        $checkSum = $this->checkSumm();
         if ($model) {
             $currentDate = new DateTime();
             $dateOfModel = $model->getUpdatedAt();
@@ -137,7 +142,7 @@ class PidkiqQuestions
      */
     public function retrieveQuestions()
     {
-        $pidiqModel = $this->getPidkiq();
+        $pidiqModel = $this->getPidkiqModel();
 
         if (!$pidiqModel->getQuestions()) {
             $pidiqModel->setUser($this->getUser());
@@ -156,7 +161,7 @@ class PidkiqQuestions
 
             $pidiqModel->setQuestions($questions);
             $pidiqModel->setSessionId($this->pidkiqApi->getSessionId());
-            $pidiqModel->setCheckSumm(md5(serialize($this->getUser()->getArrayForPidkiq())));
+            $pidiqModel->setCheckSumm($this->checkSumm());
             $this->em->persist($pidiqModel);
             $this->em->flush();
         }

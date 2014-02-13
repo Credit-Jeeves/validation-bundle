@@ -9,6 +9,7 @@ use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
+use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -124,15 +125,16 @@ class PayController extends Controller
         if (!$userType->isValid()) {
             return $this->renderErrors($userType);
         }
-
-        list($isNewAddress, $address) = $this->get('process.user.details.type')->process($userType, $this->getUser());
+        /** @var $formProcessor UserDetailsTypeProcessor */
+        $formProcessor = $this->get('user.details.type.processor');
+        $formProcessor->save($userType, $this->getUser());
 
         return new JsonResponse(
             array(
                 'success' => true,
-                'newAddress' => $isNewAddress ?
+                'newAddress' => $formProcessor->getIsNewAddress() ?
                     $this->get('jms_serializer')->serialize(
-                        $address,
+                        $formProcessor->getAddress(),
                         'array'
                     ) : null
             )

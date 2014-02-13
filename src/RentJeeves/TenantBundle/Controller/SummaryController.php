@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
+use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -56,20 +57,19 @@ class SummaryController extends Controller
         $personalInfoForm->handleRequest($request);
 
         if ($personalInfoForm->isValid()) {
-            list($isNewAddress, $address) = $this->get('process.user.details.type')->process(
-                $personalInfoForm,
-                $this->getUser()
-            );
+            /** @var $formProcessor UserDetailsTypeProcessor */
+            $formProcessor = $this->get('user.details.type.processor');
+            $formProcessor->save($personalInfoForm, $this->getUser());
+
             return $this->redirect($this->generateUrl('pidkiq_questions'));
         }
-
-        if ($personalInfoForm->isSubmitted() &&
-            $addressChose = $personalInfoForm->get('address_choice')->getData()
-        ) {
-            $defaultAddressId = $addressChose->getId();
+        $addressChoice = $personalInfoForm->get('address_choice')->getData();
+        if ($personalInfoForm->isSubmitted()) {
+            $defaultAddressId = (!empty($addressChoice))? $addressChoice->getId() : null;
         } else {
             $defaultAddressId = ($address = $this->getUser()->getDefaultAddress()) ? $address->getId() : null;
         }
+
         return array(
             'form'             => $personalInfoForm->createView(),
             'addresses'        => $this->getUser()->getAddresses(),
@@ -89,9 +89,9 @@ class SummaryController extends Controller
         $user = $this->getUser();
         $address = $user->getDefaultAddress();
         $ssn = $user->getSsn();
-        $dateOfBirthday = $user->getDateOfBirth();
+        $dateOfBirth = $user->getDateOfBirth();
 
-        if (empty($ssn) || empty($address) || empty($dateOfBirthday)) {
+        if (empty($ssn) || empty($address) || empty($dateOfBirth)) {
             return $this->redirect($this->generateUrl('personal_info_fill_pidkiq'));
         }
 

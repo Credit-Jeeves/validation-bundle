@@ -21,16 +21,18 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     <script type="text/javascript">
-        window.addressesViewModels = [];
+        addressesViewModels = [];
         {% for address in addresses %}
             var address = new Address(null);
             ko.mapping.fromJS({{ address | serialize('json') | raw }}, {}, address);
             window.addressesViewModels.push(address);
         {% endfor %}
+        var PersonalInfoFillPidkiqModel = new PersonalInfoFillPidkiq(addressesViewModels);
         {% if defaultAddressId %}
-            window.defaultAddress = {{ defaultAddressId }};
+            PersonalInfoFillPidkiqModel.address.addressChoice({{ defaultAddressId }});
+        {% else %}
+            PersonalInfoFillPidkiqModel.address.isAddNewAddress(true);
         {% endif %}
-        var PersonalInfoFillPidkiqModel = new PersonalInfoFillPidkiq('{{ defaultAddressId }}');
         $(document).ready(function(){
             ko.applyBindings(PersonalInfoFillPidkiqModel, $('#rentjeeves_checkoutbundle_userdetailstype').get(0));
         });
