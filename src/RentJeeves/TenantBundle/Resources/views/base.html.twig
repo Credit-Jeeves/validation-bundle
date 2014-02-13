@@ -59,3 +59,8 @@
     {{ render(controller('RjComponentBundle:Footer:index')) }}
 {% endblock %}
 
+{% block partner_logo %}
+    {% if app.user.getPartnerCode() %}
+        <div class="base-creditcom-logo"></div>
+    {% endif %}
+{% endblock %}
