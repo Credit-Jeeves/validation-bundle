@@ -50,15 +50,15 @@ class PaymentRepository extends EntityRepository
             'p.jobs',
             'j',
             Expr\Join::WITH,
-            "DATE(j.createdAt) <> :startDate"
+            "DATE(j.createdAt) = :startDate"
         );
+        $query->andWhere('j.id IS NULL');
         $query->andWhere('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
-        $query->andWhere('j.id IS NULL');
         $query->andWhere(
             "STR_TO_DATE(" .
             "CONCAT_WS('-', p.startYear, p.startMonth, p.dueDate)," .
-            "'%%Y-%%c-%%e'" .
+            "'%Y-%c-%e'" .
             ") <= :startDate"
         );
         $query->andWhere(
@@ -79,7 +79,6 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('startDate', $date->format('Y-m-d'));
 
         $query = $query->getQuery();
-        var_dump(getDqlWithParams($query));die('OK');
         return $query->execute();
     }
 
@@ -116,9 +115,12 @@ class PaymentRepository extends EntityRepository
     /**
      * @return array
      */
-    public function collectToJobs()
+    public function collectToJobs(DateTime $date = null)
     {
-        $payments = $this->getActivePayments(new DateTime());
+        if (null === $date) {
+            $date = new DateTime();
+        }
+        $payments = $this->getActivePayments($date);
 
         /** @var EntityManager $em */
         $em = $this->getEntityManager();

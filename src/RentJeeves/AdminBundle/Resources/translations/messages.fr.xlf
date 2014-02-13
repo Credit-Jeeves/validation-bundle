@@ -6,6 +6,14 @@
                 <source>admin.action.run</source>
                 <target>Run</target>
             </trans-unit>
+            <trans-unit id="admin.butch.run.warning">
+                <source>admin.butch.run.success</source>
+                <target>None payments added to job list</target>
+            </trans-unit>
+            <trans-unit id="admin.butch.run.success">
+                <source>admin.butch.run.success-%NUMBER%</source>
+                <target>%NUMBER% payments added to job list</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -17,37 +17,31 @@ use CreditJeeves\CoreBundle\Enum;
 class OrderStatus extends Enum
 {
     /**
-     * 
      * @var string
      */
     const NEWONE = 'new';
 
     /**
-     * 
      * @var string
      */
     const COMPLETE = 'complete';
 
     /**
-     * 
      * @var string
      */
     const ERROR = 'error';
 
     /**
-     * 
      * @var string
      */
     const CANCELLED = 'cancelled';
 
     /**
-     * 
      * @var string
      */
     const REFUNDED = 'refunded';
 
     /**
-     * 
      * @var string
      */
     const RETURNED = 'returned';

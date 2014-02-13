@@ -8,6 +8,8 @@ use JMS\Serializer\Annotation as Serializer;
 /**
  * Operation
  *
+ * @todo split to types
+ *
  * @ORM\Table(name="cj_operation")
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OperationRepository")
  */

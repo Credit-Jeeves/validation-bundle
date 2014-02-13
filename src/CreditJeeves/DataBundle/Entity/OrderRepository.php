@@ -217,53 +217,6 @@ class OrderRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
-    /**
-     * 
-     * @param array $days
-     * @param integer $month
-     * @param integer $year
-     * @param array $contract
-     * @return array
-     */
-    public function getLastOrdersArray(
-        $days = array(),
-        $month = 1,
-        $year = 2000
-    ) {
-        $result = array();
-
-        $query = $this->createQueryBuilder('o');
-        $query->select('o, oper, c');
-
-        $query->innerJoin('o.operations', 'oper');
-        $query->innerJoin('oper.contract', 'c');
-        $query->innerJoin('c.payments', 'p');
-
-        $query->where('p.status = :status');
-        $query->andWhere('p.dueDate IN (:days)');
-        $query->andWhere('c.status IN (:contract)');
-        $query->andWhere('p.startMonth <= :month');
-        $query->andWhere('p.startYear <= :year');
-        $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
-
-        $query->setParameter('status', PaymentStatus::ACTIVE);
-        $query->setParameter('days', $days);
-        $query->setParameter('month', $month);
-        $query->setParameter('year', $year);
-        
-        $query = $query->getQuery();
-        $orders = $query->execute();
-        foreach ($orders as $order) {
-            $contract = $order->getContract();
-            $item = array();
-            $item['id'] = $order->getId();
-            $item['updated'] = $order->getUpdatedAt()->format('Y-m-d');
-            $item['status'] = $order->getStatus();
-            $result[$contract->getId()] = $item;
-        }
-        return $result;
-    }
-
     public function getOrdersForReport(
         $propertyId,
         $start,

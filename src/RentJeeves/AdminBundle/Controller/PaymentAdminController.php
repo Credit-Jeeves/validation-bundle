@@ -28,34 +28,34 @@ class PaymentAdminController extends CRUDController
      */
     private $request;
 
-    /**
-     * @param $id
-     * @return RedirectResponse
-     *
-     * FIXME add warning message with approval
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
-    public function runAction($id)
-    {
-        $object = $this->admin->getModelManager()->find($this->admin->getClass(), $id);
-
-        if (empty($object)) {
-            throw $this->createNotFoundException("Payment with id '{$id}' not found");
-        }
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($object->createJob());
-        $em->flush();
-
-        $this->request->getSession()->getFlashBag()->add(
-            'sonata_flash_success',
-            'Payment added to the Job queue'
-        );
-        return $this->redirect(
-            $this->request->headers->get('referer', $this->generateUrl('admin_rentjeeves_data_payment_list'))
-        );
-    }
+//    /**
+//     * @param $id
+//     * @return RedirectResponse
+//     *
+//     * FIXME add warning message with approval
+//     *
+//     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+//     */
+//    public function runAction($id)
+//    {
+//        $object = $this->admin->getModelManager()->find($this->admin->getClass(), $id);
+//
+//        if (empty($object)) {
+//            throw $this->createNotFoundException("Payment with id '{$id}' not found");
+//        }
+//
+//        $em = $this->getDoctrine()->getManager();
+//        $em->persist($object->createJob());
+//        $em->flush();
+//
+//        $this->request->getSession()->getFlashBag()->add(
+//            'sonata_flash_success',
+//            'Payment added to the Job queue'
+//        );
+//        return $this->redirect(
+//            $this->request->headers->get('referer', $this->generateUrl('admin_rentjeeves_data_payment_list'))
+//        );
+//    }
 
     public function batchActionRun(ProxyQueryInterface $selectedModelQuery)
     {
@@ -71,27 +71,28 @@ class PaymentAdminController extends CRUDController
         /** @var PaymentRepository $repository */
         $repository = $this->getDoctrine()->getRepository($this->admin->getClass());
 
-        $day = date('d');
-        $month = date('m');
-        $year = date('Y');
+        $date = new DateTime();
 
-        $filter = $this->request->get('filter');
-        if (!empty($filter['startDate']['value'])) {
-            $day = $filter['startDate']['value']['day']?:$day;
-            $month = $filter['startDate']['value']['month']?:$month;
-            $year = $filter['startDate']['value']['year']?:$year;
-        }
+//        $filter = $this->request->get('filter');
+//        if (!empty($filter['startDate']['value']['day'])) {
+//            $day = $filter['startDate']['value']['day']?:$day;
+//            $month = $filter['startDate']['value']['month']?:$month;
+//            $year = $filter['startDate']['value']['year']?:$year;
+//        }
         $i = 0;
         /** @var Payment $payment */
-        foreach ($repository->getActivePayments(array($day), $month, $year, $this->request->get('idx')) as $payment) {
+        foreach ($repository->getActivePayments($date, $this->request->get('idx')) as $payment) {
             $em->persist($payment->createJob());
             $i++;
         }
         if (0 == $i) {
-            $this->request->getSession()->getFlashBag()->add('sonata_flash_error', 'None payments added to job list');
+            $this->request->getSession()->getFlashBag()->add('sonata_flash_warning', 'admin.butch.run.warning');
         } else {
             $em->flush();
-            $this->request->getSession()->getFlashBag()->add('sonata_flash_success', "{$i} payments added to job list");
+            $this->request->getSession()->getFlashBag()->add(
+                'sonata_flash_success',
+                $this->get('translator')->trans('admin.butch.run.success-%NUMBER%', array('%NUMBER%' => $i))
+            );
         }
 
         return $redirectResponse;

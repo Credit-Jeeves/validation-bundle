@@ -47,9 +47,9 @@ class PaymentAdmin extends Admin
                 'actions',
                 array(
                     'actions' => array(
-                        'run' => array(
-                            'template' => 'AdminBundle:CRUD:list__payment_run.html.twig'
-                        ),
+//                        'run' => array(
+//                            'template' => 'AdminBundle:CRUD:list__payment_run.html.twig'
+//                        ),
                         'jobs' => array(
                             'template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig',
                         )
@@ -98,7 +98,7 @@ class PaymentAdmin extends Admin
                 array(
                     'callback' => function ($queryBuilder, $alias, $field, $value) {
                         if (empty($value['value'])) {
-                            return;
+                            return false;
                         }
                         /** @var QueryBuilder $queryBuilder */
                         $alias = $queryBuilder->getRootAliases()[0];
@@ -107,7 +107,7 @@ class PaymentAdmin extends Admin
                         $queryBuilder->andWhere(
                             sprintf(
                                 "STR_TO_DATE(" .
-                                "CONCAT(%s.startYear, '-', %s.startMonth, '-', %s.dueDate)," .
+                                "CONCAT_WS('-', %s.startYear, %s.startMonth, %s.dueDate)," .
                                 "'%%Y-%%c-%%e'" .
                                 ") <= :start_date",
                                 $alias,

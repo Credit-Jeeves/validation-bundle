@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use RentJeeves\DataBundle\Entity\Job;
+use RentJeeves\DataBundle\Entity\JobRelatedPayment;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
@@ -35,8 +36,6 @@ use \RuntimeException;
 
 class PayCommand extends ContainerAwareCommand
 {
-    use DateCommon;
-
     protected function configure()
     {
         $this
@@ -62,33 +61,30 @@ class PayCommand extends ContainerAwareCommand
         }
 
         $date = new DateTime();
-        $days = $this->getDueDays();
-        $orders = $em->getRepository('DataBundle:Order')
-            ->getLastOrdersArray(
-                $days,
-                $date->format('n'),
-                $date->format('Y')
-            );
         /** @var Payum $payum */
         $payum = $this->getContainer()->get('payum')->getPayment('heartland');
 
-
-        /** @var Payment $payment */
+        /** @var JobRelatedPayment $relatedPayment */
         $relatedPayment = $job->findRelatedEntity('RentJeeves\DataBundle\Entity\JobRelatedPayment');
 
         if (empty($relatedPayment)) {
             throw new RuntimeException("Job ID:'{$jobId}' must have related payment");
         }
         $payment = $relatedPayment->getPayment();
-
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
-        if (isset($orders[$contract->getId()]) &&
-            $orders[$contract->getId()]['status'] == OrderStatus::COMPLETE &&
-            $orders[$contract->getId()]['updated'] == $date->format('Y-m-d')
-        ) {
+
+        $filterClosure = function (Order $order) use ($date) {
+            if ($order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
+                OrderStatus::ERROR != $order->getStatus()
+            ) {
+                return true;
+            }
+            return false;
+        };
+        if ($contract->getOperation()->getOrders()->filter($filterClosure)->count()) {
             $output->writeln('Payment already executed.');
-            exit(1);
+            return 1;
         }
         $operation = $contract->getOperation();
         if (empty($operation)) {
@@ -187,7 +183,7 @@ class PayCommand extends ContainerAwareCommand
         $em->clear();
         $output->writeln($message);
         if ('OK' != $message) {
-            exit(1);
+            return 1;
         }
     }
 }

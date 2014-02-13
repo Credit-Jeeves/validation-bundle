@@ -12,7 +12,7 @@ class CommandsCase extends BaseTestCase
     /**
      * @test
      */
-    public function executePay()
+    public function collectAndPay()
     {
         $this->load(true);
         static::$kernel = null;
@@ -23,44 +23,31 @@ class CommandsCase extends BaseTestCase
         $application->add(new PayCommand());
 
         $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertCount(1, $jobs);
 
         $command = $application->find('payment:pay');
         $commandTester = new CommandTester($command);
-        /** @var Job $job */
-        foreach ($jobs as $job) {
-            $commandTester->execute(
-                array(
-                    'command' => $command->getName(),
-                    '--jms-job-id' => $job->getId(),
-                )
-            );
-        }
-        $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
-        $this->assertCount(1, $plugin->getPreSendMessages());
-    }
 
-    /**
-     * @test
-     * @depends execute
-     */
-    public function executeRepeat()
-    {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
-        $application->add(new PayCommand());
-        
-        $plugin = $this->registerEmailListener();
-        $plugin->clean();
-
-        $command = $application->find('Payment:process');
-        $commandTester = new CommandTester($command);
         $commandTester->execute(
             array(
                 'command' => $command->getName(),
+                '--jms-job-id' => $jobs[0]->getId(),
             )
         );
-        $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(2, $count);
-        $this->assertRegExp('/Start payment process(.*)OK/', $commandTester->getDisplay());
+        $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
+        $this->assertCount(1, $plugin->getPreSendMessages());
+
+        $plugin->clean();
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--jms-job-id' => $jobs[0]->getId(),
+            )
+        );
+        $this->assertRegExp("/Start\nPayment already executed./", $commandTester->getDisplay());
+        $this->assertCount(0, $plugin->getPreSendMessages());
+
+        $jobs = $this->getContainer()->get('doctrine')->getRepository('RjDataBundle:Payment')->collectToJobs();
+        $this->assertCount(0, $jobs);
     }
 }
