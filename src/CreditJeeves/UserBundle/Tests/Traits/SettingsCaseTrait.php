@@ -73,7 +73,7 @@ trait SettingsCaseTrait
 
         $form->pressButton('common.add');
         $this->assertNotNull($errorList = $this->page->findAll('css', '.error_list'));
-        $this->assertCount(1, $errorList, 'Wrong number of received errors');
+        $this->assertCount(2, $errorList, 'Wrong number of received errors');
 
         $testStreetName = 'NEW ADDED STREET';
         $this->fillForm(
@@ -82,7 +82,7 @@ trait SettingsCaseTrait
                 'creditjeeves_userbundle_useraddresstype_street' => $testStreetName,
                 'creditjeeves_userbundle_useraddresstype_city' => 'BELTSVILLE',
                 'creditjeeves_userbundle_useraddresstype_area' => 'MD',
-                'creditjeeves_userbundle_useraddresstype_zip' => '207041563',
+                'creditjeeves_userbundle_useraddresstype_zip' => '20704',
                 'creditjeeves_userbundle_useraddresstype_unit' => '116TH 1'
             ]
         );

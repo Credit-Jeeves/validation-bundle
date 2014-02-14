@@ -127,7 +127,7 @@ abstract class Address
      * )
      * @Assert\Length(
      *     min=4,
-     *     max=5,
+     *     max=6,
      *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length",
      *     groups={
      *         "user_address_new",
@@ -136,7 +136,7 @@ abstract class Address
      *     }
      * )
      * @Assert\Regex(
-     *     pattern="/(^[0-9]{4,5})$/",
+     *     pattern="/^[0-9]+$/",
      *     message="error.user.zip.invalid",
      *     groups={
      *         "user_address_new",
