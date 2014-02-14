@@ -1,5 +1,5 @@
 <!-- Popup Delete Contract -->
-<div id="contract-delete" class="pricing-popup dashboard-popup properties-popup">
+{#<div id="contract-delete" class="pricing-popup dashboard-popup properties-popup">
     <h1>{{ 'contract.delete' | trans() }}</h1>
     <div class="clearfix col-box">
         <div class="col" id="contract-address"></div>
@@ -12,16 +12,16 @@
             </button>
         </div>
     </div>
-</div>
+</div>#}
 <!-- end Delete Contract -->
 <!-- Loader -->
-<div id="contract-loader" class="pricing-popup dashboard-popup properties-popup">
+{#<div id="contract-loader" class="pricing-popup dashboard-popup properties-popup">
     <div class="clearfix col-box popup-loader">
         <center>
             <img src="{{ asset('/bundles/core/images/img_loading.gif') }}" alt="Loading" />
         </center>
     </div>
-</div>
+</div>#}
 <!-- endloader -->
 <div class="pod-large pod-border pod-padding shadow" id="current-payments">
     <h1>{{ 'current_payments.title' | trans() }}</h1>
@@ -38,37 +38,33 @@
             <table class="properties-table zebra-grid contracts-table">
                 <thead>
                     <tr class="contracts">
-                        <th class="font-helvetica">{{ 'address' | trans() }}</th>
-                        <th class="font-helvetica">{{ 'pay_to' | trans() }}</th>
-                        <th class="font-helvetica">{{ 'amount' | trans() }}</th>
-                        <th class="font-helvetica">{{ 'contract.pay.source' | trans() }}</th>
-                        <th class="font-helvetica">{{ 'contract.payment.last' | trans() }}</th>
-                        <th class="font-helvetica">{{ 'contract.payment.next' | trans() }}</th>
-                        <th class="font-helvetica">{{ 'contract.payment.recurring' | trans() }}</th>
-                        <th class="font-helvetica">{{ 'contract.status' | trans() }}</th>
-                        <th style="width: 85px;"></th>
+                        <th class="font-helvetica" style="width: 50px">{{ 'contract.rent_amount' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 75px">{{ 'contract.payment.next' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 350px">{{ 'contract.property' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 100px">{{ 'contract.status' | trans() }}</th>
+                        <th style="width: 150px;"></th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for contract in contracts %}
                     <tr class="contracts">
-                        <td class="font-helvetica" title="{{ contract.full_address }}">{{ contract.row_address }}</td>
-                        <td class="font-helvetica" title="{{ contract.full_pay_to }}">{{ contract.row_pay_to }}</td>
                         <td class="font-helvetica">{{ contract.rent }}</td>
-                        <td class="font-helvetica" title="{{ contract.full_payment_source }}">{{ contract.row_payment_source }}</td>
-                        <td class="font-helvetica">{{ contract.payment_last }}</td>
                         <td class="font-helvetica">{{ contract.payment_next }}</td>
-                        <td class="font-helvetica">{{ contract.recur | capitalize }}</td>
-                        {% if contract.status == 'pending' %}
-                        <td class="font-helvetica" title="{{ 'contract.status.pending.title' | trans }}">{{ 'contract.status.pending.text' | trans }}
-                        {% elseif contract.status == 'invite' %}
-                        <td class="font-helvetica" title="{{ 'contract.status.invite.title' | trans }}">
-                        {{ contract.status | upper }}
-                        {% else %}
+                        <td class="font-helvetica">{{ contract.full_address }}</td>
                         <td class="font-helvetica">
-                        {{ contract.status | upper }}
-                        {% endif %}
+                            {% if contract.status == 'pending' %}
+                                {{ 'contract.status.pending.text' | trans }}
+                            {% elseif contract.status == 'invite' %}
+                                {{ 'contract.status.invite.text' | trans }}
+                            {% elseif contract.payment_type == 'recurring' %}
+                                {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_next}) }}
+                            {% elseif contract.payment_type == 'one_time' %}
+                                {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_next}) }}
+                            {% else %}
+                                {{ contract.status | upper }}
+                            {% endif %}
                         </td>
+
                         <td class="font-helvetica">
                             {% if contract.isPayment %}
                                 {% set buttonText = 'contract.edit' | trans() %}
@@ -77,16 +73,16 @@
                             {% endif %}
 
                             {% if contract.status == 'pending' %}
-                                <div class="contract-potential">
-                                    <button class="button small button-contract-pay grey floatleft">
+                                <div>
+                                    <button class="button small button-contract-pay floatleft" disabled>
                                         <span>{{ 'contract.pay' | trans() }}</span>
                                     </button>
-                                    <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                    {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>
+                                    </div>#}
                                 </div>
                             {% elseif contract.status == 'approved' or contract.status == 'invite' %}
-                                <div class="contract-potential">
+                                <div>
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
@@ -94,21 +90,21 @@
 
                                         <span>{{ buttonText }}</span>
                                     </button>
-                                    <div id="contract-{{ contract.id }}" class="contract-delete floatleft">
+                                    {#<div id="contract-{{ contract.id }}" class="contract-delete floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>
+                                    </div>#}
                                 </div>
                             {% elseif contract.status == 'current' %}
-                                <div class="contract-potential">
+                                <div>
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
                                             >
                                         <span>{{ buttonText }}</span>
                                     </button>
-                                    <div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
+                                    {#<div id="contract-{{ contract.id }}" class="contract-delete-grey floatleft">
                                         <input type="hidden" value="{{ contract.full_address }}">
-                                    </div>
+                                    </div>#}
                                 </div>
                             {% endif %}
                         </td>
@@ -129,6 +125,9 @@
             '{{ user.getIsVerified }}'
         );
         ko.applyBindings(currentPaymentsViewModel, $('#current-payments').get(0));
+        {% if contractsRaw|length == 1 and contractsRaw[0].status == 'invite'%}
+            $('#contract-pay-1').click();
+        {% endif %}
     });
 </script>
 

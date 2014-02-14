@@ -848,7 +848,7 @@
             </trans-unit>
             <trans-unit id="current_payments.title">
                 <source>current_payments.title</source>
-                <target>Current Payments</target>
+                <target>Payments</target>
             </trans-unit>
             <trans-unit id="pay_to">
                 <source>pay_to</source>
@@ -876,7 +876,7 @@
             </trans-unit>
             <trans-unit id="contract.pay">
                 <source>contract.pay</source>
-                <target>Pay</target>
+                <target>Make a Payment</target>
             </trans-unit>
             <trans-unit id="contract.paid.cash">
                 <source>contract.paid.cash</source>
@@ -888,7 +888,7 @@
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
-                <target>Edit</target>
+                <target>Edit Payment</target>
             </trans-unit>
             <trans-unit id="contract.pay.source">
                 <source>contract.pay.source</source>
@@ -904,7 +904,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.next">
                 <source>contract.payment.next</source>
-                <target>Next Due Date</target>
+                <target>Due On</target>
             </trans-unit>
             <trans-unit id="contract.payment.date.next">
                 <source>contract.payment.date.next</source>
@@ -918,6 +918,15 @@
                 <source>contract.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="contract.rent_amount">
+                <source>contract.rent_amount</source>
+                <target>Rent Amount</target>
+            </trans-unit>
+            <trans-unit id="contract.property">
+                <source>contract.property</source>
+                <target>Property</target>
+            </trans-unit>
+
             <trans-unit id="contract.error.rent">
                 <source>contract.error.rent</source>
                 <target>Amount could not be empty</target>
@@ -1270,7 +1279,7 @@
             </trans-unit>
             <trans-unit id="contract.status.pending.text">
                 <source>contract.status.pending.text</source>
-                <target>PENDING Landlord Approval</target>
+                <target>Pending Landlord Approval</target>
             </trans-unit>
             <trans-unit id="contract.status.pending.title">
                 <source>contract.status.pending.title</source>
@@ -1280,8 +1289,8 @@
                 <source>contract.status.invite</source>
                 <target>INVITE</target>
             </trans-unit>
-            <trans-unit id="contract.status.invite.title">
-                <source>contract.status.invite.title</source>
+            <trans-unit id="contract.status.invite.text">
+                <source>contract.status.invite.text</source>
                 <target>Waiting for your landlord to join RentTrack.</target>
             </trans-unit>
             <trans-unit id="contract.status.approved">
@@ -1295,6 +1304,18 @@
             <trans-unit id="contract.status.finished">
                 <source>contract.status.finished</source>
                 <target>FINISHED</target>
+            </trans-unit>
+            <trans-unit id="contract.status.approved.text">
+                <source>contract.status.approved.text</source>
+                <target>No Payment Scheduled</target>
+            </trans-unit>
+            <trans-unit id="contract.status.one_time.text">
+                <source>contract.status.one_time.text</source>
+                <target>One-Time Payment Scheduled for %payment_date%</target>
+            </trans-unit>
+            <trans-unit id="contract.status.recurring.text">
+                <source>contract.status.recurring.text</source>
+                <target>Next Recurring Payment Scheduled for %payment_date%</target>
             </trans-unit>
             <trans-unit id="landlord.alert.title">
                 <source>landlord.alert.title</source>
