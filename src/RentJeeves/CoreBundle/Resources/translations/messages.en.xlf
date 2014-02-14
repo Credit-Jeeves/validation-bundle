@@ -1819,6 +1819,42 @@
                 <source>remove.comment</source>
                 <target>To remove authorization for RentTrack to pull your credit profile, type your password below and click 'Remove'. Your score, credit profile data and any sensitive personal data will be removed from our database.</target>
             </trans-unit>
+            <trans-unit id="verify.your.identity">
+                <source>verify.your.identity</source>
+                <target>Verify Your Identity</target>
+            </trans-unit>
+            <trans-unit id="verify.your.identity.desc">
+                <source>verify.your.identity.desc</source>
+                <target>
+                    In order to show you your credit score
+                    and profile, as well as to report your
+                    rent payments to credit bureaus, we need
+                    to locate your credit file and verify your identity.
+                    This soft inquiry will not impact your credit score.
+                </target>
+            </trans-unit>
+            <trans-unit id="personal.information">
+                <source>personal.information</source>
+                <target>Personal Information</target>
+            </trans-unit>
+            <trans-unit id="verify.identity">
+                <source>verify.identity</source>
+                <target>Verify Identity</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.incorrect.answer2">
+               <source>pidkiq.error.incorrect.answer2</source>
+               <target><![CDATA[
+                We found your identity at the credit bureau, so you WILL be able
+                to set up your payment. However, some of the answers you provided to the
+                questions are incorrect, so you will not be able to see your credit score or
+                profile just yet. Contact
+                <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+                ]]>
+                </target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

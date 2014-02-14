@@ -9,6 +9,7 @@ use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
+use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -124,33 +125,16 @@ class PayController extends Controller
         if (!$userType->isValid()) {
             return $this->renderErrors($userType);
         }
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        /** @var Address $address */
-        $address = null;
-        $isNewAddress = false;
-        $em->getRepository('DataBundle:Address')->resetDefaults($this->getUser()->getId());
-        /** @var Address $addressChose */
-        /** @var Address $newAddress */
-        if ($addressChose = $userType->get('address_choice')->getData()) {
-            $address = $addressChose;
-        } elseif ($newAddress = $userType->get('new_address')->getData()) {
-            $address = $newAddress;
-            $address->setUser($this->getUser());
-            $isNewAddress = true;
-        }
-        $address->setIsDefault(1);
-        $data = $userType->getData();
-        $em->persist($address);
-        $em->persist($data);
-        $em->flush();
+        /** @var $formProcessor UserDetailsTypeProcessor */
+        $formProcessor = $this->get('user.details.type.processor');
+        $formProcessor->save($userType, $this->getUser());
 
         return new JsonResponse(
             array(
                 'success' => true,
-                'newAddress' => $isNewAddress ?
+                'newAddress' => $formProcessor->getIsNewAddress() ?
                     $this->get('jms_serializer')->serialize(
-                        $address,
+                        $formProcessor->getAddress(),
                         'array'
                     ) : null
             )

@@ -250,8 +250,8 @@ class PayCase extends BaseTestCase
             );
             $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));
         } else {
-            $this->assertNotNull($menu = $this->page->findAll('css', '.top-nav>ul>li'));
-            $this->assertEquals(1, count($menu));
+            $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
+            $this->assertFalse($pay->isVisible());
         }
 
         $this->logout();

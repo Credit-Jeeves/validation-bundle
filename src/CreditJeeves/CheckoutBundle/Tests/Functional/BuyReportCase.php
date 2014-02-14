@@ -88,10 +88,10 @@ class BuyReportCase extends BaseTestCase
         $this->assertCount(3, $form->findAll('css', '.error_list li'), 'Number of errors is wrong');
 
         $formData = array(
-            'order_authorize_authorizes_0_card_num' => '0005105105105100',
-            'order_authorize_authorizes_0_card_code' => '002',
+            'order_authorize_authorizes_0_card_num'       => '0005105105105100',
+            'order_authorize_authorizes_0_card_code'      => '002',
             'order_authorize_authorizes_0_exp_date_month' => date('m'),
-            'order_authorize_authorizes_0_exp_date_year' => date('Y'),
+            'order_authorize_authorizes_0_exp_date_year'  => date('Y'),
         );
 
         // Fake data: card number

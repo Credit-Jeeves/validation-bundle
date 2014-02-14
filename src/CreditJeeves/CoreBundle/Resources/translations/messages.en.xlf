@@ -965,7 +965,10 @@
                 <source>pidkiq.why.text2</source>
                 <target>Please answer these questions carefully. Please note that the correct answer may not be listed, and that some information on your credit file may be from past addresses and employers.</target>
             </trans-unit>
-
+            <trans-unit id="error.user.zip.invalid">
+                <source>error.user.zip.invalid</source>
+                <target>Zip code allow only numbers.</target>
+            </trans-unit>
             <trans-unit id="video.tailored.title">
                 <source>video.tailored.title</source>
                 <target>Tailored to You</target>

@@ -1,0 +1,26 @@
+{% extends "TenantBundle::base.html.twig" %}
+
+{% if form %}
+    {% form_theme form 'RjCoreBundle::form.html.twig' %}
+{% endif %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+    '@TenantBundle/Resources/public/css/personalInfoFillPidkiq.css'
+    '@TenantBundle/Resources/public/css/questions.css'
+    '@RjPublicBundle/Resources/public/css/styles.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block content %}
+    {{ include(
+    'TenantBundle:Summary:_pidkiq.html.twig',
+    {
+    'step': 'step2',
+    'form': form
+    }
+    ) }}
+{% endblock %}
