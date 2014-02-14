@@ -1,0 +1,7 @@
+<form {{ form_enctype(form) }} method="post" novalidate>
+    {{ form_widget(form) }}
+    <div class="clear"></div>
+    <button class="button fixed next">
+        <span>{{ 'pay_popup.step.next'|trans }}</span>
+    </button>
+</form>
