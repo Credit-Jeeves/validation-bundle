@@ -43,32 +43,31 @@ class PaymentReport
      */
     public function synchronize($makeArchive = false)
     {
-        if ($file = $this->fileFinder->find()) {
-
-            $data = $this->fileReader->read($file);
-
-            foreach ($data as $paymentData) {
-                switch ($paymentData['TransactionType']) {
-                    case 'Payment':
-                        $this->processCompletePayment($paymentData);
-                        break;
-                    case 'Payment Return':
-                        $this->processReturnedPayment($paymentData);
-                        break;
-                    case 'Payment Reversal':
-                        $this->processRefundedPayment($paymentData);
-                        break;
-                }
-            }
-
-            if ($makeArchive) {
-                $this->fileFinder->archive($file);
-            }
-
-            return count($data);
+        if (!$file = $this->fileFinder->find()) {
+            return 0;
         }
 
-        return 0;
+        $data = $this->fileReader->read($file);
+
+        foreach ($data as $paymentData) {
+            switch ($paymentData['TransactionType']) {
+                case 'Payment':
+                    $this->processCompletePayment($paymentData);
+                    break;
+                case 'Payment Return':
+                    $this->processReturnedPayment($paymentData);
+                    break;
+                case 'Payment Reversal':
+                    $this->processRefundedPayment($paymentData);
+                    break;
+            }
+        }
+
+        if ($makeArchive) {
+            $this->fileFinder->archive($file);
+        }
+
+        return count($data);
     }
 
     protected function processCompletePayment($paymentData)
