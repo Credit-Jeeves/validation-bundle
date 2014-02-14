@@ -6,8 +6,7 @@ function Pay(parent, contractId) {
     var current = 0;
     this.isValidUser = ko.observable(true);
     this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
-    console.info(this.isPidVerificationSkipped());
-    console.info(contract);
+
     this.getCurrentStep = function()
     {
         return steps[current];
@@ -18,15 +17,6 @@ function Pay(parent, contractId) {
         current--;
         this.step(steps[current]);
     };
-
-    this.inArray = function(what, where) {
-        for(var i = 0; i < where.length; i++) {
-            if(what == where[i]) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     this.isProcessQuestion = false;
 
@@ -239,14 +229,6 @@ function Pay(parent, contractId) {
     this.getAmount = ko.computed(function() {
         return '$' + this.payment.amount();
     }, this);
-
-    this.getTotalAmount = function(paymentCardFee) {
-        var fee = 0;
-        if (this.paymentSource.type() == 'card') {
-            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
-        }
-        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
-    };
 
     this.getFeeAmountText = function(paymentCardFee) {
         return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
