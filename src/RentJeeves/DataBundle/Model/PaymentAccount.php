@@ -59,7 +59,8 @@ abstract class PaymentAccount
      * )
      * @ORM\JoinColumn(
      *      name="address_id",
-     *      referencedColumnName="id"
+     *      referencedColumnName="id",
+     *      onDelete="SET NULL"
      * )
      *
      * @Serializer\SerializedName("addressId")

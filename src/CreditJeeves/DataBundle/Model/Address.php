@@ -254,10 +254,8 @@ abstract class Address
      *     mappedBy="address",
      *     cascade={
      *         "persist",
-     *         "remove",
      *         "merge"
-     *     },
-     *     orphanRemoval=true
+     *     }
      * )
      *
      * @var ArrayCollection

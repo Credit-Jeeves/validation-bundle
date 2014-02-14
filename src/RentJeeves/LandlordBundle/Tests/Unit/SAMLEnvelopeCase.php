@@ -59,41 +59,21 @@ class SAMLEnvelopeCase extends BaseTestCase
         $expected = '<?xml version="1.0" encoding="utf-8"?>' . "\n" .
             '<InboundConfiguration><InboundApplicationConfigurations><InboundApplicationConfiguration>' .
             '<MerchantDbaName>TIMOTHY APPLEGATE</MerchantDbaName><MerchantEmail>landlord1@example.com</MerchantEmail>' .
-            '<MerchantPhone>7858655392</MerchantPhone><CorporateName>TIMOTHY APPLEGATE</CorporateName>' .
+            '<MerchantPhone>7858655392</MerchantPhone><CorporateName>TIMOTHY APPLEGATE</CorporateName>'.
             '<CorporatePhone>7858655392</CorporatePhone>' .
             '<MerchantPrimaryContactName>TIMOTHY APPLEGATE</MerchantPrimaryContactName>' .
             '<MerchantPrimaryContactPhone>7858655392</MerchantPrimaryContactPhone>' .
             '<MerchantNumberOfLocations>1</MerchantNumberOfLocations><MerchantAddress><Street>KINGSTON DR</Street>' .
-            '<City>LAWRENCE</City><Zip>660491614</Zip><UsState>KS</UsState></MerchantAddress><OwnerOfficers>' .
-            '<OwnerOfficer><EmailAddress>landlord1@example.com</EmailAddress><FirstName>TIMOTHY</FirstName>' .
-            '<LastName>APPLEGATE</LastName><HomePhone>7858655392</HomePhone><OwnerOfficerAddress>' .
-            '<Street>KINGSTON DR</Street><City>LAWRENCE</City><Zip>660491614</Zip><UsState>KS</UsState>' .
-            '</OwnerOfficerAddress></OwnerOfficer></OwnerOfficers><MerchantAccount><MerchantAccount><AccountNumber/>' .
-            '<TransitRouterAbaNumber/><AccountType/></MerchantAccount></MerchantAccount>' .
+            '<City>LAWRENCE</City><Zip>660491614</Zip><UsState>KS</UsState></MerchantAddress>' .
+            '<OwnerOfficers><OwnerOfficer><EmailAddress>landlord1@example.com</EmailAddress>' .
+            '<FirstName>TIMOTHY</FirstName><LastName>APPLEGATE</LastName><HomePhone>7858655392</HomePhone>' .
+            '<OwnerOfficerAddress><Street>KINGSTON DR</Street><City>LAWRENCE</City><Zip>660491614</Zip>' .
+            '<UsState>KS</UsState></OwnerOfficerAddress></OwnerOfficer></OwnerOfficers><MerchantAccount>' .
+            '<MerchantAccount><AccountNumber></AccountNumber><TransitRouterAbaNumber></TransitRouterAbaNumber>' .
+            '<AccountType></AccountType></MerchantAccount></MerchantAccount>' .
             '</InboundApplicationConfiguration></InboundApplicationConfigurations></InboundConfiguration>' . "\n";
 
         $this->assertEquals($expected, $saml->getPortalApplication()->saveXml());
-
-        $this->markTestIncomplete('Tatyana please check it');
-        $encoded = 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPEluYm91bmRDb25maWd1cmF0aW9uPjxJbmJvdW5' .
-            'kQXBwbGljYXRpb25Db25maWd1cmF0aW9ucz48SW5ib3VuZEFwcGxpY2F0aW9uQ29uZmlndXJhdGlvbj48TWVyY2hhbnREYmFOY' .
-            'W1lPlRJTU9USFkgQVBQTEVHQVRFPC9NZXJjaGFudERiYU5hbWU+PE1lcmNoYW50RW1haWw+bGFuZGxvcmQxQGV4YW1wbGUuY29tP' .
-            'C9NZXJjaGFudEVtYWlsPjxNZXJjaGFudFBob25lPjc4NTg2NTUzOTI8L01lcmNoYW50UGhvbmU+PENvcnBvcmF0ZU5hbWU+VElN' .
-            'T1RIWSBBUFBMRUdBVEU8L0NvcnBvcmF0ZU5hbWU+PENvcnBvcmF0ZVBob25lPjc4NTg2NTUzOTI8L0NvcnBvcmF0ZVBob25lPjx' .
-            'NZXJjaGFudFByaW1hcnlDb250YWN0TmFtZT5USU1PVEhZIEFQUExFR0FURTwvTWVyY2hhbnRQcmltYXJ5Q29udGFjdE5hbWU+PE' .
-            '1lcmNoYW50UHJpbWFyeUNvbnRhY3RQaG9uZT43ODU4NjU1MzkyPC9NZXJjaGFudFByaW1hcnlDb250YWN0UGhvbmU+PE1lcmNo' .
-            'YW50TnVtYmVyT2ZMb2NhdGlvbnM+MTwvTWVyY2hhbnROdW1iZXJPZkxvY2F0aW9ucz48TWVyY2hhbnRBZGRyZXNzPjxTdHJlZXQ+' .
-            'S0lOR1NUT04gRFI8L1N0cmVldD48Q2l0eT5MQVdSRU5DRTwvQ2l0eT48WmlwPjY2MDQ5MTYxNDwvWmlwPjxVc1N0YXRlPktTPC9' .
-            'Vc1N0YXRlPjwvTWVyY2hhbnRBZGRyZXNzPjxPd25lck9mZmljZXJzPjxPd25lck9mZmljZXI+PEVtYWlsQWRkcmVzcz5sYW5kbG9' .
-            'yZDFAZXhhbXBsZS5jb208L0VtYWlsQWRkcmVzcz48Rmlyc3ROYW1lPlRJTU9USFk8L0ZpcnN0TmFtZT48TGFzdE5hbWU+QVBQTEV' .
-            'HQVRFPC9MYXN0TmFtZT48SG9tZVBob25lPjc4NTg2NTUzOTI8L0hvbWVQaG9uZT48T3duZXJPZmZpY2VyQWRkcmVzcz48U3RyZW' .
-            'V0PktJTkdTVE9OIERSPC9TdHJlZXQ+PENpdHk+TEFXUkVOQ0U8L0NpdHk+PFppcD42NjA0OTE2MTQ8L1ppcD48VXNTdGF0ZT5LUz' .
-            'wvVXNTdGF0ZT48L093bmVyT2ZmaWNlckFkZHJlc3M+PC9Pd25lck9mZmljZXI+PC9Pd25lck9mZmljZXJzPjxNZXJjaGFudEFj' .
-            'Y291bnQ+PE1lcmNoYW50QWNjb3VudD48QWNjb3VudE51bWJlcj48L0FjY291bnROdW1iZXI+PFRyYW5zaXRSb3V0ZXJBYmFOdW' .
-            '1iZXI+PC9UcmFuc2l0Um91dGVyQWJhTnVtYmVyPjxBY2NvdW50VHlwZT48L0FjY291bnRUeXBlPjwvTWVyY2hhbnRBY2NvdW50' .
-            'PjwvTWVyY2hhbnRBY2NvdW50PjwvSW5ib3VuZEFwcGxpY2F0aW9uQ29uZmlndXJhdGlvbj48L0luYm91bmRBcHBsaWNhdGlvbk' .
-            'NvbmZpZ3VyYXRpb25zPjwvSW5ib3VuZENvbmZpZ3VyYXRpb24+Cg==';
-        $this->assertEquals($expected, base64_decode($encoded));
     }
 
     /**

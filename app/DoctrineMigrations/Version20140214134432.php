@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20140108102042 extends AbstractMigration
+class Version20140214134432 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -27,8 +27,7 @@ class Version20140108102042 extends AbstractMigration
                 executeAfter DATETIME DEFAULT NULL,
                 closedAt DATETIME DEFAULT NULL,
                 command VARCHAR(255) NOT NULL,
-                args LONGTEXT NOT NULL
-                    COMMENT '(DC2Type:json_array)',
+                args LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)',
                 output LONGTEXT DEFAULT NULL,
                 errorOutput LONGTEXT DEFAULT NULL,
                 exitCode SMALLINT UNSIGNED DEFAULT NULL,
@@ -55,22 +54,16 @@ class Version20140108102042 extends AbstractMigration
                 dest_job_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
         $this->addSql(
-            "CREATE TABLE jms_job_related_entities (job_id BIGINT UNSIGNED NOT NULL,
-                related_class VARCHAR(150) NOT NULL,
-                related_id VARCHAR(100) NOT NULL,
+            "CREATE TABLE jms_job_related_entities (id BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
+                job_id BIGINT UNSIGNED DEFAULT NULL,
+                payment_id BIGINT DEFAULT NULL,
+                order_id BIGINT DEFAULT NULL,
+                created_at DATETIME NOT NULL,
+                related_class VARCHAR(255) NOT NULL,
                 INDEX IDX_E956F4E2BE04EA9 (job_id),
-                PRIMARY KEY(job_id,
-                related_class,
-                related_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
-        );
-        $this->addSql(
-            "CREATE TABLE jms_job_statistics (job_id BIGINT UNSIGNED NOT NULL,
-                characteristic VARCHAR(30) NOT NULL,
-                createdAt DATETIME NOT NULL,
-                charValue DOUBLE PRECISION NOT NULL,
-                PRIMARY KEY(job_id,
-                characteristic,
-                createdAt)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
+                INDEX IDX_E956F4E24C3A3BB (payment_id),
+                INDEX IDX_E956F4E28D9F6D38 (order_id),
+                PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
         $this->addSql(
             "ALTER TABLE jms_jobs
@@ -96,6 +89,19 @@ class Version20140108102042 extends AbstractMigration
                 FOREIGN KEY (job_id)
                 REFERENCES jms_jobs (id)"
         );
+        $this->addSql(
+            "ALTER TABLE jms_job_related_entities
+                ADD CONSTRAINT FK_E956F4E24C3A3BB
+                FOREIGN KEY (payment_id)
+                REFERENCES rj_payment (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE jms_job_related_entities
+                ADD CONSTRAINT FK_E956F4E28D9F6D38
+                FOREIGN KEY (order_id)
+                REFERENCES cj_order (id)"
+        );
+
     }
 
     public function down(Schema $schema)
@@ -134,9 +140,6 @@ class Version20140108102042 extends AbstractMigration
         );
         $this->addSql(
             "DROP TABLE jms_job_related_entities"
-        );
-        $this->addSql(
-            "DROP TABLE jms_job_statistics"
         );
     }
 }
