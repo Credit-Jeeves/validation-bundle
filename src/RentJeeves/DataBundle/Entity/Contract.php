@@ -453,7 +453,7 @@ class Contract extends Base
         $result['full_pay_to'] = $this->getPayToName();
         $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10).'...';
         $result['status'] = $this->getStatus();
-        $result['recur'] = 'NO';
+        $result['payment_type'] = '';
         // @todo get payment source name
         $result['row_payment_source'] = 'N/A';
         $result['full_payment_source'] = '';
@@ -461,9 +461,7 @@ class Contract extends Base
 
         if ($payment = $this->getNotClosedPayment()) {
             $result['isPayment'] = true;
-            if (PaymentType::RECURRING == $payment->getType()) {
-                $result['recur'] = 'Yes';
-            }
+            $result['payment_type'] = $payment->getType();
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {

@@ -54,3 +54,8 @@
 a.linkselect-link .linkselect-link-text {
     line-height: 20px;
 }
+div.total-amount {
+    font-size: 14px;
+    color: #000;
+    font-weight: bold;
+}
