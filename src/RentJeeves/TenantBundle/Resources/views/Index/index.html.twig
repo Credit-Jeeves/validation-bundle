@@ -2,9 +2,17 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css' %}
-        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
-    {% endstylesheets %}
+    {% if isPidVerificationSkipped == false %}
+        {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css' %}
+            <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
+    {% else %}
+        {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css'
+                       '@TenantBundle/Resources/public/css/isPidVerificationSkipped.css'
+        %}
+             <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}

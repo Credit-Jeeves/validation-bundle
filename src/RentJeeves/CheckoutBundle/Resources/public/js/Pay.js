@@ -5,6 +5,39 @@ function Pay(parent, contractId) {
     var contract = parent.getContractById(contractId);
     var current = 0;
     this.isValidUser = ko.observable(true);
+    this.isPidVerificationSkipped = ko.observable(false);
+    this.isPidVerificationSkippedSteps = ['source','user', 'questions'];
+    this.getCurrentStep = function()
+    {
+        var currentStep = steps[current];
+/*        console.info(currentStep);
+        if (self.inArray(currentStep, self.isPidVerificationSkippedSteps) && self.isPidVerificationSkipped()) {
+            console.info('Skeep to '+steps[current+2]);
+            return steps[current+2];
+        }*/
+        return currentStep;
+    }
+
+    this.previous = function() {
+        window.formProcess.removeAllErrors('#pay-popup');
+/*        if (self.inArray(currentStep, self.isPidVerificationSkippedSteps) && self.isPidVerificationSkipped()) {
+            console.info('Skeep to '+steps[current-2]);
+            var current = current-2;
+        } else {*/
+            current--;
+        //}
+        this.step(steps[current]);
+    };
+
+    this.inArray = function(what, where) {
+        for(var i = 0; i < where.length; i++) {
+            if(what == where[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     this.isProcessQuestion = false;
 
     var forms = {
@@ -28,6 +61,7 @@ function Pay(parent, contractId) {
         return this.passedSteps().indexOf(step) >= 0;
     }
 
+
     this.step.subscribe(function(newValue) {
 
         // if this step was already passed, then remove it (when user clicks Previous button)
@@ -47,9 +81,18 @@ function Pay(parent, contractId) {
             case 'source':
                 break;
             case 'user':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
                 self.isValidUser(true);
                 break;
             case 'questions':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
+
                 if (parent.questions) {
                     break;
                 }
@@ -256,7 +299,7 @@ function Pay(parent, contractId) {
     }, this);
 
     var onSuccessStep = function(data) {
-        var currentStep = steps[current];
+        var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'details':
                 break;
@@ -346,7 +389,7 @@ function Pay(parent, contractId) {
     };
 
     this.next = function() {
-        var currentStep = steps[current];
+        var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'details':
                 sendData(Routing.generate('checkout_pay_payment'), forms[currentStep]);
@@ -366,10 +409,18 @@ function Pay(parent, contractId) {
                 }
                 break;
             case 'user':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
                 self.isProcessQuestion = false;
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 break;
             case 'questions':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
                 //User is valid and we have question so we can try process it
                 if (self.isValidUser() && !self.isProcessQuestion) {
                     sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
@@ -389,12 +440,6 @@ function Pay(parent, contractId) {
                 break;
         }
 
-    };
-
-    this.previous = function() {
-        current--;
-        window.formProcess.removeAllErrors('#pay-popup ');
-        this.step(steps[current]);
     };
 
     this.cancelDialog = function() {

@@ -390,4 +390,20 @@ abstract class User extends BaseUser
         $nFicoScore = $nFicoScore > 850 ? 850 : $nFicoScore;
         return $score ? $nFicoScore: 0;
     }
+
+    public function getIsPidVerificationSkipped()
+    {
+        $isPidVerificationSkipped = false;
+        /**
+         * @var $group Group
+         */
+        foreach ($this->getGroups() as $group) {
+            $setting = $group->getGroupSettings();
+            if ($isPidVerificationSkipped = $setting->getIsPidVerificationSkipped()) {
+                break;
+            }
+        }
+
+        return $isPidVerificationSkipped;
+    }
 }

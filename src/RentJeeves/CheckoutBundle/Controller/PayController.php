@@ -141,15 +141,28 @@ class PayController extends Controller
         );
     }
 
+    protected function isVerifiedUser($request)
+    {
+        if ($this->getUser()->getIsPidVerificationSkipped()) {
+            return true;
+        }
+        $session = $request->getSession();
+        $isValidUser = $session->get('isValidUser', false);
+        if (UserIsVerified::PASSED === $this->getUser()->getIsVerified() || $isValidUser) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @Route("/exec", name="checkout_pay_exec", options={"expose"=true})
      * @Method({"POST"})
      */
     public function execAction(Request $request)
     {
-        $session = $request->getSession();
-        $isValidUser = $session->get('isValidUser', false);
-        if (UserIsVerified::PASSED != $this->getUser()->getIsVerified() && !$isValidUser) {
+
+        if (!$this->isVerifiedUser($request)) {
             throw $this->createNotFoundException('Verification not passed');
         }
 

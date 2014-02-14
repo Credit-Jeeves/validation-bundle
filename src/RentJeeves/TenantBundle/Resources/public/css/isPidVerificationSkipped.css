@@ -1,0 +1,6 @@
+.steps>li>.step {
+    width: 215px;
+}
+.steps>li>.step>span{
+    width: 155px;
+}

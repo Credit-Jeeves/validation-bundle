@@ -20,6 +20,12 @@
 </div>
 
 <div id="pay-popup" class="pricing-popup dashboard-popup properties-popup payments-popup verify-min">
+    <input type="hidden"
+           name="isPidVerificationSkipped"
+           value=""
+           id="isPidVerificationSkipped"
+           data-bind="value: isPidVerificationSkipped({{ isPidVerificationSkipped }})"
+    />
     <h1 data-bind="visible: !payment.id()">{{ 'pay_popup.title' | trans }}</h1>
     <h1 data-bind="visible: payment.id()">{{ 'pay_popup.title.edit' | trans }}</h1>
     <div class="clearfix col-box attention-container">
@@ -31,10 +37,12 @@
             <li class="step2" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
-            <li class="step3"
-                data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('questions') }">
-                <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
-            </li>
+            {% if isPidVerificationSkipped == false %}
+                <li class="step3"
+                    data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('questions') }">
+                    <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
+                </li>
+            {% endif %}
             <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
                 <span class="step"><span>{{ 'pay_popup.step.4' | trans }}</span></span>
             </li>
