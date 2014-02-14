@@ -136,7 +136,7 @@ abstract class Address
      *     }
      * )
      * @Assert\Regex(
-     *     pattern="/^[0-9]+$/",
+     *     pattern="/^(\d)+$/",
      *     message="error.user.zip.invalid",
      *     groups={
      *         "user_address_new",
