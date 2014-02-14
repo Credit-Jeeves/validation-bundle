@@ -125,6 +125,9 @@
             '{{ user.getIsVerified }}'
         );
         ko.applyBindings(currentPaymentsViewModel, $('#current-payments').get(0));
+        {% if contractsRaw|length == 1 and contractsRaw[0].status == 'invite'%}
+            $('#contract-pay-1').click();
+        {% endif %}
     });
 </script>
 
