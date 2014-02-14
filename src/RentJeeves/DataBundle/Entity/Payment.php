@@ -72,12 +72,10 @@ class Payment extends Base
      */
     public function preRemove(LifecycleEventArgs $e)
     {
-//        var_dump($e);die('OK');
-        $this->setStatus(PaymentStatus::CLOSE);
         $em = $e->getEntityManager();
-        $entity = $e->getEntity();;
-        $em->persist($entity);
-//        $em->persist($this);
-//        $em->flush($this);
+//        $em->detach($this);
+        $this->setStatus(PaymentStatus::CLOSE);
+        $em->persist($this);
+        $em->flush($this);
     }
 }

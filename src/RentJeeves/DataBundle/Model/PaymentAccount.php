@@ -137,6 +137,15 @@ abstract class PaymentAccount
     protected $updatedAt;
 
     /**
+     * @ORM\Column(
+     *      name="deleted_at",
+     *      type="datetime",
+     *      nullable=true
+     * )
+     */
+    protected $deletedAt;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
      *     mappedBy="paymentAccount",
