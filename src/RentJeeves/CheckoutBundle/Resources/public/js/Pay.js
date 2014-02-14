@@ -5,27 +5,17 @@ function Pay(parent, contractId) {
     var contract = parent.getContractById(contractId);
     var current = 0;
     this.isValidUser = ko.observable(true);
-    this.isPidVerificationSkipped = ko.observable(false);
-    this.isPidVerificationSkippedSteps = ['source','user', 'questions'];
+    this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
+    console.info(this.isPidVerificationSkipped());
+    console.info(contract);
     this.getCurrentStep = function()
     {
-        var currentStep = steps[current];
-/*        console.info(currentStep);
-        if (self.inArray(currentStep, self.isPidVerificationSkippedSteps) && self.isPidVerificationSkipped()) {
-            console.info('Skeep to '+steps[current+2]);
-            return steps[current+2];
-        }*/
-        return currentStep;
+        return steps[current];
     }
 
     this.previous = function() {
         window.formProcess.removeAllErrors('#pay-popup');
-/*        if (self.inArray(currentStep, self.isPidVerificationSkippedSteps) && self.isPidVerificationSkipped()) {
-            console.info('Skeep to '+steps[current-2]);
-            var current = current-2;
-        } else {*/
-            current--;
-        //}
+        current--;
         this.step(steps[current]);
     };
 

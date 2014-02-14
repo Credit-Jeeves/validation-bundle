@@ -45,7 +45,6 @@ class ComponentController extends Controller
             'paymentType'              => $paymentType->createView(),
             'userDetailsType'          => $userDetailsType->createView(),
             'questionsType'            => $questionsType->createView(),
-            'isPidVerificationSkipped' => $this->getUser()->getIsPidVerificationSkipped(),
         );
     }
 

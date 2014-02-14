@@ -10,6 +10,7 @@ use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
 use RentJeeves\CheckoutBundle\Form\Type\UserDetailsType;
 use RentJeeves\CheckoutBundle\Services\UserDetailsTypeProcessor;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -141,9 +142,10 @@ class PayController extends Controller
         );
     }
 
-    protected function isVerifiedUser($request)
+    protected function isVerifiedUser(Request $request, Contract $contract)
     {
-        if ($this->getUser()->getIsPidVerificationSkipped()) {
+        $setting = $contract->getGroup()->getGroupSettings();
+        if ($setting->getIsPidVerificationSkipped()) {
             return true;
         }
         $session = $request->getSession();
@@ -161,11 +163,6 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
-
-        if (!$this->isVerifiedUser($request)) {
-            throw $this->createNotFoundException('Verification not passed');
-        }
-
         $paymentType = $this->createPaymentForm();
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
@@ -183,6 +180,10 @@ class PayController extends Controller
             $paymentEntity->setContract($contract);
         } else {
             throw $this->createNotFoundException('Contract does not exist');
+        }
+
+        if (!$this->isVerifiedUser($request, $contract)) {
+            throw $this->createNotFoundException('Verification not passed');
         }
 
         if ($paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')

@@ -30,7 +30,6 @@ class IndexController extends Controller
         return array(
             'reporting'                 => $isReporting,
             'user'                      => $this->getUser(),
-            'isPidVerificationSkipped'  => $this->getUser()->getIsPidVerificationSkipped(),
         );
     }
 
