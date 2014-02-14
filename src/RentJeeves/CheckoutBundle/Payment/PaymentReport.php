@@ -55,6 +55,9 @@ class PaymentReport
                     case 'Payment Return':
                         $this->processReturnedPayment($paymentData);
                         break;
+                    case 'Payment Reversal':
+                        $this->processRefundedPayment($paymentData);
+                        break;
                 }
             }
 
@@ -70,8 +73,7 @@ class PaymentReport
 
     protected function processCompletePayment($paymentData)
     {
-        $transactionId = $paymentData['TransactionID'];
-        $transaction = $this->repo->findOneBy(array('transactionId' => $transactionId));
+        $transaction = $this->findTransaction($paymentData['TransactionID']);
 
         if ($transaction && $batchId = $paymentData['BatchID']) {
             $transaction->setBatchId($batchId);
@@ -87,8 +89,7 @@ class PaymentReport
 
     protected function processReturnedPayment($paymentData)
     {
-        $transactionId = $paymentData['OriginalTransactionID'];
-        $transaction = $this->repo->findOneBy(array('transactionId' => $transactionId));
+        $transaction = $this->findTransaction($paymentData['OriginalTransactionID']);
 
         // @TODO: process 'else' case in future
         if ($transaction) {
@@ -97,6 +98,24 @@ class PaymentReport
 
             $this->em->flush();
         }
+    }
+
+    protected function processRefundedPayment($paymentData)
+    {
+        $transaction = $this->findTransaction($paymentData['OriginalTransactionID']);
+
+        // @TODO: process 'else' case in future
+        if ($transaction) {
+            $order = $transaction->getOrder();
+            $order->setStatus(OrderStatus::REFUNDED);
+
+            $this->em->flush();
+        }
+    }
+
+    protected function findTransaction($transactionId)
+    {
+        return $this->repo->findOneBy(array('transactionId' => $transactionId));
     }
 
     protected function getBatchDate(HeartlandTransaction $transaction)
