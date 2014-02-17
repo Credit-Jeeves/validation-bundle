@@ -102,7 +102,7 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "document.URL != '{$url}'");
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
         //end check search on the not found
         $this->page->clickLink('Pricing');
