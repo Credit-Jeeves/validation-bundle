@@ -10,6 +10,8 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Alert;
 use RentJeeves\PublicBundle\Form\TenantType;
 use CreditJeeves\DataBundle\Enum\UserType;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class PublicController extends Controller
 {
@@ -22,6 +24,29 @@ class PublicController extends Controller
     public function iframeAction()
     {
         return array();
+    }
+
+    /**
+     * @Route("/tenant/invite/check", name="tenant_invite_check", options={"expose"=true})
+     * @Template()
+     *
+     */
+    public function checkInviteTenantAction(Request $request)
+    {
+        $data = array(
+            'is_already_invited' => false,
+        );
+
+        $email = $request->request->get('email');
+        if (empty($email)) {
+            return new JsonResponse($data);
+        }
+
+        $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')->findOneBy(array(
+           'email'  => $email,
+        ));
+
+        return new JsonResponse($data);
     }
 
     /**
@@ -142,33 +167,32 @@ class PublicController extends Controller
             new TenantType(),
             $tenant
         );
+        $form->handleRequest($request);
 
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $tenant = $form->getData();
-                $aForm = $request->request->get($form->getName());
-                $unitName = $request->request->get('unit'.$Property->getId());
-                $unitNew = $request->request->get('unitNew'.$Property->getId());
-                $unitSearch = null;
-                if (!empty($unitName) && $unitName != 'new') {
-                    $unitSearch = $unitName;
-                } elseif (!empty($unitNew) && $unitNew != 'none') {
-                    $unitSearch = $unitNew;
-                }
-
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
-
-                $tenant->setPassword($password);
-                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($tenant);
-                $em->flush();
-                $Property->createContract($em, $tenant, $unitSearch);
-                $this->get('project.mailer')->sendRjCheckEmail($tenant);
-                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
+        if ($form->isValid()) {
+            $tenant = $form->getData();
+            $aForm = $request->request->get($form->getName());
+            $unitName = $request->request->get('unit'.$Property->getId());
+            $unitNew = $request->request->get('unitNew'.$Property->getId());
+            $unitSearch = null;
+            if (!empty($unitName) && $unitName != 'new') {
+                $unitSearch = $unitName;
+            } elseif (!empty($unitNew) && $unitNew != 'none') {
+                $unitSearch = $unitNew;
             }
+
+            $password = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
+
+            $tenant->setPassword($password);
+            $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($tenant);
+            $em->flush();
+            $Property->createContract($em, $tenant, $unitSearch);
+            $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+            return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }
 
         $propertyList = $google->searchPropertyInRadius($Property);
