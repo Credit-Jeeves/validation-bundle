@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use JMS\DiExtraBundle\Annotation\Validator;
@@ -17,7 +18,7 @@ use CreditJeeves\DataBundle\Enum\UserType;
  *
  * @Validator("tenant_email_validator")
  */
-class TenantEmailValidator
+class TenantEmailValidator extends ConstraintValidator
 {
     protected $em;
 
@@ -54,8 +55,29 @@ class TenantEmailValidator
             return true;
         }
 
-        if (!$user->getIsActive() && $user->getType() === UserType::TENANT && $user->getInviteCode()) {
-            $this->context->addViolation($this->translate($constraint->messageGetInvite));
+        if (!($user instanceof Tenant)) {
+            $this->context->addViolation($this->translate($constraint->messageExistEmail));
+            return false;
+        }
+        /**
+         * @var $user Tenant
+         */
+        if (!$user->getIsActive() && $user->getInviteCode() && $contracts = $user->getContracts()) {
+            $contract = $contracts->first();
+            $this->context->addViolation(
+                $this->translate(
+                    $constraint->messageGetInvite,
+                    array(
+                        "%%LINK%%" => $this->router->generate(
+                            'tenant_invite_resend',
+                            array(
+                                'contractId' => $contract->getId()
+                            ),
+                            true
+                        )
+                    )
+                )
+            );
             return false;
         }
 
@@ -64,13 +86,11 @@ class TenantEmailValidator
     }
 
     //@todo setup correct link when move functional to service and will get link
-    protected function translate($message)
+    protected function translate($message, $params = array())
     {
         $this->i18n->trans(
             $message,
-            array(
-                "%%LINK%%" => $this->router->generate('', array(), true)
-            )
+            $params
         );
     }
 }

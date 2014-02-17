@@ -59,6 +59,16 @@ class PublicController extends Controller
     }
 
     /**
+     * @Route("/tenant/invite/resend/{contractId}", name="tenant_invite_resend", options={"expose"=true})
+     * @Template()
+     *
+     */
+    public function resendInviteTenantAction($contractId)
+    {
+
+    }
+
+    /**
      * @Route("/public_iframe", name="public_iframe")
      * @Template()
      *
@@ -116,27 +126,26 @@ class PublicController extends Controller
         );
 
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $tenant = $form->getData()['tenant'];
-                $invite = $form->getData()['invite'];
-                $aForm = $request->request->get($form->getName());
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['tenant']['password']['Password'], $tenant->getSalt());
-                $tenant->setPassword($password);
-                $invite->setTenant($tenant);
-                $invite->setProperty($property);
-                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($invite);
-                $em->persist($tenant);
-                $em->flush();
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $tenant = $form->getData()['tenant'];
+            $invite = $form->getData()['invite'];
+            $aForm = $request->request->get($form->getName());
+            $password = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($aForm['tenant']['password']['Password'], $tenant->getSalt());
+            $tenant->setPassword($password);
+            $invite->setTenant($tenant);
+            $invite->setProperty($property);
+            $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($invite);
+            $em->persist($tenant);
+            $em->flush();
 
-                $this->get('project.mailer')->sendRjCheckEmail($tenant);
-                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
-            }
+            $this->get('project.mailer')->sendRjCheckEmail($tenant);
+            return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }
+
         $view = $form->createView();
 
         return array(
