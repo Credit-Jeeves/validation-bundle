@@ -17,7 +17,8 @@ class Version20140131150440 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_checkout_heartland
                 ADD batch_id BIGINT DEFAULT NULL,
-                ADD batch_date DATE DEFAULT NULL"
+                ADD batch_date DATE DEFAULT NULL,
+                ADD deposit_date DATE DEFAULT NULL"
         );
     }
 
@@ -31,7 +32,8 @@ class Version20140131150440 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_checkout_heartland
                 DROP batch_id,
-                DROP batch_date"
+                DROP batch_date,
+                DROP deposit_date"
         );
     }
 }

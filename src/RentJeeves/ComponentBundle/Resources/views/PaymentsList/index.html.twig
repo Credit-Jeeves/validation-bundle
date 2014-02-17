@@ -91,7 +91,7 @@
               <tbody id="payments-block-tbody" data-bind="foreach: deposits">
                 <tr data-bind="css: $root.toggledZebraCss(batchId, $index(), true)">
                     <td>{{ 'payments.deposit'|trans }}</td>
-                    <td data-bind="text: batchDate"></td>
+                    <td data-bind="text: depositDate"></td>
                     <td colspan="2">
                         <span data-bind="text: $root.depositTitle($data)"></span>
                         <a data-bind="click: $root.togglePayments">

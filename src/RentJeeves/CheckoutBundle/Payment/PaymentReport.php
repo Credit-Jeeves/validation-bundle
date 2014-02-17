@@ -76,8 +76,12 @@ class PaymentReport
 
         if ($transaction && $batchId = $paymentData['BatchID']) {
             $transaction->setBatchId($batchId);
-            $batchDate = $this->getBatchDate($transaction);
+
+            $batchDate = $this->getBatchDate();
             $transaction->setBatchDate($batchDate);
+            
+            $depositDate = $this->getDepositDate($transaction);
+            $transaction->setDepositDate($depositDate);
 
             $order = $transaction->getOrder();
             $order->setStatus(OrderStatus::COMPLETE);
@@ -117,20 +121,28 @@ class PaymentReport
         return $this->repo->findOneBy(array('transactionId' => $transactionId));
     }
 
-    protected function getBatchDate(HeartlandTransaction $transaction)
+    protected function getDepositDate(HeartlandTransaction $transaction)
     {
-        $batchDate = new DateTime();
-        $batchDate->modify('-1 day');
+        $depositDate = new DateTime();
+        $depositDate->modify('-1 day');
 
         $paymentType = $transaction->getOrder()->getType();
 
         switch ($paymentType) {
             case OrderType::HEARTLAND_CARD:
-                return $this->businessDaysCalc->getCreditCardBusinessDate($batchDate);
+                return $this->businessDaysCalc->getCreditCardBusinessDate($depositDate);
             case OrderType::HEARTLAND_BANK:
-                return $this->businessDaysCalc->getACHBusinessDate($batchDate);
+                return $this->businessDaysCalc->getACHBusinessDate($depositDate);
             default:
-                return $batchDate;
+                return $depositDate;
         }
+    }
+
+    protected function getBatchDate()
+    {
+        $batchDate = new DateTime();
+        $batchDate->modify('-1 day');
+
+        return $batchDate;
     }
 }

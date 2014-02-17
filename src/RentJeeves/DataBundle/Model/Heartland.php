@@ -54,6 +54,16 @@ abstract class Heartland extends PaymentDetails
      */
     protected $batchDate;
 
+    /**
+     * @ORM\Column(
+     *     name="deposit_date",
+     *     type="date",
+     *     nullable=true
+     * )
+     */
+    protected $depositDate;
+
+
 //     /**
 //      * @ORM\Column(
 //      *     type="text",
@@ -189,5 +199,21 @@ abstract class Heartland extends PaymentDetails
     public function getBatchDate()
     {
         return $this->batchDate;
+    }
+
+    /**
+     * @param mixed $depositDate
+     */
+    public function setDepositDate($depositDate)
+    {
+        $this->depositDate = $depositDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDepositDate()
+    {
+        return $this->depositDate;
     }
 }

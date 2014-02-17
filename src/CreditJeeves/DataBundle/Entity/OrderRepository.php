@@ -296,7 +296,7 @@ class OrderRepository extends EntityRepository
         // get Batch Ids
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
-        $query->select('h.batchId, sum(o.amount) as order_amount, h.batchDate');
+        $query->select('h.batchId, sum(o.amount) as order_amount, h.depositDate');
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('o.heartlands', 'h');
