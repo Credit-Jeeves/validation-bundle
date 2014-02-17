@@ -207,6 +207,14 @@ function Pay(parent, contractId) {
         return '$' + this.payment.amount();
     }, this);
 
+    this.getTotalAmount = function(paymentCardFee) {
+        var fee = 0;
+        if (this.paymentSource.type() == 'card') {
+            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
+        }
+        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+    };
+
     this.getFeeAmountText = function(paymentCardFee) {
         return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };

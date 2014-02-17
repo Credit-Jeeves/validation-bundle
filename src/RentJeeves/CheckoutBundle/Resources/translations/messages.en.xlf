@@ -322,9 +322,9 @@
                 <source>checkout.recurring_for</source>
                 <target>Recurring rent payment for</target>
             </trans-unit>
-            <trans-unit id="checkout.who_paid">
-                <source>checkout.who_paid</source>
-                <target>Who's Getting Paid</target>
+            <trans-unit id="checkout.your_payment">
+                <source>checkout.your_payment</source>
+                <target>Your payment</target>
             </trans-unit>
             <trans-unit id="checkout.send_to">
                 <source>checkout.send_to</source>
@@ -360,7 +360,11 @@
             </trans-unit>
             <trans-unit id="checkout.fee">
                 <source>checkout.fee</source>
-                <target>Fee</target>
+                <target>Technology Fee</target>
+            </trans-unit>
+            <trans-unit id="checkout.total">
+                <source>checkout.total</source>
+                <target>Total</target>
             </trans-unit>
             <trans-unit id="checkout.track_score">
                 <source>checkout.track_score-%AMOUNT%</source>
