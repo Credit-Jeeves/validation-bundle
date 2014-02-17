@@ -1017,6 +1017,7 @@ class AjaxController extends Controller
      */
     public function sendReminderInvite($contractId)
     {
+        //@TODO move to service and make correct link for validator tenant email
         $translator = $this->get('translator');
         $session = $this->get("session");
         $landlordReminder = $session->get('landlord_reminder');

@@ -3,6 +3,7 @@
 namespace RentJeeves\PublicBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\DataBundle\Validators\TenantEmail;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
@@ -12,6 +13,7 @@ use RentJeeves\PublicBundle\Form\TenantType;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator;
 
 class PublicController extends Controller
 {
@@ -34,17 +36,24 @@ class PublicController extends Controller
     public function checkInviteTenantAction(Request $request)
     {
         $data = array(
-            'is_already_invited' => false,
+            'is_already_exist'   => false,
+            'message'            => ''
         );
 
         $email = $request->request->get('email');
-        if (empty($email)) {
+        /**
+         * @var $validator Validator
+         */
+        $validator = $this->get('validator');
+        $errors = $validator->validateValue($email, new TenantEmail());
+
+        if ($errors > 0) {
+            $errors = end($errors);
+            $data['is_already_exist'] = true;
+            $data['message'] = $errors;
+
             return new JsonResponse($data);
         }
-
-        $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Tenant')->findOneBy(array(
-           'email'  => $email,
-        ));
 
         return new JsonResponse($data);
     }
