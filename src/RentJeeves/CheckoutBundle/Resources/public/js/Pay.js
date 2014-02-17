@@ -19,6 +19,13 @@ function Pay(parent, contractId) {
     };
 
     this.isProcessQuestion = false;
+    this.getTotalAmount = function(paymentCardFee) {
+        var fee = 0;
+        if (this.paymentSource.type() == 'card') {
+            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
+        }
+        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+    };
 
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
