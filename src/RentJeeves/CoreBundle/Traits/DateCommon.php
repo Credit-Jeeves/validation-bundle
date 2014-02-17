@@ -5,16 +5,16 @@ use \DateTime;
 
 trait DateCommon
 {
-    public function getDueDays($forward = 0, DateTime $date = null)
+    public function getDueDays($shift = 0, DateTime $date = null)
     {
         if (null === $date) {
             $date = new DateTime();
         }
-        if ($forward > 0) {
-            $date->modify('+'.$forward.' days');
+        if ($shift > 0) {
+            $date->modify('+'.$shift.' days');
         }
-        if ($forward < 0) {
-            $date->modify('-1'.$forward.' days');
+        if ($shift < 0) {
+            $date->modify('-'.$shift.' days');
         }
         $total = $date->format('t');
         $day = $date->format('j');

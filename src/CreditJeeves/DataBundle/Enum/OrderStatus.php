@@ -7,11 +7,11 @@ use CreditJeeves\CoreBundle\Enum;
  * Order statuses
  * First status will be NEWONE for all orders
  * Avaliable chains:
- * 1. NEWONE -> COMPLETE
- * 2. NEWONE -> ERROR
- * 3. NEWONE -> CANCELLED
- * 4. NEWONE -> COMPLETE -> REFUNDED
- * 5. NEWONE -> COMPLETE -> RETURNED
+ * 1. NEWONE -> (PENDING) -> COMPLETE
+ * 2. NEWONE -> (PENDING) -> ERROR
+ * 3. NEWONE -> (PENDING) -> CANCELLED
+ * 4. NEWONE -> (PENDING) -> COMPLETE -> REFUNDED
+ * 5. NEWONE -> (PENDING) -> COMPLETE -> RETURNED
  * @author Ton Sharp <66ton99@gmail.com>
  */
 class OrderStatus extends Enum
@@ -20,6 +20,11 @@ class OrderStatus extends Enum
      * @var string
      */
     const NEWONE = 'new';
+
+    /**
+     * @var string
+     */
+    const PENDING = 'pending';
 
     /**
      * @var string

@@ -1,4 +1,5 @@
 parameters:
+    doctrine.dbal.connection.wrapper_class: ~
     translator.class: 'CreditJeeves\CoreBundle\Translation\Translator'
     date_short: 'M j, Y'
     date_full: 'F j, Y'

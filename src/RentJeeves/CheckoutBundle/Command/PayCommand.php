@@ -164,7 +164,7 @@ class PayCommand extends ContainerAwareCommand
         $order->addHeartland($paymentDetails);
         $message = 'OK';
         if ($statusRequest->isSuccess()) {
-            $order->setStatus(OrderStatus::COMPLETE);
+            $order->setStatus(OrderStatus::PENDING);
             $contract->shiftPaidTo($amount);
             $status = $contract->getStatus();
             if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {

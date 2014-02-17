@@ -329,7 +329,7 @@ function Pay(parent, contractId) {
 
                 jQuery('#pay-popup').hideOverlay();
                 if (!data.success) {
-                    window.formProcess.applyErrors([[data.error]]);
+                    window.formProcess.applyErrors(data);
                     return;
                 }
                 onSuccessStep(data);
@@ -348,7 +348,7 @@ function Pay(parent, contractId) {
                     window.formProcess.removeAllErrors('#pay-popup ');
                     window.formProcess.addFormError(
                         '#' + forms[currentStep],
-                        Translator.transChoice('payment_account.error.choice.empty')
+                        Translator.trans('payment_account.error.choice.empty')
                     );
                 } else if (self.newPaymentAccount()) {
                     sendData(Routing.generate('checkout_pay_source'), forms[currentStep]);

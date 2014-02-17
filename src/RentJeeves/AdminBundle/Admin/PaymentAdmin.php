@@ -14,17 +14,6 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class PaymentAdmin extends Admin
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function createQuery($context = 'list')
-    {
-        $query = parent::createQuery($context);
-//        $alias = $query->getRootAlias();
-//        $query->
-        return $query;
-    }
-
     public function configureRoutes(RouteCollection $collection)
     {
 //        $collection->remove('edit');// https://github.com/sonata-project/SonataDoctrineORMAdminBundle/issues/276

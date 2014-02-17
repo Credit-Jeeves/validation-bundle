@@ -105,7 +105,7 @@ $(document).ready(function(){
         $('html, body').animate({
               scrollTop: $(".search-box").offset().top
         }, 800);
-        googleLib.showError(Translator.transChoice('select.rental'));
+        googleLib.showError(Translator.trans('select.rental'));
         return false;
       }
     });
