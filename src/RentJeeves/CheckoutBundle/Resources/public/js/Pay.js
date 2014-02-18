@@ -378,7 +378,7 @@ function Pay(parent, contractId) {
                     window.formProcess.removeAllErrors('#pay-popup ');
                     window.formProcess.addFormError(
                         '#' + forms[currentStep],
-                        Translator.get('payment_account.error.choice.empty')
+                        Translator.trans('payment_account.error.choice.empty')
                     );
                 } else if (self.newPaymentAccount()) {
                     sendData(Routing.generate('checkout_pay_source'), forms[currentStep]);

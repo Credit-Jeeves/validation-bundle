@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
-use Sonata\AdminBundle\Admin\Admin;
+use CreditJeeves\AdminBundle\Admin\CjHoldingAdmin as Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -11,10 +11,6 @@ use CreditJeeves\DataBundle\Enum\GroupType;
 
 class RjHoldingAdmin extends Admin
 {
-    protected $formOptions = array(
-            'validation_groups' => 'holding'
-    );
-
     /**
      * {@inheritdoc}
      */
@@ -22,7 +18,6 @@ class RjHoldingAdmin extends Admin
     {
         $query = parent::createQuery($context);
         $alias = $query->getRootAlias();
-        $query->innerJoin($alias.'.groups', $alias.'_g');
         $query->add(
             'where',
             $query->expr()->in(
@@ -35,32 +30,13 @@ class RjHoldingAdmin extends Admin
         return $query;
     }
 
-    public function configureListFields(ListMapper $listMapper)
+    protected function configureShowField(ShowMapper $showMapper)
     {
-        $listMapper
-            ->addIdentifier('name')
-            ->add('groups')
-            ->add(
-                '_action',
-                'actions',
-                array(
-                    'actions' => array(
-                        'edit' => array(),
-                        'delete' => array(),
-                    )
-                )
-            );
-    }
-
-    public function configureDatagridFilters(DatagridMapper $datagridMapper)
-    {
-        $datagridMapper
-           ->add('name');
-    }
-
-    public function configureFormFields(FormMapper $formMapper)
-    {
-        $formMapper
-            ->add('name');
+        parent::configureShowField($showMapper);
+        $showMapper
+            ->add('users', null, array('route' => array('name' => 'show')))
+            ->add('groups', null, array('route' => array('name' => 'show')))
+            ->add('units', null, array('route' => array('name' => 'show')))
+            ->add('contracts', null, array('route' => array('name' => 'show')));
     }
 }

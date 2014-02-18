@@ -1,0 +1,5 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+{% import "JMSJobQueueBundle:Job:macros.html.twig" as macros %}
+{% block field %}
+    {{ macros.state(object) }}
+{% endblock %}

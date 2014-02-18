@@ -61,6 +61,7 @@ class TenantAdmin extends Admin
         $this->request->getSession()->set('contract_id', null);
         $this->request->getSession()->set('user_id', null);
         $listMapper
+            ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('first_name')
             ->add('middle_initial')
             ->add('last_name')
@@ -186,5 +187,43 @@ class TenantAdmin extends Admin
             $request->getSession()->getFlashBag()->add('sonata_flash_error', 'Please, enter password for this admin');
         }
         return $user;
+    }
+
+    protected function configureShowFields(ShowMapper $formMapper)
+    {
+        $formMapper
+            ->add('holding', null, array('route' => array('name' => 'show')))
+            ->add('type')
+            ->add('username')
+            ->add('usernameCanonical')
+            ->add('email')
+            ->add('emailCanonical')
+            ->add('enabled')
+            ->add('lastLogin')
+            ->add('locked')
+            ->add('expired')
+            ->add('expiresAt')
+            ->add('confirmationToken')
+            ->add('passwordRequestedAt')
+            ->add('roles')
+            ->add('credentialsExpired')
+            ->add('credentialsExpireAt')
+            ->add('firstName')
+            ->add('middleInitial')
+            ->add('lastName')
+            ->add('date_of_birth')
+            ->add('ssh')
+            ->add('isActive')
+            ->add('inviteCode')
+            ->add('scoreChangedNotification')
+            ->add('offerNotification')
+            ->add('culture')
+            ->add('hasData') // Sets to 0 when user left
+            ->add('isVerified')
+            ->add('hasReport')
+            ->add('isHoldingAdmin')
+            ->add('isSuperAdmin')
+            ->add('created_at')
+            ->add('updated_at');
     }
 }

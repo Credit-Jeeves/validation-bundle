@@ -2,7 +2,8 @@
 
 {% block field %}
     {% if admin.isGranted('EDIT', object) and object.hasContract %}
-        <a href="{{ path('admin_landlord_list', { "group_id": object.getContract.getGroup.getId }) }}" class="edit_link" title="{{ 'admin.list.landlords'|trans({}) }}">
+        <a href="{{ path('admin_landlord_list', { "group_id": object.getContract.getGroup.getId }) }}"
+           class="edit_link">
             <i class="icon-dealer"></i>
             {{ object.getGroupName }}
         </a>

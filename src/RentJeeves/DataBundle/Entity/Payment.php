@@ -1,13 +1,17 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use DateTime;
 
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Payment extends Base
 {
@@ -33,16 +37,45 @@ class Payment extends Base
 
     public function setStartDate($date = 'now')
     {
-        $dateTime = new \DateTime($date);
+        $dateTime = new DateTime($date);
         $this->setDueDate($dateTime->format('d'));
         $this->setStartMonth($dateTime->format('m'));
         $this->setStartYear($dateTime->format('Y'));
     }
 
+    public function getStartDate()
+    {
+        return new DateTime($this->getDueDate() . '-' . $this->getStartMonth() . '-' . $this->getStartYear());
+    }
+
     public function setEndDate($date = '+ 9 months')
     {
-        $dateTime = new \DateTime($date);
+        $dateTime = new DateTime($date);
         $this->setEndMonth($dateTime->format('m'));
         $this->setEndYear($dateTime->format('Y'));
+    }
+
+    public function __toString()
+    {
+        return $this->getStartDate()->format('m/d/Y') . ' ' . $this->getType();
+    }
+
+    public function createJob()
+    {
+        $job = new Job('payment:pay', array('--app=rj'));
+        $job->addRelatedEntity($this);
+        return $job;
+    }
+
+    /**
+     * @ORM\PreRemove
+     */
+    public function preRemove(LifecycleEventArgs $e)
+    {
+        $em = $e->getEntityManager();
+//        $em->detach($this);
+        $this->setStatus(PaymentStatus::CLOSE);
+        $em->persist($this);
+        $em->flush($this);
     }
 }

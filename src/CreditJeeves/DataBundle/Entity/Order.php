@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -776,14 +777,11 @@ class Order extends BaseOrder
 
     public function getAvailableOrderStatuses()
     {
-        $restrictedStatuses = array_diff(
-            array(OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR),
-            array($this->getStatus())
-        );
+        return OrderStatus::getManualAvailableToSet($this->getStatus());
+    }
 
-        return array_diff(
-            OrderStatus::all(),
-            $restrictedStatuses
-        );
+    public function __toString()
+    {
+        return (string)$this->getId();
     }
 }

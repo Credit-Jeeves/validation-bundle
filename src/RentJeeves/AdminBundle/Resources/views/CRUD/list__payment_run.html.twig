@@ -1,0 +1,6 @@
+{% if admin.isGranted('RUN', object)%}
+    <a href="{{ path('admin_rentjeeves_data_payment_run', { "id": object.id }) }}" class="btn">
+        <i class="icon-order"></i>
+        {{ 'Run'|trans({}) }}
+    </a>
+{% endif %}

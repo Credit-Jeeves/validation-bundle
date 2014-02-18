@@ -1,4 +1,35 @@
 services:
+    sonata.admin.jobs:
+        class: RentJeeves\AdminBundle\Admin\JobAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Jobs" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\Job
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.payments:
+        class: RentJeeves\AdminBundle\Admin\PaymentAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Paymnets" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\Payment
+            - 'RjAdminBundle:PaymentAdmin'
+
+    sonata.admin.payment.accounts:
+        class: RentJeeves\AdminBundle\Admin\PaymentAccountAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Paymnet accounts" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\PaymentAccount
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
     sonata.admin.rj_email:
         class: RentJeeves\AdminBundle\Admin\EmailTemplateAdmin
         tags:
@@ -78,17 +109,6 @@ services:
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]
 
-    sonata.admin.orders:
-        class: RentJeeves\AdminBundle\Admin\OrderAdmin
-        tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Payments" }
-        arguments:
-            - ~
-            - CreditJeeves\DataBundle\Entity\Order
-            - 'SonataAdminBundle:CRUD'
-        calls:
-            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
-
     sonata.admin.property:
         class: RentJeeves\AdminBundle\Admin\PropertyAdmin
         tags:
@@ -107,6 +127,17 @@ services:
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\Unit
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.heartland:
+        class: RentJeeves\AdminBundle\Admin\HeartlandAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: RentJeeves, label: "Heartland logs" }
+        arguments:
+            - ~
+            - RentJeeves\DataBundle\Entity\Heartland
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]

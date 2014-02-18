@@ -1,16 +1,20 @@
 <?php
 namespace RentJeeves\CoreBundle\Traits;
 
+use \DateTime;
+
 trait DateCommon
 {
-    public function getDueDays($forward = 0)
+    public function getDueDays($shift = 0, DateTime $date = null)
     {
-        $date = new \DateTime();
-        if ($forward > 0) {
-            $date = new \DateTime('+'.$forward.' days');
+        if (null === $date) {
+            $date = new DateTime();
         }
-        if ($forward < 0) {
-            $date = new \DateTime('-1'.$forward.' days');
+        if ($shift > 0) {
+            $date->modify('+'.$shift.' days');
+        }
+        if ($shift < 0) {
+            $date->modify('-'.$shift.' days');
         }
         $total = $date->format('t');
         $day = $date->format('j');
@@ -25,19 +29,15 @@ trait DateCommon
                 case 30:
                     return array(30, 31);
                     break;
-                default:
-                    return array($day);
-                    break;
             }
-        } else {
-            return array($day);
         }
+        return array($day);
     }
 
     public function getDiffDays($date, $now = null)
     {
         if (empty($now)) {
-            $now = new \DateTime();
+            $now = new DateTime();
         }
         return $interval = $date->diff($now)->format('%r%a');
     }

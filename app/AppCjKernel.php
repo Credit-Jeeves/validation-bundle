@@ -31,6 +31,7 @@ class AppCjKernel extends AppKernel
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Fp\BadaBoomBundle\FpBadaBoomBundle($this->exceptionCatcher, $this->chainNodeManager),
             new Rj\EmailBundle\RjEmailBundle(),
+            new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),
@@ -38,16 +39,18 @@ class AppCjKernel extends AppKernel
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
-            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
+            new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new FOS\RestBundle\FOSRestBundle(),
+            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
+            new JMS\JobQueueBundle\JMSJobQueueBundle(),
 
             // Must be last in the list
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
-            new RentJeeves\DataBundle\RjDataBundle(),
-            new RentJeeves\PublicBundle\RjPublicBundle(),
+            new RentJeeves\PublicBundle\RjPublicBundle(), // TODO remove
+            new RentJeeves\DataBundle\RjDataBundle(), // TODO remove
             new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),
@@ -56,7 +59,6 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\DealerBundle\DealerBundle(),
             new CreditJeeves\ApplicantBundle\ApplicantBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
-            new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
             new CreditJeeves\UserBundle\UserBundle(),
         );

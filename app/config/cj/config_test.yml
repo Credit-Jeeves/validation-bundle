@@ -3,6 +3,7 @@ imports:
 
 parameters:
     router.request_context.base_url: '/_test.php'
+    doctrine.dbal.connection.wrapper_class: 'CreditJeeves\TestBundle\Doctrine\DBAL\PersistedConnection'
 
 framework:
     router:   { resource: "%kernel.root_dir%/config/cj/routing_test.yml" }
@@ -19,7 +20,7 @@ web_profiler:
     intercept_redirects: false
 
 swiftmailer:
-    transport: swiftmailer.mailer.transport.file
+    transport: file
 
 doctrine:
     dbal:
@@ -31,7 +32,7 @@ twig:
 mink:
     goutte: ~
 #    sahi: ~
-#    zombie: ~
+    zombie: ~
 #    selenium: ~
     selenium2: ~
 

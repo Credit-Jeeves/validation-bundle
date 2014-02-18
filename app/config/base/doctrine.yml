@@ -7,12 +7,16 @@ doctrine:
         user:     %database_user%
         password: %database_password%
         charset:  UTF8
+        wrapper_class: %doctrine.dbal.connection.wrapper_class%
     orm:
         dql:
             datetime_functions:
-                date_format: RentJeeves\CoreBundle\DQL\DateFormat
+                date: DoctrineExtensions\Query\Mysql\Date
+                date_format: DoctrineExtensions\Query\Mysql\DateFormat
+                str_to_date: DoctrineExtensions\Query\Mysql\StrToDate
             string_functions:
                 field: DoctrineExtensions\Query\Mysql\Field
+                concat_ws: DoctrineExtensions\Query\Mysql\ConcatWs
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

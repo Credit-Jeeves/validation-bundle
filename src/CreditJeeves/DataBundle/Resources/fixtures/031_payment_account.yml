@@ -6,7 +6,7 @@ fixtures:
         address: rjAddress_1
         type: card
         name: Card
-        token: 56756ds4vs5a6
+        token: '1A41838C-00BB-444B-9FD3-887E136F0420'
         ccExpiration: 'last day of +1 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'
@@ -15,7 +15,7 @@ fixtures:
         group: RentGroup_2
         type: bank
         name: Bank
-        token: dfgh345653y23ty
+        token: '13201893-2913-433C-8551-19DE6FA61655'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     PaymentAccount_3:
@@ -23,7 +23,7 @@ fixtures:
         group: RentGroup_1
         type: bank
         name: Bank
-        token: dfgh34gfdhsty
+        token: '13201893-2913-433C-8551-19DE6FA61655'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     PaymentAccount_4:
@@ -32,7 +32,7 @@ fixtures:
         address: TenantAddres_2
         type: card
         name: Card
-        token: dfgsdh2456
+        token: '1A41838C-00BB-444B-9FD3-887E136F0420'
         ccExpiration: 'last day of +4 month'
         createdAt: '-5 days'
         updatedAt: '-5 days'

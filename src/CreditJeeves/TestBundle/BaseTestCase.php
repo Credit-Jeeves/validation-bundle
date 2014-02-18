@@ -82,6 +82,7 @@ abstract class BaseTestCase extends MinkTestCase
 
     /**
      * Load fixtures
+     * This do not need anymore, fixtures load only during build
      *
      * @param bool $reload
      * @return void
@@ -95,5 +96,33 @@ abstract class BaseTestCase extends MinkTestCase
         $khepin->purgeDatabase('orm');
         $khepin->loadFixtures();
         self::$isFixturesLoaded = true;
+    }
+
+    protected function startTransaction()
+    {
+        /** @var $em \Doctrine\ORM\EntityManager */
+        foreach ($this->getContainer()->get('doctrine')->getManagers() as $em) {
+            $em->clear();
+            $em->getConnection()->beginTransaction();
+        }
+    }
+
+    protected function rollbackTransaction()
+    {
+        //the error can be thrown during setUp
+        //It would be caught by phpunit and tearDown called.
+        //In this case we could not rollback since container may not exist.
+        if (!$this->getKernel() || !static::$kernel->getContainer()) {
+            return;
+        }
+
+        /** @var $em \Doctrine\ORM\EntityManager */
+        foreach ($this->getContainer()->get('doctrine')->getManagers() as $em) {
+            $connection = $em->getConnection();
+
+            while ($connection->isTransactionActive()) {
+                $connection->rollback();
+            }
+        }
     }
 }

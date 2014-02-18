@@ -9,6 +9,9 @@ jms_security_extra:
     secure_all_services: false
     expressions: true
 
+jms_job_queue:
+    statistics: false
+
 jms_serializer:
     handlers:
         datetime:

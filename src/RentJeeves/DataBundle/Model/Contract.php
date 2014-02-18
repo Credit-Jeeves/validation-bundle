@@ -607,7 +607,7 @@ abstract class Contract
     /**
      * Get operations
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \CreditJeeves\DataBundle\Entity\Operation
      */
     public function getOperation()
     {

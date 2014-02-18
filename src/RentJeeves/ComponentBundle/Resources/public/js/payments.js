@@ -174,7 +174,7 @@ function Payments() {
 
   this.depositTitle = function(deposit) {
       var amount = deposit.orders.length;
-      return Translator.get('payments.batched_amount', {"count": amount}, amount);
+      return Translator.trans('payments.batched_amount', {"count": amount}, amount);
   };
 
   this.haveData = ko.computed(function() {
