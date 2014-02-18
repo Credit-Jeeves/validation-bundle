@@ -38,4 +38,4 @@ class OrderListenerCase extends BaseTestCase
         $this->assertNotEquals($expectedPaidTo, $actualPaidTo);
         $this->assertEquals($newPaidToDate, $contract->getPaidTo());
     }
-} 
+}

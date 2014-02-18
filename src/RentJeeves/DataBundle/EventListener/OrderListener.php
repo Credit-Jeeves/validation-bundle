@@ -103,7 +103,7 @@ class OrderListener
                         case OrderStatus::CANCELLED:
                         case OrderStatus::RETURNED:
                             // changes to contract are made in preUpdate since only there we can check whether the order
-                            // status has been changed. But those changes aren't flushed. So the flush is here. 
+                            // status has been changed. But those changes aren't flushed. So the flush is here.
                             $contract = $operation->getContract();
                             $eventArgs->getEntityManager()->flush($contract);
 
