@@ -32,7 +32,7 @@ twig:
 mink:
     goutte: ~
 #    sahi: ~
-#    zombie: ~
+    zombie: ~
 #    selenium: ~
     selenium2: ~
 

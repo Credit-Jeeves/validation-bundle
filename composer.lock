@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "4296ae98caae8432750cc00c3f49bef1",
+    "hash": "1e04f45233082e41df4b585f7e2fcb96",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -4934,17 +4934,17 @@
         },
         {
             "name": "behat/mink-bundle",
-            "version": "dev-master",
+            "version": "v1.4.1",
             "target-dir": "Behat/MinkBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkBundle.git",
-                "reference": "302b7bd01e0afae73a1e036724f5ba47aa4eb440"
+                "reference": "d9bc3144438f4d286d380d0d43dc1535690d46c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/302b7bd01e0afae73a1e036724f5ba47aa4eb440",
-                "reference": "302b7bd01e0afae73a1e036724f5ba47aa4eb440",
+                "url": "https://api.github.com/repos/Behat/MinkBundle/zipball/d9bc3144438f4d286d380d0d43dc1535690d46c1",
+                "reference": "d9bc3144438f4d286d380d0d43dc1535690d46c1",
                 "shasum": ""
             },
             "require": {
@@ -4994,7 +4994,7 @@
                 "test",
                 "web"
             ],
-            "time": "2014-01-31 14:40:42"
+            "time": "2014-02-18 12:40:01"
         },
         {
             "name": "behat/mink-goutte-driver",
@@ -5107,27 +5107,27 @@
         },
         {
             "name": "behat/mink-zombie-driver",
-            "version": "v1.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Behat/MinkZombieDriver.git",
-                "reference": "808c0ae0dc618e7fd925ccfd80a864efd08cd1b0"
+                "reference": "b6a4b33bba1c90079e29112c6e761b97068f66fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Behat/MinkZombieDriver/zipball/808c0ae0dc618e7fd925ccfd80a864efd08cd1b0",
-                "reference": "808c0ae0dc618e7fd925ccfd80a864efd08cd1b0",
+                "url": "https://api.github.com/repos/Behat/MinkZombieDriver/zipball/b6a4b33bba1c90079e29112c6e761b97068f66fc",
+                "reference": "b6a4b33bba1c90079e29112c6e761b97068f66fc",
                 "shasum": ""
             },
             "require": {
-                "behat/mink": "~1.5.0",
+                "behat/mink": "~1.5@dev",
                 "php": ">=5.3.1",
                 "symfony/process": "~2.1"
             },
             "type": "mink-driver",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1.x-dev"
+                    "dev-master": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -5161,7 +5161,7 @@
                 "testing",
                 "zombie"
             ],
-            "time": "2013-04-13 23:52:11"
+            "time": "2014-02-07 22:39:31"
         },
         {
             "name": "doctrine/data-fixtures",
@@ -5538,7 +5538,7 @@
         "beberlei/doctrineextensions": 20,
         "jms/job-queue-bundle": 20,
         "pagerfanta/pagerfanta": 20,
-        "behat/mink-bundle": 20,
+        "behat/mink-zombie-driver": 20,
         "doctrine/data-fixtures": 20,
         "doctrine/doctrine-fixtures-bundle": 15,
         "sensio/generator-bundle": 20,
