@@ -87,7 +87,6 @@ class OrderListener
         if ($entity instanceof Order) {
             $type = OperationType::RENT;
             $operation = $entity->getOperations()->last();
-
             $type = $operation ? $operation->getType(): $type;
             switch ($type) {
                 case OperationType::RENT:
