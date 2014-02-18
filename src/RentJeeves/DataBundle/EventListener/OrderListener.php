@@ -55,9 +55,28 @@ class OrderListener
     {
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $status = $entity->getStatus();
-            if ($status == OrderStatus::COMPLETE) {
-                $entity->checkOrderProperties();
+            $operation = $entity->getOperations()->last();
+            if ($operation && $operation->getType() == OperationType::RENT) {
+                $status = $entity->getStatus();
+                switch ($status) {
+                    case OrderStatus::COMPLETE:
+                        $entity->checkOrderProperties();
+                        break;
+                    case OrderStatus::REFUNDED:
+                    case OrderStatus::CANCELLED:
+                    case OrderStatus::RETURNED:
+                        if ($eventArgs->hasChangedField('status')
+                            && !in_array(
+                                $eventArgs->getOldValue('status'),
+                                array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
+                            )
+                        ) {
+//                            $operation = $this->getOperations()->last();
+                            $contract = $operation->getContract();
+                            $contract->unshiftPaidTo($entity->getAmount());
+                        }
+                        break;
+                }
             }
         }
     }
@@ -69,6 +88,7 @@ class OrderListener
         if ($entity instanceof Order) {
             $type = OperationType::RENT;
             $operation = $entity->getOperations()->last();
+
             $type = $operation ? $operation->getType(): $type;
             switch ($type) {
                 case OperationType::RENT:
@@ -83,6 +103,8 @@ class OrderListener
                         case OrderStatus::REFUNDED:
                         case OrderStatus::CANCELLED:
                         case OrderStatus::RETURNED:
+                            $contract = $operation->getContract();
+                            $eventArgs->getEntityManager()->flush($contract);
                             $this->container->get('project.mailer')->sendOrderCancel($entity);
                             break;
                     }

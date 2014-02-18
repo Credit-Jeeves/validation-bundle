@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -781,5 +782,13 @@ class Order extends BaseOrder
             OrderStatus::all(),
             $restrictedStatuses
         );
+    }
+
+    public function unshiftContractDate()
+    {
+        $operation = $this->getOperations()->last();
+        /** @var Contract $contract */
+        $contract = $operation->getContract();
+        $contract->unshiftPaidTo($this->getAmount());
     }
 }
