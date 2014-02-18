@@ -2,7 +2,9 @@
 
 namespace RentJeeves\TenantBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\DataBundle\Entity\Tenant;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,14 +18,18 @@ class IndexController extends Controller
      */
     public function indexAction()
     {
+        /**
+         * @var $tenant Tenant
+         */
         $tenant = $this->getUser();
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $isReporting = $this->get('doctrine')->getRepository('RjDataBundle:Contract')
                                 ->countReporting($tenant);
+
         return array(
-            'reporting' => $isReporting,
-            'user' => $this->getUser(),
+            'reporting'                 => $isReporting,
+            'user'                      => $this->getUser(),
         );
     }
 

@@ -5,7 +5,27 @@ function Pay(parent, contractId) {
     var contract = parent.getContractById(contractId);
     var current = 0;
     this.isValidUser = ko.observable(true);
+    this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
+
+    this.getCurrentStep = function()
+    {
+        return steps[current];
+    }
+
+    this.previous = function() {
+        window.formProcess.removeAllErrors('#pay-popup');
+        current--;
+        this.step(steps[current]);
+    };
+
     this.isProcessQuestion = false;
+    this.getTotalAmount = function(paymentCardFee) {
+        var fee = 0;
+        if (this.paymentSource.type() == 'card') {
+            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
+        }
+        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+    };
 
     var forms = {
         'details': 'rentjeeves_checkoutbundle_paymenttype',
@@ -28,6 +48,7 @@ function Pay(parent, contractId) {
         return this.passedSteps().indexOf(step) >= 0;
     }
 
+
     this.step.subscribe(function(newValue) {
 
         // if this step was already passed, then remove it (when user clicks Previous button)
@@ -47,9 +68,18 @@ function Pay(parent, contractId) {
             case 'source':
                 break;
             case 'user':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
                 self.isValidUser(true);
                 break;
             case 'questions':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
+
                 if (parent.questions) {
                     break;
                 }
@@ -207,14 +237,6 @@ function Pay(parent, contractId) {
         return '$' + this.payment.amount();
     }, this);
 
-    this.getTotalAmount = function(paymentCardFee) {
-        var fee = 0;
-        if (this.paymentSource.type() == 'card') {
-            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
-        }
-        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
-    };
-
     this.getFeeAmountText = function(paymentCardFee) {
         return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };
@@ -256,7 +278,7 @@ function Pay(parent, contractId) {
     }, this);
 
     var onSuccessStep = function(data) {
-        var currentStep = steps[current];
+        var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'details':
                 break;
@@ -346,7 +368,7 @@ function Pay(parent, contractId) {
     };
 
     this.next = function() {
-        var currentStep = steps[current];
+        var currentStep = self.getCurrentStep();
         switch (currentStep) {
             case 'details':
                 sendData(Routing.generate('checkout_pay_payment'), forms[currentStep]);
@@ -366,10 +388,18 @@ function Pay(parent, contractId) {
                 }
                 break;
             case 'user':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
                 self.isProcessQuestion = false;
                 sendData(Routing.generate('checkout_pay_user'), forms[currentStep]);
                 break;
             case 'questions':
+                if (self.isPidVerificationSkipped()) {
+                    onSuccessStep([]);
+                    break;
+                }
                 //User is valid and we have question so we can try process it
                 if (self.isValidUser() && !self.isProcessQuestion) {
                     sendData(Routing.generate('experian_pidkiq_execute'), forms[currentStep]);
@@ -389,12 +419,6 @@ function Pay(parent, contractId) {
                 break;
         }
 
-    };
-
-    this.previous = function() {
-        current--;
-        window.formProcess.removeAllErrors('#pay-popup ');
-        this.step(steps[current]);
     };
 
     this.cancelDialog = function() {

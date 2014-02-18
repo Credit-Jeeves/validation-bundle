@@ -11,6 +11,7 @@ class SummaryCase extends BaseTestCase
      */
     public function existAddress()
     {
+        self::$kernel = null;
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
@@ -48,6 +49,7 @@ class SummaryCase extends BaseTestCase
      */
     public function newAddress()
     {
+        self::$kernel = null;
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');

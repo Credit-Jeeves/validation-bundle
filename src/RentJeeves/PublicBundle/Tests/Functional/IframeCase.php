@@ -20,8 +20,7 @@ class IframeCase extends BaseTestCase
     {
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
-        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
-        $propertySearch->click();
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-add'));
         $this->fillForm(
             $form,
             array(
@@ -29,10 +28,6 @@ class IframeCase extends BaseTestCase
             )
         );
         $propertySearch->click();
-        $this->session->wait($this->timeout, "$('div.pac-container').children().length > 0");
-        $this->session->wait($this->timeout, "$('div.pac-container').is(':visible')");
-        $this->assertNotNull($item = $this->page->find('css', 'div.pac-container div'));
-        $item->click();
     }
 
     /**
@@ -43,6 +38,7 @@ class IframeCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
         $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $this->assertNotNull($submit = $form->findButton('iframe.find'));
         $submit->click();
@@ -102,7 +98,7 @@ class IframeCase extends BaseTestCase
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "document.URL != '{$url}'");
-        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
         $this->session->wait($this->timeout, "$('#property-search').val() == '{$fillAddress}'");
         //end check search on the not found
         $this->page->clickLink('Pricing');

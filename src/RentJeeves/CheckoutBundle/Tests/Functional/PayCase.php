@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\CheckoutBundle\Tests\Functional;
 
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use RentJeeves\DataBundle\Enum\PaymentType as PaymentTypeEnum;
 
@@ -12,19 +14,44 @@ class PayCase extends BaseTestCase
     public function provider()
     {
         return array(
-            array($summary = true),
-            array($summary = false),
+            array($summary = true, $skipVerification = false),
+            array($summary = false, $skipVerification = false),
+            array($summary = null, $skipVerification = true),
         );
+    }
+
+    protected function updateGroupSettings()
+    {
+        self::$kernel = null;
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(array('email' => 'tenant11@example.com'));
+        $contracts = $tenant->getContracts();
+        /**
+         * @var $contract Contract
+         */
+        foreach ($contracts as $contract) {
+            $group = $contract->getGroup();
+            $groupSetting = $group->getGroupSettings();
+            $groupSetting->setIsPidVerificationSkipped(true);
+            $em->persist($groupSetting);
+        }
+        $em->flush();
     }
 
     /**
      * @dataProvider provider
      * @test
      */
-    public function recurring($summary)
+    public function recurring($summary, $skipVerification)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
+        if ($skipVerification) {
+            $this->updateGroupSettings();
+        }
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
         $this->assertCount(3, $payButtons, 'Wrong number of contracts');
@@ -101,6 +128,47 @@ class PayCase extends BaseTestCase
         );
         $this->page->pressButton('pay_popup.step.next');
 
+        if (!$skipVerification) {
+            $this->notSkipVerification($summary);
+        }
+
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('#checkout-payment-source:visible').length"
+        );
+
+
+        $payPopup->pressButton('checkout.make_payment');
+
+        $this->session->wait(
+            $this->timeout+5000,
+            "false" // FIXME
+        );
+        $this->session->wait(
+            $this->timeout,
+            "!jQuery('#pay-popup:visible').length"
+        );
+
+        if ($summary) {
+            $this->page->clickLink('tabs.summary');
+
+            $this->session->wait(
+                $this->timeout+5000,
+                "jQuery('#component-card-utilization-box:visible').length"
+            );
+            $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));
+        } else {
+            $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
+            $this->assertFalse($pay->isVisible());
+        }
+
+        $this->logout();
+    }
+
+    protected function notSkipVerification($summary)
+    {
+        $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
+        $this->assertNotNull($payPopup = $payPopup->getParent());
         $this->session->wait(
             $this->timeout + 15000,
             "jQuery('#rentjeeves_checkoutbundle_userdetailstype_date_of_birth_month:visible').length"
@@ -190,12 +258,13 @@ class PayCase extends BaseTestCase
             $this->assertCount(1, $errors);
             $this->assertEquals('pidkiq.error.incorrect.answer-help@renttrack.com', $errors[0]->getText());
         }
-
         $this->page->pressButton('pay_popup.step.next');
+
         $this->session->wait(
             $this->timeout,
             "jQuery('#checkout-payment-source:visible').length"
         );
+
         $payPopup->pressButton('pay_popup.step.previous');
         $this->session->wait(
             $this->timeout,
@@ -223,37 +292,5 @@ class PayCase extends BaseTestCase
         $existPaymentSource->getParent()->click();
 
         $this->page->pressButton('pay_popup.step.next');
-
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('#checkout-payment-source:visible').length"
-        );
-
-
-        $payPopup->pressButton('checkout.make_payment');
-
-        $this->session->wait(
-            $this->timeout+5000,
-            "false" // FIXME
-        );
-        $this->session->wait(
-            $this->timeout,
-            "!jQuery('#pay-popup:visible').length"
-        );
-
-        if ($summary) {
-            $this->page->clickLink('tabs.summary');
-
-            $this->session->wait(
-                $this->timeout+5000,
-                "jQuery('#component-card-utilization-box:visible').length"
-            );
-            $this->assertNotNull($box = $this->page->find('css', '#component-card-utilization-box'));
-        } else {
-            $this->assertNotNull($pay = $this->page->find('css', '#pay-popup'));
-            $this->assertFalse($pay->isVisible());
-        }
-
-        $this->logout();
     }
 }

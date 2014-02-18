@@ -2,9 +2,11 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css' %}
-        <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
-    {% endstylesheets %}
+        {% stylesheets '@RjPublicBundle/Resources/public/css/styles.css'
+                       '@TenantBundle/Resources/public/css/isPidVerificationSkipped.css'
+        %}
+             <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+        {% endstylesheets %}
 {% endblock %}
 
 {% block content %}
