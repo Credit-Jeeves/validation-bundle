@@ -2,6 +2,7 @@
 
 namespace RentJeeves\PublicBundle\Form;
 
+use RentJeeves\DataBundle\Validators\TenantEmail;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -24,7 +25,12 @@ class TenantType extends AbstractType
             'email',
             null,
             array(
-                'label' => 'Email*',
+                'label'          => 'Email*',
+                'constraints'    => new TenantEmail(
+                    array(
+                        'groups'    => 'registration_tos'
+                    )
+                )
             )
         );
         $builder->add(

@@ -23,3 +23,9 @@
 .col .creditcom-logo .search-box {
     background: #eee url(/bundles/rjpublic/images/creditcom.png) right 30px center no-repeat;
 }
+
+.box.type1 .form-row .resend-email {
+    float: none !important;
+    margin: 0 !important;
+    white-space: normal;
+}

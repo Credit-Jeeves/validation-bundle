@@ -48,9 +48,9 @@ class PublicController extends Controller
         $errors = $validator->validateValue($email, new TenantEmail());
 
         if ($errors > 0) {
-            $errors = end($errors);
+            $error = end($errors);
             $data['is_already_exist'] = true;
-            $data['message'] = $errors;
+            $data['message'] = $error->getMessage();
 
             return new JsonResponse($data);
         }
