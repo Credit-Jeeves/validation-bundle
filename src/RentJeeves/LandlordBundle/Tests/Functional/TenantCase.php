@@ -16,7 +16,7 @@ class TenantCase extends BaseTestCase
      */
     public function approve()
     {
-        $this->setDefaultSession('zombie');
+        $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
@@ -49,7 +49,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function sort()
     {
@@ -80,7 +80,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function edit()
     {
@@ -153,7 +153,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function remove()
     {
@@ -185,7 +185,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function endContract()
     {
@@ -238,7 +238,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function search()
     {
@@ -263,7 +263,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function addTenantNoneExist()
     {
@@ -361,7 +361,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function addTenantExist()
     {
@@ -442,7 +442,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function checkNotifyLandlord()
     {
@@ -518,7 +518,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      */
     public function checkReminder()
     {
@@ -591,7 +591,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * @~test
+     * @test
      * @depends checkReminder
      */
     public function revoke()

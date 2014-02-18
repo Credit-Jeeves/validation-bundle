@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CheckoutBundle\Command\PayCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
-class CommandsCase extends BaseTestCase
+class PaymentCommandsCase extends BaseTestCase
 {
     /**
      * @test
@@ -35,7 +35,8 @@ class CommandsCase extends BaseTestCase
             )
         );
         $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
-        $this->assertCount(1, $plugin->getPreSendMessages());
+        // No Emails, current status of order is PENDING Email will be send on COMPLETE status
+        $this->assertCount(0, $plugin->getPreSendMessages());
 
         $plugin->clean();
         $commandTester->execute(

@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CheckoutBundle\Command\PaymentReportCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
-class PaymentReportCommandCase extends BaseTestCase
+class PaymentReportCase extends BaseTestCase
 {
     /**
      * @test
