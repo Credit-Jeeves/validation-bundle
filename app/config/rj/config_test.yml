@@ -4,6 +4,8 @@ imports:
 parameters:
     router.request_context.base_url: '/rj_test.php'
 
+    payment_report_path: 'src/RentJeeves/CheckoutBundle/Tests/Fixtures/hps'
+
 framework:
     router:   { resource: "%kernel.root_dir%/config/rj/routing_test.yml" }
     translator: { fallback: 'test' }
