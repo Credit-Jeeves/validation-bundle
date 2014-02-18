@@ -62,8 +62,7 @@ class TenantEmailValidator extends ConstraintValidator
         /**
          * @var $user Tenant
          */
-        if (!$user->getIsActive() && $user->getInviteCode() && $contracts = $user->getContracts()) {
-            $contract = $contracts->first();
+        if (!$user->getIsActive() && $user->getInviteCode() && $user->getContracts()->count() > 0) {
             $this->context->addViolation(
                 $this->translate(
                     $constraint->messageGetInvite,
@@ -71,7 +70,7 @@ class TenantEmailValidator extends ConstraintValidator
                         "%%LINK%%" => $this->router->generate(
                             'tenant_invite_resend',
                             array(
-                                'contractId' => $contract->getId()
+                                'userId' => $user->getId()
                             ),
                             true
                         )
@@ -85,10 +84,9 @@ class TenantEmailValidator extends ConstraintValidator
         return false;
     }
 
-    //@todo setup correct link when move functional to service and will get link
     protected function translate($message, $params = array())
     {
-        $this->i18n->trans(
+        return $this->i18n->trans(
             $message,
             $params
         );

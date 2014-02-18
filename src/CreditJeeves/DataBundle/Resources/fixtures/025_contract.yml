@@ -43,7 +43,7 @@ fixtures:
         property: Property_1
         unit:     Unit_1_4
         rent:     1500
-        status:   finished
+        status:   invite
         paidTo:  '-120 days'
         startAt:   '-290 days'
         finishAt: '-160 days'

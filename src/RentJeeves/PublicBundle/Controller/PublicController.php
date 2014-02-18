@@ -59,11 +59,11 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/tenant/invite/resend/{contractId}", name="tenant_invite_resend", options={"expose"=true})
+     * @Route("/tenant/invite/resend/{userId}", name="tenant_invite_resend", options={"expose"=true})
      * @Template()
      *
      */
-    public function resendInviteTenantAction($contractId)
+    public function resendInviteTenantAction($userId)
     {
 
     }
