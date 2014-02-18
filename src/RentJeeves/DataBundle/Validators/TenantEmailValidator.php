@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Tenant;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use JMS\DiExtraBundle\Annotation\Validator;
@@ -16,28 +17,37 @@ use CreditJeeves\DataBundle\Enum\UserType;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
+ * This validator add error into flash with key tenant_email_error
+ * disable escape for this errors
+ *
  * @Validator("tenant_email_validator")
  */
 class TenantEmailValidator extends ConstraintValidator
 {
+    const ERROR_NAME = 'tenant_email_error';
+
     protected $em;
 
     protected $router;
 
     protected $i18n;
 
+    protected $session;
+
     /**
      * @InjectParams({
-     *     "em"     = @Inject("doctrine.orm.entity_manager"),
-     *     "router" = @Inject("router"),
-     *     "i18n"   = @Inject("translator"),
+     *     "em"      = @Inject("doctrine.orm.entity_manager"),
+     *     "router"  = @Inject("router"),
+     *     "i18n"    = @Inject("translator"),
+     *     "session" = @Inject("session"),
      * })
      */
-    public function __construct(EntityManager $em, $router, $i18n)
+    public function __construct(EntityManager $em, $router, $i18n, Session $session)
     {
         $this->em = $em;
         $this->router = $router;
         $this->i18n = $i18n;
+        $this->session = $session;
     }
 
     public function validate($value, Constraint $constraint)
@@ -56,14 +66,14 @@ class TenantEmailValidator extends ConstraintValidator
         }
 
         if (!($user instanceof Tenant)) {
-            $this->context->addViolation($this->translate($constraint->messageExistEmail));
+            $this->addError($this->translate($constraint->messageExistEmail));
             return false;
         }
         /**
          * @var $user Tenant
          */
         if (!$user->getIsActive() && $user->getInviteCode() && $user->getContracts()->count() > 0) {
-            $this->context->addViolation(
+            $this->addError(
                 $this->translate(
                     $constraint->messageGetInvite,
                     array(
@@ -80,7 +90,7 @@ class TenantEmailValidator extends ConstraintValidator
             return false;
         }
 
-        $this->context->addViolation($this->translate($constraint->messageExistEmail));
+        $this->addError($this->translate($constraint->messageExistEmail));
         return false;
     }
 
@@ -90,5 +100,11 @@ class TenantEmailValidator extends ConstraintValidator
             $message,
             $params
         );
+    }
+
+    protected function addError($message)
+    {
+        $this->session->getFlashBag()->set(self::ERROR_NAME, $message);
+        $this->context->addViolation('');
     }
 }

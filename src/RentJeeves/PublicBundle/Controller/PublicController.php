@@ -29,36 +29,6 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/tenant/invite/check", name="tenant_invite_check", options={"expose"=true})
-     * @Template()
-     *
-     */
-    public function checkInviteTenantAction(Request $request)
-    {
-        $data = array(
-            'is_already_exist'   => false,
-            'message'            => ''
-        );
-
-        $email = $request->request->get('email');
-        /**
-         * @var $validator Validator
-         */
-        $validator = $this->get('validator');
-        $errors = $validator->validateValue($email, new TenantEmail());
-
-        if ($errors > 0) {
-            $error = end($errors);
-            $data['is_already_exist'] = true;
-            $data['message'] = $error->getMessage();
-
-            return new JsonResponse($data);
-        }
-
-        return new JsonResponse($data);
-    }
-
-    /**
      * @Route("/tenant/invite/resend/{userId}", name="tenant_invite_resend", options={"expose"=true})
      * @Template()
      *
