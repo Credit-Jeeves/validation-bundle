@@ -71,6 +71,7 @@ class OrderListener
                                 array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
                             )
                         ) {
+                            // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
                             $contract = $operation->getContract();
                             $contract->unshiftPaidTo($entity->getAmount());
                         }
@@ -101,6 +102,8 @@ class OrderListener
                         case OrderStatus::REFUNDED:
                         case OrderStatus::CANCELLED:
                         case OrderStatus::RETURNED:
+                            // changes to contract are made in preUpdate since only there we can check whether the order
+                            // status has been changed. But those changes aren't flushed. So the flush is here. 
                             $contract = $operation->getContract();
                             $eventArgs->getEntityManager()->flush($contract);
                             $this->container->get('project.mailer')->sendOrderCancel($entity);
