@@ -11,8 +11,9 @@ class SummaryCase extends BaseTestCase
      */
     public function existAddress()
     {
-        $this->setDefaultSession('selenium2');
+        self::$kernel = null;
         $this->load(true);
+        $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
         $this->session->wait($this->timeout, "typeof $ !== undefined");
@@ -48,8 +49,9 @@ class SummaryCase extends BaseTestCase
      */
     public function newAddress()
     {
-        $this->setDefaultSession('selenium2');
+        self::$kernel = null;
         $this->load(true);
+        $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
         $this->session->wait($this->timeout, "typeof $ !== undefined");
