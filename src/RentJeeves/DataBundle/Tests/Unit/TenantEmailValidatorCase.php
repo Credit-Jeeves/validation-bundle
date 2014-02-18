@@ -20,8 +20,7 @@ class TenantEmailValidatorCase extends BaseTestCase
             $email = 'tenant11@example.com',
             new TenantEmail()
         );
-        var_dump($errors);
-        if
+        $this->assertTrue((count($errors) === 1));
     }
 
 }
