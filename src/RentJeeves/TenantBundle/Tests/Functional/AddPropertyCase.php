@@ -71,7 +71,7 @@ class AddPropertyCase extends BaseTestCase
         $this->assertNotNull($addProperty = $this->page->find('css', '.addPropertyContainer a'));
         $addProperty->click();
         $this->session->wait($this->timeout, "window.location.pathname == '/rj_test.php/property/add'");
-        $this->fillGoogleAddress('710 Broadway, Manhattan, New York, NY 10003');
+        $this->fillGoogleAddress('710 Broadway, Manhattan, New York City, NY 10003, United States');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $this->page->pressButton('find.your.rental');
         $this->session->wait($this->timeout, "window.location.pathname != '/rj_test.php/property/add'");
@@ -86,7 +86,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"
         );
-        $this->fillGoogleAddress('770 Broadway, Manhattan, New York, NY 10003');
+        $this->fillGoogleAddress('770 Broadway, Manhattan, New York City, NY 10003, United States');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $propertySearch->click();
         $this->session->wait($this->timeout, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
@@ -96,7 +96,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->evaluateScript(
             "$('#property-search').val(' ');"
         );
-        $this->fillGoogleAddress('560 Broadway, Manhattan, New York, NY 10012');
+        $this->fillGoogleAddress('560 Broadway, Manhattan, New York City, NY 10012, United States');
         $this->assertNotNull($propertySearch = $this->page->find('css', '#search-submit'));
         $propertySearch->click();
         $this->session->wait($this->timeout+10000, "window.location.pathname.match('\/property\/add\/[0-9]') != null");
@@ -107,7 +107,7 @@ class AddPropertyCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'property-search' => '710 Broadway, Manhattan, New York, NY 10003',
+                'property-search' => '710 Broadway, Manhattan, New York City, NY 10003, United States',
             )
         );
         $this->page->pressButton('find.your.rental');
