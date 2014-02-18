@@ -36,9 +36,6 @@ class PaymentAdmin extends Admin
                 'actions',
                 array(
                     'actions' => array(
-//                        'run' => array(
-//                            'template' => 'AdminBundle:CRUD:list__payment_run.html.twig'
-//                        ),
                         'jobs' => array(
                             'template' => 'AdminBundle:CRUD:list__payment_jobs.html.twig',
                         )

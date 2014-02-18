@@ -28,35 +28,6 @@ class PaymentAdminController extends CRUDController
      */
     private $request;
 
-//    /**
-//     * @param $id
-//     * @return RedirectResponse
-//     *
-//     * FIXME add warning message with approval
-//     *
-//     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-//     */
-//    public function runAction($id)
-//    {
-//        $object = $this->admin->getModelManager()->find($this->admin->getClass(), $id);
-//
-//        if (empty($object)) {
-//            throw $this->createNotFoundException("Payment with id '{$id}' not found");
-//        }
-//
-//        $em = $this->getDoctrine()->getManager();
-//        $em->persist($object->createJob());
-//        $em->flush();
-//
-//        $this->request->getSession()->getFlashBag()->add(
-//            'sonata_flash_success',
-//            'Payment added to the Job queue'
-//        );
-//        return $this->redirect(
-//            $this->request->headers->get('referer', $this->generateUrl('admin_rentjeeves_data_payment_list'))
-//        );
-//    }
-
     public function batchActionRun(ProxyQueryInterface $selectedModelQuery)
     {
         $action = $this->request->get('action');
@@ -72,13 +43,6 @@ class PaymentAdminController extends CRUDController
         $repository = $this->getDoctrine()->getRepository($this->admin->getClass());
 
         $date = new DateTime();
-
-//        $filter = $this->request->get('filter');
-//        if (!empty($filter['startDate']['value']['day'])) {
-//            $day = $filter['startDate']['value']['day']?:$day;
-//            $month = $filter['startDate']['value']['month']?:$month;
-//            $year = $filter['startDate']['value']['year']?:$year;
-//        }
         $i = 0;
         /** @var Payment $payment */
         foreach ($repository->getActivePayments($date, $this->request->get('idx')) as $payment) {
