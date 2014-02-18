@@ -5,6 +5,8 @@ parameters:
     router.request_context.base_url: '/rj_test.php'
     doctrine.dbal.connection.wrapper_class: 'CreditJeeves\TestBundle\Doctrine\DBAL\PersistedConnection'
 
+    payment_report_path: 'src/RentJeeves/CheckoutBundle/Tests/Fixtures/hps'
+
 framework:
     router:   { resource: "%kernel.root_dir%/config/rj/routing_test.yml" }
     translator: { fallback: 'test' }

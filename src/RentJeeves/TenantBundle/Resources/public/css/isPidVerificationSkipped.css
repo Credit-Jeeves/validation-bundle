@@ -1,0 +1,6 @@
+.isPidVerificationSkipped>li>.step {
+    width: 215px;
+}
+.isPidVerificationSkipped>li>.step>span{
+    width: 155px;
+}

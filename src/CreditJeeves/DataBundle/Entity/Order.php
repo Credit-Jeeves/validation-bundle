@@ -568,6 +568,10 @@ class Order extends BaseOrder
         return $this;
     }
 
+    /**
+     * @Serializer\Groups({"payment"})
+     * @Serializer\HandlerCallback("json", direction = "serialization")
+     */
     public function getItem()
     {
         $result = array();

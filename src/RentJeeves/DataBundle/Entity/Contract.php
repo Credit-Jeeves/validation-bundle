@@ -521,6 +521,18 @@ class Contract extends Base
         return $this;
     }
 
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("isPidVerificationSkipped")
+     * @Serializer\Type("boolean")
+     *
+     * @return boolean
+     */
+    public function getIsPidVerificationSkipped()
+    {
+        return $this->getGroup()->getGroupSettings()->getIsPidVerificationSkipped();
+    }
+
     public function __toString()
     {
         return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');

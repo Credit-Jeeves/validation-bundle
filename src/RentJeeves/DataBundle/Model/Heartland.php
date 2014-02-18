@@ -36,6 +36,34 @@ abstract class Heartland extends PaymentDetails
      */
     protected $order;
 
+    /**
+     * @ORM\Column(
+     *     name="batch_id",
+     *     type="bigint",
+     *     nullable=true
+     * )
+     */
+    protected $batchId;
+
+    /**
+     * @ORM\Column(
+     *     name="batch_date",
+     *     type="date",
+     *     nullable=true
+     * )
+     */
+    protected $batchDate;
+
+    /**
+     * @ORM\Column(
+     *     name="deposit_date",
+     *     type="date",
+     *     nullable=true
+     * )
+     */
+    protected $depositDate;
+
+
 //     /**
 //      * @ORM\Column(
 //      *     type="text",
@@ -81,6 +109,22 @@ abstract class Heartland extends PaymentDetails
     public function getOrder()
     {
         return $this->order;
+    }
+
+    /**
+     * @param mixed $batchId
+     */
+    public function setBatchId($batchId)
+    {
+        $this->batchId = $batchId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBatchId()
+    {
+        return $this->batchId;
     }
 
 //     /**
@@ -139,5 +183,37 @@ abstract class Heartland extends PaymentDetails
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $batchDate
+     */
+    public function setBatchDate($batchDate)
+    {
+        $this->batchDate = $batchDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBatchDate()
+    {
+        return $this->batchDate;
+    }
+
+    /**
+     * @param mixed $depositDate
+     */
+    public function setDepositDate($depositDate)
+    {
+        $this->depositDate = $depositDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDepositDate()
+    {
+        return $this->depositDate;
     }
 }

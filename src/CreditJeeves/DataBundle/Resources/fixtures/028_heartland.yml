@@ -6,6 +6,9 @@ fixtures:
     transaction_id: 123123
     isSuccessful: true
     createdAt: '-50 days'
+    batchId: 125478
+    batchDate: '-49 days'
+    depositDate: '-49 days'
   rjCheckout_1_2:
     order:  rjOrder_1
     amount: 1500
@@ -18,6 +21,9 @@ fixtures:
     transaction_id: 456456
     isSuccessful: true
     createdAt: '-40 days'
+    batchId: 325698
+    batchDate: '-41 days'
+    depositDate: '-41 days'
   rjCheckout_2_2:
     order:  rjOrder_2
     amount: 1500
@@ -30,24 +36,36 @@ fixtures:
     transaction_id: 456123
     isSuccessful: true
     createdAt: '-30 days'
+    batchId: 111555
+    batchDate: '-21 days'
+    depositDate: '-21 days'
   rjCheckout_4_1:
     order:  rjOrder_4
     amount: 1500
     transaction_id: 789789
     isSuccessful: true
     createdAt: '-20 days'
+    batchId: 111555
+    batchDate: '-21 days'
+    depositDate: '-21 days'
   rjCheckout_5_1:
     order:  rjOrder_5
     amount: 1500
     transaction_id: 147147
     isSuccessful: true
     createdAt: '-10 days'
+    batchId: 325698
+    batchDate: '-9 days'
+    depositDate: '-9 days'
   rjCheckout_6_1:
     order:  rjOrder_6
     amount: 1500
     transaction_id: 258258
     isSuccessful: true
     createdAt: '-2 days'
+    batchId: 125478
+    batchDate: '-1 days'
+    depositDate: '-1 days'
 # finished contract
   rjCheckout_7_1_1:
     order:  rjOrder_3_1

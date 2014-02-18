@@ -2,6 +2,7 @@
 namespace RentJeeves\CoreBundle\Mailer;
 
 use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -306,7 +307,7 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    public function sendOrderCancel(Order $order, $template = 'rjOrderCancel')
+    public function sendOrderCancelToTenant(Order $order, $template = 'rjOrderCancel')
     {
         $tenant = $order->getContract()->getTenant();
 
@@ -318,5 +319,21 @@ class Mailer extends BaseMailer
         );
 
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendOrderCancelToLandlord(Order $order, $template = 'rjOrderCancelToLandlord')
+    {
+        $vars = array(
+            'landlordFirstName' => '',
+            'orderStatus' => $order->getStatus(),
+            'rentAmount' => $order->getAmount(),
+            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s')
+        );
+
+        $group = $order->getContract()->getGroup();
+        foreach ($group->getGroupAgents() as $landlord) {
+            $vars['landlordFirstName'] = $landlord->getFirstName();
+            $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
+        }
     }
 }

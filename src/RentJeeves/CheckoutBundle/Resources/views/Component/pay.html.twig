@@ -24,7 +24,9 @@
     <h1 data-bind="visible: payment.id()">{{ 'pay_popup.title.edit' | trans }}</h1>
     <div class="clearfix col-box attention-container">
 
-        <ul class="steps clearfix">
+        <ul class="steps clearfix"
+            data-bind="css: isPidVerificationSkipped() == false ? 'steps clearfix' : 'steps clearfix isPidVerificationSkipped'"
+        >
             <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
                 <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
             </li>
@@ -32,7 +34,13 @@
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('questions') }">
+                data-bind="
+                css: {
+                    'active': 'user' == step() || 'questions' == step(),
+                    check: isPassed('questions')
+                },
+                visible: isPidVerificationSkipped() == false
+                ">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
             <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">

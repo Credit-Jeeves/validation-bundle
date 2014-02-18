@@ -1876,6 +1876,38 @@
                 ]]>
                 </target>
             </trans-unit>
+            <trans-unit id="filter.group_by.deposit">
+                <source>filter.group_by.deposit</source>
+                <target>Group by Deposit</target>
+            </trans-unit>
+            <trans-unit id="filter.group_by.deposit.echeck">
+                <source>filter.group_by.deposit.echeck</source>
+                <target>E-Check</target>
+            </trans-unit>
+            <trans-unit id="filter.group_by.deposit.credit-card">
+                <source>filter.group_by.deposit.credit-card</source>
+                <target>Credit Card</target>
+            </trans-unit>
+            <trans-unit id="payments.deposit">
+                <source>payments.deposit</source>
+                <target>DEPOSIT</target>
+            </trans-unit>
+            <trans-unit id="payments.batch_deposits">
+                <source>payments.batch_deposits</source>
+                <target>Batch Deposits</target>
+            </trans-unit>
+            <trans-unit id="payments.show">
+                <source>payments.show</source>
+                <target>+ Show Payments</target>
+            </trans-unit>
+            <trans-unit id="payments.hide">
+                <source>payments.hide</source>
+                <target>- Hide Payments</target>
+            </trans-unit>
+            <trans-unit id="payments.batched_amount">
+                <source>payments.batched_amount</source>
+                <target>{1}1 payment is batched into this deposit.|[2,Inf]%count% payments are batched into this deposit.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

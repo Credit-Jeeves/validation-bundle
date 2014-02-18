@@ -68,3 +68,5 @@ fixtures:
     name: rjEndContract.html
   email_34:
       name: rjOrderCancel.html
+  email_35:
+      name: rjOrderCancelToLandlord.html

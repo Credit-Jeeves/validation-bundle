@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -239,5 +240,69 @@ class OrderRepository extends EntityRepository
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
         return $query->execute();
+    }
+
+    public function getDepositedOrders(Group $group, $accountType, $page = 1, $limit = 100)
+    {
+        // get Batch Ids
+        $offset = ($page - 1) * $limit;
+        $query = $this->createQueryBuilder('o');
+        $query->select('h.batchId, sum(o.amount) as order_amount, h.depositDate');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('o.heartlands', 'h');
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+        $query->andWhere('h.batchId IS NOT NULL');
+        if ($accountType) {
+            $query->andWhere('o.type = :type');
+            $query->setParameter('type', $accountType);
+        }
+        $query->groupBy('h.batchId');
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query = $query->getQuery();
+        $deposits = $query->getScalarResult();
+
+        // get orders for each batch
+        $ordersQuery = $this->createQueryBuilder('o');
+        $ordersQuery->innerJoin('o.operations', 'p');
+        $ordersQuery->innerJoin('p.contract', 't');
+        $ordersQuery->innerJoin('o.heartlands', 'h');
+        $ordersQuery->where('t.group = :group');
+        $ordersQuery->andWhere('h.batchId = :batchId');
+        $ordersQuery->setParameter('group', $group);
+        if ($accountType) {
+            $ordersQuery->andWhere('o.type = :type');
+            $ordersQuery->setParameter('type', $accountType);
+        }
+
+        foreach ($deposits as $key => $deposit) {
+            $ordersQuery->setParameter('batchId', $deposit['batchId']);
+            $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
+        }
+
+        return $deposits;
+    }
+
+    public function getCountDeposits(Group $group, $accountType)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->select('count(distinct h.batchId)');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('o.heartlands', 'h');
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+        $query->andWhere('h.batchId IS NOT NULL');
+
+        if ($accountType) {
+            $query->andWhere('o.type = :type');
+            $query->setParameter('type', $accountType);
+        }
+
+        $query = $query->getQuery();
+
+        return $query->getSingleScalarResult();
     }
 }
