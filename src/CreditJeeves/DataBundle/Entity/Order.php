@@ -783,12 +783,4 @@ class Order extends BaseOrder
             $restrictedStatuses
         );
     }
-
-    public function unshiftContractDate()
-    {
-        $operation = $this->getOperations()->last();
-        /** @var Contract $contract */
-        $contract = $operation->getContract();
-        $contract->unshiftPaidTo($this->getAmount());
-    }
 }

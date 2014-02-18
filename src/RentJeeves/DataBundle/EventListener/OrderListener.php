@@ -71,7 +71,6 @@ class OrderListener
                                 array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
                             )
                         ) {
-//                            $operation = $this->getOperations()->last();
                             $contract = $operation->getContract();
                             $contract->unshiftPaidTo($entity->getAmount());
                         }
