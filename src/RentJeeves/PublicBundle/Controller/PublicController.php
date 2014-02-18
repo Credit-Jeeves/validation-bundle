@@ -4,6 +4,7 @@ namespace RentJeeves\PublicBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Validators\TenantEmail;
+use RentJeeves\DataBundle\Validators\TenantEmailValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
@@ -119,9 +120,9 @@ class PublicController extends Controller
         $view = $form->createView();
 
         return array(
-            'address'   => $property->getFullAddress(),
-            'form'      => $form->createView(),
-            'propertyId'=> $property->getId(),
+            'address'       => $property->getFullAddress(),
+            'form'          => $form->createView(),
+            'propertyId'    => $property->getId(),
         );
     }
 
@@ -202,6 +203,7 @@ class PublicController extends Controller
             'property'          => $Property,
             'propertyList'      => $propertyList,
             'countPropery'      => count($propertyList),
+            'keyFlashError'     => TenantEmailValidator::ERROR_NAME
         );
     }
 

@@ -1921,8 +1921,8 @@
                 <target><![CDATA[
                     This email address already invited. We recommmend you
                     <a href="%%LINK%%" class="resend-email">
-                    click here to resend the invite
-                    </a>.
+                    click here to resend the invite.
+                    </a>
                  ]]>
                 </target>
             </trans-unit>
