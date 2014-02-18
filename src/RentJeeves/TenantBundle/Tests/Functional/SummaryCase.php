@@ -11,7 +11,6 @@ class SummaryCase extends BaseTestCase
      */
     public function existAddress()
     {
-        $this->markTestSkipped('We always have error: RuntimeException: SQLSTATE[08004] [1040] Too many connections');
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
@@ -49,7 +48,6 @@ class SummaryCase extends BaseTestCase
      */
     public function newAddress()
     {
-        $this->markTestSkipped('We always have error: RuntimeException: SQLSTATE[08004] [1040] Too many connections');
         $this->setDefaultSession('selenium2');
         $this->load(true);
         $this->login('tenant11@example.com', 'pass');
