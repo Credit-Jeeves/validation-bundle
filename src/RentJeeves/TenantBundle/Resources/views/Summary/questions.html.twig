@@ -24,3 +24,12 @@
     }
     ) }}
 {% endblock %}
+
+{% block head_javascripts %}
+    {{ parent() }}
+    {% javascripts
+        '@TenantBundle/Resources/public/js/pidkiq-prev-submit.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
