@@ -34,3 +34,15 @@ label.checkbox {
     right: -10px !important;
     width: 130px !important;
 }
+.tooltip-box>p {
+    color: #693;
+    font-size: 12px;
+    line-height: 15px;
+    font-family: 'ABeeZee', sans-serif;
+}
+.floatleft {
+    margin-right: 15px;
+}
+.column-small {
+    width: 265px;
+}
