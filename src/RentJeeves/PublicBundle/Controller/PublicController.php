@@ -2,7 +2,10 @@
 
 namespace RentJeeves\PublicBundle\Controller;
 
+use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Validators\TenantEmail;
 use RentJeeves\DataBundle\Validators\TenantEmailValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,6 +17,7 @@ use RentJeeves\PublicBundle\Form\TenantType;
 use CreditJeeves\DataBundle\Enum\UserType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Process\Exception\LogicException;
 use Symfony\Component\Validator\Validator;
 
 class PublicController extends Controller
@@ -36,7 +40,37 @@ class PublicController extends Controller
      */
     public function resendInviteTenantAction($userId)
     {
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $user Tenant
+         */
+        $user = $em->getRepository('RjDataBundle:Tenant')->find($userId);
+        $contracts = $user->getContracts();
+        $contract = null;
+        //@TOD contract which created last
+        foreach ($contracts as $contract) {
+            if ($contract->getStatus() === ContractStatus::INVITE) {
+                break;
+            }
+        }
+        /**
+         * @var $contract Contract
+         */
+        if (empty($contract)) {
+            throw new LogicException("User which try to get resend invite - does not have contract with status INVITE");
+        }
+        //Save as is but, in general can be problem on this line
+        $landlord = $contract->getGroup()->getGroupAgents()->first();
+        $reminderInvite = $this->get('reminder.invite');
+        if (!$reminderInvite->send($contract->getId(), $landlord)) {
+            return array(
+                'error' => $reminderInvite->getError()
+            );
+        }
 
+        return array(
+            'error' => false,
+        );
     }
 
     /**
@@ -120,9 +154,10 @@ class PublicController extends Controller
         $view = $form->createView();
 
         return array(
-            'address'       => $property->getFullAddress(),
-            'form'          => $form->createView(),
-            'propertyId'    => $property->getId(),
+            'address'           => $property->getFullAddress(),
+            'form'              => $form->createView(),
+            'propertyId'        => $property->getId(),
+            'keyFlashError'     => TenantEmailValidator::ERROR_NAME
         );
     }
 
@@ -231,10 +266,6 @@ class PublicController extends Controller
                 'signinUrl' => $this->get('router')->generate('fos_user_security_login')
             );
         }
-//         $alert = new Alert();
-//         $alert->setMessage('rj.task.firstRent');
-//         $alert->setUser($user);
-//         $em->persist($alert);
 
         if ($user->getInvite()) {
             $invite = $user->getInvite();

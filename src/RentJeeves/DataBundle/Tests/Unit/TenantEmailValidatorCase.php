@@ -62,5 +62,4 @@ class TenantEmailValidatorCase extends BaseTestCase
         );
         $this->assertTrue((count($errors) === 0));
     }
-
 }

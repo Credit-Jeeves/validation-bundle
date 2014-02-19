@@ -1551,7 +1551,7 @@
             </trans-unit>
             <trans-unit id="contract.reminder.already.send">
                 <source>contract.reminder.error.already.send</source>
-                <target>You can not so often send reminders for the same contract.</target>
+                <target>Looks like you sent a reminder just a moment ago. We don't want to start spamming your inbox.</target>
             </trans-unit>
             <trans-unit id="iframe.login.title">
                 <source>iframe.login.title</source>
@@ -1884,8 +1884,8 @@
                 ]]>
                 </target>
             </trans-unit>
-            <trans-unit id="payments.filter.group_by.deposit">
-                <source>payments.filter.group_by.deposit</source>
+            <trans-unit id="filter.group_by.deposit">
+                <source>filter.group_by.deposit</source>
                 <target>Group by Deposit</target>
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.echeck">
@@ -1932,6 +1932,18 @@
                     This email address is already in use. Please choose another.
                 </target>
             </trans-unit>
+            <trans-unit id="verify.email.invite.title">
+                <source>verify.email.invite.title</source>
+                <target>Invite Sent.</target>
+            </trans-unit>
+            <trans-unit id="verify.email.invite.desc">
+                <source>verify.email.invite.desc</source>
+                <target>Please check your inbox for an email from RentTrack.</target>
+             </trans-unit>
+             <trans-unit id="error.oops">
+                 <source>error.oops</source>
+                 <target>Oops!</target>
+             </trans-unit>
             <trans-unit id="payments.filter.status">
                 <source>payments.filter.status</source>
                 <target>Filter by Status</target>
