@@ -157,7 +157,6 @@ class PublicController extends Controller
             'address'           => $property->getFullAddress(),
             'form'              => $form->createView(),
             'propertyId'        => $property->getId(),
-            'keyFlashError'     => TenantEmailValidator::ERROR_NAME
         );
     }
 
@@ -238,7 +237,6 @@ class PublicController extends Controller
             'property'          => $Property,
             'propertyList'      => $propertyList,
             'countPropery'      => count($propertyList),
-            'keyFlashError'     => TenantEmailValidator::ERROR_NAME
         );
     }
 

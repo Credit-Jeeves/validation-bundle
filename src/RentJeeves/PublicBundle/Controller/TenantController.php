@@ -3,6 +3,7 @@
 namespace RentJeeves\PublicBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\DataBundle\Validators\TenantEmailValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\TenantType;
@@ -52,8 +53,8 @@ class TenantController extends Controller
             }
         }
         return array(
-            'code'      => $code,
-            'form'      => $form->createView(),
+            'code'              => $code,
+            'form'              => $form->createView(),
         );
     }
 

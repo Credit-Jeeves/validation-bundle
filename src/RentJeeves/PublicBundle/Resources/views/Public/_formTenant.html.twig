@@ -12,9 +12,9 @@
               </span>
           {% endif %}
       </h4>
-        {% if app.session.flashbag.has(keyFlashError) %}
+        {% if app.session.flashbag.has('tenant_email_error') %}
             <div id="userExistMessage" class="information-box pie-el messageInfoUserAdd">
-                {% for flashMessage in app.session.flashbag.get(keyFlashError) %}
+                {% for flashMessage in app.session.flashbag.get('tenant_email_error') %}
                     {{ flashMessage|raw }}
                     <br />
                 {% endfor %}
