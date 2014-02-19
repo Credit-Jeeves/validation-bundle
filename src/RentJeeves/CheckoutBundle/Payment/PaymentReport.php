@@ -8,7 +8,6 @@ use RentJeeves\DataBundle\Entity\Heartland as HeartlandTransaction;
 use JMS\DiExtraBundle\Annotation as DI;
 use DateTime;
 use RuntimeException;
-use Exception;
 
 /**
  * @DI\Service("payment.report")
