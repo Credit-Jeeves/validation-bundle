@@ -23,7 +23,7 @@ class Version20140206172355 extends AbstractMigration
             property = "body",
             value = "
             {% extends \'RjComponentBundle:Mailer:base.html.twig\' %}
-            {% block h1 %}Dear {{ landlordFullName }},{% endblock %}
+            {% block h1 %}Dear {{ landlordFirstName }},{% endblock %}
             {% block email %}
                 {% if orderStatus == \'refunded\' %}
 
