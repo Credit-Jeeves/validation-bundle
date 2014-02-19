@@ -82,7 +82,7 @@ class PayCommand extends ContainerAwareCommand
             }
             return false;
         };
-        if ($contract->getOperation()->getOrders()->filter($filterClosure)->count()) {
+        if ($contract->getOperation() && $contract->getOperation()->getOrders()->filter($filterClosure)->count()) {
             $output->writeln('Payment already executed.');
             return 1;
         }
