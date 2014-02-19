@@ -43,13 +43,13 @@ class LeadListener
      */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
-        $em = $eventArgs->getEntityManager();
         $lead = $eventArgs->getEntity();
-        $id = $lead->getId();
 
         if (!($lead instanceof Lead)) {
             return;
         }
+        $em = $eventArgs->getEntityManager();
+        $id = $lead->getId();
 
         if ($eventArgs->hasChangedField('status')
             &&
