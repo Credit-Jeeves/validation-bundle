@@ -15,6 +15,12 @@ function Payments() {
   this.searchCollum = ko.observable("status");
   this.notHaveResult = ko.observable(false);
 
+  this.searchCollum.subscribe(function(newValue) {
+      if (newValue == 'deposit') {
+          self.filterDeposits();
+      }
+  });
+
   this.ajaxAction = function() {
       if (self.searchCollum() == 'deposit') {
           self.filterDeposits();
