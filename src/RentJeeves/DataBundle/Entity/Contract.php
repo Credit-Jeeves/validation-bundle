@@ -486,6 +486,7 @@ class Contract extends Base
         if ($payment = $this->getNotClosedPayment()) {
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
+            $result['payment_due_date'] = $payment->getNextPaymentDate()->format('m/d/Y');
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {

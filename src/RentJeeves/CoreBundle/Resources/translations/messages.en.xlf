@@ -1305,6 +1305,14 @@
                 <source>contract.status.finished</source>
                 <target>FINISHED</target>
             </trans-unit>
+            <trans-unit id="contract.status.finished.text">
+                <source>contract.status.finished.text</source>
+                <target>Lease is Finished. No Payment Due.</target>
+            </trans-unit>
+            <trans-unit id="contract.status.current.text">
+                <source>contract.status.current.text</source>
+                <target>No Payment Scheduled</target>
+            </trans-unit>
             <trans-unit id="contract.status.approved.text">
                 <source>contract.status.approved.text</source>
                 <target>No Payment Scheduled</target>
