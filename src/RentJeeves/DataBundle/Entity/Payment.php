@@ -78,4 +78,35 @@ class Payment extends Base
         $em->persist($this);
         $em->flush($this);
     }
+
+    /**
+     * @return DateTime
+     */
+    public function getNextPaymentDate()
+    {
+        // 1. Get start date
+        $day = $this->getDueDate();
+        $month = $this->getStartMonth();
+        $year = $this->getStartYear();
+
+        // 2. Get now
+        $now = new DateTime();
+
+        // 3. Get current day, month, year
+        $currentDay = $now->format('d');
+        $currentMonth = $now->format('m');
+        $currentYear = $now->format('Y');
+
+        // 4. If payment day has already gone, we should take next month
+        if ($currentDay > $this->getDueDate()) {
+            $now->modify('+1 month');
+            $month = $now->format('m');
+            $year = $now->format('Y');
+        } else { // 5. If the day is Ok, month and year should be the current ones
+            $month = $currentMonth;
+            $year = $currentYear;
+        }
+
+        return new DateTime(implode('-', array($day, $month, $year)));
+    }
 }

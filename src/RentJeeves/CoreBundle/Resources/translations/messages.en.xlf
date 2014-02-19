@@ -1305,6 +1305,14 @@
                 <source>contract.status.finished</source>
                 <target>FINISHED</target>
             </trans-unit>
+            <trans-unit id="contract.status.finished.text">
+                <source>contract.status.finished.text</source>
+                <target>Lease is Finished. No Payment Due.</target>
+            </trans-unit>
+            <trans-unit id="contract.status.current.text">
+                <source>contract.status.current.text</source>
+                <target>No Payment Scheduled</target>
+            </trans-unit>
             <trans-unit id="contract.status.approved.text">
                 <source>contract.status.approved.text</source>
                 <target>No Payment Scheduled</target>
@@ -1876,8 +1884,8 @@
                 ]]>
                 </target>
             </trans-unit>
-            <trans-unit id="filter.group_by.deposit">
-                <source>filter.group_by.deposit</source>
+            <trans-unit id="payments.filter.group_by.deposit">
+                <source>payments.filter.group_by.deposit</source>
                 <target>Group by Deposit</target>
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.echeck">
@@ -1908,6 +1916,23 @@
                 <source>payments.batched_amount</source>
                 <target>{1}1 payment is batched into this deposit.|[2,Inf]%count% payments are batched into this deposit.</target>
             </trans-unit>
+            <trans-unit id="payments.filter.status">
+                <source>payments.filter.status</source>
+                <target>Filter by Status</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.property">
+                <source>payments.filter.property</source>
+                <target>Search by Property</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.tenant">
+                <source>payments.filter.tenant</source>
+                <target>Search by Tenant</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.amount">
+                <source>payments.filter.amount</source>
+                <target>Search by Amount</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
