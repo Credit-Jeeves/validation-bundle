@@ -7,6 +7,8 @@ use CreditJeeves\DataBundle\Enum\OrderType;
 use RentJeeves\DataBundle\Entity\Heartland as HeartlandTransaction;
 use JMS\DiExtraBundle\Annotation as DI;
 use DateTime;
+use RuntimeException;
+use Exception;
 
 /**
  * @DI\Service("payment.report")
@@ -18,6 +20,7 @@ class PaymentReport
     protected $fileReader;
     protected $fileFinder;
     protected $businessDaysCalc;
+    protected $batchDate;
 
     /**
      * @DI\InjectParams({
@@ -34,6 +37,7 @@ class PaymentReport
         $this->fileReader = $fileReader;
         $this->fileFinder = $fileFinder;
         $this->businessDaysCalc = $businessDaysCalc;
+        $this->batchDate = new DateTime();
     }
 
     /**
@@ -47,6 +51,7 @@ class PaymentReport
             return 0;
         }
 
+        $this->setBatchDate($file);
         $data = $this->fileReader->read($file);
 
         foreach ($data as $paymentData) {
@@ -77,8 +82,7 @@ class PaymentReport
         if ($transaction && $batchId = $paymentData['BatchID']) {
             $transaction->setBatchId($batchId);
 
-            $batchDate = $this->getBatchDate();
-            $transaction->setBatchDate($batchDate);
+            $transaction->setBatchDate($this->batchDate);
             
             $depositDate = $this->getDepositDate($transaction);
             $transaction->setDepositDate($depositDate);
@@ -123,8 +127,7 @@ class PaymentReport
 
     protected function getDepositDate(HeartlandTransaction $transaction)
     {
-        $depositDate = new DateTime();
-        $depositDate->modify('-1 day');
+        $depositDate = clone $this->batchDate;
 
         $paymentType = $transaction->getOrder()->getType();
 
@@ -138,11 +141,13 @@ class PaymentReport
         }
     }
 
-    protected function getBatchDate()
+    protected function setBatchDate($filename)
     {
-        $batchDate = new DateTime();
-        $batchDate->modify('-1 day');
-
-        return $batchDate;
+        $filenameTokens = explode('-', $filename);
+        if (!(
+            isset($filenameTokens[1]) && $this->batchDate = DateTime::createFromFormat('Ymd', $filenameTokens[1])
+        )) {
+            throw new RuntimeException('Report filename doesn\'t correspond with required format.');
+        }
     }
 }
