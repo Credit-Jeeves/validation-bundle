@@ -381,10 +381,9 @@ class IframeCase extends BaseTestCase
                 )
             );
         $this->session->visit($this->getUrl() . 'tenant/invite/resend/'.$user->getId());
-        $userExistMessage->click();
         $this->assertNotNull($title = $this->page->find('css', '.title'));
         $this->assertEquals('verify.email.invite.title', $title->getText());
-        $this->session->evaluateScript('document.location.reload()');
+        $this->session->visit($this->getUrl() . 'tenant/invite/resend/'.$user->getId());
         $this->assertNotNull($title = $this->page->find('css', '.title'));
         $this->assertEquals('error.oops', $title->getText());
         $this->setDefaultSession('goutte');
@@ -411,6 +410,9 @@ class IframeCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
+        $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
         $fillAddress = '45 Rockefeller Plaza, New York City, NY 10111';
         $this->fillGoogleAddress($fillAddress);
         $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
@@ -420,7 +422,7 @@ class IframeCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_invitetenanttype_invite_email' => 'john@rentrack.com',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_email' => 'john@rentrack.com',
             )
         );
 
