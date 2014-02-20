@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -482,11 +483,18 @@ class Contract extends Base
         $result['row_payment_source'] = 'N/A';
         $result['full_payment_source'] = '';
         $result['isPayment'] = false;
+        /** @var Order $lastOrder */
+        $lastOrder = $repo->getLastContractPayment($this);
 
         if ($payment = $this->getNotClosedPayment()) {
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
-            $result['payment_due_date'] = $payment->getNextPaymentDate()->format('m/d/Y');
+
+            $lastPaymentDate = null;
+            if ($lastOrder) {
+                $lastPaymentDate = $lastOrder->getUpdatedAt();
+            }
+            $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {
@@ -495,8 +503,8 @@ class Contract extends Base
             }
         }
         $result['payment_last'] = 'N/A';
-        if ($order = $repo->getLastContractPayment($this)) {
-            $result['payment_last'] = $order->getUpdatedAt()->format('m/d/Y');
+        if ($lastOrder) {
+            $result['payment_last'] = $lastOrder->getUpdatedAt()->format('m/d/Y');
         }
         $result['payment_next'] = 'N/A';
         if ($paidTo = $this->getPaidTo()) {
