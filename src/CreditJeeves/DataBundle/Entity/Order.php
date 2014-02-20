@@ -591,6 +591,9 @@ class Order extends BaseOrder
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
                 $result['style'] = '';
                 break;
+            case OrderStatus::PENDING:
+                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                break;
             case OrderStatus::ERROR:
             case OrderStatus::CANCELLED:
             case OrderStatus::REFUNDED:
