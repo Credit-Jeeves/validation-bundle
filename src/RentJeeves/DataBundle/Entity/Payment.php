@@ -82,7 +82,7 @@ class Payment extends Base
     /**
      * @return DateTime
      */
-    public function getNextPaymentDate()
+    public function getNextPaymentDate(DateTime $lastPaymentDate = null)
     {
         // 1. Get start date
         $day = $this->getDueDate();
@@ -97,8 +97,15 @@ class Payment extends Base
         $currentMonth = $now->format('m');
         $currentYear = $now->format('Y');
 
-        // 4. If payment day has already gone, we should take next month
-        if ($currentDay > $this->getDueDate()) {
+        if ($currentDay > $this->getDueDate()) { // 4. If payment day has already gone, we should take next month
+            $now->modify('+1 month');
+            $month = $now->format('m');
+            $year = $now->format('Y');
+            // 5. If due date is today and payment has been made today, we should move to next month
+        } elseif (($currentDay == $this->getDueDate())
+            && $lastPaymentDate
+            && $lastPaymentDate->format('Ymd') == $now->format('Ymd')
+        ) {
             $now->modify('+1 month');
             $month = $now->format('m');
             $year = $now->format('Y');

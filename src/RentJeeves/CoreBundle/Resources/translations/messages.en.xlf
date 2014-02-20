@@ -804,6 +804,10 @@
                 <source>error</source>
                 <target>Error</target>
             </trans-unit>
+            <trans-unit id="processing">
+                <source>processing</source>
+                <target>Processing</target>
+            </trans-unit>
             <trans-unit id="payments.total">
                 <source>payments.total</source>
                 <target>Payments Total</target>
@@ -1291,7 +1295,7 @@
             </trans-unit>
             <trans-unit id="contract.status.invite.text">
                 <source>contract.status.invite.text</source>
-                <target>Waiting for your landlord to join RentTrack.</target>
+                <target>No Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.approved">
                 <source>contract.status.approved</source>
@@ -1396,6 +1400,10 @@
             <trans-unit id="order.status.text.returned">
                 <source>order.status.text.returned</source>
                 <target>RETURNED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.pending">
+                <source>order.status.text.pending</source>
+                <target>PROCESSING</target>
             </trans-unit>
             <trans-unit id="current_payment_sources.title">
                 <source>current_payment_sources.title</source>
