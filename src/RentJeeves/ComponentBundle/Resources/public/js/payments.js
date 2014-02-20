@@ -180,7 +180,7 @@ function Payments() {
 
   this.depositTitle = function(deposit) {
       var amount = deposit.orders.length;
-      return Translator.trans('payments.batched_amount', {"count": amount}, amount);
+      return Translator.transChoice('payments.batched_amount', amount, {"count": amount});
   };
 
   this.haveData = ko.computed(function() {
