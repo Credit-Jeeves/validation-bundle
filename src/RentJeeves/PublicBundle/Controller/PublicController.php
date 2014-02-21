@@ -45,9 +45,12 @@ class PublicController extends Controller
          * @var $user Tenant
          */
         $user = $em->getRepository('RjDataBundle:Tenant')->find($userId);
+        if (empty($user)) {
+            throw new LogicException("User which such id {$userId} does not exist");
+        }
         $contracts = $user->getContracts();
         $contract = null;
-        //@TOD contract which created last
+        //@TODO contract which created last
         foreach ($contracts as $contract) {
             if ($contract->getStatus() === ContractStatus::INVITE) {
                 break;
