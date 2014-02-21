@@ -1,0 +1,11 @@
+0 2 * * * /var/www/stg.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+0 23 * * * /var/www/stg.renttrack.com/bin/console --app=rj payment:collect >> /var/log/renttrack.log 2>&1
+0 8 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:tenant >> /var/log/renttrack.log 2>&1
+0 8 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:tenant --auto >> /var/log/renttrack.log 2>&1
+0 1 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:tenant --type=late >> /var/log/renttrack.log 2>&1
+30 23 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:landlord >> /var/log/renttrack.log 2>&1
+0 8 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:landlord --type=pending >> /var/log/renttrack.log 2>&1
+0 8 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:landlord --type=nsf >> /var/log/renttrack.log 2>&1
+#0 1 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:landlord --type=report >> /var/log/renttrack.log 2>&1
+30 23 * * * /var/www/stg.renttrack.com/bin/console --app=rj Email:landlord --type=late >> /var/log/renttrack.log 2>&1
+*/5 * * * * /var/www/stg.renttrack.com/bin/console jms-job-queue:run --max-runtime=300
