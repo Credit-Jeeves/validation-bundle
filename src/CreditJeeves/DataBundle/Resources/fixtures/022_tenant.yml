@@ -30,8 +30,8 @@ fixtures:
         phone: 913 76 44 215
         date_of_birth: '1957-02-19'
         ssn: 666042073
-        is_active: false
-        invite_code: 77777TEST
+        is_active: true #false
+        invite_code: null #77777TEST
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')
         score_changed_notification: true
         offer_notification: true
@@ -240,8 +240,8 @@ fixtures:
         phone: ''
         date_of_birth: '1941-01-01'
         ssn: '666316880'
-        is_active: true
-        invite_code: null
+        is_active: false
+        invite_code: 77777TEST
         password: 1a1dc91c907325c69271ddf0c944bc72
         salt:   ep3ahd5epy0c4cckkw80kc8wcgw4004
         score_changed_notification: true

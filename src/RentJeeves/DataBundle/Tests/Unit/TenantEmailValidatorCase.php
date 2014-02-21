@@ -33,7 +33,7 @@ class TenantEmailValidatorCase extends BaseTestCase
         $this->assertTrue(('user.email.already.exist' === $errors[0]));
 
         $errors = $validator->validateValue(
-            $email = 'john@rentrack.com',
+            $email = 'connie@rentrack.com',
             new TenantEmail()
         );
         $this->assertTrue((count($errors) === 1));

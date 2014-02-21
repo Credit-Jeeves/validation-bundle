@@ -2,7 +2,9 @@
 
 namespace RentJeeves\PublicBundle\Form;
 
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use RentJeeves\DataBundle\Validators\TenantEmail;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -21,16 +23,20 @@ class TenantType extends AbstractType
             )
         );
         $builder->add('last_name');
+        if ($options['inviteEmail']) {
+            $emailConstraints =  new TenantEmail(
+                array(
+                    'groups'    => 'registration_tos'
+                )
+            );
+        }
+
         $builder->add(
             'email',
             null,
             array(
                 'label'          => 'Email*',
-                'constraints'    => new TenantEmail(
-                    array(
-                        'groups'    => 'registration_tos'
-                    )
-                )
+                'constraints'    => $emailConstraints
             )
         );
         $builder->add(
@@ -82,15 +88,16 @@ class TenantType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
-                'validation_groups' => array(
+                'data_class'         => 'RentJeeves\DataBundle\Entity\Tenant',
+                'validation_groups'  => array(
                     'registration_tos',
                     'invite',
                     'password'
                 ),
-                'csrf_protection' => true,
-                'csrf_field_name' => '_token',
+                'csrf_protection'    => true,
+                'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
+                'inviteEmail'        => true
             )
         );
     }

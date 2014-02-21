@@ -32,25 +32,24 @@ class TenantController extends Controller
 
         $form = $this->createForm(
             new TenantType(),
-            $tenant
+            $tenant,
+            array('inviteEmail' => false)
         );
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $tenant = $form->getData();
-                $aForm = $request->request->get($form->getName());
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
-                $tenant->setPassword($password);
-                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-                $em = $this->getDoctrine()->getManager();
-                $tenant->setInviteCode(null);
-                $em->persist($tenant);
-                $em->flush();
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $tenant = $form->getData();
+            $aForm = $request->request->get($form->getName());
+            $password = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
+            $tenant->setPassword($password);
+            $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+            $em = $this->getDoctrine()->getManager();
+            $tenant->setInviteCode(null);
+            $em->persist($tenant);
+            $em->flush();
 
-                return $this->login($tenant);
-            }
+            return $this->login($tenant);
         }
         return array(
             'code'              => $code,

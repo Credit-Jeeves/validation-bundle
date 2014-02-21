@@ -377,7 +377,7 @@ class IframeCase extends BaseTestCase
         $user = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('DataBundle:User')
             ->findOneBy(
                 array(
-                    'email' => 'john@rentrack.com'
+                    'email' => 'connie@rentrack.com'
                 )
             );
         $this->session->visit($this->getUrl() . 'tenant/invite/resend/'.$user->getId());
@@ -399,7 +399,7 @@ class IframeCase extends BaseTestCase
     public function resendInviteIframeFound()
     {
         $this->load(true);
-        $this->getIframeFound('john@rentrack.com');
+        $this->getIframeFound('connie@rentrack.com');
         $this->checkResendInvite();
     }
 
@@ -422,7 +422,7 @@ class IframeCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_publicbundle_invitetenanttype_tenant_email' => 'john@rentrack.com',
+                'rentjeeves_publicbundle_invitetenanttype_tenant_email' => 'connie@rentrack.com',
             )
         );
 

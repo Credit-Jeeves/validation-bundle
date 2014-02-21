@@ -1884,8 +1884,8 @@
                 ]]>
                 </target>
             </trans-unit>
-            <trans-unit id="filter.group_by.deposit">
-                <source>filter.group_by.deposit</source>
+            <trans-unit id="payments.filter.group_by.deposit">
+                <source>payments.filter.group_by.deposit</source>
                 <target>Group by Deposit</target>
             </trans-unit>
             <trans-unit id="filter.group_by.deposit.echeck">
