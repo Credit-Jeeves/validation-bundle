@@ -56,7 +56,7 @@ class Order
      * @InjectParams({
      *     "serializer"                 = @Inject("jms_serializer"),
      *     "em"                         = @Inject("doctrine.orm.default_entity_manager"),
-     *     "softDeleteableControl"    = @Inject("soft.deleteable.control")
+     *     "softDeleteableControl"      = @Inject("soft.deleteable.control")
      * })
      */
     public function __construct($serializer, $em, $softDeleteableControl)
