@@ -3,7 +3,6 @@
 namespace RentJeeves\PublicBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
-use RentJeeves\DataBundle\Validators\TenantEmailValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\TenantType;
