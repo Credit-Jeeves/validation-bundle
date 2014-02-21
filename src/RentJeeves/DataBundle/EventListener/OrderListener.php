@@ -93,6 +93,9 @@ class OrderListener
                 case OperationType::RENT:
                     $status = $entity->getStatus();
                     switch ($status) {
+                        case OrderStatus::PENDING:
+                            $this->container->get('project.mailer')->sendPendingInfo($entity);
+                            break;
                         case OrderStatus::COMPLETE:
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
                             break;
