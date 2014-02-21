@@ -59,9 +59,6 @@ class OrderListener
             if ($operation && $operation->getType() == OperationType::RENT) {
                 $status = $entity->getStatus();
                 switch ($status) {
-                    case OrderStatus::COMPLETE:
-                        $entity->checkOrderProperties();
-                        break;
                     case OrderStatus::REFUNDED:
                     case OrderStatus::CANCELLED:
                     case OrderStatus::RETURNED:
