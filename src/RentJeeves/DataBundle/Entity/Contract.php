@@ -480,27 +480,28 @@ class Contract extends Base
         $result['payment_type'] = '';
         // @todo get payment source name
         $result['row_payment_source'] = 'N/A';
+        $result['payment_last'] = 'N/A';
         $result['full_payment_source'] = '';
         $result['isPayment'] = false;
         $result['payment_status'] = false;
         /** @var Order $lastOrder */
         $lastOrder = $repo->getLastContractPayment($this);
+        $lastPaymentDate = null;
+        if ($lastOrder) {
+            $result['payment_last'] = $lastOrder->getUpdatedAt()->format('m/d/Y');
+            $lastPaymentDate = $lastOrder->getUpdatedAt();
+            $now = new DateTime();
+            $today = $now->format('Ymd');
+            if ($lastOrder->getStatus() == OrderStatus::PENDING
+                && $today == $lastPaymentDate->format('Ymd')
+            ) {
+                $result['payment_status'] = 'processing';
+            }
+        }
 
         if ($payment = $this->getNotClosedPayment()) {
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
-
-            $lastPaymentDate = null;
-            if ($lastOrder) {
-                $lastPaymentDate = $lastOrder->getUpdatedAt();
-                $now = new DateTime();
-                $today = $now->format('Ymd');
-                if ($lastOrder->getStatus() == OrderStatus::PENDING
-                    && $today == $lastPaymentDate->format('Ymd')
-                ) {
-                    $result['payment_status'] = 'processing';
-                }
-            }
             $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
@@ -509,10 +510,7 @@ class Contract extends Base
                 $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
             }
         }
-        $result['payment_last'] = 'N/A';
-        if ($lastOrder) {
-            $result['payment_last'] = $lastOrder->getUpdatedAt()->format('m/d/Y');
-        }
+
         $result['payment_next'] = 'N/A';
         if ($paidTo = $this->getPaidTo()) {
             $result['payment_next'] = $paidTo->format('m/d/Y');
