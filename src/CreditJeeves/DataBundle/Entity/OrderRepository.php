@@ -209,9 +209,9 @@ class OrderRepository extends EntityRepository
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->where('p.contract = :contract');
-        $query->andWhere('o.status = :status');
+        $query->andWhere('o.status in (:status)');
         $query->setParameter('contract', $contract);
-        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->setParameter('status', array(OrderStatus::COMPLETE, OrderStatus::PENDING));
         $query->orderBy('o.created_at', 'DESC');
         $query->setMaxResults(1);
         $query = $query->getQuery();

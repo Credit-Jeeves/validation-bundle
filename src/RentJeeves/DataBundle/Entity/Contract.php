@@ -471,7 +471,6 @@ class Contract extends Base
         $repo = $em->getRepository('DataBundle:Order');
         $result = array();
         $result['id'] = $this->getId();
-        $result['status'] = $this->getStatus();
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['row_address'] = substr($result['full_address'], 0, 20).'...';
         $result['rent'] = ($rent = $this->getRent()) ? '$'.$rent : '--';
@@ -483,6 +482,7 @@ class Contract extends Base
         $result['row_payment_source'] = 'N/A';
         $result['full_payment_source'] = '';
         $result['isPayment'] = false;
+        $result['payment_status'] = false;
         /** @var Order $lastOrder */
         $lastOrder = $repo->getLastContractPayment($this);
 
@@ -493,6 +493,13 @@ class Contract extends Base
             $lastPaymentDate = null;
             if ($lastOrder) {
                 $lastPaymentDate = $lastOrder->getUpdatedAt();
+                $now = new DateTime();
+                $today = $now->format('Ymd');
+                if ($lastOrder->getStatus() == OrderStatus::PENDING
+                    && $today == $lastPaymentDate->format('Ymd')
+                ) {
+                    $result['payment_status'] = 'processing';
+                }
             }
             $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
 
