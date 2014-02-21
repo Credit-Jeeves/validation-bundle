@@ -63,6 +63,8 @@ class PublicController extends Controller
             throw new LogicException("User which try to get resend invite - does not have contract with status INVITE");
         }
         //Save as is but, in general can be problem on this line
+        //Because in group we have many landlord and don't know what exactly Landlord send invite
+        //So we select random landlord for group, it's main problem in architecture
         $landlord = $contract->getGroup()->getGroupAgents()->first();
         $reminderInvite = $this->get('reminder.invite');
         if (!$reminderInvite->send($contract->getId(), $landlord)) {
