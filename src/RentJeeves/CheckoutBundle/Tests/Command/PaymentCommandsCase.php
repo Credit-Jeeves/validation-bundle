@@ -35,8 +35,8 @@ class PaymentCommandsCase extends BaseTestCase
             )
         );
         $this->assertRegExp("/Start\nOK/", $commandTester->getDisplay());
-        // No Emails, current status of order is PENDING Email will be send on COMPLETE status
-        $this->assertCount(0, $plugin->getPreSendMessages());
+        // "Your Rent is Processing" Email
+        $this->assertCount(1, $plugin->getPreSendMessages());
 
         $plugin->clean();
         $commandTester->execute(
