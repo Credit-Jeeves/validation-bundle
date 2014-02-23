@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\TenantBundle\Service;
+namespace RentJeeves\TenantBundle\Services;
 
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
