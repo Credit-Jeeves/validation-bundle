@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "425a624ce30b85cdc0f1a3a0d2d8c856",
+    "hash": "bc98392e76b7124879fc1a31fc7e2359",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -324,12 +324,12 @@
         },
         {
             "name": "credit-jeeves/api-bundle",
-            "version": "dev-master",
+            "version": "dev-live-cj",
             "target-dir": "CreditJeeves/ApiBundle",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Tobur/ApiBundle.git",
-                "reference": "3e50568b1228beaf439809d23639bfe058e1c0cd"
+                "reference": "7c351ddcead9f0b6df7c95e9809665a0c4d25f7d"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -365,7 +365,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2014-02-24 09:40:01"
+            "time": "2014-02-24 16:17:17"
         },
         {
             "name": "credit-jeeves/arf-bundle",

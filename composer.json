@@ -174,7 +174,7 @@
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",
         "credit-jeeves/simulation-bundle": "dev-master",
-        "credit-jeeves/api-bundle": "dev-master",
+        "credit-jeeves/api-bundle": "dev-live-cj",
         "formapro/xmlseclibs": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
