@@ -28,5 +28,5 @@ api:
   pidkiq_precisel_id_type: 11
   pidkiq_subcode: 2108720
   pidkiq_end_user: 'US Equity Advantage'
-  pidkiq_account_type: 0B
+  pidkiq_account_type: 0B #not use for now, because don't now where I need put it in request, see RT-296
 
