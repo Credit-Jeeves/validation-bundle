@@ -26,5 +26,7 @@ api:
   password: '1SgQfQvenIhG3URtUOBrkN8DEO4ZAeb284cMEVL5E7k='
   admin_dealer_code: 1a1dc91c9073
   pidkiq_precisel_id_type: 11
-  pidkiq_subcode: 1908357
+  pidkiq_subcode: 2108720
+  pidkiq_end_user: 'US Equity Advantage'
+  pidkiq_account_type: 0B
 
