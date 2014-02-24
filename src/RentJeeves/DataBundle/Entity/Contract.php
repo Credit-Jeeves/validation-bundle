@@ -163,6 +163,7 @@ class Contract extends Base
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
         $result['status'] = $status['status'];
+        $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];
         $result['address'] = $this->getRentAddress($property, $unit);
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
@@ -245,7 +246,7 @@ class Contract extends Base
 
     public function getStatusArray()
     {
-        $result = array('status' => strtoupper($this->getStatus()), 'class' => '');
+        $result = array('status' => strtoupper($this->getStatus()), 'class' => '', 'status_name' => $this->getStatus());
         if (ContractStatus::PENDING == $this->getStatus()) {
             $result['class'] = 'contract-pending';
             return $result;
@@ -269,6 +270,7 @@ class Contract extends Base
             if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
                 $result['status'] = 'LATE ('.$interval->days.' days)';
+                $result['status_name'] = 'late';
                 $result['class'] = 'contract-late';
                 return $result;
             }
