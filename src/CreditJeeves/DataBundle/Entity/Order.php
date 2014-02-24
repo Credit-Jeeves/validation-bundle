@@ -692,29 +692,6 @@ class Order extends BaseOrder
         }
     }
 
-    public function checkOrderProperties()
-    {
-        $operations = $this->getOperations();
-        $orderAmount = $this->getAmount();
-        foreach ($operations as $operation) {
-            $type = $operation->getType();
-            switch ($type) {
-                case OperationType::RENT:
-                    $status = $this->getStatus();
-                    if ($status == OrderStatus::COMPLETE) {
-                        $contract = $operation->getContract();
-                        $paidTo = $contract->getPaidTo();
-                        $interval = $this->getDiffDays($paidTo);
-                        $this->setDaysLate($interval);
-                    }
-                    break;
-                case OperationType::REPORT:
-                    // Nothing to do now
-                    break;
-            }
-        }
-    }
-
     /**
      * @return \RentJeeves\DataBundle\Entity|null
      */

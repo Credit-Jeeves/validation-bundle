@@ -60,6 +60,8 @@ class AddPropertyCase extends BaseTestCase
 
     /**
      * @test
+     *
+     * @todo strange search for "560 Broadway New York, NY 10012"
      */
     public function invite()
     {

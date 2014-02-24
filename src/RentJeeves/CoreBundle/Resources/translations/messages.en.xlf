@@ -1329,6 +1329,10 @@
                 <source>contract.status.recurring.text</source>
                 <target>Next Recurring Payment Scheduled for %payment_date%</target>
             </trans-unit>
+            <trans-unit id="contract.status.processing.text">
+                <source>contract.status.processing.text</source>
+                <target>Payment Submitted</target>
+            </trans-unit>
             <trans-unit id="landlord.alert.title">
                 <source>landlord.alert.title</source>
                 <target>You have incomplete tasks</target>
