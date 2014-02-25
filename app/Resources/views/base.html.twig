@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale }}">
 <head>
     <meta charset="UTF-8" />
     <title>{% block title %}{{ 'project_name'|trans }}{% endblock %}</title>
@@ -35,7 +35,7 @@
         '@FOSJsRoutingBundle/Resources/public/js/router.js'
         '@CoreBundle/Resources/public/js/jquery.cookie.js'
         '@CoreBundle/Resources/public/js/session.js'
-        'bundles/bazingaexposetranslation/js/translator.min.js'
+        'bundles/bazingajstranslation/js/translator.min.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -47,7 +47,7 @@
         {% endif %}
     {% endblock %}
     {% block head_javascripts %}{% endblock %}
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
+    <script src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
     {% if 'dev' == env %}
         <script src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
     {% else %}

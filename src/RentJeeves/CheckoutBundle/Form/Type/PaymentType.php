@@ -171,56 +171,53 @@ class PaymentType extends AbstractType
             'start_date',
             'date',
             array(
-                'mapped' => false,
-                'label' => 'checkout.date',
-                'input' => 'string',
-                'widget' => 'single_text',
-                'format' => 'MM/dd/yyyy',
-                'mapped' => false,
-                'empty_data' => '',
-                'attr' => array(
-                    'class' => 'datepicker-field',
-                    'row_attr' => array(
+                'mapped'          => false,
+                'label'           => 'checkout.date',
+                'input'           => 'string',
+                'widget'          => 'single_text',
+                'format'          => 'MM/dd/yyyy',
+                'mapped'          => false,
+                'empty_data'      => '',
+                'attr'            => array(
+                    'class'     => 'datepicker-field',
+                    'row_attr'  => array(
                         'data-bind' => 'visible: \'one_time\' == payment.type()'
                     ),
                     'data-bind' => 'value: payment.startDate',
-                    'html' => '<div class="tooltip-box type3 pie-el">' .
-                            '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
-                                'checkout.one_time.tooltip.title-%START%-%SETTLE%' .
-                            '</h4>' .
-                            '<p data-bind="i18n: {\'AMOUNT\': getAmount, \'START\': payment.startDate}">' .
-                                'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
-                        '</p></div>',
+                    'html'      => '<div class="tooltip-box type3 pie-el">' .
+                    '<h4 data-bind="i18n: {\'START\': payment.startDate, \'SETTLE\': settle}">' .
+                    'checkout.one_time.tooltip.title-%START%-%SETTLE%' .
+                    '</h4>' .
+                    '<p data-bind="i18n: {\'AMOUNT\': getAmount, \'START\': payment.startDate}">' .
+                    'checkout.one_time.tooltip.text-%AMOUNT%-%START%' .
+                    '</p></div>',
                 ),
                 'invalid_message' => 'checkout.error.date.valid',
-                'constraints' => array(
+                'constraints'     => array(
                     new NotBlank(
                         array(
-                            'groups' => array('one_time'),
+                            'groups'  => array('one_time'),
                             'message' => 'checkout.error.date.empty',
                         )
                     ),
                     new Date(
                         array(
-                            'groups' => array('one_time'),
+                            'groups'  => array('one_time'),
                             'message' => 'checkout.error.date.valid',
-                        )
-                    ),
-                    new Callback(
-                        array(
-                            'groups' => array('one_time'),
-                            'methods' => array(array($this, 'isInTime')),
                         )
                     ),
                     new StartDate(
                         array(
-                            'groups' => array('recurring'),
-                            'oneTimeUntilValue'   => $this->oneTimeUntilValue,
+                            'groups'            => array(
+                                'recurring',
+                                'one_time'
+                            ),
+                            'oneTimeUntilValue' => $this->oneTimeUntilValue,
                         )
                     ),
                     new Callback(
                         array(
-                            'groups' => array('one_time'),
+                            'groups'  => array('one_time'),
                             'methods' => array(array($this, 'isLaterOrEqualNow'))
                         )
                     ),
@@ -331,7 +328,6 @@ class PaymentType extends AbstractType
                     }
 
                     $groups[] = $data->getType();
-
                     return $groups;
                 }
             )
@@ -341,15 +337,6 @@ class PaymentType extends AbstractType
     public function getName()
     {
         return 'rentjeeves_checkoutbundle_paymenttype';
-    }
-
-    public function isInTime($data, ExecutionContextInterface $validatorContext)
-    {
-        $now = new DateTime();
-        $until = new DateTime($this->oneTimeUntilValue);
-        if ($now->format('Y-m-d') == $data && $now >= $until) {
-            $validatorContext->addViolationAt('start_date', 'checkout.error.date.not_in_time', array(), null);
-        }
     }
 
     public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)

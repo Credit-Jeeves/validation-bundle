@@ -23,6 +23,7 @@
                 ) }}
             </div>
           <div class="errorsGoogleSearch"></div>
+
           <form id="formNewUser" action="{{ path('iframe_new', {"propertyId": property.id }) }}"
            method="post" {{ form_enctype(form) }}>
             {{ include(
@@ -49,7 +50,7 @@
 
 {% block javascripts %}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  'bundles/bazingaexposetranslation/js/translator.min.js'
+    {% javascripts  'bundles/bazingajstranslation/js/translator.min.js'
                     '@RjCoreBundle/Resources/public/js/jquery.tmpl.js'
                     '@RjCoreBundle/Resources/public/js/jquery.google.js'
                     '@RjPublicBundle/Resources/public/js/new.js'
@@ -58,7 +59,7 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}
 
 

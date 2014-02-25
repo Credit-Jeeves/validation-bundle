@@ -15,6 +15,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Exception;
 
+/**
+ * @Route("/")
+ */
 class AjaxController extends Controller
 {
     /**
@@ -52,7 +55,7 @@ class AjaxController extends Controller
     }
 
     /**
-     * @Route("/admin/order/status", name="admin_order_status", options={"expose"=true})
+     * @Route("order/status", name="admin_order_status", options={"expose"=true})
      * @Method({"POST"})
      */
     public function changeOrderStatusAction(Request $request)

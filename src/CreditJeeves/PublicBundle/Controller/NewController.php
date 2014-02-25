@@ -72,9 +72,9 @@ class NewController extends Controller
             new LeadNewType(),
             $Lead,
             array(
-                'em' => $this->getDoctrine()->getManager(),
-                'attr' => array('index' => $index)
-                )
+                'em'                => $this->getDoctrine()->getManager(),
+                'vehicles'          => $this->get('data.utility.vehicle')->getVehicles(),
+            )
         );
         if ($request->getMethod() == 'POST') {
             $form->bind($request);

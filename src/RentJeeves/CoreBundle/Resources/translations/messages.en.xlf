@@ -804,6 +804,10 @@
                 <source>error</source>
                 <target>Error</target>
             </trans-unit>
+            <trans-unit id="processing">
+                <source>processing</source>
+                <target>Processing</target>
+            </trans-unit>
             <trans-unit id="payments.total">
                 <source>payments.total</source>
                 <target>Payments Total</target>
@@ -848,7 +852,7 @@
             </trans-unit>
             <trans-unit id="current_payments.title">
                 <source>current_payments.title</source>
-                <target>Current Payments</target>
+                <target>Payments</target>
             </trans-unit>
             <trans-unit id="pay_to">
                 <source>pay_to</source>
@@ -876,7 +880,7 @@
             </trans-unit>
             <trans-unit id="contract.pay">
                 <source>contract.pay</source>
-                <target>Pay</target>
+                <target>Make a Payment</target>
             </trans-unit>
             <trans-unit id="contract.paid.cash">
                 <source>contract.paid.cash</source>
@@ -888,7 +892,7 @@
             </trans-unit>
             <trans-unit id="contract.edit">
                 <source>contract.edit</source>
-                <target>Edit</target>
+                <target>Edit Payment</target>
             </trans-unit>
             <trans-unit id="contract.pay.source">
                 <source>contract.pay.source</source>
@@ -904,7 +908,7 @@
             </trans-unit>
             <trans-unit id="contract.payment.next">
                 <source>contract.payment.next</source>
-                <target>Next Due Date</target>
+                <target>Due On</target>
             </trans-unit>
             <trans-unit id="contract.payment.date.next">
                 <source>contract.payment.date.next</source>
@@ -918,6 +922,15 @@
                 <source>contract.status</source>
                 <target>Status</target>
             </trans-unit>
+            <trans-unit id="contract.rent_amount">
+                <source>contract.rent_amount</source>
+                <target>Rent Amount</target>
+            </trans-unit>
+            <trans-unit id="contract.property">
+                <source>contract.property</source>
+                <target>Property</target>
+            </trans-unit>
+
             <trans-unit id="contract.error.rent">
                 <source>contract.error.rent</source>
                 <target>Amount could not be empty</target>
@@ -1270,7 +1283,7 @@
             </trans-unit>
             <trans-unit id="contract.status.pending.text">
                 <source>contract.status.pending.text</source>
-                <target>PENDING Landlord Approval</target>
+                <target>Pending Landlord Approval</target>
             </trans-unit>
             <trans-unit id="contract.status.pending.title">
                 <source>contract.status.pending.title</source>
@@ -1280,9 +1293,9 @@
                 <source>contract.status.invite</source>
                 <target>INVITE</target>
             </trans-unit>
-            <trans-unit id="contract.status.invite.title">
-                <source>contract.status.invite.title</source>
-                <target>Waiting for your landlord to join RentTrack.</target>
+            <trans-unit id="contract.status.invite.text">
+                <source>contract.status.invite.text</source>
+                <target>No Payment Scheduled</target>
             </trans-unit>
             <trans-unit id="contract.status.approved">
                 <source>contract.status.approved</source>
@@ -1295,6 +1308,30 @@
             <trans-unit id="contract.status.finished">
                 <source>contract.status.finished</source>
                 <target>FINISHED</target>
+            </trans-unit>
+            <trans-unit id="contract.status.finished.text">
+                <source>contract.status.finished.text</source>
+                <target>Lease is Finished. No Payment Due.</target>
+            </trans-unit>
+            <trans-unit id="contract.status.current.text">
+                <source>contract.status.current.text</source>
+                <target>No Payment Scheduled</target>
+            </trans-unit>
+            <trans-unit id="contract.status.approved.text">
+                <source>contract.status.approved.text</source>
+                <target>No Payment Scheduled</target>
+            </trans-unit>
+            <trans-unit id="contract.status.one_time.text">
+                <source>contract.status.one_time.text</source>
+                <target>One-Time Payment Scheduled for %payment_date%</target>
+            </trans-unit>
+            <trans-unit id="contract.status.recurring.text">
+                <source>contract.status.recurring.text</source>
+                <target>Next Recurring Payment Scheduled for %payment_date%</target>
+            </trans-unit>
+            <trans-unit id="contract.status.processing.text">
+                <source>contract.status.processing.text</source>
+                <target>Payment Submitted</target>
             </trans-unit>
             <trans-unit id="landlord.alert.title">
                 <source>landlord.alert.title</source>
@@ -1367,6 +1404,10 @@
             <trans-unit id="order.status.text.returned">
                 <source>order.status.text.returned</source>
                 <target>RETURNED</target>
+            </trans-unit>
+            <trans-unit id="order.status.text.pending">
+                <source>order.status.text.pending</source>
+                <target>PROCESSING</target>
             </trans-unit>
             <trans-unit id="current_payment_sources.title">
                 <source>current_payment_sources.title</source>
@@ -1522,7 +1563,7 @@
             </trans-unit>
             <trans-unit id="contract.reminder.already.send">
                 <source>contract.reminder.error.already.send</source>
-                <target>You can not so often send reminders for the same contract.</target>
+                <target>Looks like you sent a reminder just a moment ago. We don't want to start spamming your inbox.</target>
             </trans-unit>
             <trans-unit id="iframe.login.title">
                 <source>iframe.login.title</source>
@@ -1800,7 +1841,140 @@
             </trans-unit>
             <trans-unit id="payment.start_date.error.cutoff.time">
                 <source>payment.start_date.error.cutoff.time</source>
-                <target>Please check your dates. It appears you have set up a recurring payment to beyond the cutoff time for payments today.</target>
+                <target>It is past the payment cutoff time for today, please set the date to tomorrow or later.</target>
+            </trans-unit>
+            <trans-unit id="is.pid.verification.skip">
+                <source>is.pid.verification.skip</source>
+                <target>Skip PID verification?</target>
+            </trans-unit>
+            <trans-unit id="authorization.description.removed">
+                <source>authorization.description.removed</source>
+                <target><![CDATA[
+                    RentTrack will no longer store or monitor your credit information and credit score.
+                    You can continue to pay your rent through our service.
+                    <a href="%%HOME_PAGE%%">Return to the Payments tab.</a>
+                    ]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="remove.comment">
+                <source>remove.comment</source>
+                <target>To remove authorization for RentTrack to pull your credit profile, type your password below and click 'Remove'. Your score, credit profile data and any sensitive personal data will be removed from our database.</target>
+            </trans-unit>
+            <trans-unit id="verify.your.identity">
+                <source>verify.your.identity</source>
+                <target>Verify Your Identity</target>
+            </trans-unit>
+            <trans-unit id="verify.your.identity.desc">
+                <source>verify.your.identity.desc</source>
+                <target>
+                    In order to show you your credit score
+                    and profile, as well as to report your
+                    rent payments to credit bureaus, we need
+                    to locate your credit file and verify your identity.
+                    This soft inquiry will not impact your credit score.
+                </target>
+            </trans-unit>
+            <trans-unit id="personal.information">
+                <source>personal.information</source>
+                <target>Personal Information</target>
+            </trans-unit>
+            <trans-unit id="verify.identity">
+                <source>verify.identity</source>
+                <target>Verify Identity</target>
+            </trans-unit>
+            <trans-unit id="pidkiq.error.incorrect.answer2">
+               <source>pidkiq.error.incorrect.answer2</source>
+               <target><![CDATA[
+                We found your identity at the credit bureau, so you WILL be able
+                to set up your payment. However, some of the answers you provided to the
+                questions are incorrect, so you will not be able to see your credit score or
+                profile just yet. Contact
+                <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>
+                <a href="http://%MAIN_LINK%/knowledgebase/articles/281708-i-failed-online-authentication-what-should-i-do-"
+                 target="_blank" class="underline">
+                 to manually verify your identity.</a>
+                ]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="payments.filter.group_by.deposit">
+                <source>payments.filter.group_by.deposit</source>
+                <target>Group by Deposit</target>
+            </trans-unit>
+            <trans-unit id="filter.group_by.deposit.echeck">
+                <source>filter.group_by.deposit.echeck</source>
+                <target>E-Check</target>
+            </trans-unit>
+            <trans-unit id="filter.group_by.deposit.credit-card">
+                <source>filter.group_by.deposit.credit-card</source>
+                <target>Credit Card</target>
+            </trans-unit>
+            <trans-unit id="payments.deposit">
+                <source>payments.deposit</source>
+                <target>DEPOSIT</target>
+            </trans-unit>
+            <trans-unit id="payments.batch_deposits">
+                <source>payments.batch_deposits</source>
+                <target>Batch Deposits</target>
+            </trans-unit>
+            <trans-unit id="payments.show">
+                <source>payments.show</source>
+                <target>+ Show Payments</target>
+            </trans-unit>
+            <trans-unit id="payments.hide">
+                <source>payments.hide</source>
+                <target>- Hide Payments</target>
+            </trans-unit>
+            <trans-unit id="payments.batched_amount">
+                <source>payments.batched_amount</source>
+                <target>{1}1 payment is batched into this deposit.|[2,Inf]%count% payments are batched into this deposit.</target>
+            </trans-unit>
+            <trans-unit id="tenant.already.invited">
+                <source>tenant.already.invited</source>
+                <target><![CDATA[
+                    This email address already invited. We recommmend you
+                    <a href="%%LINK%%" class="resend-email">
+                    click here to resend the invite.
+                    </a>
+                 ]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="user.email.already.exist">
+                <source>user.email.already.exist</source>
+                <target>
+                    This email address is already in use. Please choose another.
+                </target>
+            </trans-unit>
+            <trans-unit id="verify.email.invite.title">
+                <source>verify.email.invite.title</source>
+                <target>Invite Sent.</target>
+            </trans-unit>
+            <trans-unit id="verify.email.invite.desc">
+                <source>verify.email.invite.desc</source>
+                <target>Please check your inbox for an email from RentTrack.</target>
+             </trans-unit>
+             <trans-unit id="error.oops">
+                 <source>error.oops</source>
+                 <target>Oops!</target>
+             </trans-unit>
+            <trans-unit id="payments.filter.status">
+                <source>payments.filter.status</source>
+                <target>Filter by Status</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.property">
+                <source>payments.filter.property</source>
+                <target>Search by Property</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.tenant">
+                <source>payments.filter.tenant</source>
+                <target>Search by Tenant</target>
+            </trans-unit>
+            <trans-unit id="payments.filter.amount">
+                <source>payments.filter.amount</source>
+                <target>Search by Amount</target>
+            </trans-unit>
+            <trans-unit id="info.payment.date">
+                <source>info.payment.date</source>
+                <target>Your payment scheduled for the %%DAY_1%%st will be executed on the %%DAY_2%%th due to the short month.</target>
             </trans-unit>
         </body>
     </file>

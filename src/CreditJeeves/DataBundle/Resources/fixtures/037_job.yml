@@ -1,0 +1,22 @@
+model: RentJeeves\DataBundle\Entity\Job
+fixtures:
+  job_1:
+    stateRaw: pending
+    createdAt: now
+    executeAfter: now
+    command: 'payment:pay'
+    args: ["--app=rj"]
+  job_2:
+    stateRaw: finished
+    createdAt: '-1 month'
+    startedAt: '-1 month'
+    executeAfter: '-1 month'
+    closedAt: '-1 month'
+    command: 'payment:pay'
+    args: ["--app=rj"]
+    output: "Start\nOK"
+    errorOutput: null
+    exitCode: 0
+    maxRuntime: 0
+    maxRetries: 0
+    runtime: 5

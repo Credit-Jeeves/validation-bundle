@@ -61,7 +61,7 @@ $(document).ready(function(){
             dataType: 'json',
             data: {'units': units, 'property_id': propertyId },
             error: function(jqXHR, errorThrown, textStatus) {
-                google.showError(Translator.get('fill.full.address'));
+                google.showError(Translator.trans('fill.full.address'));
             },
             success: function(data, textStatus, jqXHR) {
                 return location.href = Routing.generate('landlord_properties');
@@ -77,14 +77,14 @@ $(document).ready(function(){
             dataType: 'json',
             data: {'data': JSON.stringify(google.data, null)},
             error: function(jqXHR, errorThrown, textStatus) {
-                google.showError(Translator.get('fill.full.address'));
+                google.showError(Translator.trans('fill.full.address'));
             },
             success: function(data, textStatus, jqXHR) {
                 var propertyId = data.property.id;
                 if(propertyId) {
                     return saveUnitList(propertyId);
                 }
-                google.showError(Translator.get('fill.full.address'));
+                google.showError(Translator.trans('fill.full.address'));
             }
         });
     }

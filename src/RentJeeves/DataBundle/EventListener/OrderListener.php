@@ -55,9 +55,25 @@ class OrderListener
     {
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $status = $entity->getStatus();
-            if ($status == OrderStatus::COMPLETE) {
-                $entity->checkOrderProperties();
+            $operation = $entity->getOperations()->last();
+            if ($operation && $operation->getType() == OperationType::RENT) {
+                $status = $entity->getStatus();
+                switch ($status) {
+                    case OrderStatus::REFUNDED:
+                    case OrderStatus::CANCELLED:
+                    case OrderStatus::RETURNED:
+                        if ($eventArgs->hasChangedField('status')
+                            && !in_array(
+                                $eventArgs->getOldValue('status'),
+                                array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
+                            )
+                        ) {
+                            // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
+                            $contract = $operation->getContract();
+                            $contract->unshiftPaidTo($entity->getAmount());
+                        }
+                        break;
+                }
             }
         }
     }
@@ -74,6 +90,9 @@ class OrderListener
                 case OperationType::RENT:
                     $status = $entity->getStatus();
                     switch ($status) {
+                        case OrderStatus::PENDING:
+                            $this->container->get('project.mailer')->sendPendingInfo($entity);
+                            break;
                         case OrderStatus::COMPLETE:
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
                             break;
@@ -83,7 +102,14 @@ class OrderListener
                         case OrderStatus::REFUNDED:
                         case OrderStatus::CANCELLED:
                         case OrderStatus::RETURNED:
-                            $this->container->get('project.mailer')->sendOrderCancel($entity);
+                            // changes to contract are made in preUpdate since only there we can check whether the order
+                            // status has been changed. But those changes aren't flushed. So the flush is here.
+                            $contract = $operation->getContract();
+                            $eventArgs->getEntityManager()->flush($contract);
+
+                            $this->container->get('project.mailer')->sendOrderCancelToTenant($entity);
+                            $this->container->get('project.mailer')->sendOrderCancelToLandlord($entity);
+                        
                             break;
                     }
                     break;

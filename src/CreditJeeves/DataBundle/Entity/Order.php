@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Model\Order as BaseOrder;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -401,6 +402,8 @@ class Order extends BaseOrder
             $code = 'PMTCRED';
         } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
             $code = 'PMTCHECK';
+        } elseif ($this->getType() === OrderType::CASH) {
+            $code = 'EXTERNAL';
         } else {
             $code = '';
         }
@@ -457,14 +460,12 @@ class Order extends BaseOrder
      */
     public function getCheckNumber()
     {
-        if ($this->getIsCash()) {
-            return null;
-        }
-
         if ($this->getType() === OrderType::HEARTLAND_CARD) {
             $code = 'PMTCRED';
         } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
             $code = 'PMTCHECK';
+        } elseif ($this->getType() === OrderType::CASH) {
+            $code = 'EXTERNAL';
         } else {
             $code = '';
         }
@@ -568,6 +569,10 @@ class Order extends BaseOrder
         return $this;
     }
 
+    /**
+     * @Serializer\Groups({"payment"})
+     * @Serializer\HandlerCallback("json", direction = "serialization")
+     */
     public function getItem()
     {
         $result = array();
@@ -585,6 +590,9 @@ class Order extends BaseOrder
             case OrderStatus::COMPLETE:
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
                 $result['style'] = '';
+                break;
+            case OrderStatus::PENDING:
+                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
                 break;
             case OrderStatus::ERROR:
             case OrderStatus::CANCELLED:
@@ -684,29 +692,6 @@ class Order extends BaseOrder
         }
     }
 
-    public function checkOrderProperties()
-    {
-        $operations = $this->getOperations();
-        $orderAmount = $this->getAmount();
-        foreach ($operations as $operation) {
-            $type = $operation->getType();
-            switch ($type) {
-                case OperationType::RENT:
-                    $status = $this->getStatus();
-                    if ($status == OrderStatus::COMPLETE) {
-                        $contract = $operation->getContract();
-                        $paidTo = $contract->getPaidTo();
-                        $interval = $this->getDiffDays($paidTo);
-                        $this->setDaysLate($interval);
-                    }
-                    break;
-                case OperationType::REPORT:
-                    // Nothing to do now
-                    break;
-            }
-        }
-    }
-
     /**
      * @return \RentJeeves\DataBundle\Entity|null
      */
@@ -772,14 +757,11 @@ class Order extends BaseOrder
 
     public function getAvailableOrderStatuses()
     {
-        $restrictedStatuses = array_diff(
-            array(OrderStatus::NEWONE, OrderStatus::COMPLETE, OrderStatus::ERROR),
-            array($this->getStatus())
-        );
+        return OrderStatus::getManualAvailableToSet($this->getStatus());
+    }
 
-        return array_diff(
-            OrderStatus::all(),
-            $restrictedStatuses
-        );
+    public function __toString()
+    {
+        return (string)$this->getId();
     }
 }

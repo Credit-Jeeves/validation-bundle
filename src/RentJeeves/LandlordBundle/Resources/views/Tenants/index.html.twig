@@ -11,11 +11,11 @@
         '@RjComponentBundle/Resources/public/js/contract.js'
         '@RjComponentBundle/Resources/public/js/contracts.js'
         '@RjComponentBundle/Resources/public/js/landlordContract.js'
-        'bundles/bazingaexposetranslation/js/translator.min.js'
+        'bundles/bazingajstranslation/js/translator.min.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js', { 'domain_name': 'messages'}) }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js', { 'domain': 'messages'}) }}"></script>
 
     <!-- Call JsFormValidationBundle -->
     {{ JSFV(form) }}

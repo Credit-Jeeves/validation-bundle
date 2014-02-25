@@ -11,3 +11,5 @@ parameters:
     server: local
     server_name_cj: cj.loc
     server_name_rj: cj-rent.loc
+
+    payment_report_path: /home/tatyana/tmp

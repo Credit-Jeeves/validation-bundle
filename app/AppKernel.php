@@ -160,6 +160,8 @@ abstract class AppKernel extends Kernel
             $filter->allow('Exception');
             $filter->deny('SuppressedErrorException');
             $filter->deny('Symfony\Component\HttpKernel\Exception\NotFoundHttpException');
+            $filter->deny('Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException');
+
 
             $this->chainNodeManager->addFilter('default', $filter);
 

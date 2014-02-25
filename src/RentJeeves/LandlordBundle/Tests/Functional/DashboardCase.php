@@ -52,35 +52,68 @@ class DashboardCase extends BaseTestCase
     public function search()
     {
         $this->setDefaultSession('selenium2');
-        $this->load(true);
+        $this->load();
         $this->login('landlord1@example.com', 'pass');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (29)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (30)', $allh2->getText(), 'Wrong count');
 
         $this->assertNotNull($searchPayments_link = $this->page->find('css', '#searchPayments_link'));
         $searchPayments_link->click();
         $this->assertNotNull($tenant = $this->page->find('css', '#searchPayments_li_2'));
         $tenant->click();
         $this->assertNotNull($searchField = $this->page->find('css', '#searsh-field-payments'));
-        $searchField->setValue('John');
+        $searchField->setValue('John2');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments'));
         $searchSubmit->click();
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (0)', $allh2->getText(), 'Wrong count');
+
+        $this->assertNotNull($allh2 = $this->page->find('css', 'h3.processPayment'));
+        $this->assertEquals('donthavedata', $allh2->getText(), 'Wrong count');
 
         $this->assertNotNull($delete = $this->page->find('css', '#payments-block .pie-el'));
         $delete->click();
+
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
 
         $this->assertNotNull($allh2 = $this->page->find('css', '#payments-block .title-box>h2'));
-        $this->assertEquals('payments.total (29)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('payments.total (30)', $allh2->getHtml(), 'Wrong count');
+
+        $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function groupByDeposit()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('landlord1@example.com', 'pass');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+
+        $this->assertNotNull($searchPayments_link = $this->page->find('css', '#searchPayments_link'));
+        $searchPayments_link->click();
+        $this->assertNotNull($deposit = $this->page->find('css', '#searchPayments_li_4'));
+        $deposit->click();
+
+        $this->session->wait($this->timeout, "$('#search-submit-deposit-status').is(':visible')");
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-deposit-status'));
+        $searchSubmit->click();
+
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($title = $this->page->find('css', '#payments-block .title-box>h2'));
+        // the test should check payments.batch_deposits, but selenium doesn't know about this text
+        // the main goal is to check the amount
+        $this->assertEquals('payments.total (3)', $title->getHtml());
 
         $this->logout();
     }

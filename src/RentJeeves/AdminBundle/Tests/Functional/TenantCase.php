@@ -40,11 +40,10 @@ class TenantCase extends BaseTestCase
         $submit->click();
         $this->assertNotNull($tenants = $this->page->findAll('css', 'a.delete_link'));
         $this->assertCount(22, $tenants);
-        $tenants[1]->click();
+        $tenants[21]->click();
         $this->assertNotNull($form = $this->page->find('css', 'form'));
-        $this->assertNotNull($delete = $form->findButton('btn_delete'));
-        $delete->click();
-        $this->assertNotNull($message = $this->page->find('css', '.alert-success'));
+        $form->pressButton('btn_delete');
+        $this->assertNotNull($message = $this->page->find('css', '.alert-success'), $this->page->getHtml());
         $this->assertEquals('flash_delete_success', $message->getText());
         $this->assertNotNull($tenants = $this->page->findAll('css', 'a.edit_link'));
         $this->assertCount(21, $tenants);
@@ -53,6 +52,7 @@ class TenantCase extends BaseTestCase
 
     /**
      * @test
+     * @depends adminManageTenants
      */
     public function observeTenant()
     {

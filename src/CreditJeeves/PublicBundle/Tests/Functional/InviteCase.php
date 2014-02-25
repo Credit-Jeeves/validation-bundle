@@ -82,4 +82,44 @@ class InviteCase extends BaseTestCase
         //$this->login('linda@example.com', 'pass');
         $this->logout();
     }
+
+    /**
+     * @test
+     */
+    public function userInviteFullCarTest()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(false);
+        $this->session->visit($this->getUrl() . 'invite/TESTFULL');
+        $this->assertNotNull($form = $this->page->find('css', '.pod-middle form'));
+        //Select Audi
+        $this->assertNotNull(
+            $make = $this->page->find('css', '#creditjeeves_applicantbundle_usernewtype_target_name_make_link')
+        );
+        $make->click();
+        $this->assertNotNull(
+            $make = $this->page->find('css', '#creditjeeves_applicantbundle_usernewtype_target_name_make_li_2')
+        );
+        $make->click();
+        //End select Audi
+        //Select Q7
+        $this->assertNotNull(
+            $make = $this->page->find('css', '#creditjeeves_applicantbundle_usernewtype_target_name_model_link')
+        );
+        $make->click();
+        $this->assertNotNull(
+            $make = $this->page->find('css', '#creditjeeves_applicantbundle_usernewtype_target_name_model_li_13')
+        );
+        $make->click();
+        //End select Q7
+
+        $form->pressButton('common.i_agree');
+        $this->assertNotNull(
+            $selected = $this->page->findAll('css', '.linkselect-link-text')
+        );
+
+        $this->assertEquals(7, count($selected));
+        $this->assertEquals('Audi', $selected[5]->getText());
+        $this->assertEquals('Q7', $selected[6]->getText());
+    }
 }

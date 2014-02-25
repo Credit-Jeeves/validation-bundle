@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\AdminBundle\Admin;
 
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Sonata\AdminBundle\Admin\Admin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
@@ -11,6 +12,17 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class OrderAdmin extends Admin
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function configure()
+    {
+        parent::configure();
+
+        $this->datagridValues['_sort_by']    = 'id';
+        $this->datagridValues['_sort_order'] = 'DESC';
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -44,6 +56,7 @@ class OrderAdmin extends Admin
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
+            ->addIdentifier('id', null, array('route' => array('name' => 'show')))
             ->add('created_at', 'date')
             ->add('updated_at', 'date')
             ->add('type')
@@ -149,7 +162,7 @@ class OrderAdmin extends Admin
         $menu = $menu->addChild(
             $this->trans(
                 $this->getLabelTranslatorStrategy()->getLabel(
-                    'Payments List',
+                    'Orders List',
                     'breadcrumb',
                     'link'
                 ),
@@ -161,5 +174,33 @@ class OrderAdmin extends Admin
             )
         );
         return $this->breadcrumbs[$action] = $menu;
+    }
+
+    public function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+            ->add(
+                'status',
+                'choice',
+                array('choices' => OrderStatus::getManualAvailableToSet($this->getSubject()->getStatus()))
+            );
+        ;
+    }
+
+    protected function configureShowFields(ShowMapper $formMapper)
+    {
+        $formMapper
+            ->add('user', null, array('route' => array('name' => 'show')))
+            ->add('status')
+            ->add('type')
+            ->add('amount')
+            ->add('days_late')
+            ->add('created_at')
+            ->add('updated_at')
+            ->add('authorizes', null, array('route' => array('name' => 'show')))
+            ->add('heartlands', null, array('route' => array('name' => 'show')))
+            // FIXME these do not work correctly
+            ->add('operations', null, array('route' => array('name' => 'show')))
+            ->add('jobs', null, array('route' => array('name' => 'show')));
     }
 }

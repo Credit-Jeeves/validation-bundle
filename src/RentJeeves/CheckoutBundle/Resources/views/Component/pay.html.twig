@@ -24,7 +24,9 @@
     <h1 data-bind="visible: payment.id()">{{ 'pay_popup.title.edit' | trans }}</h1>
     <div class="clearfix col-box attention-container">
 
-        <ul class="steps clearfix">
+        <ul class="steps clearfix"
+            data-bind="css: isPidVerificationSkipped() == false ? 'steps clearfix' : 'steps clearfix isPidVerificationSkipped'"
+        >
             <li class="step1" data-bind="css: { 'active': 'details' == step(), check: isPassed('details') }">
                 <span class="step"><span>{{ 'pay_popup.step.1' | trans }}</span></span>
             </li>
@@ -32,7 +34,13 @@
                 <span class="step"><span>{{ 'pay_popup.step.2' | trans }}</span></span>
             </li>
             <li class="step3"
-                data-bind="css: {'active': 'user' == step() || 'questions' == step(), check: isPassed('questions') }">
+                data-bind="
+                css: {
+                    'active': 'user' == step() || 'questions' == step(),
+                    check: isPassed('questions')
+                },
+                visible: isPidVerificationSkipped() == false
+                ">
                 <span class="step"><span>{{ 'pay_popup.step.3' | trans }}</span></span>
             </li>
             <li class="step4" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
@@ -45,7 +53,9 @@
             <ul class="default">
             </ul>
         </div>
-
+        <div class="information-box pie-el" data-bind="
+        visible: infoMessage() != null && ('details' == step() || 'pay' == step()), text: infoMessage()">
+        </div>
         <div class="col" data-bind="visible: 'details' == step()">
             <div class="form-row clearfix">
                 <label>{{ 'checkout.property' | trans }}<b>*</b></label>
@@ -129,7 +139,8 @@
         <div data-bind="visible: 'pay' == step()">
             <h3 class="italic">
                 <span data-bind="visible: 'recurring' == payment.type()">{{ 'checkout.recurring_for' | trans }}</span>
-                <span data-bind="text: propertyAddress"></span>
+                <span class="value" data-bind="text: fullPayTo"></span>
+                (<span data-bind="text: propertyAddress"></span>)
             </h3>
 
             <div class="information-box pie-el"
@@ -140,19 +151,7 @@
 
             <div class="clearfix halfs-box">
                 <div class="half-box left">
-                    <h4>{{ 'checkout.who_paid' | trans }}</h4>
-                    <div class="form-row clearfix">
-                        <label>{{ 'checkout.send_to' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: fullPayTo"></span>
-                        </div>
-                    </div>
-                    <div class="form-row clearfix">
-                        <label>{{ 'checkout.rent_amount' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="text: getAmount"></span>
-                        </div>
-                    </div>
+                    <h4>{{ 'checkout.your_payment' | trans }}</h4>
                     <div class="form-row clearfix" data-bind="visible: 'recurring' == payment.type()">
                         <label>{{ 'checkout.starts_on' | trans }}</label>
                         <div class="fields-box">
@@ -173,10 +172,29 @@
                             </span>
                         </div>
                     </div>
+                    <div class="form-row clearfix">
+                        <label>{{ 'checkout.rent_amount' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value" data-bind="text: getAmount"></span>
+                        </div>
+                    </div>
                     <div class="form-row clearfix" data-bind="visible: 'on' == payment.ends()">
                         <label>{{ 'checkout.last_payment_on' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: getLastPaymentDay"></span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>{{ 'checkout.fee' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value" data-bind="visible: 'bank' == paymentSource.type()">$0.00</span>
+                            <span class="value" data-bind="visible: 'card' == paymentSource.type(), text: getFeeAmountText('{{ payment_card_fee }}')"></span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix total-amount">
+                        <label>{{ 'checkout.total' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value" data-bind="text: getTotalAmount('{{ payment_card_fee }}')"></span>
                         </div>
                     </div>
                 </div>
@@ -255,21 +273,13 @@
                             </div>
                         </div>
                         <div class="form-row clearfix">
-                            <label>{{ 'common.address' | trans }}</label>
+                            <label>{{ 'checkout.billing_address' | trans }}</label>
                             <div class="fields-box">
                                 <span class="value" data-bind="text: currentAddress()"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="form-row clearfix">
-                        <label>{{ 'checkout.fee' | trans }}</label>
-                        <div class="fields-box">
-                            <span class="value" data-bind="visible: 'bank' == paymentSource.type()">
-                                {{ 'checkout.free' | trans }}
-                            </span>
-                            <span class="value" data-bind="visible: 'card' == paymentSource.type(), text: getFeeAmountText('{{ payment_card_fee }}')"></span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
 

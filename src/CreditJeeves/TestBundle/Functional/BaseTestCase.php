@@ -99,7 +99,7 @@ abstract class BaseTestCase extends Base
         $usernameEl->setValue($user);
         $this->assertNotNull($passwordEl = $this->page->find('css', '#password'));
         $passwordEl->setValue($password);
-        $mainEl->pressButton('login.submit');
+        $this->page->pressButton('_submit');
 
         if (null !== $this->page->find('css', '#login_form #password')) {
             $this->fail("Login as '{$user}' with password '{$password}' failed");

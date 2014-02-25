@@ -1,4 +1,5 @@
 parameters:
+    doctrine.dbal.connection.wrapper_class: ~
     translator.class: 'CreditJeeves\CoreBundle\Translation\Translator'
     date_short: 'M j, Y'
     date_full: 'F j, Y'
@@ -25,3 +26,6 @@ api:
   username: '9ZKHHdEa47nzF9O0Of+vv1cKXGQUAOd/xJ6UcsY1Hxw='
   password: '1SgQfQvenIhG3URtUOBrkN8DEO4ZAeb284cMEVL5E7k='
   admin_dealer_code: 1a1dc91c9073
+  pidkiq_precisel_id_type: 11
+  pidkiq_subcode: 1908357
+

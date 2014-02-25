@@ -1,0 +1,6 @@
+model: RentJeeves\DataBundle\Entity\JobRelatedOrder
+fixtures:
+  job_order_2:
+    job: job_2
+    order: rjOrder_8
+    createdAt: '-1 month'

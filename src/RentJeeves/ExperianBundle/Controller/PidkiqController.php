@@ -3,6 +3,7 @@ namespace RentJeeves\ExperianBundle\Controller;
 
 use CreditJeeves\ExperianBundle\Controller\PidkiqController as Base;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
+use CreditJeeves\ExperianBundle\Services\PidkiqQuestions;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -33,10 +34,21 @@ class PidkiqController extends Base
         parent::setPidkiqApi($pidkiqApi);
     }
 
+    /**
+     * // Do not remove it!!!
+     * @DI\InjectParams({
+     *     "pidkiqQuestions" = @DI\Inject("pidkiq.questions")
+     * })
+     */
+    public function setPidkiqQuestions($pidkiqQuestions)
+    {
+        parent::setPidkiqQuestions($pidkiqQuestions);
+    }
+
     protected function setupUserIsValidUserIntoSession(Request $request)
     {
         $session = $request->getSession();
-        $session->set('isValidUser', $this->isValidUser);
+        $session->set('isValidUser', $this->pidkiqQuestions->isValidUser());
     }
 
     /**
@@ -47,28 +59,28 @@ class PidkiqController extends Base
      */
     public function getAction(Request $request)
     {
-        if (!$this->processQuestions()) {
+        if (!$this->pidkiqQuestions->processQuestions()) {
             $this->setupUserIsValidUserIntoSession($request);
             $response = array(
                 'status'          => 'error',
-                'error'           => $this->error,
-                'isValidUser'     => $this->isValidUser,
+                'error'           => $this->pidkiqQuestions->getError(),
+                'isValidUser'     => $this->pidkiqQuestions->isValidUser(),
             );
             return new JsonResponse($response);
         }
 
-        if ($this->questionsData) {
-            $this->form = $this->createForm(new QuestionsType($this->questionsData));
+        if ($questionsData = $this->pidkiqQuestions->getQuestionsData()) {
+            $form = $this->createForm(new QuestionsType($questionsData));
             return array(
-                'status' => 'ok',
-                'form' => $this->form->createView()
+                'status'    => 'ok',
+                'form'      => $form->createView()
             );
         } else {
             return new JsonResponse(
                 array(
                     'status'            => 'error',
                     'error'             => $this->getErrorMessageQuestionNotFound(),
-                    'isValidUser'       => $this->isValidUser,
+                    'isValidUser'       => $this->pidkiqQuestions->isValidUser(),
                 )
             );
         }
@@ -80,23 +92,22 @@ class PidkiqController extends Base
      */
     public function executeAction(Request $request)
     {
-        $this->isValidUser = true;
-        if ($questions = $this->retrieveQuestions()) {
-            $this->form = $this->createForm(new QuestionsType($questions));
+        if ($questions = $this->pidkiqQuestions->retrieveQuestions()) {
+            $form = $this->createForm(new QuestionsType($questions));
         } else {
             $this->setupUserIsValidUserIntoSession($request);
             return new JsonResponse(
                 array(
                     'status'          => 'error',
                     'error'           => $this->getErrorMessageQuestionNotFound(),
-                    'isValidUser'     => $this->isValidUser,
+                    'isValidUser'     => $this->pidkiqQuestions->isValidUser(),
                 )
             );
         }
         $this->setupUserIsValidUserIntoSession($request);
-        $this->form->handleRequest($request);
-        if ($this->form->isValid()) {
-            if ($this->processForm()) {
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($this->pidkiqQuestions->processForm($form)) {
                 return new JsonResponse(
                     array(
                         'success' => true,
@@ -104,12 +115,24 @@ class PidkiqController extends Base
                     )
                 );
             }
+
+            //Setup not valid answer
             $response = array(
-                $this->form->getName() => array('_globals' => array($this->error))
+                $form->getName() => array(
+                    '_globals' => array(
+                        $this->get('translator')->trans(
+                            'pidkiq.error.incorrect.answer-%SUPPORT_EMAIL%',
+                            array(
+                                '%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'),
+                                '%MAIN_LINK%'     => $this->container->getParameter('external_urls')['user_voice'],
+                            )
+                        )
+                    )
+                )
             );
             return new JsonResponse($response);
         } else {
-            return $this->renderErrors($this->form);
+            return $this->renderErrors($form);
         }
     }
 

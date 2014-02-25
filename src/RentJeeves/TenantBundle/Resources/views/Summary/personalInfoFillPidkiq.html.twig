@@ -1,0 +1,52 @@
+{% extends "TenantBundle::base.html.twig" %}
+
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+    '@TenantBundle/Resources/public/css/personalInfoFillPidkiq.css'
+    '@CoreBundle/Resources/public/css/styles.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block head_javascripts %}
+    {{ parent() }}
+    {% javascripts
+    '@CoreBundle/Resources/public/js/Address.js'
+    '@TenantBundle/Resources/public/js/personalInfoFillPidkiq.js'
+    '@TenantBundle/Resources/public/js/pidkiq-prev-submit.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script type="text/javascript">
+        addressesViewModels = [];
+        {% for address in addresses %}
+            var address = new Address(null);
+            ko.mapping.fromJS({{ address | serialize('json') | raw }}, {}, address);
+            window.addressesViewModels.push(address);
+        {% endfor %}
+        var PersonalInfoFillPidkiqModel = new PersonalInfoFillPidkiq(addressesViewModels);
+        {% if defaultAddressId %}
+            PersonalInfoFillPidkiqModel.address.addressChoice({{ defaultAddressId }});
+        {% else %}
+            PersonalInfoFillPidkiqModel.address.isAddNewAddress(true);
+        {% endif %}
+        $(document).ready(function(){
+            ko.applyBindings(PersonalInfoFillPidkiqModel, $('#rentjeeves_checkoutbundle_userdetailstype').get(0));
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    {{ include(
+    'TenantBundle:Summary:_pidkiq.html.twig',
+        {
+            'step': 'step1',
+            'form': form
+        }
+    ) }}
+{% endblock %}
+

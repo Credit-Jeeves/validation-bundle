@@ -126,9 +126,18 @@ abstract class Address
      *     }
      * )
      * @Assert\Length(
-     *     min=1,
-     *     max=15,
+     *     min=4,
+     *     max=6,
      *     maxMessage = "Zip code cannot be longer than {{ limit }} characters length",
+     *     groups={
+     *         "user_address_new",
+     *         "buy_report_new",
+     *         "api_identity_check"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern="/^(\d)+$/",
+     *     message="error.user.zip.invalid",
      *     groups={
      *         "user_address_new",
      *         "buy_report_new",
@@ -245,10 +254,8 @@ abstract class Address
      *     mappedBy="address",
      *     cascade={
      *         "persist",
-     *         "remove",
      *         "merge"
-     *     },
-     *     orphanRemoval=true
+     *     }
      * )
      *
      * @var ArrayCollection

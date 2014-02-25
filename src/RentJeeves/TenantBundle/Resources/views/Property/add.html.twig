@@ -57,7 +57,7 @@
 {% block javascripts %}
     {{ parent() }}
     {{ include('RjComponentBundle:Google:js.html.twig') }}
-    {% javascripts  'bundles/bazingaexposetranslation/js/translator.min.js'
+    {% javascripts  'bundles/bazingajstranslation/js/translator.min.js'
                     '@RjCoreBundle/Resources/public/js/jquery.tmpl.js'
                     '@RjCoreBundle/Resources/public/js/jquery.google.js'
                     '@TenantBundle/Resources/public/js/add.property.js'
@@ -67,14 +67,14 @@
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}
 
 
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets 
-        '@RjPublicBundle/Resources/public/css/styles.css'
+        '@CoreBundle/Resources/public/css/styles.css'
         '@TenantBundle/Resources/public/css/add.property.css'
     %}
       <link rel="stylesheet" href="{{ asset_url }}" />

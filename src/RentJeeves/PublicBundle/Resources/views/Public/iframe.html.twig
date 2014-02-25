@@ -34,13 +34,13 @@
 {% block javascripts %}
     {% javascripts
         '@RjCoreBundle/Resources/public/js/jquery.tmpl.js'
-        'bundles/bazingaexposetranslation/js/translator.min.js'
+        'bundles/bazingajstranslation/js/translator.min.js'
         '@RjCoreBundle/Resources/public/js/jquery.google.js'
         '@RjPublicBundle/Resources/public/js/public.index.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_exposetranslation_js') }}"></script>
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}

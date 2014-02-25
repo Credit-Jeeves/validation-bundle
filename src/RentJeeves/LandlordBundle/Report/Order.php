@@ -37,6 +37,7 @@ class Order
 
     protected $accountId;
 
+    protected $softDeleteableControl;
 
     protected $mapping = array(
         'xml' => array(
@@ -53,14 +54,16 @@ class Order
 
     /**
      * @InjectParams({
-     *     "serializer"  = @Inject("jms_serializer"),
-     *     "em"          = @Inject("doctrine.orm.default_entity_manager"),
+     *     "serializer"                 = @Inject("jms_serializer"),
+     *     "em"                         = @Inject("doctrine.orm.default_entity_manager"),
+     *     "softDeleteableControl"      = @Inject("soft.deleteable.control")
      * })
      */
-    public function __construct($serializer, $em)
+    public function __construct($serializer, $em, $softDeleteableControl)
     {
         $this->serializer = $serializer;
         $this->em         = $em;
+        $this->softDeleteableControl = $softDeleteableControl;
     }
 
     public function getContentType()
@@ -103,6 +106,7 @@ class Order
 
     public function getData()
     {
+        $this->softDeleteableControl->disable();
         $orderRepository = $this->em->getRepository('DataBundle:Order');
         return $orderRepository->getOrdersForReport($this->property->getId(), $this->begin, $this->end);
     }

@@ -33,13 +33,15 @@ class AppRjKernel extends AppKernel
             new Rj\EmailBundle\RjEmailBundle(),
             new Payum\Bundle\PayumBundle\PayumBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new Sonata\CoreBundle\SonataCoreBundle(),
             new Sonata\AdminBundle\SonataAdminBundle(),
             new Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle(),
             new Sonata\jQueryBundle\SonatajQueryBundle(),
             new Sonata\BlockBundle\SonataBlockBundle(),
             new APY\JsFormValidationBundle\APYJsFormValidationBundle(),
-            new Bazinga\ExposeTranslationBundle\BazingaExposeTranslationBundle(),
+            new Bazinga\Bundle\JsTranslationBundle\BazingaJsTranslationBundle(),
             new FOS\OAuthServerBundle\FOSOAuthServerBundle(),
+            new JMS\JobQueueBundle\JMSJobQueueBundle(),
 
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
@@ -51,6 +53,7 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\UserBundle\UserBundle(),
             new CreditJeeves\CheckoutBundle\CheckoutBundle(),
             new CreditJeeves\AdminBundle\AdminBundle(),
+            new CreditJeeves\ApplicantBundle\ApplicantBundle(),
 
             // Must be last in the list
             new RentJeeves\AdminBundle\RjAdminBundle(),

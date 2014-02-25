@@ -33,16 +33,12 @@ class TenantCase extends BaseTestCase
         $this->assertCount(1, $errors, 'Wrong number of errors');
         $this->assertNotNull($amount = $this->page->find('css', '#amount-approve'));
         $amount->setValue('200');
-        $start = $this->page->find('css', '#contractApproveStart');
-        $this->assertNotNull($start);
+        $this->assertNotNull($start = $this->page->find('css', '#contractApproveStart'));
         $start->click();
-        $today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today');
-        $this->assertNotNull($today);
+        $this->session->wait($this->timeout, "$('#ui-datepicker-div .ui-datepicker-today').is(':visible')");
+        $this->assertNotNull($today = $this->page->find('css', '#ui-datepicker-div .ui-datepicker-today'));
         $today->click();
         $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
-        $finish = $this->page->find('css', '#contractApproveFinish');
-        $this->assertNotNull($finish);
-        $finish->click();
         $this->page->pressButton('approve.tenant');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -132,7 +128,7 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditStart'));
         $start = $contractEditStart->getValue();
-        
+
         $this->assertNotNull($contractEditStart = $this->page->find('css', '#contractEditFinish'));
         $finish = $contractEditStart->getValue();
 

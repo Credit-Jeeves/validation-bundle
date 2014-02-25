@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "d22e3bd69c106c07994f4367abf0703f0eef97f9"
+                    "reference": "ffb885e6f2ea834e42da74e8d4ddf3c56bd07c03"
                 }
             }
         },
@@ -153,6 +153,14 @@
         {
             "type": "git",
             "url": "git@github.com:formapro/xmlseclib.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/JMSJobQueueBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/validation-bundle.git"
         }
     ],
     "require": {
@@ -179,18 +187,19 @@
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
         "friendsofsymfony/oauth-server-bundle": "dev-master",
-        "braincrafted/validation-bundle": "dev-master",
-        "doctrine/orm": ">=2.2.3,<2.4",
+        "braincrafted/validation-bundle": "dev-ton as dev-master",
+        "doctrine/orm": "2.4.*",
         "doctrine/doctrine-bundle": "dev-master",
-        "twig/extensions": "1.0.*",
+        "twig/twig": "dev-master",
+        "twig/extensions": "1.*",
         "kriswallsmith/assetic": "1.1.*",
-        "symfony/symfony": "2.3.*",
+        "symfony/symfony": "2.4.*",
         "symfony/assetic-bundle": "2.3.*",
-        "symfony/swiftmailer-bundle": "v2.3.2",
-        "symfony/monolog-bundle": "2.3.*",
+        "symfony/swiftmailer-bundle": "2.3.*",
+        "symfony/monolog-bundle": "2.4.*",
         "symfony/icu": "v1.1.0",
         "sensio/distribution-bundle": "2.3.*",
-        "sensio/framework-extra-bundle": "2.3.*",
+        "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
         "jms/security-extra-bundle": "dev-master",
         "jms/di-extra-bundle": "1.4.*",
@@ -212,23 +221,24 @@
         "stof/doctrine-extensions-bundle": "dev-master",
         "a2lix/translation-form-bundle": "dev-master",
         "rj/email-bundle": "dev-master",
-        "sonata-project/block-bundle": "dev-master",
-        "sonata-project/admin-bundle": "dev-master",
-        "sonata-project/doctrine-orm-admin-bundle": "dev-master",
+        "sonata-project/admin-bundle": "2.2.9",
+        "sonata-project/doctrine-orm-admin-bundle": "2.2.*@dev",
         "doctrine/migrations": "dev-master",
         "doctrine/doctrine-migrations-bundle": "dev-master",
         "guzzle/http": "v3.5.0",
         "apy/jsfv-bundle":"dev-master",
-        "willdurand/expose-translation-bundle": "dev-master",
-        "beberlei/DoctrineExtensions": "dev-master"
+        "willdurand/js-translation-bundle": "dev-master",
+        "beberlei/DoctrineExtensions": "dev-master",
+        "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
+        "pagerfanta/pagerfanta": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",
         "envjs": "v1",
         "sinon": "1.5.0",
-        "behat/mink-bundle": "dev-master",
+        "behat/mink-bundle": "1.4.*",
         "behat/mink-selenium2-driver": "1.1.*",
-        "behat/mink-zombie-driver": "1.1.*",
+        "behat/mink-zombie-driver": "dev-master",
         "behat/mink-goutte-driver": "1.0.*",
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",

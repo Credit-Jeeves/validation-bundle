@@ -8,7 +8,7 @@
             admin_{{ object.user.type }}_list
         {% endset %}
 
-        <a href="{{ path('admin_tenant_list', { "id": object.user.getId }) }}" class="edit_link" title="{{ 'action_show'|trans({}) }}">
+        <a href="{{ path('admin_tenant_list', { "id": object.user.getId }) }}" class="edit_link">
             <i class="icon-show"></i>
             {{ object.user.getFullName }}
         </a>

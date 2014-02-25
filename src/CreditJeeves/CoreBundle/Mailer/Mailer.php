@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\CoreBundle\Mailer;
 
+use CreditJeeves\DataBundle\Entity\Lead;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use FOS\UserBundle\Mailer\MailerInterface;
@@ -139,5 +140,20 @@ class Mailer extends BaseMailer implements MailerInterface
         $aResult['code'] = $user->getInviteCode();
 
         return $aResult;
+    }
+
+    public function sendTargetApplicant(Lead $lead, $template = 'target')
+    {
+        $user = $lead->getUser();
+        $vars = array(
+            'loginLink' => $this->container->get('router')->generate(
+                'fos_user_security_login',
+                array(),
+                true
+            ),
+            'targetScore' => $lead->getTargetScore(),
+        );
+
+        return $this->sendBaseLetter($template, $vars, $user->getEmail(), $user->getCulture());
     }
 }

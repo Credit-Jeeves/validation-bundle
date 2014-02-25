@@ -59,7 +59,8 @@ abstract class PaymentAccount
      * )
      * @ORM\JoinColumn(
      *      name="address_id",
-     *      referencedColumnName="id"
+     *      referencedColumnName="id",
+     *      onDelete="SET NULL"
      * )
      *
      * @Serializer\SerializedName("addressId")
@@ -134,6 +135,15 @@ abstract class PaymentAccount
      * )
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\Column(
+     *      name="deleted_at",
+     *      type="datetime",
+     *      nullable=true
+     * )
+     */
+    protected $deletedAt;
 
     /**
      * @ORM\OneToMany(

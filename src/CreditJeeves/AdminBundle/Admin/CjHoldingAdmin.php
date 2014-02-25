@@ -40,7 +40,7 @@ class CjHoldingAdmin extends Admin
     public function configureListFields(ListMapper $listMapper)
     {
         $listMapper
-            ->addIdentifier('name')
+            ->addIdentifier('name', null, array('route' => array('name' => 'show')))
             ->add('groups')
             ->add(
                 '_action',
@@ -64,5 +64,13 @@ class CjHoldingAdmin extends Admin
     {
         $formMapper
             ->add('name');
+    }
+
+    protected function configureShowField(ShowMapper $showMapper)
+    {
+        $showMapper
+            ->add('name')
+            ->add('createdAt')
+            ->add('updatedAt');
     }
 }

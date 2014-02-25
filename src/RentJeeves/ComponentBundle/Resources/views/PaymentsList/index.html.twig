@@ -1,34 +1,44 @@
 <div id="payments-block" class="contracts-block landrord-box" style="padding-bottom:0px;">
     <div class="title-box clearfix">
-        <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')'"></h2>
+        <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')', visible: payments().length > 0"></h2>
+        <h2 data-bind="text: '{{'payments.batch_deposits'|trans}} (' + $root.total() + ')', visible: deposits().length > 0"></h2>
         <div class="fiter-box">
-            <label>{{ 'filter.by'|trans }}</label>
-            <select id="searchPayments" class="select custom-select blue-arrow selectBox">
-                <option value="status">{{ 'filter.status'|trans }}</option>
-                <option value="property">{{ 'property'|trans }}</option>
-                <option value="tenant">{{ 'tenant'|trans }}</option>
-                <option value="amount">{{ 'amount'|trans }}</option>
+            <select id="searchPayments" data-bind="value: searchCollum" class="select custom-select blue-arrow selectBox">
+                <option value="status">{{ 'payments.filter.status'|trans }}</option>
+                <option value="property">{{ 'payments.filter.property'|trans }}</option>
+                <option value="tenant">{{ 'payments.filter.tenant'|trans }}</option>
+                <option value="amount">{{ 'payments.filter.amount'|trans }}</option>
+                <option value="deposit">{{ 'payments.filter.group_by.deposit'|trans }}</option>
             </select>
-            <div id="searchInput" style="display:none;" class="finder-box">
+            <div id="searchInput" data-bind="visible: searchCollum() != 'status' && searchCollum() != 'deposit'" class="finder-box">
                 <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
-                <a style="display: block; visibility: visible;" href="#" data-bind="click: clearSearch, style: { visibility: isSearch() ? 'visible': 'hidden' }" id="delete" class="pie-el">x</a>
+                <a href="#" data-bind="click: clearSearch" id="delete" class="pie-el">x</a>
                 <button type="submit" id="search-submit-payments" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
             </div>
-            <div id="searchSelect" class="finder-box" >
+            <div id="searchSelect" class="finder-box" data-bind="visible: searchCollum() == 'status'">
                 <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
                     <option value=''>- {{'select.status.all'|trans}} -</option>
                     <option value='new'>{{'pending'|trans}}</option>
+                    <option value='pending'>{{'processing'|trans}}</option>
                     <option value='complete'>{{'paid'|trans}}</option>
                     <option value='error'>{{'error'|trans}}</option>
                 </select>
                 <button type="submit" id="search-submit-payments-status" data-bind="click: search" class="pie-el">{{ 'search' }}</button>
+            </div>
+            <div id="depositTypeSelect" class="finder-box" data-bind="visible: searchCollum() == 'deposit'">
+                <select id="depositTypeStatus" class="select custom-select blue-arrow selectBox">
+                    <option value=''>- {{'select.status.all'|trans}} -</option>
+                    <option value='heartland_bank'>{{'filter.group_by.deposit.echeck'|trans}}</option>
+                    <option value='heartland_card'>{{'filter.group_by.deposit.credit-card'|trans}}</option>
+                </select>
+                <button type="submit" id="search-submit-deposit-status" data-bind="click: filterDeposits" class="pie-el">{{ 'search' }}</button>
             </div>
         </div>
     </div>
     <div class="content-box">
         <div class="properties-table-block table-wrap">
           <div class="table-margin">
-            <table class="properties-table zebra-grid" 
+            <table class="properties-table"
             data-bind="style: { display: processPayment() ? 'none ' :  'table' }"
             style="display:none;"
             >
@@ -64,21 +74,51 @@
                   </th>
                 </tr>
               </thead>
-              <tbody id="payments-block-tbody">
-                <!-- ko foreach: { data: aPayments() } -->
+              <!-- ko if: payments().length -->
+              <tbody id="payments-block-tbody" data-bind="foreach: payments" class="zebra-grid">
                 <tr>
-                  <td data-bind="attr: {'class': 'actions-status '+style}, text: status, i18n:{}"></td>
-                  <td data-bind="text: finish"></td>
-                  <td data-bind="text: address"></td>
-                  <td data-bind="text: tenant"></td>
-                  <td data-bind="text: amount"></td>
-                  <td class="type-box"><span data-bind="attr: {'class': 'clarification ' + icon}"><i></i></span></td>
+                    <td data-bind="attr: {'class': 'actions-status '+style}, text: status, i18n:{}"></td>
+                    <td data-bind="text: finish"></td>
+                    <td data-bind="text: address"></td>
+                    <td data-bind="text: tenant"></td>
+                    <td data-bind="text: amount"></td>
+                    <td class="type-box"><span data-bind="attr: {'class': 'clarification ' + icon}"><i></i></span></td>
+                </tr>
+              </tbody>
+              <!-- /ko -->
+
+              <!-- ko if: deposits().length -->
+              <tbody id="payments-block-tbody" data-bind="foreach: deposits">
+                <tr data-bind="css: $root.toggledZebraCss(batchId, $index(), true)">
+                    <td>{{ 'payments.deposit'|trans }}</td>
+                    <td data-bind="text: depositDate"></td>
+                    <td colspan="2">
+                        <span data-bind="text: $root.depositTitle($data)"></span>
+                        <a data-bind="click: $root.togglePayments">
+                            <span data-bind="attr: {id: 'title-show-' + batchId}">{{ 'payments.show'|trans }}</span>
+                            <span data-bind="attr: {id: 'title-hide-' + batchId}" style="display: none;">{{ 'payments.hide'|trans }}</span>
+                        </a>
+                    </td>
+                    <td colspan="2"><span data-bind="text: order_amount" class="deposit-amount"></span></td>
+                </tr>
+
+                <!-- ko foreach: orders -->
+                <tr data-bind="css: $root.toggledZebraCss($parent.batchId, $parentContext.$index(), false)" style="display:none;">
+                    <td data-bind="attr: {'class': 'actions-status '+style}, text: status, i18n:{}"></td>
+                    <td data-bind="text: finish"></td>
+                    <td data-bind="text: address"></td>
+                    <td data-bind="text: tenant"></td>
+                    <td data-bind="text: amount"></td>
+                    <td class="type-box"><span data-bind="attr: {'class': 'clarification ' + icon}"><i></i></span></td>
                 </tr>
                 <!-- /ko -->
+
               </tbody>
+                <!-- /ko -->
+
             </table>
-            <img src="/bundles/core/images/img_loading.gif" id="processPayment" class="processPayment" data-bind="style: { display: processPayment() ? 'block' : 'none' }">
-            <h3 class="processPayment" data-bind="style: { display: haveData() ? 'none' : 'block' }">{{'donthavedata'|trans}}</h3>
+            <img src="{{ asset('/bundles/core/images/img_loading.gif') }}" id="processPayment" class="processPayment" data-bind="visible: processPayment">
+            <h3 class="processPayment" data-bind="visible: !haveData()">{{'donthavedata'|trans}}</h3>
           </div>
         </div>
       </div>

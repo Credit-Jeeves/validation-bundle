@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -216,9 +217,8 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new \DateTime();
             $interval = $now->diff($date);
-            $days = $interval->format('%d');
-            if ($days > 1) {
-                $result = $days.self::PAYMENT_LATE;
+            if ($interval->days > 0) {
+                $result = $interval->days.self::PAYMENT_LATE;
             }
         }
         return $result;
@@ -268,8 +268,7 @@ class Contract extends Base
              */
             if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
                 ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
-                $days = $interval->format('%d');
-                $result['status'] = 'LATE ('.$days.' days)';
+                $result['status'] = 'LATE ('.$interval->days.' days)';
                 $result['class'] = 'contract-late';
                 return $result;
             }
@@ -431,6 +430,30 @@ class Contract extends Base
         return $this->setPaidTo($newDate);
     }
 
+    /**
+     * To avoid any failures it does the same as shiftPaidTo, but sets paidTo back.
+     */
+    public function unshiftPaidTo($amount)
+    {
+        $paidTo = $this->getPaidTo();
+        $newDate = clone $paidTo;
+        $rent = $this->getRent();
+        $amount = ($amount) ? $amount : $rent;
+        if ($amount > $rent) {
+            $newDate->modify('-1 months');
+            $diff = $amount - $rent;
+            $days = $this->countPaidDays($rent, $diff);
+            $newDate->modify('-'.$days.' days');
+        } elseif ($amount < $rent) {
+            $days = $this->countPaidDays($rent, $amount);
+            $newDate->modify('-'.$days.' days');
+        } else {
+            $newDate->modify('-1 months');
+        }
+
+        return $this->setPaidTo($newDate);
+    }
+
     private function countPaidDays($rent, $paid)
     {
         return floor($paid * 30/ $rent);
@@ -448,24 +471,38 @@ class Contract extends Base
         $repo = $em->getRepository('DataBundle:Order');
         $result = array();
         $result['id'] = $this->getId();
-        $result['status'] = $this->getStatus();
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['row_address'] = substr($result['full_address'], 0, 20).'...';
         $result['rent'] = ($rent = $this->getRent()) ? '$'.$rent : '--';
         $result['full_pay_to'] = $this->getPayToName();
         $result['row_pay_to'] = substr($result['full_pay_to'], 0, 10).'...';
         $result['status'] = $this->getStatus();
-        $result['recur'] = 'NO';
+        $result['payment_type'] = '';
         // @todo get payment source name
         $result['row_payment_source'] = 'N/A';
+        $result['payment_last'] = 'N/A';
         $result['full_payment_source'] = '';
         $result['isPayment'] = false;
+        $result['payment_status'] = false;
+        /** @var Order $lastOrder */
+        $lastOrder = $repo->getLastContractPayment($this);
+        $lastPaymentDate = null;
+        if ($lastOrder) {
+            $result['payment_last'] = $lastOrder->getUpdatedAt()->format('m/d/Y');
+            $lastPaymentDate = $lastOrder->getUpdatedAt();
+            $now = new DateTime();
+            $today = $now->format('Ymd');
+            if ($lastOrder->getStatus() == OrderStatus::PENDING
+                && $today == $lastPaymentDate->format('Ymd')
+            ) {
+                $result['payment_status'] = 'processing';
+            }
+        }
 
         if ($payment = $this->getNotClosedPayment()) {
             $result['isPayment'] = true;
-            if (PaymentType::RECURRING == $payment->getType()) {
-                $result['recur'] = 'Yes';
-            }
+            $result['payment_type'] = $payment->getType();
+            $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {
@@ -473,10 +510,7 @@ class Contract extends Base
                 $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
             }
         }
-        $result['payment_last'] = 'N/A';
-        if ($order = $repo->getLastContractPayment($this)) {
-            $result['payment_last'] = $order->getUpdatedAt()->format('m/d/Y');
-        }
+
         $result['payment_next'] = 'N/A';
         if ($paidTo = $this->getPaidTo()) {
             $result['payment_next'] = $paidTo->format('m/d/Y');
@@ -523,5 +557,22 @@ class Contract extends Base
             $this->setPaidTo($paidTo);
         }
         return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("isPidVerificationSkipped")
+     * @Serializer\Type("boolean")
+     *
+     * @return boolean
+     */
+    public function getIsPidVerificationSkipped()
+    {
+        return $this->getGroup()->getGroupSettings()->getIsPidVerificationSkipped();
+    }
+
+    public function __toString()
+    {
+        return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
     }
 }

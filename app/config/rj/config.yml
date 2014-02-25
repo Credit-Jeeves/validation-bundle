@@ -33,6 +33,9 @@ parameters:
         price: 0
         product: 'registration'
 
+    business_days_cc: 1
+    business_days_ach: 3
+
 # parameters for twig
     payment_bank_fee: 0 # Fee would be processed on heartland side
     payment_card_fee: 2.95%
@@ -66,8 +69,11 @@ sonata_admin:
                 - rj_email.email_admin
                 - sonata.admin.admin
                 - sonata.admin.orders
+                - sonata.admin.jobs
             RentJeeves:
               items:
+                - sonata.admin.payments
+#                - sonata.admin.payment.accounts
                 - sonata.admin.rj_holding
                 - sonata.admin.rj_group
                 - sonata.admin.landlord

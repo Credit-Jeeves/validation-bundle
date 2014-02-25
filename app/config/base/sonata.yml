@@ -10,9 +10,15 @@ sonata_admin:
         list:    SonataAdminBundle:CRUD:list.html.twig
         show:    SonataAdminBundle:CRUD:show.html.twig
         edit:    SonataAdminBundle:CRUD:edit.html.twig
+        dashboard: SonataAdminBundle:Core:dashboard.html.twig
 
 sonata_block:
     default_contexts: [cms]
     blocks:
         sonata.admin.block.admin_list:
             contexts:   [admin]
+#        sonata.block.service.rss:
+#            contexts:   [admin]
+#        sonata.block.service.text:
+#            contexts:   [admin]
+

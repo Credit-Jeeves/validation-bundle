@@ -412,13 +412,9 @@ table.properties-table th {
     border-radius: 3px;
     background: #bdbdbd url(/bundles/rjpublic/images/sprite-icons.png) 0 -50px no-repeat;
     z-index: 1;
-    display: none;
 }
 
 .loader {
-    display: none;
-}
-#delete {
     display: none;
 }
 

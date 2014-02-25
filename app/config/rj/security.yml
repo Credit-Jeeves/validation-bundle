@@ -50,5 +50,6 @@ security:
         - { path: ^/user/invite,                    role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/new,                       role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/user/check/*,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/translations,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,                      role: ROLE_LANDLORD }
         - { path: ^/,                               role: ROLE_TENANT }

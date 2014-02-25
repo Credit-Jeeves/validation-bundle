@@ -246,7 +246,19 @@
             </trans-unit>
             <trans-unit id="common.applicant.tos">
                 <source>common.applicant.tos</source>
-                <target>You understand that by clicking on the I AGREE button immediately following this notice, you are providing ‘written instructions’ to Credit Jeeves, LLC under the Fair Credit Reporting Act authorizing Credit Jeeves, LLC to obtain information from your personal credit profile or other information from Experian. You authorize Credit Jeeves, LLC to obtain such information solely to authenticate your identity, provide you with your score and aggregated credit information, and prequalify you for loan options. You understand that your authorization will permit Credit Jeeves, LLC to obtain your personal consumer credit profile at account set up, and periodically as needed for as long as you are deemed a member of this website for the aforementioned purposes. If at any time you desire to terminate your authorization and written instructions to permit Credit Jeeves, LLC to continue to obtain your personal consumer credit profile, you may do so by contacting Credit Jeeves Support at help@creditjeeves.com. </target>
+                <target>
+                    You understand that by clicking on the I AGREE button immediately following this notice, you are providing
+                    ‘written instructions’ to Credit Jeeves, LLC under the Fair Credit Reporting Act authorizing Credit Jeeves,
+                    LLC to obtain information from your personal credit profile or other information from Experian.
+                    You authorize Credit Jeeves, LLC to obtain such information solely to authenticate your identity, provide
+                    you with your score and aggregated credit information, prequalify you for loan options, and notify your dealer
+                    when you may be prequalified to buy a car.
+                    You understand that your authorization will permit Credit Jeeves, LLC to obtain your personal consumer
+                    credit profile at account set up, and periodically as needed for as long as you are deemed a member
+                    of this website for the aforementioned purposes. If at any time you desire to terminate
+                    your authorization and written instructions to permit Credit Jeeves, LLC to continue to obtain your
+                    personal consumer credit profile, you may do so by contacting Credit Jeeves Support at help@creditjeeves.com.
+                </target>
             </trans-unit>
             <trans-unit id="common.submit">
                 <source>common.submit</source>
@@ -953,7 +965,10 @@
                 <source>pidkiq.why.text2</source>
                 <target>Please answer these questions carefully. Please note that the correct answer may not be listed, and that some information on your credit file may be from past addresses and employers.</target>
             </trans-unit>
-
+            <trans-unit id="error.user.zip.invalid">
+                <source>error.user.zip.invalid</source>
+                <target>Zip code allow only numbers.</target>
+            </trans-unit>
             <trans-unit id="video.tailored.title">
                 <source>video.tailored.title</source>
                 <target>Tailored to You</target>
@@ -1412,6 +1427,33 @@
             <trans-unit id="admin.action.charge">
                 <source>admin.action.charge</source>
                 <target>Charge</target>
+            </trans-unit>
+            <trans-unit id="desired.car">
+                <source>desired.car</source>
+                <target>Desired car</target>
+            </trans-unit>
+            <trans-unit id="get.new.report">
+                <source>get.new.report</source>
+                <target>Get New Report</target>
+            </trans-unit>
+            <trans-unit id="authorization.removed">
+                <source>authorization.removed</source>
+                <target>Authorization Removed</target>
+            </trans-unit>
+            <trans-unit id="are.you.sure">
+                <source>are.you.sure</source>
+                <target>Are you sure?</target>
+            </trans-unit>
+            <trans-unit id="authorization.description.removed">
+                <source>authorization.description.removed</source>
+                <target><![CDATA[
+                    You have been logged out. Credit Jeeeves will no longer store or
+                    monitor your credit information. We're sorry to see you go!
+                    Please <a href="http://%%FEEDBACK_PAGE%%/">send us any feedback</a> so
+                    we can continue to help others achieve  their dreams.
+                    You can restore your account anytime in the future simply by logging in.
+                    ]]>
+                </target>
             </trans-unit>
         </body>
     </file>

@@ -1,6 +1,7 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -208,62 +209,13 @@ class OrderRepository extends EntityRepository
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->where('p.contract = :contract');
-        $query->andWhere('o.status = :status');
+        $query->andWhere('o.status in (:status)');
         $query->setParameter('contract', $contract);
-        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->setParameter('status', array(OrderStatus::COMPLETE, OrderStatus::PENDING));
         $query->orderBy('o.created_at', 'DESC');
         $query->setMaxResults(1);
         $query = $query->getQuery();
         return $query->getOneOrNullResult();
-    }
-
-    /**
-     * 
-     * @param array $days
-     * @param integer $month
-     * @param integer $year
-     * @param array $contract
-     * @return array
-     */
-    public function getLastOrdersArray(
-        $days = array(),
-        $month = 1,
-        $year = 2000,
-        $contractStatus = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
-    ) {
-        $result = array();
-
-        $query = $this->createQueryBuilder('o');
-        $query->select('o, oper, c');
-
-        $query->innerJoin('o.operations', 'oper');
-        $query->innerJoin('oper.contract', 'c');
-        $query->innerJoin('c.payments', 'p');
-
-        $query->where('p.status = :status');
-        $query->andWhere('p.dueDate IN (:days)');
-        $query->andWhere('c.status IN (:contract)');
-        $query->andWhere('p.startMonth <= :month');
-        $query->andWhere('p.startYear <= :year');
-        $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
-
-        $query->setParameter('status', PaymentStatus::ACTIVE);
-        $query->setParameter('days', $days);
-        $query->setParameter('contract', $contractStatus);
-        $query->setParameter('month', $month);
-        $query->setParameter('year', $year);
-        
-        $query = $query->getQuery();
-        $orders = $query->execute();
-        foreach ($orders as $order) {
-            $contract = $order->getContract();
-            $item = array();
-            $item['id'] = $order->getId();
-            $item['updated'] = $order->getUpdatedAt()->format('Y-m-d');
-            $item['status'] = $order->getStatus();
-            $result[$contract->getId()] = $item;
-        }
-        return $result;
     }
 
     public function getOrdersForReport(
@@ -288,5 +240,72 @@ class OrderRepository extends EntityRepository
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
         return $query->execute();
+    }
+
+    public function getDepositedOrders(Group $group, $accountType, $page = 1, $limit = 100)
+    {
+        // get Batch Ids
+        $offset = ($page - 1) * $limit;
+        $query = $this->createQueryBuilder('o');
+        $query->select(
+            "h.batchId, sum(o.amount) as order_amount, date_format(h.depositDate, '%m/%d/%Y') as depositDate"
+        );
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('o.heartlands', 'h');
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+        $query->andWhere('h.batchId IS NOT NULL');
+        if ($accountType) {
+            $query->andWhere('o.type = :type');
+            $query->setParameter('type', $accountType);
+        }
+        $query->groupBy('h.batchId');
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query->orderBy('h.depositDate', 'DESC');
+        $query = $query->getQuery();
+        $deposits = $query->getScalarResult();
+
+        // get orders for each batch
+        $ordersQuery = $this->createQueryBuilder('o');
+        $ordersQuery->innerJoin('o.operations', 'p');
+        $ordersQuery->innerJoin('p.contract', 't');
+        $ordersQuery->innerJoin('o.heartlands', 'h');
+        $ordersQuery->where('t.group = :group');
+        $ordersQuery->andWhere('h.batchId = :batchId');
+        $ordersQuery->setParameter('group', $group);
+        if ($accountType) {
+            $ordersQuery->andWhere('o.type = :type');
+            $ordersQuery->setParameter('type', $accountType);
+        }
+
+        foreach ($deposits as $key => $deposit) {
+            $ordersQuery->setParameter('batchId', $deposit['batchId']);
+            $deposits[$key]['orders'] = $ordersQuery->getQuery()->execute();
+        }
+
+        return $deposits;
+    }
+
+    public function getCountDeposits(Group $group, $accountType)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->select('count(distinct h.batchId)');
+        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('p.contract', 't');
+        $query->innerJoin('o.heartlands', 'h');
+        $query->where('t.group = :group');
+        $query->setParameter('group', $group);
+        $query->andWhere('h.batchId IS NOT NULL');
+
+        if ($accountType) {
+            $query->andWhere('o.type = :type');
+            $query->setParameter('type', $accountType);
+        }
+
+        $query = $query->getQuery();
+
+        return $query->getSingleScalarResult();
     }
 }

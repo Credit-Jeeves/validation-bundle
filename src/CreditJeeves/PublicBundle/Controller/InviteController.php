@@ -3,7 +3,11 @@
 namespace CreditJeeves\PublicBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Address;
+use CreditJeeves\DataBundle\Entity\Applicant;
 use CreditJeeves\DataBundle\Entity\User;
+use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\GroupType;
+use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -27,12 +31,13 @@ class InviteController extends Controller
      */
     public function indexAction($code)
     {
+        $vehicles = $this->get('data.utility.vehicle')->getVehicles();
         if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
             return $this->redirect($this->generateUrl('applicant_homepage'));
         }
         $isFullForm = true;
         $request = $this->get('request');
-        /** @var User $User */
+        /** @var Applicant $User */
         $User = $this->getDoctrine()->getRepository('DataBundle:User')->findOneBy(array('invite_code' =>  $code));
         if (empty($User)) {
             $i18n = $this->get('translator');
@@ -41,8 +46,10 @@ class InviteController extends Controller
             return new RedirectResponse($this->get('router')->generate('public_message_flash'));
         }
 
-
         $date = $User->getDateOfBirth();
+        /** @var Group $group */
+        $group = $User->getActiveLead()->getGroup();
+        $type = ($group)? $group->getType() : null;
         $sCurrentDob = null;
         if (!empty($date)) {
             $sCurrentDob = $date->format("Y-m-d");
@@ -62,35 +69,63 @@ class InviteController extends Controller
             $User->getDefaultAddress()->setUser($User); // TODO it can be done more clear
             $form = $this->createForm(
                 new UserNewType(),
-                $User
+                $User,
+                array(
+                    'currentGroupType'  => $type,
+                    'vehicles'          => $this->get('data.utility.vehicle')->getVehicles(),
+                )
             );
         }
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $User = $form->getData();
-                $User->setPassword(
-                    $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($User->getPassword(), $User->getSalt())
-                );
-                $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
-                if (empty($sCurrentDob) || $sCurrentDob == $sFormDob) {
-                    $User->setInviteCode(null);
-                    $User->setIsActive(true);
-                    $User->setEnabled(true);
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($User);
-                    $em->flush();
-                    return $this->login($User);
-                }
 
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $User = $form->getData();
+            if ($type === GroupType::VEHICLE && $isFullForm) {
+                $targetNameForm = $form->get('target_name');
+                $dataTarget = $targetNameForm->getData();
+                $markNameId = $dataTarget['make'];
+                $modelId = $dataTarget['model'];
+
+                $mark = array_keys($vehicles);
+                $models = array_values($vehicles);
+                $currentModels = $models[$markNameId];
+                $currentModelsName = array_keys($currentModels);
+                $currentModelsLinks = array_values($currentModels);
+
+                $lead = $User->getActiveLead();
+                $lead->setTargetName($mark[$markNameId].' '.$currentModelsName[$modelId]);
+                $lead->setTargetUrl($currentModelsLinks[$modelId]);
+                $lead->setStatus(LeadStatus::ACTIVE);
+                $em->persist($lead);
+            }
+
+            $User->setPassword(
+                $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($User->getPassword(), $User->getSalt())
+            );
+
+            $sFormDob = $User->getDateOfBirth()->format("Y-m-d");
+            if (empty($sCurrentDob) || $sCurrentDob == $sFormDob) {
+                $User->setInviteCode(null);
+                $User->setIsActive(true);
+                $User->setEnabled(true);
+
+                $em->persist($User);
+                $em->flush();
+                return $this->login($User);
             }
         }
+
+
         return array(
-            'code' => $code,
-            'form' => $form->createView(),
+            'code'       => $code,
+            'form'       => $form->createView(),
             'isFullForm' => $isFullForm,
-            'sName' => $User->getFirstName(),
+            'sName'      => $User->getFirstName(),
+            'type'       => $type,
+            'vehicles'   => json_encode(array_values($vehicles)),
         );
     }
 

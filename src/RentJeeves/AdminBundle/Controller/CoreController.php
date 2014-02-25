@@ -11,7 +11,7 @@ use Sonata\AdminBundle\Controller\CoreController as BaseController;
 class CoreController extends BaseController
 {
     /**
-     * @Route("/dashboard", name="sonata_admin_dashboard")
+     * @Route("dashboard", name="sonata_admin_dashboard")
      * @Template()
      *
      * @return array
