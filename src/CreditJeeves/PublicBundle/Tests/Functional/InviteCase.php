@@ -114,6 +114,8 @@ class InviteCase extends BaseTestCase
         //End select Q7
 
         $form->pressButton('common.i_agree');
+        $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
+        $this->session->wait($this->timeout, "$('.linkselect-link-text').length > 0");
         $this->assertNotNull(
             $selected = $this->page->findAll('css', '.linkselect-link-text')
         );
