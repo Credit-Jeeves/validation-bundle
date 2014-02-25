@@ -23,12 +23,12 @@ class Version20140221112355 extends AbstractMigration
             property = "body",
             value = "
             {% extends \'RjComponentBundle:Mailer:base.html.twig\' %}
-            {% block h1 %}Dear {{ landlordFirstName }},{% endblock %}
+            {% block h1 %}Rent Payment Initiated{% endblock %}
             {% block email %}
                 Hi {{ tenantName }}! <br /><br />
 
-                Your rent payment to {{ groupName }} was sent just now.
-                They should see the deposit in their account in 1-3 days.
+                Your rent payment to {{ groupName }} was just initiated.
+                You will receive your receipt when the payment clears, usually within 24 hours.
 
                 The details:
 
@@ -74,7 +74,7 @@ class Version20140221112355 extends AbstractMigration
                 SET translatable_id = (SELECT id FROM email WHERE name = "rjPendingOrder.html"),
                 locale = "en",
                 property = "subject",
-                value = "Your Rent is Processing"'
+                value = "Rent Payment Initiated"'
         );
     }
 
