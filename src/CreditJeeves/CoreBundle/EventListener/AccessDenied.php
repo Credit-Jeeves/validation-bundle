@@ -48,8 +48,7 @@ class AccessDenied
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        if ($exception instanceof AccessDeniedHttpException)
-        {
+        if ($exception instanceof AccessDeniedHttpException) {
             $type = ($this->user)? $this->user->getType(): '';
 
             switch ($type) {
