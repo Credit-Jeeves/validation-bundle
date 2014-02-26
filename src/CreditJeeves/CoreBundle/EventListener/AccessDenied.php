@@ -61,7 +61,7 @@ class AccessDenied
                 case UserType::ADMIN:
                     $route = $this->router->generate('sonata_admin_dashboard');
                     break;
-                case UserType::TETNANT:
+                case UserType::TENANT:
                     $route = $this->router->generate('tenant_homepage');
                     break;
                 case UserType::LANDLORD:
