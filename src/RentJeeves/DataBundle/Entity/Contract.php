@@ -338,10 +338,12 @@ class Contract extends Base
             $lastPaymentDate = $orderDate->format('m/d/Y');
             $late = $order->getDaysLate();
             if ($late < 0) {
-                $late--;
+//                @TODO: temporary commented. Should be removed if it helps to fix history.
+//                $late--;
                 $orderDate = $orderDate->modify('+'.(-1)*$late.' days');
             } elseif ($late > 0) {
-                $late++;
+//                @TODO: temporary commented. Should be removed if it helps to fix history.
+//                $late++;
                 $orderDate = $orderDate->modify('-'.$late.' days');
             }
             $nYear = $orderDate->format('Y');
