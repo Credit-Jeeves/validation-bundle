@@ -103,7 +103,6 @@ class Pidkiq extends \Pidkiq
      */
     public function getObjectOnUserData($user, $xsdRequestPath = null)
     {
-
         $userData = $this->modelToData($user);
         $xml = $this->xml->userRequestXML($userData, $xsdRequestPath);
         if ($this->isLogging) {
