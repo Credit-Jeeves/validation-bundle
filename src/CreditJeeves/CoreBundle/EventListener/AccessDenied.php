@@ -7,10 +7,10 @@ use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Inject;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Session as SfSession;
 use Symfony\Component\Routing\Router;
 
 /**
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Router;
  *      "kernel.event_listener",
  *       attributes = {
  *          "event" = "kernel.exception",
- *          "method" = "handleAccessDeniedException"
+ *          "method" = "onKernelException"
  *      }
  * )
  */
@@ -39,20 +39,26 @@ class AccessDenied
      *      "translator"        = @Inject("translator")
      * })
      */
-    public function __construct(Session $session, Router $router, $translator)
+    public function __construct(SfSession $session, Router $router, $translator)
     {
         $this->session = $session;
         $this->router = $router;
         $this->translator = $translator;
     }
 
-    public function handleAccessDeniedException(GetResponseForExceptionEvent $event)
+    public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        echo "hi";exit;
-        if ($event->getException()->getMessage() == 'Access Denied')
+        $exception = $event->getException();
+        if ($exception instanceof AccessDeniedHttpException)
         {
-            $title = $this->session->getFlashBag()->set('message_title', $this->translator->trans('access.denied'));
-            $text = $this->session->getFlashBag()->get('message_body', $this->translator->trans('access.denied.description'));
+            $title = $this->session->getFlashBag()->set(
+                'message_title',
+                $this->translator->trans('access.denied')
+            );
+            $text = $this->session->getFlashBag()->set(
+                'message_body',
+                $this->translator->trans('access.denied.description')
+            );
 
             $route = $this->router->generate('public_message_flash');
             $event->setResponse(new RedirectResponse($route));

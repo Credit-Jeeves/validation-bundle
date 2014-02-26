@@ -4,6 +4,7 @@ security:
             id: user.security.encoder.digest
 
     role_hierarchy:
+        ROLE_ADMIN:    ROLE_ADMIN
         ROLE_TENANR:   ROLE_TENANT
         ROLE_LANDLORD: ROLE_LANDLORD
 
