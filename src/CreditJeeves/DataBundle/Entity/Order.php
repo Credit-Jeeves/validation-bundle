@@ -402,6 +402,8 @@ class Order extends BaseOrder
             $code = 'PMTCRED';
         } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
             $code = 'PMTCHECK';
+        } elseif ($this->getType() === OrderType::CASH) {
+            $code = 'EXTERNAL';
         } else {
             $code = '';
         }
@@ -458,14 +460,12 @@ class Order extends BaseOrder
      */
     public function getCheckNumber()
     {
-        if ($this->getIsCash()) {
-            return null;
-        }
-
         if ($this->getType() === OrderType::HEARTLAND_CARD) {
             $code = 'PMTCRED';
         } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
             $code = 'PMTCHECK';
+        } elseif ($this->getType() === OrderType::CASH) {
+            $code = 'EXTERNAL';
         } else {
             $code = '';
         }

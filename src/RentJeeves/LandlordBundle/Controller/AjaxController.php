@@ -1017,51 +1017,13 @@ class AjaxController extends Controller
      */
     public function sendReminderInvite($contractId)
     {
-        $translator = $this->get('translator');
-        $session = $this->get("session");
-        $landlordReminder = $session->get('landlord_reminder');
-        if (!$landlordReminder) {
-            $landlordReminder = array();
-        } else {
-            $landlordReminder = json_decode($landlordReminder, true);
+        $reminderInvite = $this->get('reminder.invite');
+        if ($reminderInvite->send($contractId, $this->getUser(), $this->getCurrentGroup())) {
+            return new JsonResponse(array());
         }
 
-        if (in_array($contractId, $landlordReminder)) {
-            return new JsonResponse(array('error' => $translator->trans('contract.reminder.error.already.send')));
-        }
+        return new JsonResponse(array('error' => $reminderInvite->getError()));
 
-        /** @var $em EntityManager */
-        $em = $this->getDoctrine()->getManager();
-        /** @var $contract Contract */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
-
-        if (!$contract) {
-            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
-        }
-
-        $group = $this->getCurrentGroup();
-
-        if (!$group) {
-            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
-        }
-
-        if ($contract->getGroupId() !== $group->getId()) {
-            return new JsonResponse(array('error' => $translator->trans('contract.not.found')));
-        }
-
-        $tenant = $contract->getTenant();
-
-        if ($tenant->getIsActive()) {
-            $this->get('project.mailer')->sendRjTenantInviteReminderPayment($tenant, $this->getUser(), $contract);
-        } else {
-            $this->get('project.mailer')->sendRjTenantInviteReminder($tenant, $this->getUser(), $contract);
-        }
-
-        $landlordReminder[] = $contract->getId();
-
-        $session->set('landlord_reminder', json_encode($landlordReminder));
-
-        return new JsonResponse(array());
     }
 
     /**

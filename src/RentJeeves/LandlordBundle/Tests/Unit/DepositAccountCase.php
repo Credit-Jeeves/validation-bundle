@@ -3,7 +3,7 @@ namespace RentJeeves\LandlordBundle\Tests\Unit;
 
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
-use RentJeeves\TenantBundle\Service\InviteLandlord;
+use RentJeeves\TenantBundle\Services\InviteLandlord;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Property;
@@ -29,7 +29,6 @@ class DepositAccountCase extends BaseTestCase
         $container = static::getContainer();
         $inviteLandlordService = $container->get('invite.landord');
         $em = $container->get('doctrine.orm.entity_manager');
-
         $this->assertTrue($inviteLandlordService instanceof InviteLandlord);
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(

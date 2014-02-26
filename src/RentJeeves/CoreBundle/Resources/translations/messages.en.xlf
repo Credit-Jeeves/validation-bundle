@@ -1563,7 +1563,7 @@
             </trans-unit>
             <trans-unit id="contract.reminder.already.send">
                 <source>contract.reminder.error.already.send</source>
-                <target>You can not so often send reminders for the same contract.</target>
+                <target>Looks like you sent a reminder just a moment ago. We don't want to start spamming your inbox.</target>
             </trans-unit>
             <trans-unit id="iframe.login.title">
                 <source>iframe.login.title</source>
@@ -1928,6 +1928,34 @@
                 <source>payments.batched_amount</source>
                 <target>{1}1 payment is batched into this deposit.|[2,Inf]%count% payments are batched into this deposit.</target>
             </trans-unit>
+            <trans-unit id="tenant.already.invited">
+                <source>tenant.already.invited</source>
+                <target><![CDATA[
+                    This email address already invited. We recommmend you
+                    <a href="%%LINK%%" class="resend-email">
+                    click here to resend the invite.
+                    </a>
+                 ]]>
+                </target>
+            </trans-unit>
+            <trans-unit id="user.email.already.exist">
+                <source>user.email.already.exist</source>
+                <target>
+                    This email address is already in use. Please choose another.
+                </target>
+            </trans-unit>
+            <trans-unit id="verify.email.invite.title">
+                <source>verify.email.invite.title</source>
+                <target>Invite Sent.</target>
+            </trans-unit>
+            <trans-unit id="verify.email.invite.desc">
+                <source>verify.email.invite.desc</source>
+                <target>Please check your inbox for an email from RentTrack.</target>
+             </trans-unit>
+             <trans-unit id="error.oops">
+                 <source>error.oops</source>
+                 <target>Oops!</target>
+             </trans-unit>
             <trans-unit id="payments.filter.status">
                 <source>payments.filter.status</source>
                 <target>Filter by Status</target>
@@ -1944,7 +1972,10 @@
                 <source>payments.filter.amount</source>
                 <target>Search by Amount</target>
             </trans-unit>
-
+            <trans-unit id="info.payment.date">
+                <source>info.payment.date</source>
+                <target>Your payment scheduled for the %%DAY_1%%st will be executed on the %%DAY_2%%th due to the short month.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -14,9 +14,9 @@ class PayCase extends BaseTestCase
     public function provider()
     {
         return array(
-            array($summary = true, $skipVerification = false),
-            array($summary = false, $skipVerification = false),
-            array($summary = null, $skipVerification = true),
+            array($summary = true, $skipVerification = false, $infoMessage = false),
+            array($summary = false, $skipVerification = false, $infoMessage = false),
+            array($summary = null, $skipVerification = true, $infoMessage = true),
         );
     }
 
@@ -45,7 +45,7 @@ class PayCase extends BaseTestCase
      * @dataProvider provider
      * @test
      */
-    public function recurring($summary, $skipVerification)
+    public function recurring($summary, $skipVerification, $infoMessage)
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -78,9 +78,22 @@ class PayCase extends BaseTestCase
             $form,
             array(
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
-                'rentjeeves_checkoutbundle_paymenttype_type' => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_type'    => PaymentTypeEnum::RECURRING,
             )
         );
+        if ($infoMessage) {
+            $this->fillForm(
+                $form,
+                array(
+                    'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
+                    'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
+                    'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1
+                )
+            );
+            $this->assertNotNull($informationBox = $payPopup->find('css', '.information-box'));
+            $this->assertEquals('info.payment.date', $informationBox->getText());
+        }
+
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait($this->timeout, "jQuery('#pay-popup .attention-box li').length");
@@ -89,15 +102,23 @@ class PayCase extends BaseTestCase
         $this->assertCount(1, $errors);
         $this->assertEquals('checkout.error.amount.min', $errors[0]->getText());
 
-        $dueDate = cal_days_in_month(CAL_GREGORIAN, date('n'), date('Y'));
-        $this->fillForm(
-            $form,
-            array(
-                'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
-                'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
-            )
-        );
-
+        if (!$infoMessage) {
+            $dueDate = cal_days_in_month(CAL_GREGORIAN, date('n'), date('Y'));
+            $this->fillForm(
+                $form,
+                array(
+                    'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                    'rentjeeves_checkoutbundle_paymenttype_dueDate' => $dueDate,
+                )
+            );
+        } else {
+            $this->fillForm(
+                $form,
+                array(
+                    'rentjeeves_checkoutbundle_paymenttype_amount' => '1500',
+                )
+            );
+        }
 
         $this->page->pressButton('pay_popup.step.next');
 
@@ -137,6 +158,10 @@ class PayCase extends BaseTestCase
             "jQuery('#checkout-payment-source:visible').length"
         );
 
+        if ($infoMessage) {
+            $this->assertNotNull($informationBox = $payPopup->find('css', '.information-box'));
+            $this->assertEquals('info.payment.date', $informationBox->getText());
+        }
 
         $payPopup->pressButton('checkout.make_payment');
 

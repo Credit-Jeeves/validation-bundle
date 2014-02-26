@@ -6,6 +6,7 @@ function Pay(parent, contractId) {
     var current = 0;
     this.isValidUser = ko.observable(true);
     this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
+    this.infoMessage = ko.observable(null);
 
     this.getCurrentStep = function()
     {
@@ -265,7 +266,7 @@ function Pay(parent, contractId) {
     };
 
     this.currentAddress = ko.computed(function() {
-        if (self.paymentSource) {
+        if (self.paymentSource && self.paymentSource.address.addressChoice()) {
             var result = ko.utils.arrayFirst(window.addressesViewModels, function(address) {
                 return address.id() == self.paymentSource.address.addressChoice();
             });

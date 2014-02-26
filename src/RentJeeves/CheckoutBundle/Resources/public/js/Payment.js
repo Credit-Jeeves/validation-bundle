@@ -1,5 +1,28 @@
 function Payment(parent, paidTo) {
     var self = this;
+    this.daysInMonth = function (month,year) {
+        return new Date(year, month, 0).getDate();
+    }
+
+    this.checkDueDate = function () {
+        var dayInMonth = self.daysInMonth(self.startMonth(), self.startYear());
+
+        if (dayInMonth >= self.dueDate()) {
+            parent.infoMessage(null);
+            return;
+        }
+
+        parent.infoMessage(
+            Translator.trans(
+                'info.payment.date',
+                {
+                    "%DAY_1%" : self.dueDate(),
+                    "%DAY_2%" : dayInMonth
+                }
+            )
+        );
+    }
+
     this.id = ko.observable(null);
     this.contractId = null;
     this.paymentAccountId = ko.observable(null);
@@ -15,12 +38,28 @@ function Payment(parent, paidTo) {
         }
     }, this);
 
-    this.dueDate = ko.observable(paidTo.toString("d"));
     this.startMonth = ko.observable(paidTo.toString("M"));
     this.startYear = ko.observable(paidTo.toString("yyyy"));
+    this.dueDate = ko.observable();
+    this.dueDate.subscribe(function(newValue) {
+        self.checkDueDate();
+    });
+    this.startYear.subscribe(function(newValue) {
+        self.checkDueDate();
+    });
+    this.startMonth.subscribe(function(newValue) {
+        self.checkDueDate();
+    });
+    this.dueDate(paidTo.toString("d"));
     this.startDate = ko.computed({
         read: function() {
-            return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
+            var dayInMonth = self.daysInMonth(self.startMonth(), self.startYear());
+
+            if (dayInMonth >= self.dueDate()) {
+                return this.startMonth() + '/' + this.dueDate() + '/' + this.startYear();
+            }
+
+            return this.startMonth() + '/' + dayInMonth + '/' + this.startYear();
         },
         write: function (value) {
             var date = Date.parseExact(value,  "M/d/yyyy");
@@ -30,6 +69,8 @@ function Payment(parent, paidTo) {
         },
         owner: this
     });
+
+
 
     this.type.subscribe(function(newValue) {
         if ('one_time' == newValue) {
