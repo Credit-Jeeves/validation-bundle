@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1e04f45233082e41df4b585f7e2fcb96",
+    "hash": "6b1066aef6227a0ac62ea35ee9c4675f",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -342,7 +342,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ApiBundle.git",
-                "reference": "ffff64c878a9eb5e343d195b70b33c6703a63ef8"
+                "reference": "b90300c6373e52dd88a0fba480c3376c5cc98674"
             },
             "require": {
                 "braincrafted/validation-bundle": "dev-master",
@@ -378,7 +378,7 @@
                 "api",
                 "bundle"
             ],
-            "time": "2014-02-13 17:39:13"
+            "time": "2014-02-25 14:17:35"
         },
         {
             "name": "credit-jeeves/arf-bundle",
@@ -453,11 +453,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "ffb885e6f2ea834e42da74e8d4ddf3c56bd07c03"
+                "reference": "0b098fd654f3a651d6af91ef1ee715089f0081d6"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2014-02-07 16:30:20"
+            "time": "2014-02-25 13:45:28"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -613,7 +613,7 @@
                     "email": "kontakt@beberlei.de"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
                     "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
@@ -1141,9 +1141,9 @@
                     "email": "roman@code-factory.org"
                 },
                 {
-                    "name": "Johannes Schmitt",
+                    "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],
@@ -2787,7 +2787,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "KnpLabs",
+                    "name": "Knplabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -3218,7 +3218,7 @@
             ],
             "authors": [
                 {
-                    "name": "Kotlyar Maksim",
+                    "name": "Maksim Kotlyar",
                     "email": "kotlyar.maksim@gmail.com"
                 }
             ],
@@ -3447,7 +3447,7 @@
                 {
                     "name": "Johannes M. Schmitt",
                     "email": "schmittjoh@gmail.com",
-                    "homepage": "https://github.com/schmittjoh",
+                    "homepage": "http://jmsyst.com",
                     "role": "Developer of wrapped JMSSerializerBundle"
                 }
             ],

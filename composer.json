@@ -148,7 +148,7 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:Tobur/ApiBundle.git"
+            "url": "git@github.com:Credit-Jeeves/ApiBundle.git"
         },
         {
             "type": "git",
@@ -182,7 +182,7 @@
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",
         "credit-jeeves/simulation-bundle": "dev-master",
-        "credit-jeeves/api-bundle": "dev-live-cj",
+        "credit-jeeves/api-bundle": "dev-master",
         "formapro/xmlseclibs": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
