@@ -374,7 +374,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "a58b40ee7c9cd0b2e7062412596692895815f707"
+                "reference": "aee9f3f411b6b7dfd660adaa5dac243fa75ca74e"
             },
             "require": {
                 "credit-jeeves/core-bundle": "dev-master",
