@@ -1455,14 +1455,6 @@
                     ]]>
                 </target>
             </trans-unit>
-            <trans-unit id="access.denied">
-                <source>access.denied</source>
-                <target>Access Denied.</target>
-            </trans-unit>
-            <trans-unit id="access.denied.description">
-                <source>access.denied.description</source>
-                <target>You do not have permission to access this page.</target>
-            </trans-unit>
         </body>
     </file>
 </xliff>
