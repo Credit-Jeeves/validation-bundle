@@ -23,8 +23,12 @@ class TenantType extends AbstractType
             )
         );
         $builder->add('last_name');
+
+        $emailOptions = array(
+            'label' => 'Email*',
+        );
         if ($options['inviteEmail']) {
-            $emailConstraints =  new TenantEmail(
+            $emailOptions['constraints'] =  new TenantEmail(
                 array(
                     'groups'    => 'registration_tos'
                 )
@@ -34,11 +38,9 @@ class TenantType extends AbstractType
         $builder->add(
             'email',
             null,
-            array(
-                'label'          => 'Email*',
-                'constraints'    => $emailConstraints
-            )
+            $emailOptions
         );
+
         $builder->add(
             'phone',
             null
