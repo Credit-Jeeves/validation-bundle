@@ -78,7 +78,7 @@
                 "source": {
                     "type": "git",
                     "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                    "reference": "9248a6286c37098e69b811ed1f2b93bae000ab3c"
+                    "reference": "0b098fd654f3a651d6af91ef1ee715089f0081d6"
                 }
             }
         },
@@ -148,7 +148,7 @@
         },
         {
             "type": "git",
-            "url": "git@github.com:Credit-Jeeves/ApiBundle.git"
+            "url": "git@github.com:Tobur/ApiBundle.git"
         },
         {
             "type": "git",
@@ -174,7 +174,7 @@
         "credit-jeeves/core-bundle": "dev-master",
         "credit-jeeves/arf-bundle": "dev-master",
         "credit-jeeves/simulation-bundle": "dev-master",
-        "credit-jeeves/api-bundle": "dev-master",
+        "credit-jeeves/api-bundle": "dev-live-cj",
         "formapro/xmlseclibs": "dev-master",
         "friendsofsymfony/rest-bundle": "dev-master",
         "nelmio/api-doc-bundle": "dev-master",
