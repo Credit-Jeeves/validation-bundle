@@ -30,3 +30,6 @@ form li, .errorsGoogleSearch {
 .accept-terms-box {
    width: 450px;
 }
+.tos-input-field {
+    transform: none !important;
+}
