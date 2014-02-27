@@ -97,19 +97,21 @@ class Pidkiq extends \Pidkiq
 
     /**
      * @param User $user
+     * @param string $xsdRequestPath
      *
      * @return NetConnectResponse
      */
-    public function getObjectOnUserData($user)
+    public function getObjectOnUserData($user, $xsdRequestPath = null)
     {
         $userData = $this->modelToData($user);
-        $xml = $this->xml->userRequestXML($userData);
+        $xml = $this->xml->userRequestXML($userData, $xsdRequestPath);
         if ($this->isLogging) {
             file_put_contents(
                 $this->logPath . '/experian/' . str_replace('\\', '-', get_called_class()) . '.xml',
                 $xml
             );
         }
+
         $responce = $this->curl->sendPostRequest($this->composeRequest($xml));
         if ($this->isLogging) {
             file_put_contents(

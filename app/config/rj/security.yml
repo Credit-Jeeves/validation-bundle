@@ -4,6 +4,7 @@ security:
             id: user.security.encoder.digest
 
     role_hierarchy:
+        ROLE_ADMIN:    ROLE_ADMIN
         ROLE_TENANR:   ROLE_TENANT
         ROLE_LANDLORD: ROLE_LANDLORD
 
@@ -52,4 +53,5 @@ security:
         - { path: ^/user/check/*,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/translations,                   role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/landlord/,                      role: ROLE_LANDLORD }
+        - { path: ^/admin/,                         role: ROLE_ADMIN }
         - { path: ^/,                               role: ROLE_TENANT }

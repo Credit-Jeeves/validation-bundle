@@ -56,10 +56,10 @@ class PidkiqTest extends \PidkiqTest
      *
      * @return NetConnectResponse
      */
-    public function getObjectOnUserData(Applicant $applicant)
+    public function getObjectOnUserData(Applicant $applicant, $xsdRequestPath = null)
     {
         $userData = $this->modelToData($applicant);
-        $this->composeRequest($this->xml->userRequestXML($userData));
+        $this->composeRequest($this->xml->userRequestXML($userData, $xsdRequestPath));
         $responce = file_get_contents($this->fixturesDir . 'QuestionsResponse.xml');
         $serializer = SerializerBuilder::create()
             ->setPropertyNamingStrategy(

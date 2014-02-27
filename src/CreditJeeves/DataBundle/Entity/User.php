@@ -83,13 +83,7 @@ abstract class User extends BaseUser
             case UserType::DEALER:
                 return array('ROLE_DEALER');
             case UserType::ADMIN:
-                return array(
-                    'ROLE_USER',
-                    'ROLE_DEALER',
-                    'ROLE_ADMIN',
-                    'ROLE_TENANT',
-                    'ROLE_LANDLORD'
-                );
+                return array('ROLE_ADMIN');
             case UserType::TETNANT:
                 return array('ROLE_TENANT');
             case UserType::LANDLORD:
