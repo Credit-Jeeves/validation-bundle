@@ -7,7 +7,7 @@ $( document ).ready(function() {
             msie8: true
         },
         imagePath: '/bundles/user/img/',
-        closeCookie: false,//true,
+        closeCookie: true,
         // Header of pop-up window
         header: Translator.trans('reject.header'),
         // Paragraph 1
