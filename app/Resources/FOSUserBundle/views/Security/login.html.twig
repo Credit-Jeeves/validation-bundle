@@ -1,8 +1,21 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
 {% block stylesheets %}
-    <link href="{{ asset('bundles/user/css/login.css') }}" rel="stylesheet" type="text/css"/>
-    <link href="{{ asset('bundles/component/css/footer.css') }}" rel="stylesheet" type="text/css"/>
+    {% stylesheets
+        '@UserBundle/Resources/public/css/login.css'
+        '@ComponentBundle/Resources/public/css/footer.css'
+        '@UserBundle/Resources/public/css/jquery.reject.css'
+    %}
+    <link href="{{ asset_url }}" rel="stylesheet" type="text/css" />
+    {% endstylesheets %}
+{% endblock %}
+{% block head_javascripts %}
+     {% javascripts
+     '@UserBundle/Resources/public/js/jquery.reject.min.js'
+     '@UserBundle/Resources/public/js/reject.js'
+     %}
+     <script type="text/javascript" src="{{ asset_url }}"></script>
+     {% endjavascripts %}
 {% endblock %}
 
 {% block fos_user_content %}
