@@ -114,8 +114,9 @@ class EmailTenantCommand extends ContainerAwareCommand
                 if ($auto) {//Email:tenant --auto=true
                     // Story-1544
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                    $days = $this->getDueDays($days);
-                    $payments = $repo->getActivePayments($days, $date->format('n'), $date->format('Y'));
+                    $shiftedDate = clone $date;
+                    $shiftedDate->modify("+{$days} days");
+                    $payments = $repo->getActivePayments($shiftedDate);
                     $output->write('Start processing auto payment contracts');
                     foreach ($payments as $row) {
                         $payment = $row[0];
