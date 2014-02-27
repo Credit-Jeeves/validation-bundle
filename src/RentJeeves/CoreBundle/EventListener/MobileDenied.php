@@ -73,7 +73,7 @@ class MobileDenied
     protected function isMobile()
     {
         $userAgent = $_SERVER['HTTP_USER_AGENT'];
-        //var_dump($userAgent);exit;
+
         $preg = "/phone|iphone|itouch|ipod|symbian|android|htc_|htc-|palmos|blackberry|opera mini|iemobile|";
         $preg .= "windows ce|nokia|fennec|hiptop|kindle|mot |mot-|IEMobile|Android|";
         $preg .= "webos\/|samsung|sonyericsson|^sie-|nintendo|";
