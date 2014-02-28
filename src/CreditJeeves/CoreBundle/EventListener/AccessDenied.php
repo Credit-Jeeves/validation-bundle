@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 /**
  * @Service("core.event_listener.kernel.access_denied")
@@ -37,8 +38,10 @@ class AccessDenied
      *      "securityContext"        = @Inject("security.context")
      * })
      */
-    public function __construct(Router $router, SecurityContextInterface $securityContext)
-    {
+    public function __construct(
+        Router $router,
+        SecurityContextInterface $securityContext
+    ) {
         $this->router = $router;
         if ($token = $securityContext->getToken()) {
             $this->user = $token->getUser();
