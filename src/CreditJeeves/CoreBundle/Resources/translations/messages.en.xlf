@@ -1486,11 +1486,11 @@
             </trans-unit>
             <trans-unit id="access.denied">
                 <source>access.denied</source>
-                <target>Access Denied.</target>
+                <target>Aww Shucks.</target>
             </trans-unit>
             <trans-unit id="access.denied.description">
                 <source>access.denied.description</source>
-                <target>Sorry, but we don't support iPad/Mobile for now.</target>
+                <target>It looks like you are trying to access the RentTrack application from a mobile device. We currently do not support mobile devices - please log in using a browser on your computer. We're sorry for the inconvenience!</target>
             </trans-unit>
         </body>
     </file>
