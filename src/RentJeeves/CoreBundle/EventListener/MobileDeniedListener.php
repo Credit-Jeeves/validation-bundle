@@ -12,17 +12,17 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
- * @Service("core.event_listener.kernel.mobile_denied.")
+ * @Service("core.event_listener.kernel.mobile_denied")
  *
  *  @Tag(
  *      "kernel.event_listener",
  *       attributes = {
  *           "event" = "kernel.request",
- *           "method" = "request",
+ *           "method" = "onKernelRequest",
  *      }
  * )
  */
-class MobileDenied
+class MobileDeniedListener
 {
 
     const SKIP_CONTROLLER_REG_EXP = "/flashAction|getTranslationsAction|PublicBundle/";
@@ -50,7 +50,7 @@ class MobileDenied
         $this->translator = $translator;
     }
 
-    public function request(GetResponseEvent $event)
+    public function onKernelRequest(GetResponseEvent $event)
     {
         $controller = $event->getRequest()->attributes->get('_controller');
 
