@@ -33,3 +33,13 @@
     background: #eee url(/bundles/rjpublic/images/creditcom.png) right 30px center no-repeat;
     width: 910px;
 }
+.tos-input-field {
+    transform: none !important;
+}
+label.checkbox a {
+    display: block;
+    float: none;
+    margin-left: 86px;
+    margin-top: -18px;
+    position: absolute;
+}
