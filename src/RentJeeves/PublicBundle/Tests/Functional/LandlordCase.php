@@ -113,4 +113,24 @@ class LandlordCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($firstTd = $this->page->find('css', '.properties-table>tbody>tr>td'));
     }
+
+    /**
+     * @test
+     */
+    public function landlordResendInvite()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->session->visit($this->getUrl() . 'landlord/register/');
+        $this->assertNotNull($form = $this->page->find('css', '#LandlordAddressType'));
+        $this->fillForm(
+            $form,
+            array(
+                'LandlordAddressType_landlord_email'                     => "newlandlord12@yandex.ru",
+            )
+        );
+        $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
+        $submit->click();
+        //@TODO write check, when fixture fill be ready
+    }
 }

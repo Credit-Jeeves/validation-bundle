@@ -35,7 +35,7 @@ class PublicController extends Controller
 
     /**
      * @Route("/tenant/invite/resend/{userId}", name="tenant_invite_resend", options={"expose"=true})
-     * @Template()
+     * @Template("RjPublicBundle:Public:resendInvite.html.twig")
      *
      */
     public function resendInviteTenantAction($userId)
@@ -67,7 +67,7 @@ class PublicController extends Controller
         //So we select random landlord for group, it's main problem in architecture
         $landlord = $contract->getGroup()->getGroupAgents()->first();
         $reminderInvite = $this->get('reminder.invite');
-        if (!$reminderInvite->send($contract->getId(), $landlord)) {
+        if (!$reminderInvite->sendTenant($contract->getId(), $landlord)) {
             return array(
                 'error' => $reminderInvite->getError()
             );

@@ -1,10 +1,15 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Services;
+namespace RentJeeves\PublicBundle\Services;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
+use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Invite;
+use RentJeeves\DataBundle\Entity\Landlord;
 
 /**
  * @Service("reminder.invite")
@@ -19,6 +24,9 @@ class ReminderInvite
 
     protected $session;
 
+    /**
+     * @var Mailer
+     */
     protected $mailer;
 
     /**
@@ -47,17 +55,31 @@ class ReminderInvite
         return $this->error;
     }
 
-    public function send($contractId, $user, $currentGroup = null)
+
+    protected function isAlreadySend($contractId, $key)
     {
-        $landlordReminder = $this->session->get('landlord_reminder');
-        if (!$landlordReminder) {
-            $landlordReminder = array();
+        $reminderList = $this->session->get($key);
+        if (!$reminderList) {
+            $reminderList = array();
         } else {
-            $landlordReminder = json_decode($landlordReminder, true);
+            $reminderList = json_decode($reminderList, true);
+        }
+        if (in_array($contractId, $reminderList)) {
+            $this->setError('contract.reminder.error.already.send');
+            return true;
         }
 
-        if (in_array($contractId, $landlordReminder)) {
-            $this->setError('contract.reminder.error.already.send');
+        $reminderList[] = $contractId;
+        $this->session->set($key, json_encode($reminderList));
+
+        return false;
+    }
+
+
+
+    public function sendTenant($contractId, $user, $currentGroup = null)
+    {
+        if ($this->isAlreadySend($contractId, 'tenant_reminder')) {
             return false;
         }
 
@@ -83,9 +105,38 @@ class ReminderInvite
             $this->mailer->sendRjTenantInviteReminder($tenant, $user, $contract);
         }
 
-        $landlordReminder[] = $contract->getId();
+        return true;
+    }
 
-        $this->session->set('landlord_reminder', json_encode($landlordReminder));
+    public function sendLandlord(Landlord $landlord)
+    {
+        $groups = $landlord->getAgentGroups();
+        $contract = null;
+        /**
+         * @var $group Group
+         */
+        foreach ($groups as $group) {
+            $contracts = $group->getContracts();
+            if (!empty($contracts)) {
+                /**
+                 * @var $contract Contract
+                 */
+                $contract = $contracts->first();
+            }
+        }
+
+        if (is_null($contract)) {
+            $this->setError('contract.not.found');
+            return false;
+        }
+
+        $tenant = $contract->getTenant();
+
+        if ($this->isAlreadySend($contract->getId(), 'landlord_reminder')) {
+            return false;
+        }
+
+        $this->mailer->sendRjLandLordInvite($landlord, $tenant, $contract);
 
         return true;
     }

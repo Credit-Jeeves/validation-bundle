@@ -50,7 +50,6 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-
     public function sendRjTenantInvite($tenant, $landlord, $contract, $sTemplate = 'rjTenantInvite')
     {
         $unit = $contract->getUnit();
