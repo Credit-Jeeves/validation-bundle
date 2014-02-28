@@ -77,7 +77,7 @@ class SummaryCase extends BaseTestCase
         );
         $this->page->pressButton('pay_popup.step.next');
         $this->page->clickLink('pay_popup.step.previous');
-        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
         $this->assertNotNull(
             $radio = $this->page->findAll('css', '.radio')
         );
