@@ -6,7 +6,7 @@
 {% block content %}
 <section class="form-content">
 {{ include('RjComponentBundle:Invite:_popupLandlord.html.twig') }}
-<form  novalidate action="{{ path('landlord_register') }}" method="post" {{ form_enctype(form) }} id="landlordRegister">
+<form action="{{ path('landlord_register') }}" method="post" {{ form_enctype(form) }} id="landlordRegister">
     <div class="box type1">
         <h3 class="clearfix">
             <span>{{ 'account.information'|trans }}</span>
