@@ -373,7 +373,7 @@ class IframeCase extends BaseTestCase
     protected function checkResendInvite()
     {
         $this->assertNotNull($userExistMessage = $this->page->find('css', '#userExistMessage'));
-        $this->assertEquals('tenant.already.invited', $userExistMessage->getText());
+        $this->assertEquals('already.invited.error', $userExistMessage->getText());
         $user = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('DataBundle:User')
             ->findOneBy(
                 array(
