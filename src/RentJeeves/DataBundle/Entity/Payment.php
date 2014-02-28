@@ -79,6 +79,11 @@ class Payment extends Base
         $em->flush($this);
     }
 
+    protected function getNow()
+    {
+        return new DateTime();
+    }
+
     /**
      * @return DateTime
      */
@@ -86,11 +91,9 @@ class Payment extends Base
     {
         // 1. Get start date
         $day = $this->getDueDate();
-        $month = $this->getStartMonth();
-        $year = $this->getStartYear();
 
         // 2. Get now
-        $now = new DateTime();
+        $now = $this->getNow();
 
         // 3. Get current day, month, year
         $currentDay = $now->format('d');
@@ -114,6 +117,11 @@ class Payment extends Base
             $year = $currentYear;
         }
 
-        return new DateTime(implode('-', array($day, $month, $year)));
+        $daysInMont = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+        if ($day > $daysInMont) {
+            $day = $daysInMont;
+        }
+
+        return new DateTime(implode('-', array($year, $month, $day)));
     }
 }
