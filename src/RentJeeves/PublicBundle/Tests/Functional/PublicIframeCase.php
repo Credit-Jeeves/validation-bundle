@@ -34,4 +34,18 @@ class PublicIframeCase extends BaseTestCase
 //         $this->assertCount(3, $tr, 'List of property');
         //$this->logout();
     }
+
+    /**
+     * @test
+     */
+    public function checkTenantAndLandlordButton()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->session->visit($this->getUrl() . 'management');
+        $this->assertNotNull($tenantButton = $this->page->find('css', '#iframe-tenant-button'));
+        $this->assertNull($landlordButton = $this->page->find('css', '#iframe-landlord-button'));
+        $this->session->visit($this->getUrl() . 'management?l=true');
+        $this->assertNotNull($tenantButton = $this->page->find('css', '#iframe-tenant-button'));
+        $this->assertNotNull($landlordButton = $this->page->find('css', '#iframe-landlord-button'));
+    }
 }

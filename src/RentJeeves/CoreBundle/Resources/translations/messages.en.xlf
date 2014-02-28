@@ -1602,9 +1602,13 @@
                 <source>iframe.redirect.text</source>
                 <target>Find your rental to make a payment</target>
             </trans-unit>
-            <trans-unit id="iframe.redirect.button">
-                <source>iframe.redirect.button</source>
-                <target>Get Started</target>
+            <trans-unit id="iframe.redirect.tenant">
+                <source>iframe.redirect.tenant</source>
+                <target>Tenant</target>
+            </trans-unit>
+            <trans-unit id="iframe.redirect.landlord">
+                <source>iframe.redirect.landlord</source>
+                <target>Landlord</target>
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
