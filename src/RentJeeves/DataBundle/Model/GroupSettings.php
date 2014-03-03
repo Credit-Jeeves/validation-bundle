@@ -37,6 +37,14 @@ abstract class GroupSettings
     protected $isPidVerificationSkipped = false;
 
     /**
+     * @ORM\Column(
+     *      type="boolean",
+     *      name="is_integrated"
+     * )
+     */
+    protected $isIntegrated;
+
+    /**
      * @ORM\OneToOne(
      *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
      *     inversedBy="groupSettings",
@@ -138,5 +146,21 @@ abstract class GroupSettings
     public function getGroup()
     {
         return $this->group;
+    }
+
+    /**
+     * @param boolean $isIntegrated
+     */
+    public function setIsIntegrated($isIntegrated)
+    {
+        $this->isIntegrated = (boolean) $isIntegrated;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsIntegrated()
+    {
+        return $this->isIntegrated;
     }
 }

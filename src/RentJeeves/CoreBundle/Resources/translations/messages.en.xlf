@@ -1976,6 +1976,10 @@
                 <source>payments.filter.amount</source>
                 <target>Search by Amount</target>
             </trans-unit>
+            <trans-unit id="is.integrated">
+                <source>is.integrated</source>
+                <target>Is Integrated?</target>
+            </trans-unit>
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>
                 <target>Your payment scheduled for the %%DAY_1%%st will be executed on the %%DAY_2%%th due to the short month.</target>
