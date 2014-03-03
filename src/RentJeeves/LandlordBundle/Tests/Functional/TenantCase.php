@@ -522,9 +522,9 @@ class TenantCase extends BaseTestCase
      */
     public function checkReminder()
     {
+        $this->clearEmail();
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        $this->clearEmail();
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");

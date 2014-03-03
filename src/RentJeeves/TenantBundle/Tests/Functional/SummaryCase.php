@@ -16,7 +16,7 @@ class SummaryCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
-        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
         $this->assertNotNull(
             $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
         );
@@ -54,7 +54,7 @@ class SummaryCase extends BaseTestCase
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
         $this->page->clickLink('tabs.summary');
-        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
         $this->assertNotNull(
             $form = $this->page->find('css', '#rentjeeves_checkoutbundle_userdetailstype')
         );
