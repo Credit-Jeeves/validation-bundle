@@ -1018,7 +1018,7 @@ class AjaxController extends Controller
     public function sendReminderInvite($contractId)
     {
         $reminderInvite = $this->get('reminder.invite');
-        if ($reminderInvite->sendLandlord($this->getUser(), $this->getCurrentGroup(), $contractId)) {
+        if ($reminderInvite->sendTenant($contractId, $this->getUser(), $this->getCurrentGroup())) {
             return new JsonResponse(array());
         }
 

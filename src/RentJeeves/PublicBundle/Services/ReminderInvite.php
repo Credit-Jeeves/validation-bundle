@@ -108,48 +108,30 @@ class ReminderInvite
         return true;
     }
 
-    public function sendLandlord(Landlord $landlord, $currentGroup = null, $contractId = null)
+    public function sendLandlord(Landlord $landlord)
     {
-        if (is_null($currentGroup) && is_null($contractId)) {
-            $groups = $landlord->getAgentGroups();
-            $contract = null;
-            /**
-             * @var $group Group
-             */
-            foreach ($groups as $group) {
-                $contracts = $group->getContracts();
-                if (!empty($contracts)) {
-                    /**
-                     * @var $contract Contract
-                     */
-                    $contract = $contracts->first();
-                    break;
-                }
+        $groups = $landlord->getAgentGroups();
+        $contract = null;
+        /**
+         * @var $group Group
+         */
+        foreach ($groups as $group) {
+            $contracts = $group->getContracts();
+            if (!empty($contracts)) {
+                /**
+                 * @var $contract Contract
+                 */
+                $contract = $contracts->first();
+                break;
             }
-
-            if (is_null($contract)) {
-                $this->setError('contract.not.found');
-                return false;
-            }
-
-            $tenant = $contract->getTenant();
-        } else {
-            $contract = $this->em->getRepository('RjDataBundle:Contract')->find($contractId);
-
-            if (empty($contract)) {
-                $this->setError('contract.not.found');
-                return false;
-            }
-
-            if (!is_null($currentGroup)) {
-                if ($contract->getGroupId() !== $currentGroup->getId()) {
-                    $this->setError('contract.not.found');
-                    return false;
-                }
-            }
-
-            $tenant = $contract->getTenant();
         }
+
+        if (is_null($contract)) {
+            $this->setError('contract.not.found');
+            return false;
+        }
+
+        $tenant = $contract->getTenant();
 
         if ($this->isAlreadySend($contract->getId(), 'landlord_reminder')) {
             return false;
