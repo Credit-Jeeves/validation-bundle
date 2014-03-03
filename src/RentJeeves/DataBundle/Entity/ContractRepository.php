@@ -399,9 +399,11 @@ class ContractRepository extends EntityRepository
     public function getLateContracts($days = 5)
     {
         $query = $this->createQueryBuilder('c');
-        $query->where('c.paidTo BETWEEN :start AND :now');
+        $query->andWhere('c.paidTo BETWEEN :start AND :now');
+        $query->andWhere('c.status = :status');
         $query->setParameter('start', new DateTime('-'.$days.' days'));
         $query->setParameter('now', new DateTime());
+        $query->setParameter('status', ContractStatus::APPROVED);
         $query = $query->getQuery();
         return $query->iterate();
     }

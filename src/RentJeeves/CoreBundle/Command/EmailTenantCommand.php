@@ -150,7 +150,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                 break;
             case self::OPTION_TYPE_LATE:
                 $repo = $doctrine->getRepository('RjDataBundle:Contract');
-                $contracts = $repo->getLateContracts();
+                $contracts = $repo->getLateContracts($days);
                 $output->write('Start processing late contracts');
                 foreach ($contracts as $row) {
                     /** @var Contract $contract */
