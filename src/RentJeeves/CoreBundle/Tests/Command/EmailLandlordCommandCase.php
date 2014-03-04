@@ -6,13 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CoreBundle\Command\EmailLandlordCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
-class EmailLandlordCommandTest extends BaseTestCase
+class EmailLandlordCommandCase extends BaseTestCase
 {
     /**
      * @test
      */
     public function testExecute()
     {
+        $this->load(true);
+        static::$kernel = null;
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -37,6 +39,7 @@ class EmailLandlordCommandTest extends BaseTestCase
      */
     public function testExecutePending()
     {
+        $this->load();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -51,7 +54,7 @@ class EmailLandlordCommandTest extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(5, $count);
+        $this->assertCount(3, $count);
         $this->assertRegExp('/Story-2042/', $commandTester->getDisplay());
     }
 
@@ -61,6 +64,7 @@ class EmailLandlordCommandTest extends BaseTestCase
      */
     public function testExecutePaid()
     {
+        $this->load();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -75,7 +79,7 @@ class EmailLandlordCommandTest extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(1, $count);
+        $this->assertCount(4, $count);
         $this->assertRegExp('/Story-1555/', $commandTester->getDisplay());
     }
 
@@ -85,6 +89,7 @@ class EmailLandlordCommandTest extends BaseTestCase
      */
     public function testExecuteNotPaid()
     {
+        $this->load();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -108,6 +113,7 @@ class EmailLandlordCommandTest extends BaseTestCase
      */
     public function testExecureReport()
     {
+        $this->load();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -122,12 +128,13 @@ class EmailLandlordCommandTest extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(3, $count);
+        $this->assertCount(4, $count);
         $this->assertRegExp('/daily report/', $commandTester->getDisplay());
     }
 
     public function testExecuteLateTenants()
     {
+        $this->load();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
