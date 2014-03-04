@@ -2,6 +2,7 @@
 namespace RentJeeves\AdminBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
+use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use Sonata\AdminBundle\Admin\Admin;
@@ -14,6 +15,8 @@ use Knp\Menu\ItemInterface as MenuItemInterface;
 
 class PaymentAdmin extends Admin
 {
+    use DateCommon;
+
     public function configureRoutes(RouteCollection $collection)
     {
 //        $collection->remove('edit');// https://github.com/sonata-project/SonataDoctrineORMAdminBundle/issues/276
@@ -26,7 +29,10 @@ class PaymentAdmin extends Admin
     {
         $listMapper
             ->addIdentifier('id', null, array('route' => array('name' => 'show')))
-            ->add('start_date', 'date')
+            ->add('dueDate')
+            ->add('startMonth')
+            ->add('startYear')
+            ->add('endYear')
             ->add('type')
             ->add('status')
             ->add('amount', 'money')
@@ -59,6 +65,15 @@ class PaymentAdmin extends Admin
                     'year' => date('Y'),
                 ),
             );
+        } else {
+            $day = cal_days_in_month(
+                CAL_GREGORIAN,
+                $return['startDate']['value']['month'],
+                $return['startDate']['value']['year']
+            );
+            $return['startDate']['value']['day'] = $day < $return['startDate']['value']['day'] ?
+                $day :
+                $return['startDate']['value']['day'];
         }
 
         if (!isset($return['status']['value'])) {
@@ -88,21 +103,38 @@ class PaymentAdmin extends Admin
                         }
                         /** @var QueryBuilder $queryBuilder */
                         $alias = $queryBuilder->getRootAliases()[0];
-                        $queryBuilder->andWhere($alias . '.dueDate = :due_date');
 
-                        $queryBuilder->andWhere(
-                            sprintf(
-                                "STR_TO_DATE(" .
-                                "CONCAT_WS('-', %s.startYear, %s.startMonth, %s.dueDate)," .
-                                "'%%Y-%%c-%%e'" .
-                                ") <= :start_date",
+                        $queryBuilder->addSelect(
+                            str_replace(
+                                '%alias',
                                 $alias,
-                                $alias,
-                                $alias
+                                "@startDateLastDay := DAY(LAST_DAY(STR_TO_DATE(" .
+                                "CONCAT_WS('-', %alias.startYear, %alias.startMonth, '1')," .
+                                "'%Y-%c-%e'" .
+                                ")))"
                             )
                         );
-                        $queryBuilder->setParameter('due_date', $value['value']->format('d'));
-                        $queryBuilder->setParameter('start_date', $value['value']);
+
+//                        $queryBuilder->addSelect(
+//                            str_replace(
+//                                '%alias',
+//                                $alias,
+//                                "STR_TO_DATE(" .
+//                                "CONCAT_WS(
+//                                    '-',
+//                                    %alias.startYear,
+//                                    %alias.startMonth,
+//                                    IF(@startDateLastDay < %alias.dueDate, @startDateLastDay, %alias.dueDate),
+//                                " .
+//                                "'%Y-%c-%e'" .
+//                                ") AS startDate"
+//                            )
+//                        );
+//                        $queryBuilder->having("startDate <= :start_date");
+//                        $queryBuilder->setParameter('start_date', $value['value']);
+
+                        $queryBuilder->andWhere($alias . '.dueDate IN (:due_date)');
+                        $queryBuilder->setParameter('due_date', $this->getDueDays(0, $value['value']));
 
                         return true;
                     },
@@ -127,7 +159,9 @@ class PaymentAdmin extends Admin
             ->add('type')
             ->add('status')
             ->add('amount')
-            ->add('start_date', 'date')
+            ->add('dueDate')
+            ->add('startMonth')
+            ->add('startYear')
             ->add('endYear')
             ->add('endMonth')
             ->add('createdAt')
