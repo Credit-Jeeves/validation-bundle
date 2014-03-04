@@ -26,7 +26,7 @@ class LandlordController extends Controller
     use PaymentProcess;
 
     /**
-     * @Route("/landlord/register/", name="landlord_register")
+     * @Route("/landlord/register/", name="landlord_register", options={"expose"=true})
      * @Template()
      *
      * @return array

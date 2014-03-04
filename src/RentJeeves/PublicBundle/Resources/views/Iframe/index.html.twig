@@ -11,7 +11,10 @@
             <div class="iframe-redirect">
                 <div class="iframe-redirect-title">{{ 'iframe.redirect.title' | trans }}</div>
                 <div class="iframe-redirect-text">{{ 'iframe.redirect.text' | trans }}</div>
-                <input id="iframe-get-started" type="button" class="iframe-button iframe-button-grey" value="{{ 'iframe.redirect.button' | trans }}">
+                <input id="iframe-tenant-button" type="button" class="iframe-button iframe-button-grey" value="{{ 'iframe.redirect.tenant' | trans }}">
+                {% if app.request.query.get('l') == 'true' %}
+                    <input id="iframe-landlord-button" type="button" class="iframe-button iframe-button-grey" value="{{ 'iframe.redirect.landlord' | trans }}">
+                {% endif %}
             </div>
         </div>
         <div class="iframe-body-right">
@@ -60,11 +63,10 @@
                    '@RjPublicBundle/Resources/public/js/public-iframe.js' 
 %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
-        <script type="text/javascript">
-<!--
-redirectUrl = "{{ url }}";
-//-->
-</script>
+
     {% endjavascripts %}
+    <script type="text/javascript">
+        propertyId = "{{ app.request.attributes.get('propertyId') }}";
+    </script>
 {% endblock %}
 
