@@ -112,13 +112,14 @@ class EmailTenantCommand extends ContainerAwareCommand
         $date = new DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
         $doctrine = $this->getContainer()->get('doctrine');
+        $shiftedDate = clone $date;
+        $shiftedDate->modify("+{$days} days");
         switch ($type) {
             case self::OPTION_TYPE_DEFAULT:
                 if ($auto) {//Email:tenant --auto=true
                     // Story-1544
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                    $shiftedDate = clone $date;
-                    $shiftedDate->modify("+{$days} days");
+
                     $payments = $repo->getActivePayments($shiftedDate);
                     $output->write('Start processing auto payment contracts');
                     /** @var Payment $payment */
@@ -133,8 +134,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                 } else {//Email:tenant
                     // Story-1542
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                    $days = $this->getDueDays($days);
-                    $payments = $repo->getNonAutoPayments($days, $date->format('n'), $date->format('Y'));
+                    $payments = $repo->getNonAutoPayments($shiftedDate);
                     $output->write('Start processing non auto contracts');
                     foreach ($payments as $row) {
                         /** @var Payment $payment */

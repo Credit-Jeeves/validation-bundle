@@ -3,6 +3,7 @@ namespace RentJeeves\AdminBundle\Admin;
 
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\CoreBundle\Traits\DateCommon;
+use RentJeeves\DataBundle\Entity\PaymentRepository;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use Sonata\AdminBundle\Admin\Admin;
@@ -103,35 +104,10 @@ class PaymentAdmin extends Admin
                         }
                         /** @var QueryBuilder $queryBuilder */
                         $alias = $queryBuilder->getRootAliases()[0];
-
-                        $queryBuilder->addSelect(
-                            str_replace(
-                                '%alias',
-                                $alias,
-                                "@startDateLastDay := DAY(LAST_DAY(STR_TO_DATE(" .
-                                "CONCAT_WS('-', %alias.startYear, %alias.startMonth, '1')," .
-                                "'%Y-%c-%e'" .
-                                ")))"
-                            )
+                        $queryBuilder->andWhere(
+                            PaymentRepository::getStartDateDQLString($alias) . ' <= :start_date'
                         );
-
-//                        $queryBuilder->addSelect(
-//                            str_replace(
-//                                '%alias',
-//                                $alias,
-//                                "STR_TO_DATE(" .
-//                                "CONCAT_WS(
-//                                    '-',
-//                                    %alias.startYear,
-//                                    %alias.startMonth,
-//                                    IF(@startDateLastDay < %alias.dueDate, @startDateLastDay, %alias.dueDate),
-//                                " .
-//                                "'%Y-%c-%e'" .
-//                                ") AS startDate"
-//                            )
-//                        );
-//                        $queryBuilder->having("startDate <= :start_date");
-//                        $queryBuilder->setParameter('start_date', $value['value']);
+                        $queryBuilder->setParameter('start_date', $value['value']);
 
                         $queryBuilder->andWhere($alias . '.dueDate IN (:due_date)');
                         $queryBuilder->setParameter('due_date', $this->getDueDays(0, $value['value']));

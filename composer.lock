@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "1e04f45233082e41df4b585f7e2fcb96",
+    "hash": "b14677df58a9c9b2605336c2a5343877",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -229,14 +229,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/beberlei/DoctrineExtensions.git",
-                "reference": "5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/DoctrineExtensions/zipball/5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc",
-                "reference": "5e4ec9c3ec3434151e1c73144b4ab87ae30aefbc",
-                "shasum": ""
+                "url": "git@github.com:66Ton99/DoctrineExtensions.git",
+                "reference": "d2d13683874d6b26e5d9c61215ad81f53cad505e"
             },
             "require": {
                 "doctrine/orm": "*"
@@ -247,8 +241,7 @@
                     "DoctrineExtensions": "lib/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
-            "time": "2013-12-20 22:02:19"
+            "time": "2014-03-04 20:43:51"
         },
         {
             "name": "besimple/soap-common",

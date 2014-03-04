@@ -161,6 +161,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/validation-bundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/DoctrineExtensions.git"
         }
     ],
     "require": {

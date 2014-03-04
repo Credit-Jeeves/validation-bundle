@@ -19,6 +19,7 @@ doctrine:
             string_functions:
                 field: DoctrineExtensions\Query\Mysql\Field
                 concat_ws: DoctrineExtensions\Query\Mysql\ConcatWs
+#                if_else: DoctrineExtensions\Query\Mysql\IfElse
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
