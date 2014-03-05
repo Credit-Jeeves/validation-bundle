@@ -35,9 +35,9 @@ class Builder extends ContainerAware
         $user = $this->container->get('security.context')->getToken()->getUser();
         if ($user->haveAccessToReports()) {
             $menu->addChild(
-                'tabs.reports',
+                'tab.accounting',
                 array(
-                    'route' => 'landlord_reports'
+                    'route' => 'landlord_reports_import'
                 )
             );
         }
@@ -53,8 +53,9 @@ class Builder extends ContainerAware
             case 'landlord_tenants':
                 $menu['tabs.tenants']->setAttribute('class', 'active');
                 break;
-            case 'landlord_reports':
-                $menu['tabs.reports']->setAttribute('class', 'active');
+            case 'landlord_reports_import':
+            case 'landlord_reports_export':
+                $menu['tab.accounting']->setAttribute('class', 'active');
                 break;
             default:
                 break;
@@ -85,4 +86,34 @@ class Builder extends ContainerAware
         }
         return $menu;
     }
+
+    public function accountingMenu(FactoryInterface $factory, array $options)
+    {
+        $menu = $factory->createItem('root');
+        $menu->addChild(
+            'import',
+            array(
+                'route' => 'landlord_reports_import'
+            )
+        );
+        $menu->addChild(
+            'export',
+            array(
+                'route' => 'landlord_reports_export'
+            )
+        );
+
+        $route = $this->container->get('request')->get('_route');
+        switch ($route) {
+            case 'landlord_reports_import':
+                $menu['import']->setUri('');
+                break;
+            case 'landlord_reports_export':
+                $menu['export']->setUri('');
+                break;
+        }
+
+        return $menu;
+    }
+
 }

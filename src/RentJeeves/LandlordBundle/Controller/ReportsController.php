@@ -10,6 +10,7 @@ use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
+use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -24,13 +25,13 @@ class ReportsController extends Controller
 {
     /**
      * @Route(
-     *     "/",
-     *     name="landlord_reports"
+     *     "/export",
+     *     name="landlord_reports_export"
      * )
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function indexAction(Request $request)
+    public function exportAction(Request $request)
     {
         $user = $this->get('security.context')->getToken()->getUser();
         if (!$user->haveAccessToReports()) {
@@ -70,7 +71,31 @@ class ReportsController extends Controller
         return array(
             'settings'           => $user->getSettings(),
             'formBaseOrder'      => $formBaseOrder->createView(),
-            'nGroups' => $this->getGroups()->count(),
+            'nGroups'            => $this->getGroups()->count(),
+        );
+    }
+
+    /**
+     * @Route(
+     *     "/import",
+     *     name="landlord_reports_import"
+     * )
+     * @Method({"GET", "POST"})
+     * @Template()
+     */
+    public function importFileAction(Request $request)
+    {
+        $form = $this->createForm(
+            new ImportFileAccountingType($this->getUser())
+        );
+
+        $form->handleRequest($this->get('request'));
+        if ($form->isValid()) {
+
+        }
+
+        return array(
+            'form'      => $form->createView(),
         );
     }
 }

@@ -1984,6 +1984,38 @@
                 <source>info.payment.date</source>
                 <target>Your payment scheduled for the %%DAY_1%%st will be executed on the %%DAY_2%%th due to the short month.</target>
             </trans-unit>
+            <trans-unit id="tab.accounting">
+                <source>tab.accounting</source>
+                <target>Accounting</target>
+            </trans-unit>
+            <trans-unit id="import">
+                <source>import</source>
+                <target>Import</target>
+            </trans-unit>
+            <trans-unit id="export">
+                <source>export</source>
+                <target>Export</target>
+            </trans-unit>
+            <trans-unit id="accounting.file.import">
+                <source>accounting.file.import</source>
+                <target>Accounting File Import</target>
+            </trans-unit>
+            <trans-unit id="import.file">
+                <source>import.file</source>
+                <target>Import File</target>
+            </trans-unit>
+            <trans-unit id="match.fields">
+                <source>match.fields</source>
+                <target>Match Fields</target>
+            </trans-unit>
+            <trans-unit id="review.and.post">
+                <source>review.and.post</source>
+                <target><![CDATA[Review & Post]]></target>
+            </trans-unit>
+            <trans-unit id="csv.file">
+                <source>csv.file</source>
+                <target>CSV File</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

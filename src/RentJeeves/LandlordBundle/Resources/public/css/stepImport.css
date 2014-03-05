@@ -1,0 +1,15 @@
+.steps li {
+    width: 240px;
+}
+.steps li>.step>span{
+    width: 180px;
+}
+.column-middle {
+    width: 920px;
+}
+#import_file_type_property_row label {
+    clear: both;
+}
+#import_file_type_attachment {
+    width: 280px;
+}

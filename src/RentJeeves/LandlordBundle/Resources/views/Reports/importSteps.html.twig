@@ -1,0 +1,21 @@
+<div>
+    <h3>{{ 'accounting.file.import'|trans }}</h3>
+</div>
+<ul class="steps clearfix">
+    <li class="step1 {% if step == 'step1' %}active{% endif %}">
+        <span class="step">
+            <span>{{ 'import.file'|trans }}</span>
+        </span>
+    </li>
+    <li class="step2 {% if step == 'step2' %}active{% endif %}">
+        <span class="step">
+            <span>{{ 'match.fields'|trans }}</span>
+        </span>
+    </li>
+    <li class="step3 {% if step == 'step2' %}active{% endif %}">
+        <span class="step">
+            <span>{{ 'review.and.post'|trans }}</span>
+        </span>
+    </li>
+</ul>
+
