@@ -20,7 +20,7 @@ class Version20140303115950 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE rj_group_settings
-                ADD is_integrated TINYINT(1) NOT NULL"
+                ADD is_integrated TINYINT(1) DEFAULT 0"
         );
     }
 

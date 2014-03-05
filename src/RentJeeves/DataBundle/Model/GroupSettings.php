@@ -39,10 +39,13 @@ abstract class GroupSettings
     /**
      * @ORM\Column(
      *      type="boolean",
-     *      name="is_integrated"
+     *      name="is_integrated",
+     *      options={
+     *          "default":0
+     *      }
      * )
      */
-    protected $isIntegrated;
+    protected $isIntegrated = false;
 
     /**
      * @ORM\OneToOne(
