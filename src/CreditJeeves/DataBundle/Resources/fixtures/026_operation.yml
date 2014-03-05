@@ -4,6 +4,10 @@ fixtures:
     contract: Contract_7
     type: rent
     amount: 37200
+  rjOperation_66:
+    contract: Contract_66
+    type: rent
+    amount: 3700
 
 # finished contract
   rjOperation_7:

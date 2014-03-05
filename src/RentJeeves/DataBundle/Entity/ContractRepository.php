@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
 use \DateTime;
+use Doctrine\ORM\Query\Expr;
 
 class ContractRepository extends EntityRepository
 {
@@ -399,13 +400,17 @@ class ContractRepository extends EntityRepository
     public function getLateContracts($days = 5)
     {
         $query = $this->createQueryBuilder('c');
+        $query->leftJoin('c.operation', 'op');
+        $query->leftJoin('op.orders', 'o', Expr\Join::WITH, 'o.status = :orderStatus');
+        $query->setParameter('orderStatus', OrderStatus::PENDING);
+        $query->andWhere('o.id IS NULL');
         $query->andWhere('c.paidTo BETWEEN :start AND :now');
-        $query->andWhere('c.status = :status');
         $query->setParameter('start', new DateTime('-'.$days.' days'));
         $query->setParameter('now', new DateTime());
+        $query->andWhere('c.status = :status');
         $query->setParameter('status', ContractStatus::APPROVED);
         $query = $query->getQuery();
-        return $query->iterate();
+        return $query->execute();
     }
 
     public function getAllLateContracts($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))

@@ -152,9 +152,8 @@ class EmailTenantCommand extends ContainerAwareCommand
                 $repo = $doctrine->getRepository('RjDataBundle:Contract');
                 $contracts = $repo->getLateContracts($days);
                 $output->write('Start processing late contracts');
-                foreach ($contracts as $row) {
-                    /** @var Contract $contract */
-                    $contract = $row[0];
+                /** @var Contract $contract */
+                foreach ($contracts as $contract) {
                     $tenant = $contract->getTenant();
                     $paidTo = $contract->getPaidTo();
                     $diff = $paidTo->diff($date);
