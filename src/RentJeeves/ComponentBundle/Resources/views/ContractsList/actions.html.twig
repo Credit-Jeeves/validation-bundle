@@ -193,17 +193,18 @@
     </div>
     <div class="clearboth"></div>
     <!-- ko if: pages().length -->
-    <div class="row-20"></div>
-    <div class="floatright">
-        <!-- ko foreach: pages() -->
-            <!-- ko if: $data == $root.current() -->
-            <div class="btn grey floatleft" data-bind="click: $root.goToPage, text: $data"></div>
+    <nav class="pagination-box">
+        <ul>
+            <!-- ko foreach: pages() -->
+                <!-- ko if: $data == $root.current() -->
+                <li><span data-bind="click: $root.goToPage, text: $data" class="pagePagination"></span></li>
+                <!-- /ko -->
+                <!-- ko ifnot: $data == $root.current() -->
+                <li><a href="#" data-bind="click: $root.goToPage, text: $data" class="pagePagination"></a></li>
+                <!-- /ko -->
             <!-- /ko -->
-            <!-- ko ifnot: $data == $root.current() -->
-            <div class="btn green floatleft" data-bind="click: $root.goToPage, text: $data"></div>
-            <!-- /ko -->
-        <!-- /ko -->
-    </div>
+        </ul>
+    </nav>
     <!-- /ko -->
     <div class="clearboth"></div>
     <div class="row-20"></div>
