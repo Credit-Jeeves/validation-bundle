@@ -8,7 +8,7 @@ use \DateTime;
 use Symfony\Component\Validator\ExecutionContext;
 use \Exception;
 
-class StartDateTest extends BaseTestCase
+class StartDateCase extends BaseTestCase
 {
     /**
      * @test

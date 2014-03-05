@@ -173,7 +173,12 @@ class EmailLandlordCommand extends ContainerAwareCommand
             case self::OPTION_TYPE_DEFAULT: //Email:landlord --type=paid
                 // Story-1555
                 $repo = $doctrine->getRepository('RjDataBundle:Contract');
-                $payments = $repo->getPaymentsToLandlord();
+                $payments = $repo->getPaymentsToLandlord(
+                    array(
+                        OrderStatus::PENDING,
+                        OrderStatus::COMPLETE
+                    )
+                );
                 foreach ($payments as $payment) {
                     $holding = $doctrine->getRepository('DataBundle:Holding')->find($payment['id']);
                     $group = $doctrine->getRepository('DataBundle:Group')->find($payment['group_id']);

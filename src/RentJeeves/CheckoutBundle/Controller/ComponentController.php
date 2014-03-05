@@ -54,6 +54,9 @@ class ComponentController extends Controller
     public function sourceAction()
     {
         $paymentAccountType = $this->createForm(new PaymentAccountType($this->getUser()));
+
+        $this->get('soft.deleteable.control')->enable();
+
         return array(
             'paymentAccountType' => $paymentAccountType->createView(),
             'addresses' => $this->getUser()->getAddresses(),

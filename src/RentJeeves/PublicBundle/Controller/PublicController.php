@@ -166,7 +166,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/user/new/{propertyId}", name="iframe_new")
+     * @Route("/user/new/{propertyId}", name="iframe_new", options={"expose"=true})
      * @Template()
      *
      * @return array
