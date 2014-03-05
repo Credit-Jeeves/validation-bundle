@@ -15,6 +15,14 @@
         <div class="col-box clearfix">
             <div class="col">
                 <h4>{{ 'setup.your.rent'|trans }}</h4>
+                {% if app.session.flashbag.has('landlord_email_error') %}
+                    <div id="userExistMessage" class="information-box pie-el messageInfoUserAdd">
+                        {% for flashMessage in app.session.flashbag.get('landlord_email_error') %}
+                            {{ flashMessage|raw }}
+                            <br />
+                        {% endfor %}
+                    </div>
+                {% endif %}
                 <div class="form-row clearfix">
                     {{ form_label(form.landlord.first_name) }}
                     <div class="fields-box">

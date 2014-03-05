@@ -26,7 +26,7 @@ class AddPropertyCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      */
     public function addWithLandlord()
     {
@@ -59,7 +59,7 @@ class AddPropertyCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      *
      * @todo strange search for "560 Broadway New York, NY 10012"
      */
@@ -135,7 +135,7 @@ class AddPropertyCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * test
      * @depends invite
      */
     public function checkInvite()
@@ -175,6 +175,7 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table tbody tr'));
         $this->assertCount(1, $contract, 'Wrong number of contract');
+        $this->logout();
         //Check notify tenant about landlord come
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
@@ -233,7 +234,21 @@ class AddPropertyCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($contract = $this->page->findAll('css', '.properties-table tbody tr'));
-        $this->assertCount(4, $contract, 'Wrong number of contracts');
+
+        $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
+        $searchField->click();
+        $this->assertNotNull($current = $this->page->find('css', '#searchPaymentsStatus_li_1'));
+        $current->click();
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
+        $this->assertEquals('All (1)', $allh2->getText(), 'Wrong count of tenants');
+        $this->assertNotNull($emailBox = $this->page->findAll('css', '.email-box'));
+        $this->assertEquals('2', count($emailBox), 'Wrong count of email-box');
+        $this->assertEquals('Timothy Applegate', $emailBox[0]->getText(), 'Wrong tenant');
+        $this->assertEquals('tenant11@example.com', $emailBox[1]->getText(), 'Wrong tenant');
         $this->logout();
     }
 }

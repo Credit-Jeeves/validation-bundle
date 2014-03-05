@@ -1932,8 +1932,8 @@
                 <source>payments.batched_amount</source>
                 <target>{1}1 payment is batched into this deposit.|[2,Inf]%count% payments are batched into this deposit.</target>
             </trans-unit>
-            <trans-unit id="tenant.already.invited">
-                <source>tenant.already.invited</source>
+            <trans-unit id="already.invited.error">
+                <source>already.invited.error</source>
                 <target><![CDATA[
                     This email address already invited. We recommmend you
                     <a href="%%LINK%%" class="resend-email">

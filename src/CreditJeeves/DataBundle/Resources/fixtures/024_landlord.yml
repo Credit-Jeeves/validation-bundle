@@ -21,6 +21,8 @@ fixtures:
         updated_at: '-3 days'
     Landlord_2:
         holding: rjHolding_2
+        agent_groups:
+          - RentGroup_6
         first_name: John
         middle_initial: WAKEFIELD
         last_name: BREEN
@@ -29,7 +31,7 @@ fixtures:
         phone: 913 76 44 215
         date_of_birth: '1957-02-19'
         ssn: 666042073
-        is_active: true
+        is_active: false
         is_super_admin: true
         invite_code: null
         password: 1a1dc91c907325c69271ddf0c944bc72 #md5('pass')

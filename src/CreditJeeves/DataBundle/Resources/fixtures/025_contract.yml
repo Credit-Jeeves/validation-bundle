@@ -199,6 +199,18 @@ fixtures:
         startAt:   '30 days'
         createdAt: '-20 days'
         updatedAt: '-20 days'
+    Contract_20:
+        tenant:   Tenant_3
+        holding:  rjHolding_2
+        group:    RentGroup_6
+        property: Property_1
+        unit:     Unit_1_2
+        rent:     1400
+        status:   invite
+        paidTo:  '1 days'
+        startAt:   '30 days'
+        createdAt: '-20 days'
+        updatedAt: '-20 days'
 # Contract with one-dollar payment
     Contract_16:
         tenant:   Tenant_12

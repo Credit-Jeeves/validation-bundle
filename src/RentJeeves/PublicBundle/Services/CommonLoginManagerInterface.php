@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\PublicBundle\Service;
+namespace RentJeeves\PublicBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\User;
 
