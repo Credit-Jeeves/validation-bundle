@@ -161,6 +161,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/validation-bundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/DoctrineExtensions.git"
         }
     ],
     "require": {
@@ -190,6 +194,7 @@
         "braincrafted/validation-bundle": "dev-ton as dev-master",
         "doctrine/orm": "2.4.*",
         "doctrine/doctrine-bundle": "dev-master",
+        "doctrine/doctrine-cache-bundle": "dev-master",
         "twig/twig": "dev-master",
         "twig/extensions": "1.*",
         "kriswallsmith/assetic": "1.1.*",
