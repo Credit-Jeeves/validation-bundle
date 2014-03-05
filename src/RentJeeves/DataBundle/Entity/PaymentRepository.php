@@ -56,10 +56,7 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.status = :status');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere(
-            "STR_TO_DATE(" .
-            "CONCAT_WS('-', p.startYear, p.startMonth, p.dueDate)," .
-            "'%Y-%c-%e'" .
-            ") <= :startDate"
+            self::getStartDateDQLString('p') . ' <= :startDate'
         );
         $query->andWhere(
             '(p.endYear IS NULL AND p.endMonth IS NULL)
@@ -82,10 +79,16 @@ class PaymentRepository extends EntityRepository
         return $query->execute();
     }
 
+    /**
+     * @param DateTime $date
+     * @param array $types
+     * @param array $statuses
+     * @param array $contract
+     *
+     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
+     */
     public function getNonAutoPayments(
-        $days = array(),
-        $month = 1,
-        $year = 2000,
+        $date,
         $types = array(PaymentType::ONE_TIME, PaymentType::IMMEDIATE),
         $statuses = array(PaymentStatus::PAUSE, PaymentStatus::CLOSE),
         $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
@@ -97,16 +100,18 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.type IN (:type)');
         $query->andWhere('p.dueDate IN (:days)');
         $query->andWhere('c.status IN (:contract)');
-        $query->andWhere('p.startMonth <= :month');
-        $query->andWhere('p.startYear <= :year');
+        $query->andWhere(
+            self::getStartDateDQLString('p') . ' <= :startDate'
+        );
         $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
 
         $query->setParameter('status', $statuses);
         $query->setParameter('type', $types);
-        $query->setParameter('days', $days);
+        $query->setParameter('days', $this->getDueDays(0, $date));
         $query->setParameter('contract', $contract);
-        $query->setParameter('month', $month);
-        $query->setParameter('year', $year);
+        $query->setParameter('month', $date->format('n'));
+        $query->setParameter('year', $date->format('Y'));
+        $query->setParameter('startDate', $date->format('Y-m-d'));
     
         $query = $query->getQuery();
         return $query->iterate();
@@ -131,5 +136,41 @@ class PaymentRepository extends EntityRepository
         }
         $em->flush();
         return $jobs;
+    }
+
+    /**
+     * Converts fields: dueDate, startYear, startMonth to valid DATE object
+     *
+     * @param string $alias
+     *
+     * @return string
+     */
+    public static function getStartDateDQLString($alias)
+    {
+        return str_replace(
+            '%alias',
+            $alias,
+            "STR_TO_DATE(
+                CONCAT_WS(
+                    '-',
+                    %alias.startYear,
+                    %alias.startMonth,
+                    (CASE
+                        WHEN (
+                            DAY(LAST_DAY(STR_TO_DATE(
+                                CONCAT_WS('-',%alias.startYear,%alias.startMonth,'1'),'%Y-%c-%e')
+                            )) < %alias.dueDate
+                        ) THEN (
+                            DAY(LAST_DAY(STR_TO_DATE(
+                                CONCAT_WS('-',%alias.startYear,%alias.startMonth,'1'),'%Y-%c-%e')
+                            ))
+                        ) ELSE (
+                            %alias.dueDate
+                        )
+                    END)
+                ),
+                '%Y-%c-%e'
+            )"
+        );
     }
 }

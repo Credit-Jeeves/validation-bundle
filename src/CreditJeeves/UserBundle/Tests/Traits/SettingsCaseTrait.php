@@ -9,7 +9,7 @@ trait SettingsCaseTrait
     public function userAddressesListSettings()
     {
         //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('symfony');
+        $this->setDefaultSession('zombie');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');
@@ -39,7 +39,7 @@ trait SettingsCaseTrait
     public function userAddNewAddressSettings()
     {
         //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('symfony');
+        $this->setDefaultSession('zombie');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');
@@ -120,7 +120,7 @@ trait SettingsCaseTrait
     public function userEditAddressSettings()
     {
         //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('symfony');
+        $this->setDefaultSession('zombie');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');
@@ -189,7 +189,7 @@ trait SettingsCaseTrait
     public function userDeleteAddressSettings()
     {
         //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('symfony');
+        $this->setDefaultSession('zombie');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');

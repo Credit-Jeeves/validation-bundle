@@ -23,3 +23,6 @@
 .col .creditcom-logo .search-box {
     background: #eee url(/bundles/rjpublic/images/creditcom.png) right 30px center no-repeat;
 }
+.tos-input-field {
+    transform: none !important;
+}

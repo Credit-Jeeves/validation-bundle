@@ -9,11 +9,6 @@
     position: absolute;
     margin-left: -24px;
     margin-top: 3px;
-    -ms-transform: scale(0.1); /* IE */
-    -moz-transform: scale(0.1); /* FF */
-    /*
-    -webkit-transform: scale(0.1); /* Safari and Chrome */
-    -o-transform: scale(0.1); /* Opera */    
 }
 
 .tos-label {
@@ -32,4 +27,14 @@
 .col .creditcom-logo .search-box {
     background: #eee url(/bundles/rjpublic/images/creditcom.png) right 30px center no-repeat;
     width: 910px;
+}
+.tos-input-field {
+    transform: none !important;
+}
+label.checkbox a {
+    display: block;
+    float: none;
+    margin-left: 86px;
+    margin-top: -18px;
+    position: absolute;
 }
