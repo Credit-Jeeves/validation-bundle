@@ -47,7 +47,7 @@ class PayCase extends BaseTestCase
      */
     public function recurring($summary, $skipVerification, $infoMessage)
     {
-        $this->setDefaultSession('zombie');
+        $this->setDefaultSession('selenium2');
         $this->load(true);
         if ($skipVerification) {
             $this->updateGroupSettings();

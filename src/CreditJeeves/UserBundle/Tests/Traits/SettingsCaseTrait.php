@@ -8,8 +8,8 @@ trait SettingsCaseTrait
      */
     public function userAddressesListSettings()
     {
-        //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('zombie');
+//        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');
@@ -38,8 +38,8 @@ trait SettingsCaseTrait
      */
     public function userAddNewAddressSettings()
     {
-        //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('zombie');
+//        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');
@@ -51,6 +51,12 @@ trait SettingsCaseTrait
         $this->assertNotNull(
             $form = $this->page->find('css', '#creditjeeves_userbundle_useraddresstype'),
             'Cant find form'
+        );
+        $this->fillForm(
+            $form,
+            [
+                'creditjeeves_userbundle_useraddresstype_street' => '',
+            ]
         );
 
         // Check for validation (submit an empty form)
@@ -119,8 +125,8 @@ trait SettingsCaseTrait
      */
     public function userEditAddressSettings()
     {
-        //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('zombie');
+//        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');
@@ -188,8 +194,8 @@ trait SettingsCaseTrait
      */
     public function userDeleteAddressSettings()
     {
-        //$this->setDefaultSession('selenium2');
-        $this->setDefaultSession('zombie');
+//        $this->setDefaultSession('selenium2');
+        $this->setDefaultSession('goutte');
 
         $this->load(true);
         $this->login($this->userEmail, 'pass');
