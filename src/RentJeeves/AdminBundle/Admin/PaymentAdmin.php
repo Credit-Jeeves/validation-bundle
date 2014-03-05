@@ -67,13 +67,13 @@ class PaymentAdmin extends Admin
                 ),
             );
         } else {
-            $day = cal_days_in_month(
+            $daysInMonth = cal_days_in_month(
                 CAL_GREGORIAN,
                 $return['startDate']['value']['month'],
                 $return['startDate']['value']['year']
             );
-            $return['startDate']['value']['day'] = $day < $return['startDate']['value']['day'] ?
-                $day :
+            $return['startDate']['value']['day'] = $daysInMonth < $return['startDate']['value']['day'] ?
+                $daysInMonth :
                 $return['startDate']['value']['day'];
         }
 
