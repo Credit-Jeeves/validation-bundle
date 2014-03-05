@@ -19,6 +19,16 @@ class GroupSettings extends Base
             )
         );
 
+        $builder->add(
+            'isIntegrated',
+            'checkbox',
+            array(
+                'error_bubbling'    => true,
+                'label'             => 'is.integrated',
+                'required'          => false,
+            )
+        );
+
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
