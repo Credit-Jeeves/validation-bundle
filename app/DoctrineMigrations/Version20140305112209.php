@@ -17,9 +17,9 @@ class Version20140305112209 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_contract
                 ADD balance NUMERIC(10,
-                2) DEFAULT '0.00',
+                2) DEFAULT '0.00' NOT NULL,
                 ADD imported_balance NUMERIC(10,
-                2) DEFAULT '0.00'"
+                2) DEFAULT '0.00' NOT NULL"
         );
     }
 

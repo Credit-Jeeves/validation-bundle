@@ -253,7 +253,7 @@ abstract class Contract
      *     type="decimal",
      *     precision=10,
      *     scale=2,
-     *     nullable=true,
+     *     nullable=false,
      *     name="balance",
      *     options={
      *          "default":"0.00"
@@ -267,7 +267,7 @@ abstract class Contract
      *     type="decimal",
      *     precision=10,
      *     scale=2,
-     *     nullable=true,
+     *     nullable=false,
      *     name="imported_balance",
      *     options={
      *          "default":"0.00"
