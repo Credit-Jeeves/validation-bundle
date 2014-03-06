@@ -13,3 +13,15 @@
 #import_file_type_attachment {
     width: 280px;
 }
+
+.button-box a, .button-box button {
+    float: left;
+}
+
+.button-box button {
+    margin-top: 2px;
+}
+
+.button-box {
+    height: 33px;
+}

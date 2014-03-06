@@ -19,7 +19,7 @@
             }}
             <br />
             <br />
-            <form action="{{ path('landlord_reports_export')}}" method="post" {{ form_enctype(form) }} id="importFile" >
+            <form action="{{ path('landlord_reports_import')}}" method="post" {{ form_enctype(form) }} id="importFile" >
                 {{ form_widget(form) }}
                 <button type="submit" class="button small submitImportFile">
                     <span>

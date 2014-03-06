@@ -81,7 +81,8 @@ class ImportFileAccountingType extends AbstractType
                         array(
                             'maxSize' => '2M',
                             'mimeTypes' => array(
-                                'text/csv'
+                                'text/csv',
+                                'text/plain'
                             )
                         )
                     )

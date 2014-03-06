@@ -2016,6 +2016,38 @@
                 <source>csv.file</source>
                 <target>CSV File</target>
             </trans-unit>
+            <trans-unit id="collum.name">
+                <source>collum.name</source>
+                <target>Collum Name</target>
+            </trans-unit>
+            <trans-unit id="import.data.row1">
+                <source>import.data.row1</source>
+                <target>Import Data Row 1</target>
+            </trans-unit>
+            <trans-unit id="import.data.row2">
+                <source>import.data.row2</source>
+                <target>Import Data Row 2</target>
+            </trans-unit>
+            <trans-unit id="matching.rent.track.field">
+                <source>matching.rent.track.field</source>
+                <target>Matching RentTrack Field</target>
+            </trans-unit>
+            <trans-unit id="csv.file.too.small1">
+                <source>csv.file.too.small1</source>
+                <target>
+                    CSV File too small and must have at least three rows. One rows it's header and
+                    two rows it's data. Comeback please and upload correct file.
+                </target>
+            </trans-unit>
+           <trans-unit id="csv.file.too.small2">
+               <source>csv.file.too.small2</source>
+               <target><![CDATA[
+                    CSV File must contains minimum 8 field. Require fields:
+                    Unit, Resident_ID, Name, Actual Rent, Move In, Lease Expiration, Move Out, Balance.
+                    Comeback please and upload correct file.
+                   ]]>
+               </target>
+           </trans-unit>
         </body>
     </file>
 </xliff>
