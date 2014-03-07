@@ -187,12 +187,16 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
-        $query->where('c.group = :group AND c.paidTo < :date AND c.status <> :status');
-        $query->orWhere('c.group = :group AND c.finishAt < :today AND c.status <> :status');
+        $query->where(
+            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            ' AND (c.paidTo < :date OR c.finishAt < :today)'
+        );
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
         $query->setParameter('today', new \Datetime());
-        $query->setParameter('status', ContractStatus::FINISHED);
+        $query->setParameter('status1', ContractStatus::FINISHED);
+        $query->setParameter('status2', ContractStatus::DELETED);
+
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $query->getQuery();
         return $query->getScalarResult();
@@ -211,12 +215,15 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
-        $query->where('c.group = :group AND c.paidTo < :date AND c.status <> :status');
-        $query->orWhere('c.group = :group AND c.finishAt < :today AND c.status <> :status AND c.finishAt IS NOT NULL');
+        $query->where(
+            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            ' AND (c.paidTo < :date OR c.finishAt < :today)'
+        );
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
         $query->setParameter('today', new \Datetime());
-        $query->setParameter('status', ContractStatus::FINISHED);
+        $query->setParameter('status1', ContractStatus::FINISHED);
+        $query->setParameter('status2', ContractStatus::DELETED);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $this->applySortOrder($query, $sortField, $sortOrder);
         $query->setFirstResult($offset);
