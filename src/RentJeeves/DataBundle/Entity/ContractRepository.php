@@ -188,12 +188,8 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where(
-            'c.group = :group AND c.paidTo < :date'.
-            ' AND c.status <> :status1 AND c.status <> :status2'
-        );
-        $query->orWhere(
-            'c.group = :group AND c.finishAt < :today '.
-            ' AND c.status <> :status1 AND c.status <> :status2'
+            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            ' AND (c.paidTo < :date OR c.finishAt < :today)'
         );
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
@@ -220,12 +216,8 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
         $query->where(
-            'c.group = :group AND c.paidTo < :date'.
-            ' AND c.status <> :status1 AND c.status <> :status2'
-        );
-        $query->orWhere(
-            'c.group = :group AND c.finishAt < :today '.
-            ' AND c.status <> :status1 AND c.status <> :status2'
+            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            ' AND (c.paidTo < :date OR c.finishAt < :today)'
         );
         $query->setParameter('group', $group);
         $query->setParameter('date', new \Datetime());
