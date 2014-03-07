@@ -14,9 +14,12 @@ doctrine:
                 date: DoctrineExtensions\Query\Mysql\Date
                 date_format: DoctrineExtensions\Query\Mysql\DateFormat
                 str_to_date: DoctrineExtensions\Query\Mysql\StrToDate
+                day: DoctrineExtensions\Query\Mysql\Day
+                last_day: DoctrineExtensions\Query\Mysql\LastDay
             string_functions:
                 field: DoctrineExtensions\Query\Mysql\Field
                 concat_ws: DoctrineExtensions\Query\Mysql\ConcatWs
+#                if_else: DoctrineExtensions\Query\Mysql\IfElse
         filters:
             softdeleteable:
                 class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter

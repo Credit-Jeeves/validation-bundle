@@ -1,10 +1,13 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
+use \DateTime;
+use Doctrine\ORM\Query\Expr;
 
 class ContractRepository extends EntityRepository
 {
@@ -18,8 +21,14 @@ class ContractRepository extends EntityRepository
      * g - Group
      * d - deposit account
      * o - Orders
-     * 
+     *
      * In other cases, please use native names
+     *
+     * @param Query $query
+     * @param string $searchField
+     * @param string $searchString
+     *
+     * @return mixed
      */
     private function applySearchFilter($query, $searchField = '', $searchString = '')
     {
@@ -74,6 +83,7 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param string $search
+     *
      * @return array
      */
     private function prepareSearch($search)
@@ -83,6 +93,13 @@ class ContractRepository extends EntityRepository
         return $search;
     }
 
+    /**
+     * @param Query $query
+     * @param string $sortField
+     * @param string $sortOrder
+     *
+     * @return mixed
+     */
     private function applySortOrder($query, $sortField = '', $sortOrder = 'ASC')
     {
         if (!empty($sortField)) {
@@ -133,11 +150,14 @@ class ContractRepository extends EntityRepository
 
     /**
      * Count records for Tenant Tab
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     *
+     * @param Group $group
      * @param string $searchBy
      * @param string $search
+     *
+     * @return mixed
      */
-    public function countContracts(\CreditJeeves\DataBundle\Entity\Group $group, $searchField = '', $searchString = '')
+    public function countContracts(Group $group, $searchField = '', $searchString = '')
     {
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.tenant', 't');
@@ -158,6 +178,8 @@ class ContractRepository extends EntityRepository
      * @param string $sortOrder
      * @param string $searchField
      * @param string $searchString
+     *
+     * @return mixed
      */
     public function getContractsPage(
         $group,
@@ -182,6 +204,13 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
+    /**
+     * @param Group $group
+     * @param string $searchField
+     * @param string $searchString
+     *
+     * @return mixed
+     */
     public function countActionsRequired($group, $searchField = 'address', $searchString = '')
     {
         $query = $this->createQueryBuilder('c');
@@ -192,8 +221,8 @@ class ContractRepository extends EntityRepository
             ' AND (c.paidTo < :date OR c.finishAt < :today)'
         );
         $query->setParameter('group', $group);
-        $query->setParameter('date', new \Datetime());
-        $query->setParameter('today', new \Datetime());
+        $query->setParameter('date', new DateTime());
+        $query->setParameter('today', new DateTime());
         $query->setParameter('status1', ContractStatus::FINISHED);
         $query->setParameter('status2', ContractStatus::DELETED);
 
@@ -202,6 +231,17 @@ class ContractRepository extends EntityRepository
         return $query->getScalarResult();
     }
 
+    /**
+     * @param Group $group
+     * @param int $page
+     * @param int $limit
+     * @param string $sortField
+     * @param string $sortOrder
+     * @param string $searchField
+     * @param string $searchString
+     *
+     * @return mixed
+     */
     public function getActionsRequiredPage(
         $group,
         $page = 1,
@@ -220,8 +260,8 @@ class ContractRepository extends EntityRepository
             ' AND (c.paidTo < :date OR c.finishAt < :today)'
         );
         $query->setParameter('group', $group);
-        $query->setParameter('date', new \Datetime());
-        $query->setParameter('today', new \Datetime());
+        $query->setParameter('date', new DateTime());
+        $query->setParameter('today', new DateTime());
         $query->setParameter('status1', ContractStatus::FINISHED);
         $query->setParameter('status2', ContractStatus::DELETED);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
@@ -232,6 +272,12 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
+    /**
+     * @param Tenant $tenant
+     * @param null $status
+     *
+     * @return mixed
+     */
     public function getCountByStatus($tenant, $status = null)
     {
         $query = $this->createQueryBuilder('c');
@@ -247,6 +293,11 @@ class ContractRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    /**
+     * @param Tenant $tenant
+     *
+     * @return mixed
+     */
     public function countReporting($tenant)
     {
         $query = $this->createQueryBuilder('c');
@@ -261,6 +312,11 @@ class ContractRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
+    /**
+     * @param Landlord $landlord
+     *
+     * @return mixed|null
+     */
     public function getContractsLandlord($landlord)
     {
         $groups = $landlord->getGroups();
@@ -283,8 +339,8 @@ class ContractRepository extends EntityRepository
 
     public function getPaymentsToLandlord($status = array(OrderStatus::COMPLETE))
     {
-        $start = new \Datetime();
-        $end = new \Datetime('+1 day');
+        $start = new DateTime();
+        $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
         $query->select('SUM(o.amount) AS amount, h.id, g.id as group_id');
         $query->innerJoin('c.holding', 'h');
@@ -313,8 +369,8 @@ class ContractRepository extends EntityRepository
 
     public function getPaymentsByStatus($holding, $status = OrderStatus::COMPLETE)
     {
-        $start = new \Datetime();
-        $end = new \Datetime('+1 day');
+        $start = new DateTime();
+        $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
         $query->select('SUM(o.amount)');
         $query->innerJoin('c.holding', 'h');
@@ -342,7 +398,7 @@ class ContractRepository extends EntityRepository
         $query->andWhere('c.paidTo < :date');
         $query->setParameter('holding', $holding);
         $query->setParameter('status', $status);
-        $query->setParameter('date', new \Datetime());
+        $query->setParameter('date', new DateTime());
         $query = $query->getQuery();
         $result = $query->getOneOrNullResult();
         return !empty($result) ? $result[1] : 0;
@@ -351,11 +407,17 @@ class ContractRepository extends EntityRepository
     public function getLateContracts($days = 5)
     {
         $query = $this->createQueryBuilder('c');
-        $query->where('c.paidTo BETWEEN :start AND :now');
-        $query->setParameter('start', new \Datetime('-'.$days.' days'));
-        $query->setParameter('now', new \Datetime());
+        $query->leftJoin('c.operation', 'op');
+        $query->leftJoin('op.orders', 'o', Expr\Join::WITH, 'o.status = :orderStatus');
+        $query->setParameter('orderStatus', OrderStatus::PENDING);
+        $query->andWhere('o.id IS NULL');
+        $query->andWhere('c.paidTo BETWEEN :start AND :now');
+        $query->setParameter('start', new DateTime('-'.$days.' days'));
+        $query->setParameter('now', new DateTime());
+        $query->andWhere('c.status = :status');
+        $query->setParameter('status', ContractStatus::APPROVED);
         $query = $query->getQuery();
-        return $query->iterate();
+        return $query->execute();
     }
 
     public function getAllLateContracts($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))
@@ -366,7 +428,7 @@ class ContractRepository extends EntityRepository
         $query->andWhere('c.paidTo < :date');
         $query->setParameter('holding', $holding);
         $query->setParameter('status', $status);
-        $query->setParameter('date', new \Datetime());
+        $query->setParameter('date', new DateTime());
         $query = $query->getQuery();
         return $query->iterate();
     }

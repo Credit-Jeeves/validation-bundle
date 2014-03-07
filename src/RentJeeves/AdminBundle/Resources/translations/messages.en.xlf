@@ -7,7 +7,7 @@
                 <target>Run</target>
             </trans-unit>
             <trans-unit id="admin.butch.run.warning">
-                <source>admin.butch.run.success</source>
+                <source>admin.butch.run.warning</source>
                 <target>None payments added to job list</target>
             </trans-unit>
             <trans-unit id="admin.butch.run.success">
