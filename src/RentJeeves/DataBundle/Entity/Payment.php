@@ -70,9 +70,9 @@ class Payment extends Base
     /**
      * @ORM\PreRemove
      */
-    public function preRemove(LifecycleEventArgs $e)
+    public function preRemove(LifecycleEventArgs $event)
     {
-        $em = $e->getEntityManager();
+        $em = $event->getEntityManager();
 //        $em->detach($this);
         $this->setStatus(PaymentStatus::CLOSE);
         $em->persist($this);

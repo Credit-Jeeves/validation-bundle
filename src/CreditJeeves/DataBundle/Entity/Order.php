@@ -553,7 +553,7 @@ class Order extends BaseOrder
      */
     public function prePersist()
     {
-        $this->updated_at = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     public function setOperations($operations)

@@ -12,7 +12,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
- * @Service("deposit_account.event_listener.doctrine")
+ * @Service("data.event_listener.deposit_account")
  * @Tag(
  *     "doctrine.event_listener",
  *     attributes = {
