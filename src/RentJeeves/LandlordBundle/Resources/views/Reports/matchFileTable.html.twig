@@ -13,7 +13,10 @@
                 <td>{{ item['name'] }}</td>
                 <td>{{ item['row1'] }}</td>
                 <td>{{ item['row2'] }}</td>
-                <td></td>
+                <td>
+                    {{ form_widget(form.getChild(item['form'])) }}
+                    {{ form_errors(form.getChild(item['form'])) }}
+                </td>
             </tr>
         {% endfor %}
     </tbody>

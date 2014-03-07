@@ -12,6 +12,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
 use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
+use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -172,17 +173,30 @@ class ReportsController extends Controller
         $headers = array_keys($data[1]);
 
         for ($i=1; $i < count($data[1]); $i++) {
+            $formName =  'collum'.$i;
             $dataView[] = array(
                 'name' => $headers[$i-1],
                 'row1' => $data[1][$headers[$i-1]],
-                'row2' => $data[2][$headers[$i-1]]
+                'row2' => $data[2][$headers[$i-1]],
+                'form' => $formName,
             );
         }
 
+        $form = $this->createForm(
+            new ImportMatchFileType(count($dataView))
+        );
+        $form->handleRequest($this->get('request'));
+        if ($form->isValid()) {
+            echo "Hey, we valid!";
+            exit;
+        }
+
+        $form = $form->createView();
 
         return array(
             'error'        => false,
             'data'         => $dataView,
+            'form'         => $form,
         );
 
     }
