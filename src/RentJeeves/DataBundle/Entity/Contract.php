@@ -196,7 +196,15 @@ class Contract extends Base
         $result['finish'] = '';
         if ($finish = $this->getFinishAt()) {
             $today = new DateTime();
-            if ($today > $finish && $this->getStatus() !== ContractStatus::FINISHED) {
+            if ($today > $finish &&
+                !in_array(
+                    $this->getStatus(),
+                    array(
+                        ContractStatus::FINISHED,
+                        ContractStatus::DELETED,
+                    )
+                )
+            ) {
                 $result['style'] = 'contract-pending';
                 $result['status'] = self::CONTRACT_ENDED;
             }
@@ -266,9 +274,19 @@ class Contract extends Base
             $lastPayment = $this->getLastPayment();
             /**
              * if we have payments for this contract need show days late
+             * don't show days late for finished and delete contract
              */
-            if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
-                ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
+            if (($lastPayment != self::EMPTY_LAST_PAYMENT &&
+                !in_array(
+                    $this->getStatus(),
+                    array(
+                        ContractStatus::FINISHED,
+                        ContractStatus::DELETED,
+                    )
+                ))
+                ||
+                ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
+            ) {
                 $result['status'] = 'LATE ('.$interval->days.' days)';
                 $result['status_name'] = 'late';
                 $result['class'] = 'contract-late';
