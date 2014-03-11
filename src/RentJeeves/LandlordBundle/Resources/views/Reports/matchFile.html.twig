@@ -24,15 +24,19 @@
                             <li>{{ error|trans }}</li>
                         </ul>
                     {% else %}
-                        {{
-                        include(
-                        'LandlordBundle:Reports:matchFileTable.html.twig',
-                            {
-                                'data': data,
-                                'form': '',
-                            }
-                        )
-                        }}
+                        {{ form_start(form) }}
+                            {{ form_errors(form) }}
+                            {{
+                            include(
+                            'LandlordBundle:Reports:matchFileTable.html.twig',
+                                {
+                                    'data': data,
+                                    'form': form,
+                                }
+                            )
+                            }}
+                            {{ form_rest(form) }}
+                        {{ form_end(form) }}
                     {% endif %}
                     <br />
                     <br />

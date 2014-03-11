@@ -14,8 +14,8 @@
                 <td>{{ item['row1'] }}</td>
                 <td>{{ item['row2'] }}</td>
                 <td>
-                    {{ form_widget(form.getChild(item['form'])) }}
-                    {{ form_errors(form.getChild(item['form'])) }}
+                    {{ form_widget(attribute(form, item['form'])) }}
+                    {{ form_errors(attribute(form, item['form'])) }}
                 </td>
             </tr>
         {% endfor %}

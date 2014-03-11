@@ -33,6 +33,10 @@ class ImportMatchFileType extends AbstractType
                         'end_date'      => 'Unit',
                     ),
                     'error_bubbling' => true,
+                    'mapped'         => false,
+                    'attr'           => array(
+                        'class' => 'original'
+                    )
                 )
             );
         }

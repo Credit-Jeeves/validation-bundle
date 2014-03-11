@@ -53,6 +53,7 @@ class Builder extends ContainerAware
             case 'landlord_tenants':
                 $menu['tabs.tenants']->setAttribute('class', 'active');
                 break;
+            case 'landlord_reports_match_file':
             case 'landlord_reports_import':
             case 'landlord_reports_export':
                 $menu['tab.accounting']->setAttribute('class', 'active');
@@ -105,6 +106,7 @@ class Builder extends ContainerAware
 
         $route = $this->container->get('request')->get('_route');
         switch ($route) {
+            case 'landlord_reports_match_file':
             case 'landlord_reports_import':
                 $menu['import']->setUri('');
                 break;
