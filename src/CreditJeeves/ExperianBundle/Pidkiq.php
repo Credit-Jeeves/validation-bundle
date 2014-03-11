@@ -42,7 +42,6 @@ class Pidkiq extends \Pidkiq
 
     public function __construct()
     {
-        parent::__construct();
     }
 
     /**
@@ -66,12 +65,14 @@ class Pidkiq extends \Pidkiq
         /** @var \CreditJeeves\DataBundle\Entity\Settings $settings */
         $settings = $em->getRepository('DataBundle:Settings')->find(1);
         if (empty($settings)) {
+            parent::__construct();
             return;
         }
         \sfConfig::set('experian_pidkiq_userpwd', $settings->getPidkiqPassword());
         $xmlRoot = \sfConfig::get('experian_pidkiq_XML_root');
         $xmlRoot['EAI'] = $settings->getPidkiqEai();
         \sfConfig::set('experian_pidkiq_XML_root', $xmlRoot);
+        parent::__construct();
     }
 
     public function execute()
