@@ -228,7 +228,8 @@ abstract class Contract
      *     targetEntity="RentJeeves\DataBundle\Entity\Payment",
      *     mappedBy="contract",
      *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
+     *     orphanRemoval=true,
+     *     fetch = "EAGER"
      * )
      * @Serializer\Exclude
      * @var ArrayCollection

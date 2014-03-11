@@ -87,6 +87,11 @@ class PayCommand extends ContainerAwareCommand
             return 1;
         }
         $operation = $contract->getOperation();
+        /**
+         * @link https://github.com/Credit-Jeeves/Credit-Jeeves-SF2/commit/35b45d9b23d6210fcc8bc340931a05f4cae31c48
+         * It must be changed to new concept: each operation must have complete (success) order
+         * and if it have order but not complete - operation must be reused
+         */
         if (empty($operation)) {
             $operation = new Operation();
         }

@@ -96,6 +96,7 @@ abstract class BaseTestCase extends MinkTestCase
         $khepin->purgeDatabase('orm');
         $khepin->loadFixtures();
         self::$isFixturesLoaded = true;
+        static::$kernel = null;
     }
 
     protected function startTransaction()

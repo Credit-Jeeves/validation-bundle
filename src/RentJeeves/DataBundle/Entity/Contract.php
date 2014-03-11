@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\Serializer\Annotation as Serializer;
 use \DateTime;
+use \RuntimeException;
 
 /**
  * Contract
@@ -224,7 +225,7 @@ class Contract extends Base
     {
         $result = '1 DAY LATE';
         if ($date = $this->getPaidTo()) {
-            $now = new \DateTime();
+            $now = new DateTime();
             $interval = $now->diff($date);
             if ($interval->days > 0) {
                 $result = $interval->days.self::PAYMENT_LATE;
@@ -265,7 +266,7 @@ class Contract extends Base
             return $result;
         }
         if ($date = $this->getPaidTo()) {
-            $now = new \DateTime();
+            $now = new DateTime();
             $interval = $now->diff($date);
             $sign = $interval->format('%r');
             if (!$sign) {
@@ -347,7 +348,7 @@ class Contract extends Base
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '-');
         $payments = $this->createHistoryArray();
-        $currentDate = new \DateTime('now');
+        $currentDate = new DateTime('now');
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $repo = $em->getRepository('DataBundle:Order');
         $orders = $repo->getContractHistory($this);
@@ -596,5 +597,30 @@ class Contract extends Base
     public function __toString()
     {
         return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
+    }
+
+    /**
+     * @throws RuntimeException
+     *
+     * @return Payment
+     */
+    public function getActivePayment()
+    {
+        $collection = $this->getPayments()->filter(
+            function (Payment $payment) {
+                if (PaymentStatus::ACTIVE == $payment->getStatus()) {
+                    return true;
+                }
+
+                return false;
+            }
+        );
+        if (1 < $collection->count()) {
+            throw new RuntimeException(sprintf('Contract "%s" have more ten one active payments', $this->getId()));
+        }
+        if (0 == $collection->count()) {
+            return null;
+        }
+        return $collection[0];
     }
 }

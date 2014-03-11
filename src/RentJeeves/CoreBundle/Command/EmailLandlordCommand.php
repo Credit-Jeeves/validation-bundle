@@ -16,25 +16,16 @@ use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Entity\Order;
+use \DateTime;
 
 class EmailLandlordCommand extends ContainerAwareCommand
 {
-     use DateCommon;
+    use DateCommon;
 
     /**
      * @var string
      */
     const OPTION_TYPE = 'type';
-
-    /**
-     * @var string
-     */
-    const OPTION_DAYS = 'days';
-
-    /**
-     * @var string
-     */
-    const OPTION_AUTO = 'auto';
 
     /**
      * @var string
@@ -71,16 +62,6 @@ class EmailLandlordCommand extends ContainerAwareCommand
      */
     const OPTION_TYPE_REFUND = 'refund';
 
-    /**
-     * @var integer
-     */
-    const OPTION_DAYS_DEFAULT = 5;
-
-    /**
-     * @var boolean
-     */
-    const OPTION_AUTO_DEFAULT = true;
-
     protected function configure()
     {
         $this
@@ -92,19 +73,6 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 InputOption::VALUE_OPTIONAL,
                 'Select email/query type',
                 self::OPTION_TYPE_DEFAULT
-            )
-            ->addOption(
-                self::OPTION_DAYS,
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'Days before due date',
-                self::OPTION_DAYS_DEFAULT
-            )
-            ->addOption(
-                self::OPTION_AUTO,
-                null,
-                InputOption::VALUE_NONE,
-                'Autopay true/false'
             );
     }
 
@@ -115,9 +83,7 @@ class EmailLandlordCommand extends ContainerAwareCommand
         $this->getContainer()->get('soft.deleteable.control')->disable();
         
         $type = $input->getOption('type');
-        $days = $input->getOption('days');
-        $auto = $input->getOption('auto');
-        $date = new \DateTime();
+        $date = new DateTime();
         $mailer = $this->getContainer()->get('project.mailer');
         $doctrine = $this->getContainer()->get('doctrine');
         $translator = $this->getContainer()->get('translator.default');

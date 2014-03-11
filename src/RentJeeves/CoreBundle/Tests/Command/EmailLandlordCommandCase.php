@@ -8,13 +8,19 @@ use RentJeeves\TestBundle\Command\BaseTestCase;
 
 class EmailLandlordCommandCase extends BaseTestCase
 {
+    protected function tearDown()
+    {
+        $this->rollbackTransaction();
+        parent::tearDown();
+    }
+
     /**
      * @test
      */
     public function testExecute()
     {
         $this->load(true);
-        static::$kernel = null;
+        $this->startTransaction();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -37,9 +43,10 @@ class EmailLandlordCommandCase extends BaseTestCase
      * Contracts with status="pending"
      * @test
      */
-    public function testExecutePending()
+    public function executePending()
     {
         $this->load();
+        $this->startTransaction();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -62,9 +69,10 @@ class EmailLandlordCommandCase extends BaseTestCase
      * Story-1555
      * @test
      */
-    public function testExecutePaid()
+    public function executePaid()
     {
         $this->load();
+        $this->startTransaction();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -79,7 +87,7 @@ class EmailLandlordCommandCase extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(4, $count);
+        $this->assertCount(1, $count);
         $this->assertRegExp('/Story-1555/', $commandTester->getDisplay());
     }
 
@@ -87,9 +95,10 @@ class EmailLandlordCommandCase extends BaseTestCase
      * Story-1560
      * @test
      */
-    public function testExecuteNotPaid()
+    public function executeNotPaid()
     {
         $this->load();
+        $this->startTransaction();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -111,9 +120,10 @@ class EmailLandlordCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function testExecureReport()
+    public function execureReport()
     {
         $this->load();
+        $this->startTransaction();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());
@@ -132,9 +142,13 @@ class EmailLandlordCommandCase extends BaseTestCase
         $this->assertRegExp('/daily report/', $commandTester->getDisplay());
     }
 
-    public function testExecuteLateTenants()
+    /**
+     * @test
+     */
+    public function executeLateTenants()
     {
         $this->load();
+        $this->startTransaction();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailLandlordCommand());

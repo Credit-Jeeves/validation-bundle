@@ -48,8 +48,8 @@ fixtures:
     type: heartland_card
     amount: 1500
     days_late: 0
-    created_at: '-30 days'
-    updated_at: '-30 days'
+    created_at: 'now'
+    updated_at: 'now'
   rjOrder_3_refunded:
     operations:
       - rjOperation_1
