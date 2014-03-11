@@ -89,6 +89,39 @@ class ImportFileAccountingType extends AbstractType
                 ),
             )
         );
+
+        $builder->add(
+            'fieldDelimiter',
+            'text',
+            array(
+                'data'           => ',',
+                'error_bubbling' => true,
+                'label'          => 'field.delimiter',
+                'attr'           => array(
+                    'class' => 'half-width'
+                ),
+                'constraints'    => array(
+                    new NotBlank(),
+                ),
+            )
+        );
+
+
+        $builder->add(
+            'textDelimiter',
+            'text',
+            array(
+                'data'           => '"',
+                'error_bubbling' => true,
+                'label'          => 'text.delimiter',
+                'attr'           => array(
+                    'class' => 'half-width'
+                ),
+                'constraints'    => array(
+                    new NotBlank(),
+                ),
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

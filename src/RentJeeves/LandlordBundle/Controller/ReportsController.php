@@ -29,6 +29,10 @@ class ReportsController extends Controller
 
     const IMPORT_PROPERTY_ID = 'importPropertyId';
 
+    const IMPORT_TEXT_DELIMITER = 'importTextDelimiter';
+
+    const IMPORT_FIELD_DELIMITER = 'importFieldDelimiter';
+
     protected function checkAccessToReport()
     {
         $user = $this->get('security.context')->getToken()->getUser();
@@ -41,12 +45,16 @@ class ReportsController extends Controller
     {
         $session = $this->get('session');
         $data = array(
-            self::IMPORT_FILE_NAME      => $session->get(self::IMPORT_FILE_NAME),
-            self::IMPORT_PROPERTY_ID    => $session->get(self::IMPORT_PROPERTY_ID),
+            self::IMPORT_FILE_NAME       => $session->get(self::IMPORT_FILE_NAME),
+            self::IMPORT_PROPERTY_ID     => $session->get(self::IMPORT_PROPERTY_ID),
+            self::IMPORT_TEXT_DELIMITER  => $session->get(self::IMPORT_TEXT_DELIMITER),
+            self::IMPORT_FIELD_DELIMITER => $session->get(self::IMPORT_FIELD_DELIMITER),
         );
 
-        if (empty($data[self::IMPORT_FILE_NAME]) || empty($data[self::IMPORT_PROPERTY_ID])) {
-            return false;
+       foreach ($data as $value) {
+           if (empty($value)) {
+               return false;
+           }
         }
 
         $data[self::IMPORT_FILE_NAME] = sys_get_temp_dir().DIRECTORY_SEPARATOR.$data[self::IMPORT_FILE_NAME];
@@ -126,12 +134,16 @@ class ReportsController extends Controller
 
         $file = $form['attachment']->getData();
         $property = $form['property']->getData();
+        $textDelimiter = $form['textDelimiter']->getData();
+        $fieldDelimiter = $form['fieldDelimiter']->getData();
         $tmpDir = sys_get_temp_dir();
         $newFileName = uniqid().'.csv';
         $file->move($tmpDir, $newFileName);
         $session = $request->getSession();
         $session->set(self::IMPORT_FILE_NAME, $newFileName);
         $session->set(self::IMPORT_PROPERTY_ID, $property->getId());
+        $session->set(self::IMPORT_FIELD_DELIMITER, $fieldDelimiter);
+        $session->set(self::IMPORT_TEXT_DELIMITER, $textDelimiter);
 
         return $this->redirect($this->generateUrl('landlord_reports_match_file'));
     }
@@ -155,6 +167,8 @@ class ReportsController extends Controller
          * @var $reader CsvFileReader
          */
         $reader = $this->get('reader.csv');
+        $reader->setDelimiter($data[self::IMPORT_FIELD_DELIMITER]);
+        $reader->setEnclosure($data[self::IMPORT_TEXT_DELIMITER]);
         $data = $reader->read($data[self::IMPORT_FILE_NAME]);
 
         if (count($data) < 3) {

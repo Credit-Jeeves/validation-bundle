@@ -2048,6 +2048,14 @@
                    ]]>
                </target>
            </trans-unit>
+           <trans-unit id="field.delimiter">
+               <source>field.delimiter</source>
+               <target>Field Delimiter</target>
+           </trans-unit>
+           <trans-unit id="text.delimiter">
+               <source>text.delimiter</source>
+               <target>Text Delimiter</target>
+           </trans-unit>
         </body>
     </file>
 </xliff>
