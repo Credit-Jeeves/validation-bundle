@@ -10,7 +10,7 @@ Annotation - is default configuration where it is possible
 DEV resurces
 ------------
 
-http://dev2.creditjeeves.com/phpMyAdmin
+http://dev.creditjeeves.com/phpMyAdmin
 
 
 Installation
