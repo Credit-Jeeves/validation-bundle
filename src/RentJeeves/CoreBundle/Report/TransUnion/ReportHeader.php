@@ -14,11 +14,10 @@ class ReportHeader
     protected $reserved3 = '          ';                                // 10
     protected $reserved4 = '     ';                                     // 5
     protected $transUnionProgramIdentifier = 'RENTTRACK ';              // 10
-    /** @Serializer\Accessor(getter="getActivityDate") */
     protected $effectiveActivityDate;                                   // 8
     /** @Serializer\Accessor(getter="getDateCreated") */
     protected $dateCreated;                                             // 8
-    protected $programDate;                                             // 8
+    protected $programDate = '        ';                                // 8
     protected $reserved5 = '00000000';                                  // 8
     /** @Serializer\Accessor(getter="getPropertyManagementName") */
     protected $propertyManagementName;                                  // 40
@@ -28,11 +27,9 @@ class ReportHeader
     /** @Serializer\Accessor(getter="getReserved6") */
     protected $reserved6;                                               // 201
 
-    public function getActivityDate()
+    public function setActivityDate(DateTime $date)
     {
-        $today = new DateTime();
-
-        return $today->format('mdY');
+        $this->effectiveActivityDate = $date->format('mdY');
     }
 
     public function getDateCreated()
@@ -49,7 +46,7 @@ class ReportHeader
 
     public function getPropertyManagementAddress()
     {
-        return str_pad('13911 Ridgedale Dr # 401C Minnetonka MN 55305', 96);
+        return str_pad('13911 RIDGEDALE DR # 401C MINNETONKA MN 55305', 96);
     }
 
     public function getReserved6()

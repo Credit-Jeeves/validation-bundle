@@ -2,6 +2,7 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
+//use RentJeeves\CoreBundle\Report\TransUnion\TransUnionRentalReport;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -26,5 +27,19 @@ class CoreController extends BaseController
         $request->getSession()->set('group_id', null);
         $request->getSession()->set('property_id', null);
         return parent::dashboardAction();
+    }
+
+    /**
+     * @Route("report", name="sonata_admin_report")
+     * @Template()
+     *
+     * @return array
+     */
+    public function reportAction()
+    {
+        $report = $this->get('rental_report.trans_union');
+        $result = $this->get('jms_serializer')->serialize($report, 'tu_rental1');
+
+        return new Response('', 201);
     }
 }

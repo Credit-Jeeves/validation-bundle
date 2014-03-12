@@ -4,6 +4,7 @@ namespace RentJeeves\CoreBundle\Report\TransUnion;
 
 use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
+use DateTime;
 
 /**
  * @DI\Service("rental_report.trans_union")
@@ -11,7 +12,7 @@ use JMS\Serializer\Annotation as Serializer;
 class TransUnionRentalReport 
 {
     protected $header;
-//    protected $records;
+    protected $records;
 
     /**
      * @Serializer\Exclude
@@ -26,6 +27,8 @@ class TransUnionRentalReport
     public function __construct($container)
     {
         $this->container = $container;
+        $this->createHeader();
+        $this->records = array(new ReportRecord());
     }
 
     // Move to lazy constructor?
@@ -49,7 +52,10 @@ class TransUnionRentalReport
 
     protected function createHeader()
     {
-        $header = new ReportHeader();
+        $this->header = new ReportHeader();
+        $lastActivityDate = $this->container->get('doctrine.orm.entity_manager')
+            ->getRepository('RjDataBundle:Contract')->getLastActivityDate();
+        $this->header->setActivityDate(new DateTime($lastActivityDate));
     }
 
     protected function createRecords()

@@ -449,4 +449,15 @@ class ContractRepository extends EntityRepository
 
         return $query->getOneOrNullResult();
     }
+
+    public function getLastActivityDate()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('c.updatedAt');
+        $query->orderBy('c.updatedAt', 'DESC');
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
 }
