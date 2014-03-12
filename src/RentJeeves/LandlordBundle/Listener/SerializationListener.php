@@ -24,7 +24,7 @@ class SerializationListener implements EventSubscriberInterface
 {
 
     /**
-     * @Inject("report.order", required = true)
+     * @Inject("report.order.export", required = true)
      */
     public $reportOrder;
 

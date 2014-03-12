@@ -38,7 +38,6 @@ class ImportFileAccountingType extends AbstractType
             'entity',
             array(
                 'class'          => 'RjDataBundle:Property',
-                'error_bubbling' => true,
                 'attr'           => array(
                     'class' => 'original widthSelect',
                 ),
@@ -95,7 +94,6 @@ class ImportFileAccountingType extends AbstractType
             'text',
             array(
                 'data'           => ',',
-                'error_bubbling' => true,
                 'label'          => 'field.delimiter',
                 'attr'           => array(
                     'class' => 'half-width'
@@ -112,7 +110,6 @@ class ImportFileAccountingType extends AbstractType
             'text',
             array(
                 'data'           => '"',
-                'error_bubbling' => true,
                 'label'          => 'text.delimiter',
                 'attr'           => array(
                     'class' => 'half-width'

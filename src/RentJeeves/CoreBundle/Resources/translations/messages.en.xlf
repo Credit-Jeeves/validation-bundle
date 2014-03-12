@@ -2039,7 +2039,7 @@
                     two rows it's data. Comeback please and upload correct file.
                 </target>
             </trans-unit>
-           <trans-unit id="csv.file.too.small2">
+            <trans-unit id="csv.file.too.small2">
                <source>csv.file.too.small2</source>
                <target><![CDATA[
                     CSV File must contains minimum 8 field. Require fields:
@@ -2047,15 +2047,31 @@
                     Comeback please and upload correct file.
                    ]]>
                </target>
-           </trans-unit>
-           <trans-unit id="field.delimiter">
+            </trans-unit>
+            <trans-unit id="field.delimiter">
                <source>field.delimiter</source>
                <target>Field Delimiter</target>
-           </trans-unit>
-           <trans-unit id="text.delimiter">
+            </trans-unit>
+            <trans-unit id="text.delimiter">
                <source>text.delimiter</source>
                <target>Text Delimiter</target>
-           </trans-unit>
+            </trans-unit>
+            <trans-unit id="value.cannot.duplicate">
+               <source>value.cannot.duplicate</source>
+               <target>Value can not duplicate in choice</target>
+            </trans-unit>
+            <trans-unit id="you.need.map">
+              <source>you.need.map</source>
+              <target>You need map at least 9 fields</target>
+            </trans-unit>
+            <trans-unit id="auto.import">
+              <source>auto.import</source>
+              <target>Automatically import</target>
+            </trans-unit>
+            <trans-unit id="manually.import">
+              <source>manually.import</source>
+              <target>Manually Import, check each contract</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

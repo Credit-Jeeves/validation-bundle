@@ -80,7 +80,7 @@ class CsvFileReader
         return $this->useHeader;
     }
 
-    public function read($filename)
+    public function read($filename, $offset = null, $rowCount = null)
     {
         if (!file_exists($filename)) {
             throw new RuntimeException(sprintf('File "%s" not found.', $filename));
@@ -93,15 +93,34 @@ class CsvFileReader
         $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
 
         $header = $this->readHeader($file);
-
+        $currentNumberOfLine = 0;
+        $offsetMax = $offset+$rowCount;
         while ($row = $file->current()) {
-            foreach ($row as $valueIndex => $value) {
-                $result[$file->key()][$header[$valueIndex]] = $value;
+            $currentNumberOfLine++;
+            if (is_null($offset) && is_null($rowCount)) {
+                $this->getLine($row, $header, $file, $result);
             }
-            $file->next();
+
+            if ($offset > $currentNumberOfLine) {
+                continue;
+            }
+
+            if ($offsetMax > $currentNumberOfLine) {
+                continue;
+            }
+
+            $this->getLine($row, $header, $file, $result);
         }
 
         return $result;
+    }
+
+    protected function getLine($row, $header, $file, &$result)
+    {
+        foreach ($row as $valueIndex => $value) {
+            $result[$file->key()][$header[$valueIndex]] = $value;
+        }
+        $file->next();
     }
 
     protected function readHeader(SplFileObject $file)

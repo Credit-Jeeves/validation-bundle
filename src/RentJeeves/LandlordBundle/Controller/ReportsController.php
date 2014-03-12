@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
 use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
+use RentJeeves\LandlordBundle\Report\AccountingImport;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -25,14 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ReportsController extends Controller
 {
-    const IMPORT_FILE_NAME = 'importFileName';
-
-    const IMPORT_PROPERTY_ID = 'importPropertyId';
-
-    const IMPORT_TEXT_DELIMITER = 'importTextDelimiter';
-
-    const IMPORT_FIELD_DELIMITER = 'importFieldDelimiter';
-
     protected function checkAccessToReport()
     {
         $user = $this->get('security.context')->getToken()->getUser();
@@ -41,33 +34,11 @@ class ReportsController extends Controller
         }
     }
 
-    protected function getImportData()
-    {
-        $session = $this->get('session');
-        $data = array(
-            self::IMPORT_FILE_NAME       => $session->get(self::IMPORT_FILE_NAME),
-            self::IMPORT_PROPERTY_ID     => $session->get(self::IMPORT_PROPERTY_ID),
-            self::IMPORT_TEXT_DELIMITER  => $session->get(self::IMPORT_TEXT_DELIMITER),
-            self::IMPORT_FIELD_DELIMITER => $session->get(self::IMPORT_FIELD_DELIMITER),
-        );
-
-       foreach ($data as $value) {
-           if (empty($value)) {
-               return false;
-           }
-        }
-
-        $data[self::IMPORT_FILE_NAME] = sys_get_temp_dir().DIRECTORY_SEPARATOR.$data[self::IMPORT_FILE_NAME];
-
-        return $data;
-    }
-
     /**
      * @Route(
      *     "/export",
      *     name="landlord_reports_export"
      * )
-     * @Method({"GET", "POST"})
      * @Template()
      */
     public function exportAction(Request $request)
@@ -91,7 +62,7 @@ class ReportsController extends Controller
         if ($formBaseOrder->isValid()) {
 
             $data = $formBaseOrder->getData();
-            $baseReport = $this->get('report.order');
+            $baseReport = $this->get('report.order.export');
             $report = $baseReport->getReport($data);
 
             $response = new Response();
@@ -115,7 +86,6 @@ class ReportsController extends Controller
      *     "/file/import",
      *     name="landlord_reports_import"
      * )
-     * @Method({"GET", "POST"})
      * @Template()
      */
     public function importFileAction(Request $request)
@@ -139,11 +109,15 @@ class ReportsController extends Controller
         $tmpDir = sys_get_temp_dir();
         $newFileName = uniqid().'.csv';
         $file->move($tmpDir, $newFileName);
-        $session = $request->getSession();
-        $session->set(self::IMPORT_FILE_NAME, $newFileName);
-        $session->set(self::IMPORT_PROPERTY_ID, $property->getId());
-        $session->set(self::IMPORT_FIELD_DELIMITER, $fieldDelimiter);
-        $session->set(self::IMPORT_TEXT_DELIMITER, $textDelimiter);
+        /**
+         * @var AccountingImport $accountingImport
+         */
+        $accountingImport = $this->get('accounting.import');
+
+        $accountingImport->setFieldDelimiter($fieldDelimiter);
+        $accountingImport->setTextDelimiter($textDelimiter);
+        $accountingImport->setFilePath($newFileName);
+        $accountingImport->setPropertyId($property->getId());
 
         return $this->redirect($this->generateUrl('landlord_reports_match_file'));
     }
@@ -153,46 +127,38 @@ class ReportsController extends Controller
      *     "/match/file",
      *     name="landlord_reports_match_file"
      * )
-     * @Method({"GET", "POST"})
      * @Template()
      */
     public function matchFileAction(Request $request)
     {
         $this->checkAccessToReport();
-        if (!$data = $this->getImportData()) {
-            $this->redirect($this->generateUrl('landlord_reports_match_file'));
+        /**
+         * @var AccountingImport $accountingImport
+         */
+        $accountingImport = $this->get('accounting.import');
+        if (!$data = $accountingImport->getImportData()) {
+            $this->redirect($this->generateUrl('landlord_reports_import'));
         }
 
         /**
          * @var $reader CsvFileReader
          */
-        $reader = $this->get('reader.csv');
-        $reader->setDelimiter($data[self::IMPORT_FIELD_DELIMITER]);
-        $reader->setEnclosure($data[self::IMPORT_TEXT_DELIMITER]);
-        $data = $reader->read($data[self::IMPORT_FILE_NAME]);
-
-        if (count($data) < 3) {
+        $data = $accountingImport->getDataForMapping();
+        if (is_string($data)) {
             return array(
-                'error' => 'csv.file.too.small1'
-            );
-        }
-
-        if (count($data[1]) < 8) {
-            return array(
-                'error' => 'csv.file.too.small2'
+                'error' => $data
             );
         }
 
         $dataView = array();
         $headers = array_keys($data[1]);
 
-        for ($i=1; $i < count($data[1]); $i++) {
-            $formName =  'collum'.$i;
+        for ($i=1; $i < count($data[1])+1; $i++) {
             $dataView[] = array(
                 'name' => $headers[$i-1],
                 'row1' => $data[1][$headers[$i-1]],
-                'row2' => $data[2][$headers[$i-1]],
-                'form' => $formName,
+                'row2' => (isset($data[2]))? $data[2][$headers[$i-1]] : null,
+                'form' => ImportMatchFileType::getFieldNameByNumber($i),
             );
         }
 
@@ -201,8 +167,20 @@ class ReportsController extends Controller
         );
         $form->handleRequest($this->get('request'));
         if ($form->isValid()) {
-            echo "Hey, we valid!";
-            exit;
+            $result = array();
+            for ($i=1; $i < count($data[1])+1; $i++) {
+                $nameField = ImportMatchFileType::getFieldNameByNumber($i);
+                $value = $form->get($nameField)->getData();
+                if ($value === ImportMatchFileType::EMPTY_VALUE) {
+                    continue;
+                }
+
+                $result[$i] = $value;
+            }
+
+            $accountingImport->setMapping($result);
+
+            return $this->redirect($this->generateUrl('landlord_reports_review_and_post'));
         }
 
         $form = $form->createView();
@@ -212,6 +190,32 @@ class ReportsController extends Controller
             'data'         => $dataView,
             'form'         => $form,
         );
+    }
+    /**
+     * @Route(
+     *     "/review/post",
+     *     name="landlord_reports_review_and_post"
+     * )
+     * @Template()
+     */
+    public function reviewAndPostAction(Request $request)
+    {
+        $this->checkAccessToReport();
+        /**
+         * @var AccountingImport $accountingImport
+         */
+        $accountingImport = $this->get('accounting.import');
+        if (!$data = $accountingImport->getImportData()) {
+            $this->redirect($this->generateUrl('landlord_reports_import'));
+        }
 
+        if (empty($data[$accountingImport::IMPORT_MAPPING])) {
+            $this->redirect($this->generateUrl('landlord_reports_import'));
+        }
+
+        $accountingImport->isValidCsvData();
+
+        return array(
+        );
     }
 }

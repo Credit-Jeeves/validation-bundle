@@ -13,9 +13,9 @@ use Symfony\Component\PropertyAccess\Exception\RuntimeException;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
- * @Service("report.order")
+ * @Service("report.order.export")
  */
-class Order
+class OrderExport
 {
     protected $em;
 

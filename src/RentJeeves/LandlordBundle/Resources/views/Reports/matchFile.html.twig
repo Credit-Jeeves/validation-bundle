@@ -1,5 +1,7 @@
 {% extends "LandlordBundle::base.html.twig" %}
-{# form_theme form 'RjCoreBundle::form.html.twig' #}
+{% if form is defined %}
+    {% form_theme form 'RjCoreBundle::form.html.twig' %}
+{% endif %}
 
 {% block content %}
     <div class="sub-menu">
@@ -36,7 +38,7 @@
                             )
                             }}
                             {{ form_rest(form) }}
-                        {{ form_end(form) }}
+
                     {% endif %}
                     <br />
                     <br />
@@ -52,6 +54,9 @@
                             </button>
                         {% endif  %}
                     </div>
+                    {% if error  == false %}
+                        {{ form_end(form) }}
+                    {% endif %}
                 </div>
             </div>
             <div class="clear"></div>
@@ -62,6 +67,7 @@
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets
+                    '@LandlordBundle/Resources/public/css/matchFields.css'
                     '@LandlordBundle/Resources/public/css/submenu.css'
                     '@LandlordBundle/Resources/public/css/stepImport.css'
     %}
