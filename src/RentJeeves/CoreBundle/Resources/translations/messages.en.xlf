@@ -2072,6 +2072,55 @@
               <source>manually.import</source>
               <target>Manually Import, check each contract</target>
             </trans-unit>
+
+            <trans-unit id="import.status">
+              <source>import.status</source>
+              <target>Status</target>
+            </trans-unit>
+            <trans-unit id="import.unit">
+              <source>import.unit</source>
+              <target>Unit</target>
+            </trans-unit>
+            <trans-unit id="import.residentId">
+              <source>import.residentId</source>
+              <target>Resident ID</target>
+            </trans-unit>
+            <trans-unit id="import.first_name">
+              <source>import.first_name</source>
+              <target>First Name</target>
+            </trans-unit>
+            <trans-unit id="import.last_name">
+              <source>import.last_name</source>
+              <target>Last Name</target>
+            </trans-unit>
+            <trans-unit id="import.email">
+              <source>import.email</source>
+              <target>Email</target>
+            </trans-unit>
+            <trans-unit id="import.rent">
+              <source>import.rent</source>
+              <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="import.move_in">
+              <source>import.move_in</source>
+              <target>Move In</target>
+            </trans-unit>
+            <trans-unit id="import.move_out">
+              <source>import.move_out</source>
+              <target>Move Out</target>
+            </trans-unit>
+            <trans-unit id="import.lease_end">
+              <source>import.lease_end</source>
+              <target>Lease End</target>
+            </trans-unit>
+            <trans-unit id="import.balance">
+              <source>import.balance</source>
+              <target>Balance</target>
+            </trans-unit>
+            <trans-unit id="import.send_invite">
+              <source>import.send_invite</source>
+              <target>Send Invite?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

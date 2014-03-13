@@ -13,6 +13,9 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
 use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
+use RentJeeves\LandlordBundle\Form\ImportNewContractType;
+use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
+use RentJeeves\LandlordBundle\Form\ImportUpdateContractType;
 use RentJeeves\LandlordBundle\Report\AccountingImport;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -140,9 +143,6 @@ class ReportsController extends Controller
             $this->redirect($this->generateUrl('landlord_reports_import'));
         }
 
-        /**
-         * @var $reader CsvFileReader
-         */
         $data = $accountingImport->getDataForMapping();
         if (is_string($data)) {
             return array(
@@ -213,9 +213,22 @@ class ReportsController extends Controller
             $this->redirect($this->generateUrl('landlord_reports_import'));
         }
 
-        $accountingImport->isValidCsvData();
+        $formNewUserWithContract = $this->createForm(
+            new ImportNewUserWithContractType($accountingImport)
+        );
+
+        $formNewContract = $this->createForm(
+            new ImportNewContractType($accountingImport)
+        );
+
+        $formUpdateContract = $this->createForm(
+            new ImportUpdateContractType($accountingImport)
+        );
 
         return array(
+            'formNewUserWithContract' => $formNewUserWithContract->createView(),
+            'formNewContract'         => $formNewContract->createView(),
+            'formUpdateContract'      => $formUpdateContract->createView(),
         );
     }
 }

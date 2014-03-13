@@ -31,6 +31,10 @@ class AccountingImport
 
     const IMPORT_MAPPING = 'importMapping';
 
+    const FIRST_NAME_TENANT = 'first_name';
+
+    const LAST_NAME_TENANT = 'last_name';
+
     const KEY_UNIT = 'unit';
 
     const KEY_RESIDENT_ID = 'resident_id';
@@ -67,6 +71,8 @@ class AccountingImport
 
     protected $mapping = array();
 
+    protected $validatorsField = array();
+
     /**
      * @InjectParams({
      *     "session"   = @Inject("session"),
@@ -82,6 +88,79 @@ class AccountingImport
         $this->reader->setDelimiter($data[self::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[self::IMPORT_TEXT_DELIMITER]);
         $this->validator = $validator;
+        $this->validatorsField = array(
+            self::FIRST_NAME_TENANT => array(),
+            self::LAST_NAME_TENANT  => array(),
+            self::KEY_UNIT          => array(
+                new Length(
+                    array(
+                        'min' => 1,
+                        'max' => 50
+                    )
+                ),
+                new Regex(
+                    array(
+                        'pattern' => '/^[A-Za-z_\-0-9-\s]{1,50}+$/'
+                    )
+                ),
+                new NotBlank(),
+            ),
+            self::KEY_RESIDENT_ID   => array(
+                new Length(
+                    array(
+                        'min' => 1,
+                        'max' => 50
+                    )
+                ),
+                new NotBlank()
+            ),
+            self::KEY_TENANT_NAME   =>  array(
+                new NotBlank(),
+                new Regex(
+                    array(
+                        'pattern' => '/^[A-Za-z_\-0-9-\s]{1,100}+$/'
+                    )
+                ),
+            ),
+            self::KEY_RENT          => array(
+                new NotBlank(),
+                new Regex(
+                    array(
+                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
+                    )
+                ),
+            ),
+            self::KEY_MOVE_IN       => array(
+                new NotBlank(),
+                new DateWithFormat(),
+            ),
+            self::KEY_MOVE_OUT      => array(
+                new DateWithFormat(),
+            ),
+            self::KEY_LEASE_END     => array(
+                new NotBlank(),
+                new DateWithFormat(),
+            ),
+            self::KEY_BALANCE       => array(
+                array(
+                    new NotBlank(),
+                    new Regex(
+                        array(
+                            'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
+                        )
+                    )
+                )
+            ),
+            self::KEY_EMAIL         => array(
+                new Email(),
+                new NotBlank(),
+            ),
+        );
+    }
+
+    public function getValidatorsByKey($key)
+    {
+        return $this->validatorsField[$key];
     }
 
     public function setFilePath($fileName)
@@ -226,105 +305,73 @@ class AccountingImport
             $mappedData[] = $row;
             unset($data[$key]);
         }
-        
+
         return $isValid;
     }
 
+    /**
+     * Row mast be mapped
+     *
+     * @param $row
+     *
+     * @return bool
+     */
     public function isValidRow($row)
     {
         $this->rowsErrorsList = array();
 
         $this->isValidValue(
             $row,
-            array(
-                new Email(),
-                new NotBlank(),
-            ),
+            $this->validatorsField[self::KEY_EMAIL],
             self::KEY_EMAIL
         );
 
         $this->isValidValue(
             $row,
-            array(
-                new Length(
-                    array(
-                        'min' => 1,
-                        'max' => 50
-                    )
-                ),
-                new Regex(
-                    array(
-                        'pattern' => '/^[A-Za-z_\-0-9-\s]{1,50}+$/'
-                    )
-                ),
-                new NotBlank(),
-            ),
+            $this->validatorsField[self::KEY_UNIT],
             self::KEY_UNIT
         );
 
         $this->isValidValue(
             $row,
-            array(
-                new NotBlank(),
-                new Regex(
-                    array(
-                        'pattern' => '/^[A-Za-z_\-0-9-\s]{1,100}+$/'
-                    )
-                ),
-            ),
+            $this->validatorsField[self::KEY_TENANT_NAME],
             self::KEY_TENANT_NAME
         );
 
         $this->isValidValue(
             $row,
-            array(
-                new NotBlank(),
-                new Regex(
-                    array(
-                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
-                    )
-                )
-            ),
+            $this->validatorsField[self::KEY_BALANCE],
             self::KEY_BALANCE
         );
 
         $this->isValidValue(
             $row,
-            array(
-                new NotBlank(),
-                new Regex(
-                    array(
-                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
-                    )
-                ),
-            ),
+            $this->validatorsField[self::KEY_RENT],
             self::KEY_RENT
         );
 
         $this->isValidValue(
             $row,
-            array(
-                new NotBlank(),
-                new DateWithFormat(),
-            ),
+            $this->validatorsField[self::KEY_MOVE_IN],
             self::KEY_MOVE_IN
         );
 
         $this->isValidValue(
             $row,
-            array(
-                new NotBlank(),
-                new DateWithFormat(),
-            ),
+            $this->validatorsField[self::KEY_LEASE_END],
             self::KEY_LEASE_END
+        );
+
+        $this->isValidValue(
+            $row,
+            $this->validatorsField[self::KEY_RESIDENT_ID],
+            self::KEY_RESIDENT_ID
         );
 
         if (!empty($row[self::KEY_MOVE_OUT])) {
             $this->isValidValue(
                 $row,
-                array(
-                    new DateWithFormat(),
-                ),
+                $this->validatorsField[self::KEY_MOVE_OUT],
                 self::KEY_MOVE_OUT
             );
         }
@@ -336,6 +383,15 @@ class AccountingImport
         return false;
     }
 
+    /**
+     * Write errors into attribute of class with name rowsErrorsList
+     *
+     * @param array $values
+     * @param array $validators
+     * @param $key
+     *
+     * @return bool
+     */
     protected function isValidValue(array $values, array $validators, $key)
     {
         foreach ($validators as $validator) {
@@ -354,5 +410,41 @@ class AccountingImport
         }
 
         return false;
+    }
+
+    public static function parseName($name)
+    {
+        $names = explode(' ', $name);
+
+        switch (count($names)) {
+            case '1':
+                $data = array(
+                    self::FIRST_NAME_TENANT => $names[0],
+                    self::LAST_NAME_TENANT  => $names[0],
+                );
+                break;
+            case '2':
+                $data = array(
+                    self::FIRST_NAME_TENANT => $names[0],
+                    self::LAST_NAME_TENANT  => $names[1],
+                );
+            case '3':
+                $data = array(
+                    self::FIRST_NAME_TENANT => implode(' ', array($names[0], $names[1])),
+                    self::LAST_NAME_TENANT  => $names[2],
+                );
+            case '4':
+                $data = array(
+                    self::FIRST_NAME_TENANT => implode(' ', array($names[0], $names[1])),
+                    self::LAST_NAME_TENANT  => implode(' ', array($names[1], $names[2])),
+                );
+            default:
+                $data = array(
+                    self::FIRST_NAME_TENANT => '',
+                    self::LAST_NAME_TENANT  => '',
+                );
+        }
+
+        return $data;
     }
 }
