@@ -68,6 +68,7 @@ class AppRjKernel extends AppKernel
             new CreditJeeves\ApiBundle\ApiBundle(),
         );
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+            $bundles[] = new ENC\Bundle\BackupRestoreBundle\BackupRestoreBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();

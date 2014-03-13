@@ -26,6 +26,8 @@ use Symfony\Component\Serializer\Serializer;
 abstract class AppKernel extends Kernel
 {
     const IS_TEST = false;
+    const BACKUP_FILE_NAME = 'backup.sql';
+    const BACKUP_DIR_NAME = 'data/files/sql';
 
     /**
      * @var bool

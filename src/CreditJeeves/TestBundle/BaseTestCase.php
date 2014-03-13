@@ -5,6 +5,7 @@ use Behat\MinkBundle\Test\MinkTestCase;
 use Doctrine\ORM\Tools\SchemaTool;
 use \ReflectionClass;
 use CreditJeeves\TestBundle\EventListener\EmailListener;
+use AppKernel;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
@@ -82,7 +83,6 @@ abstract class BaseTestCase extends MinkTestCase
 
     /**
      * Load fixtures
-     * This do not need anymore, fixtures load only during build
      *
      * @param bool $reload
      * @return void
@@ -92,9 +92,9 @@ abstract class BaseTestCase extends MinkTestCase
         if (self::$isFixturesLoaded && !$reload) {
             return;
         }
-        $khepin = $this->getContainer()->get('khepin.yaml_loader');
-        $khepin->purgeDatabase('orm');
-        $khepin->loadFixtures();
+        $this->getContainer()->get('backup_restore.factory')
+            ->getRestoreInstance('doctrine.dbal.default_connection')
+            ->restoreDatabase(AppKernel::BACKUP_DIR_NAME . '/' . AppKernel::BACKUP_FILE_NAME);
         self::$isFixturesLoaded = true;
         static::$kernel = null;
     }

@@ -1,7 +1,9 @@
 <?php
 namespace RentJeeves\TestBundle\Command;
 
-class BaseTestCase extends \CreditJeeves\TestBundle\Command\BaseTestCase
+use CreditJeeves\TestBundle\Command\BaseTestCase as Base;
+
+class BaseTestCase extends Base
 {
     const APP = 'AppRj';
 }
