@@ -2,14 +2,10 @@
 
 namespace RentJeeves\CoreBundle\Report\TransUnion;
 
-use JMS\DiExtraBundle\Annotation as DI;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
-/**
- * @DI\Service("rental_report.trans_union")
- */
-class TransUnionRentalReport 
+class TransUnionRentalReport
 {
     protected $header;
     protected $records;
@@ -19,35 +15,17 @@ class TransUnionRentalReport
      */
     protected $container;
 
-    /**
-     * @DI\InjectParams({
-     *     "container" = @DI\Inject("service_container")
-     * })
-     */
-    public function __construct($container)
+    public function __construct($container, $startDate, $endDate)
     {
         $this->container = $container;
         $this->createHeader();
-        $this->records = array(new ReportRecord());
+        $this->createRecords($startDate, $endDate);
     }
 
-    // Move to lazy constructor?
     public function getReport()
     {
         $this->createHeader();
         $this->createRecords();
-    }
-
-    // Remove?
-    public function getHeader()
-    {
-        return $this->header;
-    }
-
-    // Remove?
-    public function getRecords()
-    {
-        return $this->records;
     }
 
     protected function createHeader()
@@ -58,8 +36,14 @@ class TransUnionRentalReport
         $this->header->setActivityDate(new DateTime($lastActivityDate));
     }
 
-    protected function createRecords()
+    protected function createRecords($startDate, $endDate)
     {
+        $this->records = array();
+        $contracts = $this->container->get('doctrine.orm.entity_manager')
+            ->getRepository('RjDataBundle:Contract')->getContractsForTURentalReport($startDate, $endDate);
 
+        foreach ($contracts as $contract) {
+            $this->records[] = new ReportRecord($contract);
+        }
     }
 }

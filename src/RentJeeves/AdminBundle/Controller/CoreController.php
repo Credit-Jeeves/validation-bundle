@@ -3,6 +3,7 @@
 namespace RentJeeves\AdminBundle\Controller;
 
 //use RentJeeves\CoreBundle\Report\TransUnion\TransUnionRentalReport;
+use RentJeeves\CoreBundle\Report\TransUnion\TransUnionRentalReport;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -37,9 +38,11 @@ class CoreController extends BaseController
      */
     public function reportAction()
     {
-        $report = $this->get('rental_report.trans_union');
+        $startDate = new \DateTime('02-01-2014');
+        $endDate = new \DateTime('03-01-2014');
+        $report = new TransUnionRentalReport($this->container, $startDate, $endDate);
         $result = $this->get('jms_serializer')->serialize($report, 'tu_rental1');
 
-        return new Response('', 201);
+        return new Response($result, 200);
     }
 }

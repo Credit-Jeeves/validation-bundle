@@ -3,9 +3,16 @@
 namespace RentJeeves\CoreBundle\Report\TransUnion;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 class ReportRecord 
 {
+    /**
+     * @Serializer\Exclude
+     */
+    protected $contract;
+
     protected $recordLength = '0426';                                   // 4
     protected $processingIndicator = '1';                               // 1
     /** @Serializer\Accessor(getter="getAccountUpdateTimestamp") */
@@ -46,12 +53,10 @@ class ReportRecord
     /** @Serializer\Accessor(getter="getOriginalChargeOffAmount") */
     protected $originalChargeOffAmount;                                 // 9
     protected $dateOfAccountInformation = '        ';                   // 8
-    /** @Serializer\Accessor(getter="getDateOfFirstDelinquency") */
-    protected $dateOfFirstDelinquency;                                  // 8
+    protected $dateOfFirstDelinquency = '        ';                     // 8
     /** @Serializer\Accessor(getter="getDateClosed") */
     protected $dateClosed;                                              // 8
-    /** @Serializer\Accessor(getter="getDateOfLastPayment") */
-    protected $dateOfLastPayment;                                       // 8
+    protected $dateOfLastPayment = '        ';                          // 8
     protected $reserved2 = '                 ';                         // 17
     protected $tenantTransactionType = ' ';                             // 1
     /** @Serializer\Accessor(getter="getTenantSurname") */
@@ -81,43 +86,59 @@ class ReportRecord
     protected $reserved4 = ' ';                                         // 1
     protected $residenceCode = 'R';                                     // 1
 
+    public function __construct(Contract $contract)
+    {
+        $this->contract = $contract;
+    }
+
     public function getAccountUpdateTimestamp()
     {
-        return '03152014171849';
+        return $this->contract->getUpdatedAt()->format('mdYHis');
     }
 
     public function getPropertyIdentificationNumber()
     {
-        return str_pad('71', 20);
+        $unit = $this->contract->getUnit();
+        if ($unit) {
+            $propertyNumber = $unit->getId();
+        } else {
+            $propertyNumber = $this->contract->getProperty()->getId();
+        }
+
+        return str_pad($propertyNumber, 20);
     }
 
     public function getLeaseNumber()
     {
-        return str_pad('1171', 30);
+        return str_pad($this->contract->getId(), 30);
     }
 
     public function getLeaseStartDate()
     {
-        return '02012014';
+        return $this->contract->getStartAt()->format('mdY');
     }
 
-    // rj_contract.rent
     public function getTotalRentalObligationAmount()
     {
-        return str_pad('2200', 9, '0', STR_PAD_LEFT);
+        return $this->getFormattedRentAmount();
     }
 
     // rj_contract.finish_at - rj_contract.start_at
     // if month-to-month, put in '001'
     public function getLeaseDuration()
     {
-        return str_pad('5', 3, '0', STR_PAD_LEFT);
+        if ($this->contract->getFinishAt() == null) {
+            $duration = 1;
+        } else {
+            $duration = $this->contract->getStartAt()->diff($this->contract->getFinishAt())->m;
+        }
+
+        return str_pad($duration, 3, '0', STR_PAD_LEFT);
     }
 
-    // rj_contract.rent
     public function getLeaseAmount()
     {
-        return str_pad('2200', 9, '0', STR_PAD_LEFT);
+        return $this->getFormattedRentAmount();
     }
 
     // cj_order.amount
@@ -146,79 +167,108 @@ class ReportRecord
         return '  ';
     }
 
-    // // rj_contract.rent
     public function getLeaseBalance()
     {
-        return str_pad('2200', 9, '0', STR_PAD_LEFT);
+        return $this->getFormattedRentAmount();
     }
 
     public function getAmountPastDue()
     {
-        return str_repeat('0', 9);
+        return str_pad((int)$this->contract->getBalance(), 9, '0', STR_PAD_LEFT);
     }
 
     public function getOriginalChargeOffAmount()
     {
-        return str_repeat('0', 9);
-    }
+        if ($this->contract->getStatus() == ContractStatus::FINISHED
+            && $uncollectedBalance = $this->contract->getUncollectedBalance()
+        ) {
+            return str_pad((int)$uncollectedBalance, 9, '0', STR_PAD_LEFT);
+        }
 
-    public function getDateOfFirstDelinquency()
-    {
-        return str_repeat(' ', 8);
+        return str_repeat('0', 9);
     }
 
     public function getDateClosed()
     {
-        return str_repeat(' ', 8);
-    }
+        if ($this->contract->getStatus() == ContractStatus::FINISHED) {
+            return $this->contract->getFinishAt()->format('mdY');
+        }
 
-    public function getDateOfLastPayment()
-    {
-        return '03022014';
+        return str_repeat(' ', 8);
     }
 
     public function getTenantSurname()
     {
-        return str_pad('EATON', 25);
+        $surname = $this->contract->getTenant()->getLastName();
+
+        return str_pad($surname, 25);
     }
 
     public function getTenantFirstname()
     {
-        return str_pad('DARRYL', 20);
+        $name = $this->contract->getTenant()->getFirstName();
+
+        return str_pad($name, 20);
     }
 
     public function getTenantSSN()
     {
-        return '555121212';
+        return $this->contract->getTenant()->getSsn();
     }
 
     public function getTenantDOB()
     {
-        return '05151955';
+        if ($dob = $this->contract->getTenant()->getDateOfBirth()) {
+            return $dob->format('mdY');
+        }
+
+        return str_repeat(' ', 8);
     }
 
     public function getTenantPhoneNumber()
     {
+        if (($phone = $this->contract->getTenant()->getPhone()) && strlen($phone) == 10) {
+            return $phone;
+        }
+
         return str_repeat(' ', 10);
     }
 
     public function getTenantAddress()
     {
-        return str_pad('960 ANDANTE RD', 32);
+        $address = $this->contract->getTenant()->getDefaultAddress();
+
+        $addressLine = sprintf('%s %s', $address->getNumber(), $address->getStreet());
+        if ($unit = $address->getUnit()) {
+            $addressLine = sprintf('%s # %s', $addressLine, $unit);
+        }
+
+        return str_pad($addressLine, 32);
     }
 
     public function getTenantAddressCity()
     {
-        return str_pad('SANTA BARBARA', 20);
+        $city = $this->contract->getTenant()->getDefaultAddress()->getCity();
+
+        return str_pad($city, 20);
     }
 
     public function getTenantAddressState()
     {
-        return 'CA';
+        return $this->contract->getTenant()->getDefaultAddress()->getArea();
     }
 
     public function getTenantAddressZip()
     {
-        return str_pad('93105', 9, '0');
+        $zip = $this->contract->getTenant()->getDefaultAddress()->getZip();
+
+        return str_pad($zip, 9, '0');
+    }
+
+    private function getFormattedRentAmount()
+    {
+        $rent = (int)$this->contract->getRent();
+
+        return str_pad($rent, 9, '0', STR_PAD_LEFT);
     }
 }
