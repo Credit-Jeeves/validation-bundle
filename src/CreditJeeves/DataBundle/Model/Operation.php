@@ -66,7 +66,8 @@ abstract class Operation
      * @ORM\ManyToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
      *     cascade={"persist", "remove", "merge"},
-     *     inversedBy="operations"
+     *     inversedBy="operations",
+     *     fetch = "EAGER"
      * )
      *
      * @ORM\JoinColumn(

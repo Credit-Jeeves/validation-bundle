@@ -776,15 +776,12 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
-                // Check operations
-                $operation = $contract->getOperation();
-                if (empty($operation)) {
-                    $operation = new Operation();
-                    $operation->setType(OperationType::RENT);
-                    $operation->setContract($contract);
-                    $em->persist($operation);
-                    $em->flush();
-                }
+                // Create operation
+                $operation = new Operation();
+                $operation->setType(OperationType::RENT);
+                $operation->setContract($contract);
+                $em->persist($operation);
+                $em->flush();
                 // Create order
                 $order = new Order();
                 $order->addOperation($operation);

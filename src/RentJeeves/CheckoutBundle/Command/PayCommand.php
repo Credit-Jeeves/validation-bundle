@@ -48,8 +48,6 @@ class PayCommand extends ContainerAwareCommand
     {
         $output->writeln('Start');
 
-        $routeGenerator = $this->getContainer()->get('sonata.admin.route.default_generator');
-
         /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $jobId = $input->getOption('jms-job-id');
@@ -74,33 +72,27 @@ class PayCommand extends ContainerAwareCommand
         $paymentAccount = $payment->getPaymentAccount();
         $contract = $payment->getContract();
 
-        $filterClosure = function (Order $order) use ($date) {
-            if ($order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
+        $filterClosure = function (Operation $operation) use ($date) {
+            if (($order = $operation->getOrder()) &&
+                $order->getCreatedAt()->format('Y-m-d') == $date->format('Y-m-d') &&
                 OrderStatus::ERROR != $order->getStatus()
             ) {
                 return true;
             }
             return false;
         };
-        if ($contract->getOperation() && $contract->getOperation()->getOrders()->filter($filterClosure)->count()) {
+        if ($contract->getOperations()->filter($filterClosure)->count()) {
             $output->writeln('Payment already executed.');
             return 1;
         }
-        $operation = $contract->getOperation();
-        /**
-         * @link https://github.com/Credit-Jeeves/Credit-Jeeves-SF2/commit/35b45d9b23d6210fcc8bc340931a05f4cae31c48
-         * It must be changed to new concept: each operation must have complete (success) order
-         * and if it have order but not complete - operation must be reused
-         */
-        if (empty($operation)) {
-            $operation = new Operation();
-        }
+        $operation = new Operation();
         $amount = $payment->getAmount();
         $fee = 0;
 
         $order = new Order();
         $operation->setType(OperationType::RENT);
         $operation->setContract($contract);
+        $operation->setAmount($amount);
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
             $fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
