@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Contract as Base;
@@ -595,6 +596,11 @@ class Contract extends Base
     public function getIsPidVerificationSkipped()
     {
         return $this->getGroup()->getGroupSettings()->getIsPidVerificationSkipped();
+    }
+
+    public function getAvailableDisputeCodes()
+    {
+        return DisputeCode::all();
     }
 
     public function __toString()

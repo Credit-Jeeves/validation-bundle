@@ -323,6 +323,17 @@ abstract class Contract
      */
     protected $histories;
 
+    /**
+     * @ORM\Column(
+     *     type="DisputeCode",
+     *     nullable=true,
+     *     options={
+     *         "default"=" "
+     *     }
+     * )
+     */
+    protected $disputeCode;
+
     public function __construct()
     {
         $this->operations = new ArrayCollection();
@@ -763,5 +774,21 @@ abstract class Contract
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * @param mixed $disputeCode
+     */
+    public function setDisputeCode($disputeCode)
+    {
+        $this->disputeCode = $disputeCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisputeCode()
+    {
+        return $this->disputeCode;
     }
 }
