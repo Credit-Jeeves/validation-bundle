@@ -7,6 +7,12 @@ YAML - is default configs format
 
 Annotation - is default configuration where it is possible
 
+DEV resurces
+------------
+
+http://dev.creditjeeves.com/phpMyAdmin
+
+
 Installation
 ------------
 

@@ -5,7 +5,7 @@ DIR="$(cd `dirname $0` ; pwd)"
 BUILDS_DIR="$WORKSPACE/../../jobs/$JOB_NAME/builds"
 BUILD_DIR="$DIR/../app/logs/build"
 PHPUNIT_PATH=`which phpunit`
-PHPUNIT_PARAMS=""
+PHPUNIT_PARAMS="--debug -v"
 
 #DB_DUMP="$DIR/../data/sql/dump_20130328.sql"
 #DB_NAME=cj2_migration
@@ -33,7 +33,7 @@ fi
 
 echo "##### RUN PHPUNIT ALL TESTS #####"
 #nice -n 5
-php -C -q -d memory_limit=1024M $PHPUNIT_PATH --debug -v \
+php -C -q -d memory_limit=2048M $PHPUNIT_PATH \
   $PHPUNIT_PARAMS \
   --log-junit=$BUILD_DIR/allTests.xml
 
