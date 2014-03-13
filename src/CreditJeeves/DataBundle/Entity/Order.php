@@ -705,6 +705,7 @@ class Order extends BaseOrder
      */
     public function getContract()
     {
+        /** @var Operation $operation */
         if ($operation = $this->getOperations()->last()) {
             return $operation->getContract();
         }

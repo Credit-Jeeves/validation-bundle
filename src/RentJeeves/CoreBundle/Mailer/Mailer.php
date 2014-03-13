@@ -150,7 +150,7 @@ class Mailer extends BaseMailer
 
     public function sendRentReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
     {
-        $tenant = $order->getContract()->getTenant();
+        $tenant = $order->getUser();
         $history = $order->getHeartlands()->last();
         $type = $order->getType();
         $fee = 0;
