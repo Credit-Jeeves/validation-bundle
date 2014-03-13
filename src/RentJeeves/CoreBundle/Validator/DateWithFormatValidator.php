@@ -13,12 +13,12 @@ use \Exception;
  *
  * @Validator("date_with_format_validator")
  */
-class InviteEmailValidator extends ConstraintValidator
+class DateWithFormatValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
         try {
-            $date = new DateTime::createFromFormat($constraint->format, $value);
+            $date = DateTime::createFromFormat($constraint->format, $value);
         } catch (Exception $e) {
             $this->context->addViolation($constraint->message);
         }

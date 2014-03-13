@@ -8,11 +8,10 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Validator\DateWithFormat;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Validator\Constraints\DateValidator;
-use Symfony\Component\Validator\Constraints\EmailValidator;
-use Symfony\Component\Validator\Constraints\LengthValidator;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\RegexValidator;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Validator;
 
 /**
@@ -53,6 +52,10 @@ class AccountingImport
     const KEY_IS_VALID = 'isValid';
 
     const KEY_ERRORS = 'errors';
+
+    protected $skipValue = array(
+        self::KEY_RESIDENT_ID => 'VACANT',
+    );
 
     protected $session;
 
@@ -202,40 +205,54 @@ class AccountingImport
         $isValid = true;
         foreach ($data as $key => $values) {
             $row          = $this->mappingRow($values);
-            $isValidRow   = $this->isValidateRow($row);
-            if (!$isValid) {
+            $isValidRow   = $this->isValidRow($row);
+            if (!$isValidRow) {
                 $row[self::KEY_IS_VALID] = false;
                 $row[self::KEY_ERRORS] = $this->rowsErrorsList;
+                $isValid = false;
+            }
+
+            $skip = false;
+            foreach ($this->skipValue as $keySkip => $valueSkip) {
+                if ($row[$keySkip] === $valueSkip) {
+                    $skip = true;
+                }
+            }
+
+            if ($skip) {
+                continue;
             }
 
             $mappedData[] = $row;
             unset($data[$key]);
         }
+        
+        return $isValid;
     }
 
-    public function isValidateRow($row)
+    public function isValidRow($row)
     {
         $this->rowsErrorsList = array();
 
-        $this->validateValue(
+        $this->isValidValue(
             $row,
             array(
-                new EmailValidator(),
+                new Email(),
                 new NotBlank(),
             ),
             self::KEY_EMAIL
         );
 
-        $this->isValidateValue(
+        $this->isValidValue(
             $row,
             array(
-                new LengthValidator(
+                new Length(
                     array(
                         'min' => 1,
                         'max' => 50
                     )
                 ),
-                new RegexValidator(
+                new Regex(
                     array(
                         'pattern' => '/^[A-Za-z_\-0-9-\s]{1,50}+$/'
                     )
@@ -245,11 +262,11 @@ class AccountingImport
             self::KEY_UNIT
         );
 
-        $this->isValidateRow(
+        $this->isValidValue(
             $row,
             array(
                 new NotBlank(),
-                new RegexValidator(
+                new Regex(
                     array(
                         'pattern' => '/^[A-Za-z_\-0-9-\s]{1,100}+$/'
                     )
@@ -258,33 +275,33 @@ class AccountingImport
             self::KEY_TENANT_NAME
         );
 
-        $this->isValidateRow(
+        $this->isValidValue(
             $row,
             array(
                 new NotBlank(),
-                new RegexValidator(
+                new Regex(
                     array(
-                        '/^[0-9]+(\.[0-9][0-9])?+$/'
+                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
                     )
                 )
             ),
             self::KEY_BALANCE
         );
 
-        $this->isValidateRow(
+        $this->isValidValue(
             $row,
             array(
                 new NotBlank(),
-                new RegexValidator(
+                new Regex(
                     array(
-                        '/^[0-9]+(\.[0-9][0-9])?+$/'
+                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
                     )
                 ),
             ),
             self::KEY_RENT
         );
 
-        $this->isValidateRow(
+        $this->isValidValue(
             $row,
             array(
                 new NotBlank(),
@@ -293,7 +310,7 @@ class AccountingImport
             self::KEY_MOVE_IN
         );
 
-        $this->isValidateRow(
+        $this->isValidValue(
             $row,
             array(
                 new NotBlank(),
@@ -303,7 +320,7 @@ class AccountingImport
         );
 
         if (!empty($row[self::KEY_MOVE_OUT])) {
-            $this->isValidateRow(
+            $this->isValidValue(
                 $row,
                 array(
                     new DateWithFormat(),
@@ -319,7 +336,7 @@ class AccountingImport
         return false;
     }
 
-    protected function isValidateValue(array $values, array $validators, $key)
+    protected function isValidValue(array $values, array $validators, $key)
     {
         foreach ($validators as $validator) {
             $errors = $this->validator->validateValue(
@@ -331,5 +348,11 @@ class AccountingImport
                 $this->rowsErrorsList[$key][] = $errors;
             }
         }
+
+        if (empty($this->rowsErrorsList)) {
+            return true;
+        }
+
+        return false;
     }
 }
