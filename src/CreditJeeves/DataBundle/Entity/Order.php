@@ -7,8 +7,10 @@ use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
+use DateTime;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -41,11 +43,11 @@ class Order extends BaseOrder
     public function setPropertyId($propertyId)
     {
         $this->propertyId = $propertyId;
+
         return $this;
     }
 
     /**
-     *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Property")
      * @Serializer\Groups({"csvReport"})
@@ -69,7 +71,6 @@ class Order extends BaseOrder
     }
 
     /**
-     *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Unit")
      * @Serializer\Groups({"csvReport"})
@@ -206,6 +207,7 @@ class Order extends BaseOrder
     {
         return null;
     }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("UserDefinedFields_2")
@@ -219,6 +221,7 @@ class Order extends BaseOrder
     {
         return null;
     }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("UserDefinedFields_3")
@@ -232,6 +235,7 @@ class Order extends BaseOrder
     {
         return null;
     }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("UserDefinedFields_4")
@@ -245,6 +249,7 @@ class Order extends BaseOrder
     {
         return null;
     }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("UserDefinedFields_5")
@@ -474,7 +479,6 @@ class Order extends BaseOrder
     }
 
     /**
-     *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Notes")
      * @Serializer\Groups({"xmlReport"})
@@ -548,12 +552,17 @@ class Order extends BaseOrder
         return $date->format('Y-m-d\TH:m:n');
     }
 
+    public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    {
+        if (!$operation->getOrder()) {
+            $operation->setOrder($this);
+        }
+        return parent::addOperation($operation);
+    }
+
     public function setOperations($operations)
     {
-        if (is_object($operations)) {
-            $this->addOperation($operations);
-        }
-
+        /** @var Operation $operation */
         foreach ($operations as $operation) {
             $this->addOperation($operation);
         }
@@ -564,10 +573,13 @@ class Order extends BaseOrder
     /**
      * @Serializer\Groups({"payment"})
      * @Serializer\HandlerCallback("json", direction = "serialization")
+     *
+     * @return array
      */
     public function getItem()
     {
         $result = array();
+        /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
         $result['amount'] = $this->getAmount();
         $result['tenant'] = $contract->getTenant()->getFullName();
@@ -621,6 +633,7 @@ class Order extends BaseOrder
     {
         $result = array();
         $operations = $this->getOperations();
+        /** @var Operation $operation */
         foreach ($operations as $operation) {
             $type = $operation->getType();
             if (!in_array($type, $result)) {
@@ -653,11 +666,13 @@ class Order extends BaseOrder
     /**
      * @param bool $asString Defines whether to return a string or an array
      * @param string $glue A glue for string result
+     *
      * @return array|string
      */
     public function getHeartlandTransactionIds($asString = true, $glue = ', ')
     {
         $result = array();
+        /** @var Heartland $heartland */
         foreach ($this->getHeartlands() as $heartland) {
             $result[] = $heartland->getTransactionId();
         }
@@ -671,6 +686,7 @@ class Order extends BaseOrder
 
     public function countDaysLate()
     {
+        /** @var Operation $operation */
         $operation = $this->getOperations()->last();
         $type = OperationType::REPORT;
         $type = $operation ? $operation->getType() : $type;
@@ -685,7 +701,7 @@ class Order extends BaseOrder
     }
 
     /**
-     * @return \RentJeeves\DataBundle\Entity|null
+     * @return \RentJeeves\DataBundle\Entity\Contract | null
      */
     public function getContract()
     {
@@ -706,33 +722,6 @@ class Order extends BaseOrder
         }
 
         return false;
-    }
-
-    /**
-     * @deprecated Will be removed in v2.2
-     * @return mixed
-     */
-    public function getTenant()
-    {
-        return $this->getContract()->getTenant();
-    }
-
-    /**
-     * @deprecated Will be removed in v2.2
-     * @return mixed
-     */
-    public function getGroup()
-    {
-        return $this->getContract()->getGroup();
-    }
-
-    /**
-     * @deprecated Will be removed in v2.2
-     * @return mixed
-     */
-    public function getHolding()
-    {
-        return $this->getContract()->getHolding();
     }
 
     /**

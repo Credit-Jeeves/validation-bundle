@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
+use \DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -118,25 +119,10 @@ abstract class Order
     protected $heartlands;
 
     /**
-     * @ORM\ManyToMany(
+     * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
-     *     inversedBy="orders",
+     *     mappedBy="order",
      *     cascade={"all"}
-     * )
-     * @ORM\JoinTable(
-     *      name="cj_order_operation",
-     *      joinColumns={
-     *          @ORM\JoinColumn(
-     *              name="cj_order_id",
-     *              referencedColumnName="id"
-     *          )
-     *      },
-     *      inverseJoinColumns={
-     *          @ORM\JoinColumn(
-     *              name="cj_operation_id",
-     *              referencedColumnName="id"
-     *          )
-     *      }
      * )
      *
      * @Serializer\SerializedName("Details")
@@ -159,7 +145,8 @@ abstract class Order
         $this->operations = new ArrayCollection();
         $this->authorizes = new ArrayCollection();
         $this->heartlands = new ArrayCollection();
-        $this->created_at = new \DateTime();
+        $this->operations = new ArrayCollection();
+        $this->created_at = new DateTime();
     }
 
     /**
@@ -291,7 +278,7 @@ abstract class Order
     /**
      * Set created_date
      *
-     * @param \DateTime $createdDate
+     * @param DateTime $createdDate
      * @return Order
      */
     public function setCreatedAt($createdAt)
@@ -304,7 +291,7 @@ abstract class Order
     /**
      * Get created_date
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -314,7 +301,7 @@ abstract class Order
     /**
      * Set updated_at
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return Order
      */
     public function setUpdatedAt($updatedAt)
@@ -327,7 +314,7 @@ abstract class Order
     /**
      * Get updated_at
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {

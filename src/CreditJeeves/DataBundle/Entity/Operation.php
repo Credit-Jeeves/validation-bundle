@@ -46,7 +46,6 @@ class Operation extends Base
     protected $propertyId = null;
 
     /**
-     *
      * @Serializer\VirtualProperty
      * @Serializer\Groups({"xmlReport"})
      * @Serializer\SerializedName("Amount")
@@ -61,7 +60,6 @@ class Operation extends Base
     }
 
     /**
-     *
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("Notes")
      * @Serializer\Groups({"xmlReport"})
@@ -74,7 +72,6 @@ class Operation extends Base
     {
         return $this->getCreatedAt()->format('Y-m-d\TH:m:n');
     }
-
 
     public function getAccountId()
     {
@@ -126,26 +123,20 @@ class Operation extends Base
     /**
      * Add orders
      *
-     * @param \CreditJeeves\DataBundle\Entity\Order $orders
+     * @param \CreditJeeves\DataBundle\Entity\Order $order
+     *
      * @return Operation
      */
-    public function setOrders($orders)
+    public function setOrder(\CreditJeeves\DataBundle\Entity\Order $order)
     {
-        if (is_object($orders)) {
-            $this->addOrder($orders);
-            $orders->addOperation($this);
-        }
-
-        foreach ($orders as $order) {
-            $this->addOrder($order);
-            $order->addOperation($this);
-        }
+        parent::setOrder($order);
+        $order->addOperation($this);
 
         return $this;
     }
 
     public function __toString()
     {
-        return $this->getType();
+        return (string)$this->getType();
     }
 }
