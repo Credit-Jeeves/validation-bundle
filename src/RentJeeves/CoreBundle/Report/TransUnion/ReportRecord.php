@@ -144,7 +144,8 @@ class ReportRecord
     // cj_order.amount
     public function getLeasePaymentAmountConfirmed()
     {
-        return str_pad('2200', 9, '0', STR_PAD_LEFT);
+        return $this->getFormattedRentAmount();
+//        return str_pad('2200', 9, '0', STR_PAD_LEFT);
     }
 
     public function getLeaseStatus()
@@ -164,7 +165,12 @@ class ReportRecord
 
     public function getLeaseDisputeCode()
     {
-        return '  ';
+        $disputeCode = $this->contract->getDisputeCode();
+        if ($disputeCode) {
+            return $disputeCode;
+        }
+
+        return str_repeat(' ', 2);
     }
 
     public function getLeaseBalance()
