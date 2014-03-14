@@ -171,7 +171,6 @@ class Mailer extends BaseMailer
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
-            'nameTenant' => $tenant->getFullName(),
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }

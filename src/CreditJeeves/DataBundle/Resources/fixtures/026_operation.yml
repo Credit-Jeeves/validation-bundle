@@ -4,26 +4,184 @@ fixtures:
     contract: Contract_7
     type: rent
     amount: 37200
+  rjOperation_2:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_3:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_3_error:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_3_cancelled:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_3_refunded:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_3_returned:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_4:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_5:
+    contract: Contract_7
+    type: rent
+    amount: 37200
+  rjOperation_6:
+    contract: Contract_6
+    type: rent
+    amount: 3700
   rjOperation_66:
     contract: Contract_66
     type: rent
     amount: 3700
 
 # finished contract
-  rjOperation_7:
+  rjOperation_3_1:
     contract: Contract_3
     type: rent
-    amount: 16500
-# Another finished contract
-  rjOperation_8:
+    amount: 1500
+  rjOperation_3_2_1:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_2_2:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_3:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_4:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_5:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_6:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_7:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_8:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_9:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+  rjOperation_3_10:
+    contract: Contract_3
+    type: rent
+    amount: 1500
+
+  rjOperation_4_1:
     contract: Contract_4
     type: rent
-    amount: 0
-# Operation with one-dollar payment
-  rjOperation_16:
+    amount: 1250
+  rjOperation_4_2:
+    contract: Contract_4
+    type: rent
+    amount: 1250
+  rjOperation_4_3:
+    contract: Contract_4
+    type: rent
+    amount: 1250
+  rjOperation_4_4:
+    contract: Contract_4
+    type: rent
+    amount: 1250
+  rjOperation_4_5:
+    contract: Contract_4
+    type: rent
+    amount: 1250
+  rjOperation_4_6:
+    contract: Contract_4
+    type: rent
+    amount: 1250
+  rjOperation_4_7:
+    contract: Contract_4
+    type: rent
+    amount: 1250
+
+  rjOperation_5_1:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_2:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_3:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_4:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_5:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_6:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_7:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_8:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_9:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_10:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_11:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+  rjOperation_5_12:
+    contract: Contract_2
+    type: rent
+    amount: 1250
+
+  rjOperation_6_1:
     contract: Contract_16
     type: rent
-    amount: 3
+    amount: 1
+  rjOperation_6_2:
+    contract: Contract_16
+    type: rent
+    amount: 2
+
+  rjOperation_8:
+    contract: Contract_14
+    type: rent
+    amount: 1500
 
     
 

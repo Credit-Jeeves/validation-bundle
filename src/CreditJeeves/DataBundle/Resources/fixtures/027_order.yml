@@ -12,7 +12,7 @@ fixtures:
     updated_at: '-50 days'
   rjOrder_2:
     operations:
-      - rjOperation_1
+      - rjOperation_2
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -22,7 +22,7 @@ fixtures:
     updated_at: '-40 days'
   rjOrder_3:
     operations:
-      - rjOperation_1
+      - rjOperation_3
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -32,7 +32,7 @@ fixtures:
     updated_at: '-30 days'
   rjOrder_3_error:
     operations:
-      - rjOperation_1
+      - rjOperation_3_error
     user: Tenant_1
     status: error
     type: heartland_card
@@ -42,7 +42,7 @@ fixtures:
     updated_at: '-30 days'
   rjOrder_3_cancelled:
     operations:
-      - rjOperation_1
+      - rjOperation_3_cancelled
     user: Tenant_1
     status: cancelled
     type: heartland_card
@@ -52,7 +52,7 @@ fixtures:
     updated_at: 'now'
   rjOrder_3_refunded:
     operations:
-      - rjOperation_1
+      - rjOperation_3_refunded
     user: Tenant_1
     status: refunded
     type: heartland_card
@@ -62,7 +62,7 @@ fixtures:
     updated_at: '-30 days'
   rjOrder_3_returned:
     operations:
-      - rjOperation_1
+      - rjOperation_3_returned
     user: Tenant_1
     status: returned
     type: heartland_card
@@ -72,7 +72,7 @@ fixtures:
     updated_at: '-30 days'
   rjOrder_4:
     operations:
-      - rjOperation_1
+      - rjOperation_4
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -82,7 +82,7 @@ fixtures:
     updated_at: '-20 days'
   rjOrder_5:
     operations:
-      - rjOperation_1
+      - rjOperation_5
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -92,7 +92,7 @@ fixtures:
     updated_at: '-10 days'
   rjOrder_6:
     operations:
-      - rjOperation_1
+      - rjOperation_6
     user: Tenant_1
     status: new
     type: heartland_card
@@ -113,7 +113,7 @@ fixtures:
 #finished contract
   rjOrder_3_1:
     operations:
-      - rjOperation_7
+      - rjOperation_3_1
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -123,7 +123,7 @@ fixtures:
     updated_at: '-372 days'
   rjOrder_3_2_1:
     operations:
-      - rjOperation_7
+      - rjOperation_3_2_1
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -133,7 +133,7 @@ fixtures:
     updated_at: '-335 days'
   rjOrder_3_2_2:
     operations:
-      - rjOperation_7
+      - rjOperation_3_2_2
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -143,7 +143,7 @@ fixtures:
     updated_at: '-342 days'
   rjOrder_3_3:
     operations:
-      - rjOperation_7
+      - rjOperation_3_3
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -153,7 +153,7 @@ fixtures:
     updated_at: '-312 days'
   rjOrder_3_4:
     operations:
-      - rjOperation_7
+      - rjOperation_3_4
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -163,7 +163,7 @@ fixtures:
     updated_at: '-282 days'
   rjOrder_3_5:
     operations:
-      - rjOperation_7
+      - rjOperation_3_5
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -173,7 +173,7 @@ fixtures:
     updated_at: '-252 days'
   rjOrder_3_6:
     operations:
-      - rjOperation_7
+      - rjOperation_3_6
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -183,7 +183,7 @@ fixtures:
     updated_at: '-222 days'
   rjOrder_3_7:
     operations:
-      - rjOperation_7
+      - rjOperation_3_7
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -193,7 +193,7 @@ fixtures:
     updated_at: '-192 days'
   rjOrder_3_8:
     operations:
-      - rjOperation_7
+      - rjOperation_3_8
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -203,7 +203,7 @@ fixtures:
     updated_at: '-162 days'
   rjOrder_3_9:
     operations:
-      - rjOperation_7
+      - rjOperation_3_9
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -213,7 +213,7 @@ fixtures:
     updated_at: '-132 days'
   rjOrder_3_10:
     operations:
-      - rjOperation_7
+      - rjOperation_3_10
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -224,7 +224,7 @@ fixtures:
 # Another fifnished contract
   rjOrder_4_1:
     operations:
-      - rjOperation_1
+      - rjOperation_4_1
     user: Tenant_2
     status: complete
     type: heartland_card
@@ -234,7 +234,7 @@ fixtures:
     updated_at: '-8 month'
   rjOrder_4_2:
     operations:
-      - rjOperation_1
+      - rjOperation_4_2
     user: Tenant_2
     status: complete
     type: heartland_card
@@ -244,7 +244,7 @@ fixtures:
     updated_at: '-7 month'
   rjOrder_4_3:
     operations:
-      - rjOperation_1
+      - rjOperation_4_3
     user: Tenant_2
     status: complete
     type: heartland_card
@@ -254,7 +254,7 @@ fixtures:
     updated_at: '-6 month'
   rjOrder_4_4:
     operations:
-      - rjOperation_1
+      - rjOperation_4_4
     user: Tenant_2
     status: complete
     type: heartland_card
@@ -264,7 +264,7 @@ fixtures:
     updated_at: '-5 month'
   rjOrder_4_5:
     operations:
-      - rjOperation_1
+      - rjOperation_4_5
     user: Tenant_2
     status: complete
     type: heartland_card
@@ -274,7 +274,7 @@ fixtures:
     updated_at: '-4 month'
   rjOrder_4_6:
     operations:
-      - rjOperation_1
+      - rjOperation_4_6
     user: Tenant_2
     status: complete
     type: heartland_card
@@ -284,7 +284,7 @@ fixtures:
     updated_at: '-3 month'
   rjOrder_4_7:
     operations:
-      - rjOperation_1
+      - rjOperation_4_7
     user: Tenant_2
     status: complete
     type: heartland_card
@@ -295,7 +295,7 @@ fixtures:
 
   rjOrder_5_1:
     operations:
-      - rjOperation_1
+      - rjOperation_5_1
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -305,7 +305,7 @@ fixtures:
     updated_at: '-11 month'
   rjOrder_5_2:
     operations:
-      - rjOperation_1
+      - rjOperation_5_2
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -315,7 +315,7 @@ fixtures:
     updated_at: '-10 month'
   rjOrder_5_3:
     operations:
-      - rjOperation_1
+      - rjOperation_5_3
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -325,7 +325,7 @@ fixtures:
     updated_at: '-10 month'
   rjOrder_5_4:
     operations:
-      - rjOperation_1
+      - rjOperation_5_4
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -335,7 +335,7 @@ fixtures:
     updated_at: '-8 month'
   rjOrder_5_5:
     operations:
-      - rjOperation_1
+      - rjOperation_5_5
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -345,7 +345,7 @@ fixtures:
     updated_at: '-7 month'
   rjOrder_5_6:
     operations:
-      - rjOperation_1
+      - rjOperation_5_6
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -355,7 +355,7 @@ fixtures:
     updated_at: '-5 month'
   rjOrder_5_7:
     operations:
-      - rjOperation_1
+      - rjOperation_5_7
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -365,7 +365,7 @@ fixtures:
     updated_at: '-5 month'
   rjOrder_5_8:
     operations:
-      - rjOperation_1
+      - rjOperation_5_8
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -375,7 +375,7 @@ fixtures:
     updated_at: '-4 month'
   rjOrder_5_9:
     operations:
-      - rjOperation_1
+      - rjOperation_5_9
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -385,7 +385,7 @@ fixtures:
     updated_at: '-3 month'
   rjOrder_5_10:
     operations:
-      - rjOperation_1
+      - rjOperation_5_10
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -395,7 +395,7 @@ fixtures:
     updated_at: '-2 month'
   rjOrder_5_11:
     operations:
-      - rjOperation_1
+      - rjOperation_5_11
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -405,7 +405,7 @@ fixtures:
     updated_at: '-1 month'
   rjOrder_5_12:
     operations:
-      - rjOperation_1
+      - rjOperation_5_12
     user: Tenant_1
     status: complete
     type: heartland_card
@@ -413,9 +413,10 @@ fixtures:
     days_late: 0
     created_at: '-1 days'
     updated_at: '-1 days'
+
   rjOrder_6_1:
     operations:
-      - rjOperation_16
+      - rjOperation_6_1
     user: Tenant_12
     status: complete
     type: heartland_card
@@ -425,7 +426,7 @@ fixtures:
     updated_at: '-1 days'
   rjOrder_6_2:
     operations:
-      - rjOperation_16
+      - rjOperation_6_2
     user: Tenant_12
     status: complete
     type: heartland_card
@@ -433,6 +434,7 @@ fixtures:
     days_late: 0
     created_at: '-1 days'
     updated_at: '-1 days'
+
   rjOrder_8:
     operations:
       - rjOperation_8
