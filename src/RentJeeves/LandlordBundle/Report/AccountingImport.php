@@ -2,11 +2,13 @@
 
 namespace RentJeeves\LandlordBundle\Report;
 
+use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Validator\DateWithFormat;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
@@ -53,9 +55,15 @@ class AccountingImport
 
     const KEY_EMAIL = 'email';
 
-    const KEY_IS_VALID = 'isValid';
+    const IS_VALID = 'isValid';
 
-    const KEY_ERRORS = 'errors';
+    const ERRORS = 'errors';
+
+    const STATUS = 'status';
+
+    const TENANT = 'tenant';
+
+    const CONTRACT = 'contract';
 
     protected $skipValue = array(
         self::KEY_RESIDENT_ID => 'VACANT',
@@ -73,21 +81,30 @@ class AccountingImport
 
     protected $validatorsField = array();
 
+    protected $em;
+
     /**
      * @InjectParams({
      *     "session"   = @Inject("session"),
      *     "reader"    = @Inject("reader.csv"),
-     *     "validator" = @Inject("validator")
+     *     "validator" = @Inject("validator"),
+     *     "em"        = @Inject("doctrine.orm.default_entity_manager"),
      * })
      */
-    public function __construct(Session $session, CsvFileReader $reader, Validator $validator)
+    public function __construct(
+        Session $session,
+        CsvFileReader $reader,
+        Validator $validator,
+        EntityManager $em
+    )
     {
         $this->session = $session;
         $this->reader  = $reader;
         $data          = $this->getImportData();
         $this->reader->setDelimiter($data[self::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[self::IMPORT_TEXT_DELIMITER]);
-        $this->validator = $validator;
+        $this->validator       = $validator;
+        $this->em              = $em;
         $this->validatorsField = array(
             self::FIRST_NAME_TENANT => array(),
             self::LAST_NAME_TENANT  => array(),
@@ -114,7 +131,7 @@ class AccountingImport
                 ),
                 new NotBlank()
             ),
-            self::KEY_TENANT_NAME   =>  array(
+            self::KEY_TENANT_NAME   => array(
                 new NotBlank(),
                 new Regex(
                     array(
@@ -171,6 +188,11 @@ class AccountingImport
     public function setPropertyId($propertyId)
     {
         $this->session->set(self::IMPORT_PROPERTY_ID, $propertyId);
+    }
+
+    public function getPropertyId()
+    {
+        $this->session->get(self::IMPORT_PROPERTY_ID);
     }
 
     public function setTextDelimiter($value)
@@ -267,10 +289,142 @@ class AccountingImport
             $i++;
         }
 
-        $mappedData[self::KEY_IS_VALID] = true;
-        $mappedData[self::KEY_ERRORS] = array();
+        $mappedData[self::IS_VALID] = true;
+        $mappedData[self::ERRORS] = array();
 
         return $mappedData;
+    }
+
+    protected function getFileData($mapped = true, $offset = null, $rowCount = null)
+    {
+        $mappedData = array();
+        $data       = $this->getImportData();
+        $data       = $this->reader->read($data[self::IMPORT_FILE_PATH], $offset, $rowCount);
+
+        if (!$mapped) {
+            return $data;
+        }
+
+        foreach ($data as $key => $values) {
+            $row = $this->mappingRow($values);
+            $mappedData[] = $row;
+        }
+
+        return $mappedData;
+    }
+
+    protected function getDetailedData($row)
+    {
+        $data = array(
+            self::STATUS    => null,
+            self::CONTRACT  => null,
+            self::TENANT    => null
+        );
+
+        $skip = false;
+
+        foreach ($this->skipValue as $keySkip => $valueSkip) {
+            if ($row[$keySkip] === $valueSkip) {
+                $skip = true;
+            }
+        }
+
+        if ($skip) {
+            $data[self::STATUS] = 'skip';
+            return $data;
+        }
+
+        $ended = false;
+        if (!empty($row[self::KEY_MOVE_OUT])) {
+            $ended = true;
+        }
+
+        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->fineOneBy(
+            array(
+                'email' => $row[self::KEY_EMAIL]
+            )
+        );
+
+        if (empty($tenant) && !$ended) {
+            $data[self::STATUS] = 'new_user_new_contract';
+            return $data;
+        }
+
+        $data[self::TENANT] = $tenant;
+
+        $property = $this->em->getRepository('RjDataBundle:Property')->find($this->getPropertyId());
+        $unit = $this->em->getRepository('RjDataBundle:Unit')->findOneBy(
+            array(
+                'name'     => $row[self::KEY_UNIT],
+                'property' => $property->getId(),
+            )
+        );
+
+        if (empty($unit) && empty($property) && !$ended) {
+            $data[self::STATUS] = 'exist_user_new_contract';
+            return $data;
+        }
+
+        $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy(
+            array(
+                 'tenant'   => $tenant->getId(),
+                 'property' => $property->getId(),
+                 'status'   => ContractStatus::CURRENT,
+            )
+        );
+
+        if (empty($contract) && !$ended) {
+            $data[self::STATUS] = 'exist_user_new_contract';
+            return $data;
+        }
+
+        if (!empty($contract) && !$ended) {
+            $data[self::CONTRACT] = $contract;
+            $data[self::STATUS]   = 'exist_user_exist_contract';
+            return $data;
+        }
+
+        if ($ended && !empty($contract)) {
+            $data[self::CONTRACT] = $contract;
+            $data[self::STATUS]   = 'ended_exist';
+            return $data;
+        }
+
+        if ($ended && empty($contract)) {
+            $data[self::CONTRACT] = $contract;
+            $data[self::STATUS]   = 'ended_not_exist';
+            return $data;
+        }
+    }
+
+    private function getPages($limit)
+    {
+        $result = array();
+        $total = $this->countData();
+        $pages = ceil($total / $limit);
+        if ($pages < 2) {
+            return $result;
+        }
+        for ($i = 0; $i < $pages; $i++) {
+            $result[] = $i + 1;
+        }
+        return $result;
+    }
+
+    public function countData()
+    {
+        return count($this->getFileData());
+    }
+
+    public function getMappedData($page, $rowCount)
+    {
+        $offset = $page*$rowCount;
+        $data = $this->getFileData(true, $offset, $rowCount);
+        foreach ($data as $key => $values) {
+            $data[$key][self::STATUS] = $this->getDetailedData($values)[self::STATUS];
+        }
+
+        return $data;
     }
 
     /**
@@ -278,24 +432,21 @@ class AccountingImport
      */
     public function isValidCsvData()
     {
-        $data       = $this->getImportData();
-        $data       = $this->reader->read($data[self::IMPORT_FILE_PATH]);
-        $mappedData = array();
+        $data = $this->getFileData();
         $isValid = true;
-        foreach ($data as $key => $values) {
-            $row          = $this->mappingRow($values);
-            $isValidRow   = $this->isValidRow($row);
-            if (!$isValidRow) {
-                $row[self::KEY_IS_VALID] = false;
-                $row[self::KEY_ERRORS] = $this->rowsErrorsList;
-                $isValid = false;
-            }
-
+        foreach ($data as $key => $row) {
             $skip = false;
             foreach ($this->skipValue as $keySkip => $valueSkip) {
                 if ($row[$keySkip] === $valueSkip) {
                     $skip = true;
                 }
+            }
+
+            $isValidRow   = $this->isValidRow($row);
+            if (!$isValidRow) {
+                $row[self::IS_VALID] = false;
+                $row[self::ERRORS] = $this->rowsErrorsList;
+                $isValid = false;
             }
 
             if ($skip) {

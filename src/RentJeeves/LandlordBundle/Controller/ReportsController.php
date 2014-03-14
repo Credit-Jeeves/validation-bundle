@@ -231,4 +231,15 @@ class ReportsController extends Controller
             'formUpdateContract'      => $formUpdateContract->createView(),
         );
     }
+
+    /**
+     * @Route(
+     *     "/review/post/get",
+     *     name="landlord_reports_review_get_rows"
+     * )
+     */
+    public function getRowsAction()
+    {
+
+    }
 }
