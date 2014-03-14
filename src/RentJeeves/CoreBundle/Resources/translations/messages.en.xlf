@@ -2121,6 +2121,10 @@
               <source>import.send_invite</source>
               <target>Send Invite?</target>
             </trans-unit>
+            <trans-unit id="import.error.access">
+              <source>import.error.access</source>
+              <target>Access denied, move to first step please.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

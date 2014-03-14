@@ -313,6 +313,20 @@ class AccountingImport
         return $mappedData;
     }
 
+    public function isSkipped($row)
+    {
+        $skip = false;
+
+        foreach ($this->skipValue as $keySkip => $valueSkip) {
+            if ($row[$keySkip] === $valueSkip) {
+                $skip = true;
+                break;
+            }
+        }
+
+        return $skip;
+    }
+
     protected function getDetailedData($row)
     {
         $data = array(
@@ -321,13 +335,7 @@ class AccountingImport
             self::TENANT    => null
         );
 
-        $skip = false;
-
-        foreach ($this->skipValue as $keySkip => $valueSkip) {
-            if ($row[$keySkip] === $valueSkip) {
-                $skip = true;
-            }
-        }
+        $skip = $this->isSkipped($row);
 
         if ($skip) {
             $data[self::STATUS] = 'skip';
@@ -339,7 +347,7 @@ class AccountingImport
             $ended = true;
         }
 
-        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->fineOneBy(
+        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(
                 'email' => $row[self::KEY_EMAIL]
             )
@@ -347,6 +355,11 @@ class AccountingImport
 
         if (empty($tenant) && !$ended) {
             $data[self::STATUS] = 'new_user_new_contract';
+            return $data;
+        }
+
+        if (empty($tenant) && $ended) {
+            $data[self::STATUS]   = 'ended_not_exist';
             return $data;
         }
 
@@ -391,13 +404,12 @@ class AccountingImport
         }
 
         if ($ended && empty($contract)) {
-            $data[self::CONTRACT] = $contract;
             $data[self::STATUS]   = 'ended_not_exist';
             return $data;
         }
     }
 
-    private function getPages($limit)
+    public function getPages($limit)
     {
         $result = array();
         $total = $this->countData();
@@ -418,10 +430,13 @@ class AccountingImport
 
     public function getMappedData($page, $rowCount)
     {
-        $offset = $page*$rowCount;
+        $offset = $page * $rowCount - $rowCount;
         $data = $this->getFileData(true, $offset, $rowCount);
         foreach ($data as $key => $values) {
             $data[$key][self::STATUS] = $this->getDetailedData($values)[self::STATUS];
+            $names = self::parseName($values[self::KEY_TENANT_NAME]);
+            $data[$key][self::FIRST_NAME_TENANT] = $names[self::FIRST_NAME_TENANT];
+            $data[$key][self::LAST_NAME_TENANT] = $names[self::LAST_NAME_TENANT];
         }
 
         return $data;
@@ -435,26 +450,25 @@ class AccountingImport
         $data = $this->getFileData();
         $isValid = true;
         foreach ($data as $key => $row) {
-            $skip = false;
-            foreach ($this->skipValue as $keySkip => $valueSkip) {
-                if ($row[$keySkip] === $valueSkip) {
-                    $skip = true;
-                }
+            $skip = $this->isSkipped($row);
+            $isValidRow   = $this->isValidRow($row);
+
+            if ($skip) {
+                continue;
             }
 
-            $isValidRow   = $this->isValidRow($row);
             if (!$isValidRow) {
                 $row[self::IS_VALID] = false;
                 $row[self::ERRORS] = $this->rowsErrorsList;
                 $isValid = false;
             }
 
-            if ($skip) {
-                continue;
-            }
-
             $mappedData[] = $row;
             unset($data[$key]);
+
+            if (!$isValid) {
+                break;
+            }
         }
 
         return $isValid;
@@ -568,27 +582,30 @@ class AccountingImport
         $names = explode(' ', $name);
 
         switch (count($names)) {
-            case '1':
+            case 1:
                 $data = array(
                     self::FIRST_NAME_TENANT => $names[0],
                     self::LAST_NAME_TENANT  => $names[0],
                 );
                 break;
-            case '2':
+            case 2:
                 $data = array(
                     self::FIRST_NAME_TENANT => $names[0],
                     self::LAST_NAME_TENANT  => $names[1],
                 );
-            case '3':
+                break;
+            case 3:
                 $data = array(
                     self::FIRST_NAME_TENANT => implode(' ', array($names[0], $names[1])),
                     self::LAST_NAME_TENANT  => $names[2],
                 );
-            case '4':
+                break;
+            case 4:
                 $data = array(
                     self::FIRST_NAME_TENANT => implode(' ', array($names[0], $names[1])),
                     self::LAST_NAME_TENANT  => implode(' ', array($names[1], $names[2])),
                 );
+                break;
             default:
                 $data = array(
                     self::FIRST_NAME_TENANT => '',

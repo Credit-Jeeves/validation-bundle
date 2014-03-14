@@ -7,7 +7,7 @@
     <div class="container-content">
         <div id="action_plan_page">
             <div class="column-middle floatleft">
-                <div class="pod-middle pod-border pod-padding shadow">
+                <div id="reviewContainer" class="pod-middle pod-border pod-padding shadow">
                     {{
                     include(
                     'LandlordBundle:Reports:importSteps.html.twig',
@@ -35,21 +35,39 @@
                             <th class="pie-el"><span>{{ 'import.send_invite'|trans }}</span></th>
                         </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
+                        <tbody data-bind="foreach: $root.rows">
+                            {{
+                                include(
+                                    'LandlordBundle:Reports:_reviewNewUserWithContract.html.twig',
+                                    {
+                                    'form': formNewUserWithContract,
+                                    }
+                                )
+                            }}
+                            {{
+                                include(
+                                    'LandlordBundle:Reports:_reviewNewContract.html.twig',
+                                    {
+                                    'form': formNewContract,
+                                    }
+                                )
+                            }}
+                            {{
+                                include(
+                                    'LandlordBundle:Reports:_reviewUpdateContract.html.twig',
+                                    {
+                                    'form': formUpdateContract,
+                                    }
+                                )
+                            }}
+                            {{
+                                include(
+                                    'LandlordBundle:Reports:_reviewSkip.html.twig',
+                                    {
+                                    'form': formUpdateContract,
+                                    }
+                                )
+                            }}
                         </tbody>
                     </table>
                     <br />
@@ -76,7 +94,21 @@
     {% stylesheets
     '@LandlordBundle/Resources/public/css/submenu.css'
     '@LandlordBundle/Resources/public/css/stepImport.css'
+    '@LandlordBundle/Resources/public/css/reviewAndPost.css'
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    'bundles/bazingajstranslation/js/translator.min.js'
+    '@LandlordBundle/Resources/public/js/accountingImport.js'
+    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    '@LandlordBundle/Resources/public/js/reviewAndPost.js'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}

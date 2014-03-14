@@ -21,6 +21,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use \Exception;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -235,11 +236,44 @@ class ReportsController extends Controller
     /**
      * @Route(
      *     "/review/post/get",
-     *     name="landlord_reports_review_get_rows"
+     *     name="landlord_reports_review_get_rows",
+     *     options={"expose"=true}
      * )
      */
-    public function getRowsAction()
+    public function getRowsAction(Request $request)
     {
+        $this->checkAccessToReport();
+        $result = array(
+            'error'   => false,
+            'message' => null,
+        );
+        /**
+         * @var AccountingImport $accountingImport
+         */
+        $accountingImport = $this->get('accounting.import');
+        if (!$data = $accountingImport->getImportData()) {
+            $result['error'] = true;
+            $result['message'] = 'import.error.access';
+            return new JsonResponse($result);
+        }
 
+        if (empty($data[$accountingImport::IMPORT_MAPPING])) {
+            $result['error'] = true;
+            $result['message'] = 'import.error.access';
+            return new JsonResponse($result);
+        }
+
+        $rows = array();
+        $total = $accountingImport->countData();
+        $data = $request->request->all();
+        if ($total > 0) {
+            $rows = $accountingImport->getMappedData($data['page'], 10);
+        }
+
+        $result['rows'] = $rows;
+        $result['total'] = $total;
+        $result['pagination'] = $accountingImport->getPages(10);
+
+        return new JsonResponse($result);
     }
 }

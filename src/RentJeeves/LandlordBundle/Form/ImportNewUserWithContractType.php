@@ -32,7 +32,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_RENT
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_RENT)
             )
@@ -43,7 +44,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_LEASE_END
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_LEASE_END)
             )
@@ -54,7 +56,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_BALANCE
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_BALANCE)
             )
@@ -65,7 +68,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_EMAIL
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_EMAIL)
             )
@@ -76,7 +80,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::FIRST_NAME_TENANT
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_TENANT_NAME)
             )
@@ -87,7 +92,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::LAST_NAME_TENANT
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_TENANT_NAME)
             )
@@ -98,7 +104,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_MOVE_IN
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_MOVE_IN)
             )
@@ -109,7 +116,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class' => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_RESIDENT_ID
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_RESIDENT_ID)
             )
@@ -120,7 +128,8 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'class'     => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_UNIT
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_UNIT)
             )
