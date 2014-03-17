@@ -1,14 +1,29 @@
+{% form_theme form 'RjCoreBundle::form.html.twig' %}
+
 <tr data-bind="if: status == 'exist_user_exist_contract'">
-    <td data-bind="text:status"></td>
+    {{ form_start(form) }}
+    <td data-bind="text:status_readable"></td>
     <td data-bind="text:unit"></td>
-    <td data-bind="text:resident_id"></td>
-    <td data-bind="text:status"></td>
-    <td data-bind="text:first_name"></td>
+    <td>
+        {{ form_widget(form.resident_id) }}
+    </td>
     <td data-bind="text:last_name"></td>
-    <td data-bind="text:rent"></td>
+    <td data-bind="text:first_name"></td>
+    <td data-bind="text:email"></td>
+    <td>
+        {{ form_widget(form.rent) }}
+    </td>
     <td data-bind="text:move_in"></td>
-    <td data-bind="text:lease_end"></td>
-    <td data-bind="text:move_out"></td>
-    <td data-bind="text:balance"></td>
+    <td>
+        {{ form_widget(form.lease_end) }}
+    </td>
+    <td>
+        {{ form_widget(form.move_out) }}
+    </td>
+    <td>
+        {{ form_widget(form.balance) }}
+    </td>
     <td></td>
+    {{ form_widget(form._token) }}
+    {{ form_end(form) }}
 </tr>

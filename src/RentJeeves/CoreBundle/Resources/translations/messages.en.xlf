@@ -2125,6 +2125,26 @@
               <source>import.error.access</source>
               <target>Access denied, move to first step please.</target>
             </trans-unit>
+            <trans-unit id="import.status.skip">
+              <source>import.status.skip</source>
+              <target>Skip</target>
+            </trans-unit>
+            <trans-unit id="import.status.ended">
+              <source>import.status.ended</source>
+              <target>Skip</target>
+            </trans-unit>
+            <trans-unit id="import.status.match">
+              <source>import.status.match</source>
+              <target>Match</target>
+            </trans-unit>
+            <trans-unit id="import.status.new">
+              <source>import.status.new</source>
+              <target>New</target>
+            </trans-unit>
+            <trans-unit id="import.review.and.post">
+              <source>import.review.and.post</source>
+              <target>Import data and review next</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

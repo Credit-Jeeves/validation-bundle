@@ -18,7 +18,13 @@
                     }}
                     <br />
                     <br />
-                    <table class="properties-table zebra-grid">
+                    <div class="errorMessage" data-bind="
+                            visible: $root.errorLoadDataMessage().length > 0,
+                            text: $root.errorLoadDataMessage()
+                    ">
+                    </div>
+                    <table class="properties-table zebra-grid" data-bind="
+                            visible: $root.errorLoadDataMessage().length <= 0">
                         <thead>
                         <tr class="properties-th">
                             <th class="pie-el"><span>{{ 'import.status'|trans }}</span></th>
@@ -76,9 +82,12 @@
                         <a href="{{ path("landlord_reports_match_file") }}" class="button small fixed next grey prev">
                             <span>{{ 'pay_popup.step.previous'|trans }}</span>
                         </a>
-                        <button type="submit" class="button small submitImportFile">
+                        <button type="submit"
+                                class="button small submitImportFile"
+                                data-bind="visible: $root.errorLoadDataMessage().length <= 0"
+                        >
                             <span>
-                                {{ 'next'|trans }}
+                                {{ 'import.review.and.post'|trans }}
                             </span>
                         </button>
                     </div>
@@ -101,11 +110,13 @@
 {% endblock %}
 
 {% block javascripts %}
+    {{ include('FpJsFormValidatorBundle::javascripts.html.twig') }}
     {{ parent() }}
     {% javascripts
     'bundles/bazingajstranslation/js/translator.min.js'
     '@LandlordBundle/Resources/public/js/accountingImport.js'
     '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+    '@RjComponentBundle/Resources/public/js/knockout-jqueryui.min.js'
     '@LandlordBundle/Resources/public/js/reviewAndPost.js'
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>

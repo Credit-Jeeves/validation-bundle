@@ -245,21 +245,22 @@ class ReportsController extends Controller
         $this->checkAccessToReport();
         $result = array(
             'error'   => false,
-            'message' => null,
+            'message' => '',
         );
+        $i18n = $this->get('translator');
         /**
          * @var AccountingImport $accountingImport
          */
         $accountingImport = $this->get('accounting.import');
         if (!$data = $accountingImport->getImportData()) {
             $result['error'] = true;
-            $result['message'] = 'import.error.access';
+            $result['message'] = $i18n->trans('import.error.access');
             return new JsonResponse($result);
         }
 
         if (empty($data[$accountingImport::IMPORT_MAPPING])) {
             $result['error'] = true;
-            $result['message'] = 'import.error.access';
+            $result['message'] =  $i18n->trans('import.error.access');
             return new JsonResponse($result);
         }
 

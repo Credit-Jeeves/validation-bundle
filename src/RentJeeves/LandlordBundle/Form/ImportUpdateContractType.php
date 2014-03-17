@@ -31,7 +31,9 @@ class ImportUpdateContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'id'        => '',
+                    'class'     => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_RENT,
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_RENT)
             )
@@ -42,9 +44,24 @@ class ImportUpdateContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'id'        => '',
+                    'class'     => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_LEASE_END,
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_LEASE_END)
+            )
+        );
+
+        $builder->add(
+            AccountingImport::KEY_MOVE_OUT,
+            'text',
+            array(
+                'attr'           => array(
+                    'id'        => '',
+                    'class'     => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_MOVE_OUT,
+                ),
+                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_MOVE_OUT)
             )
         );
 
@@ -53,9 +70,35 @@ class ImportUpdateContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
-                    'class' => 'half-width'
+                    'id'        => '',
+                    'class'     => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_BALANCE,
                 ),
                 'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_BALANCE)
+            )
+        );
+
+        $builder->add(
+            AccountingImport::KEY_RESIDENT_ID,
+            'text',
+            array(
+                'attr'           => array(
+                    'id'        => '',
+                    'class'     => 'half-width',
+                    'data-bind' => 'value: '.AccountingImport::KEY_RESIDENT_ID,
+                ),
+                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_RESIDENT_ID)
+            )
+        );
+
+        $builder->add(
+            '_token',
+            'hidden',
+            array(
+                'attr'           => array(
+                    'id'         => '',
+                    'data-bind'  => 'value: _token'
+                ),
             )
         );
     }
@@ -66,6 +109,7 @@ class ImportUpdateContractType extends AbstractType
             array(
                 'csrf_protection'    => true,
                 'cascade_validation' => true,
+                'csrf_field_name' => '_token',
             )
         );
     }

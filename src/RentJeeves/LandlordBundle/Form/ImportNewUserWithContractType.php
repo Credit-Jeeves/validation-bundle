@@ -32,6 +32,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::KEY_RENT
                 ),
@@ -44,6 +45,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::KEY_LEASE_END
                 ),
@@ -56,6 +58,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::KEY_BALANCE
                 ),
@@ -68,6 +71,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::KEY_EMAIL
                 ),
@@ -80,6 +84,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::FIRST_NAME_TENANT
                 ),
@@ -92,6 +97,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::LAST_NAME_TENANT
                 ),
@@ -104,6 +110,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::KEY_MOVE_IN
                 ),
@@ -116,6 +123,7 @@ class ImportNewUserWithContractType extends AbstractType
             'text',
             array(
                 'attr'           => array(
+                    'id'        => '',
                     'class' => 'half-width',
                     'data-bind' => 'value: '.AccountingImport::KEY_RESIDENT_ID
                 ),
@@ -135,14 +143,33 @@ class ImportNewUserWithContractType extends AbstractType
             )
         );
 
+        $builder->add(
+            'send_invite',
+            'checkbox',
+            array(
+                'data' => true,
+            )
+        );
+
+        $builder->add(
+            '_token',
+            'hidden',
+            array(
+                'attr'           => array(
+                    'id'        => '',
+                    'data-bind' => 'value: _token'
+                ),
+            )
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
-                'csrf_protection'    => true,
-                'cascade_validation' => true,
+                'csrf_protection'       => true,
+                'cascade_validation'    => true,
+                'csrf_field_name'       => '_token',
             )
         );
     }

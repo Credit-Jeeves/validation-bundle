@@ -9,12 +9,15 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Validator\DateWithFormat;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use Symfony\Bridge\Twig\Node\TransDefaultDomainNode;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Validator;
+use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
+use CreditJeeves\CoreBundle\Translation\Translator;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -61,6 +64,8 @@ class AccountingImport
 
     const STATUS = 'status';
 
+    const STATUS_READABLE = 'status_readable';
+
     const TENANT = 'tenant';
 
     const CONTRACT = 'contract';
@@ -83,21 +88,30 @@ class AccountingImport
 
     protected $em;
 
+    protected $csrfProvider;
+
+    protected $i18n;
+
     /**
      * @InjectParams({
-     *     "session"   = @Inject("session"),
-     *     "reader"    = @Inject("reader.csv"),
-     *     "validator" = @Inject("validator"),
-     *     "em"        = @Inject("doctrine.orm.default_entity_manager"),
+     *     "session"      = @Inject("session"),
+     *     "reader"       = @Inject("reader.csv"),
+     *     "validator"    = @Inject("validator"),
+     *     "em"           = @Inject("doctrine.orm.default_entity_manager"),
+     *     "csrfProvider" = @Inject("form.csrf_provider"),
+     *     "translator"   = @Inject("translator")
      * })
      */
     public function __construct(
         Session $session,
         CsvFileReader $reader,
         Validator $validator,
-        EntityManager $em
+        EntityManager $em,
+        CsrfTokenManagerAdapter $csrfProvider,
+        Translator $translator
     )
     {
+        $this->csrfProvider = $csrfProvider;
         $this->session = $session;
         $this->reader  = $reader;
         $data          = $this->getImportData();
@@ -105,6 +119,7 @@ class AccountingImport
         $this->reader->setEnclosure($data[self::IMPORT_TEXT_DELIMITER]);
         $this->validator       = $validator;
         $this->em              = $em;
+        $this->i18n            = $translator;
         $this->validatorsField = array(
             self::FIRST_NAME_TENANT => array(),
             self::LAST_NAME_TENANT  => array(),
@@ -159,12 +174,10 @@ class AccountingImport
                 new DateWithFormat(),
             ),
             self::KEY_BALANCE       => array(
-                array(
-                    new NotBlank(),
-                    new Regex(
-                        array(
-                            'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
-                        )
+                new NotBlank(),
+                new Regex(
+                    array(
+                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
                     )
                 )
             ),
@@ -192,7 +205,7 @@ class AccountingImport
 
     public function getPropertyId()
     {
-        $this->session->get(self::IMPORT_PROPERTY_ID);
+        return $this->session->get(self::IMPORT_PROPERTY_ID);
     }
 
     public function setTextDelimiter($value)
@@ -330,15 +343,17 @@ class AccountingImport
     protected function getDetailedData($row)
     {
         $data = array(
-            self::STATUS    => null,
-            self::CONTRACT  => null,
-            self::TENANT    => null
+            self::STATUS            => null,
+            self::CONTRACT          => null,
+            self::TENANT            => null,
+            self::STATUS_READABLE   => null,
         );
 
         $skip = $this->isSkipped($row);
 
         if ($skip) {
             $data[self::STATUS] = 'skip';
+            $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.skip');
             return $data;
         }
 
@@ -355,10 +370,12 @@ class AccountingImport
 
         if (empty($tenant) && !$ended) {
             $data[self::STATUS] = 'new_user_new_contract';
+            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.new');
             return $data;
         }
 
         if (empty($tenant) && $ended) {
+            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.skip');
             $data[self::STATUS]   = 'ended_not_exist';
             return $data;
         }
@@ -375,6 +392,7 @@ class AccountingImport
 
         if (empty($unit) && empty($property) && !$ended) {
             $data[self::STATUS] = 'exist_user_new_contract';
+            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.new');
             return $data;
         }
 
@@ -388,22 +406,26 @@ class AccountingImport
 
         if (empty($contract) && !$ended) {
             $data[self::STATUS] = 'exist_user_new_contract';
+            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.new');
             return $data;
         }
 
         if (!empty($contract) && !$ended) {
             $data[self::CONTRACT] = $contract;
             $data[self::STATUS]   = 'exist_user_exist_contract';
+            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.match');
             return $data;
         }
 
         if ($ended && !empty($contract)) {
             $data[self::CONTRACT] = $contract;
+            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.ended');
             $data[self::STATUS]   = 'ended_exist';
             return $data;
         }
 
         if ($ended && empty($contract)) {
+            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.skip');
             $data[self::STATUS]   = 'ended_not_exist';
             return $data;
         }
@@ -433,10 +455,13 @@ class AccountingImport
         $offset = $page * $rowCount - $rowCount;
         $data = $this->getFileData(true, $offset, $rowCount);
         foreach ($data as $key => $values) {
-            $data[$key][self::STATUS] = $this->getDetailedData($values)[self::STATUS];
+            $result = $this->getDetailedData($values);
+            $data[$key][self::STATUS] = $result[self::STATUS];
+            $data[$key][self::STATUS_READABLE] = $result[self::STATUS_READABLE];
             $names = self::parseName($values[self::KEY_TENANT_NAME]);
             $data[$key][self::FIRST_NAME_TENANT] = $names[self::FIRST_NAME_TENANT];
             $data[$key][self::LAST_NAME_TENANT] = $names[self::LAST_NAME_TENANT];
+            $data[$key]['_token'] = $this->csrfProvider->generateCsrfToken($key+$offset);
         }
 
         return $data;
