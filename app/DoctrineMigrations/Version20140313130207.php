@@ -4,6 +4,7 @@ namespace Application\Migrations;
 
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
+use PDO;
 
 class Version20140313130207 extends AbstractMigration
 {
@@ -13,28 +14,49 @@ class Version20140313130207 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
-        $this->addSql(
-            "DROP TABLE cj_order_operation"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
-                DROP INDEX UNIQ_21F5D92D2576E0FD,
-                ADD INDEX IDX_21F5D92D2576E0FD (contract_id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
-                ADD order_id BIGINT DEFAULT NULL"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
-                ADD CONSTRAINT FK_21F5D92D8D9F6D38
-                FOREIGN KEY (order_id)
-                REFERENCES cj_order (id)"
-        );
-        $this->addSql(
-            "CREATE INDEX IDX_21F5D92D8D9F6D38 ON cj_operation (order_id)"
-        );
+        $sql = "SELECT ord.*, o.*, op.*, ord.amount AS order_amount, h.amount AS h_amount, op.cj_order_id AS cj_order_id
+        FROM `cj_order_operation` AS op
+        INNER JOIN cj_operation AS o ON op.cj_operation_id = o.id
+        INNER JOIN cj_order AS ord ON op.cj_order_id = ord.id
+        LEFT JOIN rj_checkout_heartland AS h ON h.order_id = ord.id
+        GROUP BY `cj_order_id`, `cj_operation_id`";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute();
+
+        $oldRow = null;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+            $amount = empty($row['order_amount'])?$row['h_amount']:$row['order_amount'];
+            if ($oldRow['cj_operation_id'] != $row['cj_operation_id']) {
+                $this->addSql("UPDATE cj_operation
+                SET `order_id` = {$row['cj_order_id']},
+                    `amount` = '{$amount}'
+                WHERE `id` = {$row['cj_operation_id']}
+                ");
+                $oldRow = $row;
+            } else {
+                $sql = "INSERT cj_operation
+                SET
+                `order_id` = {$row['cj_order_id']},
+                `amount` = {$amount},
+                `type` = '{$oldRow['type']}',
+                `created_at` = '{$oldRow['created_at']}'
+                ";
+                if ($oldRow['cj_applicant_report_id']) {
+                    $sql .= ",`cj_applicant_report_id` = {$oldRow['cj_applicant_report_id']}";
+                }
+                if ($oldRow['contract_id']) {
+                    $sql .= ",`contract_id` = {$oldRow['contract_id']}";
+                }
+                if ($oldRow['group_id']) {
+                    $sql .= ",`group_id` = {$oldRow['group_id']}";
+                }
+                $this->addSql($sql);
+            }
+
+//            $this->addSql("DELETE FROM `cj_order_operation`
+//                WHERE `cj_operation_id` = {$row['cj_operation_id']} AND `cj_order_id` = {$row['cj_order_id']}");
+        }
     }
 
     public function down(Schema $schema)
@@ -43,43 +65,6 @@ class Version20140313130207 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
-        $this->addSql(
-            "CREATE TABLE cj_order_operation (cj_order_id BIGINT NOT NULL,
-                cj_operation_id BIGINT NOT NULL,
-                INDEX IDX_1FF923042122E99A (cj_order_id),
-                INDEX IDX_1FF92304CBF96867 (cj_operation_id),
-                PRIMARY KEY(cj_order_id,
-                cj_operation_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_order_operation
-                ADD CONSTRAINT FK_1FF92304CBF96867
-                FOREIGN KEY (cj_operation_id)
-                REFERENCES cj_operation (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_order_operation
-                ADD CONSTRAINT FK_1FF923042122E99A
-                FOREIGN KEY (cj_order_id)
-                REFERENCES cj_order (id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
-                DROP INDEX IDX_21F5D92D2576E0FD,
-                ADD UNIQUE INDEX UNIQ_21F5D92D2576E0FD (contract_id)"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
-                DROP
-                FOREIGN KEY FK_21F5D92D8D9F6D38"
-        );
-        $this->addSql(
-            "DROP INDEX IDX_21F5D92D8D9F6D38 ON cj_operation"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
-                DROP order_id"
-        );
+
     }
 }

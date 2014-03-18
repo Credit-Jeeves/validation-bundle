@@ -1,184 +1,225 @@
 model: CreditJeeves\DataBundle\Entity\Operation 
 fixtures:
   rjOperation_1:
+    order: rjOrder_1
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_2:
+    order: rjOrder_2
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_3:
+    order: rjOrder_3
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_3_error:
+    order: rjOrder_3_error
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_3_cancelled:
+    order: rjOrder_3_cancelled
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_3_refunded:
+    order: rjOrder_3_refunded
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_3_returned:
+    order: rjOrder_3_returned
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_4:
+    order: rjOrder_4
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_5:
+    order: rjOrder_5
     contract: Contract_7
     type: rent
     amount: 37200
   rjOperation_6:
+    order: rjOrder_6
     contract: Contract_6
     type: rent
     amount: 3700
   rjOperation_66:
+    order: rjOrder_66
     contract: Contract_66
     type: rent
     amount: 3700
 
 # finished contract
   rjOperation_3_1:
+    order: rjOrder_3_1
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_2_1:
+    order: rjOrder_3_2_1
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_2_2:
+    order: rjOrder_3_2_2
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_3:
+    order: rjOrder_3_3
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_4:
+    order: rjOrder_3_4
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_5:
+    order: rjOrder_3_5
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_6:
+    order: rjOrder_3_6
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_7:
+    order: rjOrder_3_7
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_8:
+    order: rjOrder_3_8
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_9:
+    order: rjOrder_3_9
     contract: Contract_3
     type: rent
     amount: 1500
   rjOperation_3_10:
+    order: rjOrder_3_10
     contract: Contract_3
     type: rent
     amount: 1500
 
   rjOperation_4_1:
+    order: rjOrder_4_1
     contract: Contract_4
     type: rent
     amount: 1250
   rjOperation_4_2:
+    order: rjOrder_4_2
     contract: Contract_4
     type: rent
     amount: 1250
   rjOperation_4_3:
+    order: rjOrder_4_3
     contract: Contract_4
     type: rent
     amount: 1250
   rjOperation_4_4:
+    order: rjOrder_4_4
     contract: Contract_4
     type: rent
     amount: 1250
   rjOperation_4_5:
+    order: rjOrder_4_5
     contract: Contract_4
     type: rent
     amount: 1250
   rjOperation_4_6:
-    contract: Contract_4
+    order: rjOrder_4_6
     type: rent
     amount: 1250
   rjOperation_4_7:
-    contract: Contract_4
+    order: rjOrder_4_7
     type: rent
     amount: 1250
 
   rjOperation_5_1:
-    contract: Contract_2
+    order: rjOrder_5_1
     type: rent
     amount: 1250
   rjOperation_5_2:
+    order: rjOrder_5_2
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_3:
+    order: rjOrder_5_3
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_4:
+    order: rjOrder_5_4
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_5:
+    order: rjOrder_5_5
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_6:
+    order: rjOrder_5_6
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_7:
+    order: rjOrder_5_7
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_8:
+    order: rjOrder_5_8
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_9:
+    order: rjOrder_5_9
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_10:
+    order: rjOrder_5_10
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_11:
+    order: rjOrder_5_11
     contract: Contract_2
     type: rent
     amount: 1250
   rjOperation_5_12:
+    order: rjOrder_5_12
     contract: Contract_2
     type: rent
     amount: 1250
 
   rjOperation_6_1:
+    order: rjOrder_6_1
     contract: Contract_16
     type: rent
     amount: 1
   rjOperation_6_2:
+    order: rjOrder_6_2
     contract: Contract_16
     type: rent
     amount: 2
 
   rjOperation_8:
+    order: rjOrder_8
     contract: Contract_14
     type: rent
     amount: 1500

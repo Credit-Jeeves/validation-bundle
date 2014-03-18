@@ -72,7 +72,8 @@ abstract class Operation
      *
      * @ORM\JoinColumn(
      *     name="order_id",
-     *     referencedColumnName="id"
+     *     referencedColumnName="id",
+     *     nullable=false
      * )
      */
     protected $order;
