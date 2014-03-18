@@ -401,10 +401,13 @@ class IframeCase extends BaseTestCase
         $this->load(true);
         $this->getIframeFound('connie@rentrack.com');
         $this->checkResendInvite();
+        // Close browser and reset session by this
+        static::tearDownAfterClass();
     }
 
     /**
      * @test
+     * @depends resendInviteIframeFound
      */
     public function resendInviteIframeNotFound()
     {

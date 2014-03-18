@@ -12,10 +12,4 @@ abstract class BaseTestCase extends Base
     const APP = 'AppRj';
 
     protected $envPath = '/rj_test.php/';
-
-    protected function load($reload = false)
-    {
-        parent::load($reload);
-        $this->clearEmail();
-    }
 }
