@@ -345,8 +345,8 @@ class ContractRepository extends EntityRepository
         $query->select('SUM(o.amount) AS amount, h.id, g.id as group_id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('c.operation', 'operation');
-        $query->innerJoin('operation.orders', 'o');
+        $query->innerJoin('c.operations', 'operation');
+        $query->innerJoin('operation.order', 'o');
         $query->where('o.status IN (:status)');
         $query->andWhere('o.updated_at BETWEEN :start AND :end');
         $query->groupBy('h.id');
@@ -375,8 +375,8 @@ class ContractRepository extends EntityRepository
         $query->select('SUM(o.amount)');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
-        $query->innerJoin('c.operation', 'operation');
-        $query->innerJoin('operation.orders', 'o');
+        $query->innerJoin('c.operations', 'operation');
+        $query->innerJoin('operation.order', 'o');
         $query->where('c.holding = :holding');
         $query->andWhere('o.status =:status');
         $query->andWhere('o.updated_at BETWEEN :start AND :end');
@@ -407,8 +407,8 @@ class ContractRepository extends EntityRepository
     public function getLateContracts($days = 5)
     {
         $query = $this->createQueryBuilder('c');
-        $query->leftJoin('c.operation', 'op');
-        $query->leftJoin('op.orders', 'o', Expr\Join::WITH, 'o.status = :orderStatus');
+        $query->leftJoin('c.operations', 'op');
+        $query->leftJoin('op.order', 'o', Expr\Join::WITH, 'o.status = :orderStatus');
         $query->setParameter('orderStatus', OrderStatus::PENDING);
         $query->andWhere('o.id IS NULL');
         $query->andWhere('c.paidTo BETWEEN :start AND :now');

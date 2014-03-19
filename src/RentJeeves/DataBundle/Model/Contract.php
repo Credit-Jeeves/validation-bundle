@@ -212,16 +212,16 @@ abstract class Contract
     protected $updatedAt;
 
     /**
-     * @ORM\OneToOne(
+     * @ORM\OneToMany(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Operation",
      *     mappedBy="contract",
      *     cascade={"all"},
      *     orphanRemoval=true
      * )
-     * @var \CreditJeeves\DataBundle\Entity\Operation
      * @Serializer\Exclude
+     * @var ArrayCollection
      */
-    protected $operation;
+    protected $operations;
 
     /**
      * @ORM\OneToMany(
@@ -657,25 +657,35 @@ abstract class Contract
     }
 
     /**
-     * Set operation
+     * Add payment
      *
      * @param \CreditJeeves\DataBundle\Entity\Operation $operation
      * @return Contract
      */
-    public function setOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
-        $this->operation = $operation;
+        $this->operations[] = $operation;
         return $this;
+    }
+
+    /**
+     * Remove payment
+     *
+     * @param \CreditJeeves\DataBundle\Entity\Operation $operation
+     */
+    public function removeOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
+    {
+        $this->operations->removeElement($operation);
     }
 
     /**
      * Get operations
      *
-     * @return \CreditJeeves\DataBundle\Entity\Operation
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getOperation()
+    public function getOperations()
     {
-        return $this->operation;
+        return $this->operations;
     }
 
     /**

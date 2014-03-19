@@ -13,4 +13,3 @@ monolog:
 
 assetic:
     use_controller: true
-

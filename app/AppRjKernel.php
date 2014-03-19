@@ -67,14 +67,15 @@ class AppRjKernel extends AppKernel
             new RentJeeves\ExperianBundle\RjExperianBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
         );
-        if (in_array($this->getEnvironment(), array('dev', 'test'))) {
+        if (in_array($this->getEnvironment(), array('dev', 'test', 'migration'))) {
+            $bundles[] = new ENC\Bundle\BackupRestoreBundle\BackupRestoreBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             $bundles[] = new Khepin\YamlFixturesBundle\KhepinYamlFixturesBundle();
             $bundles[] = new CreditJeeves\DevBundle\CjDevBundle();
         }
-        if (in_array($this->getEnvironment(), array('test'))) {
+        if (in_array($this->getEnvironment(), array('test', 'migration'))) {
             $bundles[] = new Behat\MinkBundle\MinkBundle();
             $bundles[] = new CreditJeeves\TestBundle\TestBundle(); // Must be one of last included bundle
             $bundles[] = new RentJeeves\TestBundle\TestBundle(); // Must be last included bundle

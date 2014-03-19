@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
@@ -238,12 +239,13 @@ class Contract extends Base
     {
         $result = self::EMPTY_LAST_PAYMENT;
         $payments = array();
-        $operation = $this->getOperation();
-        if (empty($operation)) {
+        $operations = $this->getOperations();
+        if (!$operations->count()) {
             return $result;
         } else {
-            $orders = $operation->getOrders();
-            foreach ($orders as $order) {
+            /** @var Operation $operation */
+            foreach ($operations as $operation) {
+                $order = $operation->getOrder();
                 if (OrderStatus::COMPLETE == $order->getStatus()) {
                     $payments[] = $order->getCreatedAt()->format('M d, Y');
                 }

@@ -36,3 +36,4 @@ mink:
 #    selenium: ~
     selenium2: ~
 
+backup_restore: ~

@@ -30,3 +30,5 @@ khepin_yaml_fixtures:
         - DataBundle
         - RjDataBundle
     directory: Resources/fixtures
+
+backup_restore: ~

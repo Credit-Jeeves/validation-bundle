@@ -1,5 +1,0 @@
-model: CreditJeeves\DataBundle\Entity\Operation 
-fixtures:
-  cjOperationReport_1:
-    reportD2c: cjApplicantReportD2C_5
-    amount: 9

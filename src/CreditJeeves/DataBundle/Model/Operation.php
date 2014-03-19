@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
+use DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -50,7 +51,7 @@ abstract class Operation
     protected $cjApplicantReportId;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(
      *     name="created_at",
@@ -62,12 +63,20 @@ abstract class Operation
     /**
      * @var ArrayCollection
      *
-     * @ORM\ManyToMany(
+     * @ORM\ManyToOne(
      *     targetEntity="\CreditJeeves\DataBundle\Entity\Order",
-     *     mappedBy="operations"
+     *     cascade={"persist", "remove", "merge"},
+     *     inversedBy="operations",
+     *     fetch = "EAGER"
+     * )
+     *
+     * @ORM\JoinColumn(
+     *     name="order_id",
+     *     referencedColumnName="id",
+     *     nullable=false
      * )
      */
-    protected $orders;
+    protected $order;
 
     /**
      * @var \CreditJeeves\DataBundle\Entity\ReportD2c
@@ -87,9 +96,9 @@ abstract class Operation
     /**
      * @var \RentJeeves\DataBundle\Entity\Contract
      * 
-     * @ORM\OneToOne(
+     * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
-     *     inversedBy="operation",
+     *     inversedBy="operations",
      *     cascade={"all"}
      * )
      * @ORM\JoinColumn(
@@ -108,8 +117,7 @@ abstract class Operation
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
-        $this->orders = new ArrayCollection();
+        $this->createdAt = new DateTime();
     }
 
 
@@ -192,7 +200,7 @@ abstract class Operation
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      * @return Operation
      */
     public function setCreatedAt($createdAt)
@@ -205,7 +213,7 @@ abstract class Operation
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getCreatedAt()
     {
@@ -216,7 +224,8 @@ abstract class Operation
      * Add reportsD2c
      *
      * @param \CreditJeeves\DataBundle\Entity\ReportD2c $reportD2c
-     * @return User
+     * 
+     * @return Operation
      */
     public function setReportD2c(\CreditJeeves\DataBundle\Entity\ReportD2c $reportD2c)
     {
@@ -236,45 +245,40 @@ abstract class Operation
     }
 
     /**
-     * Add orders
+     * Set order
      *
      * @param \CreditJeeves\DataBundle\Entity\Order $orders
-     * @return User
+     *
+     * @return Operation
      */
-    public function addOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
+    public function setOrder(\CreditJeeves\DataBundle\Entity\Order $order)
     {
-        throw new \RuntimeException('Don\'t use this method, jackass! Use only order::addOperation!');
+        $this->order = $order;
+
+        return $this;
     }
 
     /**
-     * Remove orders
+     * Get order
      *
-     * @param \CreditJeeves\DataBundle\Entity\Order $orders
+     * @return \CreditJeeves\DataBundle\Entity\Order
      */
-    public function removeOrder(\CreditJeeves\DataBundle\Entity\Order $orders)
+    public function getOrder()
     {
-        $this->orders->removeElement($orders);
-    }
-
-    /**
-     * Get orders
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOrders()
-    {
-        return $this->orders;
+        return $this->order;
     }
 
     /**
      * Set Contract
      *
      * @param \RentJeeves\DataBundle\Entity\Contract $contract
+     * 
      * @return Operation
      */
     public function setContract(\RentJeeves\DataBundle\Entity\Contract $contract = null)
     {
         $this->contract = $contract;
+
         return $this;
     }
 
@@ -289,15 +293,18 @@ abstract class Operation
     }
 
     /**
-     * @param CreditJeeves\DataBundle\Entity\Group $group
+     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     *
+     * @return Operation
      */
     public function setGroup($group)
     {
         $this->group = $group;
+        return $this;
     }
 
     /**
-     * @return CreditJeeves\DataBundle\Entity\Group
+     * @return \CreditJeeves\DataBundle\Entity\Group
      */
     public function getGroup()
     {
