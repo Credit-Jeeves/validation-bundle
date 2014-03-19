@@ -4,3 +4,4 @@ fixtures:
     order: cjOrder_1
     reportD2c: cjApplicantReportD2C_5
     amount: 9
+    paidTo: now

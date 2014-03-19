@@ -51,6 +51,28 @@ abstract class Operation
     protected $cjApplicantReportId;
 
     /**
+     * @ORM\Column(
+     *     name="paid_at",
+     *     type="datetime",
+     *     nullable=false
+     * )
+     *
+     * @var DateTime
+     */
+    protected $paidTo;
+
+    /**
+     * @ORM\Column(
+     *     name="paid_for",
+     *     type="bigint",
+     *     nullable=false
+     * )
+     *
+     * @var integer
+     */
+    protected $paidFor;
+
+    /**
      * @var DateTime
      *
      * @ORM\Column(
@@ -195,6 +217,52 @@ abstract class Operation
     public function getCjApplicantReportId()
     {
         return $this->cjApplicantReportId;
+    }
+
+    /**
+     * Set paidFor
+     *
+     * @param integer $paidFor
+     * @return Operation
+     */
+    public function setPaidFor($paidFor)
+    {
+        $this->paidFor = $paidFor;
+        return $this;
+    }
+
+    /**
+     * Get paidFor
+     *
+     * @return integer
+     */
+    public function getPaidFor()
+    {
+        return $this->paidFor;
+    }
+
+    /**
+     * Set paidTo
+     *
+     * @param DateTime $paidTo
+     *
+     * @return Operation
+     */
+    public function setPaidTo($paidTo)
+    {
+        $this->paidTo = $paidTo;
+
+        return $this;
+    }
+
+    /**
+     * Get paidTo
+     *
+     * @return DateTime
+     */
+    public function getPaidTo()
+    {
+        return $this->paidTo;
     }
 
     /**

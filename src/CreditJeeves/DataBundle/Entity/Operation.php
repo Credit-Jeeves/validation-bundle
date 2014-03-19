@@ -4,6 +4,7 @@ namespace CreditJeeves\DataBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Operation as Base;
 use JMS\Serializer\Annotation as Serializer;
+use DateTime;
 
 /**
  * Operation
@@ -12,6 +13,7 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @ORM\Table(name="cj_operation")
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OperationRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Operation extends Base
 {
@@ -138,5 +140,15 @@ class Operation extends Base
     public function __toString()
     {
         return (string)$this->getType();
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        if (empty($this->paidFor) && ($this->paidTo instanceof DateTime)) {
+            $this->paidFor = $this->paidTo->format('n');
+        }
     }
 }
