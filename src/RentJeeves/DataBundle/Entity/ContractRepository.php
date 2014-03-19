@@ -461,10 +461,11 @@ class ContractRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function getContractsForTURentalReport(DateTime $firstDate, DateTime $lastDate)
+    public function getContractsForRentalReport(DateTime $firstDate, DateTime $lastDate)
     {
         $query = $this->createQueryBuilder('c');
         $query->where('c.status = :statusCurrent');
+//        $query->andWhere('c.reporting = 1');
         $query->orWhere('c.status = :statusFinished and c.finishAt BETWEEN :firstDate AND :lastDate');
         $query->setParameter('statusCurrent', ContractStatus::CURRENT);
         $query->setParameter('statusFinished', ContractStatus::FINISHED);

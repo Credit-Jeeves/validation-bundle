@@ -1,11 +1,11 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report\TransUnion;
+namespace RentJeeves\CoreBundle\Report;
 
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
-class TransUnionRentalReport
+class ExperianRentalReport
 {
     protected $header;
     protected $records;
@@ -22,28 +22,19 @@ class TransUnionRentalReport
         $this->createRecords($startDate, $endDate);
     }
 
-    public function getReport()
-    {
-        $this->createHeader();
-        $this->createRecords();
-    }
-
     protected function createHeader()
     {
-        $this->header = new ReportHeader();
-        $lastActivityDate = $this->container->get('doctrine.orm.entity_manager')
-            ->getRepository('RjDataBundle:Contract')->getLastActivityDate();
-        $this->header->setActivityDate(new DateTime($lastActivityDate));
+        $this->header = new ExperianReportHeader();
     }
 
     protected function createRecords($startDate, $endDate)
     {
         $this->records = array();
         $contracts = $this->container->get('doctrine.orm.entity_manager')
-            ->getRepository('RjDataBundle:Contract')->getContractsForTURentalReport($startDate, $endDate);
+            ->getRepository('RjDataBundle:Contract')->getContractsForRentalReport($startDate, $endDate);
 
         foreach ($contracts as $contract) {
-            $this->records[] = new ReportRecord($contract);
+            $this->records[] = new ExperianReportRecord($contract);
         }
     }
 }

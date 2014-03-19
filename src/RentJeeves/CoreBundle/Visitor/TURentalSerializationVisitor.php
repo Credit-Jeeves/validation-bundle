@@ -44,7 +44,7 @@ class TURentalSerializationVisitor extends AbstractVisitor
      */
     public function visitString($data, array $type, Context $context)
     {
-        $this->content .= $data;
+        $this->content .= strtoupper($data);
     }
 
     /**

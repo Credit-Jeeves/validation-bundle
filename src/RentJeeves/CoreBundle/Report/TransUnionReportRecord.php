@@ -1,12 +1,13 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report\TransUnion;
+namespace RentJeeves\CoreBundle\Report;
 
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use DateTime;
 
-class ReportRecord 
+class TransUnionReportRecord
 {
     /**
      * @Serializer\Exclude
@@ -74,9 +75,10 @@ class ReportRecord
     protected $leaseRelationshipCode = '1';                             // 1
     protected $reserved3 = '  ';                                        // 2
     protected $countryCode = 'US';                                      // 2
-    /** @Serializer\Accessor(getter="getTenantAddress") */
+    /** @Serializer\Accessor(getter="getFirstLineOfAddress") */
     protected $firstLineOfAddress;                                      // 32
-    protected $secondLineOfAddress = '                                ';// 32
+    /** @Serializer\Accessor(getter="getSecondLineOfAddress") */
+    protected $secondLineOfAddress;                                     // 32
     /** @Serializer\Accessor(getter="getTenantAddressCity") */
     protected $tenantAddressCity;                                       // 20
     /** @Serializer\Accessor(getter="getTenantAddressState") */
@@ -98,12 +100,7 @@ class ReportRecord
 
     public function getPropertyIdentificationNumber()
     {
-        $unit = $this->contract->getUnit();
-        if ($unit) {
-            $propertyNumber = $unit->getId();
-        } else {
-            $propertyNumber = $this->contract->getProperty()->getId();
-        }
+        $propertyNumber = $this->contract->getProperty()->getId();
 
         return str_pad($propertyNumber, 20);
     }
@@ -150,6 +147,8 @@ class ReportRecord
 
     public function getLeaseStatus()
     {
+        $today = new DateTime();
+        $paidTo = $this->contract->getPaidTo();
         return '11';
     }
 
@@ -240,13 +239,19 @@ class ReportRecord
         return str_repeat(' ', 10);
     }
 
-    public function getTenantAddress()
+    public function getFirstLineOfAddress()
     {
-        $address = $this->contract->getTenant()->getDefaultAddress();
+        $property = $this->contract->getProperty();
+        $addressLine = sprintf('%s %s', $property->getNumber(), $property->getStreet());
 
-        $addressLine = sprintf('%s %s', $address->getNumber(), $address->getStreet());
-        if ($unit = $address->getUnit()) {
-            $addressLine = sprintf('%s # %s', $addressLine, $unit);
+        return str_pad($addressLine, 32);
+    }
+
+    public function getSecondLineOfAddress()
+    {
+        $addressLine = '';
+        if ($unit = $this->contract->getUnit()) {
+            $addressLine = $unit->getName();
         }
 
         return str_pad($addressLine, 32);

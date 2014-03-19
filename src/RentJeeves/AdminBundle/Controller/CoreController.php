@@ -2,8 +2,8 @@
 
 namespace RentJeeves\AdminBundle\Controller;
 
-//use RentJeeves\CoreBundle\Report\TransUnion\TransUnionRentalReport;
-use RentJeeves\CoreBundle\Report\TransUnion\TransUnionRentalReport;
+use RentJeeves\CoreBundle\Report\ExperianRentalReport;
+use RentJeeves\CoreBundle\Report\TransUnionRentalReport;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -31,17 +31,25 @@ class CoreController extends BaseController
     }
 
     /**
-     * @Route("report", name="sonata_admin_report")
+     * @Route("report/{type}", name="sonata_admin_report")
      * @Template()
      *
      * @return array
      */
-    public function reportAction()
+    public function reportAction($type)
     {
         $startDate = new \DateTime('02-01-2014');
         $endDate = new \DateTime('03-01-2014');
-        $report = new TransUnionRentalReport($this->container, $startDate, $endDate);
-        $result = $this->get('jms_serializer')->serialize($report, 'tu_rental1');
+
+        switch ($type) {
+            case 'tu_rental1':
+                $report = new TransUnionRentalReport($this->container, $startDate, $endDate);
+                break;
+            case 'csv':
+                $report = new ExperianRentalReport()
+        }
+
+        $result = $this->get('jms_serializer')->serialize($report, $type);
 
         return new Response($result, 200);
     }

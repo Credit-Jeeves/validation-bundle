@@ -1,11 +1,11 @@
 <?php
 
-namespace RentJeeves\CoreBundle\Report\TransUnion;
+namespace RentJeeves\CoreBundle\Report;
 
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
-class ReportHeader 
+class TransUnionReportHeader
 {
     protected $recordLength = '0426';                                   // 4
     protected $recordIdentifier = 'HEADER';                             // 6
