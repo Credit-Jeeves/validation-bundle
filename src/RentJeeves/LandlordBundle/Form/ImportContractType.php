@@ -40,17 +40,6 @@ class ImportContractType extends AbstractType
         );
 
         $builder->add(
-            'move_out',
-            'text',
-            array(
-                'mapped'         => false,
-                'attr'           => array(
-                    'class'     => 'half-width',
-                ),
-            )
-        );
-
-        $builder->add(
             'imported_balance',
             'text',
             array(
