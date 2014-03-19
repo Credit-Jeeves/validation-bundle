@@ -141,14 +141,4 @@ class Operation extends Base
     {
         return (string)$this->getType();
     }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        if (empty($this->paidFor) && ($this->paidTo instanceof DateTime)) {
-            $this->paidFor = $this->paidTo->format('n');
-        }
-    }
 }

@@ -52,23 +52,12 @@ abstract class Operation
 
     /**
      * @ORM\Column(
-     *     name="paid_at",
-     *     type="datetime",
+     *     name="paid_for",
+     *     type="date",
      *     nullable=false
      * )
      *
      * @var DateTime
-     */
-    protected $paidTo;
-
-    /**
-     * @ORM\Column(
-     *     name="paid_for",
-     *     type="bigint",
-     *     nullable=false
-     * )
-     *
-     * @var integer
      */
     protected $paidFor;
 
@@ -222,7 +211,7 @@ abstract class Operation
     /**
      * Set paidFor
      *
-     * @param integer $paidFor
+     * @param DateTime $paidFor
      * @return Operation
      */
     public function setPaidFor($paidFor)
@@ -234,35 +223,11 @@ abstract class Operation
     /**
      * Get paidFor
      *
-     * @return integer
+     * @return DateTime
      */
     public function getPaidFor()
     {
         return $this->paidFor;
-    }
-
-    /**
-     * Set paidTo
-     *
-     * @param DateTime $paidTo
-     *
-     * @return Operation
-     */
-    public function setPaidTo($paidTo)
-    {
-        $this->paidTo = $paidTo;
-
-        return $this;
-    }
-
-    /**
-     * Get paidTo
-     *
-     * @return DateTime
-     */
-    public function getPaidTo()
-    {
-        return $this->paidTo;
     }
 
     /**

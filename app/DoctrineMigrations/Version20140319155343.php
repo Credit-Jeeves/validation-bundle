@@ -16,8 +16,7 @@ class Version20140319155343 extends AbstractMigration
         
         $this->addSql(
             "ALTER TABLE cj_operation
-                ADD paid_at DATETIME NOT NULL,
-                ADD paid_for BIGINT NOT NULL"
+                ADD paid_for DATE NOT NULL"
         );
     }
 
@@ -29,7 +28,6 @@ class Version20140319155343 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_operation
-                DROP paid_at,
                 DROP paid_for"
         );
     }
