@@ -13,20 +13,22 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  * Class ImportNewUserWithContractType
  * @package RentJeeves\LandlordBundle\Form
  */
-class ImportNewContractType extends AbstractType
+class ImportUnitType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'contract',
-            new ImportContractType()
+            'name',
+            'text',
+            array(
+                'attr'           => array(
+                    'class'     => 'half-width',
+                    'data-bind' => 'value: name',
+                ),
+            )
         );
 
-        $builder->add(
-            'unit',
-            new ImportUnitType()
-        );
 
     }
 
@@ -34,19 +36,19 @@ class ImportNewContractType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'csrf_protection'       => true,
-                'csrf_field_name'       => '_token',
-                'cascade_validation'    => true,
-                'validation_groups'     => array(
-                    'import_contract',
+                'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
+                'validation_groups' => array(
+                    'import_unit',
                 ),
+                'csrf_protection'    => true,
+                'cascade_validation' => true,
             )
         );
     }
 
     public function getName()
     {
-        return 'import_new_contract';
+        return 'import_unit';
     }
 }
 

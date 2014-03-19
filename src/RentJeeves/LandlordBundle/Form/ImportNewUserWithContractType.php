@@ -16,131 +16,21 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class ImportNewUserWithContractType extends AbstractType
 {
 
-    protected $accountingImport;
-
-    public function __construct(AccountingImport $accountingImport)
-    {
-        $this->accountingImport = $accountingImport;
-    }
-
-
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            AccountingImport::KEY_RENT,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::KEY_RENT
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_RENT)
-            )
+            'tenant',
+            new ImportTenantType()
         );
 
         $builder->add(
-            AccountingImport::KEY_LEASE_END,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::KEY_LEASE_END
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_LEASE_END)
-            )
+            'contract',
+            new ImportContractType()
         );
 
         $builder->add(
-            AccountingImport::KEY_BALANCE,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::KEY_BALANCE
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_BALANCE)
-            )
-        );
-
-        $builder->add(
-            AccountingImport::KEY_EMAIL,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::KEY_EMAIL
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_EMAIL)
-            )
-        );
-
-        $builder->add(
-            AccountingImport::FIRST_NAME_TENANT,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::FIRST_NAME_TENANT
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_TENANT_NAME)
-            )
-        );
-
-        $builder->add(
-            AccountingImport::LAST_NAME_TENANT,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::LAST_NAME_TENANT
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_TENANT_NAME)
-            )
-        );
-
-        $builder->add(
-            AccountingImport::KEY_MOVE_IN,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::KEY_MOVE_IN
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_MOVE_IN)
-            )
-        );
-
-        $builder->add(
-            AccountingImport::KEY_RESIDENT_ID,
-            'text',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'class' => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::KEY_RESIDENT_ID
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_RESIDENT_ID)
-            )
-        );
-
-        $builder->add(
-            AccountingImport::KEY_UNIT,
-            'text',
-            array(
-                'attr'           => array(
-                    'class'     => 'half-width',
-                    'data-bind' => 'value: '.AccountingImport::KEY_UNIT
-                ),
-                'constraints'    => $this->accountingImport->getValidatorsByKey(AccountingImport::KEY_UNIT)
-            )
+            'unit',
+            new ImportUnitType()
         );
 
         $builder->add(
@@ -151,16 +41,6 @@ class ImportNewUserWithContractType extends AbstractType
             )
         );
 
-        $builder->add(
-            '_token',
-            'hidden',
-            array(
-                'attr'           => array(
-                    'id'        => '',
-                    'data-bind' => 'value: _token'
-                ),
-            )
-        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -168,8 +48,11 @@ class ImportNewUserWithContractType extends AbstractType
         $resolver->setDefaults(
             array(
                 'csrf_protection'       => true,
-                'cascade_validation'    => true,
                 'csrf_field_name'       => '_token',
+                'cascade_validation'    => true,
+                'validation_groups' => array(
+                    'import_contract',
+                ),
             )
         );
     }

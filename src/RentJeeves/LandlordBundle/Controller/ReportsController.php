@@ -6,11 +6,14 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\SerializerBuilder;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
+use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
 use RentJeeves\LandlordBundle\Form\ImportNewContractType;
@@ -214,17 +217,9 @@ class ReportsController extends Controller
             $this->redirect($this->generateUrl('landlord_reports_import'));
         }
 
-        $formNewUserWithContract = $this->createForm(
-            new ImportNewUserWithContractType($accountingImport)
-        );
-
-        $formNewContract = $this->createForm(
-            new ImportNewContractType($accountingImport)
-        );
-
-        $formUpdateContract = $this->createForm(
-            new ImportUpdateContractType($accountingImport)
-        );
+        $formNewUserWithContract = $accountingImport->getCreateUserAndCreateContractForm();
+        $formNewContract = $accountingImport->getCreateContractForm();
+        $formUpdateContract = $accountingImport->getUpdateContractForm();
 
         return array(
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
@@ -271,10 +266,19 @@ class ReportsController extends Controller
             $rows = $accountingImport->getMappedData($data['page'], 10);
         }
 
+        /**
+         * @var $contract Contract
+         */
+  /*      foreach ($rows[3]->getContracts() as $contract)
+        {
+            var_dump($contract->getStatus());
+        }
+        exit;*/
+        $serializer = SerializerBuilder::create()->build();
         $result['rows'] = $rows;
         $result['total'] = $total;
         $result['pagination'] = $accountingImport->getPages(10);
 
-        return new JsonResponse($result);
+        return new Response($serializer->serialize($result, 'json'));
     }
 }

@@ -2,15 +2,26 @@
 
 namespace RentJeeves\LandlordBundle\Report;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Validator\DateWithFormat;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Form\ImportContractType;
+use RentJeeves\LandlordBundle\Form\ImportNewContractType;
+use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
+use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Bridge\Twig\Node\TransDefaultDomainNode;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -62,14 +73,6 @@ class AccountingImport
 
     const ERRORS = 'errors';
 
-    const STATUS = 'status';
-
-    const STATUS_READABLE = 'status_readable';
-
-    const TENANT = 'tenant';
-
-    const CONTRACT = 'contract';
-
     protected $skipValue = array(
         self::KEY_RESIDENT_ID => 'VACANT',
     );
@@ -78,114 +81,58 @@ class AccountingImport
 
     protected $reader;
 
-    protected $validator;
-
-    protected $rowsErrorsList = array();
-
     protected $mapping = array();
-
-    protected $validatorsField = array();
 
     protected $em;
 
-    protected $csrfProvider;
+    /**
+     * @var Landlord
+     */
+    protected $user;
 
-    protected $i18n;
+    protected $formFactory;
 
     /**
      * @InjectParams({
      *     "session"      = @Inject("session"),
      *     "reader"       = @Inject("reader.csv"),
-     *     "validator"    = @Inject("validator"),
      *     "em"           = @Inject("doctrine.orm.default_entity_manager"),
-     *     "csrfProvider" = @Inject("form.csrf_provider"),
-     *     "translator"   = @Inject("translator")
+     *     "translator"   = @Inject("translator"),
+     *     "context"      = @Inject("security.context"),
+     *     "formFactory"  = @Inject("form.factory")
      * })
      */
     public function __construct(
         Session $session,
         CsvFileReader $reader,
-        Validator $validator,
         EntityManager $em,
-        CsrfTokenManagerAdapter $csrfProvider,
-        Translator $translator
+        Translator $translator,
+        SecurityContext $context,
+        $formFactory
     )
     {
-        $this->csrfProvider = $csrfProvider;
         $this->session = $session;
         $this->reader  = $reader;
         $data          = $this->getImportData();
         $this->reader->setDelimiter($data[self::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[self::IMPORT_TEXT_DELIMITER]);
-        $this->validator       = $validator;
-        $this->em              = $em;
-        $this->i18n            = $translator;
-        $this->validatorsField = array(
-            self::FIRST_NAME_TENANT => array(),
-            self::LAST_NAME_TENANT  => array(),
-            self::KEY_UNIT          => array(
-                new Length(
-                    array(
-                        'min' => 1,
-                        'max' => 50
-                    )
-                ),
-                new Regex(
-                    array(
-                        'pattern' => '/^[A-Za-z_\-0-9-\s]{1,50}+$/'
-                    )
-                ),
-                new NotBlank(),
-            ),
-            self::KEY_RESIDENT_ID   => array(
-                new Length(
-                    array(
-                        'min' => 1,
-                        'max' => 50
-                    )
-                ),
-                new NotBlank()
-            ),
-            self::KEY_TENANT_NAME   => array(
-                new NotBlank(),
-                new Regex(
-                    array(
-                        'pattern' => '/^[A-Za-z_\-0-9-\s]{1,100}+$/'
-                    )
-                ),
-            ),
-            self::KEY_RENT          => array(
-                new NotBlank(),
-                new Regex(
-                    array(
-                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
-                    )
-                ),
-            ),
-            self::KEY_MOVE_IN       => array(
-                new NotBlank(),
-                new DateWithFormat(),
-            ),
-            self::KEY_MOVE_OUT      => array(
-                new DateWithFormat(),
-            ),
-            self::KEY_LEASE_END     => array(
-                new NotBlank(),
-                new DateWithFormat(),
-            ),
-            self::KEY_BALANCE       => array(
-                new NotBlank(),
-                new Regex(
-                    array(
-                        'pattern' => '/^[0-9]+(\.[0-9][0-9])?+$/'
-                    )
-                )
-            ),
-            self::KEY_EMAIL         => array(
-                new Email(),
-                new NotBlank(),
-            ),
-        );
+        $this->em          = $em;
+        $this->user        = $context->getToken()->getUser();
+        $this->formFactory = $formFactory;
+    }
+
+    /**
+     * Creates and returns a Form instance from the type of the form.
+     *
+     * @param string|FormTypeInterface $type The built type of the form
+     * @param mixed $data The initial data for the form
+     * @param array $options Options for the form
+     *
+     * @return Form
+     */
+    public function createForm($type, $data = null, array $options = array())
+    {
+        return $this->formFactory->create($type, $data, $options);
     }
 
     public function getValidatorsByKey($key)
@@ -303,7 +250,7 @@ class AccountingImport
         }
 
         $mappedData[self::IS_VALID] = true;
-        $mappedData[self::ERRORS] = array();
+        $mappedData[self::ERRORS]   = array();
 
         return $mappedData;
     }
@@ -319,7 +266,7 @@ class AccountingImport
         }
 
         foreach ($data as $key => $values) {
-            $row = $this->mappingRow($values);
+            $row          = $this->mappingRow($values);
             $mappedData[] = $row;
         }
 
@@ -340,95 +287,158 @@ class AccountingImport
         return $skip;
     }
 
-    protected function getDetailedData($row)
+    protected function getProperty()
     {
-        $data = array(
-            self::STATUS            => null,
-            self::CONTRACT          => null,
-            self::TENANT            => null,
-            self::STATUS_READABLE   => null,
+        return $this->em->getRepository('RjDataBundle:Property')->find($this->getPropertyId());
+    }
+
+
+    //@TODO need check exist unit in DB add group_id and holding_id
+    protected function getUnit($row)
+    {
+        $params = array(
+            'property' => $this->getPropertyId(),
+            'name'     => $row[self::KEY_UNIT],
         );
 
-        $skip = $this->isSkipped($row);
-
-        if ($skip) {
-            $data[self::STATUS] = 'skip';
-            $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.skip');
-            return $data;
+        if ($group = $this->user->getCurrentGroup()) {
+            $params['group'] = $group;
         }
 
-        $ended = false;
-        if (!empty($row[self::KEY_MOVE_OUT])) {
-            $ended = true;
+        if ($holding = $this->user->getHolding()) {
+            $params['holding'] = $holding;
         }
 
-        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => $row[self::KEY_EMAIL]
+        $unit = $this->em->getRepository('RjDataBundle:Unit')->findOneBy($params);
+        if ($unit) {
+            return $unit;
+        }
+        $unit = new Unit();
+        $unit->setName($row[self::KEY_UNIT]);
+        $unit->setProperty($this->getProperty());
+        $unit->setHolding($this->user->getHolding());
+        $unit->setGroup($this->user->getCurrentGroup());
+        return $unit;
+    }
+
+    //@TODO try to make in this place serializer
+    // how we mark skip tenant? - solved
+    // problem with query for getting tenant
+    // problem with move_out field - solved
+    //
+    protected function getTenant($row)
+    {
+        $import = new Import();
+        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImport(
+            $email = $row[self::KEY_EMAIL],
+            $propertyId = $this->getPropertyId(),
+            $unitName = $row[self::KEY_UNIT]
+        );
+
+        if (empty($tenant)) {
+            $tenant = new Tenant();
+            $names  = $this::parseName($row[self::KEY_TENANT_NAME]);
+            $tenant->setFirstName($names[self::FIRST_NAME_TENANT]);
+            $tenant->setLastName($names[self::LAST_NAME_TENANT]);
+            $tenant->setEmail($row[self::KEY_EMAIL]);
+            $tenant->setEmailCanonical($row[self::KEY_EMAIL]);
+        }
+
+        $import->setTenant($tenant);
+        $import->setIsSkipped(false);
+        if ($this->isSkipped($row)) {
+            $import->setIsSkipped(true);
+        }
+
+        if (!$tenant->getResidentId()) {
+            $tenant->setResidentId($row[self::KEY_RESIDENT_ID]);
+        }
+
+        $contracts = $tenant->getContracts();
+        $contract  = $contracts->first();
+
+        if (!$contract) {
+            $contract = new Contract();
+            $contract->setStatus(ContractStatus::INVITE);
+            $contract->setProperty($this->getProperty());
+            $contract->setGroup($this->user->getCurrentGroup());
+            $contract->setHolding($this->user->getHolding());
+            $tenant->addContract($contract);
+            $contract->setUnit($this->getUnit($row));
+        }
+
+        $contract->setStartAt($row[self::KEY_MOVE_IN]);
+        $contract->setFinishAt($row[self::KEY_LEASE_END]);
+        if ($row[self::KEY_MOVE_OUT]) {
+            $contract->setFinishAt($row[self::KEY_MOVE_OUT]);
+            $contract->setStatus(ContractStatus::FINISHED);
+        }
+        $contract->setImportedBalance($row[self::KEY_BALANCE]);
+
+        $tenantId   = $tenant->getId();
+        $contractId = $contract->getId();
+
+        //Update contract
+        if ($tenantId &&
+            in_array(
+                $contract->getStatus(),
+                array(
+                    ContractStatus::APPROVED,
+                    ContractStatus::CURRENT
+                )
             )
-        );
-
-        if (empty($tenant) && !$ended) {
-            $data[self::STATUS] = 'new_user_new_contract';
-            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.new');
-            return $data;
+            && $contractId
+        ) {
+            $form = $this->getUpdateContractForm();
         }
 
-        if (empty($tenant) && $ended) {
-            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.skip');
-            $data[self::STATUS]   = 'ended_not_exist';
-            return $data;
+        //Create contract and create user
+        if (empty($tenantId) && in_array(
+                $contract->getStatus(),
+                array(
+                    ContractStatus::INVITE
+                )) && empty($contractId)
+        ) {
+            $form = $this->getCreateUserAndCreateContractForm();
         }
 
-        $data[self::TENANT] = $tenant;
-
-        $property = $this->em->getRepository('RjDataBundle:Property')->find($this->getPropertyId());
-        $unit = $this->em->getRepository('RjDataBundle:Unit')->findOneBy(
-            array(
-                'name'     => $row[self::KEY_UNIT],
-                'property' => $property->getId(),
-            )
-        );
-
-        if (empty($unit) && empty($property) && !$ended) {
-            $data[self::STATUS] = 'exist_user_new_contract';
-            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.new');
-            return $data;
+        //Create contract
+        if ($tenantId && empty($contractId)) {
+            $form = $this->getCreateContractForm();
         }
 
-        $contract = $this->em->getRepository('RjDataBundle:Contract')->findOneBy(
-            array(
-                 'tenant'   => $tenant->getId(),
-                 'property' => $property->getId(),
-                 'status'   => ContractStatus::CURRENT,
-            )
-        );
 
-        if (empty($contract) && !$ended) {
-            $data[self::STATUS] = 'exist_user_new_contract';
-            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.new');
-            return $data;
+        if (isset($form)) {
+            $form = $form->createView();
+            $token = $form['_token'];
+            $import->setCsrfToken($token->vars["value"]);
         }
 
-        if (!empty($contract) && !$ended) {
-            $data[self::CONTRACT] = $contract;
-            $data[self::STATUS]   = 'exist_user_exist_contract';
-            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.match');
-            return $data;
-        }
+        return $import;
+    }
 
-        if ($ended && !empty($contract)) {
-            $data[self::CONTRACT] = $contract;
-            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.ended');
-            $data[self::STATUS]   = 'ended_exist';
-            return $data;
-        }
+    /**
+     * @return Form
+     */
+    public function getUpdateContractForm()
+    {
+        return $this->createForm(new ImportContractType());
+    }
 
-        if ($ended && empty($contract)) {
-            $data[self::STATUS_READABLE] = $data[self::STATUS_READABLE] = $this->i18n->trans('import.status.skip');
-            $data[self::STATUS]   = 'ended_not_exist';
-            return $data;
-        }
+    /**
+     * @return Form
+     */
+    public function getCreateUserAndCreateContractForm()
+    {
+        return $this->createForm(new ImportNewUserWithContractType());
+    }
+
+    /**
+     * @return Form
+     */
+    public function getCreateContractForm()
+    {
+        return $this->createForm(new ImportNewContractType());
     }
 
     public function getPages($limit)
@@ -454,152 +464,11 @@ class AccountingImport
     {
         $offset = $page * $rowCount - $rowCount;
         $data = $this->getFileData(true, $offset, $rowCount);
+        $collection = new ArrayCollection(array());
         foreach ($data as $key => $values) {
-            $result = $this->getDetailedData($values);
-            $data[$key][self::STATUS] = $result[self::STATUS];
-            $data[$key][self::STATUS_READABLE] = $result[self::STATUS_READABLE];
-            $names = self::parseName($values[self::KEY_TENANT_NAME]);
-            $data[$key][self::FIRST_NAME_TENANT] = $names[self::FIRST_NAME_TENANT];
-            $data[$key][self::LAST_NAME_TENANT] = $names[self::LAST_NAME_TENANT];
-            $data[$key]['_token'] = $this->csrfProvider->generateCsrfToken($key+$offset);
+            $collection->add($this->getTenant($values));
         }
-
-        return $data;
-    }
-
-    /**
-     * return boolean
-     */
-    public function isValidCsvData()
-    {
-        $data = $this->getFileData();
-        $isValid = true;
-        foreach ($data as $key => $row) {
-            $skip = $this->isSkipped($row);
-            $isValidRow   = $this->isValidRow($row);
-
-            if ($skip) {
-                continue;
-            }
-
-            if (!$isValidRow) {
-                $row[self::IS_VALID] = false;
-                $row[self::ERRORS] = $this->rowsErrorsList;
-                $isValid = false;
-            }
-
-            $mappedData[] = $row;
-            unset($data[$key]);
-
-            if (!$isValid) {
-                break;
-            }
-        }
-
-        return $isValid;
-    }
-
-    /**
-     * Row mast be mapped
-     *
-     * @param $row
-     *
-     * @return bool
-     */
-    public function isValidRow($row)
-    {
-        $this->rowsErrorsList = array();
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_EMAIL],
-            self::KEY_EMAIL
-        );
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_UNIT],
-            self::KEY_UNIT
-        );
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_TENANT_NAME],
-            self::KEY_TENANT_NAME
-        );
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_BALANCE],
-            self::KEY_BALANCE
-        );
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_RENT],
-            self::KEY_RENT
-        );
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_MOVE_IN],
-            self::KEY_MOVE_IN
-        );
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_LEASE_END],
-            self::KEY_LEASE_END
-        );
-
-        $this->isValidValue(
-            $row,
-            $this->validatorsField[self::KEY_RESIDENT_ID],
-            self::KEY_RESIDENT_ID
-        );
-
-        if (!empty($row[self::KEY_MOVE_OUT])) {
-            $this->isValidValue(
-                $row,
-                $this->validatorsField[self::KEY_MOVE_OUT],
-                self::KEY_MOVE_OUT
-            );
-        }
-
-        if (empty($this->rowsErrorsList)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Write errors into attribute of class with name rowsErrorsList
-     *
-     * @param array $values
-     * @param array $validators
-     * @param $key
-     *
-     * @return bool
-     */
-    protected function isValidValue(array $values, array $validators, $key)
-    {
-        foreach ($validators as $validator) {
-            $errors = $this->validator->validateValue(
-                $values[$key],
-                $validator
-            );
-
-            if (count($errors) > 0) {
-                $this->rowsErrorsList[$key][] = $errors;
-            }
-        }
-
-        if (empty($this->rowsErrorsList)) {
-            return true;
-        }
-
-        return false;
+        return $collection;
     }
 
     public static function parseName($name)

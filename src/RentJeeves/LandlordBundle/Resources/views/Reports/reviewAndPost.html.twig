@@ -42,36 +42,33 @@
                         </tr>
                         </thead>
                         <tbody data-bind="foreach: $root.rows">
-                            {{
+                            {#
                                 include(
                                     'LandlordBundle:Reports:_reviewNewUserWithContract.html.twig',
                                     {
                                     'form': formNewUserWithContract,
                                     }
                                 )
-                            }}
-                            {{
+                            #}
+                            {#
                                 include(
                                     'LandlordBundle:Reports:_reviewNewContract.html.twig',
                                     {
                                     'form': formNewContract,
                                     }
                                 )
-                            }}
-                            {{
+                            #}
+                            {#
                                 include(
                                     'LandlordBundle:Reports:_reviewUpdateContract.html.twig',
                                     {
                                     'form': formUpdateContract,
                                     }
                                 )
-                            }}
+                            #}
                             {{
                                 include(
-                                    'LandlordBundle:Reports:_reviewSkip.html.twig',
-                                    {
-                                    'form': formUpdateContract,
-                                    }
+                                    'LandlordBundle:Reports:_reviewSkip.html.twig'
                                 )
                             }}
                         </tbody>

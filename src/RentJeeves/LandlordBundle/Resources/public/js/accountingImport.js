@@ -45,9 +45,9 @@ function accountingImport() {
 
     self.isProcessing.subscribe(function(newValue) {
         if (newValue) {
-            $('table').parent().showOverlay();
+            //$('table').parent().showOverlay();
             return;
         }
-        $('table').parent().hideOverlay();
+        //$('table').parent().hideOverlay();
     });
 }
