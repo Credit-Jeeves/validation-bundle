@@ -23,7 +23,7 @@ class Version20140313130207 extends AbstractMigration
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
 
-        $oldRow = null;
+        $oldRow = array('cj_operation_id' => null);
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
             $amount = empty($row['order_amount'])?$row['h_amount']:$row['order_amount'];
@@ -53,9 +53,6 @@ class Version20140313130207 extends AbstractMigration
                 }
                 $this->addSql($sql);
             }
-
-//            $this->addSql("DELETE FROM `cj_order_operation`
-//                WHERE `cj_operation_id` = {$row['cj_operation_id']} AND `cj_order_id` = {$row['cj_order_id']}");
         }
     }
 
