@@ -125,7 +125,7 @@ class ResolveCase extends BaseTestCase
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
         $this->session->wait($this->timeout, "!jQuery('#actions-block .processPayment').is(':visible')");
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
-        $this->assertCount(static::CONTRACTS_COUNT + 1, $contracts);
+        $this->assertCount(static::CONTRACTS_COUNT, $contracts);
         $this->logout();
     }
 
@@ -160,7 +160,7 @@ class ResolveCase extends BaseTestCase
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
         $this->session->wait($this->timeout, "!jQuery('#actions-block .processPayment').is(':visible')");
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
-        $this->assertCount(static::CONTRACTS_COUNT + 1, $contracts);
+        $this->assertCount(static::CONTRACTS_COUNT, $contracts);
         $this->logout();
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
