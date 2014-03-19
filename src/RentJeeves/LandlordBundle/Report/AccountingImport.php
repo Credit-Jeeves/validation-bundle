@@ -22,13 +22,9 @@ use Symfony\Bridge\Twig\Node\TransDefaultDomainNode;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\SecurityContext;
-use Symfony\Component\Validator\Constraints\Email;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Regex;
-use Symfony\Component\Validator\Validator;
-use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use CreditJeeves\CoreBundle\Translation\Translator;
+use \DateTime;
+use \Exception;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -68,10 +64,6 @@ class AccountingImport
     const KEY_BALANCE = 'balance';
 
     const KEY_EMAIL = 'email';
-
-    const IS_VALID = 'isValid';
-
-    const ERRORS = 'errors';
 
     protected $skipValue = array(
         self::KEY_RESIDENT_ID => 'VACANT',
@@ -249,9 +241,6 @@ class AccountingImport
             $i++;
         }
 
-        $mappedData[self::IS_VALID] = true;
-        $mappedData[self::ERRORS]   = array();
-
         return $mappedData;
     }
 
@@ -321,11 +310,18 @@ class AccountingImport
         return $unit;
     }
 
+    public function getDateByField($field)
+    {
+        try {
+            $date = DateTime::createFromFormat('d/m/y', $field);
+        } catch(Exception $e) {
+            return null;
+        }
+
+        return ($date)? $date : null;
+    }
+
     //@TODO try to make in this place serializer
-    // how we mark skip tenant? - solved
-    // problem with query for getting tenant
-    // problem with move_out field - solved
-    //
     protected function getTenant($row)
     {
         $import = new Import();
@@ -342,8 +338,10 @@ class AccountingImport
             $tenant->setLastName($names[self::LAST_NAME_TENANT]);
             $tenant->setEmail($row[self::KEY_EMAIL]);
             $tenant->setEmailCanonical($row[self::KEY_EMAIL]);
+        } else {
+            //Fix bug with doctrine cache and the same tenant
+            $this->em->detach($tenant);
         }
-
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
         if ($this->isSkipped($row)) {
@@ -367,8 +365,8 @@ class AccountingImport
             $contract->setUnit($this->getUnit($row));
         }
 
-        $contract->setStartAt($row[self::KEY_MOVE_IN]);
-        $contract->setFinishAt($row[self::KEY_LEASE_END]);
+        $contract->setStartAt($this->getDateByField($row[self::KEY_MOVE_IN]));
+        $contract->setFinishAt($this->getDateByField($row[self::KEY_LEASE_END]));
         if ($row[self::KEY_MOVE_OUT]) {
             $contract->setFinishAt($row[self::KEY_MOVE_OUT]);
             $contract->setStatus(ContractStatus::FINISHED);

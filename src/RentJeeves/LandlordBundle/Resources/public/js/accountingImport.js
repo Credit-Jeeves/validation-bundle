@@ -43,7 +43,23 @@ function accountingImport() {
         self.loadData();
     };
 
-    self.isProcessing.subscribe(function(newValue) {
+    this.getStatusText = function(data) {
+        if (data.isSkipped) {
+            return Translator.trans('import.status.skip');
+        }
+
+        if (data.Tenant.contracts[0].status == 'finished') {
+            return Translator.trans('import.status.ended');
+        }
+
+        if (data.Tenant.contracts[0].id !== undefined && data.Tenant.id !== undefined) {
+            return Translator.trans('import.status.match');
+        }
+
+        return Translator.trans('import.status.new');
+    };
+
+    this.isProcessing.subscribe(function(newValue) {
         if (newValue) {
             //$('table').parent().showOverlay();
             return;

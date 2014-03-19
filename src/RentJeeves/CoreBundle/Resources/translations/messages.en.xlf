@@ -2131,7 +2131,7 @@
             </trans-unit>
             <trans-unit id="import.status.ended">
               <source>import.status.ended</source>
-              <target>Skip</target>
+              <target>Ended</target>
             </trans-unit>
             <trans-unit id="import.status.match">
               <source>import.status.match</source>
