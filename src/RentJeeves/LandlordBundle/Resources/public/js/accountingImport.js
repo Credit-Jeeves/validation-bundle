@@ -59,6 +59,14 @@ function accountingImport() {
         return Translator.trans('import.status.new');
     };
 
+    this.formatDate = function(dateString) {
+        if (!dateString || dateString.length <= 0) {
+            return '';
+        }
+        var date = new Date(dateString);
+        return (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
+    }
+
     this.isProcessing.subscribe(function(newValue) {
         if (newValue) {
             //$('table').parent().showOverlay();

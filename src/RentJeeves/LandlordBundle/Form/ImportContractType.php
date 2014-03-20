@@ -20,8 +20,10 @@ class ImportContractType extends AbstractType
     {
         $builder->add(
             'startAt',
-            'text',
+            'date',
             array(
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
                 'attr'           => array(
                     'class'     => 'half-width',
                 ),
@@ -31,8 +33,10 @@ class ImportContractType extends AbstractType
 
         $builder->add(
             'finishAt',
-            'text',
+            'date',
             array(
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
                 'attr'           => array(
                     'class'     => 'half-width',
                 ),

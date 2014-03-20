@@ -1,6 +1,6 @@
 {% form_theme form 'RjCoreBundle::form.html.twig' %}
 
-<tr data-bind="if: !isSkipped && Tenant.contracts[0].id && Tenant.contracts[0].status !== 'finished'">
+<tr data-bind="if: !isSkipped && ((Tenant.contracts[0].id && Tenant.contracts[0].status !== 'finished') || (!Tenant.contracts[0].id && Tenant.id))">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data)"></td>
     <td data-bind="text:Tenant.contracts[0].unit.name"></td>
@@ -13,28 +13,28 @@
     </td>
     <td>
         {{ form_widget(
-        form.startAt,
-        {
-        'attr': {'data-bind': 'value:$root.formatDate(Tenant.contracts[0].startAt)'}
-        }
+            form.startAt,
+            {
+                'attr': {'data-bind': 'value:$root.formatDate(Tenant.contracts[0].startAt)'}
+            }
         ) }}
     </td>
     <td>
         {{ form_widget(
-        form.finishAt,
-        {
-        'attr': {'data-bind': 'value: $root.formatDate(Tenant.contracts[0].finishAt)'}
-        }
+            form.finishAt,
+            {
+                'attr': {'data-bind': 'value: $root.formatDate(Tenant.contracts[0].finishAt)'}
+            }
         ) }}
     </td>
     <td></td>
     <td>
         {{ form_widget(
-        form.imported_balance,
-        {
-        'attr':
-        {'data-bind': 'value: Tenant.contracts[0].imported_balance'}
-        }
+            form.imported_balance,
+            {
+                'attr':
+                    {'data-bind': 'value: Tenant.contracts[0].imported_balance'}
+            }
         ) }}
     </td>
     <td>

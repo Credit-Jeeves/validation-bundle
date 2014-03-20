@@ -218,13 +218,11 @@ class ReportsController extends Controller
         }
 
         $formNewUserWithContract = $accountingImport->getCreateUserAndCreateContractForm();
-        $formNewContract = $accountingImport->getCreateContractForm();
-        $formUpdateContract = $accountingImport->getUpdateContractForm();
+        $formContract = $accountingImport->getContractForm();
 
         return array(
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
-            'formNewContract'         => $formNewContract->createView(),
-            'formUpdateContract'      => $formUpdateContract->createView(),
+            'formContract'            => $formContract->createView(),
         );
     }
 
@@ -266,14 +264,6 @@ class ReportsController extends Controller
             $rows = $accountingImport->getMappedData($data['page'], 10);
         }
 
-        /**
-         * @var $contract Contract
-         */
-  /*      foreach ($rows[3]->getContracts() as $contract)
-        {
-            var_dump($contract->getStatus());
-        }
-        exit;*/
         $serializer = SerializerBuilder::create()->build();
         $result['rows'] = $rows;
         $result['total'] = $total;

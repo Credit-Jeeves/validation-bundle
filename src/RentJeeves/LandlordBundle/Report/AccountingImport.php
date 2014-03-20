@@ -313,7 +313,7 @@ class AccountingImport
     public function getDateByField($field)
     {
         try {
-            $date = DateTime::createFromFormat('d/m/y', $field);
+            $date = DateTime::createFromFormat('m/d/Y', $field);
         } catch(Exception $e) {
             return null;
         }
@@ -368,16 +368,16 @@ class AccountingImport
         $contract->setStartAt($this->getDateByField($row[self::KEY_MOVE_IN]));
         $contract->setFinishAt($this->getDateByField($row[self::KEY_LEASE_END]));
         if ($row[self::KEY_MOVE_OUT]) {
-            $contract->setFinishAt($row[self::KEY_MOVE_OUT]);
+            $contract->setFinishAt($this->getDateByField($row[self::KEY_MOVE_OUT]));
             $contract->setStatus(ContractStatus::FINISHED);
         }
         $contract->setImportedBalance($row[self::KEY_BALANCE]);
-
+        $contract->setRent($row[self::KEY_RENT]);
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
 
-        //Update contract
-        if ($tenantId &&
+        //Update contract or Create contract
+        if (($tenantId &&
             in_array(
                 $contract->getStatus(),
                 array(
@@ -385,9 +385,10 @@ class AccountingImport
                     ContractStatus::CURRENT
                 )
             )
-            && $contractId
+            && $contractId)
+            || ($tenantId && empty($contractId))
         ) {
-            $form = $this->getUpdateContractForm();
+            $form = $this->getContractForm();
         }
 
         //Create contract and create user
@@ -399,12 +400,6 @@ class AccountingImport
         ) {
             $form = $this->getCreateUserAndCreateContractForm();
         }
-
-        //Create contract
-        if ($tenantId && empty($contractId)) {
-            $form = $this->getCreateContractForm();
-        }
-
 
         if (isset($form)) {
             $form = $form->createView();
@@ -418,7 +413,7 @@ class AccountingImport
     /**
      * @return Form
      */
-    public function getUpdateContractForm()
+    public function getContractForm()
     {
         return $this->createForm(new ImportContractType());
     }
@@ -429,14 +424,6 @@ class AccountingImport
     public function getCreateUserAndCreateContractForm()
     {
         return $this->createForm(new ImportNewUserWithContractType());
-    }
-
-    /**
-     * @return Form
-     */
-    public function getCreateContractForm()
-    {
-        return $this->createForm(new ImportNewContractType());
     }
 
     public function getPages($limit)

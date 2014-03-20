@@ -50,19 +50,11 @@
                                     }
                                 )
                             #}
-                            {#
-                                include(
-                                    'LandlordBundle:Reports:_reviewNewContract.html.twig',
-                                    {
-                                    'form': formNewContract,
-                                    }
-                                )
-                            #}
                             {{
                                 include(
-                                    'LandlordBundle:Reports:_reviewUpdateContract.html.twig',
+                                    'LandlordBundle:Reports:_reviewUpdateCreateContract.html.twig',
                                     {
-                                    'form': formUpdateContract,
+                                    'form': formContract,
                                     }
                                 )
                             }}
