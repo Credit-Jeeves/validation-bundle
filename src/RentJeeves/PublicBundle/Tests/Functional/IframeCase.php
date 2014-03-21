@@ -8,6 +8,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -357,14 +358,15 @@ class IframeCase extends BaseTestCase
         $order = new Order();
         $operation = new Operation();
         $contract = new Contract();
-        $contract->setPaidTo(new \DateTime());
+        $contract->setPaidTo(new DateTime());
         $operation->setType(OperationType::RENT);
         $operation->setContract($contract);
+        $operation->setPaidFor($contract->getPaidTo());
         $order->addOperation($operation);
         $order->setUser($user);
         $order->setStatus(OrderStatus::NEWONE);
         $em->persist($order);
-        $date = new \DateTime();
+        $date = new DateTime();
         $this->assertEquals($date->format('Y-m-d'), $partnerCode->getFirstPaymentDate()->format('Y-m-d'));
         $this->assertFalse($partnerCode->getIsCharged());
         $em->detach($order);
