@@ -72,7 +72,7 @@ class SummaryCase extends BaseTestCase
                 'rentjeeves_checkoutbundle_userdetailstype_new_address_street'  => 'Street',
                 'rentjeeves_checkoutbundle_userdetailstype_new_address_city'    => 'City',
                 'rentjeeves_checkoutbundle_userdetailstype_new_address_area'    => 'CA',
-                'rentjeeves_checkoutbundle_userdetailstype_new_address_zip'     => '1234',
+                'rentjeeves_checkoutbundle_userdetailstype_new_address_zip'     => '90210',
             )
         );
         $this->page->pressButton('pay_popup.step.next');

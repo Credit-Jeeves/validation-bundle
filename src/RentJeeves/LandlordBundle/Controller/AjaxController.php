@@ -776,21 +776,21 @@ class AjaxController extends Controller
                 break;
             case Contract::RESOLVE_PAID:
                 $em = $this->getDoctrine()->getManager();
-                // Create operation
-                $operation = new Operation();
-                $operation->setType(OperationType::RENT);
-                $operation->setContract($contract);
-                // FIXME after paid for would be implemented for payments
-                $operation->setPaidFor($contract->getPaidTo());
-                $em->persist($operation);
                 // Create order
                 $order = new Order();
-                $operation->setOrder($order);
                 $order->setUser($tenant);
                 $order->setAmount($contract->getRent());
                 $order->setStatus(OrderStatus::COMPLETE);
                 $order->setType(OrderType::CASH);
                 $em->persist($order);
+                // Create operation
+                $operation = new Operation();
+                $operation->setOrder($order);
+                $operation->setType(OperationType::RENT);
+                $operation->setContract($contract);
+                // FIXME after paid for would be implemented for payments
+                $operation->setPaidFor($contract->getPaidTo());
+                $em->persist($operation);
                 // Change paid to date
                 $contract->shiftPaidTo($amount);
                 $contract->setStatus(ContractStatus::CURRENT);
