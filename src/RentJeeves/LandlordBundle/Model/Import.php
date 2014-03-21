@@ -18,6 +18,13 @@ class Import
     protected $isSkipped;
 
     /**
+     * @Serializer\Type("integer")
+     * @Serializer\SerializedName("number")
+     * @Serializer\Groups({"CreditJeeves"})
+     */
+    protected $number;
+
+    /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Tenant")
      * @Serializer\SerializedName("Tenant")
      * @Serializer\Groups({"CreditJeeves"})
@@ -30,6 +37,46 @@ class Import
      * @Serializer\Groups({"CreditJeeves"})
      */
     protected $csrfToken;
+
+    /**
+     * @Serializer\SerializedName("moveOut")
+     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Type("DateTime")
+     */
+    protected $moveOut = null;
+
+    /**
+     * @return mixed
+     */
+    public function getMoveOut()
+    {
+        return $this->moveOut;
+    }
+
+    /**
+     * @param mixed $moveOut
+     */
+    public function setMoveOut($moveOut)
+    {
+        $this->moveOut = $moveOut;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    /**
+     * @param integer $number
+     */
+    public function setNumber($number)
+    {
+        $this->number = (int)$number;
+    }
+
 
     /**
      * @return string

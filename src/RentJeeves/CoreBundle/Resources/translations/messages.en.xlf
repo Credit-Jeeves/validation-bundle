@@ -2117,9 +2117,21 @@
               <source>import.balance</source>
               <target>Balance</target>
             </trans-unit>
-            <trans-unit id="import.send_invite">
-              <source>import.send_invite</source>
-              <target>Send Invite?</target>
+            <trans-unit id="import.action">
+              <source>import.action</source>
+              <target>Action</target>
+            </trans-unit>
+            <trans-unit id="send.invite">
+              <source>send.invite</source>
+              <target>Invite</target>
+            </trans-unit>
+            <trans-unit id="import.pmt.amt">
+              <source>import.pmt.amt</source>
+              <target>Import Pmt Amt</target>
+            </trans-unit>
+            <trans-unit id="import.pmt.date">
+              <source>import.pmt.date</source>
+              <target>Import Pmt Date</target>
             </trans-unit>
             <trans-unit id="import.error.access">
               <source>import.error.access</source>

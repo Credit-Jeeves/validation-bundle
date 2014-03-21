@@ -7,3 +7,10 @@
 .errorMessage {
     color: red;
 }
+.properties-table td>input[type="checkbox"] {
+    width: 15px !important;
+    margin: 0px;
+}
+.properties-table td>input[type="text"] {
+    margin-top: 5px;
+}

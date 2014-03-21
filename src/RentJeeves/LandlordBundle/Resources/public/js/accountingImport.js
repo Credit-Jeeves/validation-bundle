@@ -1,46 +1,43 @@
 function accountingImport() {
     var self = this;
-    this.pagesList = ko.observableArray([]);
-    this.pagesTotal = ko.observable(0);
-    this.currentPage = ko.observable(1);
+    this.rowsTotal = ko.observable(0);
     this.errorLoadDataMessage = ko.observable('');
     this.isProcessing = ko.observable(false);
     this.rows =  ko.observableArray([]);
-    this.loadData = function() {
+    this.loadData = function(next) {
         self.isProcessing(true);
         self.rows([]);
-        self.pagesList([]);
-        self.pagesTotal(0);
+        self.rowsTotal(0);
         $.ajax({
             url: Routing.generate('landlord_reports_review_get_rows'),
             type: 'POST',
             dataType: 'json',
             data: {
-                'page' : self.currentPage()
+                'next': next
             },
             success: function(response) {
                 self.isProcessing(false);
                 self.errorLoadDataMessage(response.message);
                 if (response.error === false) {
                     self.rows(response.rows);
-                    self.pagesList(response.pagination);
-                    self.pagesTotal(response.total);
+                    self.rowsTotal(response.total);
                     self.initGuiScript();
                     return;
                 }
-
-
             }
         });
     };
 
+    this.getMoveOut = function(data) {
+        if (data.moveOut !== undefined) {
+            return data.moveOut;
+        }
+
+        return '';
+    }
+
     this.initGuiScript = function() {
 
-    };
-
-    this.goToPage = function(page) {
-        self.currentPage(page);
-        self.loadData();
     };
 
     this.getStatusText = function(data) {
@@ -67,11 +64,59 @@ function accountingImport() {
         return (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
     }
 
+    //Have problem with implementation datepicker
+    this.getUniqueId = function(i)
+    {
+        var id = "id" + Math.random().toString(16).slice(2);
+        return id;
+    }
+
     this.isProcessing.subscribe(function(newValue) {
         if (newValue) {
-            //$('table').parent().showOverlay();
+            $('#reviewContainer').parent().showOverlay();
             return;
         }
-        //$('table').parent().hideOverlay();
+        $('#reviewContainer').parent().hideOverlay();
     });
+
+    this.submitForms = function() {
+        self.isProcessing(true);
+        var number = 0;
+        var success = Array();
+        var errors = Array();
+        $.each($('.line'), function (key,value) {
+            var element = $(this);
+            //not allow send knockout duplicate
+            if (element.find('td').length >= 12) {
+                return;
+            }
+            $.ajax({
+                url: Routing.generate('landlord_reports_review_save_row'),
+                type: 'POST',
+                async: false,
+                dataType: 'json',
+                data: {
+                    'line': self.rows()[number].number
+                },
+                success: function(response) {
+                    var row = self.rows()[number];
+                    success.push(row);
+                }
+            });
+            number++;
+        });
+
+        $.each(success, function (key,value) {
+            self.rows.remove(value);
+        });
+
+        self.isProcessing(false);
+        if (errors.length <= 0) {
+            self.loadData(true);
+        } else {
+            //process forms errors
+            console.info('We need show errors for user');
+        }
+    }
+
 }

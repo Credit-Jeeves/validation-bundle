@@ -24,7 +24,6 @@ class ImportTenantType extends AbstractType
             array(
                 'attr'           => array(
                     'class'     => 'half-width',
-                    'data-bind' => 'value: first_name',
                 ),
             )
         );
@@ -36,18 +35,6 @@ class ImportTenantType extends AbstractType
             array(
                 'attr'           => array(
                     'class'     => 'half-width',
-                    'data-bind' => 'value: last_name',
-                ),
-            )
-        );
-
-        $builder->add(
-            'residentId',
-            'text',
-            array(
-                'attr'           => array(
-                    'class'     => 'half-width',
-                    'data-bind' => 'value: residentId',
                 ),
             )
         );
@@ -58,7 +45,6 @@ class ImportTenantType extends AbstractType
             array(
                 'attr'           => array(
                     'class'     => 'half-width',
-                    'data-bind' => 'value: email',
                 ),
             )
         );
@@ -70,7 +56,7 @@ class ImportTenantType extends AbstractType
             array(
                 'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
                 'validation_groups' => array(
-                    'import_tenant',
+                    'import',
                 ),
                 'csrf_protection'    => true,
                 'cascade_validation' => true,

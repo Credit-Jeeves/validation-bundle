@@ -33,23 +33,38 @@
                             <th class="pie-el"><span>{{ 'import.first_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.last_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.email'|trans }}*</span></th>
-                            <th class="pie-el"><span>{{ 'import.rent'|trans }}</span></th>
-                            <th class="pie-el"><span>{{ 'import.move_in'|trans }}</span></th>
-                            <th class="pie-el"><span>{{ 'import.lease_end'|trans }}</span></th>
-                            <th class="pie-el"><span>{{ 'import.move_out'|trans }}</span></th>
-                            <th class="pie-el"><span>{{ 'import.balance'|trans }}</span></th>
-                            <th class="pie-el"><span>{{ 'import.send_invite'|trans }}</span></th>
+                            <th class="pie-el">
+                                <span>
+                                    {{ 'import.rent'|trans }} <br />
+                                    {{ 'import.balance'|trans }}
+                                </span>
+                            </th>
+                            <th class="pie-el">
+                                <span>
+                                    {{ 'import.move_in'|trans }}
+                                    <br />
+                                    {{ 'import.lease_end'|trans }}
+                                </span>
+                            </th>
+                            <th class="pie-el">
+                                <span>
+                                    {{ 'import.pmt.amt'|trans }}
+                                    <br />
+                                    {{ 'import.pmt.date'|trans }}
+                                </span>
+                            </th>
+                            <th class="pie-el"><span>{{ 'import.action'|trans }}</span></th>
                         </tr>
                         </thead>
                         <tbody data-bind="foreach: $root.rows">
-                            {#
+                            {{
                                 include(
                                     'LandlordBundle:Reports:_reviewNewUserWithContract.html.twig',
                                     {
                                     'form': formNewUserWithContract,
                                     }
                                 )
-                            #}
+                            }}
                             {{
                                 include(
                                     'LandlordBundle:Reports:_reviewUpdateCreateContract.html.twig',
@@ -75,7 +90,7 @@
                                 class="button small submitImportFile"
                                 data-bind="visible: $root.errorLoadDataMessage().length <= 0"
                         >
-                            <span>
+                            <span  data-bind="click: function(data, event) { submitForms() }">
                                 {{ 'import.review.and.post'|trans }}
                             </span>
                         </button>
@@ -99,7 +114,7 @@
 {% endblock %}
 
 {% block javascripts %}
-    {{ include('FpJsFormValidatorBundle::javascripts.html.twig') }}
+    {# For now this bundle now support what we need include('FpJsFormValidatorBundle::javascripts.html.twig') #}
     {{ parent() }}
     {% javascripts
     'bundles/bazingajstranslation/js/translator.min.js'

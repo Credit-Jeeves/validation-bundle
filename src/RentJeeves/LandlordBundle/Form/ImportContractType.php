@@ -25,6 +25,7 @@ class ImportContractType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'MM/dd/yyyy',
                 'attr'           => array(
+                    'id'        => '',
                     'class'     => 'half-width',
                 ),
             )
@@ -38,6 +39,7 @@ class ImportContractType extends AbstractType
                 'widget' => 'single_text',
                 'format' => 'MM/dd/yyyy',
                 'attr'           => array(
+                    'id'        => '',
                     'class'     => 'half-width',
                 ),
             )
@@ -70,7 +72,7 @@ class ImportContractType extends AbstractType
             array(
                 'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
                 'validation_groups' => array(
-                    'import_contract',
+                    'import',
                 ),
                 'csrf_protection'    => true,
                 'csrf_field_name'    => '_token',

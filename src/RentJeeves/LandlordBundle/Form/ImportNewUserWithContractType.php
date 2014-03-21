@@ -29,11 +29,6 @@ class ImportNewUserWithContractType extends AbstractType
         );
 
         $builder->add(
-            'unit',
-            new ImportUnitType()
-        );
-
-        $builder->add(
             'send_invite',
             'checkbox',
             array(
@@ -51,7 +46,7 @@ class ImportNewUserWithContractType extends AbstractType
                 'csrf_field_name'       => '_token',
                 'cascade_validation'    => true,
                 'validation_groups' => array(
-                    'import_contract',
+                    'import',
                 ),
             )
         );

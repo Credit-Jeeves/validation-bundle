@@ -1,20 +1,16 @@
-<tr data-bind="if: isSkipped || Tenant.contracts[0].status == 'finished'">
+<tr data-bind="if: isSkipped || Tenant.contracts[0].status == 'finished', attr:{class:'line'}">
     <td data-bind="text: $root.getStatusText($data)"></td>
     <td data-bind="text:Tenant.contracts[0].unit.name"></td>
     <td data-bind="text:Tenant.resident_id"></td>
     <td data-bind="text:Tenant.first_name"></td>
     <td data-bind="text:Tenant.last_name"></td>
     <td data-bind="text:Tenant.email"></td>
-    <td data-bind="text:Tenant.contracts[0].rent"></td>
-    <td data-bind="text:$root.formatDate(Tenant.contracts[0].startAt)"></td>
-    <td>
-        <span data-bind="text:$root.formatDate(Tenant.contracts[0].finishAt), visible: Tenant.contracts[0].status !== 'finished'">
-        </span>
+    <td data-bind="html:Tenant.contracts[0].rent+'<br/>'+Tenant.contracts[0].imported_balance"></td>
+    <td data-bind="html:$root.formatDate(Tenant.contracts[0].startAt)+'<br/>'+$root.formatDate(Tenant.contracts[0].finishAt)">
     </td>
-    <td>
-        <span data-bind="text:$root.formatDate(Tenant.contracts[0].finishAt), visible: Tenant.contracts[0].status === 'finished'">
-        </span>
-    </td>
-    <td data-bind="text:Tenant.contracts[0].imported_balance"></td>
     <td></td>
+    <td>
+        <span data-bind="visible: Tenant.contracts[0].status == 'finished', text: $root.formatDate($root.getMoveOut($data))">
+        </span>
+    </td>
 </tr>

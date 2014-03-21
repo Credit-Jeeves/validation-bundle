@@ -41,6 +41,8 @@ class AccountingImport
 
     const IMPORT_FIELD_DELIMITER = 'importFieldDelimiter';
 
+    const IMPORT_FILE_LINE = 'importFileLine';
+
     const IMPORT_MAPPING = 'importMapping';
 
     const FIRST_NAME_TENANT = 'first_name';
@@ -135,6 +137,16 @@ class AccountingImport
     public function setFilePath($fileName)
     {
         $this->session->set(self::IMPORT_FILE_PATH, $fileName);
+    }
+
+    public function getFileLine()
+    {
+        return $this->session->get(self::IMPORT_FILE_LINE, 0);
+    }
+
+    public function setFileLine($fileLine)
+    {
+        return $this->session->set(self::IMPORT_FILE_LINE, $fileLine);
     }
 
     public function setPropertyId($propertyId)
@@ -322,7 +334,7 @@ class AccountingImport
     }
 
     //@TODO try to make in this place serializer
-    protected function getTenant($row)
+    protected function getImport($row)
     {
         $import = new Import();
         $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImport(
@@ -368,7 +380,7 @@ class AccountingImport
         $contract->setStartAt($this->getDateByField($row[self::KEY_MOVE_IN]));
         $contract->setFinishAt($this->getDateByField($row[self::KEY_LEASE_END]));
         if ($row[self::KEY_MOVE_OUT]) {
-            $contract->setFinishAt($this->getDateByField($row[self::KEY_MOVE_OUT]));
+            $import->setMoveOut($this->getDateByField($row[self::KEY_MOVE_OUT]));
             $contract->setStatus(ContractStatus::FINISHED);
         }
         $contract->setImportedBalance($row[self::KEY_BALANCE]);
@@ -426,32 +438,19 @@ class AccountingImport
         return $this->createForm(new ImportNewUserWithContractType());
     }
 
-    public function getPages($limit)
-    {
-        $result = array();
-        $total = $this->countData();
-        $pages = ceil($total / $limit);
-        if ($pages < 2) {
-            return $result;
-        }
-        for ($i = 0; $i < $pages; $i++) {
-            $result[] = $i + 1;
-        }
-        return $result;
-    }
-
     public function countData()
     {
         return count($this->getFileData());
     }
 
-    public function getMappedData($page, $rowCount)
+    public function getMappedData()
     {
-        $offset = $page * $rowCount - $rowCount;
-        $data = $this->getFileData(true, $offset, $rowCount);
+        $data = $this->getFileData(true, $this->getFileLine(), $rowCount = 10);
         $collection = new ArrayCollection(array());
         foreach ($data as $key => $values) {
-            $collection->add($this->getTenant($values));
+            $import = $this->getImport($values);
+            $import->setNumber($key);
+            $collection->add($import);
         }
         return $collection;
     }

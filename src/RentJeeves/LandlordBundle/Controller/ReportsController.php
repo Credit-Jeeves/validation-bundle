@@ -257,17 +257,58 @@ class ReportsController extends Controller
             return new JsonResponse($result);
         }
 
+        $newRows = $request->request->get('newRows', false);
+        if ($newRows) {
+            $accountingImport->setFileLine($accountingImport->getFileLine() + 1);
+        }
+
         $rows = array();
         $total = $accountingImport->countData();
-        $data = $request->request->all();
+
         if ($total > 0) {
-            $rows = $accountingImport->getMappedData($data['page'], 10);
+            $rows = $accountingImport->getMappedData();
         }
 
         $serializer = SerializerBuilder::create()->build();
         $result['rows'] = $rows;
         $result['total'] = $total;
-        $result['pagination'] = $accountingImport->getPages(10);
+
+
+        return new Response($serializer->serialize($result, 'json'));
+    }
+
+    /**
+     * @Route(
+     *     "/review/post/save/row",
+     *     name="landlord_reports_review_save_row",
+     *     options={"expose"=true}
+     * )
+     */
+    public function saveRowAction(Request $request)
+    {
+        $this->checkAccessToReport();
+        $result = array(
+            'error'   => false,
+            'message' => '',
+        );
+        $i18n = $this->get('translator');
+        /**
+         * @var AccountingImport $accountingImport
+         */
+        $accountingImport = $this->get('accounting.import');
+        if (!$data = $accountingImport->getImportData()) {
+            $result['error'] = true;
+            $result['message'] = $i18n->trans('import.error.access');
+            return new JsonResponse($result);
+        }
+
+        if (empty($data[$accountingImport::IMPORT_MAPPING])) {
+            $result['error'] = true;
+            $result['message'] =  $i18n->trans('import.error.access');
+            return new JsonResponse($result);
+        }
+
+        $serializer = SerializerBuilder::create()->build();
 
         return new Response($serializer->serialize($result, 'json'));
     }
