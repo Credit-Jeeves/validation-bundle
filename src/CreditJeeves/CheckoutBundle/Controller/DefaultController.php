@@ -91,6 +91,7 @@ class DefaultController extends Controller
                     $report->setRawData('');
                     $operation = new Operation();
                     $operation->setReportD2c($report);
+                    $operation->setPaidFor(new DateTime());
                     $this->order->addOperation($operation);
                     $em->persist($operation);
                     $em->persist($report);

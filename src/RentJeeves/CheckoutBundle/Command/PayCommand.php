@@ -85,14 +85,17 @@ class PayCommand extends ContainerAwareCommand
             $output->writeln('Payment already executed.');
             return 1;
         }
+        $order = new Order();
         $operation = new Operation();
         $amount = $payment->getAmount();
         $fee = 0;
 
-        $order = new Order();
+        $operation->setOrder($order);
         $operation->setType(OperationType::RENT);
         $operation->setContract($contract);
         $operation->setAmount($amount);
+        // FIXME after paid for would be implemented for payments
+        $operation->setPaidFor($contract->getPaidTo());
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
             $fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
@@ -102,7 +105,6 @@ class PayCommand extends ContainerAwareCommand
             $order->setType(OrderType::HEARTLAND_BANK);
         }
 
-        $order->addOperation($operation);
         $order->setUser($paymentAccount->getUser());
         $order->setAmount($amount);
         $order->setStatus(OrderStatus::NEWONE);

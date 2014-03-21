@@ -19,6 +19,7 @@ use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RuntimeException;
+use DateTime;
 
 /**
  * @DI\Service("payment_terminal")
@@ -49,6 +50,7 @@ class Terminal
         $operation->setType(OperationType::CHARGE);
         $operation->setAmount($amount);
         $operation->setGroup($group);
+        $operation->setPaidFor(new DateTime());
         $order->addOperation($operation);
 
         $users = $group->getGroupAgents();
