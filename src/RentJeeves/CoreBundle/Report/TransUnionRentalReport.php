@@ -15,11 +15,11 @@ class TransUnionRentalReport
      */
     protected $em;
 
-    public function __construct($em, $startDate, $endDate)
+    public function __construct($em, $reportMonth, $reportYear)
     {
         $this->em = $em;
         $this->createHeader();
-        $this->createRecords($startDate, $endDate);
+        $this->createRecords($reportMonth, $reportYear);
     }
 
     protected function createHeader()
@@ -29,14 +29,15 @@ class TransUnionRentalReport
         $this->header->setActivityDate(new DateTime($lastActivityDate));
     }
 
-    protected function createRecords($startDate, $endDate)
+    protected function createRecords($reportMonth, $reportYear)
     {
         $this->records = array();
-        $contracts = $this->em
-            ->getRepository('RjDataBundle:Contract')->getContractsForRentalReport($startDate, $endDate);
+        $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
+        $contracts = $contractRepo->getContractsForRentalReport($reportMonth, $reportYear);
 
         foreach ($contracts as $contract) {
-            $this->records[] = new TransUnionReportRecord($contract);
+            $rentOperation = $contractRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
+            $this->records[] = new TransUnionReportRecord($contract, $rentOperation);
         }
     }
 }

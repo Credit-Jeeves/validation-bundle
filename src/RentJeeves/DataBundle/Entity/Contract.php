@@ -603,6 +603,11 @@ class Contract extends Base
         return DisputeCode::all();
     }
 
+    public function getLastRentOperation()
+    {
+        return null;
+    }
+
     public function __toString()
     {
         return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');

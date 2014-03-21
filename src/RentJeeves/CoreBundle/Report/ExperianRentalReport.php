@@ -7,34 +7,29 @@ use DateTime;
 
 class ExperianRentalReport
 {
-    protected $header;
     protected $records;
 
     /**
      * @Serializer\Exclude
      */
-    protected $container;
+    protected $em;
 
-    public function __construct($container, $startDate, $endDate)
+    public function __construct($em, $reportMonth, $reportYear)
     {
-        $this->container = $container;
-        $this->createHeader();
-        $this->createRecords($startDate, $endDate);
+        $this->em = $em;
+        $this->createRecords($reportMonth, $reportYear);
     }
 
-    protected function createHeader()
-    {
-        $this->header = new ExperianReportHeader();
-    }
-
-    protected function createRecords($startDate, $endDate)
+    protected function createRecords($reportMonth, $reportYear)
     {
         $this->records = array();
-        $contracts = $this->container->get('doctrine.orm.entity_manager')
-            ->getRepository('RjDataBundle:Contract')->getContractsForRentalReport($startDate, $endDate);
+        $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
+
+        $contracts = $contractRepo->getContractsForRentalReport($reportMonth, $reportYear);
 
         foreach ($contracts as $contract) {
-            $this->records[] = new ExperianReportRecord($contract);
+            $rentOperation = $contractRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
+            $this->records[] = new ExperianReportRecord($contract, $rentOperation);
         }
     }
 }

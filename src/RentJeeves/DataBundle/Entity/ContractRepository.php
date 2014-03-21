@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -461,8 +462,11 @@ class ContractRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function getContractsForRentalReport(DateTime $firstDate, DateTime $lastDate)
+    public function getContractsForRentalReport($monthNo, $yearNo)
     {
+        $firstDate = new DateTime("$yearNo-$monthNo-01");
+        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+
         $query = $this->createQueryBuilder('c');
         $query->where('c.status = :statusCurrent');
 //        $query->andWhere('c.reporting = 1');
@@ -474,5 +478,23 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->execute();
+    }
+
+    public function getRentOperationForMonth($contractId, $monthNo, $yearNo)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.operation', 'op', Expr\Join::WITH, 'op.type = :operationType');
+        $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :orderStatus');
+        $query->where('c.contractId = :contractId');
+        $query->andWhere('MONTH(op.paidFor) = :month');
+        $query->andWhere('YEAR(op.paidFor) = :year');
+        $query->setParameter('contractId', $contractId);
+        $query->setParameter('operationType', OperationType::RENT);
+        $query->setParameter('orderStatus', OrderStatus::COMPLETE);
+        $query->setParameter('month', $monthNo);
+        $query->setParameter('year', $yearNo);
+        $query = $query->getQuery();
+
+        return $query->getSingleResult();
     }
 }

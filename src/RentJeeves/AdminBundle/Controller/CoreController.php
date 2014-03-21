@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CoreController as BaseController;
+use RuntimeException;
 
 class CoreController extends BaseController
 {
@@ -31,25 +32,29 @@ class CoreController extends BaseController
     }
 
     /**
-     * @Route("report/{type}", name="sonata_admin_report")
+     * @Route("report/{type}/{month}/{year}", name="sonata_admin_report")
      * @Template()
      *
      * @return array
      */
-    public function reportAction($type)
+    public function reportAction($type, $month, $year)
     {
-        $startDate = new \DateTime('02-01-2014');
-        $endDate = new \DateTime('03-01-2014');
+        $em = $this->getDoctrine()->getManager();
 
         switch ($type) {
-            case 'tu_rental1':
-                $report = new TransUnionRentalReport($this->container, $startDate, $endDate);
+            case 'trans_union':
+                $report = new TransUnionRentalReport($em, $month, $year);
+                $serializationType = 'tu_rental1';
                 break;
-            case 'csv':
-                $report = new ExperianRentalReport()
+            case 'experian':
+                $report = new ExperianRentalReport($em, $month, $year);
+                $serializationType = 'csv';
+                break;
+            default:
+                throw new RuntimeException(sprintf('Given report type \'%s\' does not exist', $type));
         }
 
-        $result = $this->get('jms_serializer')->serialize($report, $type);
+        $result = $this->get('jms_serializer')->serialize($report, $serializationType);
 
         return new Response($result, 200);
     }

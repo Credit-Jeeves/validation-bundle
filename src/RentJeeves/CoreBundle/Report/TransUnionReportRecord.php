@@ -2,6 +2,7 @@
 
 namespace RentJeeves\CoreBundle\Report;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -13,6 +14,11 @@ class TransUnionReportRecord
      * @Serializer\Exclude
      */
     protected $contract;
+
+    /**
+     * @Serializer\Exclude
+     */
+    protected $operation;
 
     protected $recordLength = '0426';                                   // 4
     protected $processingIndicator = '1';                               // 1
@@ -88,9 +94,10 @@ class TransUnionReportRecord
     protected $reserved4 = ' ';                                         // 1
     protected $residenceCode = 'R';                                     // 1
 
-    public function __construct(Contract $contract)
+    public function __construct(Contract $contract, Operation $operation)
     {
         $this->contract = $contract;
+        $this->operation = $operation;
     }
 
     public function getAccountUpdateTimestamp()
@@ -138,16 +145,21 @@ class TransUnionReportRecord
         return $this->getFormattedRentAmount();
     }
 
-    // cj_order.amount
+
     public function getLeasePaymentAmountConfirmed()
     {
-        return $this->getFormattedRentAmount();
-//        return str_pad('2200', 9, '0', STR_PAD_LEFT);
+        $amount = 0;
+        if ($this->operation) {
+            $amount = $this->operation->getAmount();
+        }
+
+        return str_pad($amount, 9, '0', STR_PAD_LEFT);
     }
 
     public function getLeaseStatus()
     {
-        $today = new DateTime();
+        $lastOperation = $this->operation ?: $this->contract->getLastRentOperation();
+        // due date in the month
         $paidTo = $this->contract->getPaidTo();
         return '11';
     }

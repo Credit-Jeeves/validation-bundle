@@ -2,91 +2,171 @@
 
 namespace RentJeeves\CoreBundle\Report;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use DateTime;
 
 class ExperianReportRecord
 {
+    const EXPERIAN_REPORT_DATE_FORMAT = 'Ymd';
+
     /**
      * @Serializer\Exclude
      */
     protected $contract;
 
-    /** @Serializer\Accessor(getter="getTenantUniqueIdentifier") */
+    /**
+     * @Serializer\Exclude
+     */
+    protected $operation;
+
+    /**
+     * @Serializer\Accessor(getter="getTenantUniqueIdentifier")
+     * @Serializer\SerializedName("Tenant Unique Identifier")
+     */
     protected $tenantUniqueIdentifier;
-    /** @Serializer\Accessor(getter="getTenantFirstName") */
+    /**
+     * @Serializer\Accessor(getter="getTenantFirstName")
+     * @Serializer\SerializedName("Tenant First Name")
+     */
     protected $tenantFirstName;
-    /** @Serializer\Accessor(getter="getTenantMiddleName") */
+    /**
+     * @Serializer\Accessor(getter="getTenantMiddleName")
+     * @Serializer\SerializedName("Tenant Middle Name")
+     */
     protected $tenantMiddleName;
-    /** @Serializer\Accessor(getter="getTenantLastName") */
+    /**
+     * @Serializer\Accessor(getter="getTenantLastName")
+     * @Serializer\SerializedName("Tenant Last Name")
+     */
     protected $tenantLastName;
-    /** @Serializer\Accessor(getter="getTenantSSN") */
+    /**
+     * @Serializer\Accessor(getter="getTenantSSN")
+     * @Serializer\SerializedName("Tenant SSN")
+     */
     protected $tenantSSN;
-    /** @Serializer\Accessor(getter="getTenantDOB") */
+    /**
+     * @Serializer\Accessor(getter="getTenantDOB")
+     * @Serializer\SerializedName("Tenant DOB")
+     */
     protected $tenantDOB;
-    /** @Serializer\Accessor(getter="getTenantAddressUniqueIdentifier") */
+    /**
+     * @Serializer\Accessor(getter="getTenantAddressUniqueIdentifier")
+     * @Serializer\SerializedName("Tenant Address Unique Identifier")
+     */
     protected $tenantAddressUniqueIdentifier;
-    /** @Serializer\Accessor(getter="getTenantAddress1") */
+    /**
+     * @Serializer\Accessor(getter="getTenantAddress1")
+     * @Serializer\SerializedName("Tenant Address 1")
+     */
     protected $tenantAddress1;
-    /** @Serializer\Accessor(getter="getTenantAddress2") */
+    /**
+     * @Serializer\Accessor(getter="getTenantAddress2")
+     * @Serializer\SerializedName("Tenant Address 2")
+     */
     protected $tenantAddress2;
-    /** @Serializer\Accessor(getter="getTenantCity") */
+    /**
+     * @Serializer\Accessor(getter="getTenantCity")
+     * @Serializer\SerializedName("Tenant City")
+     */
     protected $tenantCity;
-    /** @Serializer\Accessor(getter="getTenantState") */
+    /**
+     * @Serializer\Accessor(getter="getTenantState")
+     * @Serializer\SerializedName("Tenant State")
+     */
     protected $tenantState;
-    /** @Serializer\Accessor(getter="getTenantZip") */
+    /**
+     * @Serializer\Accessor(getter="getTenantZip")
+     * @Serializer\SerializedName("Tenant Zip")
+     */
     protected $tenantZip;
-    /** @Serializer\Accessor(getter="getLeaseUniqueIdentifier") */
+    /**
+     * @Serializer\Accessor(getter="getLeaseUniqueIdentifier")
+     * @Serializer\SerializedName("Lease Unique Identifier")
+     */
     protected $leaseUniqueIdentifier;
-    /** @Serializer\Accessor(getter="getEnrollmentDate") */
+    /**
+     * @Serializer\Accessor(getter="getEnrollmentDate")
+     * @Serializer\SerializedName("Enrollment Date")
+     */
     protected $enrollmentDate;
-    /** @Serializer\Accessor(getter="getLeaseEndDate") */
+    /**
+     * @Serializer\Accessor(getter="getLeaseEndDate")
+     * @Serializer\SerializedName("Lease End Date")
+     */
     protected $leaseEndDate;
-    /** @Serializer\Accessor(getter="getMoveOutBalanceOwed") */
+    /**
+     * @Serializer\Accessor(getter="getMoveOutBalanceOwed")
+     * @Serializer\SerializedName("Move-Out Balance Owed")
+     */
     protected $moveOutBalanceOwed;
-    /** @Serializer\Accessor(getter="getLeaseMoveOutDate") */
+    /**
+     * @Serializer\Accessor(getter="getLeaseMoveOutDate")
+     * @Serializer\SerializedName("Lease Move-Out Date")
+     */
     protected $leaseMoveOutDate;
-    /** @Serializer\Accessor(getter="getMonthToMonthLease") */
+    /**
+     * @Serializer\Accessor(getter="getMonthToMonthLease")
+     * @Serializer\SerializedName("Month-to-month Lease")
+     */
     protected $monthToMonthLease;
-    /** @Serializer\Accessor(getter="getSubsidizedLease") */
+    /**
+     * @Serializer\Accessor(getter="getSubsidizedLease")
+     * @Serializer\SerializedName("Subsidized Lease")
+     */
     protected $subsidizedLease;
-    /** @Serializer\Accessor(getter="getPaymentUniqueIdentifier") */
+    /**
+     * @Serializer\Accessor(getter="getPaymentUniqueIdentifier")
+     * @Serializer\SerializedName("Payment Unique Identifier")
+     */
     protected $paymentUniqueIdentifier;
-    /** @Serializer\Accessor(getter="getMonthlyRentAmountDue") */
+    /**
+     * @Serializer\Accessor(getter="getMonthlyRentAmountDue")
+     * @Serializer\SerializedName("Monthly Rent Amount Due")
+     */
     protected $monthlyRentAmountDue;
-    /** @Serializer\Accessor(getter="getDueDate") */
+    /**
+     * @Serializer\Accessor(getter="getDueDate")
+     * @Serializer\SerializedName("Due Date")
+     */
     protected $dueDate;
-    /** @Serializer\Accessor(getter="getAmountPaid") */
+    /**
+     * @Serializer\Accessor(getter="getAmountPaid")
+     * @Serializer\SerializedName("Amount Paid")
+     */
     protected $amountPaid;
-    /** @Serializer\Accessor(getter="getDatePaid") */
+    /**
+     * @Serializer\Accessor(getter="getDatePaid")
+     * @Serializer\SerializedName("Date Paid")
+     */
     protected $datePaid;
 
-    public function __construct(Contract $contract)
+    public function __construct(Contract $contract, Operation $operation)
     {
         $this->contract = $contract;
+        $this->operation = $operation;
     }
 
     public function getDatePaid()
     {
-        return '20140228';
+        return $this->operation->getOrder()->getUpdatedAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
     }
 
     public function getDueDate()
     {
-        return '20140301';
+        return $this->operation->getPaidFor()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
     }
 
     public function getEnrollmentDate()
     {
-        return $this->contract->getStartAt();
+        return $this->contract->getStartAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
     }
 
     public function getLeaseEndDate()
     {
         if ($finishAt = $this->contract->getFinishAt()) {
-            return $finishAt->format('Ymd');
+            return $finishAt->format(self::EXPERIAN_REPORT_DATE_FORMAT);
         }
 
         return null;
@@ -95,7 +175,7 @@ class ExperianReportRecord
     public function getLeaseMoveOutDate()
     {
         if ($this->contract->getStatus() == ContractStatus::FINISHED) {
-            return $this->contract->getFinishAt()->format('Ymd');
+            return $this->contract->getFinishAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
         }
 
         return null;
@@ -108,11 +188,11 @@ class ExperianReportRecord
 
     public function getMonthToMonthLease()
     {
-        if ($this->contract->getFinishAt() == null) {
-            return 1;
+        if ($this->contract->getStatus() == ContractStatus::CURRENT && $this->contract->getFinishAt() == null) {
+            return 'YES';
         }
 
-        return null;
+        return 'NO';
     }
 
     public function getMonthlyRentAmountDue()
@@ -131,12 +211,12 @@ class ExperianReportRecord
 
     public function getPaymentUniqueIdentifier()
     {
-        return 111;
+        return $this->operation->getId();
     }
 
     public function getSubsidizedLease()
     {
-        return null;
+        return 'NO';
     }
 
     public function getTenantAddress1()
@@ -171,7 +251,7 @@ class ExperianReportRecord
 
     public function getTenantDOB()
     {
-        return $this->contract->getTenant()->getDateOfBirth()->format('mdY');
+        return $this->contract->getTenant()->getDateOfBirth()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
     }
 
     public function getTenantFirstName()
@@ -211,6 +291,6 @@ class ExperianReportRecord
 
     public function getAmountPaid()
     {
-        return 555;
+        return $this->operation->getAmount();
     }
 }
