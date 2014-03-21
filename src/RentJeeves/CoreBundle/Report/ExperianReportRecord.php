@@ -150,12 +150,20 @@ class ExperianReportRecord
 
     public function getDatePaid()
     {
-        return $this->operation->getOrder()->getUpdatedAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        if ($this->operation) {
+            return $this->operation->getOrder()->getUpdatedAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        }
+
+        return null;
     }
 
     public function getDueDate()
     {
-        return $this->operation->getPaidFor()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        if ($this->operation) {
+            return $this->operation->getPaidFor()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        }
+
+        return $this->contract->getPaidTo();
     }
 
     public function getEnrollmentDate()
@@ -206,12 +214,16 @@ class ExperianReportRecord
             return $this->contract->getUncollectedBalance();
         }
 
-        return 0;
+        return null;
     }
 
     public function getPaymentUniqueIdentifier()
     {
-        return $this->operation->getId();
+        if ($this->operation) {
+            return $this->operation->getId();
+        }
+
+        return null;
     }
 
     public function getSubsidizedLease()
@@ -291,6 +303,10 @@ class ExperianReportRecord
 
     public function getAmountPaid()
     {
-        return $this->operation->getAmount();
+        if ($this->operation) {
+            return $this->operation->getAmount();
+        }
+
+        return null;
     }
 }

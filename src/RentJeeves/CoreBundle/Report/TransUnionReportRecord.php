@@ -10,10 +10,25 @@ use DateTime;
 
 class TransUnionReportRecord
 {
+    const LEASE_STATUS_CURRENT = 11;
+    const LEASE_STATUS_CLOSED_AND_PAID = 13;
+    const LEASE_STATUS_CLOSED_AND_UNPAID = 97;
+    const LEASE_STATUS_30_59_DAYS_LATE = 71;
+    const LEASE_STATUS_60_89_DAYS_LATE = 78;
+    const LEASE_STATUS_90_119_DAYS_LATE = 80;
+    const LEASE_STATUS_120_149_DAYS_LATE = 82;
+    const LEASE_STATUS_150_179_DAYS_LATE = 83;
+    const LEASE_STATUS_MORE_THAN_180_DAYS_LATE = 84;
+
     /**
      * @Serializer\Exclude
      */
     protected $contract;
+
+    /**
+     * @Serializer\Exclude
+     */
+    protected $reportLeaseStatus;
 
     /**
      * @Serializer\Exclude
@@ -50,6 +65,7 @@ class TransUnionReportRecord
     protected $paymentRating;                                           // 1
     /** @Serializer\Accessor(getter="getRentalHistoryProfile") */
     protected $rentalHistoryProfile;                                    // 24
+    /** @Serializer\Accessor(getter="getLeaseCommentCode") */
     protected $leaseCommentCode = '  ';                                 // 2
     /** @Serializer\Accessor(getter="getLeaseDisputeCode") */
     protected $leaseDisputeCode;                                        // 2
@@ -145,7 +161,6 @@ class TransUnionReportRecord
         return $this->getFormattedRentAmount();
     }
 
-
     public function getLeasePaymentAmountConfirmed()
     {
         $amount = 0;
@@ -158,20 +173,79 @@ class TransUnionReportRecord
 
     public function getLeaseStatus()
     {
-        $lastOperation = $this->operation ?: $this->contract->getLastRentOperation();
-        // due date in the month
-        $paidTo = $this->contract->getPaidTo();
-        return '11';
+        if ($this->contract->getStatus() == ContractStatus::FINISHED) {
+            if ($this->contract->getUncollectedBalance() > 0) {
+                return self::LEASE_STATUS_CLOSED_AND_UNPAID;
+            }
+            return self::LEASE_STATUS_CLOSED_AND_PAID;
+        }
+
+        $operation = $this->operation ?: $this->contract->getLastRentOperation();
+
+        $paidFor = $operation->getPaidFor();
+        $paidAt = $operation->getOrder()->getUpdatedAt();
+        $interval = $paidFor->diff($paidAt)->format('%r%a');
+        $this->reportLeaseStatus = $this->getLateLeaseStatus($interval);
+
+        return $this->reportLeaseStatus;
     }
 
     public function getPaymentRating()
     {
-        return ' ';
+        if ($this->contract->getStatus() == ContractStatus::FINISHED) {
+            return ' ';
+        }
+
+        if (!$this->reportLeaseStatus) {
+            $this->getLeaseStatus();
+        }
+
+        switch ($this->reportLeaseStatus) {
+            case self::LEASE_STATUS_30_59_DAYS_LATE:
+                return 1;
+            case self::LEASE_STATUS_60_89_DAYS_LATE:
+                return 2;
+            case self::LEASE_STATUS_90_119_DAYS_LATE:
+                return 3;
+            case self::LEASE_STATUS_120_149_DAYS_LATE:
+                return 4;
+            case self::LEASE_STATUS_150_179_DAYS_LATE:
+                return 5;
+            case self::LEASE_STATUS_MORE_THAN_180_DAYS_LATE:
+                return 6;
+            default:
+                return 0;
+        }
     }
 
     public function getRentalHistoryProfile()
     {
         return str_repeat('B', 24);
+    }
+
+    public function getLeaseCommentCode()
+    {
+        //MM‐Rent paid before day 6
+        //NN‐Rent paid on day 6 or before day 15
+        //OO‐Rent paid on or after day 15
+        //PP‐Rent paid, but required a demand letter
+        //QQ‐Eviction (non‐legal action)
+        //RR‐ Eviction
+        //SS‐ Rent unpaid, renter skipped, and did not fulfill remaining lease term
+        
+        if (!$this->operation) {
+            return 'SS';
+        }
+
+        $paidOnDay = $this->operation->getOrder()->getUpdatedAt()->format('j');
+        switch ($paidOnDay) {
+            case ($paidOnDay < 6):
+                return 'MM';
+            case ($paidOnDay >= 6 && $paidOnDay < 15):
+                return 'NN';
+            case ($paidOnDay >= 15):
+                return 'OO';
+        }
     }
 
     public function getLeaseDisputeCode()
@@ -293,5 +367,33 @@ class TransUnionReportRecord
         $rent = (int)$this->contract->getRent();
 
         return str_pad($rent, 9, '0', STR_PAD_LEFT);
+    }
+
+    private function getLateLeaseStatus($interval)
+    {
+        switch ($interval) {
+            case ($interval >= 30 && $interval <= 59):
+                $status = self::LEASE_STATUS_30_59_DAYS_LATE;
+                break;
+            case ($interval >= 60 && $interval <= 89):
+                $status = $status = self::LEASE_STATUS_60_89_DAYS_LATE;
+                break;
+            case ($interval >= 90 && $interval <= 119):
+                $status = $status = self::LEASE_STATUS_90_119_DAYS_LATE;
+                break;
+            case ($interval >= 120 && $interval <= 149):
+                $status = $status = self::LEASE_STATUS_120_149_DAYS_LATE;
+                break;
+            case ($interval >= 150 && $interval <= 179):
+                $status = $status = self::LEASE_STATUS_150_179_DAYS_LATE;
+                break;
+            case ($interval >= 180):
+                $status = $status = self::LEASE_STATUS_MORE_THAN_180_DAYS_LATE;
+                break;
+            default:
+                $status = $status = self::LEASE_STATUS_CURRENT;
+        }
+
+        return $status;
     }
 }
