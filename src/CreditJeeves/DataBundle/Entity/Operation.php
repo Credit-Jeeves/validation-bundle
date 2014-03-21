@@ -4,7 +4,6 @@ namespace CreditJeeves\DataBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use CreditJeeves\DataBundle\Model\Operation as Base;
 use JMS\Serializer\Annotation as Serializer;
-use DateTime;
 
 /**
  * Operation
@@ -13,7 +12,6 @@ use DateTime;
  *
  * @ORM\Table(name="cj_operation")
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OperationRepository")
- * @ORM\HasLifecycleCallbacks()
  */
 class Operation extends Base
 {

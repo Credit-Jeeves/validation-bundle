@@ -780,6 +780,8 @@ class AjaxController extends Controller
                 $operation = new Operation();
                 $operation->setType(OperationType::RENT);
                 $operation->setContract($contract);
+                // FIXME after paid for would be implemented for payments
+                $operation->setPaidFor($contract->getPaidTo());
                 $em->persist($operation);
                 $em->flush();
                 // Create order
