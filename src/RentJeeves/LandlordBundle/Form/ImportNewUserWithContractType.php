@@ -20,30 +20,37 @@ class ImportNewUserWithContractType extends AbstractType
     {
         $builder->add(
             'tenant',
-            new ImportTenantType()
+            new ImportTenantType(),
+            array()
         );
 
         $builder->add(
             'contract',
-            new ImportContractType()
+            new ImportContractType($token = false),
+            array()
         );
 
         $builder->add(
-            'send_invite',
+            'sendInvite',
             'checkbox',
             array(
-                'data' => true,
+                'data'      => true,
+                'required'  => false,
             )
         );
 
+        $builder->add(
+            '_token',
+            'hidden',
+            array()
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
-                'csrf_protection'       => true,
-                'csrf_field_name'       => '_token',
+                'csrf_protection'       => false,
                 'cascade_validation'    => true,
                 'validation_groups' => array(
                     'import',

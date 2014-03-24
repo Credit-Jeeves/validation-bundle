@@ -12,5 +12,18 @@
     margin: 0px;
 }
 .properties-table td>input[type="text"] {
+    width: 60px !important;
     margin-top: 5px;
+}
+.column-middle {
+    padding: 2px;
+}
+.properties-th>.status  {
+    width: 38px;
+}
+.properties-th>.unit {
+    width: 48px;
+}
+.properties-th>.resident {
+    width: 55px;
 }

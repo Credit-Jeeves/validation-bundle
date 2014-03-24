@@ -2,10 +2,11 @@ function accountingImport() {
     var self = this;
     this.rowsTotal = ko.observable(0);
     this.errorLoadDataMessage = ko.observable('');
-    this.isProcessing = ko.observable(false);
-    this.rows =  ko.observableArray([]);
+    this.isFinishReview =  ko.observable(false);
+    this.rows = ko.observableArray([]);
+    this.formErrors = ko.observableArray([]);
     this.loadData = function(next) {
-        self.isProcessing(true);
+        self.setProcessing(true);
         self.rows([]);
         self.rowsTotal(0);
         $.ajax({
@@ -13,20 +14,31 @@ function accountingImport() {
             type: 'POST',
             dataType: 'json',
             data: {
-                'next': next
+                'newRows': next
             },
             success: function(response) {
-                self.isProcessing(false);
+                self.setProcessing(false);
                 self.errorLoadDataMessage(response.message);
                 if (response.error === false) {
+                    console.info(response.rows);
                     self.rows(response.rows);
                     self.rowsTotal(response.total);
                     self.initGuiScript();
-                    return;
+
+                    if (self.rows().length <= 0) {
+                        self.isFinishReview(true);
+                    }
                 }
             }
         });
     };
+
+    this.isVisibleTable = function() {
+        if (self.errorLoadDataMessage().length <= 0 && self.rows().length > 0) {
+            return true;
+        }
+        return false;
+    }
 
     this.getMoveOut = function(data) {
         if (data.moveOut !== undefined) {
@@ -45,8 +57,12 @@ function accountingImport() {
             return Translator.trans('import.status.skip');
         }
 
-        if (data.Tenant.contracts[0].status == 'finished') {
+        if (data.Tenant.contracts[0].status == 'finished' && self.getMoveOut(data).length > 0) {
             return Translator.trans('import.status.ended');
+        }
+
+        if (data.Tenant.contracts[0].status == 'finished' && self.getMoveOut(data).length <= 0) {
+            return Translator.trans('import.status.error');
         }
 
         if (data.Tenant.contracts[0].id !== undefined && data.Tenant.id !== undefined) {
@@ -64,59 +80,117 @@ function accountingImport() {
         return (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
     }
 
-    //Have problem with implementation datepicker
-    this.getUniqueId = function(i)
-    {
-        var id = "id" + Math.random().toString(16).slice(2);
-        return id;
-    }
-
-    this.isProcessing.subscribe(function(newValue) {
-        if (newValue) {
-            $('#reviewContainer').parent().showOverlay();
-            return;
-        }
-        $('#reviewContainer').parent().hideOverlay();
-    });
-
     this.submitForms = function() {
-        self.isProcessing(true);
+        self.setProcessing(true);
         var number = 0;
         var success = Array();
         var errors = Array();
-        $.each($('.line'), function (key,value) {
+        var forms = Object();
+
+        $.each($('.properties-table tr'), function (key,value) {
             var element = $(this);
             //not allow send knockout duplicate
-            if (element.find('td').length >= 12) {
+            if (element.find('td').length <= 0) {
                 return;
             }
-            $.ajax({
-                url: Routing.generate('landlord_reports_review_save_row'),
-                type: 'POST',
-                async: false,
-                dataType: 'json',
-                data: {
-                    'line': self.rows()[number].number
-                },
-                success: function(response) {
-                    var row = self.rows()[number];
-                    success.push(row);
-                }
-            });
+            var form = new Object();
+            if (element.find('form').length > 0) {
+                var data = element.find('input').serializeArray();
+                $.each(data, function (key,value) {
+                    form[value.name] = value.value;
+                });
+            }
+
+            form['line'] = self.rows()[number].number;
+            forms[number] = form;
             number++;
         });
 
-        $.each(success, function (key,value) {
-            self.rows.remove(value);
-        });
+        self.formErrors([]);
 
-        self.isProcessing(false);
-        if (errors.length <= 0) {
-            self.loadData(true);
-        } else {
-            //process forms errors
-            console.info('We need show errors for user');
-        }
+        $.ajax({
+            url: Routing.generate('landlord_reports_review_save_row'),
+            type: 'POST',
+            async: true,
+            dataType: 'json',
+            data: forms,
+            success: function(response) {
+                var errorsLen = $.map(response.formErrors, function(n, i) { return i; }).length;
+                if (errorsLen > 0) {
+                    console.info( self.rows());
+                    var rows = new Array();
+                    $.each(self.rows(), function (key,value) {
+                        if (response.formErrors[value.number] !== undefined) {
+                            rows.push(value);
+                        }
+                    });
+                    self.rows([]);
+                    self.rows(rows);
+                    self.setProcessing(false);
+                } else {
+                    self.loadData(false);
+                }
+            }
+        });
     }
 
+    this.uniqueId = function() {
+        // always start with a letter (for DOM friendlyness)
+        var idstr=String.fromCharCode(Math.floor((Math.random()*25)+65));
+        do {
+            // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
+            var ascicode=Math.floor((Math.random()*42)+48);
+            if (ascicode<58 || ascicode>64){
+                // exclude all chars between : (58) and @ (64)
+                idstr+=String.fromCharCode(ascicode);
+            }
+        } while (idstr.length<36);
+
+        return (idstr);
+    }
+
+    this.setProcessing = function(newValue) {
+        if (newValue) {
+            $('#reviewContainer').parent().showOverlay();
+            return true;
+        }
+        $('#reviewContainer').parent().hideOverlay();
+        return true;
+    };
+
+    this.getErrorsList = function(data) {
+        var number = data.number;
+
+        if (self.formErrors().length <= 0) {
+            return '';
+        }
+
+        if (self.formErrors()[number] === undefined) {
+            return '';
+        }
+
+        return self.formErrors()[number];
+    };
+
+    this.getClassLine = function(data) {
+        console.info('******************************');
+        console.info(data);
+        return 'line_number_'+data.number;
+    }
+
+    this.getErrorClass = function(data) {
+        if (self.getErrorsList(data).length > 0) {
+            return 'errorField';
+        }
+
+        return '';
+    };
+
+    this.getErrorTitle = function(data, fieldName) {
+        if (self.getErrorsList(data).length > 0) {
+            return 'Have error!';
+        }
+
+        return '';
+    };
 }

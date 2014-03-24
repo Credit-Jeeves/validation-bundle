@@ -105,9 +105,13 @@ class CsvFileReader
             if ($currentNumberOfLine > $offset && $currentNumberOfLine < $offsetMax) {
                 $this->getLine($row, $header, $file, $result);
                 continue;
-            } else {
+            }
+
+            if ($currentNumberOfLine > $offsetMax) {
                 break;
             }
+
+            $file->next();
         }
 
         return $result;

@@ -183,6 +183,7 @@ class ReportsController extends Controller
             }
 
             $accountingImport->setMapping($result);
+            $accountingImport->setFileLine(0);
 
             return $this->redirect($this->generateUrl('landlord_reports_review_and_post'));
         }
@@ -216,6 +217,7 @@ class ReportsController extends Controller
         if (empty($data[$accountingImport::IMPORT_MAPPING])) {
             $this->redirect($this->generateUrl('landlord_reports_import'));
         }
+
 
         $formNewUserWithContract = $accountingImport->getCreateUserAndCreateContractForm();
         $formContract = $accountingImport->getContractForm();
@@ -257,9 +259,10 @@ class ReportsController extends Controller
             return new JsonResponse($result);
         }
 
-        $newRows = $request->request->get('newRows', false);
+        $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
+
         if ($newRows) {
-            $accountingImport->setFileLine($accountingImport->getFileLine() + 1);
+            $accountingImport->setFileLine($accountingImport->getFileLine() + $accountingImport::ROW_ON_PAGE);
         }
 
         $rows = array();
@@ -309,6 +312,10 @@ class ReportsController extends Controller
         }
 
         $serializer = SerializerBuilder::create()->build();
+
+        $data = $request->request->all();
+        $errors = $accountingImport->saveForms($data);
+        $result['formErrors'] = $errors;
 
         return new Response($serializer->serialize($result, 'json'));
     }

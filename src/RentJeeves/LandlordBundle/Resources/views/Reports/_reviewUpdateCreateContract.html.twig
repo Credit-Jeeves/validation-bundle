@@ -1,6 +1,8 @@
 {% form_theme form "RjCoreBundle::form.html.twig" %}
 
-<tr data-bind="if: !isSkipped && ((Tenant.contracts[0].id && Tenant.contracts[0].status !== 'finished') || (!Tenant.contracts[0].id && Tenant.id)), attr:{class:'line'}">
+<tr data-bind="
+    attr: {'class': $root.getClassLine($data)},
+    if: !isSkipped && ((Tenant.contracts[0].id && Tenant.contracts[0].status !== 'finished') || (!Tenant.contracts[0].id && Tenant.id))">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data)"></td>
     <td data-bind="text:Tenant.contracts[0].unit.name"></td>
@@ -12,14 +14,17 @@
         {{
             form_widget(
                 form.rent,
-                {"attr": {"id": "", "data-bind": "value: Tenant.contracts[0].rent, attr: {'class': number+'_rent'}"}}
+                {
+                    "attr":
+                    {"data-bind": "value: Tenant.contracts[0].rent, attr: {'class': number+'_rent import_contract_rent', 'id':$root.uniqueId()}"}
+                }
             )
         }}
         {{ form_widget(
-            form.imported_balance,
+            form.importedBalance,
             {
                 "attr":
-                {"id": "", "data-bind": "value: Tenant.contracts[0].imported_balance, attr: {'class': number+'_balance'}"}
+                {"id": "", "data-bind": "value: Tenant.contracts[0].imported_balance, attr: {'class': number+'_balance import_contract_importedBalance', 'id':$root.uniqueId()}"}
             }
         ) }}
     </td>
@@ -28,14 +33,23 @@
             form.startAt,
             {
                 "attr":
-                {"id": "", "data-bind": "value:$root.formatDate(Tenant.contracts[0].startAt), attr: {'class': number+'_startAt'}"}
+                {
+                    "id": "",
+                    "data-bind": "
+                        value:$root.formatDate(Tenant.contracts[0].startAt),
+                        attr: {
+                            'class': number+'_startAt import_contract_startAt datepicker '+$root.getErrorClass($data),
+                            'id':$root.uniqueId(),
+                            'title': $root.getErrorTitle($data)
+                        }"
+                }
             }
         ) }}
         {{ form_widget(
             form.finishAt,
             {
                 "attr":
-                {"id": "", "data-bind": "value: $root.formatDate(Tenant.contracts[0].finishAt), attr: {'class': number+'_finishAt'}"}
+                {"id": "", "data-bind": "value: $root.formatDate(Tenant.contracts[0].finishAt), attr: {'class': number+'_finishAt import_contract_finishAt', 'id':$root.uniqueId()}"}
             }
         ) }}
     </td>
@@ -43,6 +57,6 @@
     </td>
     <td>
     </td>
-    {{ form_widget(form._token, {"attr": {"id": "","data-bind": "value: csrfToken, attr: {'class': number+'_token'}"}}) }}
+    {{ form_widget(form._token, {"attr": {"data-bind": "value: csrfToken, attr: {'class': number+'_token import_contract__token', 'id':$root.uniqueId()}"}}) }}
     {{ form_end(form) }}
 </tr>

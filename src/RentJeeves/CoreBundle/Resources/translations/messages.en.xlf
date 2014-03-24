@@ -691,6 +691,10 @@
                 <source>error.rent.empty</source>
                 <target>Please specify the rent amount.</target>
             </trans-unit>
+           <trans-unit id="error.balance.empty">
+                <source>error.balance.empty</source>
+                <target>Please specify the balance.</target>
+            </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
                 <target>close</target>
@@ -2145,6 +2149,10 @@
               <source>import.status.ended</source>
               <target>Ended</target>
             </trans-unit>
+            <trans-unit id="import.status.error">
+              <source>import.status.error</source>
+              <target>Error</target>
+            </trans-unit>
             <trans-unit id="import.status.match">
               <source>import.status.match</source>
               <target>Match</target>
@@ -2156,6 +2164,10 @@
             <trans-unit id="import.review.and.post">
               <source>import.review.and.post</source>
               <target>Import data and review next</target>
+            </trans-unit>
+            <trans-unit id="import.review.finish">
+              <source>import.review.finish</source>
+              <target>Review are finished. Data imported.</target>
             </trans-unit>
         </body>
     </file>

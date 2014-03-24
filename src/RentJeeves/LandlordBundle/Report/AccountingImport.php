@@ -8,6 +8,7 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
+use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Validator\DateWithFormat;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -20,11 +21,13 @@ use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Bridge\Twig\Node\TransDefaultDomainNode;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\SecurityContext;
 use CreditJeeves\CoreBundle\Translation\Translator;
 use \DateTime;
 use \Exception;
+use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -33,6 +36,8 @@ use \Exception;
  */
 class AccountingImport
 {
+    use FormErrors;
+
     const IMPORT_FILE_PATH = 'importFileName';
 
     const IMPORT_PROPERTY_ID = 'importPropertyId';
@@ -67,6 +72,8 @@ class AccountingImport
 
     const KEY_EMAIL = 'email';
 
+    const ROW_ON_PAGE = 10;
+
     protected $skipValue = array(
         self::KEY_RESIDENT_ID => 'VACANT',
     );
@@ -86,14 +93,20 @@ class AccountingImport
 
     protected $formFactory;
 
+    protected $formCsrfProvider;
+
+    protected $validateData = false;
+
     /**
      * @InjectParams({
-     *     "session"      = @Inject("session"),
-     *     "reader"       = @Inject("reader.csv"),
-     *     "em"           = @Inject("doctrine.orm.default_entity_manager"),
-     *     "translator"   = @Inject("translator"),
-     *     "context"      = @Inject("security.context"),
-     *     "formFactory"  = @Inject("form.factory")
+     *     "session"          = @Inject("session"),
+     *     "reader"           = @Inject("reader.csv"),
+     *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
+     *     "translator"       = @Inject("translator"),
+     *     "context"          = @Inject("security.context"),
+     *     "formFactory"      = @Inject("form.factory"),
+     *     "translator"       = @Inject("translator"),
+     *     "formCsrfProvider" = @Inject("form.csrf_provider")
      * })
      */
     public function __construct(
@@ -102,7 +115,9 @@ class AccountingImport
         EntityManager $em,
         Translator $translator,
         SecurityContext $context,
-        $formFactory
+        $formFactory,
+        $translator,
+        CsrfTokenManagerAdapter $formCsrfProvider
     )
     {
         $this->session = $session;
@@ -113,6 +128,8 @@ class AccountingImport
         $this->em          = $em;
         $this->user        = $context->getToken()->getUser();
         $this->formFactory = $formFactory;
+        $this->translator = $translator;
+        $this->formCsrfProvider = $formCsrfProvider;
     }
 
     /**
@@ -293,8 +310,6 @@ class AccountingImport
         return $this->em->getRepository('RjDataBundle:Property')->find($this->getPropertyId());
     }
 
-
-    //@TODO need check exist unit in DB add group_id and holding_id
     protected function getUnit($row)
     {
         $params = array(
@@ -333,8 +348,8 @@ class AccountingImport
         return ($date)? $date : null;
     }
 
-    //@TODO try to make in this place serializer
-    protected function getImport($row)
+    //@TODO try to make in this place serializer if that will be possible
+    protected function getImport($row, $lineNumber)
     {
         $import = new Import();
         $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImport(
@@ -387,7 +402,7 @@ class AccountingImport
         $contract->setRent($row[self::KEY_RENT]);
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
-
+        $token   = (!$this->validateData) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         //Update contract or Create contract
         if (($tenantId &&
             in_array(
@@ -401,6 +416,7 @@ class AccountingImport
             || ($tenantId && empty($contractId))
         ) {
             $form = $this->getContractForm();
+            $form->setData($contract);
         }
 
         //Create contract and create user
@@ -411,14 +427,16 @@ class AccountingImport
                 )) && empty($contractId)
         ) {
             $form = $this->getCreateUserAndCreateContractForm();
+            $form->get('tenant')->setData($tenant);
+            $form->get('contract')->setData($contract);
         }
 
         if (isset($form)) {
-            $form = $form->createView();
-            $token = $form['_token'];
-            $import->setCsrfToken($token->vars["value"]);
+            $form->get('_token')->setData($token);
+            $import->setForm($form);
         }
 
+        $import->setCsrfToken($token);
         return $import;
     }
 
@@ -445,14 +463,85 @@ class AccountingImport
 
     public function getMappedData()
     {
-        $data = $this->getFileData(true, $this->getFileLine(), $rowCount = 10);
+        $data = $this->getFileData(true, $this->getFileLine(), $rowCount = self::ROW_ON_PAGE);
         $collection = new ArrayCollection(array());
         foreach ($data as $key => $values) {
-            $import = $this->getImport($values);
+            $import = $this->getImport($values, $key);
             $import->setNumber($key);
             $collection->add($import);
         }
         return $collection;
+    }
+
+    public function saveForms($data)
+    {
+        $mappedData = $this->getMappedData();
+        $errors = array();
+        $this->validateData = true;
+        foreach ($data as $formData) {
+            $formData['line'] = (int) $formData['line'];
+            /**
+             * @var $import Import
+             */
+            foreach ($mappedData as $import) {
+                if ($import->getNumber() === $formData['line']) {
+                    $this->bindForm($import, $formData, $errors);
+                }
+            }
+        }
+        $this->validateData = false;
+        //$this->em->flush();
+        return $errors;
+    }
+
+    protected function bindForm(Import $import, $postData, &$errors)
+    {
+        if ($import->getIsSkipped()) {
+            return;
+        }
+        $line = $postData['line'];
+        unset($postData['line']);
+        $contract = $import->getTenant()->getContracts()->first();
+        $contractId = $contract->getId();
+        $form = $import->getForm();
+        self::prepeaSubmit($postData);
+        if (isset($postData['_token'])) {
+            $form->submit($postData);
+            $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
+            if ($form->isValid() && $isCsrfTokenValid) {
+                //Do save
+            } elseif (!$isCsrfTokenValid) {
+                //@TODO move to trans
+                $errors[$line] = array(
+                    '_global' => 'The CSRF token is invalid. Please try to resubmit the form',
+                );
+            } else {
+                $errors[$line] = $this->getFormErrors($form);
+            }
+        } elseif ($import->getMoveOut() &&
+            $contract->getStatus() === ContractStatus::FINISHED &&
+            !empty($contractId)
+        ) {
+            //$this->em->persist($contract);
+        }
+    }
+
+    public static function prepeaSubmit(&$formData)
+    {
+        $replaces = array(
+            'import_new_user_with_contract' => 30,
+            'import_tenant'                 => 14,
+        );
+
+        foreach ($formData as $key => $value) {
+            foreach ($replaces as $replace => $number) {
+                if (preg_match('/'.$replace.'\[/', $key)) {
+                    $newKey = substr($key, $number, strlen($key)-1);
+                    $formData[$newKey] = $value;
+                    unset($formData[$key]);
+                }
+            }
+        }
     }
 
     public static function parseName($name)

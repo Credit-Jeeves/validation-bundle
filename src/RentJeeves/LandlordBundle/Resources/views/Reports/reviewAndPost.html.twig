@@ -23,13 +23,12 @@
                             text: $root.errorLoadDataMessage()
                     ">
                     </div>
-                    <table class="properties-table zebra-grid" data-bind="
-                            visible: $root.errorLoadDataMessage().length <= 0">
+                    <table class="properties-table zebra-grid" data-bind="visible: $root.isVisibleTable()">
                         <thead>
                         <tr class="properties-th">
-                            <th class="pie-el"><span>{{ 'import.status'|trans }}</span></th>
-                            <th class="pie-el"><span>{{ 'import.unit'|trans }}*</span></th>
-                            <th class="pie-el"><span>{{ 'import.residentId'|trans }}*</span></th>
+                            <th class="pie-el status"><span>{{ 'import.status'|trans }}</span></th>
+                            <th class="pie-el unit"><span>{{ 'import.unit'|trans }}*</span></th>
+                            <th class="pie-el resident"><span>{{ 'import.residentId'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.first_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.last_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.email'|trans }}*</span></th>
@@ -82,7 +81,7 @@
                     </table>
                     <br />
                     <br />
-                    <div class="button-box">
+                    <div class="button-box"  data-bind="visible: $root.isVisibleTable()">
                         <a href="{{ path("landlord_reports_match_file") }}" class="button small fixed next grey prev">
                             <span>{{ 'pay_popup.step.previous'|trans }}</span>
                         </a>
@@ -94,6 +93,9 @@
                                 {{ 'import.review.and.post'|trans }}
                             </span>
                         </button>
+                    </div>
+                    <div data-bind="if: isFinishReview">
+                        <center><h3>{{ 'import.review.finish'|trans }}</h3></center>
                     </div>
                 </div>
             </div>

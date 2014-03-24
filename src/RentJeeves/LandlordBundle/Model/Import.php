@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Tenant;
+use Symfony\Component\Form\Form;
 
 /**
  * @Serializer\XmlRoot("Import")
@@ -36,7 +37,7 @@ class Import
      * @Serializer\SerializedName("csrfToken")
      * @Serializer\Groups({"CreditJeeves"})
      */
-    protected $csrfToken;
+    protected $csrfToken = '';
 
     /**
      * @Serializer\SerializedName("moveOut")
@@ -44,6 +45,28 @@ class Import
      * @Serializer\Type("DateTime")
      */
     protected $moveOut = null;
+
+    /**
+     * @Serializer\Exclude
+     */
+    protected $form = false;
+
+    /**
+     * @return Form
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function setForm(Form $form)
+    {
+        $this->form = $form;
+    }
+
 
     /**
      * @return mixed

@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\DataBundle\Validators\TenantEmail;
 use RentJeeves\LandlordBundle\Report\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -21,31 +22,27 @@ class ImportTenantType extends AbstractType
         $builder->add(
             'first_name',
             'text',
-            array(
-                'attr'           => array(
-                    'class'     => 'half-width',
-                ),
-            )
+            array()
         );
 
 
         $builder->add(
             'last_name',
             'text',
-            array(
-                'attr'           => array(
-                    'class'     => 'half-width',
-                ),
-            )
+            array()
         );
 
         $builder->add(
             'email',
             'text',
             array(
-                'attr'           => array(
-                    'class'     => 'half-width',
-                ),
+                'constraints'    => array(
+                    new TenantEmail(
+                        array(
+                            'groups' => 'import',
+                        )
+                    )
+                )
             )
         );
     }
@@ -58,7 +55,7 @@ class ImportTenantType extends AbstractType
                 'validation_groups' => array(
                     'import',
                 ),
-                'csrf_protection'    => true,
+                'csrf_protection'    => false,
                 'cascade_validation' => true,
             )
         );

@@ -128,7 +128,14 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.rent.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^[0-9]+(\.[0-9][0-9])?+$/",
+     *     groups = {
+     *         "import"
      *     }
      * )
      */
@@ -165,7 +172,8 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.start.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("startAt")
@@ -182,7 +190,8 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.finish.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
@@ -260,6 +269,7 @@ abstract class Contract
      *          "default":"0.00"
      *     }
      * )
+     *
      */
     protected $balance = 0.00;
 
@@ -272,6 +282,18 @@ abstract class Contract
      *     name="imported_balance",
      *     options={
      *          "default":"0.00"
+     *     }
+     * )
+     * @Assert\NotBlank(
+     *     message="error.balance.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^[0-9]+(\.[0-9][0-9])?+$/",
+     *     groups = {
+     *         "import"
      *     }
      * )
      */

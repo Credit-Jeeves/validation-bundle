@@ -47,7 +47,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @Assert\Length(
@@ -62,7 +63,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @Serializer\Type("string")
@@ -103,7 +105,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @Assert\Length(
@@ -118,7 +121,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @Serializer\Type("string")
@@ -131,7 +135,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Assert\Email(
@@ -140,7 +145,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @InviteEmail(
@@ -328,6 +334,18 @@ abstract class User extends BaseUser
      *      name="resident_id",
      *      length=128,
      *      nullable=true
+     * )
+     * @Assert\NotBlank(
+     *     groups={
+     *         "import_not_editable"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=5,
+     *     max=128,
+     *     groups={
+     *         "import_not_editable"
+     *     }
      * )
      */
     protected $residentId;

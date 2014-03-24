@@ -15,6 +15,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ImportContractType extends AbstractType
 {
+    protected $token;
+
+    public function __construct($token = true)
+    {
+        $this->token =  $token;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -24,10 +30,6 @@ class ImportContractType extends AbstractType
             array(
                 'widget' => 'single_text',
                 'format' => 'MM/dd/yyyy',
-                'attr'           => array(
-                    'id'        => '',
-                    'class'     => 'half-width',
-                ),
             )
         );
 
@@ -38,32 +40,36 @@ class ImportContractType extends AbstractType
             array(
                 'widget' => 'single_text',
                 'format' => 'MM/dd/yyyy',
-                'attr'           => array(
-                    'id'        => '',
-                    'class'     => 'half-width',
-                ),
             )
         );
 
         $builder->add(
-            'imported_balance',
+            'importedBalance',
             'text',
-            array(
-                'attr'           => array(
-                    'class'     => 'half-width',
-                ),
-            )
+            array()
         );
 
         $builder->add(
             'rent',
             'text',
-            array(
-                'attr'           => array(
-                    'class'     => 'half-width',
-                ),
-            )
+            array()
         );
+
+        $builder->add(
+            'rent',
+            'text',
+            array()
+        );
+
+        if ($this->token) {
+            $builder->add(
+                '_token',
+                'hidden',
+                array(
+                    'mapped' => false,
+                )
+            );
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -74,8 +80,7 @@ class ImportContractType extends AbstractType
                 'validation_groups' => array(
                     'import',
                 ),
-                'csrf_protection'    => true,
-                'csrf_field_name'    => '_token',
+                'csrf_protection'    => false,
                 'cascade_validation' => true,
             )
         );
@@ -83,7 +88,7 @@ class ImportContractType extends AbstractType
 
     public function getName()
     {
-        return 'import_tenant';
+        return 'import_contract';
     }
 }
 

@@ -1,4 +1,4 @@
-<tr data-bind="if: isSkipped || Tenant.contracts[0].status == 'finished', attr:{class:'line'}">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: isSkipped || Tenant.contracts[0].status == 'finished'">
     <td data-bind="text: $root.getStatusText($data)"></td>
     <td data-bind="text:Tenant.contracts[0].unit.name"></td>
     <td data-bind="text:Tenant.resident_id"></td>
