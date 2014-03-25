@@ -39,7 +39,7 @@ class TransUnionRentalReport extends RentalReport
 
         foreach ($contracts as $contract) {
             $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
-            $this->records[] = new TransUnionReportRecord($contract, $rentOperation);
+            $this->records[] = new TransUnionReportRecord($contract, $reportMonth, $reportYear, $rentOperation);
         }
     }
 }

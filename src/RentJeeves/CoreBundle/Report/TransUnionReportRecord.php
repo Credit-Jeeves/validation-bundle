@@ -29,6 +29,16 @@ class TransUnionReportRecord
     /**
      * @Serializer\Exclude
      */
+    protected $month;
+
+    /**
+     * @Serializer\Exclude
+     */
+    protected $year;
+
+    /**
+     * @Serializer\Exclude
+     */
     protected $reportLeaseStatus;
 
     /**
@@ -111,9 +121,11 @@ class TransUnionReportRecord
     protected $reserved4 = ' ';                                         // 1
     protected $residenceCode = 'R';                                     // 1
 
-    public function __construct(Contract $contract, Operation $operation)
+    public function __construct(Contract $contract, $month, $year, Operation $operation = null)
     {
         $this->contract = $contract;
+        $this->month = $month;
+        $this->year = $year;
         $this->operation = $operation;
     }
 
@@ -184,12 +196,20 @@ class TransUnionReportRecord
             return self::LEASE_STATUS_CLOSED_AND_PAID;
         }
 
-        $operation = $this->operation ?: $this->contract->getLastRentOperation();
-
-        $paidFor = $operation->getPaidFor();
-        $paidAt = $operation->getOrder()->getUpdatedAt();
-        $interval = $paidFor->diff($paidAt)->format('%r%a');
-        $this->reportLeaseStatus = $this->getLateLeaseStatus($interval);
+        if ($this->operation) {
+            $paidFor = $this->operation->getPaidFor();
+            $paidAt = $this->operation->getOrder()->getUpdatedAt();
+            $interval = $paidFor->diff($paidAt)->format('%r%a');
+            $this->reportLeaseStatus = $this->getLateLeaseStatus($interval);
+        } else {
+            // If we reach this point - contract is definitely late
+            // paidTo is "zero point" for calculating days late
+            $paidTo = $this->contract->getPaidTo();
+            $requiredMonth = new DateTime("{$this->year}-{$this->month}-1");
+            $lastDayOfRequiredMonth = new DateTime($requiredMonth->format('Y-m-t'));
+            $interval = $paidTo->diff($lastDayOfRequiredMonth)->format('%r%a');
+            $this->reportLeaseStatus = $this->getLateLeaseStatus($interval);
+        }
 
         return $this->reportLeaseStatus;
     }
