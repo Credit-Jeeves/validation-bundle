@@ -21,6 +21,14 @@ file that was distributed with this source code.
             </thead>
 
             <tbody>
+
+                {% if _key == 0 %}
+                    <tr id="block_rental_reports">
+                        <td class="sonata-ba-list-label">{{ 'Reports'|trans }}</td>
+                        <td><a href="{{ url('sonata_admin_rental_report') }}">Rental reports</a></td>
+                    </tr>
+                {% endif %}
+
                 {% for admin in group.items %}
                     {% if admin.hasroute('create') and admin.isGranted('CREATE') or admin.hasroute('list') and admin.isGranted('LIST') %}
                         <tr id="id_block_{{ admin.label|lower|replace({' ':'_'}) }}">

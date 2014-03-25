@@ -5,11 +5,14 @@ namespace RentJeeves\AdminBundle\Controller;
 use RentJeeves\CoreBundle\Report\ExperianRentalReport;
 use RentJeeves\CoreBundle\Report\TransUnionRentalReport;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sonata\AdminBundle\Controller\CoreController as BaseController;
+use DateTime;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class CoreController extends BaseController
 {
@@ -32,30 +35,54 @@ class CoreController extends BaseController
     }
 
     /**
-     * @Route("report/{type}/{month}/{year}", name="sonata_admin_report")
+     * @Route("report", name="sonata_admin_rental_report")
      * @Template()
      *
      * @return array
      */
-    public function reportAction($type, $month, $year)
+    public function reportAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        if ($request->getMethod() == 'POST') {
+            $type = $request->request->get('type');
+            $month = $request->request->get('month');
+            $year = $request->request->get('year');
 
-        switch ($type) {
-            case 'trans_union':
-                $report = new TransUnionRentalReport($em, $month, $year);
-                $serializationType = 'tu_rental1';
-                break;
-            case 'experian':
-                $report = new ExperianRentalReport($em, $month, $year);
-                $serializationType = 'csv';
-                break;
-            default:
-                throw new RuntimeException(sprintf('Given report type \'%s\' does not exist', $type));
+            $em = $this->getDoctrine()->getManager();
+
+            switch ($type) {
+                case 'trans_union':
+                    $report = new TransUnionRentalReport($em, $month, $year);
+                    break;
+                case 'experian':
+                    $report = new ExperianRentalReport($em, $month, $year);
+                    break;
+                default:
+                    throw new RuntimeException(sprintf('Given report type "\'%s\'" does not exist', $type));
+            }
+
+            $result = $this->get('jms_serializer')->serialize($report, $report->getSerializationType());
+
+            $response = new Response($result, 200);
+            $attachment = $response->headers->makeDisposition(
+                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                $report->getReportFilename()
+            );
+            $response->headers->set('Content-Disposition', $attachment);
+
+            return $response;
         }
 
-        $result = $this->get('jms_serializer')->serialize($report, $serializationType);
+        $months = array();
+        foreach (range(1, 12) as $month) {
+            $months[$month] = date('F', strtotime("2000-{$month}-1"));
+        }
 
-        return new Response($result, 200);
+        $now = new DateTime();
+        $years = array($now->format('Y'), $now->modify('-1 year')->format('Y'));
+
+        return array(
+            'months' => $months,
+            'years' => $years,
+        );
     }
 }

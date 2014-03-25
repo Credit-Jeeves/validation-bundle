@@ -234,16 +234,16 @@ class ExperianReportRecord
     public function getTenantAddress1()
     {
         $property = $this->contract->getProperty();
-        $address = sprintf('%s %s', $property->getNumber(), $property->getStreet());
-        if ($unit = $this->contract->getUnit()) {
-           return sprintf('%s %s', $address, $unit->getName());
-        }
 
-        return $address;
+        return sprintf('%s %s', $property->getNumber(), $property->getStreet());
     }
 
     public function getTenantAddress2()
     {
+        if ($unit = $this->contract->getUnit()) {
+            return $unit->getName();
+        }
+
         return null;
     }
 

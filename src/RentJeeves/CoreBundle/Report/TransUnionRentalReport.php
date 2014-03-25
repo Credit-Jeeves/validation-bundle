@@ -5,38 +5,40 @@ namespace RentJeeves\CoreBundle\Report;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
-class TransUnionRentalReport
+class TransUnionRentalReport extends RentalReport
 {
     protected $header;
     protected $records;
 
-    /**
-     * @Serializer\Exclude
-     */
-    protected $em;
-
-    public function __construct($em, $reportMonth, $reportYear)
+    public function getSerializationType()
     {
-        $this->em = $em;
-        $this->createHeader();
-        $this->createRecords($reportMonth, $reportYear);
+        return 'tu_rental1';
     }
 
-    protected function createHeader()
+    public function getReportFilename()
+    {
+        $today = new DateTime();
+
+        return sprintf('renttrack-%s.txt', $today->format('Ymd'));
+    }
+
+    public function createHeader()
     {
         $this->header = new TransUnionReportHeader();
         $lastActivityDate = $this->em->getRepository('RjDataBundle:Contract')->getLastActivityDate();
         $this->header->setActivityDate(new DateTime($lastActivityDate));
     }
 
-    protected function createRecords($reportMonth, $reportYear)
+    public function createRecords($reportMonth, $reportYear)
     {
         $this->records = array();
-        $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
-        $contracts = $contractRepo->getContractsForRentalReport($reportMonth, $reportYear);
+        $contracts = $this->em->getRepository('RjDataBundle:Contract')
+            ->getContractsForRentalReport($reportMonth, $reportYear);
+
+        $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
         foreach ($contracts as $contract) {
-            $rentOperation = $contractRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
+            $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
             $this->records[] = new TransUnionReportRecord($contract, $rentOperation);
         }
     }

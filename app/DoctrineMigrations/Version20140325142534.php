@@ -5,7 +5,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20140313133818 extends AbstractMigration
+class Version20140325142534 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -16,8 +16,7 @@ class Version20140313133818 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_contract
-                ADD disputeCode ENUM('BLANK','XB','XC','XH','XR')
-                    COMMENT '(DC2Type:DisputeCode)' DEFAULT 'BLANK' NOT NULL"
+                ADD reporting_at DATE DEFAULT NULL"
         );
     }
 
@@ -30,7 +29,7 @@ class Version20140313133818 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_contract
-                DROP disputeCode"
+                DROP reporting_at"
         );
     }
 }

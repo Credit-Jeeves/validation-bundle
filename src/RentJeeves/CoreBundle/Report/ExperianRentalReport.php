@@ -2,33 +2,38 @@
 
 namespace RentJeeves\CoreBundle\Report;
 
-use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
-class ExperianRentalReport
+class ExperianRentalReport extends RentalReport
 {
     protected $records;
 
-    /**
-     * @Serializer\Exclude
-     */
-    protected $em;
-
-    public function __construct($em, $reportMonth, $reportYear)
+    public function getSerializationType()
     {
-        $this->em = $em;
-        $this->createRecords($reportMonth, $reportYear);
+        return 'csv';
     }
 
-    protected function createRecords($reportMonth, $reportYear)
+    public function getReportFilename()
+    {
+        $today = new DateTime();
+
+        return sprintf('renttrack-full-%s.csv', $today->format('Ymd'));
+    }
+
+    public function createHeader()
+    {
+
+    }
+
+    public function createRecords($reportMonth, $reportYear)
     {
         $this->records = array();
         $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
-
         $contracts = $contractRepo->getContractsForRentalReport($reportMonth, $reportYear);
+        $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
         foreach ($contracts as $contract) {
-            $rentOperation = $contractRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
+            $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
             $this->records[] = new ExperianReportRecord($contract, $rentOperation);
         }
     }

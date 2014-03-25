@@ -468,33 +468,14 @@ class ContractRepository extends EntityRepository
         $lastDate = new DateTime($firstDate->format('Y-m-t'));
 
         $query = $this->createQueryBuilder('c');
-        $query->where('c.status = :statusCurrent');
-//        $query->andWhere('c.reporting = 1');
-        $query->orWhere('c.status = :statusFinished and c.finishAt BETWEEN :firstDate AND :lastDate');
-        $query->setParameter('statusCurrent', ContractStatus::CURRENT);
-        $query->setParameter('statusFinished', ContractStatus::FINISHED);
-        $query->setParameter('firstDate', $firstDate);
+        $query->where('c.reporting = 1 AND c.reportingAt is not NULL AND c.reportingAt <= :startDate');
+        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setParameter('startDate', $firstDate);
         $query->setParameter('lastDate', $lastDate);
         $query = $query->getQuery();
 
         return $query->execute();
-    }
-
-    public function getRentOperationForMonth($contractId, $monthNo, $yearNo)
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.operation', 'op', Expr\Join::WITH, 'op.type = :operationType');
-        $query->innerJoin('op.order', 'ord', Expr\Join::WITH, 'ord.status = :orderStatus');
-        $query->where('c.contractId = :contractId');
-        $query->andWhere('MONTH(op.paidFor) = :month');
-        $query->andWhere('YEAR(op.paidFor) = :year');
-        $query->setParameter('contractId', $contractId);
-        $query->setParameter('operationType', OperationType::RENT);
-        $query->setParameter('orderStatus', OrderStatus::COMPLETE);
-        $query->setParameter('month', $monthNo);
-        $query->setParameter('year', $yearNo);
-        $query = $query->getQuery();
-
-        return $query->getSingleResult();
     }
 }

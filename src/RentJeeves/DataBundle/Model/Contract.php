@@ -328,9 +328,10 @@ abstract class Contract
      *     type="DisputeCode",
      *     nullable=true,
      *     options={
-     *         "default"=" "
+     *         "default"="BLANK"
      *     }
      * )
+     * @Serializer\Exclude
      */
     protected $disputeCode;
 
@@ -790,5 +791,21 @@ abstract class Contract
     public function getDisputeCode()
     {
         return $this->disputeCode;
+    }
+
+    /**
+     * @param \DateTime $reportingAt
+     */
+    public function setReportingAt($reportingAt)
+    {
+        $this->reportingAt = $reportingAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingAt()
+    {
+        return $this->reportingAt;
     }
 }

@@ -6,7 +6,7 @@ use CreditJeeves\CoreBundle\Enum;
 
 class DisputeCode extends Enum
 {
-    const DISPUTE_CODE_BLANK = ' ';
+    const DISPUTE_CODE_BLANK = 'BLANK';
 
     /**
      * Account information disputed by consumer (Meets requirements of the Fair Credit Reporting Act)

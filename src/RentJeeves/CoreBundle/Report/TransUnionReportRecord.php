@@ -7,6 +7,7 @@ use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use DateTime;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 
 class TransUnionReportRecord
 {
@@ -121,6 +122,9 @@ class TransUnionReportRecord
         return $this->contract->getUpdatedAt()->format('mdYHis');
     }
 
+    /**
+     * TU does not want a unique unit ID, only property
+     */
     public function getPropertyIdentificationNumber()
     {
         $propertyNumber = $this->contract->getProperty()->getId();
@@ -232,7 +236,7 @@ class TransUnionReportRecord
         //QQ‐Eviction (non‐legal action)
         //RR‐ Eviction
         //SS‐ Rent unpaid, renter skipped, and did not fulfill remaining lease term
-        
+
         if (!$this->operation) {
             return 'SS';
         }
@@ -251,7 +255,7 @@ class TransUnionReportRecord
     public function getLeaseDisputeCode()
     {
         $disputeCode = $this->contract->getDisputeCode();
-        if ($disputeCode) {
+        if ($disputeCode != DisputeCode::DISPUTE_CODE_BLANK) {
             return $disputeCode;
         }
 

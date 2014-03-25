@@ -14,6 +14,31 @@
                 <source>admin.butch.run.success-%NUMBER%</source>
                 <target>%NUMBER% payments added to job list</target>
             </trans-unit>
+            <trans-unit id="admin.report.experian">
+                <source>admin.report.experian</source>
+                <target>Experian</target>
+            </trans-unit>
+            <trans-unit id="admin.report.trans_union">
+                <source>admin.report.trans_union</source>
+                <target>Trans Union</target>
+            </trans-unit>
+            <trans-unit id="admin.report.generate">
+                <source>admin.report.generate</source>
+                <target>Generate report</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_type">
+                <source>admin.report.choose_type</source>
+                <target>Choose report type:</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_month">
+                <source>admin.report.choose_month</source>
+                <target>Choose report month:</target>
+            </trans-unit>
+            <trans-unit id="admin.report.choose_year">
+                <source>admin.report.choose_year</source>
+                <target>Choose report year:</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
