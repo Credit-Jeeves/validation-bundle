@@ -157,6 +157,22 @@
                 <source>exp_date</source>
                 <target>Expiration</target>
             </trans-unit>
+            <trans-unit id="scoretrack-box-title">
+                <source>scoretrack-box-title</source>
+                <target>Track Your Credit</target>
+            </trans-unit>
+            <trans-unit id="scoretrack-box-message">
+                <source>scoretrack-box-message</source>
+                <target>We'll update your Vantage 3.0 score monthly. We'll also refresh your credit profile, rank, and analysis every six months.</target>
+            </trans-unit>
+            <trans-unit id="scoretrack-buy-link">
+                <source>scoretrack-buy-link</source>
+                <target>Sign Up</target>
+            </trans-unit>
+            <trans-unit id="scoretrack-box-note">
+                <source>scoretrack-box-note</source>
+                <target>ScoreTrack &#8482;</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
