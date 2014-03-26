@@ -81,6 +81,18 @@
     <td>
     </td>
     <td>
+        {{ form_widget(
+        form.skip,
+        {
+            "attr": {
+                "class": "skipCheckbox",
+                "data-bind": "
+                    attr: {
+                        'id':$root.uniqueId()
+                    }"
+            }
+        }
+        )}} {{ 'skip'|trans }}
     </td>
     {{ form_widget(form._token, {"attr": {"data-bind": "value: csrfToken, attr: {'class': number+'_token import_contract__token', 'id':$root.uniqueId()}"}}) }}
     {{ form_end(form) }}

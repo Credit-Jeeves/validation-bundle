@@ -2043,6 +2043,10 @@
                     one rows it's data. Comeback please and upload correct file.
                 </target>
             </trans-unit>
+            <trans-unit id="skip">
+                <source>skip</source>
+                <target>Skip</target>
+            </trans-unit>
             <trans-unit id="csv.file.too.small2">
                <source>csv.file.too.small2</source>
                <target><![CDATA[

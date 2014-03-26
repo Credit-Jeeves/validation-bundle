@@ -131,6 +131,19 @@
                         }"}
             }
         )}} {{ 'send.invite'|trans }}
+        <br />
+        {{ form_widget(
+            form.contract.skip,
+            {
+                "attr": {
+                "class": "skipCheckbox",
+                "data-bind": "
+                    attr: {
+                        'id':$root.uniqueId()
+                    }"
+                }
+            }
+        )}} {{ 'skip'|trans }}
     </td>
     {{ form_widget(
         form._token,

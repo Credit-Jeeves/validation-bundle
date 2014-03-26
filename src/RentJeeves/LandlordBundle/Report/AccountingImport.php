@@ -504,14 +504,15 @@ class AccountingImport
                 }
             }
         }
-        //$this->em->flush();
+        $this->em->flush();
         $this->validateData = false;
         return $errors;
     }
 
     protected function bindForm(Import $import, $postData, &$errors)
     {
-        if ($import->getIsSkipped()) {
+        self::prepeaSubmit($postData);
+        if ($import->getIsSkipped() || isset($postData['contract']['skip']) || isset($postData['skip'])) {
             return;
         }
         $line = $postData['line'];
@@ -519,7 +520,6 @@ class AccountingImport
         $contract = $import->getTenant()->getContracts()->first();
         $contractId = $contract->getId();
         $form = $import->getForm();
-        self::prepeaSubmit($postData);
         if (isset($postData['_token'])) {
             $form->submit($postData);
             $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
@@ -540,7 +540,6 @@ class AccountingImport
                         if (!empty($contractId)) {
                             $this->em->persist($contract);
                         }
-                        $this->em->flush();
                         break;
                     case 'import_new_user_with_contract':
                         $data = $form->getData();
@@ -554,7 +553,6 @@ class AccountingImport
                         if ($sendInvite) {
                             $this->mailer->sendRjTenantInvite($tenant, $this->user, $contract);
                         }
-                        $this->em->flush();
                         break;
                 }
 

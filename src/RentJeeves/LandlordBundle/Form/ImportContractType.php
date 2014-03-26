@@ -61,6 +61,16 @@ class ImportContractType extends AbstractType
             array()
         );
 
+        $builder->add(
+            'skip',
+            'checkbox',
+            array(
+                'data'      => false,
+                'required'  => false,
+                'mapped'    => false,
+            )
+        );
+
         if ($this->token) {
             $builder->add(
                 '_token',

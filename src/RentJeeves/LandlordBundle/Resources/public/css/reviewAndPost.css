@@ -46,3 +46,7 @@ table tbody tr td {
 .errorField {
     border: 3px solid #ff0000 !important;
 }
+
+.skipCheckbox {
+    margin-left: -7px !important;
+}
