@@ -9,6 +9,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\CoreBundle\Validator\DateWithFormat;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -97,6 +98,8 @@ class AccountingImport
 
     protected $validateData = false;
 
+    protected $mailer;
+
     /**
      * @InjectParams({
      *     "session"          = @Inject("session"),
@@ -106,7 +109,8 @@ class AccountingImport
      *     "context"          = @Inject("security.context"),
      *     "formFactory"      = @Inject("form.factory"),
      *     "translator"       = @Inject("translator"),
-     *     "formCsrfProvider" = @Inject("form.csrf_provider")
+     *     "formCsrfProvider" = @Inject("form.csrf_provider"),
+     *     "mailer"           = @Inject("project.mailer")
      * })
      */
     public function __construct(
@@ -117,7 +121,8 @@ class AccountingImport
         SecurityContext $context,
         $formFactory,
         $translator,
-        CsrfTokenManagerAdapter $formCsrfProvider
+        CsrfTokenManagerAdapter $formCsrfProvider,
+        Mailer $mailer
     )
     {
         $this->session = $session;
@@ -130,6 +135,7 @@ class AccountingImport
         $this->formFactory = $formFactory;
         $this->translator = $translator;
         $this->formCsrfProvider = $formCsrfProvider;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -239,7 +245,7 @@ class AccountingImport
         $data = $this->getImportData();
         $data = $this->reader->read($data[self::IMPORT_FILE_PATH], 0, 3);
 
-        if (count($data) < 2) {
+        if (count($data) < 1) {
             return 'csv.file.too.small1';
         }
 
@@ -365,10 +371,13 @@ class AccountingImport
             $tenant->setLastName($names[self::LAST_NAME_TENANT]);
             $tenant->setEmail($row[self::KEY_EMAIL]);
             $tenant->setEmailCanonical($row[self::KEY_EMAIL]);
+            $tenant->setPassword(md5(md5(1)));
         } else {
-            //Fix bug with doctrine cache and the same tenant
+            //For the same tenant and different contract/unit we have the same result
+            //That's why we need detach
             $this->em->detach($tenant);
         }
+
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
         if ($this->isSkipped($row)) {
@@ -389,15 +398,21 @@ class AccountingImport
             $contract->setGroup($this->user->getCurrentGroup());
             $contract->setHolding($this->user->getHolding());
             $tenant->addContract($contract);
+            $contract->setTenant($tenant);
             $contract->setUnit($this->getUnit($row));
+            $contract->setCreatedAt(new DateTime());
         }
 
+        $contract->setUpdatedAt(new DateTime());
         $contract->setStartAt($this->getDateByField($row[self::KEY_MOVE_IN]));
         $contract->setFinishAt($this->getDateByField($row[self::KEY_LEASE_END]));
-        if ($row[self::KEY_MOVE_OUT]) {
+        if ($row[self::KEY_MOVE_OUT] && $contract->getStatus() !== ContractStatus::FINISHED) {
             $import->setMoveOut($this->getDateByField($row[self::KEY_MOVE_OUT]));
             $contract->setStatus(ContractStatus::FINISHED);
+        } elseif ($row[self::KEY_MOVE_OUT] && $contract->getStatus() === ContractStatus::FINISHED) {
+            $import->setIsSkipped(true);
         }
+
         $contract->setImportedBalance($row[self::KEY_BALANCE]);
         $contract->setRent($row[self::KEY_RENT]);
         $tenantId   = $tenant->getId();
@@ -489,8 +504,8 @@ class AccountingImport
                 }
             }
         }
-        $this->validateData = false;
         //$this->em->flush();
+        $this->validateData = false;
         return $errors;
     }
 
@@ -510,6 +525,39 @@ class AccountingImport
             $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
             if ($form->isValid() && $isCsrfTokenValid) {
                 //Do save
+                switch ($form->getName()) {
+                    case 'import_contract':
+                        /**
+                         * Read line 376, detach tenant
+                         *
+                         * @var $contract Contract
+                         */
+                        $contract = $form->getData();
+                        $unit = $contract->getUnit();
+                        $this->em->merge($contract->getTenant());
+                        $this->em->merge($contract);
+                        $this->em->persist($unit);
+                        if (!empty($contractId)) {
+                            $this->em->persist($contract);
+                        }
+                        $this->em->flush();
+                        break;
+                    case 'import_new_user_with_contract':
+                        $data = $form->getData();
+                        $tenant = $data['tenant'];
+                        $contract = $data['contract'];
+                        $unit = $contract->getUnit();
+                        $sendInvite = $data['sendInvite'];
+                        $this->em->persist($tenant);
+                        $this->em->persist($unit);
+                        $this->em->persist($contract);
+                        if ($sendInvite) {
+                            $this->mailer->sendRjTenantInvite($tenant, $this->user, $contract);
+                        }
+                        $this->em->flush();
+                        break;
+                }
+
             } elseif (!$isCsrfTokenValid) {
                 //@TODO move to trans
                 $errors[$line] = array(
@@ -522,7 +570,7 @@ class AccountingImport
             $contract->getStatus() === ContractStatus::FINISHED &&
             !empty($contractId)
         ) {
-            //$this->em->persist($contract);
+            $this->em->persist($contract);
         }
     }
 
@@ -530,7 +578,7 @@ class AccountingImport
     {
         $replaces = array(
             'import_new_user_with_contract' => 30,
-            'import_tenant'                 => 14,
+            'import_contract'               => 16,
         );
 
         foreach ($formData as $key => $value) {

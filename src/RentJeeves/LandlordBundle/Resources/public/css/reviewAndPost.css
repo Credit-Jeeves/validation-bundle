@@ -12,7 +12,7 @@
     margin: 0px;
 }
 .properties-table td>input[type="text"] {
-    width: 60px !important;
+    width: 55px !important;
     margin-top: 5px;
 }
 .column-middle {
@@ -26,4 +26,23 @@
 }
 .properties-th>.resident {
     width: 55px;
+}
+
+.properties-th>.dates{
+    width: 95px
+}
+.datepicker{
+    float: left;
+    clear: both;
+}
+.ui-datepicker-trigger {
+    float: left;
+    margin: 9px 0 0 4px;
+}
+table tbody tr td {
+    padding: 5px;
+    text-align: center;
+}
+.errorField {
+    border: 3px solid #ff0000 !important;
 }

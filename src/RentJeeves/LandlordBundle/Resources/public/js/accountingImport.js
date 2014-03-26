@@ -20,7 +20,6 @@ function accountingImport() {
                 self.setProcessing(false);
                 self.errorLoadDataMessage(response.message);
                 if (response.error === false) {
-                    console.info(response.rows);
                     self.rows(response.rows);
                     self.rowsTotal(response.total);
                     self.initGuiScript();
@@ -47,8 +46,15 @@ function accountingImport() {
 
         return '';
     }
-
+    //Use this function, because extension does not work
     this.initGuiScript = function() {
+        $.each($('.datepicker'), function(key, value) {
+           $(this).datepicker({
+                showOn: "both",
+                buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+                format: 'm/d/Y'
+            });
+        });
 
     };
 
@@ -61,9 +67,9 @@ function accountingImport() {
             return Translator.trans('import.status.ended');
         }
 
-        if (data.Tenant.contracts[0].status == 'finished' && self.getMoveOut(data).length <= 0) {
+/*        if (data.Tenant.contracts[0].status == 'finished' && self.getMoveOut(data).length <= 0) {
             return Translator.trans('import.status.error');
-        }
+        }*/
 
         if (data.Tenant.contracts[0].id !== undefined && data.Tenant.id !== undefined) {
             return Translator.trans('import.status.match');
@@ -100,7 +106,6 @@ function accountingImport() {
                     form[value.name] = value.value;
                 });
             }
-
             form['line'] = self.rows()[number].number;
             forms[number] = form;
             number++;
@@ -117,7 +122,6 @@ function accountingImport() {
             success: function(response) {
                 var errorsLen = $.map(response.formErrors, function(n, i) { return i; }).length;
                 if (errorsLen > 0) {
-                    console.info( self.rows());
                     var rows = new Array();
                     $.each(self.rows(), function (key,value) {
                         if (response.formErrors[value.number] !== undefined) {
@@ -126,9 +130,11 @@ function accountingImport() {
                     });
                     self.rows([]);
                     self.rows(rows);
+                    self.formErrors(response.formErrors);
                     self.setProcessing(false);
+                    self.initGuiScript()
                 } else {
-                    self.loadData(false);
+                    self.loadData(true);
                 }
             }
         });
@@ -158,12 +164,21 @@ function accountingImport() {
         return true;
     };
 
+    this.getErrorsFields = function(data){
+        var result = {};
+        jQuery.each(data, function(keys1, values1) {
+            jQuery.each(values1, function(keys2, values2) {
+                jQuery.each(values2, function(fieldName, errors) {
+                    result[fieldName] = errors;
+                });
+            })
+        })
+
+        return result;
+    }
+
     this.getErrorsList = function(data) {
         var number = data.number;
-
-        if (self.formErrors().length <= 0) {
-            return '';
-        }
 
         if (self.formErrors()[number] === undefined) {
             return '';
@@ -173,24 +188,34 @@ function accountingImport() {
     };
 
     this.getClassLine = function(data) {
-        console.info('******************************');
-        console.info(data);
         return 'line_number_'+data.number;
     }
 
-    this.getErrorClass = function(data) {
-        if (self.getErrorsList(data).length > 0) {
-            return 'errorField';
+    this.getErrorClass = function(data, nameField) {
+        if (!self.getErrorsList(data)) {
+            return;
         }
 
-        return '';
+        var result = self.getErrorsFields(self.getErrorsList(data));
+
+        if (result[nameField] == undefined) {
+            return;
+        }
+
+        return 'errorField';
     };
 
-    this.getErrorTitle = function(data, fieldName) {
-        if (self.getErrorsList(data).length > 0) {
-            return 'Have error!';
+    this.getErrorTitle = function(data, nameField) {
+        if (!self.getErrorsList(data)) {
+            return;
         }
 
-        return '';
+        var result = self.getErrorsFields(self.getErrorsList(data));
+
+        if (result[nameField] == undefined) {
+            return;
+        }
+
+        return result[nameField][0];
     };
 }

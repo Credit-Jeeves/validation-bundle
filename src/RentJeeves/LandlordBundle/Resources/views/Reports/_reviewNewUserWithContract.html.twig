@@ -1,46 +1,118 @@
 {% form_theme form "RjCoreBundle::form.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !isSkipped && !Tenant.contracts[0].id && !Tenant.id && !Tenant.contracts[0].status !== 'finished'">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !isSkipped && !Tenant.contracts[0].id && !Tenant.id && Tenant.contracts[0].status != 'finished'">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data)"></td>
     <td data-bind="text:Tenant.contracts[0].unit.name"></td>
     <td data-bind="text:Tenant.resident_id"></td>
     <td>
-        {{
-            form_widget(
+        {{  form_widget(
                 form.tenant.first_name,
                 {"attr":
-                    {"data-bind": "value: Tenant.first_name, attr: {'class': number+'_first_name import_new_user_with_contract_tenant_first_name', 'id':$root.uniqueId()}"}
+                    {
+                        "data-bind":
+                            "value: Tenant.first_name,
+                             attr:
+                                {
+                                    'class': number+'_first_name import_new_user_with_contract_tenant_first_name '+$root.getErrorClass($data, 'import_new_user_with_contract_tenant_first_name'),
+                                    'id':$root.uniqueId(),
+                                    'title': $root.getErrorTitle($data, 'import_new_user_with_contract_tenant_first_name')
+                                }"
+                    }
                 }
             )
         }}
     </td>
     <td>
-        {{ form_widget(form.tenant.last_name, {"attr": {"id": "", "data-bind": "value: Tenant.last_name, attr: {'class': number+'_last_name import_new_user_with_contract_tenant_last_name', 'id':$root.uniqueId()}"}}) }}
+        {{ form_widget(
+            form.tenant.last_name,
+            {"attr":
+                {
+                    "data-bind":
+                        "value: Tenant.last_name,
+                         attr:
+                            {
+                                'class': number+'_last_name import_new_user_with_contract_tenant_last_name '+$root.getErrorClass($data, 'import_new_user_with_contract_tenant_last_name'),
+                                'id':$root.uniqueId(),
+                                'title': $root.getErrorTitle($data, 'import_new_user_with_contract_tenant_last_name')
+                            }"
+                }
+            }
+        ) }}
     </td>
     <td>
-        {{ form_widget(form.tenant.email, {"attr": {"id": "", "data-bind": "value: Tenant.email, attr: {'class': number+'_email import_new_user_with_contract_tenant_first_email', 'id':$root.uniqueId()}"}}) }}
+        {{ form_widget(
+            form.tenant.email,
+            {"attr":
+                {
+                    "data-bind":
+                        "value: Tenant.email,
+                         attr: {
+                            'class': number+'_email import_new_user_with_contract_tenant_email '+$root.getErrorClass($data, 'import_new_user_with_contract_tenant_email'),
+                            'id':$root.uniqueId(),
+                            'title': $root.getErrorTitle($data, 'import_new_user_with_contract_tenant_email')
+                         }"
+                }
+            })
+        }}
     </td>
     <td>
         {{ form_widget(
             form.contract.rent,
-                {"attr": {"data-bind": "value: Tenant.contracts[0].rent, attr: {'class': number+'_rent import_new_user_with_contract_contract_rent', 'id':$root.uniqueId()}" }}
-            )
-        }}
+            {"attr":
+                {
+                    "data-bind":
+                        "value: Tenant.contracts[0].rent,
+                         attr: {
+                            'class': number+'_rent import_new_user_with_contract_contract_rent '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_rent'),
+                            'id':$root.uniqueId(),
+                            'title': $root.getErrorTitle($data, 'import_new_user_with_contract_contract_rent')
+                         }"
+                }
+            }
+        )}}
         {{ form_widget(
             form.contract.importedBalance,
-            {"attr": {"data-bind": "value: Tenant.contracts[0].imported_balance, attr: {'class': number+'_balance import_new_user_with_contract_contract_importedBalance', 'id':$root.uniqueId()}"}}
+            {"attr":
+                {
+                    "data-bind":
+                        "value: Tenant.contracts[0].imported_balance,
+                         attr: {
+                            'class': number+'_balance import_new_user_with_contract_contract_importedBalance '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_importedBalance'),
+                            'id':$root.uniqueId(),
+                            'title': $root.getErrorTitle($data, 'import_new_user_with_contract_contract_importedBalance')
+                         }"
+                }
+            }
         ) }}
     </td>
     <td>
         {{ form_widget(
             form.contract.startAt,
-            {"attr": {"data-bind": "value: $root.formatDate(Tenant.contracts[0].startAt), attr: {'class': number+'_startAt import_new_user_with_contract_tenant_startAt datepicker', 'id':$root.uniqueId()}"}}
+            {
+                "attr":{
+                    "data-bind":
+                        "value: $root.formatDate(Tenant.contracts[0].startAt),
+                         attr:{
+                            'class': number+'_startAt import_new_user_with_contract_tenant_startAt datepicker '+$root.getErrorClass($data,'import_new_user_with_contract_contract_startAt'),
+                            'id':$root.uniqueId(),
+                            'title': $root.getErrorTitle($data,'import_new_user_with_contract_contract_startAt')
+                         }"
+                }
+            }
         ) }}
         {{ form_widget(
             form.contract.finishAt,
             {
-                "attr": {"data-bind": "value: $root.formatDate(Tenant.contracts[0].finishAt), attr: {'class': number+'_finishAt import_new_user_with_contract_tenant_finishAt datepicker', 'id':$root.uniqueId()}"}
+                "attr": {
+                    "data-bind":
+                        "value: $root.formatDate(Tenant.contracts[0].finishAt),
+                         attr: {
+                            'class': number+'_finishAt import_new_user_with_contract_contract_finishAt datepicker '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_finishAt'),
+                            'id':$root.uniqueId(),
+                            'title': $root.getErrorTitle($data, 'import_new_user_with_contract_contract_finishAt')
+                         }"
+                }
             }
         ) }}
     </td>
@@ -50,7 +122,13 @@
         {{ form_widget(
             form.sendInvite,
             {
-                "attr": {"data-bind": "attr: {'class': number+'_sendInvite import_new_user_with_sendInvite', 'id':$root.uniqueId()}"}
+                "attr": {
+                    "data-bind": "
+                        attr: {
+                            'class': number+'_sendInvite import_new_user_with_sendInvite '+$root.getErrorClass($data, 'import_new_user_with_sendInvite'),
+                            'id':$root.uniqueId(),
+                            'title': $root.getErrorTitle($data, 'import_new_user_with_sendInvite')
+                        }"}
             }
         )}} {{ 'send.invite'|trans }}
     </td>

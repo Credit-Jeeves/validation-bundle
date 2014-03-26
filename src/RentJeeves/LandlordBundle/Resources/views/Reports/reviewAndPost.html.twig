@@ -11,9 +11,9 @@
                     {{
                     include(
                     'LandlordBundle:Reports:importSteps.html.twig',
-                    {
-                    'step': 'step3',
-                    }
+                        {
+                            'step': 'step3',
+                        }
                     )
                     }}
                     <br />
@@ -38,7 +38,7 @@
                                     {{ 'import.balance'|trans }}
                                 </span>
                             </th>
-                            <th class="pie-el">
+                            <th class="pie-el dates">
                                 <span>
                                     {{ 'import.move_in'|trans }}
                                     <br />
@@ -116,14 +116,11 @@
 {% endblock %}
 
 {% block javascripts %}
-    {# For now this bundle now support what we need include('FpJsFormValidatorBundle::javascripts.html.twig') #}
-    {{ parent() }}
     {% javascripts
-    'bundles/bazingajstranslation/js/translator.min.js'
-    '@LandlordBundle/Resources/public/js/accountingImport.js'
-    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-    '@RjComponentBundle/Resources/public/js/knockout-jqueryui.min.js'
-    '@LandlordBundle/Resources/public/js/reviewAndPost.js'
+        'bundles/bazingajstranslation/js/translator.min.js'
+        '@LandlordBundle/Resources/public/js/accountingImport.js'
+        '@RjCoreBundle/Resources/public/js/jquery-ui.js'
+        '@LandlordBundle/Resources/public/js/reviewAndPost.js'
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

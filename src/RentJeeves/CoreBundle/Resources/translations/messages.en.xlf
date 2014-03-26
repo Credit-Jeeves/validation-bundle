@@ -2039,8 +2039,8 @@
             <trans-unit id="csv.file.too.small1">
                 <source>csv.file.too.small1</source>
                 <target>
-                    CSV File too small and must have at least three rows. One rows it's header and
-                    two rows it's data. Comeback please and upload correct file.
+                    CSV File too small and must have at least two rows. One rows it's header and
+                    one rows it's data. Comeback please and upload correct file.
                 </target>
             </trans-unit>
             <trans-unit id="csv.file.too.small2">
