@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 use Gedmo\Mapping\Annotation as Gedmo;
+use DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -95,10 +96,9 @@ abstract class LeadHistory extends AbstractLogEntry
     protected $status = LeadStatus::NEWONE;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
-     * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
 
@@ -385,7 +385,7 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return LeadHistory
      */
     public function setUpdatedAt($updatedAt)
@@ -398,7 +398,7 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getUpdatedAt()
     {

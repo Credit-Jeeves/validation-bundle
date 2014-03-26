@@ -15,9 +15,6 @@ class ContractHistory extends Base
      */
     public function setData($data)
     {
-        if (isset($data['search'])) {
-            $this->setSearch($data['search']);
-        }
         if (isset($data['status'])) {
             $this->setStatus($data['status']);
         }
