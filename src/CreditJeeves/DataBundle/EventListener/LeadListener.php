@@ -39,7 +39,7 @@ class LeadListener
     /**
      * We need send email to Applicant when his Applicant change status from ACTIVE to READY
      *
-     * @param LifecycleEventArgs $eventArgs
+     * @param PreUpdateEventArgs $eventArgs
      */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
@@ -48,8 +48,6 @@ class LeadListener
         if (!($lead instanceof Lead)) {
             return;
         }
-        $em = $eventArgs->getEntityManager();
-        $id = $lead->getId();
 
         if ($eventArgs->hasChangedField('status')
             &&

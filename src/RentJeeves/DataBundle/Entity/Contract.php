@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\Serializer\Annotation as Serializer;
+use Gedmo\Mapping\Annotation as Gedmo;
 use \DateTime;
 use \RuntimeException;
 
@@ -19,6 +20,8 @@ use \RuntimeException;
  *
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ContractRepository")
  * @ORM\Table(name="rj_contract")
+ *
+ * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
  */
 class Contract extends Base
 {

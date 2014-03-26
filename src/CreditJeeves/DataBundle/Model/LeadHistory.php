@@ -30,7 +30,7 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * @var integer
      *
-     * @ORM\Column(name="object_id", type="bigint", nullable=true)
+     * @~ORM\Column(name="object_id", type="bigint", nullable=true)
      */
     protected $objectId;
 
@@ -176,6 +176,26 @@ abstract class LeadHistory extends AbstractLogEntry
     public function getEditorId()
     {
         return $this->editorId;
+    }
+
+    /**
+     * @param $object
+     *
+     * @return $this
+     */
+    public function setObject($object)
+    {
+        $this->object = $object;
+
+        return $this;
+    }
+
+    /**
+     * @return \CreditJeeves\DataBundle\Entity\Lead
+     */
+    public function getObject()
+    {
+        return $this->object;
     }
 
     /**

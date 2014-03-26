@@ -52,7 +52,6 @@ class PaymentCase extends BaseTestCase
     public function prePersist()
     {
         $this->load(true);
-        static::$kernel = null;
 //        $this->startTransaction();
         $doctrineManager = $this->getContainer()->get('doctrine')->getManager();
         /** @var Contract $contract */
