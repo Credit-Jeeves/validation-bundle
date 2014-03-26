@@ -1,11 +1,13 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -193,7 +195,8 @@ class OrderRepository extends EntityRepository
     public function getContractHistory(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $query = $this->createQueryBuilder('o');
-        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('o.operations', 'p', Expr\Join::WITH, "p.type = :rent");
+        $query->setParameter('rent', OperationType::RENT);
         $query->where('p.contract = :contract');
         $query->setParameter('contract', $contract);
         $query->orderBy('o.created_at', 'ASC');

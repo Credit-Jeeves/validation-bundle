@@ -139,4 +139,13 @@ class Operation extends Base
     {
         return (string)$this->getType();
     }
+
+    public function getDaysLate()
+    {
+        $days = $this->getCreatedAt()->diff($this->getPaidFor())->days;
+        if ($this->getCreatedAt() > $this->getPaidFor()) {
+            $days *= -1;
+        }
+        return $days;
+    }
 }

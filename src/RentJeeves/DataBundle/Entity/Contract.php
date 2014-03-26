@@ -349,6 +349,11 @@ class Contract extends Base
         return $this->getPaymentHistory($em);
     }
 
+    /**
+     * @param EntityManager $em
+     *
+     * @return array
+     */
     public function getPaymentHistory($em)
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '-');
@@ -357,6 +362,7 @@ class Contract extends Base
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $repo = $em->getRepository('DataBundle:Order');
         $orders = $repo->getContractHistory($this);
+        /** @var Order $order */
         foreach ($orders as $order) {
             $orderDate = $order->getCreatedAt();
             $lastPaymentDate = $orderDate->format('m/d/Y');

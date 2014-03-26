@@ -16,7 +16,7 @@ class LoggableListenerCase extends BaseTestCase
     /**
      * @test
      */
-    public function create()
+    public function createAndUpdate()
     {
         $this->load(true);
         $em = $this->getContainer()->get('doctrine')->getManager();

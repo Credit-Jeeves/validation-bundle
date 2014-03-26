@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
+use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -540,8 +541,21 @@ class Order extends BaseOrder
      */
     public function getPostMonth()
     {
-        $date = $this->getUpdatedAt();
-        $daysLate = $this->getDaysLate();
+        $operationCollection = $this->getOperations()
+            ->filter(function(Operation $operation) {
+                if (OperationType::RENT == $operation->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        );
+        if (1 < $operationCollection->count()) {
+            throw new RuntimeException("Order have more than ONE 'RENT' operation");
+        }
+        /** @var Operation $operation */
+        $operation = $operationCollection->last();
+        $daysLate = $operation->getDaysLate();
+        $date = $operation->getCreatedAt();
         if ($daysLate < 0) {
             $date->modify('-'.$daysLate.' day');
         } elseif ($daysLate > 0) {

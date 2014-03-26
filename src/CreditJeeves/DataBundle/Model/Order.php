@@ -74,14 +74,6 @@ abstract class Order
 
     /**
      * @ORM\Column(
-     *     type="integer",
-     *     nullable=true
-     * )
-     */
-    protected $days_late = null;
-
-    /**
-     * @ORM\Column(
      *     type="datetime"
      * )
      * @Gedmo\Timestampable(on="create")
@@ -250,30 +242,6 @@ abstract class Order
     {
         return $this->amount;
     }
-
-    /**
-     * Set days_late
-     *
-     * @param double $days
-     * @return Order
-     */
-    public function setDaysLate($days)
-    {
-        $this->days_late = $days;
-    
-        return $this;
-    }
-    
-    /**
-     * Get days_late
-     *
-     * @return double
-     */
-    public function getDaysLate()
-    {
-        return $this->days_late;
-    }
-    
     
     /**
      * Set created_date
