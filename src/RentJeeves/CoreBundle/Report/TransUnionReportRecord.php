@@ -257,10 +257,6 @@ class TransUnionReportRecord
         //RR‐ Eviction
         //SS‐ Rent unpaid, renter skipped, and did not fulfill remaining lease term
 
-        if (!$this->operation) {
-            return 'SS';
-        }
-
         $paidOnDay = $this->operation->getOrder()->getUpdatedAt()->format('j');
         switch ($paidOnDay) {
             case ($paidOnDay < 6):
@@ -270,6 +266,8 @@ class TransUnionReportRecord
             case ($paidOnDay >= 15):
                 return 'OO';
         }
+
+        return str_repeat(' ', 2);
     }
 
     public function getLeaseDisputeCode()
