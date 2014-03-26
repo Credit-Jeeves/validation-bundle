@@ -34,7 +34,7 @@ abstract class ContractHistory extends AbstractLogEntry
     /**
      * @var integer
      *
-     * @~ORM\Column(name="object_id", type="bigint", nullable=true)
+     * @ORM\Column(name="object_id", type="bigint", nullable=true)
      */
     protected $objectId;
 
