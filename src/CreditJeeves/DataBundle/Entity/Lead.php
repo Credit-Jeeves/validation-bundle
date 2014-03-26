@@ -19,10 +19,11 @@ class Lead extends BaseLead
      */
     public function methodPrePersist()
     {
-        $this->created_at = new \DateTime();
-        $this->updated_at = new \DateTime();
+        if (!$this->getTargetScore()) {
+            $this->setTargetScore($this->getGroup() ? $this->getGroup()->getTargetScore() : null);
+        }
     }
-    
+
     public function __toString()
     {
         return (string)$this->getGroupName().' '.$this->getTargetScore();

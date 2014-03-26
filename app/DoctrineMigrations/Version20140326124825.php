@@ -18,7 +18,6 @@ class Version20140326124825 extends AbstractMigration
             "CREATE TABLE rj_contract_history (id BIGINT AUTO_INCREMENT NOT NULL,
                 object_id BIGINT DEFAULT NULL,
                 editor_id BIGINT DEFAULT NULL,
-                search VARCHAR(255) DEFAULT NULL,
                 status ENUM('pending','invite','approved','current','finished','deleted')
                     COMMENT '(DC2Type:ContractStatus)' DEFAULT 'pending' NOT NULL,
                 rent NUMERIC(10,
@@ -33,7 +32,7 @@ class Version20140326124825 extends AbstractMigration
                 reporting TINYINT(1) DEFAULT '0',
                 start_at DATE DEFAULT NULL,
                 finish_at DATE DEFAULT NULL,
-                updated_at DATETIME NOT NULL,
+                logged_at DATETIME NOT NULL,
                 action VARCHAR(8) NOT NULL,
                 INDEX IDX_6CF9EAFD232D562B (object_id),
                 PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"

@@ -42,8 +42,5 @@ class ContractHistory extends Base
         if (isset($data['finishAt'])) {
             $this->setFinishAt($data['finishAt']);
         }
-        if (isset($data['updated_at'])) {
-            $this->setUpdatedAt($data['updated_at']);
-        }
     }
 }

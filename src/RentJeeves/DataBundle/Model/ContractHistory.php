@@ -143,17 +143,9 @@ abstract class ContractHistory extends AbstractLogEntry
     protected $finishAt;
 
     /**
-     * @ORM\Column(
-     *     name="updated_at",
-     *     type="datetime"
-     * )
-     */
-    protected $updatedAt;
-
-    /**
      * @var string $loggedAt
      *
-     * @~ORM\Column(name="logged_at", type="datetime")
+     * @ORM\Column(name="logged_at", type="datetime")
      */
     protected $loggedAt;
 
