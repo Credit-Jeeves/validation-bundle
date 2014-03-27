@@ -27,14 +27,16 @@ class ExperianRentalReport extends RentalReport
 
     public function createRecords($reportMonth, $reportYear)
     {
-        $this->records = array();
-        $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
-        $contracts = $contractRepo->getContractsForRentalReport($reportMonth, $reportYear);
-        $operationRepo = $this->em->getRepository('DataBundle:Operation');
+        if (!$this->records) {
+            $this->records = array();
+            $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
+            $contracts = $contractRepo->getContractsForRentalReport($reportMonth, $reportYear);
+            $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
-        foreach ($contracts as $contract) {
-            $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
-            $this->records[] = new ExperianReportRecord($contract, $rentOperation);
+            foreach ($contracts as $contract) {
+                $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
+                $this->records[] = new ExperianReportRecord($contract, $rentOperation);
+            }
         }
     }
 }
