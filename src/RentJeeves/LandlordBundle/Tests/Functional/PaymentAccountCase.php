@@ -26,7 +26,7 @@ class PaymentAccountCase extends BaseTestCase
             array(
                 'billingAccountType_nickname'         => "mary",
                 'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber'    => "5473500000000014",
+                'billingAccountType_AccountNumber'    => "123245678",
                 'billingAccountType_RoutingNumber'    => "062202574",
                 'billingAccountType_ACHDepositType_0' => true,
                 'billingAccountType_isActive'         => true,
@@ -45,8 +45,8 @@ class PaymentAccountCase extends BaseTestCase
             array(
                 'billingAccountType_nickname'         => "gary",
                 'billingAccountType_PayorName'        => "mary stone",
-                'billingAccountType_AccountNumber'    => "1234",
-                'billingAccountType_RoutingNumber'    => "1234",
+                'billingAccountType_AccountNumber'    => "123245678",
+                'billingAccountType_RoutingNumber'    => "062202574",
                 'billingAccountType_ACHDepositType_0' => true,
                 'billingAccountType_isActive'         => true,
             )
