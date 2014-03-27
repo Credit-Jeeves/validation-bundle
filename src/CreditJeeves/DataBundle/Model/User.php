@@ -18,7 +18,7 @@ use \DateTime;
 
 /**
  * @ORM\MappedSuperclass
- * @UniqueEntity(fields={"email"}, groups={"invite"})
+ * @UniqueEntity(fields={"email"}, groups={"invite", "import"})
  */
 abstract class User extends BaseUser
 {
@@ -64,6 +64,12 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^[A-Za-z_]{1,100}+$/",
+     *     groups = {
      *         "import"
      *     }
      * )
@@ -122,6 +128,12 @@ abstract class User extends BaseUser
      *         "tenant_invite",
      *         "account_landlord",
      *         "api_identity_check",
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^[A-Za-z_]{1,100}+$/",
+     *     groups = {
      *         "import"
      *     }
      * )

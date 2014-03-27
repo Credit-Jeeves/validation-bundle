@@ -16,6 +16,7 @@ use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
 use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
@@ -354,14 +355,29 @@ class AccountingImport
         return ($date)? $date : null;
     }
 
+    private function getNewContract($row, $tenant)
+    {
+        $contract = new Contract();
+        $contract->setStatus(ContractStatus::INVITE);
+        $contract->setProperty($this->getProperty());
+        $contract->setGroup($this->user->getCurrentGroup());
+        $contract->setHolding($this->user->getHolding());
+        $tenant->addContract($contract);
+        $contract->setTenant($tenant);
+        $contract->setUnit($this->getUnit($row));
+        $contract->setCreatedAt(new DateTime());
+
+        return $contract;
+    }
+
     //@TODO try to make in this place serializer if that will be possible
     protected function getImport($row, $lineNumber)
     {
         $import = new Import();
-        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImport(
-            $email = $row[self::KEY_EMAIL],
-            $propertyId = $this->getPropertyId(),
-            $unitName = $row[self::KEY_UNIT]
+        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => $row[self::KEY_EMAIL]
+            )
         );
 
         if (empty($tenant)) {
@@ -372,10 +388,6 @@ class AccountingImport
             $tenant->setEmail($row[self::KEY_EMAIL]);
             $tenant->setEmailCanonical($row[self::KEY_EMAIL]);
             $tenant->setPassword(md5(md5(1)));
-        } else {
-            //For the same tenant and different contract/unit we have the same result
-            //That's why we need detach
-            $this->em->detach($tenant);
         }
 
         $import->setTenant($tenant);
@@ -388,33 +400,31 @@ class AccountingImport
             $tenant->setResidentId($row[self::KEY_RESIDENT_ID]);
         }
 
-        $contracts = $tenant->getContracts();
-        $contract  = $contracts->first();
-
-        if (!$contract) {
-            $contract = new Contract();
-            $contract->setStatus(ContractStatus::INVITE);
-            $contract->setProperty($this->getProperty());
-            $contract->setGroup($this->user->getCurrentGroup());
-            $contract->setHolding($this->user->getHolding());
-            $tenant->addContract($contract);
-            $contract->setTenant($tenant);
-            $contract->setUnit($this->getUnit($row));
-            $contract->setCreatedAt(new DateTime());
+        if (!$tenant->getId()) {
+            $contract = $this->getNewContract($row, $tenant);
+        } else {
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
+                $tenant->getId(),
+                $row[self::KEY_UNIT]
+            );
+            $contract = (!empty($contract))? $contract : $this->getNewContract($row, $tenant);
         }
 
         $contract->setUpdatedAt(new DateTime());
-        $contract->setStartAt($this->getDateByField($row[self::KEY_MOVE_IN]));
-        $contract->setFinishAt($this->getDateByField($row[self::KEY_LEASE_END]));
-        if ($row[self::KEY_MOVE_OUT] && $contract->getStatus() !== ContractStatus::FINISHED) {
+
+        if (!empty($row[self::KEY_MOVE_OUT]) && $contract->getStatus() !== ContractStatus::FINISHED) {
             $import->setMoveOut($this->getDateByField($row[self::KEY_MOVE_OUT]));
             $contract->setStatus(ContractStatus::FINISHED);
-        } elseif ($row[self::KEY_MOVE_OUT] && $contract->getStatus() === ContractStatus::FINISHED) {
+        } elseif (!empty($row[self::KEY_MOVE_OUT]) && $contract->getStatus() === ContractStatus::FINISHED) {
             $import->setIsSkipped(true);
+        } else {
+            $contract->setImportedBalance($row[self::KEY_BALANCE]);
+            $contract->setRent($row[self::KEY_RENT]);
+            $contract->setStartAt($this->getDateByField($row[self::KEY_MOVE_IN]));
+            $contract->setFinishAt($this->getDateByField($row[self::KEY_LEASE_END]));
         }
 
-        $contract->setImportedBalance($row[self::KEY_BALANCE]);
-        $contract->setRent($row[self::KEY_RENT]);
+
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
         $token   = (!$this->validateData) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
@@ -446,11 +456,16 @@ class AccountingImport
             $form->get('contract')->setData($contract);
         }
 
+        if ($contract->getStatus() === ContractStatus::FINISHED && !$import->getIsSkipped()) {
+            $form = $this->getContractFinishForm();
+            $form->setData($contract);
+        }
+
         if (isset($form)) {
             $form->get('_token')->setData($token);
             $import->setForm($form);
         }
-
+        $import->setContract($contract);
         $import->setCsrfToken($token);
         return $import;
     }
@@ -469,6 +484,14 @@ class AccountingImport
     public function getCreateUserAndCreateContractForm()
     {
         return $this->createForm(new ImportNewUserWithContractType());
+    }
+
+    /**
+     * @return Form
+     */
+    public function getContractFinishForm()
+    {
+        return $this->createForm(new ImportContractFinishType());
     }
 
     public function countData()
@@ -504,7 +527,9 @@ class AccountingImport
                 }
             }
         }
-        $this->em->flush();
+        if (empty($errors)) {
+            $this->em->flush();
+        }
         $this->validateData = false;
         return $errors;
     }
@@ -517,58 +542,46 @@ class AccountingImport
         }
         $line = $postData['line'];
         unset($postData['line']);
-        $contract = $import->getTenant()->getContracts()->first();
-        $contractId = $contract->getId();
         $form = $import->getForm();
-        if (isset($postData['_token'])) {
-            $form->submit($postData);
-            $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
-            if ($form->isValid() && $isCsrfTokenValid) {
-                //Do save
-                switch ($form->getName()) {
-                    case 'import_contract':
-                        /**
-                         * Read line 376, detach tenant
-                         *
-                         * @var $contract Contract
-                         */
-                        $contract = $form->getData();
-                        $unit = $contract->getUnit();
-                        $this->em->merge($contract->getTenant());
-                        $this->em->merge($contract);
-                        $this->em->persist($unit);
-                        if (!empty($contractId)) {
-                            $this->em->persist($contract);
-                        }
-                        break;
-                    case 'import_new_user_with_contract':
-                        $data = $form->getData();
-                        $tenant = $data['tenant'];
-                        $contract = $data['contract'];
-                        $unit = $contract->getUnit();
-                        $sendInvite = $data['sendInvite'];
-                        $this->em->persist($tenant);
-                        $this->em->persist($unit);
-                        $this->em->persist($contract);
-                        if ($sendInvite) {
-                            $this->mailer->sendRjTenantInvite($tenant, $this->user, $contract);
-                        }
-                        break;
-                }
-
-            } elseif (!$isCsrfTokenValid) {
-                //@TODO move to trans
-                $errors[$line] = array(
-                    '_global' => 'The CSRF token is invalid. Please try to resubmit the form',
-                );
-            } else {
-                $errors[$line] = $this->getFormErrors($form);
+        if (!isset($postData['_token'])) {
+            return;
+        }
+        $form->submit($postData);
+        $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
+        if ($form->isValid() && $isCsrfTokenValid) {
+            //Do save and maybe move it to factory pattern
+            switch ($form->getName()) {
+                case 'import_contract_finish':
+                    $contract = $form->getData();
+                    $this->em->persist($contract);
+                    break;
+                case 'import_contract':
+                    $contract = $form->getData();
+                    $this->em->persist($contract);
+                    $this->em->persist($contract->getUnit());
+                    break;
+                case 'import_new_user_with_contract':
+                    $data = $form->getData();
+                    $tenant = $data['tenant'];
+                    $contract = $data['contract'];
+                    $unit = $contract->getUnit();
+                    $sendInvite = $data['sendInvite'];
+                    $this->em->persist($tenant);
+                    $this->em->persist($unit);
+                    $this->em->persist($contract);
+                    if ($sendInvite) {
+                        $this->mailer->sendRjTenantInvite($tenant, $this->user, $contract);
+                    }
+                    break;
             }
-        } elseif ($import->getMoveOut() &&
-            $contract->getStatus() === ContractStatus::FINISHED &&
-            !empty($contractId)
-        ) {
-            $this->em->persist($contract);
+
+            return;
+        }
+
+        $errors[$line] = $this->getFormErrors($form);
+        if (!$isCsrfTokenValid) {
+            //@TODO move to trans
+            $errors[$line]['_global'] = 'The CSRF token is invalid. Please try to resubmit the form';
         }
     }
 
@@ -577,6 +590,7 @@ class AccountingImport
         $replaces = array(
             'import_new_user_with_contract' => 30,
             'import_contract'               => 16,
+            'import_contract_finish'        => 23,
         );
 
         foreach ($formData as $key => $value) {

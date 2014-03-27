@@ -16,6 +16,10 @@ function accountingImport() {
             data: {
                 'newRows': next
             },
+            error: function() {
+                self.setProcessing(false);
+                self.errorLoadDataMessage(Translator.trans('import.error.flush'));
+            },
             success: function(response) {
                 self.setProcessing(false);
                 self.errorLoadDataMessage(response.message);
@@ -55,15 +59,21 @@ function accountingImport() {
                 format: 'm/d/Y'
             });
         });
-
     };
+
+    this.removeGuiScript = function() {
+        $.each($('.datepicker'), function(key, value) {
+            $(this).datepicker("destroy");
+        });
+    };
+
 
     this.getStatusText = function(data) {
         if (data.isSkipped) {
             return Translator.trans('import.status.skip');
         }
 
-        if (data.Tenant.contracts[0].status == 'finished' && self.getMoveOut(data).length > 0) {
+        if (data.Contract.status == 'finished' && self.getMoveOut(data).length > 0) {
             return Translator.trans('import.status.ended');
         }
 
@@ -71,7 +81,7 @@ function accountingImport() {
             return Translator.trans('import.status.error');
         }*/
 
-        if (data.Tenant.contracts[0].id !== undefined && data.Tenant.id !== undefined) {
+        if (data.Contract.id !== undefined && data.Tenant.id !== undefined) {
             return Translator.trans('import.status.match');
         }
 
@@ -87,6 +97,7 @@ function accountingImport() {
     }
 
     this.submitForms = function() {
+        self.removeGuiScript();
         self.setProcessing(true);
         var number = 0;
         var success = Array();
@@ -112,27 +123,23 @@ function accountingImport() {
         });
 
         self.formErrors([]);
-
         $.ajax({
             url: Routing.generate('landlord_reports_review_save_row'),
             type: 'POST',
             async: true,
             dataType: 'json',
             data: forms,
+            error: function() {
+                self.setProcessing(false);
+                self.errorLoadDataMessage(Translator.trans('import.error.flush'));
+            },
             success: function(response) {
                 var errorsLen = $.map(response.formErrors, function(n, i) { return i; }).length;
                 if (errorsLen > 0) {
-                    var rows = new Array();
-                    $.each(self.rows(), function (key,value) {
-                        if (response.formErrors[value.number] !== undefined) {
-                            rows.push(value);
-                        }
-                    });
-                    self.rows([]);
-                    self.rows(rows);
+                    self.rows(self.rows());
                     self.formErrors(response.formErrors);
                     self.setProcessing(false);
-                    self.initGuiScript()
+                    self.initGuiScript();
                 } else {
                     self.loadData(true);
                 }
@@ -168,11 +175,15 @@ function accountingImport() {
         var result = {};
         jQuery.each(data, function(keys1, values1) {
             jQuery.each(values1, function(keys2, values2) {
-                jQuery.each(values2, function(fieldName, errors) {
-                    result[fieldName] = errors;
-                });
+                if (values2 instanceof Array) {
+                    result[keys2] = values2;
+                } else {
+                    jQuery.each(values2, function (fieldName, errors) {
+                        result[fieldName] = errors;
+                    });
+                }
             })
-        })
+        });
 
         return result;
     }
@@ -188,18 +199,18 @@ function accountingImport() {
     };
 
     this.getClassLine = function(data) {
-        return 'line_number_'+data.number;
+        return 'line_number_'+data.number+' ';
     }
 
     this.getErrorClass = function(data, nameField) {
         if (!self.getErrorsList(data)) {
-            return;
+            return '';
         }
 
         var result = self.getErrorsFields(self.getErrorsList(data));
-
+        console.info(result);
         if (result[nameField] == undefined) {
-            return;
+            return '';
         }
 
         return 'errorField';

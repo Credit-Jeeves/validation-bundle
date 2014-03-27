@@ -139,7 +139,7 @@ abstract class Contract
      *     }
      * )
      */
-    protected $rent;
+    protected $rent = 0.00;
 
     /**
      * @ORM\Column(
@@ -291,7 +291,7 @@ abstract class Contract
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[0-9]+(\.[0-9][0-9])?+$/",
+     *     pattern = "/^(\-?)+[0-9]+(\.[0-9][0-9])?+$/",
      *     groups = {
      *         "import"
      *     }

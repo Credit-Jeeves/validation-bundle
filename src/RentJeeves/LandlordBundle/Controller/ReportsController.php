@@ -221,10 +221,12 @@ class ReportsController extends Controller
 
         $formNewUserWithContract = $accountingImport->getCreateUserAndCreateContractForm();
         $formContract = $accountingImport->getContractForm();
+        $formContractFinish = $accountingImport->getContractFinishForm();
 
         return array(
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
             'formContract'            => $formContract->createView(),
+            'formContractFinish'      => $formContractFinish->createView(),
         );
     }
 
@@ -314,7 +316,7 @@ class ReportsController extends Controller
         $serializer = SerializerBuilder::create()->build();
 
         $data = $request->request->all();
-        $errors = $accountingImport->saveForms($data);
+        $errors               = $accountingImport->saveForms($data);
         $result['formErrors'] = $errors;
 
         return new Response($serializer->serialize($result, 'json'));

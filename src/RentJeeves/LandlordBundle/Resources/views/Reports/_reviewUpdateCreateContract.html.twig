@@ -2,10 +2,10 @@
 
 <tr data-bind="
     attr: {'class': $root.getClassLine($data)},
-    if: !isSkipped && ((Tenant.contracts[0].id && Tenant.contracts[0].status != 'finished') || (!Tenant.contracts[0].id && Tenant.id && Tenant.contracts[0].status != 'finished'))">
+    if: !isSkipped && ((Contract.id && Contract.status != 'finished') || (!Contract.id && Tenant.id && Contract.status != 'finished'))">
     {{ form_start(form) }}
-    <td data-bind="text: $root.getStatusText($data)"></td>
-    <td data-bind="text:Tenant.contracts[0].unit.name"></td>
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
+    <td data-bind="text:Contract.unit.name"></td>
     <td data-bind="text:Tenant.resident_id"></td>
     <td data-bind="text:Tenant.first_name"></td>
     <td data-bind="text:Tenant.last_name"></td>
@@ -18,7 +18,7 @@
                     "attr":
                     {
                         "data-bind":
-                        "value: Tenant.contracts[0].rent,
+                        "value: Contract.rent,
                          attr:
                             {
                                 'class': number+'_rent import_contract_rent '+$root.getErrorClass($data, 'import_contract_rent'),
@@ -35,7 +35,7 @@
                 "attr":
                 {
                 "data-bind":
-                    "value: Tenant.contracts[0].imported_balance,
+                    "value: Contract.imported_balance,
                      attr:
                         {
                             'class': number+'_balance import_contract_importedBalance '+$root.getErrorClass($data, 'import_contract_importedBalance'),
@@ -53,7 +53,7 @@
                 "attr":
                 {
                 "data-bind": "
-                    value:$root.formatDate(Tenant.contracts[0].startAt),
+                    value:$root.formatDate(Contract.startAt),
                     attr: {
                         'class': number+'_startAt import_contract_startAt datepicker '+$root.getErrorClass($data, 'import_contract_startAt'),
                         'id':$root.uniqueId(),
@@ -68,7 +68,7 @@
                 "attr":
                 {
                 "data-bind":
-                    "value: $root.formatDate(Tenant.contracts[0].finishAt),
+                    "value: $root.formatDate(Contract.finishAt),
                      attr: {
                         'class': number+'_finishAt import_contract_finishAt datepicker '+$root.getErrorClass($data, 'import_contract_finishAt'),
                         'id':$root.uniqueId(),

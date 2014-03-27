@@ -74,7 +74,10 @@
                             }}
                             {{
                                 include(
-                                    'LandlordBundle:Reports:_reviewSkip.html.twig'
+                                    'LandlordBundle:Reports:_reviewSkip.html.twig',
+                                    {
+                                        'form': formContractFinish
+                                    }
                                 )
                             }}
                         </tbody>

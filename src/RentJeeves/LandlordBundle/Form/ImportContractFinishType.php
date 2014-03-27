@@ -2,12 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use RentJeeves\DataBundle\Validators\TenantEmail;
 use RentJeeves\LandlordBundle\Report\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * This form for exit Tenant and new Contract
@@ -15,37 +13,25 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * Class ImportNewUserWithContractType
  * @package RentJeeves\LandlordBundle\Form
  */
-class ImportTenantType extends AbstractType
+class ImportContractFinishType extends AbstractType
 {
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'first_name',
-            'text',
-            array()
-        );
-
-
-        $builder->add(
-            'last_name',
-            'text',
-            array()
-        );
-
-        $builder->add(
-            'email',
-            'text',
+            'finishAt',
+            'date',
             array(
-     /*           'constraints'    => array(
-                    new UniqueEntity(
-                        array(
-                            "fields" => "email",
-                            "message" => "user.email.already.exist",
-                            'groups' => 'import',
-                        )
-                    )
-                )*/
+                'widget' => 'single_text',
+                'format' => 'MM/dd/yyyy',
+            )
+        );
+
+        $builder->add(
+            '_token',
+            'hidden',
+            array(
+                'mapped' => false,
             )
         );
     }
@@ -54,7 +40,7 @@ class ImportTenantType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'RentJeeves\DataBundle\Entity\Tenant',
+                'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
                 'validation_groups' => array(
                     'import',
                 ),
@@ -66,7 +52,7 @@ class ImportTenantType extends AbstractType
 
     public function getName()
     {
-        return 'import_new_tenant';
+        return 'import_contract_finish';
     }
 }
 

@@ -33,6 +33,13 @@ class Import
     protected $tenant;
 
     /**
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\Contract")
+     * @Serializer\SerializedName("Contract")
+     * @Serializer\Groups({"CreditJeeves"})
+     */
+    protected $contract;
+
+    /**
      * @Serializer\Type("string")
      * @Serializer\SerializedName("csrfToken")
      * @Serializer\Groups({"CreditJeeves"})
@@ -50,6 +57,22 @@ class Import
      * @Serializer\Exclude
      */
     protected $form = false;
+
+    /**
+     * @return mixed
+     */
+    public function getContract()
+    {
+        return $this->contract;
+    }
+
+    /**
+     * @param mixed $contract
+     */
+    public function setContract($contract)
+    {
+        $this->contract = $contract;
+    }
 
     /**
      * @return Form

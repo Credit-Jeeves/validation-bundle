@@ -1,16 +1,36 @@
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: isSkipped || Tenant.contracts[0].status == 'finished'">
-    <td data-bind="text: $root.getStatusText($data)"></td>
-    <td data-bind="text:Tenant.contracts[0].unit.name"></td>
+{% form_theme form "RjCoreBundle::form.html.twig" %}
+
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: isSkipped || Contract.status == 'finished'">
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
+    <td data-bind="text:Contract.unit.name"></td>
     <td data-bind="text:Tenant.resident_id"></td>
     <td data-bind="text:Tenant.first_name"></td>
     <td data-bind="text:Tenant.last_name"></td>
     <td data-bind="text:Tenant.email"></td>
-    <td data-bind="html:Tenant.contracts[0].rent+'<br/>'+Tenant.contracts[0].imported_balance"></td>
-    <td data-bind="html:$root.formatDate(Tenant.contracts[0].startAt)+'<br/>'+$root.formatDate(Tenant.contracts[0].finishAt)">
+    <td data-bind="html:Contract.rent+'<br/>'+Contract.imported_balance"></td>
+    <td data-bind="html:$root.formatDate(Contract.startAt)+'<br/>'+$root.formatDate(Contract.finishAt)">
     </td>
     <td></td>
     <td>
-        <span data-bind="visible: Tenant.contracts[0].status == 'finished', text: $root.formatDate($root.getMoveOut($data))">
+        <span  class="finishContract" data-bind="if: Contract.status == 'finished' && $root.getMoveOut($data).length > 0 && !isSkipped && Contract.id">
+        {{ form_start(form) }}
+            {{ 'import.move_out'|trans }}:<br />
+            {{ form_widget(
+                form.finishAt,
+                {
+                    "attr": {
+                    "data-bind":
+                    "value: $root.formatDate(Contract.finishAt),
+                                 attr: {
+                                    'class': number+'_finishAt import_contract_finish_finishAt datepicker '+$root.getErrorClass($data, 'import_contract_finish_finishAt'),
+                                    'id':$root.uniqueId(),
+                                    'title': $root.getErrorTitle($data, 'import_contract_finish_finishAt')
+                                 }"
+                    }
+                }
+            ) }}
+            {{ form_widget(form._token, {"attr": {"data-bind": "value: csrfToken, attr: {'class': number+'_token import_contract_finish__token', 'id':$root.uniqueId()}"}}) }}
+        {{ form_end(form) }}
         </span>
     </td>
 </tr>

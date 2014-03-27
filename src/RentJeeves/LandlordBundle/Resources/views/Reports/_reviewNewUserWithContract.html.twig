@@ -1,9 +1,9 @@
 {% form_theme form "RjCoreBundle::form.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !isSkipped && !Tenant.contracts[0].id && !Tenant.id && Tenant.contracts[0].status != 'finished'">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !isSkipped && !Contract.id && !Tenant.id && Contract.status != 'finished'">
     {{ form_start(form) }}
-    <td data-bind="text: $root.getStatusText($data)"></td>
-    <td data-bind="text:Tenant.contracts[0].unit.name"></td>
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
+    <td data-bind="text:Contract.unit.name"></td>
     <td data-bind="text:Tenant.resident_id"></td>
     <td>
         {{  form_widget(
@@ -62,7 +62,7 @@
             {"attr":
                 {
                     "data-bind":
-                        "value: Tenant.contracts[0].rent,
+                        "value: Contract.rent,
                          attr: {
                             'class': number+'_rent import_new_user_with_contract_contract_rent '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_rent'),
                             'id':$root.uniqueId(),
@@ -76,7 +76,7 @@
             {"attr":
                 {
                     "data-bind":
-                        "value: Tenant.contracts[0].imported_balance,
+                        "value: Contract.imported_balance,
                          attr: {
                             'class': number+'_balance import_new_user_with_contract_contract_importedBalance '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_importedBalance'),
                             'id':$root.uniqueId(),
@@ -92,7 +92,7 @@
             {
                 "attr":{
                     "data-bind":
-                        "value: $root.formatDate(Tenant.contracts[0].startAt),
+                        "value: $root.formatDate(Contract.startAt),
                          attr:{
                             'class': number+'_startAt import_new_user_with_contract_tenant_startAt datepicker '+$root.getErrorClass($data,'import_new_user_with_contract_contract_startAt'),
                             'id':$root.uniqueId(),
@@ -106,7 +106,7 @@
             {
                 "attr": {
                     "data-bind":
-                        "value: $root.formatDate(Tenant.contracts[0].finishAt),
+                        "value: $root.formatDate(Contract.finishAt),
                          attr: {
                             'class': number+'_finishAt import_new_user_with_contract_contract_finishAt datepicker '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_finishAt'),
                             'id':$root.uniqueId(),
