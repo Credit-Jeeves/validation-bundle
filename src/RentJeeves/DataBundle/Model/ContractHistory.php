@@ -143,37 +143,34 @@ abstract class ContractHistory extends AbstractLogEntry
     protected $finishAt;
 
     /**
-     * @var string $loggedAt
+     * ORM\Column(name="object_class", type="string", length=255)
+     * Exclude from DB schema
      *
-     * @ORM\Column(name="logged_at", type="datetime")
-     */
-    protected $loggedAt;
-
-    /**
      * @var string $objectClass
-     *
-     * @~ORM\Column(name="object_class", type="string", length=255)
      */
     protected $objectClass;
 
     /**
-     * @var integer $version
+     * ORM\Column(type="bigint")
+     * Exclude from DB schema
      *
-     * @~ORM\Column(type="bigint")
+     * @var integer $version
      */
     protected $version;
 
     /**
-     * @var string $data
+     * ORM\Column(type="array", nullable=true)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(type="array", nullable=true)
+     * @var string $data
      */
     protected $data;
 
     /**
-     * @var string $data
+     * ORM\Column(length=255, nullable=true)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(length=255, nullable=true)
+     * @var string $data
      */
     protected $username;
 
