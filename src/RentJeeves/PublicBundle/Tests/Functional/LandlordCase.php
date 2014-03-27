@@ -78,7 +78,6 @@ class LandlordCase extends BaseTestCase
         $unitNames[2]->setValue('1C');
 
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
-        $currentUrl = $this->session->getCurrentUrl();
         $submit->click();
 
         $this->session->wait($this->timeout, "$('#main-content-wrapper').is(':visible')");
