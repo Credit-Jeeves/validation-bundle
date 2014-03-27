@@ -2,7 +2,7 @@
 
 <tr data-bind="
     attr: {'class': $root.getClassLine($data)},
-    if: !isSkipped && ((Contract.id && Contract.status != 'finished') || (!Contract.id && Tenant.id && Contract.status != 'finished'))">
+    if: !isSkipped && isValid && ((Contract.id && Contract.status != 'finished') || (!Contract.id && Tenant.id && Contract.status != 'finished'))">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
     <td data-bind="text:Contract.unit.name"></td>

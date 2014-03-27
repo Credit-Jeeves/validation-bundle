@@ -48,6 +48,15 @@ class TenantRepository extends EntityRepository
         return $query->execute();
     }
 
+    /**
+     *
+     * Don't use for now, but saved, maybe we can use it in future
+     *
+     * @param $email
+     * @param $propertyId
+     * @param $unitName
+     * @return mixed
+     */
     public function getTenantForImport($email, $propertyId, $unitName)
     {
         $query = $this->createQueryBuilder('tenant')
@@ -78,7 +87,7 @@ class TenantRepository extends EntityRepository
         $query->where('tenant.email = :email');
         $query->setParameter('status1', ContractStatus::CURRENT);
         $query->setParameter('status2', ContractStatus::APPROVED);
-        $query->setParameter('property',$propertyId);
+        $query->setParameter('property', $propertyId);
         $query->setParameter('unitName', $unitName);
         $query->setParameter('email', $email);
         $query->setMaxResults(1);

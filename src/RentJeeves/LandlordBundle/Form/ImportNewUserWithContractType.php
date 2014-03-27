@@ -64,4 +64,3 @@ class ImportNewUserWithContractType extends AbstractType
         return 'import_new_user_with_contract';
     }
 }
-

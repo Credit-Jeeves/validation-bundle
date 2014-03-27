@@ -10,7 +10,6 @@ use Symfony\Component\PropertyAccess\Exception\RuntimeException;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-
 class ImportFileAccountingType extends AbstractType
 {
     protected $user;

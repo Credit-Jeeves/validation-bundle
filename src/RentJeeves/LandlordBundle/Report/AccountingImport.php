@@ -10,7 +10,6 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
-use RentJeeves\CoreBundle\Validator\DateWithFormat;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -124,8 +123,7 @@ class AccountingImport
         $translator,
         CsrfTokenManagerAdapter $formCsrfProvider,
         Mailer $mailer
-    )
-    {
+    ) {
         $this->session = $session;
         $this->reader  = $reader;
         $data          = $this->getImportData();
@@ -348,7 +346,7 @@ class AccountingImport
     {
         try {
             $date = DateTime::createFromFormat('m/d/Y', $field);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
 
@@ -370,7 +368,6 @@ class AccountingImport
         return $contract;
     }
 
-    //@TODO try to make in this place serializer if that will be possible
     protected function getImport($row, $lineNumber)
     {
         $import = new Import();
@@ -390,7 +387,6 @@ class AccountingImport
             $tenant->setPassword(md5(md5(1)));
         }
 
-        $import->setTenant($tenant);
         $import->setIsSkipped(false);
         if ($this->isSkipped($row)) {
             $import->setIsSkipped(true);
@@ -424,49 +420,62 @@ class AccountingImport
             $contract->setFinishAt($this->getDateByField($row[self::KEY_LEASE_END]));
         }
 
-
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
         $token   = (!$this->validateData) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
-        //Update contract or Create contract
-        if (($tenantId &&
-            in_array(
-                $contract->getStatus(),
-                array(
-                    ContractStatus::APPROVED,
-                    ContractStatus::CURRENT
-                )
-            )
-            && $contractId)
-            || ($tenantId && empty($contractId))
-        ) {
-            $form = $this->getContractForm();
-            $form->setData($contract);
+        if (preg_match('/^[A-Za-z_0-9\-]{1,50}+$/i', $contract->getUnit()->getName())) {
+            $import->setIsValidUnit(true);
         }
 
-        //Create contract and create user
-        if (empty($tenantId) && in_array(
-                $contract->getStatus(),
-                array(
-                    ContractStatus::INVITE
-                )) && empty($contractId)
-        ) {
-            $form = $this->getCreateUserAndCreateContractForm();
-            $form->get('tenant')->setData($tenant);
-            $form->get('contract')->setData($contract);
+        if (preg_match('/^[A-Za-z_0-9]{1,100}+$/i', $tenant->getResidentId())) {
+            $import->setIsValidResidentId(true);
         }
 
-        if ($contract->getStatus() === ContractStatus::FINISHED && !$import->getIsSkipped()) {
-            $form = $this->getContractFinishForm();
-            $form->setData($contract);
+
+        if ($import->isValid()) {
+            //Update contract or Create contract with exist User
+            if (($tenantId &&
+                    in_array(
+                        $contract->getStatus(),
+                        array(
+                            ContractStatus::APPROVED,
+                            ContractStatus::CURRENT
+                        )
+                    )
+                    && $contractId)
+                || ($tenantId && empty($contractId))
+            ) {
+                $form = $this->getContractForm();
+                $form->setData($contract);
+            }
+
+
+            //Create contract and create user
+            if (empty($tenantId) &&
+                $contract->getStatus() === ContractStatus::INVITE &&
+                empty($contractId)
+            ) {
+                $form = $this->getCreateUserAndCreateContractForm();
+                $form->get('tenant')->setData($tenant);
+                $form->get('contract')->setData($contract);
+            }
+
+            //Finish exist contract form
+            if ($contract->getStatus() === ContractStatus::FINISHED && !$import->getIsSkipped()) {
+                $form = $this->getContractFinishForm();
+                $form->setData($contract);
+            }
+
+            if (isset($form)) {
+                $form->get('_token')->setData($token);
+                $import->setForm($form);
+            }
         }
 
-        if (isset($form)) {
-            $form->get('_token')->setData($token);
-            $import->setForm($form);
-        }
+        $import->setTenant($tenant);
         $import->setContract($contract);
         $import->setCsrfToken($token);
+
         return $import;
     }
 
@@ -537,7 +546,11 @@ class AccountingImport
     protected function bindForm(Import $import, $postData, &$errors)
     {
         self::prepeaSubmit($postData);
-        if ($import->getIsSkipped() || isset($postData['contract']['skip']) || isset($postData['skip'])) {
+        if ($import->getIsSkipped() ||
+            isset($postData['contract']['skip']) ||
+            isset($postData['skip']) ||
+            !$import->isValid()
+        ) {
             return;
         }
         $line = $postData['line'];

@@ -21,14 +21,14 @@ class ImportMatchFileType extends AbstractType
         $this->number  = $number;
     }
 
-    static function getFieldNameByNumber($i)
+    public static function getFieldNameByNumber($i)
     {
         return 'collum'.$i;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        for($i = 1; $i <= $this->number; $i++) {
+        for ($i = 1; $i <= $this->number; $i++) {
             $builder->add(
                 self::getFieldNameByNumber($i),
                 'choice',
@@ -55,27 +55,30 @@ class ImportMatchFileType extends AbstractType
         }
 
         $self = $this;
-        $builder->addEventListener(FormEvents::SUBMIT, function(FormEvent $event) use ($options, $self) {
-            $used = array();
-            $form = $event->getForm();
-            for($i = 1; $i <= $this->number; $i++) {
-                $name = $self::getFieldNameByNumber($i);
-                $field = $form->get($name);
-                $data = $field->getData();
-                if (!in_array($data, $used) && $data !== $self::EMPTY_VALUE) {
-                    $used[] = $data;
-                    continue;
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($options, $self) {
+                $used = array();
+                $form = $event->getForm();
+                for ($i = 1; $i <= $this->number; $i++) {
+                    $name = $self::getFieldNameByNumber($i);
+                    $field = $form->get($name);
+                    $data = $field->getData();
+                    if (!in_array($data, $used) && $data !== $self::EMPTY_VALUE) {
+                        $used[] = $data;
+                        continue;
+                    }
+
+                    if ($data !== $self::EMPTY_VALUE) {
+                        $field->addError(new FormError('value.cannot.duplicate'));
+                    }
                 }
 
-                if ($data !== $self::EMPTY_VALUE) {
-                    $field->addError(new FormError('value.cannot.duplicate'));
+                if (count($used) < 9) {
+                    $form->addError(new FormError('you.need.map'));
                 }
             }
-
-            if (count($used) < 9) {
-                $form->addError(new FormError('you.need.map'));
-            }
-        });
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -93,4 +96,3 @@ class ImportMatchFileType extends AbstractType
         return 'import_match_file_type';
     }
 }
-

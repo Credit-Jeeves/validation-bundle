@@ -1,6 +1,6 @@
 {% form_theme form "RjCoreBundle::form.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !isSkipped && !Contract.id && !Tenant.id && Contract.status != 'finished'">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !isSkipped && isValid && !Contract.id && !Tenant.id && Contract.status != 'finished'">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
     <td data-bind="text:Contract.unit.name"></td>

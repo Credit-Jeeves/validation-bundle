@@ -48,4 +48,3 @@ class ImportChoiceType extends AbstractType
         return 'import_choice_type';
     }
 }
-

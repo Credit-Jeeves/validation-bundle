@@ -22,31 +22,18 @@ class ImportTenantType extends AbstractType
     {
         $builder->add(
             'first_name',
-            'text',
-            array()
+            'text'
         );
 
 
         $builder->add(
             'last_name',
-            'text',
-            array()
+            'text'
         );
 
         $builder->add(
             'email',
-            'text',
-            array(
-     /*           'constraints'    => array(
-                    new UniqueEntity(
-                        array(
-                            "fields" => "email",
-                            "message" => "user.email.already.exist",
-                            'groups' => 'import',
-                        )
-                    )
-                )*/
-            )
+            'text'
         );
     }
 
@@ -69,4 +56,3 @@ class ImportTenantType extends AbstractType
         return 'import_new_tenant';
     }
 }
-

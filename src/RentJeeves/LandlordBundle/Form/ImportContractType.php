@@ -101,4 +101,3 @@ class ImportContractType extends AbstractType
         return 'import_contract';
     }
 }
-

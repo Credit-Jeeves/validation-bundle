@@ -2177,6 +2177,14 @@
               <source>import.error.flush</source>
               <target>Import failed. Something wrong, please contract to administrator.</target>
             </trans-unit>
+            <trans-unit id="import.error.unit">
+              <source>import.error.unit</source>
+              <target><![CDATA[Unit name is invalid, it must only contains A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.residentId">
+              <source>import.error.residentId</source>
+              <target><![CDATA[Resident ID is invalid, it must only contains A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

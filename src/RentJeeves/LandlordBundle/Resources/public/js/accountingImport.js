@@ -73,13 +73,13 @@ function accountingImport() {
             return Translator.trans('import.status.skip');
         }
 
+        if (!data.isValid) {
+            return Translator.trans('import.status.error');
+        }
+
         if (data.Contract.status == 'finished' && self.getMoveOut(data).length > 0) {
             return Translator.trans('import.status.ended');
         }
-
-/*        if (data.Tenant.contracts[0].status == 'finished' && self.getMoveOut(data).length <= 0) {
-            return Translator.trans('import.status.error');
-        }*/
 
         if (data.Contract.id !== undefined && data.Tenant.id !== undefined) {
             return Translator.trans('import.status.match');
@@ -208,7 +208,7 @@ function accountingImport() {
         }
 
         var result = self.getErrorsFields(self.getErrorsList(data));
-        console.info(result);
+
         if (result[nameField] == undefined) {
             return '';
         }
@@ -229,4 +229,52 @@ function accountingImport() {
 
         return result[nameField][0];
     };
+
+    this.getUnitClass = function(data) {
+        if (data.isSkipped) {
+            return '';
+        }
+
+        if (data.isValidUnit) {
+            return '';
+        }
+
+        return 'errorField';
+    }
+
+    this.getUnitTitle = function(data) {
+        if (data.isSkipped) {
+            return '';
+        }
+
+        if (data.isValidUnit) {
+            return '';
+        }
+
+        return Translator.trans('import.error.unit');
+    }
+
+    this.getResidentIdClass = function(data) {
+        if (data.isSkipped) {
+            return '';
+        }
+
+        if (data.isValidResidentId) {
+            return '';
+        }
+
+        return 'errorField';
+    }
+
+    this.getResidentIdTitle = function(data) {
+        if (data.isSkipped) {
+            return '';
+        }
+
+        if (data.isValidResidentId) {
+            return '';
+        }
+
+        return Translator.trans('import.error.residentId');
+    }
 }

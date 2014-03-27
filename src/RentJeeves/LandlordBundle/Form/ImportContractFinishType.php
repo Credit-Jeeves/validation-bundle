@@ -55,4 +55,3 @@ class ImportContractFinishType extends AbstractType
         return 'import_contract_finish';
     }
 }
-

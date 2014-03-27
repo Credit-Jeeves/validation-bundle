@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Model;
 
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\Form;
 
@@ -47,6 +48,20 @@ class Import
     protected $csrfToken = '';
 
     /**
+     * @Serializer\Type("boolean")
+     * @Serializer\SerializedName("isValidUnit")
+     * @Serializer\Groups({"CreditJeeves"})
+     */
+    protected $isValidUnit = false;
+
+    /**
+     * @Serializer\Type("boolean")
+     * @Serializer\SerializedName("isValidResidentId")
+     * @Serializer\Groups({"CreditJeeves"})
+     */
+    protected $isValidResidentId = false;
+
+    /**
      * @Serializer\SerializedName("moveOut")
      * @Serializer\Groups({"CreditJeeves"})
      * @Serializer\Type("DateTime")
@@ -59,7 +74,41 @@ class Import
     protected $form = false;
 
     /**
-     * @return mixed
+     * @return boolean
+     */
+    public function getIsValidResidentId()
+    {
+        return $this->isValidResidentId;
+    }
+
+    /**
+     * @param boolean $isValidResidentId
+     */
+    public function setIsValidResidentId($isValidResidentId)
+    {
+        $this->isValidResidentId = $isValidResidentId;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsValidUnit()
+    {
+        return $this->isValidUnit;
+    }
+
+    /**
+     * @param boolean $isValidUnit
+     */
+    public function setIsValidUnit($isValidUnit)
+    {
+        $this->isValidUnit = $isValidUnit;
+    }
+
+
+
+    /**
+     * @return Contract
      */
     public function getContract()
     {
@@ -170,5 +219,19 @@ class Import
     public function setTenant($tenant)
     {
         $this->tenant = $tenant;
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("isValid")
+     * @Serializer\Type("boolean")
+     */
+    public function isValid()
+    {
+        if ($this->isValidResidentId && $this->isValidUnit) {
+            return true;
+        }
+
+        return false;
     }
 }

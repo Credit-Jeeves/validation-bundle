@@ -1,9 +1,9 @@
 {% form_theme form "RjCoreBundle::form.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: isSkipped || Contract.status == 'finished'">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: isSkipped || Contract.status == 'finished' || !isValid">
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
-    <td data-bind="text:Contract.unit.name"></td>
-    <td data-bind="text:Tenant.resident_id"></td>
+    <td data-bind="text:Contract.unit.name, attr: {'class': $root.getUnitClass($data), 'title': $root.getUnitTitle($data) }"></td>
+    <td data-bind="text:Tenant.resident_id, attr: {'class': $root.getResidentIdClass($data), 'title': $root.getResidentIdTitle($data) }"></td>
     <td data-bind="text:Tenant.first_name"></td>
     <td data-bind="text:Tenant.last_name"></td>
     <td data-bind="text:Tenant.email"></td>
@@ -12,7 +12,7 @@
     </td>
     <td></td>
     <td>
-        <span  class="finishContract" data-bind="if: Contract.status == 'finished' && $root.getMoveOut($data).length > 0 && !isSkipped && Contract.id">
+        <span  class="finishContract" data-bind="if: Contract.status == 'finished' && $root.getMoveOut($data).length > 0 && !isSkipped && Contract.id && isValid">
         {{ form_start(form) }}
             {{ 'import.move_out'|trans }}:<br />
             {{ form_widget(
