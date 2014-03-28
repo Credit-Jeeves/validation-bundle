@@ -300,7 +300,7 @@
         {
             "name": "braincrafted/validation-bundle",
             "version": "dev-ton",
-            "target-dir": "Braincrafted/Bundle/â‰¤ValidationBundle",
+            "target-dir": "Braincrafted/Bundle/≤ValidationBundle",
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/validation-bundle.git",
@@ -3247,7 +3247,7 @@
             ],
             "authors": [
                 {
-                    "name": "Pablo DÃ­ez",
+                    "name": "Pablo Díez",
                     "email": "pablodip@gmail.com",
                     "homepage": "http://github.com/pablodip"
                 }
@@ -5605,7 +5605,7 @@
             ],
             "authors": [
                 {
-                    "name": "SÃ©bastien Armand",
+                    "name": "Sébastien Armand",
                     "email": "khepin@gmail.com"
                 }
             ],
