@@ -2,7 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use RentJeeves\LandlordBundle\Report\AccountingImport;
+use RentJeeves\LandlordBundle\Accounting\Import as AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;

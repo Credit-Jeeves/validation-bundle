@@ -19,7 +19,7 @@ use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
 use RentJeeves\LandlordBundle\Form\ImportNewContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
 use RentJeeves\LandlordBundle\Form\ImportUpdateContractType;
-use RentJeeves\LandlordBundle\Report\AccountingImport;
+use RentJeeves\LandlordBundle\Accounting\Import;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -70,7 +70,7 @@ class AccountingController extends Controller
         if ($formBaseOrder->isValid()) {
 
             $data = $formBaseOrder->getData();
-            $baseReport = $this->get('report.order.export');
+            $baseReport = $this->get('accounting.export');
             $report = $baseReport->getReport($data);
 
             $response = new Response();

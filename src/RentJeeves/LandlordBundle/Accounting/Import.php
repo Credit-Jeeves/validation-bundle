@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Report;
+namespace RentJeeves\LandlordBundle\Accounting;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -18,7 +18,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
 use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
-use RentJeeves\LandlordBundle\Model\Import;
+use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\SecurityContext;
@@ -32,7 +32,7 @@ use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
  *
  * @Service("accounting.import")
  */
-class AccountingImport
+class Import
 {
     use FormErrors;
 
@@ -367,7 +367,7 @@ class AccountingImport
 
     protected function getImport($row, $lineNumber)
     {
-        $import = new Import();
+        $import = new ModelImport();
         $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(
                 'email' => $row[self::KEY_EMAIL]
@@ -540,7 +540,7 @@ class AccountingImport
         return $errors;
     }
 
-    protected function bindForm(Import $import, $postData, &$errors)
+    protected function bindForm(ModelImport $import, $postData, &$errors)
     {
         self::prepeaSubmit($postData);
         if ($import->getIsSkipped() ||
@@ -590,8 +590,7 @@ class AccountingImport
 
         $errors[$line] = $this->getFormErrors($form);
         if (!$isCsrfTokenValid) {
-            //@TODO move to trans
-            $errors[$line]['_global'] = 'The CSRF token is invalid. Please try to resubmit the form';
+            $errors[$line]['_global'] = $this->translator->trans('csrf.token.is.invalid');
         }
     }
 

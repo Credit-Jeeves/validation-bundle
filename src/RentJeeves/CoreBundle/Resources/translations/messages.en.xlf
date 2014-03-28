@@ -2189,6 +2189,11 @@
               <source>import.error.residentId</source>
               <target><![CDATA[Resident ID is invalid, it must only contains A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
+            <trans-unit id="csrf.token.is.invalid">
+              <source>csrf.token.is.invalid</source>
+              <target>The CSRF token is invalid. Please try to resubmit the form.</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
