@@ -10,7 +10,7 @@
                 <div id="reviewContainer" class="pod-middle pod-border pod-padding shadow">
                     {{
                     include(
-                    'LandlordBundle:Reports:importSteps.html.twig',
+                    'LandlordBundle:Accounting:importSteps.html.twig',
                         {
                             'step': 'step3',
                         }
@@ -58,7 +58,7 @@
                         <tbody data-bind="foreach: $root.rows">
                             {{
                                 include(
-                                    'LandlordBundle:Reports:_reviewNewUserWithContract.html.twig',
+                                    'LandlordBundle:Accounting:_reviewNewUserWithContract.html.twig',
                                     {
                                     'form': formNewUserWithContract,
                                     }
@@ -66,7 +66,7 @@
                             }}
                             {{
                                 include(
-                                    'LandlordBundle:Reports:_reviewUpdateCreateContract.html.twig',
+                                    'LandlordBundle:Accounting:_reviewUpdateCreateContract.html.twig',
                                     {
                                     'form': formContract,
                                     }
@@ -74,7 +74,7 @@
                             }}
                             {{
                                 include(
-                                    'LandlordBundle:Reports:_reviewSkip.html.twig',
+                                    'LandlordBundle:Accounting:_reviewSkip.html.twig',
                                     {
                                         'form': formContractFinish
                                     }
@@ -85,7 +85,7 @@
                     <br />
                     <br />
                     <div class="button-box"  data-bind="visible: $root.isVisibleTable()">
-                        <a href="{{ path("landlord_reports_match_file") }}" class="button small fixed next grey prev">
+                        <a href="{{ path("accounting_match_file") }}" class="button small fixed next grey prev">
                             <span>{{ 'pay_popup.step.previous'|trans }}</span>
                         </a>
                         <button type="submit"
@@ -112,7 +112,7 @@
     {% stylesheets
     '@LandlordBundle/Resources/public/css/submenu.css'
     '@LandlordBundle/Resources/public/css/stepImport.css'
-    '@LandlordBundle/Resources/public/css/reviewAndPost.css'
+    '@LandlordBundle/Resources/public/css/import.css'
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -124,7 +124,7 @@
         'bundles/bazingajstranslation/js/translator.min.js'
         '@LandlordBundle/Resources/public/js/accountingImport.js'
         '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-        '@LandlordBundle/Resources/public/js/reviewAndPost.js'
+        '@LandlordBundle/Resources/public/js/importBase.js'
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

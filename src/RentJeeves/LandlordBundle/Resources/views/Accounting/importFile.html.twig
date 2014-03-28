@@ -11,7 +11,7 @@
             <div class="pod-middle pod-border pod-padding shadow">
             {{
                 include(
-                    'LandlordBundle:Reports:importSteps.html.twig',
+                    'LandlordBundle:Accounting:importSteps.html.twig',
                     {
                     'step': 'step1',
                     }
@@ -19,7 +19,7 @@
             }}
             <br />
             <br />
-            <form action="{{ path('landlord_reports_import')}}" method="post" {{ form_enctype(form) }} id="importFile" >
+            <form action="{{ path('accounting_import_file')}}" method="post" {{ form_enctype(form) }} id="importFile" >
                 {{ form_widget(form) }}
                 <button type="submit" class="button small submitImportFile">
                     <span>

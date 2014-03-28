@@ -30,9 +30,9 @@ use Symfony\Component\HttpFoundation\Response;
 use JMS\Serializer\SerializationContext;
 
 /**
- * @Route("/reports")
+ * @Route("/accounting")
  */
-class ReportsController extends Controller
+class AccountingController extends Controller
 {
     protected function checkAccessToReport()
     {
@@ -45,7 +45,7 @@ class ReportsController extends Controller
     /**
      * @Route(
      *     "/export",
-     *     name="landlord_reports_export"
+     *     name="accounting_export"
      * )
      * @Template()
      */
@@ -91,8 +91,8 @@ class ReportsController extends Controller
 
     /**
      * @Route(
-     *     "/file/import",
-     *     name="landlord_reports_import"
+     *     "/import/file",
+     *     name="accounting_import_file"
      * )
      * @Template()
      */
@@ -127,13 +127,13 @@ class ReportsController extends Controller
         $accountingImport->setFilePath($newFileName);
         $accountingImport->setPropertyId($property->getId());
 
-        return $this->redirect($this->generateUrl('landlord_reports_match_file'));
+        return $this->redirect($this->generateUrl('accounting_match_file'));
     }
 
     /**
      * @Route(
-     *     "/match/file",
-     *     name="landlord_reports_match_file"
+     *     "/import/match/file",
+     *     name="accounting_match_file"
      * )
      * @Template()
      */
@@ -145,7 +145,7 @@ class ReportsController extends Controller
          */
         $accountingImport = $this->get('accounting.import');
         if (!$data = $accountingImport->getImportData()) {
-            $this->redirect($this->generateUrl('landlord_reports_import'));
+            $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
         $data = $accountingImport->getDataForMapping();
@@ -186,7 +186,7 @@ class ReportsController extends Controller
             $accountingImport->setMapping($result);
             $accountingImport->setFileLine(0);
 
-            return $this->redirect($this->generateUrl('landlord_reports_review_and_post'));
+            return $this->redirect($this->generateUrl('accounting_import'));
         }
 
         $form = $form->createView();
@@ -199,12 +199,12 @@ class ReportsController extends Controller
     }
     /**
      * @Route(
-     *     "/review/post",
-     *     name="landlord_reports_review_and_post"
+     *     "/import",
+     *     name="accounting_import"
      * )
      * @Template()
      */
-    public function reviewAndPostAction(Request $request)
+    public function importAction(Request $request)
     {
         $this->checkAccessToReport();
         /**
@@ -212,11 +212,11 @@ class ReportsController extends Controller
          */
         $accountingImport = $this->get('accounting.import');
         if (!$data = $accountingImport->getImportData()) {
-            $this->redirect($this->generateUrl('landlord_reports_import'));
+            $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
         if (empty($data[$accountingImport::IMPORT_MAPPING])) {
-            $this->redirect($this->generateUrl('landlord_reports_import'));
+            $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
 
@@ -233,8 +233,8 @@ class ReportsController extends Controller
 
     /**
      * @Route(
-     *     "/review/post/get",
-     *     name="landlord_reports_review_get_rows",
+     *     "/import/getRows",
+     *     name="accounting_import_get_rows",
      *     options={"expose"=true}
      * )
      */
@@ -277,7 +277,7 @@ class ReportsController extends Controller
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('CreditJeevesImport');
+        $context->setGroups('RentJeevesImport');
 
         $result['rows'] = $rows;
         $result['total'] = $total;
@@ -287,12 +287,12 @@ class ReportsController extends Controller
 
     /**
      * @Route(
-     *     "/review/post/save/row",
-     *     name="landlord_reports_review_save_row",
+     *     "/import/save/rows",
+     *     name="accounting_import_save_rows",
      *     options={"expose"=true}
      * )
      */
-    public function saveRowAction(Request $request)
+    public function saveRowsAction(Request $request)
     {
         $this->checkAccessToReport();
         $result = array(
@@ -318,7 +318,7 @@ class ReportsController extends Controller
 
         $context = new SerializationContext();
         $context->setSerializeNull(true);
-        $context->setGroups('CreditJeevesImport');
+        $context->setGroups('RentJeevesImport');
 
         $data = $request->request->all();
         $errors               = $accountingImport->saveForms($data);

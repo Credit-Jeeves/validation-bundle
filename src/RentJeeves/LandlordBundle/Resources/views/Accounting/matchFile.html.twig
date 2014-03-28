@@ -13,7 +13,7 @@
                 <div class="pod-middle pod-border pod-padding shadow">
                     {{
                     include(
-                    'LandlordBundle:Reports:importSteps.html.twig',
+                    'LandlordBundle:Accounting:importSteps.html.twig',
                         {
                         'step': 'step2',
                         }
@@ -30,7 +30,7 @@
                             {{ form_errors(form) }}
                             {{
                             include(
-                            'LandlordBundle:Reports:matchFileTable.html.twig',
+                            'LandlordBundle:Accounting:matchFileTable.html.twig',
                                 {
                                     'data': data,
                                     'form': form,
@@ -43,7 +43,7 @@
                     <br />
                     <br />
                     <div class="button-box">
-                        <a href="{{ path("landlord_reports_import") }}" class="button small fixed next grey prev">
+                        <a href="{{ path("accounting_import_file") }}" class="button small fixed next grey prev">
                             <span>{{ 'pay_popup.step.previous'|trans }}</span>
                         </a>
                         {% if error  == false %}

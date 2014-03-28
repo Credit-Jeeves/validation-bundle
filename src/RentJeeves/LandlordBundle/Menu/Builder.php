@@ -37,7 +37,7 @@ class Builder extends ContainerAware
             $menu->addChild(
                 'tab.accounting',
                 array(
-                    'route' => 'landlord_reports_import'
+                    'route' => 'accounting_import_file'
                 )
             );
         }
@@ -53,10 +53,10 @@ class Builder extends ContainerAware
             case 'landlord_tenants':
                 $menu['tabs.tenants']->setAttribute('class', 'active');
                 break;
-            case 'landlord_reports_review_and_post':
-            case 'landlord_reports_match_file':
-            case 'landlord_reports_import':
-            case 'landlord_reports_export':
+            case 'accounting_import':
+            case 'accounting_match_file':
+            case 'accounting_import_file':
+            case 'accounting_export':
                 $menu['tab.accounting']->setAttribute('class', 'active');
                 break;
             default:
@@ -95,24 +95,24 @@ class Builder extends ContainerAware
         $menu->addChild(
             'import',
             array(
-                'route' => 'landlord_reports_import'
+                'route' => 'accounting_import_file'
             )
         );
         $menu->addChild(
             'export',
             array(
-                'route' => 'landlord_reports_export'
+                'route' => 'accounting_export'
             )
         );
 
         $route = $this->container->get('request')->get('_route');
         switch ($route) {
-            case 'landlord_reports_match_file':
-            case 'landlord_reports_review_and_post':
-            case 'landlord_reports_import':
+            case 'accounting_match_file':
+            case 'accounting_import':
+            case 'accounting_import_file':
                 $menu['import']->setUri('');
                 break;
-            case 'landlord_reports_export':
+            case 'accounting_export':
                 $menu['export']->setUri('');
                 break;
         }
