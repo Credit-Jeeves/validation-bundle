@@ -26,7 +26,6 @@ function accountingImport() {
                 if (response.error === false) {
                     self.rows(response.rows);
                     self.rowsTotal(response.total);
-                    self.initGuiScript();
 
                     if (self.rows().length <= 0) {
                         self.isFinishReview(true);
@@ -43,23 +42,15 @@ function accountingImport() {
         return false;
     }
 
-    //Use this function, because extension does not work
-    this.initGuiScript = function() {
-        $.each($('.datepicker'), function(key, value) {
-           $(this).datepicker({
-                showOn: "both",
-                buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
-                format: 'm/d/Y'
-            });
-        });
-    };
+    this.getDatePickerOptions = function() {
+        var options = {
+            showOn: "both",
+            buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+            format: 'm/d/Y'
+        };
 
-    this.removeGuiScript = function() {
-        $.each($('.datepicker'), function(key, value) {
-            $(this).datepicker("destroy");
-        });
-    };
-
+        return options;
+    }
 
     this.getStatusText = function(data) {
         if (data.isSkipped) {
@@ -90,7 +81,6 @@ function accountingImport() {
     }
 
     this.submitForms = function() {
-        self.removeGuiScript();
         self.setProcessing(true);
         var number = 0;
         var success = Array();
@@ -114,7 +104,6 @@ function accountingImport() {
             forms[number] = form;
             number++;
         });
-
         self.formErrors([]);
         $.ajax({
             url: Routing.generate('landlord_reports_review_save_row'),
@@ -132,7 +121,6 @@ function accountingImport() {
                     self.rows(self.rows());
                     self.formErrors(response.formErrors);
                     self.setProcessing(false);
-                    self.initGuiScript();
                 } else {
                     self.loadData(true);
                 }
@@ -140,20 +128,19 @@ function accountingImport() {
         });
     }
 
-    this.uniqueId = function() {
-        // always start with a letter (for DOM friendlyness)
-        var idstr=String.fromCharCode(Math.floor((Math.random()*25)+65));
-        do {
-            // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
-            var ascicode=Math.floor((Math.random()*42)+48);
-            if (ascicode<58 || ascicode>64){
-                // exclude all chars between : (58) and @ (64)
-                idstr+=String.fromCharCode(ascicode);
-            }
-        } while (idstr.length<36);
 
-        return (idstr);
-    }
+    this.setDateDatepickerIntoRow = function(viewModel, element, datepickerFieldName){
+        try {
+            $(element).datepicker("getDate");
+            var day = $(element).datepicker('getDate').getDate();
+            var month = $(element).datepicker('getDate').getMonth() + 1;
+            var year = $(element).datepicker('getDate').getFullYear();
+            var fullDate = month + "/" + day + "/" + year;
+            viewModel.Contract[datepickerFieldName] = fullDate;
+        } catch (e) {
+            viewModel.Contract[datepickerFieldName] = '';
+        }
+    };
 
     this.setProcessing = function(newValue) {
         if (newValue) {

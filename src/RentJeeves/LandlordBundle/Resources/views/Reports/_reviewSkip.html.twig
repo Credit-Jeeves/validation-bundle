@@ -20,16 +20,18 @@
                 {
                     "attr": {
                     "data-bind":
-                    "value: $root.formatDate(Contract.finishAt),
-                                 attr: {
-                                    'class': number+'_finishAt import_contract_finish_finishAt datepicker '+$root.getErrorClass($data, 'import_contract_finish_finishAt'),
-                                    'id':$root.uniqueId(),
-                                    'title': $root.getErrorTitle($data, 'import_contract_finish_finishAt')
-                                 }"
+                        "value: $data.moveOut,
+                         datepicker: $data.moveOut,
+                         datepickerOptions: $root.getDatePickerOptions(),
+                         datepickerFieldName: 'finishAt'
+                         attr: {
+                            'class': number+'_finishAt import_contract_finish_finishAt datepicker '+$root.getErrorClass($data, 'import_contract_finish_finishAt'),
+                            'title': $root.getErrorTitle($data, 'import_contract_finish_finishAt')
+                         }"
                     }
                 }
             ) }}
-            {{ form_widget(form._token, {"attr": {"data-bind": "value: csrfToken, attr: {'class': number+'_token import_contract_finish__token', 'id':$root.uniqueId()}"}}) }}
+            {{ form_widget(form._token, {"attr": {"data-bind": "value: csrfToken, attr: {'class': number+'_token import_contract_finish__token'}"}}) }}
         {{ form_end(form) }}
         </span>
     </td>
