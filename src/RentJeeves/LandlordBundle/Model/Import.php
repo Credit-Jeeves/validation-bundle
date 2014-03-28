@@ -15,55 +15,55 @@ class Import
     /**
      * @Serializer\Type("boolean")
      * @Serializer\SerializedName("isSkipped")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $isSkipped;
 
     /**
      * @Serializer\Type("integer")
      * @Serializer\SerializedName("number")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $number;
 
     /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Tenant")
      * @Serializer\SerializedName("Tenant")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $tenant;
 
     /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Contract")
      * @Serializer\SerializedName("Contract")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $contract;
 
     /**
      * @Serializer\Type("string")
      * @Serializer\SerializedName("csrfToken")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $csrfToken = '';
 
     /**
      * @Serializer\Type("boolean")
      * @Serializer\SerializedName("isValidUnit")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $isValidUnit = false;
 
     /**
      * @Serializer\Type("boolean")
      * @Serializer\SerializedName("isValidResidentId")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $isValidResidentId = false;
 
     /**
      * @Serializer\SerializedName("moveOut")
-     * @Serializer\Groups({"CreditJeeves"})
+     * @Serializer\Groups({"CreditJeevesImport"})
      * @Serializer\Type("DateTime")
      */
     protected $moveOut = null;
@@ -224,6 +224,7 @@ class Import
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("isValid")
+     * @Serializer\Groups({"CreditJeevesImport"})
      * @Serializer\Type("boolean")
      */
     public function isValid()

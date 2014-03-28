@@ -19,6 +19,7 @@ abstract class Contract
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $id;
 
@@ -89,6 +90,7 @@ abstract class Contract
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $unit;
 
@@ -115,6 +117,7 @@ abstract class Contract
      *         "default"="pending"
      *     }
      * )
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $status;
 
@@ -138,6 +141,7 @@ abstract class Contract
      *         "import"
      *     }
      * )
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $rent = 0.00;
 
@@ -148,6 +152,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
+     * @Serializer\Groups({"CreditJeevesImport"})
      * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $paidTo;
@@ -177,6 +182,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
+     * @Serializer\Groups({"CreditJeevesImport"})
      * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $startAt;
@@ -195,6 +201,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
+     * @Serializer\Groups({"CreditJeevesImport"})
      * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $finishAt;
@@ -296,6 +303,7 @@ abstract class Contract
      *         "import"
      *     }
      * )
+     * @Serializer\Groups({"CreditJeevesImport"})
      */
     protected $importedBalance = 0.00;
 

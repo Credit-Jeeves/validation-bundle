@@ -16,8 +16,10 @@ class ReportsCase extends BaseTestCase
     public function baseXmlFormat()
     {
         $this->load(true);
+        //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.reports');
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
 
         $beginD = new DateTime();
         $beginD->modify('-1 month');
@@ -79,9 +81,10 @@ class ReportsCase extends BaseTestCase
     public function baseCsvFormat()
     {
         $this->load(true);
+        //$this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
-        $this->page->clickLink('tabs.reports');
-
+        $this->page->clickLink('tab.accounting');
+        $this->page->clickLink('export');
         $beginD = new DateTime();
         $beginD->modify('-1 month');
         $endD = new DateTime();

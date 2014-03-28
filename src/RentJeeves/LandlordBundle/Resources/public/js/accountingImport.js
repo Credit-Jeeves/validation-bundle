@@ -43,13 +43,6 @@ function accountingImport() {
         return false;
     }
 
-    this.getMoveOut = function(data) {
-        if (data.moveOut !== undefined) {
-            return data.moveOut;
-        }
-
-        return '';
-    }
     //Use this function, because extension does not work
     this.initGuiScript = function() {
         $.each($('.datepicker'), function(key, value) {
@@ -77,11 +70,11 @@ function accountingImport() {
             return Translator.trans('import.status.error');
         }
 
-        if (data.Contract.status == 'finished' && self.getMoveOut(data).length > 0) {
+        if (data.Contract.status == 'finished' && data.getMoveOut !== null) {
             return Translator.trans('import.status.ended');
         }
 
-        if (data.Contract.id !== undefined && data.Tenant.id !== undefined) {
+        if (data.Contract.id !== null && data.Tenant.id !== null) {
             return Translator.trans('import.status.match');
         }
 

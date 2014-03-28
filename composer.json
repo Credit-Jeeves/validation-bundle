@@ -240,8 +240,7 @@
         "willdurand/js-translation-bundle": "dev-master",
         "beberlei/DoctrineExtensions": "dev-master",
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
-        "pagerfanta/pagerfanta": "dev-master",
-        "fp/jsformvalidator-bundle": "dev-master"
+        "pagerfanta/pagerfanta": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",

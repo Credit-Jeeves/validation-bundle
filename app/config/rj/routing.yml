@@ -111,11 +111,6 @@ jms_jobs_retry_job:
     defaults: { _controller: JMSJobQueueBundle:Job:retryJob }
     path: /admin/job/{id}/retryJob
 
-
 jms_jobs_cancel_job:
     defaults: { _controller: JMSJobQueueBundle:Job:cancelJob }
     path: /admin/job/{id}/cancel
-
-fp_js_form_validator:
-    resource: "@FpJsFormValidatorBundle/Resources/config/routing.xml"
-    prefix: /fp_js_form_validator

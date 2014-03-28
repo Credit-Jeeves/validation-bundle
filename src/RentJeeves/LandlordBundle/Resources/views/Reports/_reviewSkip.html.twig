@@ -12,7 +12,7 @@
     </td>
     <td></td>
     <td>
-        <span  class="finishContract" data-bind="if: Contract.status == 'finished' && $root.getMoveOut($data).length > 0 && !isSkipped && Contract.id && isValid">
+        <span  class="finishContract" data-bind="if: Contract.status == 'finished' && $data.moveOut && !isSkipped && Contract.id && isValid">
         {{ form_start(form) }}
             {{ 'import.move_out'|trans }}:<br />
             {{ form_widget(

@@ -27,6 +27,7 @@ use \Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @Route("/reports")
@@ -274,12 +275,14 @@ class ReportsController extends Controller
             $rows = $accountingImport->getMappedData();
         }
 
-        $serializer = SerializerBuilder::create()->build();
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('CreditJeevesImport');
+
         $result['rows'] = $rows;
         $result['total'] = $total;
 
-
-        return new Response($serializer->serialize($result, 'json'));
+        return new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
     }
 
     /**
@@ -313,12 +316,14 @@ class ReportsController extends Controller
             return new JsonResponse($result);
         }
 
-        $serializer = SerializerBuilder::create()->build();
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('CreditJeevesImport');
 
         $data = $request->request->all();
         $errors               = $accountingImport->saveForms($data);
         $result['formErrors'] = $errors;
 
-        return new Response($serializer->serialize($result, 'json'));
+        return new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
     }
 }

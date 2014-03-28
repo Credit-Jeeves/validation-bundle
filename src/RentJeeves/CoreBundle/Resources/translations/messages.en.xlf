@@ -2171,7 +2171,7 @@
             </trans-unit>
             <trans-unit id="import.review.finish">
               <source>import.review.finish</source>
-              <target>Review are finished. Data imported.</target>
+              <target>Review is finished. Data imported.</target>
             </trans-unit>
             <trans-unit id="import.error.flush">
               <source>import.error.flush</source>
