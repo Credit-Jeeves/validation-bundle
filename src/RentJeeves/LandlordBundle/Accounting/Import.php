@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
+use RentJeeves\LandlordBundle\Accounting\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -100,7 +100,7 @@ class Import
     /**
      * @InjectParams({
      *     "session"          = @Inject("session"),
-     *     "reader"           = @Inject("reader.csv"),
+     *     "reader"           = @Inject("import.reader.csv"),
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
      *     "translator"       = @Inject("translator"),
      *     "context"          = @Inject("security.context"),
@@ -542,7 +542,12 @@ class Import
 
     protected function bindForm(ModelImport $import, $postData, &$errors)
     {
-        self::prepeaSubmit($postData);
+        $form = $import->getForm();
+        if (!$form) {
+            return;
+        }
+
+        self::prepeaSubmit($postData, $form->getName());
         if ($import->getIsSkipped() ||
             isset($postData['contract']['skip']) ||
             isset($postData['skip']) ||
@@ -550,6 +555,7 @@ class Import
         ) {
             return;
         }
+
         $line = $postData['line'];
         unset($postData['line']);
         $form = $import->getForm();
@@ -594,22 +600,16 @@ class Import
         }
     }
 
-    public static function prepeaSubmit(&$formData)
+    public static function prepeaSubmit(&$formData, $formName)
     {
-        $replaces = array(
-            'import_new_user_with_contract' => 30,
-            'import_contract'               => 16,
-            'import_contract_finish'        => 23,
-        );
-
+        $length = strlen($formName)+1;
         foreach ($formData as $key => $value) {
-            foreach ($replaces as $replace => $number) {
-                if (preg_match('/'.$replace.'\[/', $key)) {
-                    $newKey = substr($key, $number, strlen($key)-1);
-                    $formData[$newKey] = $value;
-                    unset($formData[$key]);
-                }
+            if (!preg_match('/'.$formName.'\[/', $key)) {
+                continue;
             }
+            $newKey = substr($key, $length, strlen($key)-1);
+            $formData[$newKey] = $value;
+            unset($formData[$key]);
         }
     }
 

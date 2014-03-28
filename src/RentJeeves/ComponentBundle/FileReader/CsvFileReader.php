@@ -80,49 +80,33 @@ class CsvFileReader
         return $this->useHeader;
     }
 
-    public function read($filename, $offset = null, $rowCount = null)
+    public function read($filename)
     {
-        if (!file_exists($filename)) {
-            throw new RuntimeException(sprintf('File "%s" not found.', $filename));
-        }
-
         $result = array();
-
-        $file = new SplFileObject($filename, 'rb');
-        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
-        $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
-
+        $file = $this->getFile($filename);
         $header = $this->readHeader($file);
-        $currentLineNumber = 0;
-        $offsetMax = $offset + $rowCount;
+
         while ($row = $file->current()) {
-            $currentLineNumber++;
-            if (is_null($offset) && is_null($rowCount)) {
-                $this->getLine($row, $header, $file, $result);
-                continue;
+            foreach ($row as $valueIndex => $value) {
+                $result[$file->key()][$header[$valueIndex]] = $value;
             }
-
-            if ($currentLineNumber > $offset && $currentLineNumber < $offsetMax) {
-                $this->getLine($row, $header, $file, $result);
-                continue;
-            }
-
-            if ($currentLineNumber > $offsetMax) {
-                break;
-            }
-
             $file->next();
         }
 
         return $result;
     }
 
-    protected function getLine($row, $header, $file, &$result)
+    protected function getFile($filename)
     {
-        foreach ($row as $valueIndex => $value) {
-            $result[$file->key()][$header[$valueIndex]] = $value;
+        if (!file_exists($filename)) {
+            throw new RuntimeException(sprintf('File "%s" not found.', $filename));
         }
-        $file->next();
+
+        $file = new SplFileObject($filename, 'rb');
+        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
+
+        return $file;
     }
 
     protected function readHeader(SplFileObject $file)
