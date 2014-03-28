@@ -54,13 +54,12 @@ class ImportFileAccountingType extends AbstractType
 
                     $ids = array();
                     foreach ($groups as $group) {
-                        $ids[$group->getId()] = $group->getId();
+                        $ids[] = $group->getId();
                     }
-                    $groupsIds = implode("','", $ids);
+                        
                     $query     = $er->createQueryBuilder('p');
                     $query->innerJoin('p.property_groups', 'g');
-                    $query->where('g.id IN (:groupsIds)');
-                    $query->setParameter('groupsIds', $groupsIds);
+                    $query->add('where', $query->expr()->in('g.id', $ids));
 
                     return $query;
                 }

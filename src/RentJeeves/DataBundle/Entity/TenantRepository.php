@@ -74,7 +74,7 @@ class TenantRepository extends EntityRepository
                    INNER JOIN tenant2.contracts contract2
                    INNER JOIN contract2.unit unit2
                    WHERE tenant2.email = :email AND (
-                        contract2.status = :status1 OR contract2.status = :status2
+                        contract2.status = :current OR contract2.status = :approved
                    ) AND unit2.name = :unitName
                    AND contract2.property = :property
             )'
@@ -85,8 +85,8 @@ class TenantRepository extends EntityRepository
         );
 
         $query->where('tenant.email = :email');
-        $query->setParameter('status1', ContractStatus::CURRENT);
-        $query->setParameter('status2', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('approved', ContractStatus::APPROVED);
         $query->setParameter('property', $propertyId);
         $query->setParameter('unitName', $unitName);
         $query->setParameter('email', $email);
