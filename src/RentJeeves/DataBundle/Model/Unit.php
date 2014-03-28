@@ -17,7 +17,7 @@ abstract class Unit
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -27,7 +27,7 @@ abstract class Unit
      *     type="string",
      *     length=50
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $name;
 

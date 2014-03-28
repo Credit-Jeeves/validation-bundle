@@ -19,7 +19,7 @@ abstract class Contract
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -90,7 +90,7 @@ abstract class Contract
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $unit;
 
@@ -117,7 +117,7 @@ abstract class Contract
      *         "default"="pending"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $status;
 
@@ -136,12 +136,12 @@ abstract class Contract
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[0-9]+(\.[0-9][0-9])?+$/",
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
      *     groups = {
      *         "import"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $rent = 0.00;
 
@@ -152,7 +152,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $paidTo;
@@ -182,7 +182,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $startAt;
@@ -201,7 +201,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
      */
     protected $finishAt;
@@ -298,12 +298,12 @@ abstract class Contract
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^(\-?)+[0-9]+(\.[0-9][0-9])?+$/",
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
      *     groups = {
      *         "import"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $importedBalance = 0.00;
 

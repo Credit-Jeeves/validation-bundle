@@ -438,11 +438,11 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('contract');
         $query->leftJoin('contract.unit', 'unit');
         $query->leftJoin('contract.tenant', 'tenant');
-        $query->where('contract.status = :status1 OR contract.status = :status2');
+        $query->where('contract.status = :approve OR contract.status = :current');
         $query->andWhere('tenant.id = :tenantId');
         $query->andWhere('unit.name = :unitName');
-        $query->setParameter('status1', ContractStatus::APPROVED);
-        $query->setParameter('status2', ContractStatus::CURRENT);
+        $query->setParameter('approve', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('tenantId', $tenant);
         $query->setParameter('unitName', $unitName);
         $query = $query->getQuery();

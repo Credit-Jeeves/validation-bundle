@@ -30,7 +30,7 @@ abstract class User extends BaseUser
      * @ORM\GeneratedValue(
      *     strategy="AUTO"
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -75,7 +75,7 @@ abstract class User extends BaseUser
      *         "import"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      *
      * @var string
@@ -141,7 +141,7 @@ abstract class User extends BaseUser
      *         "import"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      */
     protected $last_name;
@@ -171,7 +171,7 @@ abstract class User extends BaseUser
      *         "invite",
      *     }
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      */
     protected $email;
@@ -365,7 +365,7 @@ abstract class User extends BaseUser
      *         "import_not_editable"
      *     }
      * )
-     * @Serializer\Groups({"CreditJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $residentId;
 

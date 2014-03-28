@@ -2020,9 +2020,9 @@
                 <source>csv.file</source>
                 <target>CSV File</target>
             </trans-unit>
-            <trans-unit id="collum.name">
-                <source>collum.name</source>
-                <target>Collum Name</target>
+            <trans-unit id="collumn.name">
+                <source>collumn.name</source>
+                <target>Collumn Name</target>
             </trans-unit>
             <trans-unit id="import.data.row1">
                 <source>import.data.row1</source>

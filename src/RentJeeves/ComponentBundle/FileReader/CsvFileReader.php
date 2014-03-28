@@ -93,21 +93,21 @@ class CsvFileReader
         $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
 
         $header = $this->readHeader($file);
-        $currentNumberOfLine = 0;
-        $offsetMax = $offset+$rowCount;
+        $currentLineNumber = 0;
+        $offsetMax = $offset + $rowCount;
         while ($row = $file->current()) {
-            $currentNumberOfLine++;
+            $currentLineNumber++;
             if (is_null($offset) && is_null($rowCount)) {
                 $this->getLine($row, $header, $file, $result);
                 continue;
             }
 
-            if ($currentNumberOfLine > $offset && $currentNumberOfLine < $offsetMax) {
+            if ($currentLineNumber > $offset && $currentLineNumber < $offsetMax) {
                 $this->getLine($row, $header, $file, $result);
                 continue;
             }
 
-            if ($currentNumberOfLine > $offsetMax) {
+            if ($currentLineNumber > $offsetMax) {
                 break;
             }
 
