@@ -1492,6 +1492,10 @@
                 <source>access.denied.description</source>
                 <target>It looks like you are trying to access the RentTrack application from a mobile device. We currently do not support mobile devices - please log in using a browser on your computer. We're sorry for the inconvenience!</target>
             </trans-unit>
+            <trans-unit id="scoretrack-teaser-link">
+                <source>scoretrack-teaser-link</source>
+                <target>Enroll in &lt;span class="highlight"&gt;ScoreTrack&lt;/span&gt; to get monthly updates.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

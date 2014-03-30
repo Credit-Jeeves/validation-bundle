@@ -169,6 +169,10 @@
                 <source>scoretrack-buy-link</source>
                 <target>Sign Up</target>
             </trans-unit>
+            <trans-unit id="scoretrack-promo-amount">
+                <source>scoretrack-promo-amount</source>
+                <target>Only &lt;span class="integer"&gt;$%dollars%&lt;/span&gt;&lt;span class="decimal"&gt;%cents%&lt;/span&gt;/mo</target>
+            </trans-unit>
             <trans-unit id="scoretrack-box-note">
                 <source>scoretrack-box-note</source>
                 <target>ScoreTrack &#8482;</target>

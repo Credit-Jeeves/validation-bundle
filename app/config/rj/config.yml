@@ -44,6 +44,9 @@ parameters:
     tenant_payment_per_month_curence: $
     tenant_payment_per_month_dollars: 1
     tenant_payment_per_month_cents: 95
+    scoretrack_payment_per_month_currency: $
+    scoretrack_payment_per_month_dollars: 3
+    scoretrack_payment_per_month_cents: 95
     landlord_monthly_minimum: $9.95
     landlord_per_screen: $14.95
     landlord_payment_per_month_dollars: 1
@@ -85,6 +88,9 @@ twig:
         google_maps_key: %google_maps_key%
         payment_card_fee: %payment_card_fee%
         payment_dollars: %payment_dollars%
+        scoretrack_payment_per_month: %scoretrack_payment_per_month_currency%%scoretrack_payment_per_month_dollars%.%scoretrack_payment_per_month_cents%
+        scoretrack_payment_per_month_dollars: %scoretrack_payment_per_month_dollars%
+        scoretrack_payment_per_month_cents: %scoretrack_payment_per_month_cents%
         tenant_payment_per_month: %tenant_payment_per_month_curence%%tenant_payment_per_month_dollars%.%tenant_payment_per_month_cents%
         tenant_payment_per_month_dollars: %tenant_payment_per_month_dollars%
         tenant_payment_per_month_cents: %tenant_payment_per_month_cents%

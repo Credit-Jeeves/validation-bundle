@@ -1069,6 +1069,10 @@
                 <source>popup.tenant.footer.note_1</source>
                 <target>We’ll invite your landlord to join. Once they join and accept rent electronically, you can start building your credit.</target>
             </trans-unit>
+            <trans-unit id="popup.signed.up.already">
+                <source>popup.signed.up.already</source>
+                <target>Your Current Plan</target>
+            </trans-unit>
             <trans-unit id="popup.sign.up.today">
                 <source>popup.sign.up.today</source>
                 <target>Sign Up Today</target>
@@ -1983,6 +1987,26 @@
             <trans-unit id="info.payment.date">
                 <source>info.payment.date</source>
                 <target>Your payment scheduled for the %%DAY_1%%st will be executed on the %%DAY_2%%th due to the short month.</target>
+            </trans-unit>
+            <trans-unit id="scoretrack.pay.title">
+                <source>scoretrack.pay.title</source>
+                <target>Sign up for ScoreTrack</target>
+            </trans-unit>
+            <trans-unit id="scoretrack.pay.step.1">
+                <source>scoretrack.pay.step.1</source>
+                <target>Payment Source</target>
+            </trans-unit>
+            <trans-unit id="scoretrack.pay.step.2">
+                <source>scoretrack.pay.step.2</source>
+                <target>Review &amp; Pay</target>
+            </trans-unit>
+            <trans-unit id="scoretrack.pay.confirm">
+                <source>scoretrack.pay.confirm</source>
+                <target>Bill me $%amount% each month for ScoreTrack starting today until cancelled.</target>
+            </trans-unit>
+            <trans-unit id="scoretrack.pay.amount">
+                <source>scoretrack.pay.amount</source>
+                <target>Amount</target>
             </trans-unit>
         </body>
     </file>

@@ -29,9 +29,7 @@ use \AuthorizeNetAIM_Response;
  */
 class DefaultController extends Controller
 {
-    const CREDIT_REPORT_AMOUNT = '9.00';
-
-    const SCORE_TRACK_AMOUNT = '3.95';
+    const AMOUNT = '9.00';
 
     /**
      * @var Order
@@ -63,7 +61,7 @@ class DefaultController extends Controller
         $this->order = new Order();
         $this->order->addAuthorize(new CheckoutAuthorizeNetAim());
         $this->order->setUser($user);
-        $this->order->setAmount(static::CREDIT_REPORT_AMOUNT);
+        $this->order->setAmount(static::AMOUNT);
         $this->form = $this->createForm(new OrderAuthorizeType(), $this->order);
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -80,7 +78,7 @@ class DefaultController extends Controller
                 $authorize->setCity($this->form->getData()->getUser()->getCity());
                 $authorize->setState($this->form->getData()->getUser()->getState());
                 $authorize->setZip($this->form->getData()->getUser()->getZip());
-                $authorize->setAmount(static::CREDIT_REPORT_AMOUNT);
+                $authorize->setAmount(static::AMOUNT);
                 $this->order->setAuthorizes(new ArrayCollection());
                 $em->persist($this->order);
                 $em->flush();
@@ -201,15 +199,5 @@ class DefaultController extends Controller
             'boxNote' => $boxNote,
             'link' => $link,
         );
-    }
-
-    /**
-     * @Template()
-     *
-     * @return array
-     */
-    public function scoretrackboxAction()
-    {
-        return array();
     }
 }

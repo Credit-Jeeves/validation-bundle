@@ -1,5 +1,5 @@
 {% trans_default_domain 'checkout' %}
-<div class="pod-small pod-border pod-padding shadow checkout-buy-box" id="checkout_buy_box">
+<div class="pod-small pod-border pod-padding shadow scoretrack-promo-box">
     <h3>{{ 'scoretrack-box-title' | trans }}</h3>
     <p>
         {{ 'scoretrack-box-message' | trans }}
@@ -9,6 +9,10 @@
 
     <div class="note-text biggerbold">
         {{ 'scoretrack-box-note' | trans }}
+    </div>
+
+    <div class="price">
+      {{ 'scoretrack-promo-amount' | trans({"%dollars%": scoretrack_payment_per_month_dollars, "%cents%": scoretrack_payment_per_month_cents}) | raw }}
     </div>
 </div>
 

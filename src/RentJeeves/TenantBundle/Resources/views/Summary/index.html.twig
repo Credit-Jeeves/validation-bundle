@@ -29,13 +29,15 @@
 {% endblock %}
 
 {% block content %}
-    {{ include('RjComponentBundle:Invite:_popupTenant.html.twig') }}
+    {{ render(controller('TenantBundle:ScoreTrack:pricing')) }}
+    {{ render(controller('TenantBundle:ScoreTrack:pay')) }}
+
     <div id="summary_page">
         <div class="column-middle floatleft">
             {{ render(controller('ComponentBundle:Score:index', {'user': User})) }}
         </div>
         <div class="column-small floatright">
-             {{ render(controller('CheckoutBundle:Default:scoretrackbox')) }}
+            {{ render(controller('TenantBundle:ScoreTrack:promobox')) }}
         </div>
         <div class="clearboth"></div>
         <div class="column-large">
