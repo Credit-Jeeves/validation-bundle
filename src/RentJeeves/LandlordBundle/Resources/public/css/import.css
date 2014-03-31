@@ -91,5 +91,7 @@ table tbody tr td {
     background: -ms-linear-gradient(left,  #fc1919 0%,#ffffff 43%); /* IE10+ */
     background: linear-gradient(to right,  #fc1919 0%,#ffffff 43%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fc1919', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
-
+}
+.finishedTitle {
+    text-align: center;
 }

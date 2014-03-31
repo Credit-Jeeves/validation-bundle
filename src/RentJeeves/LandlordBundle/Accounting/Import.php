@@ -353,7 +353,11 @@ class Import
     private function getNewContract($row, $tenant)
     {
         $contract = new Contract();
-        $contract->setStatus(ContractStatus::INVITE);
+        if ($tenant->getId()) {
+            $contract->setStatus(ContractStatus::APPROVED);
+        } else {
+            $contract->setStatus(ContractStatus::INVITE);
+        }
         $contract->setProperty($this->getProperty());
         $contract->setGroup($this->user->getCurrentGroup());
         $contract->setHolding($this->user->getHolding());

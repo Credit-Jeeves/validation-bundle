@@ -158,7 +158,7 @@ function accountingImport() {
     };
 
     this.setProcessing = function(newValue) {
-        if (newValue) {
+        if (newValue && $('.overlay-trigger').length <= 0) {
             $('#reviewContainer').parent().showOverlay();
             return true;
         }

@@ -8,7 +8,7 @@ use \SimpleXMLElement;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  */
-class ReportsCase extends BaseTestCase
+class ExportCase extends BaseTestCase
 {
     /**
      * @test

@@ -2039,8 +2039,8 @@
             <trans-unit id="csv.file.too.small1">
                 <source>csv.file.too.small1</source>
                 <target>
-                    CSV File too small and must have at least two rows. One rows it's header and
-                    one rows it's data. Comeback please and upload correct file.
+                    CSV File is too small and must have at least two rows. One row is header and
+                    one row is data. Comeback please and upload correct file.
                 </target>
             </trans-unit>
             <trans-unit id="skip">
@@ -2050,7 +2050,7 @@
             <trans-unit id="csv.file.too.small2">
                <source>csv.file.too.small2</source>
                <target><![CDATA[
-                    CSV File must contains minimum 8 field. Require fields:
+                    CSV File should contain minimum 8 fields. Required fields:
                     Unit, Resident_ID, Name, Actual Rent, Move In, Lease Expiration, Move Out, Balance.
                     Comeback please and upload correct file.
                    ]]>
@@ -2066,7 +2066,7 @@
             </trans-unit>
             <trans-unit id="value.cannot.duplicate">
                <source>value.cannot.duplicate</source>
-               <target>Value can not duplicate in choice</target>
+               <target>Value can not be duplicated</target>
             </trans-unit>
             <trans-unit id="you.need.map">
               <source>you.need.map</source>
@@ -2080,7 +2080,6 @@
               <source>manually.import</source>
               <target>Manually Import, check each contract</target>
             </trans-unit>
-
             <trans-unit id="import.status">
               <source>import.status</source>
               <target>Status</target>
@@ -2171,7 +2170,7 @@
             </trans-unit>
             <trans-unit id="import.review.finish">
               <source>import.review.finish</source>
-              <target>Review is finished. Data imported.</target>
+              <target>Data has been imported.</target>
             </trans-unit>
             <trans-unit id="regexp.error.name">
                 <source>regexp.error.name</source>
@@ -2183,17 +2182,16 @@
             </trans-unit>
             <trans-unit id="import.error.unit">
               <source>import.error.unit</source>
-              <target><![CDATA[Unit name is invalid, it must only contains A-Za-z_0-9- and not be blank.]]></target>
+              <target><![CDATA[Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
             <trans-unit id="import.error.residentId">
               <source>import.error.residentId</source>
-              <target><![CDATA[Resident ID is invalid, it must only contains A-Za-z_0-9- and not be blank.]]></target>
+              <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
             </trans-unit>
-
         </body>
     </file>
 </xliff>

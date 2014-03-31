@@ -69,7 +69,7 @@ abstract class User extends BaseUser
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^([a-zA-Z \-'\s]{1,65}){1}$/",
+     *     pattern = "/^([a-zA-Z \-'\s]{1,65})$/",
      *     message="regexp.error.name",
      *     groups = {
      *         "import"
@@ -135,7 +135,7 @@ abstract class User extends BaseUser
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^([a-zA-Z \-'\s]{1,65}){1}$/",
+     *     pattern = "/^([a-zA-Z \-'\s]{1,65})$/",
      *     message="regexp.error.name",
      *     groups = {
      *         "import"
