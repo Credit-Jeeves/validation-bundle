@@ -114,7 +114,7 @@ abstract class LeadHistory extends AbstractLogEntry
      * ORM\Column(name="logged_at", type="datetime")
      * Exclude from DB schema
      *
-     * @var string $loggedAt
+     * @var DateTime $loggedAt
      */
     protected $loggedAt;
 

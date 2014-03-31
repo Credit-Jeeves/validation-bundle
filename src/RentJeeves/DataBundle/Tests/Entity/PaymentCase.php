@@ -52,7 +52,6 @@ class PaymentCase extends BaseTestCase
     public function prePersist()
     {
         $this->load(true);
-//        $this->startTransaction();
         $doctrineManager = $this->getContainer()->get('doctrine')->getManager();
         /** @var Contract $contract */
         $contract = $doctrineManager->getRepository('RjDataBundle:Contract')
@@ -76,6 +75,5 @@ class PaymentCase extends BaseTestCase
         $payment = $doctrineManager->getRepository('RjDataBundle:Payment')->findOneBy(array('id' => $paymentId));
         $this->assertNotNull($payment);
         $this->assertEquals(PaymentStatus::CLOSE, $payment->getStatus());
-//        $this->rollbackTransaction();
     }
 }
