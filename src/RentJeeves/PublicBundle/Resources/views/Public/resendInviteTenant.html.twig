@@ -1,0 +1,31 @@
+{% extends "RjPublicBundle::base.html.twig" %}
+
+{% block content %}
+    <div class="form-content">
+        <br />
+        <br />
+        {% if error %}
+            <h3 class="title">
+                <span>{{ 'error.oops'|trans }}</span>
+            </h3>
+            <br />
+            <h4 class="col" id="inviteText">
+                {{ error }}
+            </h4>
+        {% else %}
+            <h3 class="title">
+                <span>{{ 'verify.email.invite.title'|trans }}</span>
+            </h3>
+            <br />
+            <h4 class="col" id="inviteText">
+                {{ 'verify.email.invite.desc'|trans }}
+            </h4>
+        {% endif %}
+        <br />
+        <br />
+        <br />
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}

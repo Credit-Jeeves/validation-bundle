@@ -54,12 +54,20 @@
                         <td class="font-helvetica">
                             {% if contract.status == 'pending' %}
                                 {{ 'contract.status.pending.text' | trans }}
+                            {% elseif contract.payment_status == 'processing' %}
+                                {{ 'contract.status.processing.text' | trans }}
                             {% elseif contract.status == 'invite' %}
                                 {{ 'contract.status.invite.text' | trans }}
                             {% elseif contract.payment_type == 'recurring' %}
-                                {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_next}) }}
+                                {{ 'contract.status.recurring.text' | trans({'%payment_date%': contract.payment_due_date}) }}
                             {% elseif contract.payment_type == 'one_time' %}
-                                {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_next}) }}
+                                {{ 'contract.status.one_time.text' | trans({'%payment_date%': contract.payment_due_date}) }}
+                            {% elseif contract.status == 'approved' %}
+                                {{ 'contract.status.approved.text' | trans }}
+                            {% elseif contract.status == 'current' %}
+                                {{ 'contract.status.current.text' | trans }}
+                            {% elseif contract.status == 'finished' %}
+                                {{ 'contract.status.finished.text' | trans }}
                             {% else %}
                                 {{ contract.status | upper }}
                             {% endif %}
@@ -86,6 +94,7 @@
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
+                                            {% if contract.payment_status == 'processing' %} disabled{% endif %}
                                     >
 
                                         <span>{{ buttonText }}</span>
@@ -99,6 +108,7 @@
                                     <button class="button small button-contract-pay floatleft"
                                             data-bind="click: openPayPopup.bind($data, {{ contract.id }})"
                                             id="contract-pay-{{ loop.revindex }}"
+                                            {% if contract.payment_status == 'processing' %} disabled{% endif %}
                                             >
                                         <span>{{ buttonText }}</span>
                                     </button>

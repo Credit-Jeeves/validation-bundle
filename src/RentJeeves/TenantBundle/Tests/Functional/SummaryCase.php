@@ -39,9 +39,9 @@ class SummaryCase extends BaseTestCase
             )
         );
         $this->page->pressButton('pay_popup.step.3');
-        $this->assertNotNull($form = $this->page->find('css', '.loading'));
-        $this->session->wait($this->timeout, "window.location.pathname.match('\/summary') === null");
-        $this->assertNotNull($form = $this->page->find('css', '#summary_page'));
+        $this->assertNotNull($loading = $this->page->find('css', '.loading'));
+        $this->session->wait($this->timeout+5000, "window.location.pathname.match('\/summary') === null");
+        $this->assertNotNull($summaryPage = $this->page->find('css', '#summary_page'));
     }
 
     /**

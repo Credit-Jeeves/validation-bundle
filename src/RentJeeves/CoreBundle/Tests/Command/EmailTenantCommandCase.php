@@ -6,13 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\CoreBundle\Command\EmailTenantCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 
-class EmailTenantCommandTest extends BaseTestCase
+class EmailTenantCommandCase extends BaseTestCase
 {
     /**
      * @test
      */
     public function testExecuteAutoPayment()
     {
+        $this->load(true);
+        static::$kernel = null;
         $kernel = $this->getKernel();
         $application = new Application($kernel);
         $application->add(new EmailTenantCommand());

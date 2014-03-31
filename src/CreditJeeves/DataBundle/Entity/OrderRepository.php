@@ -209,9 +209,9 @@ class OrderRepository extends EntityRepository
         $query = $this->createQueryBuilder('o');
         $query->innerJoin('o.operations', 'p');
         $query->where('p.contract = :contract');
-        $query->andWhere('o.status = :status');
+        $query->andWhere('o.status in (:status)');
         $query->setParameter('contract', $contract);
-        $query->setParameter('status', OrderStatus::COMPLETE);
+        $query->setParameter('status', array(OrderStatus::COMPLETE, OrderStatus::PENDING));
         $query->orderBy('o.created_at', 'DESC');
         $query->setMaxResults(1);
         $query = $query->getQuery();
@@ -247,7 +247,9 @@ class OrderRepository extends EntityRepository
         // get Batch Ids
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
-        $query->select('h.batchId, sum(o.amount) as order_amount, h.depositDate');
+        $query->select(
+            "h.batchId, sum(o.amount) as order_amount, date_format(h.depositDate, '%m/%d/%Y') as depositDate"
+        );
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
         $query->innerJoin('o.heartlands', 'h');
@@ -261,6 +263,7 @@ class OrderRepository extends EntityRepository
         $query->groupBy('h.batchId');
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
+        $query->orderBy('h.depositDate', 'DESC');
         $query = $query->getQuery();
         $deposits = $query->getScalarResult();
 

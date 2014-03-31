@@ -197,10 +197,7 @@ class IframeCase extends BaseTestCase
         $this->assertCount(1, $contract, 'Wrong number of pending');
     }
 
-    /**
-     * @test
-     */
-    public function iframeFound()
+    private function getIframeFound($email)
     {
         $this->setDefaultSession('selenium2');
         $this->clearEmail();
@@ -224,7 +221,7 @@ class IframeCase extends BaseTestCase
             array(
                 'rentjeeves_publicbundle_tenanttype_first_name'                => "Alex",
                 'rentjeeves_publicbundle_tenanttype_last_name'                 => "Sharamko",
-                'rentjeeves_publicbundle_tenanttype_email'                     => "newtenant13@yandex.ru",
+                'rentjeeves_publicbundle_tenanttype_email'                     => $email,
                 'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
                 'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
                 'rentjeeves_publicbundle_tenanttype_tos'                       => true,
@@ -234,6 +231,14 @@ class IframeCase extends BaseTestCase
         $thisIsMyRental->click();
         $this->assertNotNull($submit = $this->page->find('css', '#register'));
         $submit->click();
+    }
+
+    /**
+     * @test
+     */
+    public function iframeFound()
+    {
+        $this->getIframeFound('newtenant13@yandex.ru');
         $fields = $this->page->findAll('css', '#inviteText>h4');
         $this->assertCount(2, $fields, 'wrong number of text h4');
     }
@@ -363,5 +368,66 @@ class IframeCase extends BaseTestCase
         $this->assertEquals($date->format('Y-m-d'), $partnerCode->getFirstPaymentDate()->format('Y-m-d'));
         $this->assertFalse($partnerCode->getIsCharged());
         $em->detach($order);
+    }
+
+    protected function checkResendInvite()
+    {
+        $this->assertNotNull($userExistMessage = $this->page->find('css', '#userExistMessage'));
+        $this->assertEquals('tenant.already.invited', $userExistMessage->getText());
+        $user = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('DataBundle:User')
+            ->findOneBy(
+                array(
+                    'email' => 'connie@rentrack.com'
+                )
+            );
+        $this->session->visit($this->getUrl() . 'tenant/invite/resend/'.$user->getId());
+        $this->assertNotNull($title = $this->page->find('css', '.title'));
+        $this->assertEquals('verify.email.invite.title', $title->getText());
+        $this->session->visit($this->getUrl() . 'tenant/invite/resend/'.$user->getId());
+        $this->assertNotNull($title = $this->page->find('css', '.title'));
+        $this->assertEquals('error.oops', $title->getText());
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($email = $this->page->findAll('css', 'a'));
+        $this->assertCount(1, $email, 'Wrong number of emails');
+    }
+
+
+    /**
+     * @test
+     */
+    public function resendInviteIframeFound()
+    {
+        $this->load(true);
+        $this->getIframeFound('connie@rentrack.com');
+        $this->checkResendInvite();
+    }
+
+    /**
+     * @test
+     */
+    public function resendInviteIframeNotFound()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+        $this->assertNotNull($form = $this->page->find('css', '#formSearch'));
+        $fillAddress = '45 Rockefeller Plaza, New York City, NY 10111';
+        $this->fillGoogleAddress($fillAddress);
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
+        $this->session->wait($this->timeout, "$('#rentjeeves_publicbundle_invitetenanttype').length > 0");
+        $this->assertNotNull($this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype_invite_unit'));
+        $this->assertNotNull($form = $this->page->find('css', '#rentjeeves_publicbundle_invitetenanttype'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_invitetenanttype_tenant_email' => 'connie@rentrack.com',
+            )
+        );
+
+        $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
+        $submit->click();
+        $this->checkResendInvite();
     }
 }

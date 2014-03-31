@@ -336,4 +336,24 @@ class Mailer extends BaseMailer
             $this->sendBaseLetter($template, $vars, $landlord->getEmail(), $landlord->getCulture());
         }
     }
+
+    public function sendPendingInfo(Order $order, $template = 'rjPendingOrder')
+    {
+        $tenant = $order->getContract()->getTenant();
+        $history = $order->getHeartlands()->last();
+        $amount = $order->getAmount();
+        $fee = ($order->getType() == OrderType::HEARTLAND_CARD) ?
+            round($amount * (float)$this->container->getParameter('payment_card_fee')) / 100 : 0;
+        $total = $fee + $amount;
+        $vars = array(
+            'tenantName' => $tenant->getFullName(),
+            'orderTime' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'transactionID' => $history ? $history->getTransactionId() : 'N/A',
+            'amount' => $order->getAmount(),
+            'fee' => $fee,
+            'total' => $total,
+            'groupName' => $order->getGroupName(),
+        );
+        return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
 }

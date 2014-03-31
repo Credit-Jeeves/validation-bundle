@@ -6,6 +6,7 @@ function Pay(parent, contractId) {
     var current = 0;
     this.isValidUser = ko.observable(true);
     this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
+    this.infoMessage = ko.observable(null);
 
     this.getCurrentStep = function()
     {

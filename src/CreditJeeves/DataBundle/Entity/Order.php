@@ -402,6 +402,8 @@ class Order extends BaseOrder
             $code = 'PMTCRED';
         } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
             $code = 'PMTCHECK';
+        } elseif ($this->getType() === OrderType::CASH) {
+            $code = 'EXTERNAL';
         } else {
             $code = '';
         }
@@ -458,14 +460,12 @@ class Order extends BaseOrder
      */
     public function getCheckNumber()
     {
-        if ($this->getIsCash()) {
-            return null;
-        }
-
         if ($this->getType() === OrderType::HEARTLAND_CARD) {
             $code = 'PMTCRED';
         } elseif ($this->getType() === OrderType::HEARTLAND_BANK) {
             $code = 'PMTCHECK';
+        } elseif ($this->getType() === OrderType::CASH) {
+            $code = 'EXTERNAL';
         } else {
             $code = '';
         }
@@ -591,6 +591,9 @@ class Order extends BaseOrder
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
                 $result['style'] = '';
                 break;
+            case OrderStatus::PENDING:
+                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                break;
             case OrderStatus::ERROR:
             case OrderStatus::CANCELLED:
             case OrderStatus::REFUNDED:
@@ -686,29 +689,6 @@ class Order extends BaseOrder
                 $interval = $this->getDiffDays($paidTo);
                 $this->setDaysLate($interval);
                 break;
-        }
-    }
-
-    public function checkOrderProperties()
-    {
-        $operations = $this->getOperations();
-        $orderAmount = $this->getAmount();
-        foreach ($operations as $operation) {
-            $type = $operation->getType();
-            switch ($type) {
-                case OperationType::RENT:
-                    $status = $this->getStatus();
-                    if ($status == OrderStatus::COMPLETE) {
-                        $contract = $operation->getContract();
-                        $paidTo = $contract->getPaidTo();
-                        $interval = $this->getDiffDays($paidTo);
-                        $this->setDaysLate($interval);
-                    }
-                    break;
-                case OperationType::REPORT:
-                    // Nothing to do now
-                    break;
-            }
         }
     }
 

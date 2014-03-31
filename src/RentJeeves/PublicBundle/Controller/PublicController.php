@@ -2,7 +2,12 @@
 
 namespace RentJeeves\PublicBundle\Controller;
 
+use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Validators\TenantEmail;
+use RentJeeves\DataBundle\Validators\TenantEmailValidator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteTenantType;
@@ -10,6 +15,10 @@ use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Alert;
 use RentJeeves\PublicBundle\Form\TenantType;
 use CreditJeeves\DataBundle\Enum\UserType;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Process\Exception\LogicException;
+use Symfony\Component\Validator\Validator;
 
 class PublicController extends Controller
 {
@@ -22,6 +31,51 @@ class PublicController extends Controller
     public function iframeAction()
     {
         return array();
+    }
+
+    /**
+     * @Route("/tenant/invite/resend/{userId}", name="tenant_invite_resend", options={"expose"=true})
+     * @Template()
+     *
+     */
+    public function resendInviteTenantAction($userId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /**
+         * @var $user Tenant
+         */
+        $user = $em->getRepository('RjDataBundle:Tenant')->find($userId);
+        if (empty($user)) {
+            throw new LogicException("User which such id {$userId} does not exist");
+        }
+        $contracts = $user->getContracts();
+        $contract = null;
+        //@TODO contract which created last
+        foreach ($contracts as $contract) {
+            if ($contract->getStatus() === ContractStatus::INVITE) {
+                break;
+            }
+        }
+        /**
+         * @var $contract Contract
+         */
+        if (empty($contract)) {
+            throw new LogicException("User which try to get resend invite - does not have contract with status INVITE");
+        }
+        //Save as is but, in general can be problem on this line
+        //Because in group we have many landlord and don't know what exactly Landlord send invite
+        //So we select random landlord for group, it's main problem in architecture
+        $landlord = $contract->getGroup()->getGroupAgents()->first();
+        $reminderInvite = $this->get('reminder.invite');
+        if (!$reminderInvite->send($contract->getId(), $landlord)) {
+            return array(
+                'error' => $reminderInvite->getError()
+            );
+        }
+
+        return array(
+            'error' => false,
+        );
     }
 
     /**
@@ -82,33 +136,32 @@ class PublicController extends Controller
         );
 
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $tenant = $form->getData()['tenant'];
-                $invite = $form->getData()['invite'];
-                $aForm = $request->request->get($form->getName());
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['tenant']['password']['Password'], $tenant->getSalt());
-                $tenant->setPassword($password);
-                $invite->setTenant($tenant);
-                $invite->setProperty($property);
-                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($invite);
-                $em->persist($tenant);
-                $em->flush();
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $tenant = $form->getData()['tenant'];
+            $invite = $form->getData()['invite'];
+            $aForm = $request->request->get($form->getName());
+            $password = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($aForm['tenant']['password']['Password'], $tenant->getSalt());
+            $tenant->setPassword($password);
+            $invite->setTenant($tenant);
+            $invite->setProperty($property);
+            $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($invite);
+            $em->persist($tenant);
+            $em->flush();
 
-                $this->get('project.mailer')->sendRjCheckEmail($tenant);
-                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
-            }
+            $this->get('project.mailer')->sendRjCheckEmail($tenant);
+            return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }
+
         $view = $form->createView();
 
         return array(
-            'address'   => $property->getFullAddress(),
-            'form'      => $form->createView(),
-            'propertyId'=> $property->getId(),
+            'address'           => $property->getFullAddress(),
+            'form'              => $form->createView(),
+            'propertyId'        => $property->getId(),
         );
     }
 
@@ -142,33 +195,32 @@ class PublicController extends Controller
             new TenantType(),
             $tenant
         );
+        $form->handleRequest($request);
 
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
-            if ($form->isValid()) {
-                $tenant = $form->getData();
-                $aForm = $request->request->get($form->getName());
-                $unitName = $request->request->get('unit'.$Property->getId());
-                $unitNew = $request->request->get('unitNew'.$Property->getId());
-                $unitSearch = null;
-                if (!empty($unitName) && $unitName != 'new') {
-                    $unitSearch = $unitName;
-                } elseif (!empty($unitNew) && $unitNew != 'none') {
-                    $unitSearch = $unitNew;
-                }
-
-                $password = $this->container->get('user.security.encoder.digest')
-                        ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
-
-                $tenant->setPassword($password);
-                $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($tenant);
-                $em->flush();
-                $Property->createContract($em, $tenant, $unitSearch);
-                $this->get('project.mailer')->sendRjCheckEmail($tenant);
-                return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
+        if ($form->isValid()) {
+            $tenant = $form->getData();
+            $aForm = $request->request->get($form->getName());
+            $unitName = $request->request->get('unit'.$Property->getId());
+            $unitNew = $request->request->get('unitNew'.$Property->getId());
+            $unitSearch = null;
+            if (!empty($unitName) && $unitName != 'new') {
+                $unitSearch = $unitName;
+            } elseif (!empty($unitNew) && $unitNew != 'none') {
+                $unitSearch = $unitNew;
             }
+
+            $password = $this->container->get('user.security.encoder.digest')
+                    ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
+
+            $tenant->setPassword($password);
+            $tenant->setCulture($this->container->parameters['kernel.default_locale']);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($tenant);
+            $em->flush();
+            $Property->createContract($em, $tenant, $unitSearch);
+            $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+            return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }
 
         $propertyList = $google->searchPropertyInRadius($Property);
@@ -217,10 +269,6 @@ class PublicController extends Controller
                 'signinUrl' => $this->get('router')->generate('fos_user_security_login')
             );
         }
-//         $alert = new Alert();
-//         $alert->setMessage('rj.task.firstRent');
-//         $alert->setUser($user);
-//         $em->persist($alert);
 
         if ($user->getInvite()) {
             $invite = $user->getInvite();

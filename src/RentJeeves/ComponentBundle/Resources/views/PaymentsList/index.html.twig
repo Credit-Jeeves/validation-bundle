@@ -3,13 +3,12 @@
         <h2 data-bind="text: '{{'payments.total'|trans}} (' + $root.total() + ')', visible: payments().length > 0"></h2>
         <h2 data-bind="text: '{{'payments.batch_deposits'|trans}} (' + $root.total() + ')', visible: deposits().length > 0"></h2>
         <div class="fiter-box">
-            <label>{{ 'filter.by'|trans }}</label>
             <select id="searchPayments" data-bind="value: searchCollum" class="select custom-select blue-arrow selectBox">
-                <option value="status">{{ 'filter.status'|trans }}</option>
-                <option value="property">{{ 'property'|trans }}</option>
-                <option value="tenant">{{ 'tenant'|trans }}</option>
-                <option value="amount">{{ 'amount'|trans }}</option>
-                <option value="deposit">{{ 'filter.group_by.deposit'|trans }}</option>
+                <option value="status">{{ 'payments.filter.status'|trans }}</option>
+                <option value="property">{{ 'payments.filter.property'|trans }}</option>
+                <option value="tenant">{{ 'payments.filter.tenant'|trans }}</option>
+                <option value="amount">{{ 'payments.filter.amount'|trans }}</option>
+                <option value="deposit">{{ 'payments.filter.group_by.deposit'|trans }}</option>
             </select>
             <div id="searchInput" data-bind="visible: searchCollum() != 'status' && searchCollum() != 'deposit'" class="finder-box">
                 <input type="text" id="searsh-field-payments" name="searsh-field"  data-bind="value: searchText">
@@ -20,6 +19,7 @@
                 <select id="searchPaymentsStatus" class="select custom-select blue-arrow selectBox">
                     <option value=''>- {{'select.status.all'|trans}} -</option>
                     <option value='new'>{{'pending'|trans}}</option>
+                    <option value='pending'>{{'processing'|trans}}</option>
                     <option value='complete'>{{'paid'|trans}}</option>
                     <option value='error'>{{'error'|trans}}</option>
                 </select>

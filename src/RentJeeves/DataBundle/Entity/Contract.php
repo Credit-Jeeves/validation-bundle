@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -194,7 +195,15 @@ class Contract extends Base
         $result['finish'] = '';
         if ($finish = $this->getFinishAt()) {
             $today = new DateTime();
-            if ($today > $finish && $this->getStatus() !== ContractStatus::FINISHED) {
+            if ($today > $finish &&
+                !in_array(
+                    $this->getStatus(),
+                    array(
+                        ContractStatus::FINISHED,
+                        ContractStatus::DELETED,
+                    )
+                )
+            ) {
                 $result['style'] = 'contract-pending';
                 $result['status'] = self::CONTRACT_ENDED;
             }
@@ -264,9 +273,19 @@ class Contract extends Base
             $lastPayment = $this->getLastPayment();
             /**
              * if we have payments for this contract need show days late
+             * don't show days late for finished and delete contract
              */
-            if ($lastPayment != self::EMPTY_LAST_PAYMENT ||
-                ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))) {
+            if (($lastPayment != self::EMPTY_LAST_PAYMENT &&
+                !in_array(
+                    $this->getStatus(),
+                    array(
+                        ContractStatus::FINISHED,
+                        ContractStatus::DELETED,
+                    )
+                ))
+                ||
+                ($this->getStatusShowLateForce() && $result['status'] == strtoupper(ContractStatus::CURRENT))
+            ) {
                 $result['status'] = 'LATE ('.$interval->days.' days)';
                 $result['class'] = 'contract-late';
                 return $result;
@@ -470,7 +489,6 @@ class Contract extends Base
         $repo = $em->getRepository('DataBundle:Order');
         $result = array();
         $result['id'] = $this->getId();
-        $result['status'] = $this->getStatus();
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
         $result['row_address'] = substr($result['full_address'], 0, 20).'...';
         $result['rent'] = ($rent = $this->getRent()) ? '$'.$rent : '--';
@@ -480,12 +498,29 @@ class Contract extends Base
         $result['payment_type'] = '';
         // @todo get payment source name
         $result['row_payment_source'] = 'N/A';
+        $result['payment_last'] = 'N/A';
         $result['full_payment_source'] = '';
         $result['isPayment'] = false;
+        $result['payment_status'] = false;
+        /** @var Order $lastOrder */
+        $lastOrder = $repo->getLastContractPayment($this);
+        $lastPaymentDate = null;
+        if ($lastOrder) {
+            $result['payment_last'] = $lastOrder->getUpdatedAt()->format('m/d/Y');
+            $lastPaymentDate = $lastOrder->getUpdatedAt();
+            $now = new DateTime();
+            $today = $now->format('Ymd');
+            if ($lastOrder->getStatus() == OrderStatus::PENDING
+                && $today == $lastPaymentDate->format('Ymd')
+            ) {
+                $result['payment_status'] = 'processing';
+            }
+        }
 
         if ($payment = $this->getNotClosedPayment()) {
             $result['isPayment'] = true;
             $result['payment_type'] = $payment->getType();
+            $result['payment_due_date'] = $payment->getNextPaymentDate($lastPaymentDate)->format('m/d/Y');
 
             $result['row_payment_source'] = $payment->getPaymentAccount()->getName();
             if (10 < strlen($result['row_payment_source'])) {
@@ -493,10 +528,7 @@ class Contract extends Base
                 $result['full_payment_source'] = $payment->getPaymentAccount()->getName();
             }
         }
-        $result['payment_last'] = 'N/A';
-        if ($order = $repo->getLastContractPayment($this)) {
-            $result['payment_last'] = $order->getUpdatedAt()->format('m/d/Y');
-        }
+
         $result['payment_next'] = 'N/A';
         if ($paidTo = $this->getPaidTo()) {
             $result['payment_next'] = $paidTo->format('m/d/Y');

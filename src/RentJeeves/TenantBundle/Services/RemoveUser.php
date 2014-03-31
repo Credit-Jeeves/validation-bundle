@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\TenantBundle\Service;
+namespace RentJeeves\TenantBundle\Services;
 
 use Symfony\Component\Process\Exception\LogicException;
 use JMS\DiExtraBundle\Annotation\Service;
