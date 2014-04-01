@@ -11,7 +11,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\MappedSuperclass
- * @~Gedmo\Loggable
  */
 abstract class Lead
 {
@@ -106,12 +105,13 @@ abstract class Lead
 
     /**
      * @ORM\Column(type="datetime")
+     * @Gedmo\Timestampable(on="create")
      */
     protected $created_at;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Gedmo\Versioned
+     * @Gedmo\Timestampable(on="update")
      */
     protected $updated_at;
 
@@ -432,7 +432,7 @@ abstract class Lead
     /**
      * Get User
      *
-     * @return \CreditJeeves\DataBundle\Entity\User
+     * @return \CreditJeeves\DataBundle\Entity\Applicant
      */
     public function getUser()
     {
@@ -484,26 +484,6 @@ abstract class Lead
     {
         return $this->dealer;
     }
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function methodPrePersist()
-    {
-        $this->created_at = new \DateTime();
-        $this->updated_at = new \DateTime();
-        $this->status = 'new';
-        $this->target_score = $this->getGroup()->getTargetScore();
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function methodPreUpdate()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
 
     /**
      * Get state
