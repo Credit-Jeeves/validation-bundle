@@ -168,17 +168,20 @@ fixtures:
     paidFor: '-4 month'
   rjOperation_4_6:
     order: rjOrder_4_6
+    contract: Contract_4
     type: rent
     amount: 1250
     paidFor: '-3 month'
   rjOperation_4_7:
     order: rjOrder_4_7
+    contract: Contract_4
     type: rent
     amount: 1250
     paidFor: '-2 month'
 
   rjOperation_5_1:
     order: rjOrder_5_1
+    contract: Contract_2
     type: rent
     amount: 1250
     paidFor: '-11 month'

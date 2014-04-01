@@ -705,7 +705,7 @@
             </trans-unit>
             <trans-unit id="tabs.rent">
                 <source>tabs.rent</source>
-                <target>My Rent</target>
+                <target>Pay Rent</target>
             </trans-unit>
             <trans-unit id="tabs.action_plan">
                 <source>tabs.action_plan</source>
@@ -713,7 +713,7 @@
             </trans-unit>
             <trans-unit id="tabs.summary">
                 <source>tabs.summary</source>
-                <target>Credit Summary</target>
+                <target>Build Credit</target>
             </trans-unit>
             <trans-unit id="tabs.report">
                 <source>tabs.report</source>

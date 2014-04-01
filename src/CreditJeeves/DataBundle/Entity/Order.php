@@ -604,14 +604,13 @@ class Order extends BaseOrder
         $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $result['finish'] = '--';
-        $result['style'] = 'contract-pending';
+        $result['style'] = $this->getOrderStatusStyle();
         $result['icon'] = $this->getOrderTypes();
         $status = $this->getStatus();
         $result['status'] = 'order.status.text.'.$status;
         switch ($status) {
             case OrderStatus::COMPLETE:
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
-                $result['style'] = '';
                 break;
             case OrderStatus::PENDING:
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
@@ -621,9 +620,69 @@ class Order extends BaseOrder
             case OrderStatus::REFUNDED:
             case OrderStatus::RETURNED:
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
-                $result['style'] = 'late';
                 break;
         }
+        return $result;
+    }
+
+    protected function getOrderStatusStyle()
+    {
+        switch ($this->getStatus()) {
+            case OrderStatus::COMPLETE:
+                $style = '';
+                break;
+            case OrderStatus::ERROR:
+            case OrderStatus::CANCELLED:
+            case OrderStatus::REFUNDED:
+            case OrderStatus::RETURNED:
+                $style = 'late';
+                break;
+            default:
+                $style = 'contract-pending';
+        }
+
+        return $style;
+    }
+
+    /**
+     * @Serializer\Groups({"tenantPayment"})
+     * @Serializer\HandlerCallback("json", direction = "serialization")
+     *
+     * @return array
+     */
+    public function getTenantPayment()
+    {
+        $result = array();
+        $result['status'] = $this->getStatus();
+        $result['statusStyle'] = $this->getOrderStatusStyle();
+        $result['date'] = $this->getCreatedAt()->format('m/d/Y');
+        $result['property'] = $this->getContract()->getRentAddress();
+
+        // TODO: use Order->getRentOperation when that one exists
+        /** @var Operation $rentOperation */
+        $rentOperation = $this->getOperations()->filter(
+            function(Operation $operation) {
+                if (OperationType::RENT == $operation->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        )->first();
+        /** @var Operation $otherOperation */
+        $otherOperation = $this->getOperations()->filter(
+            function(Operation $operation) {
+                if (OperationType::OTHER == $operation->getType()) {
+                    return true;
+                }
+                return false;
+            }
+        )->first();
+
+        $result['rent'] = $rentOperation? $rentOperation->getFormatedAmount() : '';
+        $result['other'] = $otherOperation? $otherOperation->getFormatedAmount() : '';
+        $result['total'] = $this->getTotalAmount();
+        $result['type'] = $this->getOrderTypes();
+
         return $result;
     }
 

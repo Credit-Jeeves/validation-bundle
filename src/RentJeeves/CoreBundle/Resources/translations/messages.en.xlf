@@ -854,9 +854,9 @@
                 <source>action.required</source>
                 <target>Action Required</target>
             </trans-unit>
-            <trans-unit id="current_payments.title">
-                <source>current_payments.title</source>
-                <target>Payments</target>
+            <trans-unit id="current_contracts.title">
+                <source>current_contracts.title</source>
+                <target>Contracts</target>
             </trans-unit>
             <trans-unit id="pay_to">
                 <source>pay_to</source>
@@ -2191,6 +2191,38 @@
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
+            </trans-unit>
+            <trans-unit id="tenant.payments.title">
+                <source>tenant.payments.title</source>
+                <target>Payment History</target>
+            </trans-unit>
+            <trans-unit id="payment.status">
+                <source>payment.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="payment.date">
+                <source>payment.date</source>
+                <target>Date</target>
+            </trans-unit>
+            <trans-unit id="payment.property">
+                <source>payment.property</source>
+                <target>Property</target>
+            </trans-unit>
+            <trans-unit id="payment.rent">
+                <source>payment.rent</source>
+                <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="payment.other">
+                <source>payment.other</source>
+                <target>Other</target>
+            </trans-unit>
+            <trans-unit id="payment.total">
+                <source>payment.total</source>
+                <target>Total</target>
+            </trans-unit>
+            <trans-unit id="payment.type">
+                <source>payment.type</source>
+                <target>Type</target>
             </trans-unit>
         </body>
     </file>

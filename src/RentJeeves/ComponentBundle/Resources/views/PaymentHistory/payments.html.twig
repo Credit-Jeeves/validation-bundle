@@ -1,0 +1,39 @@
+<div class="pod-large pod-border pod-padding shadow" id="tenant-payments">
+    <h1>{{ 'tenant.payments.title' | trans() }}</h1>
+    <div class="row-20"></div>
+    <div class="properties-table-block table-wrap">
+        <div class="table-margin">
+            <table class="properties-table zebra-grid contracts-table">
+                <thead>
+                    <tr class="contracts">
+                        <th class="font-helvetica" style="width: 75px">{{ 'payment.status' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 75px">{{ 'payment.date' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 300px">{{ 'payment.property' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 70px">{{ 'payment.rent' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 70px">{{ 'payment.other' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 70px">{{ 'payment.total' | trans() }}</th>
+                        <th class="font-helvetica" style="width: 50px">{{ 'payment.type' | trans() }}</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach: tenantPayments">
+                    <tr class="contracts">
+                        <td data-bind="text: status, css: 'actions-status ' + statusStyle()" style="text-transform: uppercase"></td>
+                        <td data-bind="text: date"></td>
+                        <td data-bind="text: property"></td>
+                        <td data-bind="text: rent"></td>
+                        <td data-bind="text: other"></td>
+                        <td data-bind="text: total"></td>
+                        <td class="type-box"><span data-bind="css: 'clarification ' + type()"><i></i></span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var viewModel = new TenantPaymentsViewModel({{ payments|raw }});
+        ko.applyBindings(viewModel, $('#tenant-payments').get(0));
+    });
+</script>

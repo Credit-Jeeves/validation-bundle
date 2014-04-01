@@ -322,9 +322,15 @@ class Contract extends Base
      * @param $unit
      * @return string
      */
-    public function getRentAddress($property, $unit)
+    public function getRentAddress($property = null, $unit = null)
     {
         $result = array();
+        if (!$property) {
+            $property = $this->getProperty();
+        }
+        if (!$unit) {
+            $unit = $this->getUnit();
+        }
         $result[] = $property->getAddress();
         if ($unit) {
             $result[] = $unit->getName();

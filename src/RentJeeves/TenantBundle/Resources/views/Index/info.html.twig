@@ -26,7 +26,9 @@
             </p>
             <br />
             <center>
-                <h5>Available after you make a few on-time payments.</h5>
+                <button class="button small{% if status == false %} greyButton {% endif %}" data-bind="click: openPopup">
+                    <span>{{ 'bureau.reporting.setup' | trans() }}</span>
+                </button>
             </center>
         </div>
         <div class="img">
