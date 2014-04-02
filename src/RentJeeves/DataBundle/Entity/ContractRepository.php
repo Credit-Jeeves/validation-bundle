@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
-use \DateTime;
+use DateTime;
 use Doctrine\ORM\Query\Expr;
 
 class ContractRepository extends EntityRepository
