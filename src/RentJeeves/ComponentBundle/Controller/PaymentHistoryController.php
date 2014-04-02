@@ -18,7 +18,7 @@ class PaymentHistoryController extends Controller
         $finished = array();
         $aMonthes = array();
         for ($i = 1; $i < 13; $i++) {
-            $aMonthes[] = date('M', mktime(0, 0, 0, $i));
+            $aMonthes[] = date('M', mktime(0, 0, 0, $i, 1));
         }
         $em = $this->get('doctrine.orm.default_entity_manager');
         $translator = $this->get('translator.default');

@@ -236,7 +236,6 @@ class OrderRepository extends EntityRepository
         $query->setParameter('start', $start);
         $query->setParameter('propId', $propertyId);
         $query->setParameter('status', OrderStatus::COMPLETE);
-        $query->orderBy('o.created_at', 'ASC');
         $query->orderBy('o.id', 'ASC');
         $query = $query->getQuery();
         return $query->execute();

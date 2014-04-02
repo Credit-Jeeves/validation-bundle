@@ -1,6 +1,8 @@
 <?php
-namespace CreditJeeves\CoreBundle\EventListener;
+namespace CreditJeeves\DataBundle\EventListener;
 
+use Doctrine\ORM\UnitOfWork;
+use Gedmo\Loggable\Document\MappedSuperclass\AbstractLogEntry;
 use Gedmo\Loggable\LoggableListener as Base;
 use Doctrine\Common\EventArgs;
 use Gedmo\Mapping\MappedEventSubscriber;
@@ -11,14 +13,26 @@ use CreditJeeves\DataBundle\Entity\Lead;
 /**
  * @author Ton Sharp <66ton99@gmail.com>
  */
-class Loggable extends Base
+class LoggableListener extends Base
 {
+    protected function isLoggable($object)
+    {
+        if ($object instanceof Lead) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * {@inheritdoc}
      */
     protected function createLogEntry($action, $object, LoggableAdapter $ea)
     {
-        if (($object instanceof Lead) && self::ACTION_REMOVE === $action) {
+        if (!$this->isLoggable($object)) {
+            return parent::createLogEntry($action, $object, $ea);
+        }
+
+        if (self::ACTION_REMOVE === $action) {
             return;
         }
 
@@ -41,11 +55,29 @@ class Loggable extends Base
             if (!$objectId && $action === self::ACTION_CREATE) {
                 $this->pendingLogEntryInserts[spl_object_hash($object)] = $logEntry;
             }
+            /** @var UnitOfWork $uow */
             $uow = $om->getUnitOfWork();
-            $logEntry->setObjectId($objectId);
+            $logEntry->setObject($object);
             $newValues = array();
             if ($action !== self::ACTION_REMOVE && isset($config['versioned'])) {
-                foreach ($ea->getObjectChangeSet($uow, $object) as $field => $changes) {
+                foreach ($uow->getOriginalEntityData($object) as $field => $value) {
+                    if (!in_array($field, $config['versioned'])) {
+                        continue;
+                    }
+                    if ($meta->isSingleValuedAssociation($field) && $value) {
+                        $oid = spl_object_hash($value);
+                        $wrappedAssoc = AbstractWrapper::wrap($value, $om);
+                        $value = $wrappedAssoc->getIdentifier(false);
+                        if (!is_array($value) && !$value) {
+                            $this->pendingRelatedObjects[$oid][] = array(
+                                'log' => $logEntry,
+                                'field' => $field
+                            );
+                        }
+                    }
+                    $newValues[$field] = $value;
+                }
+                foreach ($uow->getEntityChangeSet($object) as $field => $changes) {
                     if (!in_array($field, $config['versioned'])) {
                         continue;
                     }
@@ -67,18 +99,6 @@ class Loggable extends Base
             }
             if ($action === self::ACTION_UPDATE && 0 === count($newValues)) {
                 return;
-            }
-
-            if (!($object instanceof Lead)) {
-                $version = 1;
-                if ($action !== self::ACTION_CREATE) {
-                    $version = $ea->getNewVersion($logEntryMeta, $object);
-                    if (empty($version)) {
-                        // was versioned later
-                        $version = 1;
-                    }
-                }
-                $logEntry->setVersion($version);
             }
 
             $this->prePersistLogEntry($logEntry, $object);
