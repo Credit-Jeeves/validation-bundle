@@ -199,7 +199,7 @@ abstract class Contract
      *         "import"
      *     }
      * )
-	 * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $importedBalance = 0.00;
@@ -261,7 +261,7 @@ abstract class Contract
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-	 * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $finishAt;

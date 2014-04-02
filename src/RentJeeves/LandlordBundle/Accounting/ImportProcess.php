@@ -85,7 +85,7 @@ class ImportProcess
     /**
      * @var bool
      */
-    protected $validateData = false;
+    protected $isCreateCsrfToken = false;
 
     protected $emailSendingQueue = array();
     /**
@@ -348,15 +348,13 @@ class ImportProcess
         $import->setTenant($tenant);
         $import->setContract($contract);
 
-        $token      = (!$this->validateData) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
+        $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $import->setCsrfToken($token);
         $this->validateFieldWhichNotCheckByForm($import);
 
         if ($import->isValid()) {
             $this->setForm($import);
         }
-
-
 
         return $import;
     }
@@ -401,7 +399,7 @@ class ImportProcess
     {
         $mappedData         = $this->getMappedData();
         $errors             = array();
-        $this->validateData = true;
+        $this->isCreateCsrfToken = true;
         $lines = array();
         foreach ($data as $formData) {
             $formData['line'] = (int)$formData['line'];
@@ -416,7 +414,7 @@ class ImportProcess
                 }
             }
         }
-        $this->validateData = false;
+        $this->isCreateCsrfToken = false;
 
         if (!empty($errors)) {
             return $errors;
@@ -426,8 +424,7 @@ class ImportProcess
         $this->clearTokens($lines);
         $this->sendInviteEmail();
 
-        return $errors;
-
+        return array();
     }
 
     protected function bindForm(ModelImport $import, $postData, &$errors)
@@ -455,7 +452,7 @@ class ImportProcess
         $form->submit($postData);
         $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
         if ($form->isValid() && $isCsrfTokenValid) {
-            //Do save and maybe move it to factory pattern
+            //Do save and maybe in future move it to factory pattern, when have more logic
             switch ($form->getName()) {
                 case 'import_contract_finish':
                     $contract = $form->getData();
