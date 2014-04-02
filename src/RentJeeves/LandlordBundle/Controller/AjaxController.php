@@ -765,6 +765,7 @@ class AjaxController extends Controller
         if (isset($data['amount'])) {
             $amount = $data['amount'];
         }
+        /** @var Contract $contract */
         $contract = $this->get('doctrine.orm.default_entity_manager')
             ->getRepository('RjDataBundle:Contract')
             ->find($data['contract_id']);
@@ -779,7 +780,7 @@ class AjaxController extends Controller
                 // Create order
                 $order = new Order();
                 $order->setUser($tenant);
-                $order->setAmount($contract->getRent());
+                $order->setSum($contract->getRent());
                 $order->setStatus(OrderStatus::COMPLETE);
                 $order->setType(OrderType::CASH);
                 $em->persist($order);
@@ -788,6 +789,7 @@ class AjaxController extends Controller
                 $operation->setOrder($order);
                 $operation->setType(OperationType::RENT);
                 $operation->setContract($contract);
+                $operation->setAmount($contract->getRent());
                 // FIXME after paid for would be implemented for payments
                 $operation->setPaidFor($contract->getPaidTo());
                 $em->persist($operation);
@@ -823,7 +825,6 @@ class AjaxController extends Controller
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $request = $this->getRequest();
         $page = $request->request->all('data');
         $data = $page['data'];
