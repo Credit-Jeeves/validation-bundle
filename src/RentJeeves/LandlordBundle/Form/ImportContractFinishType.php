@@ -8,7 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * This form for exit Tenant and new Contract
+ * This form for finish exist Contract
  *
  * Class ImportNewUserWithContractType
  * @package RentJeeves\LandlordBundle\Form

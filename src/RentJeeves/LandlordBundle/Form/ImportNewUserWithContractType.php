@@ -2,7 +2,6 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

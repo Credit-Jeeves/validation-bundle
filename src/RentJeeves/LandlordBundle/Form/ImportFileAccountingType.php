@@ -36,19 +36,18 @@ class ImportFileAccountingType extends AbstractType
             'property',
             'entity',
             array(
-                'class'          => 'RjDataBundle:Property',
-                'attr'           => array(
+                'class'         => 'RjDataBundle:Property',
+                'attr'          => array(
                     'class' => 'original widthSelect',
                 ),
-                'constraints'    => array(
+                'constraints'   => array(
                     new NotBlank(),
                 ),
-                'query_builder'  => function (EntityRepository $er) use ($groups) {
-
+                'query_builder' => function (EntityRepository $er) use ($groups) {
                     if (empty($groups)) {
                         $query = $er->createQueryBuilder('p');
-                        $query->where('p.id = :sero');
-                        $query->setParameter('sero', 0);
+                        $query->where('p.id = :zero');
+                        $query->setParameter('zero', 0);
                         return $query;
                     }
 
@@ -57,7 +56,7 @@ class ImportFileAccountingType extends AbstractType
                         $ids[] = $group->getId();
                     }
 
-                    $query     = $er->createQueryBuilder('p');
+                    $query = $er->createQueryBuilder('p');
                     $query->innerJoin('p.property_groups', 'g');
                     $query->add('where', $query->expr()->in('g.id', $ids));
 

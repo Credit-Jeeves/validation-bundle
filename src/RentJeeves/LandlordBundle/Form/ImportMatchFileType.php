@@ -2,7 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use RentJeeves\LandlordBundle\Accounting\Import as AccountingImport;
+use RentJeeves\LandlordBundle\Accounting\ImportMapping as ImportMapping;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -14,37 +14,39 @@ class ImportMatchFileType extends AbstractType
 {
     const EMPTY_VALUE = 'empty_value';
 
-    protected $number;
+    public $numberRow;
 
     public function __construct($number)
     {
-        $this->number  = $number;
+        $this->numberRow  = $number;
     }
 
     public static function getFieldNameByNumber($i)
     {
-        return 'collum'.$i;
+        return 'column'.$i;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        for ($i = 1; $i <= $this->number; $i++) {
+        $choices =  array(
+            self::EMPTY_VALUE => 'Choose an option',
+            ImportMapping::KEY_BALANCE         => 'Balance',
+            ImportMapping::KEY_RESIDENT_ID     => 'Resident ID',
+            ImportMapping::KEY_TENANT_NAME     => 'Tenant Name',
+            ImportMapping::KEY_UNIT            => 'Unit',
+            ImportMapping::KEY_RENT            => 'Rent',
+            ImportMapping::KEY_EMAIL           => 'Email',
+            ImportMapping::KEY_LEASE_END       => 'Lease End',
+            ImportMapping::KEY_MOVE_IN         => 'Move In',
+            ImportMapping::KEY_MOVE_OUT        => 'Move Out'
+        );
+
+        for ($i = 1; $i <= $this->numberRow; $i++) {
             $builder->add(
                 self::getFieldNameByNumber($i),
                 'choice',
                 array(
-                    'choices'   => array(
-                        self::EMPTY_VALUE => 'Choose an option',
-                        AccountingImport::KEY_BALANCE         => 'Balance',
-                        AccountingImport::KEY_RESIDENT_ID     => 'Resident ID',
-                        AccountingImport::KEY_TENANT_NAME     => 'Tenant Name',
-                        AccountingImport::KEY_UNIT            => 'Unit',
-                        AccountingImport::KEY_RENT            => 'Rent',
-                        AccountingImport::KEY_EMAIL           => 'Email',
-                        AccountingImport::KEY_LEASE_END       => 'Lease End',
-                        AccountingImport::KEY_MOVE_IN         => 'Move In',
-                        AccountingImport::KEY_MOVE_OUT        => 'Move Out'
-                    ),
+                    'choices'   => $choices,
                     'error_bubbling' => false,
                     'mapped'         => false,
                     'attr'           => array(
@@ -57,10 +59,10 @@ class ImportMatchFileType extends AbstractType
         $self = $this;
         $builder->addEventListener(
             FormEvents::SUBMIT,
-            function (FormEvent $event) use ($options, $self) {
+            function (FormEvent $event) use ($options, $self, $choices) {
                 $used = array();
                 $form = $event->getForm();
-                for ($i = 1; $i <= $this->number; $i++) {
+                for ($i = 1; $i <= $self->numberRow; $i++) {
                     $name = $self::getFieldNameByNumber($i);
                     $field = $form->get($name);
                     $data = $field->getData();
@@ -74,7 +76,7 @@ class ImportMatchFileType extends AbstractType
                     }
                 }
 
-                if (count($used) < 9) {
+                if (count($used) < count($choices)-1) {
                     $form->addError(new FormError('you.need.map'));
                 }
             }

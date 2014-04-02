@@ -87,8 +87,8 @@
             {
                 "attr":{
                     "data-bind":
-                        "value: Contract.startAt,
-                         datepicker: Contract.startAt,
+                        "value: $root.formatDate(Contract.startAt),
+                         datepicker: $root.formatDate(Contract.startAt),
                          datepickerOptions: $root.getDatePickerOptions(),
                          datepickerFieldName: 'startAt',
                          attr:{
@@ -103,8 +103,8 @@
             {
                 "attr": {
                     "data-bind":
-                        "value: Contract.finishAt,
-                         datepicker: Contract.finishAt,
+                        "value: $root.formatDate(Contract.finishAt),
+                         datepicker: $root.formatDate(Contract.finishAt),
                          datepickerOptions: $root.getDatePickerOptions(),
                          datepickerFieldName: 'finishAt',
                          attr: {

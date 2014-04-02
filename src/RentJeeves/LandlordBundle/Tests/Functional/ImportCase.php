@@ -6,7 +6,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\Unit;
-use RentJeeves\LandlordBundle\Accounting\Import;
+use RentJeeves\LandlordBundle\Accounting\ImportMapping as Import;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use \DateTime;
 use \SimpleXMLElement;
@@ -105,7 +105,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($table = $this->page->find('css', 'table'));
 
         for ($i = 1; $i <= 14; $i++) {
-            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_collum'.$i));
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
             if (isset($this->mapFile[$i])) {
                 $choice->selectOption($this->mapFile[$i]);
             }
@@ -124,7 +124,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(count($trs), 5, "Count statuses is wrong");
         $this->assertEquals(count($trs['import.status.error']), 1, "Error contract on first page is wrong number");
-        $this->assertEquals(count($trs['import.status.new']), 2, "New contract on first page is wrong number");
+        $this->assertEquals(count($trs['import.status.new']), 3, "New contract on first page is wrong number");
         $this->assertEquals(count($trs['import.status.skip']), 3, "Skip contract on first page is wrong number");
         $this->assertEquals(count($trs['import.status.match']), 1, "Match contract on first page is wrong number");
         $this->assertEquals(count($trs['import.status.ended']), 2, "Ended contract on first page is wrong number");
@@ -193,7 +193,7 @@ class ImportCase extends BaseTestCase
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(9, $email, 'Wrong number of emails');
+        $this->assertCount(8, $email, 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -223,8 +223,8 @@ class ImportCase extends BaseTestCase
         $this->assertEquals($contract->getStatus(), ContractStatus::INVITE);
         $this->assertEquals($contract->getRent(), '1200');
         $this->assertEquals($contract->getImportedBalance(), '0');
-        $this->assertEquals($contract->getStartAt()->format('m/d/Y'), '10/13/2019');
-        $this->assertEquals($contract->getFinishAt()->format('m/d/Y'), '10/13/2019');
+        $this->assertEquals($contract->getStartAt()->format('m/d/Y'), '11/09/2013');
+        $this->assertEquals($contract->getFinishAt()->format('m/d/Y'), '11/08/2014');
 
         /**
          * @var $tenant Tenant
@@ -251,12 +251,12 @@ class ImportCase extends BaseTestCase
         }
 
         $this->assertEquals($contractEnded->getStatus(), ContractStatus::FINISHED);
-        $this->assertEquals($contractEnded->getFinishAt()->format('m/d/Y'), '10/03/2019');
+        $this->assertEquals($contractEnded->getFinishAt()->format('m/d/Y'), '03/01/2011');
 
         $this->assertEquals($contractMatch->getRent(), '1190');
         $this->assertEquals($contractMatch->getImportedBalance(), '0');
-        $this->assertEquals($contractMatch->getStartAt()->format('m/d/Y'), '10/23/2019');
-        $this->assertEquals($contractMatch->getFinishAt()->format('m/d/Y'), '10/28/2019');
+        $this->assertEquals($contractMatch->getStartAt()->format('m/d/Y'), '04/22/2010');
+        $this->assertEquals($contractMatch->getFinishAt()->format('m/d/Y'), '10/21/2016');
         $this->assertEquals($contractMatch->getStatus(), ContractStatus::APPROVED);
         $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(
@@ -275,8 +275,8 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals($contractNew->getRent(), '950');
         $this->assertEquals($contractNew->getImportedBalance(), '0');
-        $this->assertEquals($contractNew->getStartAt()->format('m/d/Y'), '10/20/2019');
-        $this->assertEquals($contractNew->getFinishAt()->format('m/d/Y'), '11/06/2019');
+        $this->assertEquals($contractNew->getStartAt()->format('m/d/Y'), '03/18/2011');
+        $this->assertEquals($contractNew->getFinishAt()->format('m/d/Y'), '03/31/2015');
         $this->assertEquals($contractNew->getStatus(), ContractStatus::APPROVED);
     }
 }

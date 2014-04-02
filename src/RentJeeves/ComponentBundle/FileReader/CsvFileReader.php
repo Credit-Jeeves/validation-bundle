@@ -105,7 +105,6 @@ class CsvFileReader
         $file = new SplFileObject($filename, 'rb');
         $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
         $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
-
         return $file;
     }
 

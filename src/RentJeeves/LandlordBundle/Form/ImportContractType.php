@@ -8,18 +8,18 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * This form for exit Tenant and new Contract
+ * This form for Contract
  *
  * Class ImportNewUserWithContractType
  * @package RentJeeves\LandlordBundle\Form
  */
 class ImportContractType extends AbstractType
 {
-    protected $token;
+    protected $isUseToken;
 
     public function __construct($token = true)
     {
-        $this->token =  $token;
+        $this->isUseToken =  $token;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -56,12 +56,6 @@ class ImportContractType extends AbstractType
         );
 
         $builder->add(
-            'rent',
-            'text',
-            array()
-        );
-
-        $builder->add(
             'skip',
             'checkbox',
             array(
@@ -71,7 +65,7 @@ class ImportContractType extends AbstractType
             )
         );
 
-        if ($this->token) {
+        if ($this->isUseToken) {
             $builder->add(
                 '_token',
                 'hidden',

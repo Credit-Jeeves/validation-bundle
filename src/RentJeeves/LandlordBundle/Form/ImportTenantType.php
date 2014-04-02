@@ -10,7 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * This form for exit Tenant and new Contract
+ * This form for new Tenant
  *
  * Class ImportNewUserWithContractType
  * @package RentJeeves\LandlordBundle\Form

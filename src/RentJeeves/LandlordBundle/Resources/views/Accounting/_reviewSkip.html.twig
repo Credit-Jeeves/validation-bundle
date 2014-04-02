@@ -20,8 +20,8 @@
                 {
                     "attr": {
                     "data-bind":
-                        "value: moveOut,
-                         datepicker: moveOut,
+                        "value: $root.formatDate(moveOut),
+                         datepicker: $root.formatDate(moveOut),
                          datepickerOptions: $root.getDatePickerOptions(),
                          datepickerFieldName: 'finishAt',
                          attr: {

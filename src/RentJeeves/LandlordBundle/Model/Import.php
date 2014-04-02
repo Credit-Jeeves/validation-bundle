@@ -71,7 +71,7 @@ class Import
     /**
      * @Serializer\Exclude
      */
-    protected $form = false;
+    protected $form = null;
 
     /**
      * @return boolean

@@ -9,7 +9,7 @@ function accountingImport() {
         self.setProcessing(true);
         self.rows([]);
         self.rowsTotal(0);
-        $.ajax({
+        jQuery.ajax({
             url: Routing.generate('accounting_import_get_rows'),
             type: 'POST',
             dataType: 'json',
@@ -27,7 +27,7 @@ function accountingImport() {
                     self.rows(response.rows);
                     self.rowsTotal(response.total);
 
-                    if (self.rows().length <= 0) {
+                    if (self.rows().length == 0) {
                         self.isFinishReview(true);
                     }
                 }
@@ -36,7 +36,7 @@ function accountingImport() {
     };
 
     this.uniqueId = function() {
-        // always start with a letter (for DOM friendlyness)
+        // always start with a letter (for DOM friendliness)
         var idstr=String.fromCharCode(Math.floor((Math.random()*25)+65));
         do {
             // between numbers and characters (48 is 0 and 90 is Z (42-48 = 90)
@@ -51,7 +51,7 @@ function accountingImport() {
     }
 
     this.isVisibleTable = function() {
-        if (self.errorLoadDataMessage().length <= 0 && self.rows().length > 0) {
+        if (self.errorLoadDataMessage().length == 0 && self.rows().length > 0) {
             return true;
         }
         return false;
@@ -88,7 +88,7 @@ function accountingImport() {
     };
 
     this.formatDate = function(dateString) {
-        if (!dateString || dateString.length <= 0) {
+        if (!dateString || dateString.length == 0) {
             return '';
         }
         var date = new Date(dateString);
@@ -102,16 +102,16 @@ function accountingImport() {
         var errors = Array();
         var forms = Object();
 
-        $.each($('.properties-table tr'), function (key,value) {
-            var element = $(this);
+        ko.utils.arrayForEach(jQuery('.properties-table tr'), function (value) {
+            var element = jQuery(value);
             //not allow send knockout duplicate
-            if (element.find('td').length <= 0) {
+               if (element.find('td').length == 0) {
                 return;
             }
             var form = new Object();
             if (element.find('form').length > 0) {
                 var data = element.find('input').serializeArray();
-                $.each(data, function (key,value) {
+                ko.utils.arrayForEach(data, function (value) {
                     form[value.name] = value.value;
                 });
             }
@@ -119,8 +119,9 @@ function accountingImport() {
             forms[number] = form;
             number++;
         });
+
         self.formErrors([]);
-        $.ajax({
+        jQuery.ajax({
             url: Routing.generate('accounting_import_save_rows'),
             type: 'POST',
             async: true,
@@ -131,7 +132,7 @@ function accountingImport() {
                 self.errorLoadDataMessage(Translator.trans('import.error.flush'));
             },
             success: function(response) {
-                var errorsLen = $.map(response.formErrors, function(n, i) { return i; }).length;
+                var errorsLen = jQuery.map(response.formErrors, function(n, i) { return i; }).length;
                 if (errorsLen > 0) {
                     self.rows(self.rows());
                     self.formErrors(response.formErrors);
@@ -144,30 +145,36 @@ function accountingImport() {
     }
 
 
-    this.setDateDatepickerIntoRow = function(viewModel, element, datepickerFieldName){
+    this.setDateDatepickerIntoRow = function(currentRow, elementHtml, datepickerFieldName){
         try {
-            $(element).datepicker("getDate");
-            var day = $(element).datepicker('getDate').getDate();
-            var month = $(element).datepicker('getDate').getMonth() + 1;
-            var year = $(element).datepicker('getDate').getFullYear();
+            jQuery(elementHtml).datepicker("getDate");
+            var day = jQuery(elementHtml).datepicker('getDate').getDate();
+            var month = jQuery(elementHtml).datepicker('getDate').getMonth() + 1;
+            var year = jQuery(elementHtml).datepicker('getDate').getFullYear();
             var fullDate = month + "/" + day + "/" + year;
-            viewModel.Contract[datepickerFieldName] = fullDate;
+            currentRow.Contract[datepickerFieldName] = fullDate;
         } catch (e) {
-            viewModel.Contract[datepickerFieldName] = '';
+            currentRow.Contract[datepickerFieldName] = '';
         }
     };
 
     this.setProcessing = function(newValue) {
-        if (newValue && $('.overlay-trigger').length <= 0) {
-            $('#reviewContainer').parent().showOverlay();
+        if (newValue && jQuery('.overlay-trigger').length <= 0) {
+            jQuery('#reviewContainer').parent().showOverlay();
             return true;
         }
-        $('#reviewContainer').parent().hideOverlay();
+
+        if (newValue) {
+            return true;
+        }
+
+        jQuery('#reviewContainer').parent().hideOverlay();
         return true;
     };
 
     this.getErrorsFields = function(data){
         var result = {};
+        //use jquery, because knockout function can't get key of array/object - just value
         jQuery.each(data, function(keys1, values1) {
             jQuery.each(values1, function(keys2, values2) {
                 if (values2 instanceof Array) {

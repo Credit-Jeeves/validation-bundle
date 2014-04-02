@@ -7,19 +7,22 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializerBuilder;
-use RentJeeves\ComponentBundle\FileReader\CsvFileReader;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\LandlordBundle\Form\BaseOrderReportType;
+use RentJeeves\LandlordBundle\Accounting\ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\ImportProcess;
+use RentJeeves\LandlordBundle\Accounting\ImportStorage;
+use RentJeeves\LandlordBundle\Exception\ImportMappingException;
+use RentJeeves\LandlordBundle\Exception\ImportStorageException;
+use RentJeeves\LandlordBundle\Form\ExportType;
 use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportFileAccountingType;
 use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
 use RentJeeves\LandlordBundle\Form\ImportNewContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
 use RentJeeves\LandlordBundle\Form\ImportUpdateContractType;
-use RentJeeves\LandlordBundle\Accounting\Import;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -63,7 +66,7 @@ class AccountingController extends Controller
 
         $group = $this->get('core.session.landlord')->getGroup();
         $formBaseOrder = $this->createForm(
-            new BaseOrderReportType($this->getUser(), $group, $validationRule)
+            new ExportType($this->getUser(), $group, $validationRule)
         );
 
         $formBaseOrder->handleRequest($this->get('request'));
@@ -118,14 +121,14 @@ class AccountingController extends Controller
         $newFileName = uniqid().'.csv';
         $file->move($tmpDir, $newFileName);
         /**
-         * @var AccountingImport $accountingImport
+         * @var ImportStorage $importStorage
          */
-        $accountingImport = $this->get('accounting.import');
+        $importStorage = $this->get('accounting.import.storage');
 
-        $accountingImport->setFieldDelimiter($fieldDelimiter);
-        $accountingImport->setTextDelimiter($textDelimiter);
-        $accountingImport->setFilePath($newFileName);
-        $accountingImport->setPropertyId($property->getId());
+        $importStorage->setFieldDelimiter($fieldDelimiter);
+        $importStorage->setTextDelimiter($textDelimiter);
+        $importStorage->setFilePath($newFileName);
+        $importStorage->setPropertyId($property->getId());
 
         return $this->redirect($this->generateUrl('accounting_match_file'));
     }
@@ -140,18 +143,22 @@ class AccountingController extends Controller
     public function matchFileAction(Request $request)
     {
         $this->checkAccessToReport();
-        /**
-         * @var AccountingImport $accountingImport
-         */
-        $accountingImport = $this->get('accounting.import');
-        if (!$data = $accountingImport->getImportData()) {
+        try {
+            /**
+             * @var ImportStorage $importStorage
+             */
+            $importStorage = $this->get('accounting.import.storage');
+            $data = $importStorage->getImportData();
+            /**
+             * @var ImportMapping $importMapping
+             */
+            $importMapping = $this->get('accounting.import.mapping');
+            $data = $importMapping->getDataForMapping();
+        } catch (ImportStorageException $e) {
             $this->redirect($this->generateUrl('accounting_import_file'));
-        }
-
-        $data = $accountingImport->getDataForMapping();
-        if (is_string($data)) {
+        } catch (ImportMappingException $e) {
             return array(
-                'error' => $data
+                'error' => $e->getMessage()
             );
         }
 
@@ -183,8 +190,8 @@ class AccountingController extends Controller
                 $result[$i] = $value;
             }
 
-            $accountingImport->setMapping($result);
-            $accountingImport->setFileLine(0);
+            $importStorage->setMapping($result);
+            $importStorage->setFileLine(0);
 
             return $this->redirect($this->generateUrl('accounting_import'));
         }
@@ -208,21 +215,25 @@ class AccountingController extends Controller
     {
         $this->checkAccessToReport();
         /**
-         * @var AccountingImport $accountingImport
+         * @var ImportStorage $importStorage
          */
-        $accountingImport = $this->get('accounting.import');
-        if (!$data = $accountingImport->getImportData()) {
+        $importStorage = $this->get('accounting.import.storage');
+        try {
+            $data = $importStorage->getImportData();
+        } catch (ImportStorageException $e) {
             $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
-        if (empty($data[$accountingImport::IMPORT_MAPPING])) {
+        if (empty($data[ImportStorage::IMPORT_MAPPING])) {
             $this->redirect($this->generateUrl('accounting_import_file'));
         }
-
-
-        $formNewUserWithContract = $accountingImport->getCreateUserAndCreateContractForm();
-        $formContract = $accountingImport->getContractForm();
-        $formContractFinish = $accountingImport->getContractFinishForm();
+        /**
+         * @var $importProcess ImportProcess
+         */
+        $importProcess = $this->get('accounting.import.process');
+        $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm();
+        $formContract = $importProcess->getContractForm();
+        $formContractFinish = $importProcess->getContractFinishForm();
 
         return array(
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
@@ -240,39 +251,33 @@ class AccountingController extends Controller
      */
     public function getRowsAction(Request $request)
     {
-        $this->checkAccessToReport();
-        $result = array(
-            'error'   => false,
-            'message' => '',
-        );
-        $i18n = $this->get('translator');
+        $result = $this->checkingAjaxRequest();
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
         /**
-         * @var AccountingImport $accountingImport
+         * @var ImportStorage $importStorage
          */
-        $accountingImport = $this->get('accounting.import');
-        if (!$data = $accountingImport->getImportData()) {
-            $result['error'] = true;
-            $result['message'] = $i18n->trans('import.error.access');
-            return new JsonResponse($result);
-        }
-
-        if (empty($data[$accountingImport::IMPORT_MAPPING])) {
-            $result['error'] = true;
-            $result['message'] =  $i18n->trans('import.error.access');
-            return new JsonResponse($result);
-        }
-
+        $importStorage = $this->get('accounting.import.storage');
+        /**
+         * @var ImportMapping $importMapping
+         */
+        $importMapping = $this->get('accounting.import.mapping');
         $newRows = filter_var($request->request->get('newRows', false), FILTER_VALIDATE_BOOLEAN);
 
         if ($newRows) {
-            $accountingImport->setFileLine($accountingImport->getFileLine() + $accountingImport::ROW_ON_PAGE);
+            $importStorage->setFileLine($importStorage->getFileLine() + ImportProcess::ROW_ON_PAGE);
         }
 
         $rows = array();
-        $total = $accountingImport->countData();
+        /**
+         * @var $importProcess ImportProcess
+         */
+        $importProcess = $this->get('accounting.import.process');
+        $total = $importMapping->countLines();
 
         if ($total > 0) {
-            $rows = $accountingImport->getMappedData();
+            $rows = $importProcess->getMappedData();
         }
 
         $context = new SerializationContext();
@@ -295,35 +300,52 @@ class AccountingController extends Controller
     public function saveRowsAction(Request $request)
     {
         $this->checkAccessToReport();
+        $result = $this->checkingAjaxRequest();
+        if ($result instanceof JsonResponse) {
+            return $result;
+        }
+
+        $context = new SerializationContext();
+        $context->setSerializeNull(true);
+        $context->setGroups('RentJeevesImport');
+        /**
+         * @var $importProcess ImportProcess
+         */
+        $importProcess = $this->get('accounting.import.process');
+        $data = $request->request->all();
+        $errors               = $importProcess->saveForms($data);
+        $result['formErrors'] = $errors;
+
+        return new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
+    }
+
+    protected function checkingAjaxRequest()
+    {
+        $this->checkAccessToReport();
         $result = array(
             'error'   => false,
             'message' => '',
         );
         $i18n = $this->get('translator');
         /**
-         * @var AccountingImport $accountingImport
+         * @var ImportStorage $importStorage
          */
-        $accountingImport = $this->get('accounting.import');
-        if (!$data = $accountingImport->getImportData()) {
+        $importStorage = $this->get('accounting.import.storage');
+
+        try {
+            $data = $importStorage->getImportData();
+        } catch (ImportStorageException $e) {
             $result['error'] = true;
             $result['message'] = $i18n->trans('import.error.access');
             return new JsonResponse($result);
         }
 
-        if (empty($data[$accountingImport::IMPORT_MAPPING])) {
+        if (empty($data[ImportStorage::IMPORT_MAPPING])) {
             $result['error'] = true;
             $result['message'] =  $i18n->trans('import.error.access');
             return new JsonResponse($result);
         }
 
-        $context = new SerializationContext();
-        $context->setSerializeNull(true);
-        $context->setGroups('RentJeevesImport');
-
-        $data = $request->request->all();
-        $errors               = $accountingImport->saveForms($data);
-        $result['formErrors'] = $errors;
-
-        return new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
+        return $result;
     }
 }

@@ -54,7 +54,7 @@
         setTimeout(self.timeout, left);
       } else {
         //console.info('lock app');
-        self._lockApp();
+        //self._lockApp();
       }
     }
   };

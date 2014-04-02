@@ -51,12 +51,12 @@
                 "attr":
                 {
                 "data-bind": "
-                    value: Contract.startAt,
+                    value: $root.formatDate(Contract.startAt),
                     attr: {
                         'class': number+'_startAt import_contract_startAt datepicker '+$root.getErrorClass($data, 'import_contract_startAt'),
                         'title': $root.getErrorTitle($data, 'import_contract_startAt')
                     },
-                    datepicker: Contract.startAt,
+                    datepicker: $root.formatDate(Contract.startAt),
                     datepickerOptions: $root.getDatePickerOptions(),
                     datepickerFieldName: 'startAt'
                     ",
@@ -69,8 +69,8 @@
                 "attr":
                 {
                 "data-bind":
-                    "value: Contract.finishAt,
-                     datepicker: Contract.finishAt,
+                    "value: $root.formatDate(Contract.finishAt),
+                     datepicker: $root.formatDate(Contract.finishAt),
                      datepickerOptions: $root.getDatePickerOptions(),
                      datepickerFieldName: 'finishAt',
                      attr: {

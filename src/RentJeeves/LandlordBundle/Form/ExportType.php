@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
-class BaseOrderReportType extends AbstractType
+class ExportType extends AbstractType
 {
     protected $user;
 
@@ -97,8 +97,8 @@ class BaseOrderReportType extends AbstractType
 
                     if (!$groups) {
                         $query = $er->createQueryBuilder('p');
-                        $query->where('p.id = :sero');
-                        $query->setParameter('sero', 0);
+                        $query->where('p.id = :zero');
+                        $query->setParameter('zero', 0);
                         return $query;
                     }
 
