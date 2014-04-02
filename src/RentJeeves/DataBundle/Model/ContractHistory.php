@@ -8,107 +8,41 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
+use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
+use DateTime;
 
 /**
  * @ORM\MappedSuperclass
  * @ORM\HasLifecycleCallbacks()
  */
-abstract class Contract
+abstract class ContractHistory extends AbstractLogEntry
 {
     /**
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Tenant",
-     *     inversedBy="contracts"
-     * )
-     * @ORM\JoinColumn(
-     *     name="tenant_id",
-     *     referencedColumnName="id"
-     * )
-     * @Serializer\Exclude
+     * @var integer
+     *
+     * @ORM\Column(name="editor_id", type="bigint", nullable=true)
      */
-    protected $tenant;
+    protected $editorId;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Holding",
-     *     inversedBy="contracts"
-     * )
-     * @ORM\JoinColumn(
-     *     name="holding_id",
-     *     referencedColumnName="id"
-     * )
-     * @Serializer\Exclude
+     * @var integer
+     *
+     * @ORM\Column(name="object_id", type="bigint", nullable=true)
      */
-    protected $holding;
+    protected $objectId;
 
     /**
-     * @ORM\ManyToOne(
-     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
-     *     inversedBy="contracts"
-     * )
-     * @ORM\JoinColumn(
-     *     name="group_id",
-     *     referencedColumnName="id"
-     * )
-     * @Serializer\SerializedName("groupId")
-     * @Serializer\Accessor(getter="getGroupId")
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract", inversedBy="histories")
+     * @ORM\JoinColumn(name="object_id", referencedColumnName="id")
      */
-    protected $group;
-
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Property",
-     *     inversedBy="contracts"
-     * )
-     * @ORM\JoinColumn(
-     *     name="property_id",
-     *     referencedColumnName="id"
-     * )
-     * @Assert\NotBlank(
-     *     message="error.property.empty",
-     *     groups={
-     *         "tenant_invite"
-     *     }
-     * )
-     */
-    protected $property;
-
-    /**
-     * @ORM\ManyToOne(
-     *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
-     *     inversedBy="contracts"
-     * )
-     * @ORM\JoinColumn(
-     *     name="unit_id",
-     *     referencedColumnName="id"
-     * )
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $unit;
-
-    /**
-     * @ORM\Column(
-     *     type="string",
-     *     nullable=true
-     * )
-     * @Assert\Length(
-     *     max=15,
-     *     maxMessage="unit.name.long",
-     *     groups={
-     *         "tenant_contract",
-     *     }
-     * )
-     * @Serializer\Exclude
-     */
-    protected $search;
+    protected $object;
 
     /**
      * @ORM\Column(
@@ -117,8 +51,6 @@ abstract class Contract
      *         "default"="pending"
      *     }
      * )
-     * @Gedmo\Versioned
-     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $status;
 
@@ -129,24 +61,8 @@ abstract class Contract
      *     scale=2,
      *     nullable=true
      * )
-     * @Assert\NotBlank(
-     *     message="error.rent.empty",
-     *     groups={
-     *         "tenant_invite",
-     *         "import"
-     *     }
-     * )
-     * @Gedmo\Versioned
-     * @Assert\Regex(
-     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
-     *     groups = {
-     *         "import"
-     *     }
-     * )
-     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $rent = null;
-
 
     /**
      * @ORM\Column(
@@ -156,10 +72,8 @@ abstract class Contract
      *     nullable=true,
      *     name="uncollected_balance"
      * )
-     * @Gedmo\Versioned
      */
     protected $uncollectedBalance;
-
 
     /**
      * @ORM\Column(
@@ -172,7 +86,6 @@ abstract class Contract
      *          "default":"0.00"
      *     }
      * )
-     * @Gedmo\Versioned
      */
     protected $balance = 0.00;
 
@@ -187,20 +100,6 @@ abstract class Contract
      *          "default":"0.00"
      *     }
      * )
-     * @Assert\NotBlank(
-     *     message="error.balance.empty",
-     *     groups={
-     *         "import"
-     *     }
-     * )
-     * @Assert\Regex(
-     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
-     *     groups = {
-     *         "import"
-     *     }
-     * )
-	 * @Serializer\Groups({"RentJeevesImport"})
-     * @Gedmo\Versioned
      */
     protected $importedBalance = 0.00;
 
@@ -211,8 +110,6 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * @Serializer\Groups({"RentJeevesImport"})
-     * @Gedmo\Versioned
      */
     protected $paidTo;
 
@@ -224,7 +121,6 @@ abstract class Contract
      *         "default"="0"
      *     }
      * )
-     * @Gedmo\Versioned
      */
     protected $reporting = 0;
 
@@ -234,16 +130,6 @@ abstract class Contract
      *     type="date",
      *     nullable=true
      * )
-     * @Assert\NotBlank(
-     *     message="error.start.empty",
-     *     groups={
-     *         "tenant_invite",
-     *         "import"
-     *     }
-     * )
-     * @Serializer\SerializedName("startAt")
-     * @Serializer\Groups({"RentJeevesImport"})
-     * @Gedmo\Versioned
      */
     protected $startAt;
 
@@ -253,40 +139,40 @@ abstract class Contract
      *     type="date",
      *     nullable=true
      * )
-     * @Assert\NotBlank(
-     *     message="error.finish.empty",
-     *     groups={
-     *         "tenant_invite",
-     *         "import"
-     *     }
-     * )
-     * @Serializer\SerializedName("finishAt")
-	 * @Serializer\Groups({"RentJeevesImport"})
-     * @Gedmo\Versioned
      */
     protected $finishAt;
-    
 
     /**
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(
-     *     name="created_at",
-     *     type="datetime"
-     * )
-     * @Serializer\Exclude
+     * ORM\Column(name="object_class", type="string", length=255)
+     * Exclude from DB schema
+     *
+     * @var string $objectClass
      */
-    protected $createdAt;
+    protected $objectClass;
 
     /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(
-     *     name="updated_at",
-     *     type="datetime"
-     * )
-     * @Serializer\Exclude
-     * @Gedmo\Versioned
+     * ORM\Column(type="bigint")
+     * Exclude from DB schema
+     *
+     * @var integer $version
      */
-    protected $updatedAt;
+    protected $version;
+
+    /**
+     * ORM\Column(type="array", nullable=true)
+     * Exclude from DB schema
+     *
+     * @var string $data
+     */
+    protected $data;
+
+    /**
+     * ORM\Column(length=255, nullable=true)
+     * Exclude from DB schema
+     *
+     * @var string $data
+     */
+    protected $username;
 
     /**
      * @ORM\OneToMany(
@@ -313,21 +199,10 @@ abstract class Contract
      */
     protected $payments;
 
-    /**
-     * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\ContractHistory",
-     *     mappedBy="object",
-     *     cascade={"persist", "remove", "merge"},
-     *     orphanRemoval=true
-     * )
-     */
-    protected $histories;
-
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
-        $this->histories = new ArrayCollection();
     }
 
     /**
@@ -341,135 +216,46 @@ abstract class Contract
     }
 
     /**
-     * Set Tenant
+     * Set editorId
      *
-     * @param \RentJeeves\DataBundle\Entity\Tenant $tenant
-     * @return contract
+     * @param integer $editorId
+     * @return $this
      */
-    public function setTenant(\RentJeeves\DataBundle\Entity\Tenant $tenant)
+    public function setEditorId($editorId)
     {
-        $this->tenant = $tenant;
+        $this->editorId = $editorId;
+
         return $this;
     }
 
     /**
-     * Get Tenant
+     * Get editorId
      *
-     * @return \RentJeeves\DataBundle\Entity\Tenant
+     * @return integer
      */
-    public function getTenant()
+    public function getEditorId()
     {
-        return $this->tenant;
+        return $this->editorId;
     }
 
     /**
-     * Set Holding
+     * @param $object
      *
-     * @param Holding $holding
-     * @return Contract
+     * @return $this
      */
-    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding)
+    public function setObject($object)
     {
-        $this->holding = $holding;
+        $this->object = $object;
+
         return $this;
     }
 
     /**
-     * Get Holding
-     *
-     * @return Holding
+     * @return \RentJeeves\DataBundle\Entity\Contract
      */
-    public function getHolding()
+    public function getObject()
     {
-        return $this->holding;
-    }
-
-    /**
-     * Set Group
-     *
-     * @param Holding $holding
-     * @return Contract
-     */
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
-    {
-        $this->group = $group;
-        return $this;
-    }
-
-    /**
-     * Get Group
-     *
-     * @return \CreditJeeves\DataBundle\Entity\Group
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
-     * Set Property
-     *
-     * @param Property $property
-     * @return Contract
-     */
-    public function setProperty(Property $property)
-    {
-        $this->property = $property;
-        return $this;
-    }
-
-    /**
-     * Get Property
-     *
-     * @return \RentJeeves\DataBundle\Entity\Property
-     */
-    public function getProperty()
-    {
-        return $this->property;
-    }
-
-    /**
-     * Set Unit
-     *
-     * @param Unit $unit
-     * @return Contract
-     */
-    public function setUnit(Unit $unit = null)
-    {
-        $this->unit = $unit;
-        return $this;
-    }
-
-    /**
-     * Get Unit
-     *
-     * @return Unit
-     */
-    public function getUnit()
-    {
-        return $this->unit;
-    }
-
-    /**
-     * Set search
-     *
-     * @param string $search
-     * @return Contract
-     */
-    public function setSearch($search)
-    {
-        $this->search = $search;
-        return $this;
-    }
-
-    /**
-     * Get search
-     *
-     * @return string
-     */
-    public function getSearch()
-    {
-        return $this->search;
+        return $this->object;
     }
 
     /**
@@ -568,8 +354,8 @@ abstract class Contract
     /**
      * Set Paid to
      *
-     * @param \DateTime $paidTo
-     * @return Contract
+     * @param DateTime $paidTo
+     * @return $this
      */
     public function setPaidTo($paidTo)
     {
@@ -580,7 +366,7 @@ abstract class Contract
     /**
      * Get startAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getPaidTo()
     {
@@ -595,7 +381,7 @@ abstract class Contract
      * Set Reporting
      *
      * @param boolean $reporting
-     * @return Contract
+     * @return $this
      */
     public function setReporting($reporting)
     {
@@ -616,8 +402,8 @@ abstract class Contract
     /**
      * Set startAt
      *
-     * @param \DateTime $startAt
-     * @return Contract
+     * @param DateTime $startAt
+     * @return $this
      */
     public function setStartAt($startAt)
     {
@@ -628,7 +414,7 @@ abstract class Contract
     /**
      * Get startAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getStartAt()
     {
@@ -638,8 +424,8 @@ abstract class Contract
     /**
      * Set finishAt
      *
-     * @param \DateTime $finishAt
-     * @return Contract
+     * @param DateTime $finishAt
+     * @return $this
      */
     public function setFinishAt($finishAt)
     {
@@ -650,7 +436,7 @@ abstract class Contract
     /**
      * Get finishAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getFinishAt()
     {
@@ -658,32 +444,10 @@ abstract class Contract
     }
 
     /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     * @return Contract
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
-     * @return Contract
+     * @param DateTime $updatedAt
+     * @return $this
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -694,7 +458,7 @@ abstract class Contract
     /**
      * Get updatedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {
@@ -705,7 +469,7 @@ abstract class Contract
      * Add payment
      *
      * @param \CreditJeeves\DataBundle\Entity\Operation $operation
-     * @return Contract
+     * @return $this
      */
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
@@ -737,7 +501,7 @@ abstract class Contract
      * Add payment
      *
      * @param \RentJeeves\DataBundle\Entity\Payment $payment
-     * @return Contract
+     * @return $this
      */
     public function addPayment(\RentJeeves\DataBundle\Entity\Payment $payment)
     {

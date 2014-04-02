@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\Tradeline;
 use CreditJeeves\DataBundle\Entity\ApplicantIncentive;
 use CreditJeeves\ArfBundle\Map\ArfTradelines;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
@@ -51,6 +52,10 @@ class Doctrine
         
     }
 
+    /**
+     * @param ReportPrequal $Report
+     * @param EntityManager $em
+     */
     private function setScore(ReportPrequal $Report, $em)
     {
         $arfReport = $Report->getArfReport();
@@ -64,6 +69,10 @@ class Doctrine
             $em->persist($score);
     }
 
+    /**
+     * @param Tradeline $tradeline
+     * @param EntityManager $em
+     */
     private function checkCompleted(Tradeline $tradeline, $em)
     {
         $isCompleted = $tradeline->getIsCompleted();
