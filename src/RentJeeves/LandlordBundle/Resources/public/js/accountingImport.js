@@ -68,19 +68,19 @@ function accountingImport() {
     }
 
     this.getStatusText = function(data) {
-        if (data.isSkipped) {
+        if (data.is_skipped) {
             return Translator.trans('import.status.skip');
         }
 
-        if (!data.isValid) {
+        if (!data.is_valid) {
             return Translator.trans('import.status.error');
         }
 
-        if (data.Contract.status == 'finished' && data.getMoveOut !== null) {
+        if (data.contract.status == 'finished' && data.move_out !== null) {
             return Translator.trans('import.status.ended');
         }
 
-        if (data.Contract.id !== null && data.Tenant.id !== null) {
+        if (data.contract.id !== null && data.tenant.id !== null) {
             return Translator.trans('import.status.match');
         }
 
@@ -233,11 +233,11 @@ function accountingImport() {
     };
 
     this.getUnitClass = function(data) {
-        if (data.isSkipped) {
+        if (data.is_skipped) {
             return '';
         }
 
-        if (data.isValidUnit) {
+        if (data.is_valid_unit) {
             return '';
         }
 
@@ -245,11 +245,11 @@ function accountingImport() {
     }
 
     this.getUnitTitle = function(data) {
-        if (data.isSkipped) {
+        if (data.is_skipped) {
             return '';
         }
 
-        if (data.isValidUnit) {
+        if (data.is_valid_unit) {
             return '';
         }
 
@@ -257,11 +257,11 @@ function accountingImport() {
     }
 
     this.getResidentIdClass = function(data) {
-        if (data.isSkipped) {
+        if (data.is_skipped) {
             return '';
         }
 
-        if (data.isValidResidentId) {
+        if (data.is_valid_resident_id) {
             return '';
         }
 
@@ -269,11 +269,11 @@ function accountingImport() {
     }
 
     this.getResidentIdTitle = function(data) {
-        if (data.isSkipped) {
+        if (data.is_skipped) {
             return '';
         }
 
-        if (data.isValidResidentId) {
+        if (data.is_valid_resident_id) {
             return '';
         }
 

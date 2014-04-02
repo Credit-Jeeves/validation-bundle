@@ -2,14 +2,14 @@
 
 <tr data-bind="
     attr: {'class': $root.getClassLine($data)},
-    if: !isSkipped && isValid && ((Contract.id && Contract.status != 'finished') || (!Contract.id && Tenant.id && Contract.status != 'finished'))">
+    if: !is_skipped && is_valid && ((contract.id && contract.status != 'finished') || (!contract.id && tenant.id && contract.status != 'finished'))">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
-    <td data-bind="text:Contract.unit.name"></td>
-    <td data-bind="text:Tenant.resident_id"></td>
-    <td data-bind="text:Tenant.first_name"></td>
-    <td data-bind="text:Tenant.last_name"></td>
-    <td data-bind="text:Tenant.email"></td>
+    <td data-bind="text:contract.unit.name"></td>
+    <td data-bind="text:tenant.resident_id"></td>
+    <td data-bind="text:tenant.first_name"></td>
+    <td data-bind="text:tenant.last_name"></td>
+    <td data-bind="text:tenant.email"></td>
     <td>
         {{
             form_widget(
@@ -18,7 +18,7 @@
                     "attr":
                     {
                         "data-bind":
-                        "value: Contract.rent,
+                        "value: contract.rent,
                          attr:
                             {
                                 'class': number+'_rent import_contract_rent '+$root.getErrorClass($data, 'import_contract_rent'),
@@ -34,7 +34,7 @@
                 "attr":
                 {
                 "data-bind":
-                    "value: Contract.imported_balance,
+                    "value: contract.imported_balance,
                      attr:
                         {
                             'class': number+'_balance import_contract_importedBalance '+$root.getErrorClass($data, 'import_contract_importedBalance'),
@@ -51,12 +51,12 @@
                 "attr":
                 {
                 "data-bind": "
-                    value: $root.formatDate(Contract.startAt),
+                    value: $root.formatDate(contract.startAt),
                     attr: {
                         'class': number+'_startAt import_contract_startAt datepicker '+$root.getErrorClass($data, 'import_contract_startAt'),
                         'title': $root.getErrorTitle($data, 'import_contract_startAt')
                     },
-                    datepicker: $root.formatDate(Contract.startAt),
+                    datepicker: $root.formatDate(contract.startAt),
                     datepickerOptions: $root.getDatePickerOptions(),
                     datepickerFieldName: 'startAt'
                     ",
@@ -69,8 +69,8 @@
                 "attr":
                 {
                 "data-bind":
-                    "value: $root.formatDate(Contract.finishAt),
-                     datepicker: $root.formatDate(Contract.finishAt),
+                    "value: $root.formatDate(contract.finishAt),
+                     datepicker: $root.formatDate(contract.finishAt),
                      datepickerOptions: $root.getDatePickerOptions(),
                      datepickerFieldName: 'finishAt',
                      attr: {
@@ -93,6 +93,6 @@
         }
         )}} {{ 'skip'|trans }}
     </td>
-    {{ form_widget(form._token, {"attr": {"data-bind": "value: csrfToken, attr: {'class': number+'_token import_contract__token'}"}}) }}
+    {{ form_widget(form._token, {"attr": {"data-bind": "value: csrf_token, attr: {'class': number+'_token import_contract__token'}"}}) }}
     {{ form_end(form) }}
 </tr>

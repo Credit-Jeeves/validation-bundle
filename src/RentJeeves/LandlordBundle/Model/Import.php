@@ -14,55 +14,47 @@ class Import
 {
     /**
      * @Serializer\Type("boolean")
-     * @Serializer\SerializedName("isSkipped")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $isSkipped;
 
     /**
      * @Serializer\Type("integer")
-     * @Serializer\SerializedName("number")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $number;
 
     /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Tenant")
-     * @Serializer\SerializedName("Tenant")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $tenant;
 
     /**
      * @Serializer\Type("RentJeeves\DataBundle\Entity\Contract")
-     * @Serializer\SerializedName("Contract")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $contract;
 
     /**
      * @Serializer\Type("string")
-     * @Serializer\SerializedName("csrfToken")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $csrfToken = '';
 
     /**
      * @Serializer\Type("boolean")
-     * @Serializer\SerializedName("isValidUnit")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $isValidUnit = false;
 
     /**
      * @Serializer\Type("boolean")
-     * @Serializer\SerializedName("isValidResidentId")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $isValidResidentId = false;
 
     /**
-     * @Serializer\SerializedName("moveOut")
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("DateTime")
      */
@@ -223,7 +215,7 @@ class Import
 
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("isValid")
+     * @Serializer\SerializedName("is_valid")
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("boolean")
      */

@@ -1,17 +1,17 @@
 {% form_theme form "LandlordBundle::form_widget_attributes.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !isSkipped && isValid && !Contract.id && !Tenant.id && Contract.status != 'finished'">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: !is_skipped && is_valid && !contract.id && !tenant.id && contract.status != 'finished'">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
-    <td data-bind="text:Contract.unit.name"></td>
-    <td data-bind="text:Tenant.resident_id"></td>
+    <td data-bind="text:contract.unit.name"></td>
+    <td data-bind="text:tenant.resident_id"></td>
     <td>
         {{  form_widget(
                 form.tenant.first_name,
                 {"attr":
                     {
                         "data-bind":
-                            "value: Tenant.first_name,
+                            "value: tenant.first_name,
                              attr:
                                 {
                                     'class': number+'_first_name import_new_user_with_contract_tenant_first_name '+$root.getErrorClass($data, 'import_new_user_with_contract_tenant_first_name'),
@@ -28,7 +28,7 @@
             {"attr":
                 {
                     "data-bind":
-                        "value: Tenant.last_name,
+                        "value: tenant.last_name,
                          attr:
                             {
                                 'class': number+'_last_name import_new_user_with_contract_tenant_last_name '+$root.getErrorClass($data, 'import_new_user_with_contract_tenant_last_name'),
@@ -44,7 +44,7 @@
             {"attr":
                 {
                     "data-bind":
-                        "value: Tenant.email,
+                        "value: tenant.email,
                          attr: {
                             'class': number+'_email import_new_user_with_contract_tenant_email '+$root.getErrorClass($data, 'import_new_user_with_contract_tenant_email'),
                             'title': $root.getErrorTitle($data, 'import_new_user_with_contract_tenant_email')
@@ -59,7 +59,7 @@
             {"attr":
                 {
                     "data-bind":
-                        "value: Contract.rent,
+                        "value: contract.rent,
                          attr: {
                             'class': number+'_rent import_new_user_with_contract_contract_rent '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_rent'),
                             'title': $root.getErrorTitle($data, 'import_new_user_with_contract_contract_rent')
@@ -72,7 +72,7 @@
             {"attr":
                 {
                     "data-bind":
-                        "value: Contract.imported_balance,
+                        "value: contract.imported_balance,
                          attr: {
                             'class': number+'_balance import_new_user_with_contract_contract_importedBalance '+$root.getErrorClass($data, 'import_new_user_with_contract_contract_importedBalance'),
                             'title': $root.getErrorTitle($data, 'import_new_user_with_contract_contract_importedBalance')
@@ -87,8 +87,8 @@
             {
                 "attr":{
                     "data-bind":
-                        "value: $root.formatDate(Contract.startAt),
-                         datepicker: $root.formatDate(Contract.startAt),
+                        "value: $root.formatDate(contract.startAt),
+                         datepicker: $root.formatDate(contract.startAt),
                          datepickerOptions: $root.getDatePickerOptions(),
                          datepickerFieldName: 'startAt',
                          attr:{
@@ -103,8 +103,8 @@
             {
                 "attr": {
                     "data-bind":
-                        "value: $root.formatDate(Contract.finishAt),
-                         datepicker: $root.formatDate(Contract.finishAt),
+                        "value: $root.formatDate(contract.finishAt),
+                         datepicker: $root.formatDate(contract.finishAt),
                          datepickerOptions: $root.getDatePickerOptions(),
                          datepickerFieldName: 'finishAt',
                          attr: {
@@ -142,7 +142,7 @@
     {{ form_widget(
         form._token,
         {
-            "attr": {"data-bind": "value: csrfToken, attr: {'class': number+'_token import_new_user_with_contract_tenant__token'}"}
+            "attr": {"data-bind": "value: csrf_token, attr: {'class': number+'_token import_new_user_with_contract_tenant__token'}"}
         }) }}
     {{ form_end(form) }}
 </tr>
