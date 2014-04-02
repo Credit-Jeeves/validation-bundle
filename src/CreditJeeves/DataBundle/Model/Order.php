@@ -70,7 +70,7 @@ abstract class Order
      *      nullable=true
      * )
      */
-    protected $amount;
+    protected $sum;
 
     /**
      * @ORM\Column(
@@ -221,26 +221,26 @@ abstract class Order
     }
 
     /**
-     * Set amount
+     * Set sum
      *
-     * @param double $amount
+     * @param double $sum
      * @return Order
      */
-    public function setAmount($amount)
+    public function setSum($sum)
     {
-        $this->amount = $amount;
+        $this->sum = $sum;
     
         return $this;
     }
     
     /**
-     * Get amount
+     * Get sum
      *
      * @return double
      */
-    public function getAmount()
+    public function getSum()
     {
-        return $this->amount;
+        return $this->sum;
     }
     
     /**

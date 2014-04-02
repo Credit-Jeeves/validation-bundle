@@ -39,9 +39,9 @@ class LoggableListenerCase extends BaseTestCase
         $em->persist($lead);
         $em->flush($lead);
 
-        $contractHistory = $em->getRepository('DataBundle:LeadHistory')->findByObjectId($lead->getId());
-        $this->assertNotNull($contractHistory);
-        $this->assertCount(1, $contractHistory);
+        $leadHistory = $em->getRepository('DataBundle:LeadHistory')->findByObjectId($lead->getId());
+        $this->assertNotNull($leadHistory);
+        $this->assertCount(1, $leadHistory);
 
         // Update
         $lead->setTargetScore(690);
@@ -50,9 +50,9 @@ class LoggableListenerCase extends BaseTestCase
         $em->clear();
         static::$kernel = null;
 
-        $contractHistory = $em->getRepository('DataBundle:LeadHistory')->findByObjectId($lead->getId());
-        $this->assertNotNull($contractHistory);
-        $this->assertCount(2, $contractHistory);
+        $leadHistory = $em->getRepository('DataBundle:LeadHistory')->findByObjectId($lead->getId());
+        $this->assertNotNull($leadHistory);
+        $this->assertCount(2, $leadHistory);
 
     }
 }

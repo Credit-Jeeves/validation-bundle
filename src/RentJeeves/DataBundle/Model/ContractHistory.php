@@ -46,14 +46,6 @@ abstract class ContractHistory extends AbstractLogEntry
 
     /**
      * @ORM\Column(
-     *     type="string",
-     *     nullable=true
-     * )
-     */
-    protected $search;
-
-    /**
-     * @ORM\Column(
      *     type="ContractStatus",
      *     options={
      *         "default"="pending"
@@ -151,46 +143,34 @@ abstract class ContractHistory extends AbstractLogEntry
     protected $finishAt;
 
     /**
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(
-     *     name="updated_at",
-     *     type="datetime"
-     * )
-     */
-    protected $updatedAt;
-
-    /**
-     * @var string $loggedAt
+     * ORM\Column(name="object_class", type="string", length=255)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(name="logged_at", type="datetime")
-     */
-    protected $loggedAt;
-
-    /**
      * @var string $objectClass
-     *
-     * @~ORM\Column(name="object_class", type="string", length=255)
      */
     protected $objectClass;
 
     /**
-     * @var integer $version
+     * ORM\Column(type="bigint")
+     * Exclude from DB schema
      *
-     * @~ORM\Column(type="bigint")
+     * @var integer $version
      */
     protected $version;
 
     /**
-     * @var string $data
+     * ORM\Column(type="array", nullable=true)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(type="array", nullable=true)
+     * @var string $data
      */
     protected $data;
 
     /**
-     * @var string $data
+     * ORM\Column(length=255, nullable=true)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(length=255, nullable=true)
+     * @var string $data
      */
     protected $username;
 
@@ -276,138 +256,6 @@ abstract class ContractHistory extends AbstractLogEntry
     public function getObject()
     {
         return $this->object;
-    }
-
-    /**
-     * Set Tenant
-     *
-     * @param \RentJeeves\DataBundle\Entity\Tenant $tenant
-     * @return $this
-     */
-    public function setTenant(\RentJeeves\DataBundle\Entity\Tenant $tenant)
-    {
-        $this->tenant = $tenant;
-        return $this;
-    }
-
-    /**
-     * Get Tenant
-     *
-     * @return \RentJeeves\DataBundle\Entity\Tenant
-     */
-    public function getTenant()
-    {
-        return $this->tenant;
-    }
-
-    /**
-     * Set Holding
-     *
-     * @param Holding $holding
-     * @return $this
-     */
-    public function setHolding(\CreditJeeves\DataBundle\Entity\Holding $holding)
-    {
-        $this->holding = $holding;
-        return $this;
-    }
-
-    /**
-     * Get Holding
-     *
-     * @return Holding
-     */
-    public function getHolding()
-    {
-        return $this->holding;
-    }
-
-    /**
-     * Set Group
-     *
-     * @param Holding $holding
-     * @return $this
-     */
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
-    {
-        $this->group = $group;
-        return $this;
-    }
-
-    /**
-     * Get Group
-     *
-     * @return \CreditJeeves\DataBundle\Entity\Group
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
-     * Set Property
-     *
-     * @param Property $property
-     * @return $this
-     */
-    public function setProperty(Property $property)
-    {
-        $this->property = $property;
-        return $this;
-    }
-
-    /**
-     * Get Property
-     *
-     * @return \RentJeeves\DataBundle\Entity\Property
-     */
-    public function getProperty()
-    {
-        return $this->property;
-    }
-
-    /**
-     * Set Unit
-     *
-     * @param Unit $unit
-     * @return $this
-     */
-    public function setUnit(Unit $unit = null)
-    {
-        $this->unit = $unit;
-        return $this;
-    }
-
-    /**
-     * Get Unit
-     *
-     * @return Unit
-     */
-    public function getUnit()
-    {
-        return $this->unit;
-    }
-
-    /**
-     * Set search
-     *
-     * @param string $search
-     * @return $this
-     */
-    public function setSearch($search)
-    {
-        $this->search = $search;
-        return $this;
-    }
-
-    /**
-     * Get search
-     *
-     * @return string
-     */
-    public function getSearch()
-    {
-        return $this->search;
     }
 
     /**

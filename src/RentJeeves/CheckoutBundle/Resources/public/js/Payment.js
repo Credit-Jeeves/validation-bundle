@@ -63,9 +63,10 @@ function Payment(parent, paidTo) {
         },
         write: function (value) {
             var date = Date.parseExact(value,  "M/d/yyyy");
-            this.startMonth(date.toString('M'));
-            this.startYear(date.toString('yyyy'));
-            this.dueDate(date.toString('d'));
+
+            this.startMonth(date.getMonth()+1);
+            this.startYear(date.getFullYear());
+            this.dueDate(date.getDate());
         },
         owner: this
     });

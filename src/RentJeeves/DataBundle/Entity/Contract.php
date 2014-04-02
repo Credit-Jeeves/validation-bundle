@@ -364,21 +364,13 @@ class Contract extends Base
         $orders = $repo->getContractHistory($this);
         /** @var Order $order */
         foreach ($orders as $order) {
-            $orderDate = $order->getCreatedAt();
-            $lastPaymentDate = $orderDate->format('m/d/Y');
-            $late = $order->getDaysLate();
-            if ($late < 0) {
-//                @TODO: temporary commented. Should be removed if it helps to fix history.
-//                $late--;
-                $orderDate = $orderDate->modify('+'.(-1)*$late.' days');
-            } elseif ($late > 0) {
-//                @TODO: temporary commented. Should be removed if it helps to fix history.
-//                $late++;
-                $orderDate = $orderDate->modify('-'.$late.' days');
-            }
-            $nYear = $orderDate->format('Y');
-            $nMonth = $orderDate->format('m');
-            $interval = $currentDate->diff($orderDate)->format('%r%a');
+            $operation = $order->getRentOperation();
+            $paidFor = $operation->getPaidFor();
+            $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
+            $late = $operation->getDaysLate();
+            $nYear = $paidFor->format('Y');
+            $nMonth = $paidFor->format('m');
+            $interval = $currentDate->diff($paidFor)->format('%r%a');
             $status = $order->getStatus();
             switch ($status) {
                 case OrderStatus::NEWONE:
@@ -387,7 +379,7 @@ class Contract extends Base
                     break;
                 case OrderStatus::COMPLETE:
                     if ($interval >= $lastDate) {
-                        $result['last_amount'] = $order->getAmount();
+                        $result['last_amount'] = $operation->getAmount();
                         $result['last_date'] = $lastPaymentDate;
                     }
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
@@ -397,9 +389,9 @@ class Contract extends Base
                         $payments[$nYear][$nMonth]['text'] = $late;
                     }
                     if (!isset($payments[$nYear][$nMonth]['amount'])) {
-                        $payments[$nYear][$nMonth]['amount'] = $order->getAmount();
+                        $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
                     } else {
-                        $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
+                        $payments[$nYear][$nMonth]['amount']+= $operation->getAmount();
                     }
                     break;
                 default:

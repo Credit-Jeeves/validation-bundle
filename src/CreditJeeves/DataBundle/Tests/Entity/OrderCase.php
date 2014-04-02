@@ -2,31 +2,65 @@
 namespace CreditJeeves\DataBundle\Tests\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
 use RentJeeves\TestBundle\BaseTestCase;
 use DateTime;
 
 class OrderCase extends BaseTestCase
 {
-    public static function dataProviderForDaysLate()
+    /**
+     * @test
+     */
+    public function getPostMonth()
     {
-        return array(
-            array(new DateTime('2014-02-04'), new DateTime('2014-03-01'), 25),
-            array(new DateTime('2014-03-01'), new DateTime('2014-02-04'), -25),
-            array(new DateTime('2014-03-01'), new DateTime('2014-03-01'), 0),
-            array(new DateTime('2014-03-01'), new DateTime('2014-03-02'), 1),
-            array(new DateTime('2014-03-01'), new DateTime('2014-02-28'), -1),
-        );
+        $order = new Order();
+
+        $operationRent = new Operation();
+        $operationRent->setType(OperationType::RENT);
+        $operationRent->setPaidFor(new DateTime('2014-02-04'));
+        $order->addOperation($operationRent);
+
+        $operationOther = new Operation();
+        $operationOther->setType(OperationType::OTHER);
+        $order->addOperation($operationOther);
+
+        $this->assertEquals('2014-02-04T00:02:2', $order->getPostMonth());
     }
 
     /**
      * @test
-     * @dataProvider dataProviderForDaysLate
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Order have more than ONE 'RENT' operation
      */
-    public function getDaysLate($createdAt, $paidFor, $result)
+    public function getPostMonthException()
     {
-        $operation = new Operation();
-        $operation->setCreatedAt($createdAt);
-        $operation->setPaidFor($paidFor);
-        $this->assertEquals($result, $operation->getDaysLate());
+        $order = new Order();
+
+        $operationRent = new Operation();
+        $operationRent->setType(OperationType::RENT);
+        $order->addOperation($operationRent);
+
+        $operationRent2 = new Operation();
+        $operationRent2->setType(OperationType::RENT);
+        $order->addOperation($operationRent2);
+
+        $order->getPostMonth();
+    }
+
+    /**
+     * @test
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Order must have ONE 'RENT' operation
+     */
+    public function getPostMonthException2()
+    {
+        $order = new Order();
+
+        $operationOther = new Operation();
+        $operationOther->setType(OperationType::OTHER);
+        $order->addOperation($operationOther);
+
+        $order->getPostMonth();
     }
 }

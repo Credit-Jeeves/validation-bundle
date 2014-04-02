@@ -105,7 +105,6 @@ abstract class Contract
      *     }
      * )
      * @Serializer\Exclude
-     * @Gedmo\Versioned
      */
     protected $search;
 

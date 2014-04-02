@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\LeadStatus;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Loggable\Entity\MappedSuperclass\AbstractLogEntry;
 use Gedmo\Mapping\Annotation as Gedmo;
+use DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -95,7 +96,7 @@ abstract class LeadHistory extends AbstractLogEntry
     protected $status = LeadStatus::NEWONE;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="updated_at", type="datetime")
      * @Gedmo\Timestampable(on="update")
@@ -110,37 +111,42 @@ abstract class LeadHistory extends AbstractLogEntry
     protected $action;
 
     /**
-     * @var string $loggedAt
+     * ORM\Column(name="logged_at", type="datetime")
+     * Exclude from DB schema
      *
-     * @~ORM\Column(name="logged_at", type="datetime")
+     * @var DateTime $loggedAt
      */
     protected $loggedAt;
 
     /**
-     * @var string $objectClass
+     * ORM\Column(name="object_class", type="string", length=255)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(name="object_class", type="string", length=255)
+     * @var string $objectClass
      */
     protected $objectClass;
 
     /**
-     * @var integer $version
+     * ORM\Column(type="bigint")
+     * Exclude from DB schema
      *
-     * @~ORM\Column(type="bigint")
+     * @var integer $version
      */
     protected $version;
 
     /**
-     * @var string $data
+     * ORM\Column(type="array", nullable=true)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(type="array", nullable=true)
+     * @var string $data
      */
     protected $data;
 
     /**
-     * @var string $data
+     * ORM\Column(length=255, nullable=true)
+     * Exclude from DB schema
      *
-     * @~ORM\Column(length=255, nullable=true)
+     * @var string $data
      */
     protected $username;
 
@@ -385,7 +391,7 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return LeadHistory
      */
     public function setUpdatedAt($updatedAt)
@@ -398,7 +404,7 @@ abstract class LeadHistory extends AbstractLogEntry
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return DateTime 
      */
     public function getUpdatedAt()
     {
