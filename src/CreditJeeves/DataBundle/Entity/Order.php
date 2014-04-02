@@ -654,6 +654,9 @@ class Order extends BaseOrder
     {
         $result = array();
         $result['status'] = $this->getStatus();
+        if ($this->getStatus() == OrderStatus::ERROR) {
+            $result['errorMessage'] = $this->getHeartlandErrorMessage();
+        }
         $result['statusStyle'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
         $result['property'] = $this->getContract()->getRentAddress();

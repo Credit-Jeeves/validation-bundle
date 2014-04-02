@@ -17,7 +17,9 @@
                 </thead>
                 <tbody data-bind="foreach: tenantPayments">
                     <tr class="contracts">
-                        <td data-bind="text: status, css: 'actions-status ' + statusStyle()" style="text-transform: uppercase"></td>
+                        <td
+                            data-bind="text: status, css: 'actions-status ' + statusStyle(), attr: {title: errorMessage}"
+                            style="text-transform: uppercase"></td>
                         <td data-bind="text: date"></td>
                         <td data-bind="text: property"></td>
                         <td data-bind="text: rent"></td>
