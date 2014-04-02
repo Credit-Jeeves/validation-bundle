@@ -164,7 +164,9 @@ class AccountingController extends Controller
 
         $dataView = array();
         $headers = array_keys($data[1]);
-
+        /**
+         * Generate array values for view: 2 rows from csv file and choice  form field
+         */
         for ($i=1; $i < count($data[1])+1; $i++) {
             $dataView[] = array(
                 'name' => $headers[$i-1],
