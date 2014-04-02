@@ -182,7 +182,7 @@ class ImportProcess
         }
         $unit = new Unit();
         $unit->setName($row[ImportMapping::KEY_UNIT]);
-        $unit->setProperty($this->storage->getProperty());
+        $unit->setProperty($this->getProperty());
         $unit->setHolding($this->user->getHolding());
         $unit->setGroup($this->user->getCurrentGroup());
         return $unit;
@@ -196,7 +196,7 @@ class ImportProcess
         } else {
             $contract->setStatus(ContractStatus::INVITE);
         }
-        $contract->setProperty($this->storage->getProperty());
+        $contract->setProperty($this->getProperty());
         $contract->setGroup($this->user->getCurrentGroup());
         $contract->setHolding($this->user->getHolding());
         $tenant->addContract($contract);
@@ -458,11 +458,11 @@ class ImportProcess
                     break;
                 case 'import_contract':
                     $contract = $form->getData();
+                    if (!$contract->getId()) {
+                        $this->emailSendingQueue[] = $import;
+                    }
                     $this->em->persist($contract);
                     $this->em->persist($contract->getUnit());
-                    if (!$contract->getId()) {
-                        $this->emailSendingQueue['sendRjTenantInvite'] = $import;
-                    }
                     break;
                 case 'import_new_user_with_contract':
                     $data       = $form->getData();
@@ -474,7 +474,7 @@ class ImportProcess
                     $this->em->persist($unit);
                     $this->em->persist($contract);
                     if ($sendInvite) {
-                        $this->emailSendingQueue['sendRjTenantInvite'] = $import;
+                        $this->emailSendingQueue[] = $import;
                     }
                     break;
             }

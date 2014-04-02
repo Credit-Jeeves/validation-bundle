@@ -147,7 +147,7 @@ class ImportCase extends BaseTestCase
         $this->waitReviewAndPost();
 
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(count($errorFields), 5);
+        $this->assertEquals(count($errorFields), 4);
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertEquals(count($trs), 2, "Count statuses is wrong");
@@ -193,7 +193,7 @@ class ImportCase extends BaseTestCase
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(8, $email, 'Wrong number of emails');
+        $this->assertCount(9, $email, 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */
@@ -208,8 +208,8 @@ class ImportCase extends BaseTestCase
         );
         $this->assertNotNull($tenant);
         $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
-        $this->assertEquals($tenant->getLastName(), 'Direnna Jacquelyn');
-        $this->assertEquals($tenant->getLastName(), 'Direnna Jacquelyn');
+        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
+        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
         $this->assertEquals($tenant->getResidentId(), 't0019851');
         /**
          * @var $contract Contract

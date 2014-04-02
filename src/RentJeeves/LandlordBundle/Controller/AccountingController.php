@@ -297,7 +297,7 @@ class AccountingController extends Controller
         $result['rows'] = $rows;
         $result['total'] = $total;
 
-        $response = Response($this->get('jms_serializer')->serialize($result, 'json', $context));
+        $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
