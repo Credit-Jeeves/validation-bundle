@@ -202,8 +202,6 @@ class ImportProcess
         $tenant->addContract($contract);
         $contract->setTenant($tenant);
         $contract->setUnit($this->getUnit($row));
-        $contract->setCreatedAt(new DateTime());
-        $contract->setUpdatedAt(new DateTime());
 
         return $contract;
     }
@@ -462,6 +460,9 @@ class ImportProcess
                     $contract = $form->getData();
                     $this->em->persist($contract);
                     $this->em->persist($contract->getUnit());
+                    if (!$contract->getId()) {
+                        $this->emailSendingQueue['sendRjTenantInvite'] = $import;
+                    }
                     break;
                 case 'import_new_user_with_contract':
                     $data       = $form->getData();
@@ -473,7 +474,7 @@ class ImportProcess
                     $this->em->persist($unit);
                     $this->em->persist($contract);
                     if ($sendInvite) {
-                        $this->emailSendingQueue[] = $import;
+                        $this->emailSendingQueue['sendRjTenantInvite'] = $import;
                     }
                     break;
             }

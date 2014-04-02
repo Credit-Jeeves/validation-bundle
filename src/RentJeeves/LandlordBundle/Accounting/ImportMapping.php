@@ -92,12 +92,13 @@ class ImportMapping
     {
         $mapping    = $this->storage->getMapping();
         $mappedData = array();
-        $i          = 1;
-        foreach ($row as $value) {
+        $countedFields = count($row);
+        $data = array_values($row);
+        for ($i = 1; $i <= $countedFields; $i++) {
             if (isset($mapping[$i])) {
-                $mappedData[$mapping[$i]] = $value;
+                $indexData = $i-1;
+                $mappedData[$mapping[$i]] = $data[$indexData];
             }
-            $i++;
         }
 
         return $mappedData;
