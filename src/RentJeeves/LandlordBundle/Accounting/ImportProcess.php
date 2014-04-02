@@ -260,11 +260,11 @@ class ImportProcess
         $tenant = $import->getTenant();
         $contract = $import->getContract();
 
-        if (preg_match('/^[A-Za-z_0-9\-]{1,50}+$/i', $contract->getUnit()->getName())) {
+        if (preg_match('/^[A-Za-z_0-9\-]{1,50}$/i', $contract->getUnit()->getName())) {
             $import->setIsValidUnit(true);
         }
 
-        if (preg_match('/^[A-Za-z_0-9]{1,100}+$/i', $tenant->getResidentId())) {
+        if (preg_match('/^[A-Za-z_0-9]{1,100}$/i', $tenant->getResidentId())) {
             $import->setIsValidResidentId(true);
         }
     }
@@ -432,7 +432,7 @@ class ImportProcess
             return;
         }
 
-        self::prepeaSubmit($postData, $form->getName());
+        self::prepareSubmit($postData, $form->getName());
         if ($import->getIsSkipped() ||
             isset($postData['contract']['skip']) ||
             isset($postData['skip']) ||
@@ -511,7 +511,17 @@ class ImportProcess
         $this->emailSendingQueue = array();
     }
 
-    public static function prepeaSubmit(&$formData, $formName)
+
+    protected function getProperty()
+    {
+        return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
+    }
+
+    /**
+     * We need remove form name from key of array and leave just name form field
+     * it's need for form submit
+     */
+    public static function prepareSubmit(&$formData, $formName)
     {
         $length = strlen($formName) + 1;
         foreach ($formData as $key => $value) {

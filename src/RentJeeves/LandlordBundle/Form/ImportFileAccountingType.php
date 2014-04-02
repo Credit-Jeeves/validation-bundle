@@ -14,9 +14,6 @@ class ImportFileAccountingType extends AbstractType
 {
     protected $user;
 
-    protected $group;
-
-
     public function __construct($user)
     {
         $this->user  = $user;
@@ -46,8 +43,7 @@ class ImportFileAccountingType extends AbstractType
                 'query_builder' => function (EntityRepository $er) use ($groups) {
                     if (empty($groups)) {
                         $query = $er->createQueryBuilder('p');
-                        $query->where('p.id = :zero');
-                        $query->setParameter('zero', 0);
+                        $query->where('p.id = 0');
                         return $query;
                     }
 

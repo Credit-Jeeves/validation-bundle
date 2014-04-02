@@ -3,7 +3,6 @@
 namespace RentJeeves\LandlordBundle\Accounting;
 
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
-use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -34,14 +33,12 @@ class ImportStorage
 
     /**
      * @InjectParams({
-     *     "session"          = @Inject("session"),
-     *     "em"               = @Inject("doctrine.orm.default_entity_manager")
+     *     "session"          = @Inject("session")
      * })
      */
-    public function __construct(Session $session, EntityManager $em)
+    public function __construct(Session $session)
     {
         $this->session     = $session;
-        $this->em          = $em;
     }
 
     public function setFilePath($fileName)
@@ -124,10 +121,5 @@ class ImportStorage
         $data[self::IMPORT_FILE_PATH] = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $data[self::IMPORT_FILE_PATH];
 
         return $data;
-    }
-
-    public function getProperty()
-    {
-        return $this->em->getRepository('RjDataBundle:Property')->find($this->getPropertyId());
     }
 }

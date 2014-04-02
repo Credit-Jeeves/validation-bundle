@@ -97,8 +97,7 @@ class ExportType extends AbstractType
 
                     if (!$groups) {
                         $query = $er->createQueryBuilder('p');
-                        $query->where('p.id = :zero');
-                        $query->setParameter('zero', 0);
+                        $query->where('p.id = 0');
                         return $query;
                     }
 

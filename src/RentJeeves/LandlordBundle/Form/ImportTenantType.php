@@ -2,12 +2,9 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use RentJeeves\DataBundle\Validators\TenantEmail;
-use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * This form for new Tenant

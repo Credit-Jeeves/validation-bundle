@@ -251,10 +251,18 @@ class AccountingController extends Controller
      */
     public function getRowsAction(Request $request)
     {
-        $result = $this->checkingAjaxRequest();
-        if ($result instanceof JsonResponse) {
-            return $result;
+        $result = array(
+            'error'   => false,
+            'message' => '',
+        );
+
+        if (!$this->isAjaxRequestValid()) {
+            $result['error'] = true;
+            $result['message'] = $this->get('translator')->trans('import.error.access');
+
+            return new JsonResponse($result);
         }
+
         /**
          * @var ImportStorage $importStorage
          */
@@ -287,7 +295,10 @@ class AccountingController extends Controller
         $result['rows'] = $rows;
         $result['total'] = $total;
 
-        return new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
+        $response = Response($this->get('jms_serializer')->serialize($result, 'json', $context));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**
@@ -300,9 +311,15 @@ class AccountingController extends Controller
     public function saveRowsAction(Request $request)
     {
         $this->checkAccessToReport();
-        $result = $this->checkingAjaxRequest();
-        if ($result instanceof JsonResponse) {
-            return $result;
+        $result = array(
+            'error'   => false,
+            'message' => '',
+        );
+        if (!$this->isAjaxRequestValid()) {
+            $result['error'] = true;
+            $result['message'] = $this->get('translator')->trans('import.error.access');
+
+            return new JsonResponse($result);
         }
 
         $context = new SerializationContext();
@@ -316,17 +333,15 @@ class AccountingController extends Controller
         $errors               = $importProcess->saveForms($data);
         $result['formErrors'] = $errors;
 
-        return new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
+        $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
-    protected function checkingAjaxRequest()
+    protected function isAjaxRequestValid()
     {
         $this->checkAccessToReport();
-        $result = array(
-            'error'   => false,
-            'message' => '',
-        );
-        $i18n = $this->get('translator');
         /**
          * @var ImportStorage $importStorage
          */
@@ -335,17 +350,13 @@ class AccountingController extends Controller
         try {
             $data = $importStorage->getImportData();
         } catch (ImportStorageException $e) {
-            $result['error'] = true;
-            $result['message'] = $i18n->trans('import.error.access');
-            return new JsonResponse($result);
+            return false;
         }
 
         if (empty($data[ImportStorage::IMPORT_MAPPING])) {
-            $result['error'] = true;
-            $result['message'] =  $i18n->trans('import.error.access');
-            return new JsonResponse($result);
+            return false;
         }
 
-        return $result;
+        return true;
     }
 }
