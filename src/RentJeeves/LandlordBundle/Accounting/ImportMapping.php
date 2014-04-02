@@ -131,7 +131,7 @@ class ImportMapping
             case 1:
                 $data = array(
                     self::FIRST_NAME_TENANT => $names[0],
-                    self::LAST_NAME_TENANT  => $names[0],
+                    self::LAST_NAME_TENANT  => '',
                 );
                 break;
             case 2:
@@ -149,7 +149,7 @@ class ImportMapping
             case 4:
                 $data = array(
                     self::FIRST_NAME_TENANT => implode(' ', array($names[0], $names[1])),
-                    self::LAST_NAME_TENANT  => implode(' ', array($names[1], $names[2])),
+                    self::LAST_NAME_TENANT  => implode(' ', array($names[2], $names[3])),
                 );
                 break;
             default:
