@@ -50,17 +50,18 @@
     {% javascripts '@RjCoreBundle/Resources/public/js/formProcess.js'
                    '@RjCoreBundle/Resources/public/js/user-voice.js'
                    '@LandlordBundle/Resources/public/js/verifyEmail.js'
-%}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-{% endjavascripts %}
+                   '@LandlordBundle/Resources/public/js/accountingImport.js'
+    %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
 {% endblock %}
 
 
 {% block javascripts %}
     {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
-                    '@CoreBundle/Resources/public/js/datepicker.js'
+                    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
                     '@ComponentBundle/Resources/public/js/groups.js'
-
+                    '@RjComponentBundle/Resources/public/js/bindingHandlersDatepicker.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

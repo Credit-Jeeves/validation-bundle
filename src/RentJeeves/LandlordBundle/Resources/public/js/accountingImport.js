@@ -152,9 +152,9 @@ function accountingImport() {
             var month = jQuery(elementHtml).datepicker('getDate').getMonth() + 1;
             var year = jQuery(elementHtml).datepicker('getDate').getFullYear();
             var fullDate = month + "/" + day + "/" + year;
-            currentRow.Contract[datepickerFieldName] = fullDate;
+            currentRow.contract[datepickerFieldName] = fullDate;
         } catch (e) {
-            currentRow.Contract[datepickerFieldName] = '';
+            currentRow.contract[datepickerFieldName] = '';
         }
     };
 

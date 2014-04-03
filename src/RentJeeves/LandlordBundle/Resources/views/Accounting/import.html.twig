@@ -105,6 +105,14 @@
             <div class="clear"></div>
         </div>
     </div>
+<script type="text/javascript">
+    var accountingImport = new accountingImport();
+
+    $(document).ready(function() {
+        ko.applyBindings(accountingImport, $('#reviewContainer').get(0));
+        accountingImport.loadData(false);
+    });
+</script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -116,17 +124,4 @@
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
-{% endblock %}
-
-{% block javascripts %}
-    {% javascripts
-        '@RjComponentBundle/Resources/public/js/bindingHandlersDatepicker.js'
-        'bundles/bazingajstranslation/js/translator.min.js'
-        '@LandlordBundle/Resources/public/js/accountingImport.js'
-        '@RjCoreBundle/Resources/public/js/jquery-ui.js'
-        '@LandlordBundle/Resources/public/js/importBase.js'
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}

@@ -45,11 +45,8 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-    'bundles/bazingajstranslation/js/translator.min.js'
     '@LandlordBundle/Resources/public/js/baseOrderReport.js'
-    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-    <script type="text/javascript" src="{{ url('bazinga_jstranslation_js') }}"></script>
 {% endblock %}
