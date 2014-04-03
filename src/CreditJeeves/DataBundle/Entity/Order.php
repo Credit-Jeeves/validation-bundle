@@ -538,7 +538,8 @@ class Order extends BaseOrder
     public function getRentOperation()
     {
         $operationCollection = $this->getOperations()
-            ->filter(function(Operation $operation) {
+            ->filter(
+                function (Operation $operation) {
                     if (OperationType::RENT == $operation->getType()) {
                         return true;
                     }
