@@ -162,39 +162,14 @@ class AccountingController extends Controller
             );
         }
 
-        $dataView = array();
-        $headers = array_keys($data[1]);
-        /**
-         * Generate array values for view: 2 rows from csv file and choice  form field
-         */
-        for ($i=1; $i < count($data[1])+1; $i++) {
-            $dataView[] = array(
-                'name' => $headers[$i-1],
-                'row1' => $data[1][$headers[$i-1]],
-                'row2' => (isset($data[2]))? $data[2][$headers[$i-1]] : null,
-                'form' => ImportMatchFileType::getFieldNameByNumber($i),
-            );
-        }
 
+        $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
             new ImportMatchFileType(count($dataView))
         );
         $form->handleRequest($this->get('request'));
         if ($form->isValid()) {
-            $result = array();
-            for ($i=1; $i < count($data[1])+1; $i++) {
-                $nameField = ImportMatchFileType::getFieldNameByNumber($i);
-                $value = $form->get($nameField)->getData();
-                if ($value === ImportMatchFileType::EMPTY_VALUE) {
-                    continue;
-                }
-
-                $result[$i] = $value;
-            }
-
-            $importStorage->setMapping($result);
-            $importStorage->setFileLine(0);
-
+            $importMapping->setupMapping($form, $data);
             return $this->redirect($this->generateUrl('accounting_import'));
         }
 

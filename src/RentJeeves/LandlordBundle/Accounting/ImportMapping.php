@@ -7,6 +7,8 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\ComponentBundle\FileReader\CsvFileReaderImport;
+use RentJeeves\LandlordBundle\Form\ImportMatchFileType;
+use Symfony\Component\Form\Form;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -121,6 +123,42 @@ class ImportMapping
         }
 
         return $data;
+    }
+
+    /**
+     * Generate array values for view: 2 rows from csv file and choice  form field
+     */
+    public function prepareDataForCreateMapping(array $data)
+    {
+        $headers = array_keys($data[1]);
+        $dataView = array();
+        for ($i=1; $i < count($data[1])+1; $i++) {
+            $dataView[] = array(
+                'name' => $headers[$i-1],
+                'row1' => $data[1][$headers[$i-1]],
+                'row2' => (isset($data[2]))? $data[2][$headers[$i-1]] : null,
+                'form' => ImportMatchFileType::getFieldNameByNumber($i),
+            );
+        }
+
+        return $dataView;
+    }
+
+    public function setupMapping(Form $form, array $data)
+    {
+        $result = array();
+        for ($i=1; $i < count($data[1])+1; $i++) {
+            $nameField = ImportMatchFileType::getFieldNameByNumber($i);
+            $value = $form->get($nameField)->getData();
+            if ($value === ImportMatchFileType::EMPTY_VALUE) {
+                continue;
+            }
+
+            $result[$i] = $value;
+        }
+
+        $this->storage->setMapping($result);
+        $this->storage->setFileLine(0);
     }
 
     public static function parseName($name)

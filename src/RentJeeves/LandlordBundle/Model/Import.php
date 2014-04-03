@@ -7,7 +7,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\Form;
 
-
 class Import
 {
     /**
