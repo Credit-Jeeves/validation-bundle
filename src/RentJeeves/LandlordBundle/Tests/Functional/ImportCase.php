@@ -30,10 +30,9 @@ class ImportCase extends BaseTestCase
 
     protected function getFilePathByName($fileName)
     {
-        $currentScriptPath = realpath(dirname(__FILE__));
-        $filePath = $currentScriptPath.DIRECTORY_SEPARATOR.'..';
-        $filePath .= DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.$fileName;
-
+        $sep = DIRECTORY_SEPARATOR;
+        $filePath = getcwd();
+        $filePath .= $sep.'data'.$sep.'fixtures'.$sep.$fileName;
         return $filePath;
     }
 
