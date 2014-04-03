@@ -50,8 +50,6 @@ class OrderCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Order must have ONE 'RENT' operation
      */
     public function getPostMonthException2()
     {
@@ -61,6 +59,6 @@ class OrderCase extends BaseTestCase
         $operationOther->setType(OperationType::OTHER);
         $order->addOperation($operationOther);
 
-        $order->getPostMonth();
+        $this->assertEquals('', $order->getPostMonth());
     }
 }

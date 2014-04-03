@@ -550,7 +550,7 @@ class Order extends BaseOrder
             throw new RuntimeException("Order has more than ONE 'RENT' operation");
         }
         if (0 == $operationCollection->count()) {
-            throw new RuntimeException("Order must have ONE 'RENT' operation");
+            return null;
         }
         return $operationCollection->last();
     }
@@ -566,7 +566,7 @@ class Order extends BaseOrder
      */
     public function getPostMonth()
     {
-        return $this->getRentOperation()->getPaidFor()->format('Y-m-d\TH:m:n');
+        return $this->getRentOperation()?$this->getRentOperation()->getPaidFor()->format('Y-m-d\TH:m:n'):'';
     }
 
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)

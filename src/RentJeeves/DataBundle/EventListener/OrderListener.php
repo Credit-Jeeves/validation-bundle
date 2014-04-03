@@ -57,9 +57,8 @@ class OrderListener
         /** @var Order $entity */
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            try {
-                $operation = $entity->getRentOperation();
-            } catch (RuntimeException $e) {
+            $operation = $entity->getRentOperation();
+            if (!$operation) {
                 return;
             }
             $status = $entity->getStatus();
