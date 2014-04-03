@@ -80,6 +80,7 @@ class ImportCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tab.accounting');
         //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNotNull($error = $this->page->find('css', '.error_list>li'));
@@ -95,6 +96,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals($error->getHtml(), 'csv.file.too.small2');
         $this->assertNotNull($prev = $this->page->find('css', '.button'));
         $prev->click();
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $filePath = $this->getFilePathByName('import.csv');
         $attFile->attachFile($filePath);
