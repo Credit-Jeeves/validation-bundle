@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\DataBundle\Tests\EventListener;
+namespace CreditJeeves\DataBundle\Tests\Entity;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use RentJeeves\TestBundle\BaseTestCase;

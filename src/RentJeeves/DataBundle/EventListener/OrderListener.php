@@ -12,6 +12,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use DateTime;
+use RuntimeException;
 
 class OrderListener
 {
@@ -56,7 +57,11 @@ class OrderListener
         /** @var Order $entity */
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $operation = $entity->getRentOperation();
+            try {
+                $operation = $entity->getRentOperation();
+            } catch (RuntimeException $e) {
+                return;
+            }
             $status = $entity->getStatus();
             switch ($status) {
                 case OrderStatus::REFUNDED:

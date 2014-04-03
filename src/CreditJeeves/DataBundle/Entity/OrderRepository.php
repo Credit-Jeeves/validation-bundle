@@ -250,7 +250,7 @@ class OrderRepository extends EntityRepository
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
         $query->select(
-            "h.batchId, sum(o.amount) as order_amount, date_format(h.depositDate, '%m/%d/%Y') as depositDate"
+            "h.batchId, sum(o.sum) as order_amount, date_format(h.depositDate, '%m/%d/%Y') as depositDate"
         );
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');

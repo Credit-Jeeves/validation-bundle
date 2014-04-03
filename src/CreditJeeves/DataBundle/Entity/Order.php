@@ -546,10 +546,10 @@ class Order extends BaseOrder
                 }
             );
         if (1 < $operationCollection->count()) {
-            throw new RuntimeException("Order has more than ONE 'RENT' operation");
+            throw new RuntimeException("Order have more than ONE 'RENT' operation");
         }
         if (0 == $operationCollection->count()) {
-            throw new RuntimeException("Order must has ONE 'RENT' operation");
+            throw new RuntimeException("Order must have ONE 'RENT' operation");
         }
         return $operationCollection->last();
     }

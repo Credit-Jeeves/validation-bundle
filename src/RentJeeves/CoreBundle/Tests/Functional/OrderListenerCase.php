@@ -2,6 +2,8 @@
 
 namespace RentJeeves\CoreBundle\Tests\Functional;
 
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
@@ -22,8 +24,11 @@ class OrderListenerCase extends BaseTestCase
                     'type' => 'heartland_card'
                 )
             );
+
+        /** @var Order $order */
         $order = $orders[0];
 
+        /** @var Operation $operation */
         $operation = $order->getOperations()->last();
         $contract = $operation->getContract();
         $currentPaidToDate = clone $contract->getPaidTo();

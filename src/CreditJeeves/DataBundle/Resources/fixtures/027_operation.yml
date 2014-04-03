@@ -4,61 +4,61 @@ fixtures:
     order: rjOrder_1
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 1500
     paidFor: '-50 days'
   rjOperation_2:
     order: rjOrder_2
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 1500
     paidFor: '-40 days'
   rjOperation_3:
     order: rjOrder_3
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 1500
     paidFor: '-30 days'
   rjOperation_3_error:
     order: rjOrder_3_error
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 1500
     paidFor: '-30 days'
   rjOperation_3_cancelled:
     order: rjOrder_3_cancelled
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 1500
     paidFor: 'now'
   rjOperation_3_refunded:
     order: rjOrder_3_refunded
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 700
     paidFor: '-30 days'
   rjOperation_3_returned:
     order: rjOrder_3_returned
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 750
     paidFor: '-30 days'
   rjOperation_4:
     order: rjOrder_4
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 1500
     paidFor: '-20 days'
   rjOperation_5:
     order: rjOrder_5
     contract: Contract_7
     type: rent
-    amount: 37200
+    amount: 1500
     paidFor: '-10 days'
   rjOperation_6:
     order: rjOrder_6
     contract: Contract_6
     type: rent
-    amount: 3700
+    amount: 1500
     paidFor: '-2 days'
   rjOperation_66:
     order: rjOrder_66

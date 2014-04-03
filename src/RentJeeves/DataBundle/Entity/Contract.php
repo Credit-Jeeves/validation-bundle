@@ -464,7 +464,7 @@ class Contract extends Base
         $paidTo = $this->getPaidTo();
         $newDate = clone $paidTo;
         $rent = $this->getRent();
-        $amount = ($amount) ? $amount : $rent;
+        $amount = $amount?:$rent;
         if ($amount > $rent) {
             $newDate->modify('-1 months');
             $diff = $amount - $rent;

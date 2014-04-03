@@ -1,5 +1,5 @@
 <?php
-namespace CreditJeeves\DataBundle\Tests\EventListener;
+namespace CreditJeeves\DataBundle\Tests\Entity;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -31,7 +31,7 @@ class OrderCase extends BaseTestCase
     /**
      * @test
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage Order have more than ONE 'RENT' operation
+     * @expectedExceptionMessage Order has more than ONE 'RENT' operation
      */
     public function getPostMonthException()
     {
