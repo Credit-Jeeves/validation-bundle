@@ -1,0 +1,38 @@
+{% form_theme form "LandlordBundle::form_widget_attributes.html.twig" %}
+
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: is_skipped || contract.status == 'finished' || !is_valid">
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
+    <td data-bind="text:contract.unit.name, attr: {'class': $root.getUnitClass($data), 'title': $root.getUnitTitle($data) }"></td>
+    <td data-bind="text:tenant.resident_id, attr: {'class': $root.getResidentIdClass($data), 'title': $root.getResidentIdTitle($data) }"></td>
+    <td data-bind="text:tenant.first_name"></td>
+    <td data-bind="text:tenant.last_name"></td>
+    <td data-bind="text:tenant.email"></td>
+    <td data-bind="html:contract.rent+'<br/>'+contract.imported_balance"></td>
+    <td data-bind="html:$root.formatDate(contract.startAt)+'<br/>'+$root.formatDate(contract.finishAt)">
+    </td>
+    <td></td>
+    <td>
+        <span  class="finishContract" data-bind="if: contract.status == 'finished' && $data.move_out && !is_skipped && contract.id && is_valid">
+        {{ form_start(form) }}
+            {{ 'import.move_out'|trans }}:<br />
+            {{ form_widget(
+                form.finishAt,
+                {
+                    "attr": {
+                    "data-bind":
+                        "value: $root.formatDate(move_out),
+                         datepicker: $root.formatDate(move_out),
+                         datepickerOptions: $root.getDatePickerOptions(),
+                         datepickerFieldName: 'finishAt',
+                         attr: {
+                            'class': number+'_finishAt import_contract_finish_finishAt datepicker '+$root.getErrorClass($data, 'import_contract_finish_finishAt'),
+                            'title': $root.getErrorTitle($data, 'import_contract_finish_finishAt')
+                         }"
+                    }
+                }
+            ) }}
+            {{ form_widget(form._token, {"attr": {"data-bind": "value: csrf_token, attr: {'class': number+'_token import_contract_finish__token'}"}}) }}
+        {{ form_end(form) }}
+        </span>
+    </td>
+</tr>

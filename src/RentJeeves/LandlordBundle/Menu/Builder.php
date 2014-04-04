@@ -35,9 +35,9 @@ class Builder extends ContainerAware
         $user = $this->container->get('security.context')->getToken()->getUser();
         if ($user->haveAccessToReports()) {
             $menu->addChild(
-                'tabs.reports',
+                'tab.accounting',
                 array(
-                    'route' => 'landlord_reports'
+                    'route' => 'accounting_import_file'
                 )
             );
         }
@@ -53,8 +53,11 @@ class Builder extends ContainerAware
             case 'landlord_tenants':
                 $menu['tabs.tenants']->setAttribute('class', 'active');
                 break;
-            case 'landlord_reports':
-                $menu['tabs.reports']->setAttribute('class', 'active');
+            case 'accounting_import':
+            case 'accounting_match_file':
+            case 'accounting_import_file':
+            case 'accounting_export':
+                $menu['tab.accounting']->setAttribute('class', 'active');
                 break;
             default:
                 break;
@@ -83,6 +86,37 @@ class Builder extends ContainerAware
                 $menu['settings.deposit']->setUri('');
                 break;
         }
+        return $menu;
+    }
+
+    public function accountingMenu(FactoryInterface $factory, array $options)
+    {
+        $menu = $factory->createItem('root');
+        $menu->addChild(
+            'import',
+            array(
+                'route' => 'accounting_import_file'
+            )
+        );
+        $menu->addChild(
+            'export',
+            array(
+                'route' => 'accounting_export'
+            )
+        );
+
+        $route = $this->container->get('request')->get('_route');
+        switch ($route) {
+            case 'accounting_match_file':
+            case 'accounting_import':
+            case 'accounting_import_file':
+                $menu['import']->setUri('');
+                break;
+            case 'accounting_export':
+                $menu['export']->setUri('');
+                break;
+        }
+
         return $menu;
     }
 }
