@@ -51,7 +51,7 @@ class OrderCase extends BaseTestCase
     /**
      * @test
      */
-    public function getPostMonthException2()
+    public function getPostMonthEmpty()
     {
         $order = new Order();
 

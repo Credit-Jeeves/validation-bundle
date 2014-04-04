@@ -16,7 +16,7 @@ class Version20140319155343 extends AbstractMigration
         
         $this->addSql(
             "ALTER TABLE cj_operation
-                ADD paid_for DATE NOT NULL"
+                ADD paid_for DATE DEFAULT NULL"
         );
     }
 
