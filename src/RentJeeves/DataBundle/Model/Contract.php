@@ -19,6 +19,7 @@ abstract class Contract
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -89,6 +90,7 @@ abstract class Contract
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $unit;
 
@@ -116,6 +118,7 @@ abstract class Contract
      *     }
      * )
      * @Gedmo\Versioned
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $status;
 
@@ -129,10 +132,18 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.rent.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Gedmo\Versioned
+     * @Assert\Regex(
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $rent = null;
 
@@ -176,6 +187,19 @@ abstract class Contract
      *          "default":"0.00"
      *     }
      * )
+     * @Assert\NotBlank(
+     *     message="error.balance.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $importedBalance = 0.00;
@@ -187,6 +211,7 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $paidTo;
@@ -212,10 +237,12 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.start.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("startAt")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $startAt;
@@ -229,10 +256,12 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.finish.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $finishAt;

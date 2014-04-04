@@ -1,0 +1,27 @@
+.steps li {
+    width: 240px;
+}
+.steps li>.step>span{
+    width: 180px;
+}
+.column-middle {
+    width: 920px;
+}
+#import_file_type_property_row label {
+    clear: both;
+}
+#import_file_type_attachment {
+    width: 280px;
+}
+
+.button-box a, .button-box button {
+    float: left;
+}
+
+.button-box button {
+    margin-top: 2px;
+}
+
+.button-box {
+    height: 33px;
+}

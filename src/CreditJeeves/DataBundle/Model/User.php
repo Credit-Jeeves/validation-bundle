@@ -18,7 +18,7 @@ use \DateTime;
 
 /**
  * @ORM\MappedSuperclass
- * @UniqueEntity(fields={"email"}, groups={"invite"})
+ * @UniqueEntity(fields={"email"}, groups={"invite", "import"})
  */
 abstract class User extends BaseUser
 {
@@ -30,6 +30,7 @@ abstract class User extends BaseUser
      * @ORM\GeneratedValue(
      *     strategy="AUTO"
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -47,7 +48,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @Assert\Length(
@@ -62,9 +64,18 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
+     * @Assert\Regex(
+     *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
+     *     message="regexp.error.name",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      *
      * @var string
@@ -103,7 +114,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @Assert\Length(
@@ -118,9 +130,18 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
+     * @Assert\Regex(
+     *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
+     *     message="regexp.error.name",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      */
     protected $last_name;
@@ -131,7 +152,8 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Assert\Email(
@@ -140,7 +162,8 @@ abstract class User extends BaseUser
      *         "invite",
      *         "tenant_invite",
      *         "account_landlord",
-     *         "api_identity_check"
+     *         "api_identity_check",
+     *         "import"
      *     }
      * )
      * @InviteEmail(
@@ -148,6 +171,7 @@ abstract class User extends BaseUser
      *         "invite",
      *     }
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("string")
      */
     protected $email;
@@ -329,6 +353,19 @@ abstract class User extends BaseUser
      *      length=128,
      *      nullable=true
      * )
+     * @Assert\NotBlank(
+     *     groups={
+     *         "import_not_editable"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=5,
+     *     max=128,
+     *     groups={
+     *         "import_not_editable"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $residentId;
 

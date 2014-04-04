@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\LandlordBundle\Report;
+namespace RentJeeves\LandlordBundle\Accounting;
 
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -13,9 +13,9 @@ use Symfony\Component\PropertyAccess\Exception\RuntimeException;
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
  *
- * @Service("report.order")
+ * @Service("accounting.export")
  */
-class Order
+class Export
 {
     protected $em;
 

@@ -432,4 +432,21 @@ class ContractRepository extends EntityRepository
         $query = $query->getQuery();
         return $query->iterate();
     }
+
+    public function getImportContract($tenant, $unitName)
+    {
+        $query = $this->createQueryBuilder('contract');
+        $query->leftJoin('contract.unit', 'unit');
+        $query->leftJoin('contract.tenant', 'tenant');
+        $query->where('contract.status = :approved OR contract.status = :current');
+        $query->andWhere('tenant.id = :tenantId');
+        $query->andWhere('unit.name = :unitName');
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('tenantId', $tenant);
+        $query->setParameter('unitName', $unitName);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
 }
