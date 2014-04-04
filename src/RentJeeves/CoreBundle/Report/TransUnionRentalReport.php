@@ -2,7 +2,6 @@
 
 namespace RentJeeves\CoreBundle\Report;
 
-use JMS\Serializer\Annotation as Serializer;
 use DateTime;
 
 class TransUnionRentalReport extends RentalReport
@@ -33,7 +32,7 @@ class TransUnionRentalReport extends RentalReport
     {
         $this->records = array();
         $contracts = $this->em->getRepository('RjDataBundle:Contract')
-            ->getContractsForRentalReport($reportMonth, $reportYear);
+            ->getContractsForTURentalReport($reportMonth, $reportYear);
 
         $operationRepo = $this->em->getRepository('DataBundle:Operation');
 

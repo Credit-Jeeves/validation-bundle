@@ -10,6 +10,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use RuntimeException;
+use DateTime;
 
 /**
  * @Route("/ajax")
@@ -39,22 +42,35 @@ class AjaxController extends Controller
      *
      * @return array
      */
-    public function contractBureauReporting()
+    public function contractBureauReporting(Request $request)
     {
-        $request = $this->getRequest();
-        $data = $request->request->all('data');
-        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
-        $action = $data['action'];
-        $user = $this->getUser();
-        $em = $this->getDoctrine()->getManager();
-        if ($action == 'start') {
-            $contract->setReporting(true);
-        } else {
-            $contract->setReporting(false);
+        $contractId = $request->request->get('contractId');
+        $reportToExperian = $request->request->get('experianReporting');
+        $reportToTU = $request->request->get('tuReporting');
+
+        /** @var Contract $contract */
+        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($contractId);
+        if (!$contract) {
+            throw new RuntimeException('Contract not found');
         }
-        $em->persist($contract);
+
+        $contract->setReportToExperian($reportToExperian);
+        $contract->setReportToTU($reportToTU);
+
+        // if reporting is being turning on for the first time - set start date
+        $now = new DateTime();
+        if (!$contract->getExperianStartAt() && $reportToExperian) {
+            $contract->setExperianStartAt($now);
+        }
+
+        if (!$contract->getTuStartAt() && $reportToTU) {
+            $contract->setTuStartAt($now);
+        }
+
+        $em = $this->getDoctrine()->getManager();
         $em->flush();
-        return new JsonResponse(array($action));
+
+        return new JsonResponse();
     }
 
     /**

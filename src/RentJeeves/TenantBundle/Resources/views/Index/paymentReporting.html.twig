@@ -1,0 +1,55 @@
+<!-- popup -->
+<div id="reporting-popup" class="pricing-popup dashboard-popup properties-popup" style="height: 470px;">
+    <h1>{{ 'bureau.reporting.title' | trans() }}</h1>
+    <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block; height: 420px;">
+        <form method="post" action="{{ path('tenant_reporting_start') }}" id="reporting-form">
+            <div class="col">
+                <p>{% autoescape false %}{{ 'bureau.reporting.text1' | trans() }}{% endautoescape %}</p>
+                <div class="select-bureaus">
+                    <p>{{ 'bureau.reporting.select'|trans }}</p>
+                    <p><input type="checkbox" name="reporting[]" value="experian" checked /> {{ 'bureau.reporting.experian'|trans }}</p>
+                    <p><input type="checkbox" name="reporting[]" value="trans_union" checked /> {{ 'bureau.reporting.trans_union'|trans }}</p>
+                </div>
+                <p>{% autoescape false %}{{ 'bureau.reporting.text2' | trans() }}{% endautoescape %}</p>
+            </div>
+            <div class="footer-button-box">
+                <a class="button buttonFix button-link" onclick="$('#reporting-form').submit();">
+                    <span>{{ 'bureau.reporting.start' | trans() }}</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- End popup -->
+{% if isReporting %}
+    {{ render(controller('RjComponentBundle:PaymentHistory:index')) }}
+{% else %}
+    <div class="pod-large pod-border pod-padding shadow" id="info-block">
+        <h1>{{ 'info.reporting.title' | trans() }}</h1>
+        <br />
+        <div class="infoBlock">
+            <div class="text">
+                <h3 class="font-abeezee">{{ 'info.reporting.see' | trans() }}</h3>
+                <br />
+                <p class="font-helvetica">
+                    {{ 'info.reporting.text' | trans() }}
+                </p>
+                <br />
+                <center>
+                    <button class="button small" data-bind="click: openPopup">
+                        <span>{{ 'bureau.reporting.setup' | trans() }}</span>
+                    </button>
+                </center>
+            </div>
+            <div class="img">
+                <img src="{{ asset('bundles/rjpublic/images/info-block.png') }}" />
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+{% endif %}
+
+{% javascripts '@TenantBundle/Resources/public/js/Info.js'
+%}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+{% endjavascripts %}

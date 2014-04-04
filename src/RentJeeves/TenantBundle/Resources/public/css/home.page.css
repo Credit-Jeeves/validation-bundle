@@ -54,6 +54,7 @@
     moz-border-radius: 5px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
+    min-height: 185px;
 }
 .infoBlock>.text {
     width: 345px;
@@ -62,6 +63,7 @@
 }
 .infoBlock>.text>h3{
     color: #73AF27;
+    font-weight: bold;
 }
 .infoBlock>.img {
     float: left;   
@@ -189,4 +191,23 @@ button.contract-delete {
     position: relative;
     float: right;
     margin-right: -380px;
+}
+.select-bureaus {
+    padding: 20px 0px 20px;
+}
+.select-bureaus p {
+    margin-bottom: 10px;
+}
+.reporting-start {
+    display: none;
+}
+.reporting-box {
+    height: 190px;
+    margin: 0 0 0 15px;
+}
+.reporting-action {
+    cursor: pointer;
+}
+.start-reporting {
+    width: 75px;
 }

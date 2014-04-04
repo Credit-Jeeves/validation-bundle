@@ -14,8 +14,9 @@ class PaymentHistoryController extends Controller
      * @Template("RjComponentBundle:PaymentHistory:index.html.twig")
      * @return mixed
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\User $user, $short = false)
+    public function indexAction()
     {
+        $user = $this->getUser();
         $active = array();
         $finished = array();
         $aMonthes = array();
@@ -57,6 +58,8 @@ class PaymentHistoryController extends Controller
                 $item['balance_month'] = $finishedDate->format('m');
             }
             $item['tenant'] = $contract->getTenant()->getFullName();
+            $item['reporting']['experian'] = $contract->getReportToExperian();
+            $item['reporting']['tu'] = $contract->getReportToTU();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::APPROVED:
                     $history = $contract->getFuturePaymentHistory($em);
@@ -64,7 +67,6 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = $translator->trans('contract.status.pay');
-                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::CURRENT:
@@ -73,7 +75,6 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = $translator->trans('contract.status.current');
-                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::FINISHED:
@@ -90,14 +91,13 @@ class PaymentHistoryController extends Controller
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,
-            'short' => $short,
         );
     }
 
     /**
      * @Template
      */
-    public function paymentsAction(Tenant $user)
+    public function paymentsAction()
     {
         $context = new SerializationContext();
         $context->setSerializeNull(true);

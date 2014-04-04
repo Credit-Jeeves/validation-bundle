@@ -391,9 +391,10 @@ class Contract extends Base
                     }
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
                     $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                    if ($late > 0) {
+                    if ($late >= 30) {
                         $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                        $payments[$nYear][$nMonth]['text'] = $late;
+                        $lateText = floor($late / 30) * 30;
+                        $payments[$nYear][$nMonth]['text'] = $lateText;
                     }
                     if (!isset($payments[$nYear][$nMonth]['amount'])) {
                         $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
@@ -432,14 +433,14 @@ class Contract extends Base
         for ($i = $startYear; $i <= $finishYear; $i++) {
             $result[$i] = $aMonthes;
         }
-        if (ContractStatus::FINISHED != $this->getStatus()) {
+        /*if (ContractStatus::FINISHED != $this->getStatus()) {
             $paidTo = $this->getPaidTo();
             $result[$paidTo->format('Y')][$paidTo->format('m')] = array(
                 'status' => self::STATUS_PAY,
                 'text' => self::PAYMENT_PAY,
                 'amount' => 0,
             );
-        }
+        }*/
         return $result;
     }
 

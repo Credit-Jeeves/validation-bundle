@@ -288,8 +288,8 @@ fixtures:
         unit:      Unit_1_2
         rent:      987
         status:    current
-        reporting: true
-        reportingAt: '2014-01-01'
+        reportToTU: true
+        tuStartAt: '2014-01-01'
         disputeCode: 'BLANK'
         paidTo:    '2014-04-01'
         startAt:   '2014-01-01'

@@ -218,15 +218,49 @@ abstract class Contract
 
     /**
      * @ORM\Column(
+     *     name="report_to_experian",
      *     type="boolean",
      *     nullable=true,
      *     options={
      *         "default"="0"
      *     }
      * )
-     * @Gedmo\Versioned
+     * @Serializer\Exclude
      */
-    protected $reporting = 0;
+    protected $reportToExperian = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="report_to_tu",
+     *     type="boolean",
+     *     nullable=true,
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $reportToTU = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="experian_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $experianStartAt;
+
+    /**
+     * @ORM\Column(
+     *     name="tu_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $tuStartAt;
 
     /**
      * @ORM\Column(
@@ -604,28 +638,6 @@ abstract class Contract
     }
 
     /**
-     * Set Reporting
-     *
-     * @param boolean $reporting
-     * @return Contract
-     */
-    public function setReporting($reporting)
-    {
-        $this->reporting = $reporting;
-        return $this;
-    }
-
-    /**
-     * Get Reporting
-     *
-     * @return boolean
-     */
-    public function getReporting()
-    {
-        return $this->reporting;
-    }
-
-    /**
      * Set startAt
      *
      * @param \DateTime $startAt
@@ -794,18 +806,66 @@ abstract class Contract
     }
 
     /**
-     * @param \DateTime $reportingAt
+     * @param \DateTime $experianStartAt
      */
-    public function setReportingAt($reportingAt)
+    public function setExperianStartAt($experianStartAt)
     {
-        $this->reportingAt = $reportingAt;
+        $this->experianStartAt = $experianStartAt;
     }
 
     /**
      * @return \DateTime
      */
-    public function getReportingAt()
+    public function getExperianStartAt()
     {
-        return $this->reportingAt;
+        return $this->experianStartAt;
+    }
+
+    /**
+     * @param boolean $reportExperian
+     */
+    public function setReportToExperian($reportExperian)
+    {
+        $this->reportToExperian = $reportExperian;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToExperian()
+    {
+        return $this->reportToExperian;
+    }
+
+    /**
+     * @param boolean $reportTU
+     */
+    public function setReportToTU($reportTU)
+    {
+        $this->reportToTU = $reportTU;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToTU()
+    {
+        return $this->reportToTU;
+    }
+
+    /**
+     * @param \DateTime $tuStartAt
+     */
+    public function setTuStartAt($tuStartAt)
+    {
+        $this->tuStartAt = $tuStartAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTuStartAt()
+    {
+        return $this->tuStartAt;
     }
 }

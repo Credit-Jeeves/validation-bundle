@@ -824,10 +824,6 @@
                 <source>rent.properties</source>
                 <target>Payments</target>
             </trans-unit>
-            <trans-unit id="rent.history">
-                <source>rent.history</source>
-                <target>Payment History</target>
-            </trans-unit>
             <trans-unit id="rent.sources">
                 <source>rent.sources</source>
                 <target>Payment Sources</target>
@@ -1301,13 +1297,13 @@
                 <source>rent.last.amount</source>
                 <target>Last Payment Amount</target>
             </trans-unit>
-            <trans-unit id="rent.contracts.active">
-                <source>rent.contracts.active</source>
-                <target>Current Properties</target>
+            <trans-unit id="tenant.reporting.payment_history">
+                <source>tenant.reporting.payment_history</source>
+                <target>Payment Reporting</target>
             </trans-unit>
             <trans-unit id="rent.contracts.finished">
                 <source>rent.contracts.finished</source>
-                <target>Past Properties</target>
+                <target>Finished Contracts</target>
             </trans-unit>
             <trans-unit id="footer.data_provided_by">
                 <source>footer.data_provided_by</source>

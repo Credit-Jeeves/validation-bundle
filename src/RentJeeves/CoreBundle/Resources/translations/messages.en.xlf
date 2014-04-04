@@ -653,19 +653,41 @@
                 <source>bureau.reporting.setup</source>
                 <target>Set Up Bureau Reporting</target>
            </trans-unit>
-           <trans-unit id="bureau.reporting.text">
-                <source>bureau.reporting.text</source>
+           <trans-unit id="bureau.reporting.text1">
+                <source>bureau.reporting.text1</source>
                 <target><![CDATA[RentTrack can report your payments to a credit reporting agency.
-                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br />
-                                 Within a few months after signing up, you will notice a new entry on your credit report titled "RentTrack."
-                                 This entry will reflect your payment status on a particular property and is updated monthly.
-                                 Once this entry exists, it will begin to affect any credit score models that take rent payments into account.<br /><br />
-                                 You can stop reporting at any time. However, once eligible payments have been reported to the credit reporting agency,
-                                 they cannot be erased. Furthermore, stopping and subsequently starting reporting again
-                                 may have a negative on your credit history.<br /><br />
+                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br /> ]]>
+             </target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.text2">
+               <source>bureau.reporting.text2</source>
+               <target><![CDATA[Within a few months, you will notice a new "RentTrack" entry on your credit report.
+                                 This will reflect your current payment status and is updated monthly.
+                                 You can stop reporting at any time. However, once eligible payments have been reported to the credit bureau,
+                                 they cannot be erased.<br /><br />
                                  Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>. Please review the terms, then click on the button below
                                  to begin building credit.]]>
-                                 </target>
+               </target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.select">
+               <source>bureau.reporting.select</source>
+               <target>Select which bureaus you want to report to:</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.experian">
+               <source>bureau.reporting.experian</source>
+               <target>Experian (Positive Payment History Only)</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.trans_union">
+               <source>bureau.reporting.trans_union</source>
+               <target>TransUnion (All Payment History)</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.manage">
+               <source>bureau.reporting.manage</source>
+               <target>Manage reporting</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.save">
+               <source>bureau.reporting.save</source>
+               <target>Save</target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -677,7 +699,7 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by choosing to report your payments to a major credit bureau. This optional activity helps establish good credit when you make your rent payments on-time.</target>
+                <target>Put RentTrack to work by choosing to report your payments to a major credit bureaus. This optional activity helps establish good credit when you make your rent payments on-time.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>

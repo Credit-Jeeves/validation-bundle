@@ -1,32 +1,17 @@
-<!-- Popup Reporting start -->
-<div id="reporting-start" class="pricing-popup dashboard-popup properties-popup">
-    <h1>{{ 'bureau.reporting.title' | trans() }}</h1>
-    <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
-        <div class="col">
-            <h4>{{ 'bureau.reporting.text' | trans({'%link%': 'http://www.renttrack.com/terms-of-service'}) }}</h4>
-            <div class="row-20"></div>
-            <h4 id="reporting-agreement"></h4>
+<!-- Popup Reporting -->
+<div id="reporting-start-{{ contract.id }}" class="pricing-popup dashboard-popup properties-popup reporting-start">
+    <h1>{{ 'bureau.reporting.manage' | trans }}</h1>
+    <div class="clearfix col-box reporting-box">
+        <div class="select-bureaus">
+            <p>{{ 'bureau.reporting.select'|trans }}</p>
+            <p><input type="checkbox" id="reportExperian-{{ contract.id }}" value="experian" {% if contract.reporting.experian %}checked{% endif %} /> {{ 'bureau.reporting.experian'|trans }}</p>
+            <p><input type="checkbox" id="reportTU-{{ contract.id }}" value="trans_union" {% if contract.reporting.tu %}checked{% endif %} /> {{ 'bureau.reporting.trans_union'|trans }}</p>
         </div>
         <div class="footer-button-box">
-            <button class="button buttonFix" id="start-reporting">
-                <span id="saveManageUnits" >{{ 'bureau.reporting.start' | trans() }}</span>
+            <button class="button buttonFix start-reporting" id="reporting-btn-{{ contract.id }}">
+                <span>{{ 'bureau.reporting.save' | trans }}</span>
             </button>
         </div>
     </div>
 </div>
-<!-- end Reporting start -->
-<!-- start Reporting srop popup -->
-<div id="reporting-stop" class="pricing-popup dashboard-popup properties-popup">
-    <h1>{{ 'bureau.reporting.title.stop' | trans() }}</h1>
-    <div class="clearfix col-box" id="blockPopupEditProperty" style="display: block;">
-        <div class="col">
-            <h4 id="reporting-alert"></h4>
-        </div>
-        <div class="footer-button-box">
-            <button class="button buttonFix" id="stop-reporting">
-                <span id="saveManageUnits" >{{ 'bureau.reporting.stop' | trans() }}</span>
-            </button>
-        </div>
-    </div>
-</div>
-<!-- End Reporting stop popup -->
+<!-- end Reporting -->

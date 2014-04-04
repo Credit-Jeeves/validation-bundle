@@ -30,7 +30,7 @@ class ExperianRentalReport extends RentalReport
         if (!$this->records) {
             $this->records = array();
             $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
-            $contracts = $contractRepo->getContractsForRentalReport($reportMonth, $reportYear);
+            $contracts = $contractRepo->getContractsForExperianRentalReport($reportMonth, $reportYear);
             $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
             foreach ($contracts as $contract) {
