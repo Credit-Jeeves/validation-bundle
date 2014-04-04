@@ -26,8 +26,11 @@ class TransUnionRentalReportCase extends BaseTestCase
 
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 
-        $result = $this->getContainer()->get('jms_serializer')->serialize($report, 'tu_rental1');
-        $expectedResult = file_get_contents(__DIR__.'/../Fixtures/Report/transunion.txt');
-        $this->assertEquals($expectedResult, $result);
+        // check only record, b/c header doesn't contain important info and has changeable data
+        $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'tu_rental1');
+        $reportRecord = explode("\n", $report)[1];
+        $expectedResult = explode("\n", file_get_contents(__DIR__.'/../Fixtures/Report/transunion.txt'))[1];
+
+        $this->assertEquals($expectedResult, $reportRecord);
     }
 }

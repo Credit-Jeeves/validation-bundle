@@ -7,6 +7,9 @@ use DateTime;
 
 class TransUnionReportHeader
 {
+    const PROPERTY_MANAGEMENT_ADDRESS = '13911 RIDGEDALE DR # 401C MINNETONKA MN 55305';
+    const PROPERTY_MANAGEMENT_PHONE_NUMBER = '8618419090';
+
     protected $recordLength = '0426';                                   // 4
     protected $recordIdentifier = 'HEADER';                             // 6
     protected $reserved1 = '  ';                                        // 2
@@ -23,7 +26,8 @@ class TransUnionReportHeader
     protected $propertyManagementName;                                  // 40
     /** @Serializer\Accessor(getter="getPropertyManagementAddress") */
     protected $propertyManagementAddress;                               // 96
-    protected $propertyManagementPhoneNumber = '8618419090';            // 10
+    /** @Serializer\Accessor(getter="getPropertyManagementPhone") */
+    protected $propertyManagementPhoneNumber;                           // 10
     /** @Serializer\Accessor(getter="getReserved6") */
     protected $reserved6;                                               // 201
 
@@ -46,7 +50,12 @@ class TransUnionReportHeader
 
     public function getPropertyManagementAddress()
     {
-        return str_pad('13911 RIDGEDALE DR # 401C MINNETONKA MN 55305', 96);
+        return str_pad(self::PROPERTY_MANAGEMENT_ADDRESS, 96);
+    }
+
+    public function getPropertyManagementPhone()
+    {
+        return self::PROPERTY_MANAGEMENT_PHONE_NUMBER;
     }
 
     public function getReserved6()

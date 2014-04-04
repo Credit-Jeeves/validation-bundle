@@ -151,7 +151,7 @@ class ExperianReportRecord
     public function getDatePaid()
     {
         if ($this->operation) {
-            return $this->operation->getOrder()->getUpdatedAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+            return $this->operation->getCreatedAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
         }
 
         return null;
