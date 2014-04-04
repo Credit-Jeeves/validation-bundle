@@ -36,9 +36,9 @@
 {% endblock %}
 
 {% block tabs %}
-        <div class="top-nav">
+<div class="top-nav">
     {{ knp_menu_render('LandlordBundle:Builder:mainMenu', { 'template': '::menu.html.twig' }) }}
-    </div>
+</div>
     
 {% endblock %}
 
@@ -51,6 +51,7 @@
                    '@RjCoreBundle/Resources/public/js/user-voice.js'
                    '@LandlordBundle/Resources/public/js/verifyEmail.js'
                    '@LandlordBundle/Resources/public/js/accountingImport.js'
+                   '@RjCoreBundle/Resources/public/js/jquery-ui.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -60,9 +61,9 @@
 {% block javascripts %}
     {% javascripts  '@CoreBundle/Resources/public/js/less.min.js'
                     '@CoreBundle/Resources/public/js/datepicker.js'
-                    '@RjCoreBundle/Resources/public/js/jquery-ui.js'
                     '@ComponentBundle/Resources/public/js/groups.js'
                     '@RjComponentBundle/Resources/public/js/bindingHandlersDatepicker.js'
+                    '@LandlordBundle/Resources/public/js/baseOrderReport.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

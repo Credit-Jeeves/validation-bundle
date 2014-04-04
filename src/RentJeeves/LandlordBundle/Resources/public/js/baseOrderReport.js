@@ -1,4 +1,7 @@
 $(function() {
+    if ($('#base_order_report_type_type').length == 0) {
+        return;
+    }
 
     $('.calendar').datepicker({
         showOn: "both",

@@ -41,12 +41,3 @@
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {% javascripts
-    '@LandlordBundle/Resources/public/js/baseOrderReport.js'
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-{% endblock %}
