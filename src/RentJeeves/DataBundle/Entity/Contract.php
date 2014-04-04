@@ -349,6 +349,11 @@ class Contract extends Base
         return $this->getPaymentHistory($em);
     }
 
+    /**
+     * @param EntityManager $em
+     *
+     * @return array
+     */
     public function getPaymentHistory($em)
     {
         $result = array('history' => array(), 'last_amount' => 0, 'last_date' => '-');
@@ -357,22 +362,15 @@ class Contract extends Base
         $lastDate = $currentDate->diff($this->getCreatedAt())->format('%r%a');
         $repo = $em->getRepository('DataBundle:Order');
         $orders = $repo->getContractHistory($this);
+        /** @var Order $order */
         foreach ($orders as $order) {
-            $orderDate = $order->getCreatedAt();
-            $lastPaymentDate = $orderDate->format('m/d/Y');
-            $late = $order->getDaysLate();
-            if ($late < 0) {
-//                @TODO: temporary commented. Should be removed if it helps to fix history.
-//                $late--;
-                $orderDate = $orderDate->modify('+'.(-1)*$late.' days');
-            } elseif ($late > 0) {
-//                @TODO: temporary commented. Should be removed if it helps to fix history.
-//                $late++;
-                $orderDate = $orderDate->modify('-'.$late.' days');
-            }
-            $nYear = $orderDate->format('Y');
-            $nMonth = $orderDate->format('m');
-            $interval = $currentDate->diff($orderDate)->format('%r%a');
+            $operation = $order->getRentOperation();
+            $paidFor = $operation->getPaidFor();
+            $lastPaymentDate = $order->getCreatedAt()->format('m/d/Y');
+            $late = $operation->getDaysLate();
+            $nYear = $paidFor->format('Y');
+            $nMonth = $paidFor->format('m');
+            $interval = $currentDate->diff($paidFor)->format('%r%a');
             $status = $order->getStatus();
             switch ($status) {
                 case OrderStatus::NEWONE:
@@ -381,7 +379,7 @@ class Contract extends Base
                     break;
                 case OrderStatus::COMPLETE:
                     if ($interval >= $lastDate) {
-                        $result['last_amount'] = $order->getAmount();
+                        $result['last_amount'] = $operation->getAmount();
                         $result['last_date'] = $lastPaymentDate;
                     }
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
@@ -391,9 +389,9 @@ class Contract extends Base
                         $payments[$nYear][$nMonth]['text'] = $late;
                     }
                     if (!isset($payments[$nYear][$nMonth]['amount'])) {
-                        $payments[$nYear][$nMonth]['amount'] = $order->getAmount();
+                        $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
                     } else {
-                        $payments[$nYear][$nMonth]['amount']+= $order->getAmount();
+                        $payments[$nYear][$nMonth]['amount']+= $operation->getAmount();
                     }
                     break;
                 default:
@@ -466,7 +464,7 @@ class Contract extends Base
         $paidTo = $this->getPaidTo();
         $newDate = clone $paidTo;
         $rent = $this->getRent();
-        $amount = ($amount) ? $amount : $rent;
+        $amount = $amount?:$rent;
         if ($amount > $rent) {
             $newDate->modify('-1 months');
             $diff = $amount - $rent;

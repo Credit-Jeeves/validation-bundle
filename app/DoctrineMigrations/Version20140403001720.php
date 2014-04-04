@@ -5,7 +5,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20140319155343 extends AbstractMigration
+class Version20140403001720 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -13,10 +13,14 @@ class Version20140319155343 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        
+
+        $this->addSql(
+            "ALTER TABLE cj_order
+                DROP days_late"
+        );
         $this->addSql(
             "ALTER TABLE cj_operation
-                ADD paid_for DATE DEFAULT NULL"
+                CHANGE paid_for paid_for DATE NOT NULL"
         );
     }
 
@@ -26,9 +30,10 @@ class Version20140319155343 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
+
         $this->addSql(
             "ALTER TABLE cj_operation
-                DROP paid_for"
+                CHANGE paid_for paid_for DATE DEFAULT NULL"
         );
     }
 }

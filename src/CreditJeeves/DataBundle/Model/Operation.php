@@ -34,7 +34,9 @@ abstract class Operation
     /**
      * @var float
      * @ORM\Column(
-     *     type="integer",
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
      *     nullable=false
      * )
      */

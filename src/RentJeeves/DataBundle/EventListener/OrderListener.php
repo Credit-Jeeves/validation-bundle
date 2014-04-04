@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\EventListener;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
@@ -11,6 +12,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use DateTime;
+use RuntimeException;
 
 class OrderListener
 {
@@ -39,7 +41,6 @@ class OrderListener
     {
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $entity->countDaysLate();
             $this->chargePartner($entity, $eventArgs->getEntityManager());
         }
     }
@@ -53,27 +54,29 @@ class OrderListener
      */
     public function preUpdate(LifecycleEventArgs $eventArgs)
     {
+        /** @var Order $entity */
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $operation = $entity->getOperations()->last();
-            if ($operation && $operation->getType() == OperationType::RENT) {
-                $status = $entity->getStatus();
-                switch ($status) {
-                    case OrderStatus::REFUNDED:
-                    case OrderStatus::CANCELLED:
-                    case OrderStatus::RETURNED:
-                        if ($eventArgs->hasChangedField('status')
-                            && !in_array(
-                                $eventArgs->getOldValue('status'),
-                                array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
-                            )
-                        ) {
-                            // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
-                            $contract = $operation->getContract();
-                            $contract->unshiftPaidTo($entity->getAmount());
-                        }
-                        break;
-                }
+            $operation = $entity->getRentOperation();
+            if (!$operation) {
+                return;
+            }
+            $status = $entity->getStatus();
+            switch ($status) {
+                case OrderStatus::REFUNDED:
+                case OrderStatus::CANCELLED:
+                case OrderStatus::RETURNED:
+                    if ($eventArgs->hasChangedField('status')
+                        && !in_array(
+                            $eventArgs->getOldValue('status'),
+                            array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
+                        )
+                    ) {
+                        // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
+                        $contract = $operation->getContract();
+                        $contract->unshiftPaidTo($operation->getAmount());
+                    }
+                    break;
             }
         }
     }

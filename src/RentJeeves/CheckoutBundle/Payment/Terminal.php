@@ -62,7 +62,7 @@ class Terminal
 
         $order->setType(OrderType::HEARTLAND_BANK);
         $order->setUser($groupUser);
-        $order->setAmount($amount);
+        $order->setSum($amount);
         $order->setStatus(OrderStatus::NEWONE);
 
         $paymentRequest = new MakePaymentRequest();
