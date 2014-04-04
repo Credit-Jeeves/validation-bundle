@@ -21,7 +21,7 @@ $(document).ready(function(){
                 tuReporting: tuFlag
             },
             success: function() {
-                $('#reporting-start').dialog('close');
+                $('#reporting-start-' + id).dialog('close');
             }
         });
     });

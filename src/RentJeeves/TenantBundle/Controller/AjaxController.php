@@ -45,8 +45,8 @@ class AjaxController extends Controller
     public function contractBureauReporting(Request $request)
     {
         $contractId = $request->request->get('contractId');
-        $reportToExperian = $request->request->get('experianReporting');
-        $reportToTU = $request->request->get('tuReporting');
+        $reportToExperian = $request->request->get('experianReporting') === 'true';
+        $reportToTU = $request->request->get('tuReporting') === 'true';
 
         /** @var Contract $contract */
         $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($contractId);
@@ -68,6 +68,7 @@ class AjaxController extends Controller
         }
 
         $em = $this->getDoctrine()->getManager();
+        $em->persist($contract);
         $em->flush();
 
         return new JsonResponse();

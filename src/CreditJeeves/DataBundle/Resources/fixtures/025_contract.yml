@@ -290,6 +290,8 @@ fixtures:
         status:    current
         reportToTU: true
         tuStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
         disputeCode: 'BLANK'
         paidTo:    '2014-04-01'
         startAt:   '2014-01-01'

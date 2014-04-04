@@ -202,12 +202,16 @@ button.contract-delete {
     display: none;
 }
 .reporting-box {
-    height: 190px;
-    margin: 0 0 0 15px;
+    height: 340px;
+    margin: 0 15px 0 15px;
 }
 .reporting-action {
     cursor: pointer;
 }
 .start-reporting {
     width: 75px;
+}
+.select-bureaus label {
+    line-height: 100%;
+    font-size: 15px;
 }
