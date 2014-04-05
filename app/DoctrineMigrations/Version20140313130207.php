@@ -19,7 +19,8 @@ class Version20140313130207 extends AbstractMigration
         INNER JOIN cj_operation AS o ON op.cj_operation_id = o.id
         INNER JOIN cj_order AS ord ON op.cj_order_id = ord.id
         LEFT JOIN rj_checkout_heartland AS h ON h.order_id = ord.id
-        GROUP BY `cj_order_id`, `cj_operation_id`";
+        GROUP BY `cj_order_id`, `cj_operation_id`
+        ORDER BY `cj_operation_id`";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
 

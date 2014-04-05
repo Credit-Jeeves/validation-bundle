@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
-use \DateTime;
+use DateTime;
 use Doctrine\ORM\Query\Expr;
 
 class ContractRepository extends EntityRepository
@@ -342,7 +342,7 @@ class ContractRepository extends EntityRepository
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.amount) AS amount, h.id, g.id as group_id');
+        $query->select('SUM(o.sum) AS amount, h.id, g.id as group_id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operation');
@@ -372,7 +372,7 @@ class ContractRepository extends EntityRepository
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.amount)');
+        $query->select('SUM(o.sum)');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operation');
@@ -431,5 +431,22 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new DateTime());
         $query = $query->getQuery();
         return $query->iterate();
+    }
+
+    public function getImportContract($tenant, $unitName)
+    {
+        $query = $this->createQueryBuilder('contract');
+        $query->leftJoin('contract.unit', 'unit');
+        $query->leftJoin('contract.tenant', 'tenant');
+        $query->where('contract.status = :approved OR contract.status = :current');
+        $query->andWhere('tenant.id = :tenantId');
+        $query->andWhere('unit.name = :unitName');
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('tenantId', $tenant);
+        $query->setParameter('unitName', $unitName);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
     }
 }

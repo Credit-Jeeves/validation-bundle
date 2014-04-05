@@ -19,6 +19,7 @@ abstract class Contract
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -89,6 +90,7 @@ abstract class Contract
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $unit;
 
@@ -115,6 +117,8 @@ abstract class Contract
      *         "default"="pending"
      *     }
      * )
+     * @Gedmo\Versioned
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $status;
 
@@ -128,11 +132,77 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.rent.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
+     * @Gedmo\Versioned
+     * @Assert\Regex(
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
-    protected $rent;
+    protected $rent = null;
+
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=true,
+     *     name="uncollected_balance"
+     * )
+     * @Gedmo\Versioned
+     */
+    protected $uncollectedBalance;
+
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=false,
+     *     name="balance",
+     *     options={
+     *          "default":"0.00"
+     *     }
+     * )
+     * @Gedmo\Versioned
+     */
+    protected $balance = 0.00;
+
+    /**
+     * @ORM\Column(
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=false,
+     *     name="imported_balance",
+     *     options={
+     *          "default":"0.00"
+     *     }
+     * )
+     * @Assert\NotBlank(
+     *     message="error.balance.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
+     */
+    protected $importedBalance = 0.00;
 
     /**
      * @ORM\Column(
@@ -141,7 +211,8 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
-     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
      */
     protected $paidTo;
 
@@ -153,6 +224,7 @@ abstract class Contract
      *         "default"="0"
      *     }
      * )
+     * @Gedmo\Versioned
      */
     protected $reporting = 0;
 
@@ -165,11 +237,13 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.start.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("startAt")
-     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
      */
     protected $startAt;
 
@@ -182,11 +256,13 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.finish.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
-     * Serializer\Type("DateTime<'d/m/Y'>") It breaks JS Data() conversion
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Gedmo\Versioned
      */
     protected $finishAt;
     
@@ -208,6 +284,7 @@ abstract class Contract
      *     type="datetime"
      * )
      * @Serializer\Exclude
+     * @Gedmo\Versioned
      */
     protected $updatedAt;
 
@@ -236,103 +313,22 @@ abstract class Contract
      */
     protected $payments;
 
-
     /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=true,
-     *     name="uncollected_balance"
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ContractHistory",
+     *     mappedBy="object",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
      * )
      */
-    protected $uncollectedBalance;
-
-
-    /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=false,
-     *     name="balance",
-     *     options={
-     *          "default":"0.00"
-     *     }
-     * )
-     */
-    protected $balance = 0.00;
-
-    /**
-     * @ORM\Column(
-     *     type="decimal",
-     *     precision=10,
-     *     scale=2,
-     *     nullable=false,
-     *     name="imported_balance",
-     *     options={
-     *          "default":"0.00"
-     *     }
-     * )
-     */
-    protected $importedBalance = 0.00;
-
+    protected $histories;
 
     public function __construct()
     {
         $this->operations = new ArrayCollection();
         $this->payments = new ArrayCollection();
+        $this->histories = new ArrayCollection();
     }
-
-    /**
-     * @param float $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getBalance()
-    {
-        return $this->balance;
-    }
-
-    /**
-     * @param float $importedBalance
-     */
-    public function setImportedBalance($importedBalance)
-    {
-        $this->importedBalance = $importedBalance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getImportedBalance()
-    {
-        return $this->importedBalance;
-    }
-
-
-    /**
-     * @param float $uncollectedBalance
-     */
-    public function setUncollectedBalance($uncollectedBalance)
-    {
-        $this->uncollectedBalance = $uncollectedBalance;
-    }
-
-    /**
-     * @return float
-     */
-    public function getUncollectedBalance()
-    {
-        return $this->uncollectedBalance;
-    }
-
 
     /**
      * Get id
@@ -518,6 +514,55 @@ abstract class Contract
     public function getRent()
     {
         return $this->rent;
+    }
+
+    /**
+     * @param float $balance
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    /**
+     * @param float $importedBalance
+     */
+    public function setImportedBalance($importedBalance)
+    {
+        $this->importedBalance = $importedBalance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getImportedBalance()
+    {
+        return $this->importedBalance;
+    }
+
+
+    /**
+     * @param float $uncollectedBalance
+     */
+    public function setUncollectedBalance($uncollectedBalance)
+    {
+        $this->uncollectedBalance = $uncollectedBalance;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUncollectedBalance()
+    {
+        return $this->uncollectedBalance;
     }
 
     /**

@@ -21,6 +21,9 @@ class Version20140313130208 extends AbstractMigration
         $this->addSql(
             "DROP TABLE cj_order_operation"
         );
+        $this->addSql(
+            "ALTER TABLE `cj_operation` CHANGE `amount` `amount` DOUBLE( 10, 2 ) NOT NULL"
+        );
     }
 
     public function down(Schema $schema)
@@ -53,6 +56,9 @@ class Version20140313130208 extends AbstractMigration
                 ADD CONSTRAINT FK_1FF923042122E99A
                 FOREIGN KEY (cj_order_id)
                 REFERENCES cj_order (id)"
+        );
+        $this->addSql(
+            "ALTER TABLE `cj_operation` CHANGE `amount` `amount` DOUBLE( 10, 2 ) DEFAULT NULL"
         );
     }
 }

@@ -65,8 +65,8 @@ class LandlordCase extends BaseTestCase
                 'numberOfUnit'                                           => 3,
                 'LandlordAddressType_deposit_nickname'                   => 'Nick',
                 'LandlordAddressType_deposit_PayorName'                  => 'Nick Staut',
-                'LandlordAddressType_deposit_AccountNumber'              => '12345678',
-                'LandlordAddressType_deposit_RoutingNumber'              => '12345678',
+                'LandlordAddressType_deposit_AccountNumber'              => '123245678',
+                'LandlordAddressType_deposit_RoutingNumber'              => '062202574',
                 'LandlordAddressType_deposit_ACHDepositType_0'           => true,
             )
         );
@@ -78,7 +78,6 @@ class LandlordCase extends BaseTestCase
         $unitNames[2]->setValue('1C');
 
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
-        $currentUrl = $this->session->getCurrentUrl();
         $submit->click();
 
         $this->session->wait($this->timeout, "$('#main-content-wrapper').is(':visible')");

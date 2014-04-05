@@ -691,6 +691,10 @@
                 <source>error.rent.empty</source>
                 <target>Please specify the rent amount.</target>
             </trans-unit>
+           <trans-unit id="error.balance.empty">
+                <source>error.balance.empty</source>
+                <target>Please specify the balance.</target>
+            </trans-unit>
            <trans-unit id="legend.close">
                 <source>legend.close</source>
                 <target>close</target>
@@ -2007,6 +2011,210 @@
             <trans-unit id="scoretrack.pay.amount">
                 <source>scoretrack.pay.amount</source>
                 <target>Amount</target>
+            </trans-unit>
+            <trans-unit id="tab.accounting">
+                <source>tab.accounting</source>
+                <target>Accounting</target>
+            </trans-unit>
+            <trans-unit id="import">
+                <source>import</source>
+                <target>Import</target>
+            </trans-unit>
+            <trans-unit id="export">
+                <source>export</source>
+                <target>Export</target>
+            </trans-unit>
+            <trans-unit id="accounting.file.import">
+                <source>accounting.file.import</source>
+                <target>Accounting File Import</target>
+            </trans-unit>
+            <trans-unit id="import.file">
+                <source>import.file</source>
+                <target>Import File</target>
+            </trans-unit>
+            <trans-unit id="match.fields">
+                <source>match.fields</source>
+                <target>Match Fields</target>
+            </trans-unit>
+            <trans-unit id="review.and.post">
+                <source>review.and.post</source>
+                <target><![CDATA[Review & Post]]></target>
+            </trans-unit>
+            <trans-unit id="csv.file">
+                <source>csv.file</source>
+                <target>CSV File</target>
+            </trans-unit>
+            <trans-unit id="collumn.name">
+                <source>collumn.name</source>
+                <target>Collumn Name</target>
+            </trans-unit>
+            <trans-unit id="import.data.row1">
+                <source>import.data.row1</source>
+                <target>Import Data Row 1</target>
+            </trans-unit>
+            <trans-unit id="import.data.row2">
+                <source>import.data.row2</source>
+                <target>Import Data Row 2</target>
+            </trans-unit>
+            <trans-unit id="matching.rent.track.field">
+                <source>matching.rent.track.field</source>
+                <target>Matching RentTrack Field</target>
+            </trans-unit>
+            <trans-unit id="csv.file.too.small1">
+                <source>csv.file.too.small1</source>
+                <target>
+                    CSV File is too small and must have at least two rows. One row is header and
+                    one row is data. Comeback please and upload correct file.
+                </target>
+            </trans-unit>
+            <trans-unit id="skip">
+                <source>skip</source>
+                <target>Skip</target>
+            </trans-unit>
+            <trans-unit id="csv.file.too.small2">
+               <source>csv.file.too.small2</source>
+               <target><![CDATA[
+                    CSV File should contain minimum 8 fields. Required fields:
+                    Unit, Resident_ID, Name, Actual Rent, Move In, Lease Expiration, Move Out, Balance.
+                    Comeback please and upload correct file.
+                   ]]>
+               </target>
+            </trans-unit>
+            <trans-unit id="field.delimiter">
+               <source>field.delimiter</source>
+               <target>Field Delimiter</target>
+            </trans-unit>
+            <trans-unit id="text.delimiter">
+               <source>text.delimiter</source>
+               <target>Text Delimiter</target>
+            </trans-unit>
+            <trans-unit id="value.cannot.duplicate">
+               <source>value.cannot.duplicate</source>
+               <target>Value can not be duplicated</target>
+            </trans-unit>
+            <trans-unit id="you.need.map">
+              <source>you.need.map</source>
+              <target>You need map at least 9 fields</target>
+            </trans-unit>
+            <trans-unit id="auto.import">
+              <source>auto.import</source>
+              <target>Automatically import</target>
+            </trans-unit>
+            <trans-unit id="manually.import">
+              <source>manually.import</source>
+              <target>Manually Import, check each contract</target>
+            </trans-unit>
+            <trans-unit id="import.status">
+              <source>import.status</source>
+              <target>Status</target>
+            </trans-unit>
+            <trans-unit id="import.unit">
+              <source>import.unit</source>
+              <target>Unit</target>
+            </trans-unit>
+            <trans-unit id="import.residentId">
+              <source>import.residentId</source>
+              <target>Resident ID</target>
+            </trans-unit>
+            <trans-unit id="import.first_name">
+              <source>import.first_name</source>
+              <target>First Name</target>
+            </trans-unit>
+            <trans-unit id="import.last_name">
+              <source>import.last_name</source>
+              <target>Last Name</target>
+            </trans-unit>
+            <trans-unit id="import.email">
+              <source>import.email</source>
+              <target>Email</target>
+            </trans-unit>
+            <trans-unit id="import.rent">
+              <source>import.rent</source>
+              <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="import.move_in">
+              <source>import.move_in</source>
+              <target>Move In</target>
+            </trans-unit>
+            <trans-unit id="import.move_out">
+              <source>import.move_out</source>
+              <target>Move Out</target>
+            </trans-unit>
+            <trans-unit id="import.lease_end">
+              <source>import.lease_end</source>
+              <target>Lease End</target>
+            </trans-unit>
+            <trans-unit id="import.balance">
+              <source>import.balance</source>
+              <target>Balance</target>
+            </trans-unit>
+            <trans-unit id="import.action">
+              <source>import.action</source>
+              <target>Action</target>
+            </trans-unit>
+            <trans-unit id="send.invite">
+              <source>send.invite</source>
+              <target>Invite</target>
+            </trans-unit>
+            <trans-unit id="import.pmt.amt">
+              <source>import.pmt.amt</source>
+              <target>Import Pmt Amt</target>
+            </trans-unit>
+            <trans-unit id="import.pmt.date">
+              <source>import.pmt.date</source>
+              <target>Import Pmt Date</target>
+            </trans-unit>
+            <trans-unit id="import.error.access">
+              <source>import.error.access</source>
+              <target>Access denied, move to first step please.</target>
+            </trans-unit>
+            <trans-unit id="import.status.skip">
+              <source>import.status.skip</source>
+              <target>Skip</target>
+            </trans-unit>
+            <trans-unit id="import.status.ended">
+              <source>import.status.ended</source>
+              <target>Ended</target>
+            </trans-unit>
+            <trans-unit id="import.status.error">
+              <source>import.status.error</source>
+              <target>Error</target>
+            </trans-unit>
+            <trans-unit id="import.status.match">
+              <source>import.status.match</source>
+              <target>Match</target>
+            </trans-unit>
+            <trans-unit id="import.status.new">
+              <source>import.status.new</source>
+              <target>New</target>
+            </trans-unit>
+            <trans-unit id="import.review.and.post">
+              <source>import.review.and.post</source>
+              <target>Import data and review next</target>
+            </trans-unit>
+            <trans-unit id="import.review.finish">
+              <source>import.review.finish</source>
+              <target>Data has been imported.</target>
+            </trans-unit>
+            <trans-unit id="regexp.error.name">
+                <source>regexp.error.name</source>
+                <target><![CDATA[Names should not have special characters except space, apostrophe, and hyphen (-).]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.flush">
+              <source>import.error.flush</source>
+              <target>Import failed. Something went wrong, please contact the administrator.</target>
+            </trans-unit>
+            <trans-unit id="import.error.unit">
+              <source>import.error.unit</source>
+              <target><![CDATA[Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.residentId">
+              <source>import.error.residentId</source>
+              <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
+            <trans-unit id="csrf.token.is.invalid">
+              <source>csrf.token.is.invalid</source>
+              <target>The CSRF token is invalid. Please try to resubmit the form.</target>
             </trans-unit>
         </body>
     </file>

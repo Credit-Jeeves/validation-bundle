@@ -67,6 +67,7 @@ class AppRjKernel extends AppKernel
             new RentJeeves\ExperianBundle\RjExperianBundle(),
             new CreditJeeves\ApiBundle\ApiBundle(),
         );
+
         if (in_array($this->getEnvironment(), array('dev', 'test', 'migration'))) {
             $bundles[] = new ENC\Bundle\BackupRestoreBundle\BackupRestoreBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();

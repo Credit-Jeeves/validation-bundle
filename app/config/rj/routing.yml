@@ -111,7 +111,6 @@ jms_jobs_retry_job:
     defaults: { _controller: JMSJobQueueBundle:Job:retryJob }
     path: /admin/job/{id}/retryJob
 
-
 jms_jobs_cancel_job:
     defaults: { _controller: JMSJobQueueBundle:Job:cancelJob }
     path: /admin/job/{id}/cancel

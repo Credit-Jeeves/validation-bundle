@@ -9,5 +9,5 @@ parameters:
     experian.logging: false
 
     server: local
-    server_name_cj: creditjeeves2.tonpc.forma-dev.com
-    server_name_rj: renttrack.tonpc.forma-dev.com
+    server_name_cj: creditjeeves2.te
+    server_name_rj: renttrack.te

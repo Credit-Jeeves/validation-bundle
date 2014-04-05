@@ -34,7 +34,9 @@ abstract class Operation
     /**
      * @var float
      * @ORM\Column(
-     *     type="integer",
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
      *     nullable=false
      * )
      */
@@ -49,6 +51,17 @@ abstract class Operation
      * )
      */
     protected $cjApplicantReportId;
+
+    /**
+     * @ORM\Column(
+     *     name="paid_for",
+     *     type="date",
+     *     nullable=false
+     * )
+     *
+     * @var DateTime
+     */
+    protected $paidFor;
 
     /**
      * @var DateTime
@@ -195,6 +208,28 @@ abstract class Operation
     public function getCjApplicantReportId()
     {
         return $this->cjApplicantReportId;
+    }
+
+    /**
+     * Set paidFor
+     *
+     * @param DateTime $paidFor
+     * @return Operation
+     */
+    public function setPaidFor($paidFor)
+    {
+        $this->paidFor = $paidFor;
+        return $this;
+    }
+
+    /**
+     * Get paidFor
+     *
+     * @return DateTime
+     */
+    public function getPaidFor()
+    {
+        return $this->paidFor;
     }
 
     /**

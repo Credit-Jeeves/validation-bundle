@@ -109,6 +109,10 @@ doctrine:
                 dir: %kernel.root_dir%/../vendor/payum/heartland/src/Payum/Heartland/Bridge/Doctrine/Resources/mapping
                 prefix: Payum\Heartland\Bridge\Doctrine\Entity
 
+stof_doctrine_extensions:
+    class:
+        loggable: RentJeeves\DataBundle\EventListener\LoggableListener
+
 payum:
     contexts:
         heartland:

@@ -130,7 +130,9 @@ class Operation extends Base
     public function setOrder(\CreditJeeves\DataBundle\Entity\Order $order)
     {
         parent::setOrder($order);
-        $order->addOperation($this);
+        if (!$order->getOperations()->contains($this)) {
+            $order->addOperation($this);
+        }
 
         return $this;
     }
@@ -138,5 +140,11 @@ class Operation extends Base
     public function __toString()
     {
         return (string)$this->getType();
+    }
+
+    public function getDaysLate()
+    {
+        $days = $this->getCreatedAt()->diff($this->getPaidFor())->format('%r%a');
+        return $days;
     }
 }

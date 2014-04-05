@@ -79,15 +79,16 @@ class PayCase extends BaseTestCase
             array(
                 'rentjeeves_checkoutbundle_paymenttype_amount' => '0',
                 'rentjeeves_checkoutbundle_paymenttype_type'    => PaymentTypeEnum::RECURRING,
+                'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 3,
+                'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1
             )
         );
         if ($infoMessage) {
             $this->fillForm(
                 $form,
                 array(
-                    'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
                     'rentjeeves_checkoutbundle_paymenttype_startMonth'  => 2,
-                    'rentjeeves_checkoutbundle_paymenttype_startYear'   => date('Y')+1
+                    'rentjeeves_checkoutbundle_paymenttype_dueDate'     => '31',
                 )
             );
             $this->assertNotNull($informationBox = $payPopup->find('css', '.information-box'));

@@ -26,6 +26,12 @@ class Version20140313130206 extends AbstractMigration
         $this->addSql(
             "CREATE INDEX IDX_21F5D92D8D9F6D38 ON cj_operation (order_id)"
         );
+        $this->addSql(
+            "ALTER TABLE `cj_operation` CHANGE `amount` `amount` DOUBLE( 10, 2 ) DEFAULT NULL"
+        );
+        $this->addSql(
+            "UPDATE `cj_order` SET amount = 0 WHERE amount IS NULL"
+        );
     }
 
     public function down(Schema $schema)
@@ -50,6 +56,9 @@ class Version20140313130206 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE cj_operation
                 DROP order_id"
+        );
+        $this->addSql(
+            "ALTER TABLE `cj_operation` CHANGE `amount` `amount` INT(11) DEFAULT NULL"
         );
     }
 }

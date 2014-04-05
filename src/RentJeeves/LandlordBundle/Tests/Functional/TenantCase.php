@@ -540,8 +540,8 @@ class TenantCase extends BaseTestCase
         $this->fillForm(
             $form,
             array(
-                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex123',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko123',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_first_name' => 'Alex',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'test123@email.ru',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',

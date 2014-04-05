@@ -1,0 +1,74 @@
+{% extends "LandlordBundle::base.html.twig" %}
+{% form_theme formBaseOrder 'RjCoreBundle::form.html.twig' %}
+
+{% block content %}
+<div class="sub-menu">
+    {{ knp_menu_render('LandlordBundle:Builder:accountingMenu', { 'template': '::menu.html.twig' }) }}
+</div>
+<div class="container-content">
+  <h3>
+      {{ 'tabs.reports'|trans }}
+  </h3>
+  <br />
+  <div class="pod-middle pod-border pod-padding shadow">
+    <section class="form-content">
+       <form action="{{ path('accounting_export')}}" method="post" {{ form_enctype(formBaseOrder) }} id="baseOrderReport" >
+
+            {{ form_widget(formBaseOrder) }}
+           <button type="submit" class="button small submitBaseReport">
+                    <span>
+                        {{ 'base.order.report.download'|trans }}
+                    </span>
+           </button>
+           <div class="helpContainer">
+               Help:
+               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296770-how-to-import-payments-into-yardi" class="xml">{{ 'base.order.report.how_to.yardi'|trans }}</a>
+               <a href="http://{{ external_urls['user_voice'] }}/knowledgebase/articles/296772-how-do-i-import-payments-into-realpage-onesite-" class="csv none">{{ 'base.order.report.how_to.realpage'|trans }}</a>
+           </div>
+        </form>
+    </section>
+    <div class="col-box clearfix"></div>
+  </div>
+</div>
+<div class="col-box clearfix"></div>
+<script type="text/javascript">
+    $(function() {
+        //@TODO move too knockout
+        $('.calendar').datepicker({
+            showOn: "both",
+            buttonImage: "/bundles/rjpublic/images/ill-datepicker-icon.png",
+            format:'m/d/Y',
+            starts: 1,
+            position: 'r'
+        });
+
+        function processFieldsFormReport(type)
+        {
+            if(type == 'xml') {
+                $('.int').parent().parent().show();
+                $('.type-date').css({'margin-top':'-175px'});
+            } else {
+                $('.int').parent().parent().hide();
+                $('.type-date').css({'margin-top':'-70px'});
+            }
+        }
+
+        $('#base_order_report_type_type').change(function(){
+            $('.helpContainer>a').hide();
+            $('.'+$(this).val()).show();
+            processFieldsFormReport($(this).val());
+        });
+
+        processFieldsFormReport($('#base_order_report_type_type option:selected').val());
+    });
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets '@LandlordBundle/Resources/public/css/reports.css'
+                   '@LandlordBundle/Resources/public/css/submenu.css'
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
