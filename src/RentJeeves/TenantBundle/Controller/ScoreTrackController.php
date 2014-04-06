@@ -12,8 +12,13 @@ class ScoreTrackController extends Controller
      */
     public function payAction()
     {
+
+        $em = $this->getDoctrine()->getManager();
+        $group = $em->getRepository('DataBundle:Group')->findByCode('RentTrack')[0];
+
         return array(
-            'paymentAccounts' => $this->getUser()->getPaymentAccounts()
+          'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
+          'paymentGroup' => $group
         );
     }
 

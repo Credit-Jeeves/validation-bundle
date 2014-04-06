@@ -1,5 +1,10 @@
 function ScoreTrackPayDialog(options) {
-    ko.cleanNode($('#pay-popup').get(0));
+    this.root = $('#pay-popup');
+
+    ko.cleanNode(this.root.get(0));
+
+    this.paymentAccounts = ko.observableArray(this.root.data('paymentAccounts'));
+    this.paymentGroup = this.root.data('paymentGroup');
 
     var self = this;
     var current = 0;
@@ -87,8 +92,6 @@ function ScoreTrackPayDialog(options) {
         }
     });
 
-    this.paymentAccounts = ko.observableArray(window.paymentAccounts);
-
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
 
     this.notEmptyPaymentAccount = ko.computed(function() {
@@ -130,6 +133,7 @@ function ScoreTrackPayDialog(options) {
     }, this);
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
+    this.paymentSource.groupId(this.paymentGroup.id);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
 
@@ -207,9 +211,6 @@ function ScoreTrackPayDialog(options) {
             timeout: 30000, // 30 secs
             dataType: 'json',
             data: jQuery.param(data, false),
-//            complete: function(jqXHR, textStatus) {
-//                jQuery('#pay-popup').hideOverlay();
-//            },
             error: function(jqXHR, textStatus, errorThrown) {
                 window.formProcess.removeAllErrors('#pay-popup ');
                 jQuery('#pay-popup').hideOverlay();
