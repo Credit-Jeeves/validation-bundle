@@ -61,7 +61,7 @@
                 <div class="table-cell">
                     <div class="buttons-box score-track-pay">
                         <button
-                          data-bind="click: openDialog.bind($data)"
+                          data-bind="click: pay"
                           class="button button-close" type="button"><span>{{ 'popup.sign.up.today' | trans() }}</span></button>
                     </div>
                 </div>
@@ -70,13 +70,12 @@
     </div>
     <p class="note">{{ 'popup.tenant.footer.note_3' | trans({"%payment_percent%": payment_card_fee, "%payment_dollars%": payment_dollars}) }}</p>
 </div>
-
 <script type="text/javascript">
-    $(document).ready(function() {
-        var scoreTrackPay = new ScoreTrackPay({
-          amount: {{ scoretrack_payment_per_month_dollars ~ '.' ~ scoretrack_payment_per_month_cents }}
-        });
-
-        ko.applyBindings(scoreTrackPay, $('.score-track-pay').get(0));
+$(function(){
+    var scoreTrackPricing = new ScoreTrackPricing({
+      amount: {{ scoretrack_payment_per_month_dollars ~ '.' ~ scoretrack_payment_per_month_cents }}
     });
+
+    ko.applyBindings(scoreTrackPricing, $('#pricing-popup').get(0));
+});
 </script>
