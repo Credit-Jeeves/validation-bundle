@@ -46,6 +46,14 @@
                 <source>admin.reports</source>
                 <target>Reports</target>
             </trans-unit>
+            <trans-unit id="admin.dashboard">
+                <source>admin.dashboard</source>
+                <target>Dashboard</target>
+            </trans-unit>
+            <trans-unit id="admin.rental_report">
+                <source>admin.rental_report</source>
+                <target>Rental report</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

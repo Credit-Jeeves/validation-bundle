@@ -555,6 +555,25 @@ class Order extends BaseOrder
         return $operationCollection->last();
     }
 
+    public function getOtherOperation()
+    {
+        $operationCollection = $this->getOperations()
+            ->filter(
+                function (Operation $operation) {
+                    if (OperationType::OTHER == $operation->getType()) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+
+        if (0 == $operationCollection->count()) {
+            return null;
+        }
+
+        return $operationCollection->last();
+    }
+
     /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PostMonth")
@@ -661,25 +680,8 @@ class Order extends BaseOrder
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
         $result['property'] = $this->getContract()->getRentAddress();
 
-        // TODO: use Order->getRentOperation when that one exists
-        /** @var Operation $rentOperation */
-        $rentOperation = $this->getOperations()->filter(
-            function(Operation $operation) {
-                if (OperationType::RENT == $operation->getType()) {
-                    return true;
-                }
-                return false;
-            }
-        )->first();
-        /** @var Operation $otherOperation */
-        $otherOperation = $this->getOperations()->filter(
-            function(Operation $operation) {
-                if (OperationType::OTHER == $operation->getType()) {
-                    return true;
-                }
-                return false;
-            }
-        )->first();
+        $rentOperation = $this->getRentOperation();
+        $otherOperation = $this->getOtherOperation();
 
         $result['rent'] = $rentOperation? $rentOperation->getFormatedAmount() : '';
         $result['other'] = $otherOperation? $otherOperation->getFormatedAmount() : '';

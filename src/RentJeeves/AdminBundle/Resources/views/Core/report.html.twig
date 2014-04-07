@@ -1,12 +1,12 @@
 {% extends 'RjAdminBundle::standard_layout.html.twig' %}
 
 {% block breadcrumb %}
-    <li><a href="{{ url('sonata_admin_dashboard') }}">{{ 'Dashboard'|trans }}</a><span class="divider">/</span></li>
-    <li class="active">{{ 'Rental report'|trans }}</li>
+    <li><a href="{{ url('sonata_admin_dashboard') }}">{{ 'admin.dashboard'|trans }}</a><span class="divider">/</span></li>
+    <li class="active">{{ 'admin.rental_report'|trans }}</li>
 {% endblock %}
 
 {% block content %}
-    <h1>Rental report</h1>
+    <h1>{{ 'admin.rental_report'|trans }}</h1>
     <form method="post">
         <div>
 
