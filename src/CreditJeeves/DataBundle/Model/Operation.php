@@ -33,10 +33,14 @@ abstract class Operation
 
     /**
      * @var float
+     *
      * @ORM\Column(
-     *     type="integer",
-     *     nullable=false
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=false
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $amount = 0;
 
@@ -56,6 +60,7 @@ abstract class Operation
      *     type="date",
      *     nullable=false
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      *
      * @var DateTime
      */

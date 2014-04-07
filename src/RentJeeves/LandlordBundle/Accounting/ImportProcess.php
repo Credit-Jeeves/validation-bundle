@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
@@ -88,6 +89,7 @@ class ImportProcess
     protected $isCreateCsrfToken = false;
 
     protected $emailSendingQueue = array();
+
     /**
      * @InjectParams({
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
@@ -111,7 +113,8 @@ class ImportProcess
         Mailer $mailer,
         ImportStorage $storage,
         ImportMapping $mapping
-    ) {
+    )
+    {
         $this->em               = $em;
         $this->user             = $context->getToken()->getUser();
         $this->formFactory      = $formFactory;
@@ -257,7 +260,7 @@ class ImportProcess
 
     protected function validateFieldWhichNotCheckByForm(ModelImport $import)
     {
-        $tenant = $import->getTenant();
+        $tenant   = $import->getTenant();
         $contract = $import->getContract();
 
         if (preg_match('/^[A-Za-z_0-9\-]{1,50}$/i', $contract->getUnit()->getName())) {
@@ -271,7 +274,7 @@ class ImportProcess
 
     protected function setForm(ModelImport $import)
     {
-        $tenant = $import->getTenant();
+        $tenant   = $import->getTenant();
         $contract = $import->getContract();
 
         $tenantId   = $tenant->getId();
@@ -317,6 +320,44 @@ class ImportProcess
         }
     }
 
+    protected function setOperation(ModelImport $import, $row)
+    {
+        if (!$this->mapping->isHavePaymentMapping($row)) {
+            return;
+        }
+
+        $contract = $import->getContract();
+        if ($contract->getStatus() !== ContractStatus::CURRENT) {
+            return;
+        }
+
+        $tenant = $import->getTenant();
+        $amount = $row[ImportMapping::KEY_PAYMENT_AMOUNT];
+        $paidFor = $this->getDateByField($row[ImportMapping::KEY_PAYMENT_DATE]);
+
+        if (!$paidFor) {
+            return;
+        }
+
+        $operation = $this->em->getRepository('DataBundle:Operation')->getOperationImport(
+             $tenant,
+             $contract,
+             $paidFor,
+             $amount
+        );
+
+        //We can't create double payment
+        if ($operation) {
+            return;
+        }
+
+        $operation = new Operation();
+        $operation->setPaidFor($paidFor);
+        $operation->setAmount($amount);
+
+        $import->setOperation($operation);
+    }
+
     /**
      * @param array $row
      * @param integer $lineNumber
@@ -353,6 +394,8 @@ class ImportProcess
         if ($import->isValid()) {
             $this->setForm($import);
         }
+
+        $this->setOperation($import, $row);
 
         return $import;
     }

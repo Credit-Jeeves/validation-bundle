@@ -39,6 +39,10 @@ class ImportMapping
 
     const KEY_EMAIL = 'email';
 
+    const KEY_PAYMENT_AMOUNT = 'payment_amount';
+
+    const KEY_PAYMENT_DATE = 'payment_date';
+
     /**
      * @var ImportStorage
      */
@@ -159,6 +163,19 @@ class ImportMapping
 
         $this->storage->setMapping($result);
         $this->storage->setFileLine(0);
+    }
+
+    public function isHavePaymentMapping($row)
+    {
+        if (!isset($row[self::KEY_PAYMENT_AMOUNT]) && !isset($row[self::KEY_PAYMENT_DATE])) {
+            return false;
+        }
+
+        if (empty($row[self::KEY_PAYMENT_AMOUNT]) || empty($row[self::KEY_PAYMENT_DATE])) {
+            return false;
+        }
+
+        return true;
     }
 
     public static function parseName($name)

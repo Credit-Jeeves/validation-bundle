@@ -67,7 +67,7 @@ abstract class Order
      *      type="decimal",
      *      precision=10,
      *      scale=2,
-     *      nullable=true
+     *      nullable=false
      * )
      */
     protected $amount;

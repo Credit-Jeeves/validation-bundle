@@ -73,6 +73,12 @@ class ImportContractType extends AbstractType
                     'mapped' => false,
                 )
             );
+            //If we use token it's means this exist user
+            $builder->add(
+                'operation',
+                new ImportOperationType(),
+                array('mapped'=> false)
+            );
         }
     }
 

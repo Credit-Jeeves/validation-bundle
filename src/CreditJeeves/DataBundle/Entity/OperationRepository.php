@@ -12,4 +12,32 @@ use Doctrine\ORM\EntityRepository;
  */
 class OperationRepository extends EntityRepository
 {
+    public function getOperationImport(
+        Tenant $tenant,
+        Contract $contract,
+        DateTime $paidFor,
+        $amount
+    ) {
+        $query = $this->createQueryBuilder('operation');
+        $query->innerJoin('operation.order', 'order');
+        $query->innerJoin('operation.contract', 'contract');
+        $query->innerJoin('contract.tenant', 'tenant');
+        $query->where("tenant.id = :tenant");
+        $query->andWhere('operation.amount = :amount');
+        $query->andWhere('contract.id = :contract');
+        $query->andWhere('MONTH(operation.paidFor) = :paidForMonth');
+        $query->andWhere('YEAR(operation.paidFor) = :paidForYear');
+        $query->andWhere('o.status = :status');
+
+        $query->setParameter('amount', $amount);
+        $query->setParameter('contract', $contract->getId());
+        $query->setParameter('paidForMonth', $paidFor->format('n'));
+        $query->setParameter('paidForYear', $paidFor->format('Y'));
+        $query->setParameter('tenant', $tenant->getId());
+        $query->setParameter('status', OrderStatus::COMPLETE);
+
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
 }

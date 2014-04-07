@@ -165,7 +165,7 @@ class AccountingController extends Controller
 
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
-            new ImportMatchFileType(count($dataView))
+            new ImportMatchFileType(count($dataView), $this->get('translator'))
         );
         $form->handleRequest($this->get('request'));
         if ($form->isValid()) {

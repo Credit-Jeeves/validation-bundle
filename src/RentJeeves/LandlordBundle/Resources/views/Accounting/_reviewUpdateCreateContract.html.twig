@@ -82,6 +82,24 @@
         ) }}
     </td>
     <td>
+        {{ form_widget(
+            form.operation.amount,
+            {
+                "attr":
+                {
+                    "data-bind": "",
+                }
+            }
+        ) }}
+        {{ form_widget(
+            form.operation.paidFor,
+            {
+                "attr":
+                {
+                    "data-bind":""
+                }
+            }
+        ) }}
     </td>
     <td>
         {{ form_widget(

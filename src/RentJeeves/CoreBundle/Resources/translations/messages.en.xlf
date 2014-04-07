@@ -479,6 +479,14 @@
                 <source>amount</source>
                 <target>Amount</target>
             </trans-unit>
+            <trans-unit id="payment.amount">
+                <source>payment.amount</source>
+                <target>Payment Amount</target>
+            </trans-unit>
+            <trans-unit id="payment.date">
+                <source>payment.date</source>
+                <target>Payment Date</target>
+            </trans-unit>
             <trans-unit id="start">
                 <source>start</source>
                 <target>Start</target>
@@ -2070,7 +2078,7 @@
             </trans-unit>
             <trans-unit id="you.need.map">
               <source>you.need.map</source>
-              <target>You need map at least 9 fields</target>
+              <target>You need map at least 9 fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
             </trans-unit>
             <trans-unit id="auto.import">
               <source>auto.import</source>
@@ -2191,6 +2199,14 @@
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
+            </trans-unit>
+            <trans-unit id="choose.an.option">
+                <source>choose.an.option</source>
+                <target>Choose an option</target>
+            </trans-unit>
+            <trans-unit id="tenant.name">
+                <source>tenant.name</source>
+                <target>Tenant Name</target>
             </trans-unit>
         </body>
     </file>
