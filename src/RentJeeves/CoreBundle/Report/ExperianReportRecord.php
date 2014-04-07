@@ -304,7 +304,7 @@ class ExperianReportRecord
     public function getAmountPaid()
     {
         if ($this->operation) {
-            return $this->operation->getAmount();
+            return (int)$this->operation->getAmount();
         }
 
         return null;

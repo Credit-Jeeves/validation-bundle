@@ -181,7 +181,7 @@ class TransUnionReportRecord
     {
         $amount = 0;
         if ($this->operation) {
-            $amount = $this->operation->getAmount();
+            $amount = (int)$this->operation->getAmount();
         }
 
         return str_pad($amount, 9, '0', STR_PAD_LEFT);
@@ -257,14 +257,16 @@ class TransUnionReportRecord
         //RR‐ Eviction
         //SS‐ Rent unpaid, renter skipped, and did not fulfill remaining lease term
 
-        $paidOnDay = $this->operation->getOrder()->getUpdatedAt()->format('j');
-        switch ($paidOnDay) {
-            case ($paidOnDay < 6):
-                return 'MM';
-            case ($paidOnDay >= 6 && $paidOnDay < 15):
-                return 'NN';
-            case ($paidOnDay >= 15):
-                return 'OO';
+        if ($this->operation) {
+            $paidOnDay = $this->operation->getCreatedAt()->format('j');
+            switch ($paidOnDay) {
+                case ($paidOnDay < 6):
+                    return 'MM';
+                case ($paidOnDay >= 6 && $paidOnDay < 15):
+                    return 'NN';
+                case ($paidOnDay >= 15):
+                    return 'OO';
+            }
         }
 
         return str_repeat(' ', 2);
