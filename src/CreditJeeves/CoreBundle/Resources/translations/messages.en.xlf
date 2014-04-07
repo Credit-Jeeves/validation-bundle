@@ -1301,10 +1301,6 @@
                 <source>tenant.reporting.payment_history</source>
                 <target>Payment Reporting</target>
             </trans-unit>
-            <trans-unit id="rent.contracts.finished">
-                <source>rent.contracts.finished</source>
-                <target>Finished Contracts</target>
-            </trans-unit>
             <trans-unit id="footer.data_provided_by">
                 <source>footer.data_provided_by</source>
                 <target>Data provided by</target>

@@ -38,7 +38,14 @@
                 <source>admin.report.choose_year</source>
                 <target>Choose report year:</target>
             </trans-unit>
-
+            <trans-unit id="admin.rental_reports">
+                <source>admin.rental_reports</source>
+                <target>Rental reports</target>
+            </trans-unit>
+            <trans-unit id="admin.reports">
+                <source>admin.reports</source>
+                <target>Reports</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
