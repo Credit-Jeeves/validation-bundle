@@ -54,7 +54,7 @@ class IndexController extends Controller
      */
     public function startBureauReporting(Request $request)
     {
-        $bureaus = $request->request->get('reporting');
+        $bureaus = $request->request->get('reporting', []);
         $includeExperian = in_array('experian', $bureaus);
         $includeTransUnion = in_array('trans_union', $bureaus);
 
