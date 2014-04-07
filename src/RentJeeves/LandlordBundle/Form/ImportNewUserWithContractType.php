@@ -25,7 +25,7 @@ class ImportNewUserWithContractType extends AbstractType
 
         $builder->add(
             'contract',
-            new ImportContractType($token = false),
+            new ImportContractType($token = false, $useOperation = false),
             array()
         );
 

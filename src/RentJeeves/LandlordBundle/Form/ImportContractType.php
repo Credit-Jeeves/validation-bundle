@@ -17,9 +17,12 @@ class ImportContractType extends AbstractType
 {
     protected $isUseToken;
 
-    public function __construct($token = true)
+    protected $isUseOperation;
+
+    public function __construct($token = true, $operation = true)
     {
         $this->isUseToken =  $token;
+        $this->isUseOperation = $operation;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -73,7 +76,9 @@ class ImportContractType extends AbstractType
                     'mapped' => false,
                 )
             );
-            //If we use token it's means this exist user
+        }
+
+        if ($this->isUseOperation) {
             $builder->add(
                 'operation',
                 new ImportOperationType(),

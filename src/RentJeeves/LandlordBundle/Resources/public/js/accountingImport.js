@@ -152,7 +152,11 @@ function accountingImport() {
             var month = jQuery(elementHtml).datepicker('getDate').getMonth() + 1;
             var year = jQuery(elementHtml).datepicker('getDate').getFullYear();
             var fullDate = month + "/" + day + "/" + year;
-            currentRow.contract[datepickerFieldName] = fullDate;
+            if (datepickerFieldName == 'paid_for') {
+                currentRow.operation[datepickerFieldName] = fullDate;
+            } else {
+                currentRow.contract[datepickerFieldName] = fullDate;
+            }
         } catch (e) {
             currentRow.contract[datepickerFieldName] = '';
         }
@@ -186,7 +190,6 @@ function accountingImport() {
                 }
             })
         });
-
         return result;
     }
 

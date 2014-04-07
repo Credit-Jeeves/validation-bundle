@@ -33,17 +33,21 @@ class ImportMatchFileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $choicesRequired =  array(
-            ImportMapping::KEY_BALANCE         => $this->translator->trans('common.balance')."*",
-            ImportMapping::KEY_RESIDENT_ID     => $this->translator->trans('import.residentId')."*",
-            ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('tenant.name')."*",
-            ImportMapping::KEY_UNIT            => $this->translator->trans('import.unit')."*",
-            ImportMapping::KEY_RENT            => $this->translator->trans('import.rent')."*",
-            ImportMapping::KEY_EMAIL           => $this->translator->trans('email')."*",
-            ImportMapping::KEY_LEASE_END       => $this->translator->trans('import.lease_end')."*",
-            ImportMapping::KEY_MOVE_IN         => $this->translator->trans('import.move_in')."*",
-            ImportMapping::KEY_MOVE_OUT        => $this->translator->trans('import.move_out')."*",
+            ImportMapping::KEY_BALANCE         => $this->translator->trans('common.balance'),
+            ImportMapping::KEY_RESIDENT_ID     => $this->translator->trans('import.residentId'),
+            ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('tenant.name'),
+            ImportMapping::KEY_UNIT            => $this->translator->trans('import.unit'),
+            ImportMapping::KEY_RENT            => $this->translator->trans('import.rent'),
+            ImportMapping::KEY_EMAIL           => $this->translator->trans('email'),
+            ImportMapping::KEY_LEASE_END       => $this->translator->trans('import.lease_end'),
+            ImportMapping::KEY_MOVE_IN         => $this->translator->trans('import.move_in'),
+            ImportMapping::KEY_MOVE_OUT        => $this->translator->trans('import.move_out'),
         );
 
+        $choicesRequired =  array_map(function($value){
+            return $value."*";
+        }, $choicesRequired);
+        
         $choicesNoneRequired = array(
             ImportMapping::KEY_PAYMENT_AMOUNT  => $this->translator->trans('payment.amount'),
             ImportMapping::KEY_PAYMENT_DATE    => $this->translator->trans('payment.date'),

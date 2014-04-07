@@ -262,7 +262,7 @@ class AccountingController extends Controller
         $total = $importMapping->countLines();
 
         if ($total > 0) {
-            $rows = $importProcess->getMappedData();
+            $rows = $importProcess->getImportModelCollection();
         }
 
         $context = new SerializationContext();
