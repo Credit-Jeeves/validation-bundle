@@ -70,15 +70,7 @@ abstract class Order
      *      nullable=false
      * )
      */
-    protected $amount;
-
-    /**
-     * @ORM\Column(
-     *     type="integer",
-     *     nullable=true
-     * )
-     */
-    protected $days_late = null;
+    protected $sum;
 
     /**
      * @ORM\Column(
@@ -229,51 +221,27 @@ abstract class Order
     }
 
     /**
-     * Set amount
+     * Set sum
      *
-     * @param double $amount
+     * @param double $sum
      * @return Order
      */
-    public function setAmount($amount)
+    public function setSum($sum)
     {
-        $this->amount = $amount;
+        $this->sum = $sum;
     
         return $this;
     }
     
     /**
-     * Get amount
+     * Get sum
      *
      * @return double
      */
-    public function getAmount()
+    public function getSum()
     {
-        return $this->amount;
+        return $this->sum;
     }
-
-    /**
-     * Set days_late
-     *
-     * @param double $days
-     * @return Order
-     */
-    public function setDaysLate($days)
-    {
-        $this->days_late = $days;
-    
-        return $this;
-    }
-    
-    /**
-     * Get days_late
-     *
-     * @return double
-     */
-    public function getDaysLate()
-    {
-        return $this->days_late;
-    }
-    
     
     /**
      * Set created_date

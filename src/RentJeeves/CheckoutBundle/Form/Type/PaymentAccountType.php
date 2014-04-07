@@ -203,8 +203,9 @@ class PaymentAccountType extends AbstractType
                         '<li><span class="cc visa">visa</span></li>' .
                         '<li><span class="cc mc">mastercard</span></li>' .
 //                        '<li><span class="cc ae">american express</span></li>' .
-                        '<li><span class="cc discover">discover</span></li>' ,
-//                        '<li><span class="cc dc">diners club</span></li></ul>',
+                        '<li><span class="cc discover">discover</span></li>' .
+//                        '<li><span class="cc dc">diners club</span></li>',
+                        '</ul>',
                     'data-bind' => 'value: paymentSource.CardNumber',
                     'row_attr' => array(
                         'data-bind' => 'visible: \'card\' == paymentSource.type()'

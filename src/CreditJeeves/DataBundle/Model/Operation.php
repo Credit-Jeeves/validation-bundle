@@ -35,10 +35,10 @@ abstract class Operation
      * @var float
      *
      * @ORM\Column(
-     *      type="decimal",
-     *      precision=10,
-     *      scale=2,
-     *      nullable=false
+     *     type="decimal",
+     *     precision=10,
+     *     scale=2,
+     *     nullable=false
      * )
      * @Serializer\Groups({"RentJeevesImport"})
      */
