@@ -475,5 +475,4 @@ class ContractRepository extends EntityRepository
 
         return $query->getOneOrNullResult();
     }
-
 }

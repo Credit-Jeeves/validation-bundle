@@ -109,8 +109,7 @@ class ImportProcess
         Mailer $mailer,
         ImportStorage $storage,
         ImportMapping $mapping
-    )
-    {
+    ) {
         $this->em               = $em;
         $this->user             = $context->getToken()->getUser();
         $this->formFactory      = $formFactory;

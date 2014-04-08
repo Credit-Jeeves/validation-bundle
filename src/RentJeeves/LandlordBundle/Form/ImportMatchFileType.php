@@ -44,9 +44,12 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_MOVE_OUT        => $this->translator->trans('import.move_out'),
         );
 
-        $choicesRequired =  array_map(function($value){
-            return $value."*";
-        }, $choicesRequired);
+        $choicesRequired =  array_map(
+            function ($value) {
+                return $value."*";
+            },
+            $choicesRequired
+        );
         
         $choicesNoneRequired = array(
             ImportMapping::KEY_PAYMENT_AMOUNT  => $this->translator->trans('payment.amount'),
