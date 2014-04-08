@@ -105,7 +105,9 @@ class PaymentHistoryController extends Controller
         // can't use jms_serializer since order already has handlerCallback used in another serialization
         array_walk(
             $orders,
-            function (&$order) { $order = $order->getTenantPayment(); }
+            function (&$order) {
+                $order = $order->getTenantPayment();
+            }
         );
 
         $result = json_encode(array('payments' => $orders));

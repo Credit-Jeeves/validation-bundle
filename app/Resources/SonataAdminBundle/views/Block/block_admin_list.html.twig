@@ -22,7 +22,7 @@ file that was distributed with this source code.
 
             <tbody>
 
-                {% if _key == 0 %}
+                {% if _key == 0 and application == 'rj' %}
                     <tr id="block_rental_reports">
                         <td class="sonata-ba-list-label">{{ 'admin.reports'|trans }}</td>
                         <td><a href="{{ url('sonata_admin_rental_report') }}">{{ 'admin.rental_reports'|trans }}</a></td>
