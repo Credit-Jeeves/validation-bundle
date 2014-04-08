@@ -380,7 +380,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "aee9f3f411b6b7dfd660adaa5dac243fa75ca74e"
+                "reference": "2e6451bbf60a36e714463c90c6c42da6005e93fa"
             },
             "require": {
                 "credit-jeeves/core-bundle": "dev-master",
@@ -402,7 +402,7 @@
                 }
             ],
             "description": "CreditJeeves ARF Bundle",
-            "time": "2014-02-25 23:50:32"
+            "time": "2014-04-08 19:48:26"
         },
         {
             "name": "credit-jeeves/core-bundle",
@@ -411,7 +411,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "c8b6f23b9430355e2006ef31eda8601f3916131c"
+                "reference": "9ce30546634c1eae9d69c7b06b802273facbf484"
             },
             "require": {
                 "doctrine/dbal": "~2.4",
@@ -438,7 +438,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-02-26 15:45:22"
+            "time": "2014-04-08 19:49:00"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
