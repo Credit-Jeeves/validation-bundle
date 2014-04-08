@@ -82,7 +82,9 @@ class ImportContractType extends AbstractType
             $builder->add(
                 'operation',
                 new ImportOperationType(),
-                array('mapped'=> false)
+                array(
+                    'mapped'=> false
+                )
             );
         }
     }

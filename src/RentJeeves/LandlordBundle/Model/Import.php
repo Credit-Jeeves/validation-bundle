@@ -59,12 +59,6 @@ class Import
     protected $isValidResidentId = false;
 
     /**
-     * @Serializer\Type("boolean")
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $isLatePayment = false;
-
-    /**
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("DateTime")
      */
@@ -74,22 +68,6 @@ class Import
      * @Serializer\Exclude
      */
     protected $form = null;
-
-    /**
-     * @param mixed $isLatePayment
-     */
-    public function setIsLatePayment($isLatePayment)
-    {
-        $this->isLatePayment = $isLatePayment;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsLatePayment()
-    {
-        return $this->isLatePayment;
-    }
 
     /**
      * @return boolean

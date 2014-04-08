@@ -458,8 +458,8 @@ class ContractRepository extends EntityRepository
     public function getImportContractInvite($tenant, $unitName)
     {
         $query = $this->createQueryBuilder('contract');
-        $query->leftJoin('contract.unit', 'unit');
-        $query->leftJoin('contract.tenant', 'tenant');
+        $query->innerJoin('contract.unit', 'unit');
+        $query->innerJoin('contract.tenant', 'tenant');
         $query->where('contract.status = :invite');
         $query->andWhere('tenant.id = :tenantId');
         $query->andWhere('unit.name = :unitName');

@@ -180,10 +180,6 @@ class ImportMapping
             return false;
         }
 
-        if (empty($row[self::KEY_PAYMENT_AMOUNT]) || empty($row[self::KEY_PAYMENT_DATE])) {
-            return false;
-        }
-
         return true;
     }
 

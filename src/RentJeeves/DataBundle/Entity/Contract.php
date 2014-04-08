@@ -626,4 +626,32 @@ class Contract extends Base
         }
         return $collection[0];
     }
+
+
+    /**
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("is_late")
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Type("boolean")
+     *
+     * @return bool
+     */
+    public function isLate()
+    {
+        $paidTo = $this->getPaidTo();
+
+        if (empty($paidTo) || !($paidTo instanceof DateTime) || $this->getId() === null) {
+            return false;
+        }
+
+        $today = new DateTime();
+        $interval = $today->diff($paidTo);
+
+        if ($interval->days >= 30) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -152,9 +152,9 @@ class ImportProcess
     /**
      * @return Form
      */
-    public function getContractForm()
+    public function getContractForm($isUseToken = true, $isUseOperation = true)
     {
-        return $this->createForm(new ImportContractType());
+        return $this->createForm(new ImportContractType($isUseToken, $isUseOperation));
     }
 
     /**
@@ -179,7 +179,7 @@ class ImportProcess
      *
      * @return Contract
      */
-    protected function createContract($row, $tenant)
+    protected function createContract(array $row, Tenant $tenant)
     {
         $contract = new Contract();
         if ($tenant->getId()) {
@@ -202,7 +202,7 @@ class ImportProcess
      *
      * @return Unit
      */
-    protected function getUnit($row)
+    protected function getUnit(array $row)
     {
         $params = array(
             'property' => $this->storage->getPropertyId(),
@@ -235,7 +235,7 @@ class ImportProcess
      *
      * @return Contract
      */
-    protected function getContract(ModelImport $import, $row)
+    protected function getContract(ModelImport $import, array $row)
     {
         $tenant  = $import->getTenant();
 
@@ -284,7 +284,7 @@ class ImportProcess
      *
      * @return Operation|null
      */
-    protected function getOperation(ModelImport $import, $row)
+    protected function getOperation(ModelImport $import, array $row)
     {
         if (!$this->mapping->isHavePaymentMapping($row)) {
             return null;
@@ -292,23 +292,25 @@ class ImportProcess
 
         $contract = $import->getContract();
         if ($contract->getStatus() !== ContractStatus::CURRENT) {
-            return;
+            return null;
         }
 
         $tenant = $import->getTenant();
         $amount = $row[ImportMapping::KEY_PAYMENT_AMOUNT];
         $paidFor = $this->getDateByField($row[ImportMapping::KEY_PAYMENT_DATE]);
 
-        $operation = $this->em->getRepository('DataBundle:Operation')->getOperationImport(
-            $tenant,
-            $contract,
-            $paidFor,
-            $amount
-        );
+        if ($paidFor instanceof DateTime && $amount > 0) {
+            $operation = $this->em->getRepository('DataBundle:Operation')->getOperationImport(
+                $tenant,
+                $contract,
+                $paidFor,
+                $amount
+            );
 
-        //We can't create double payment for current month
-        if ($operation) {
-            return null;
+            //We can't create double payment for current month
+            if ($operation) {
+                return null;
+            }
         }
 
         $operation = new Operation();
@@ -323,7 +325,7 @@ class ImportProcess
      *
      * @return Tenant
      */
-    protected function getTenant($row)
+    protected function getTenant(array $row)
     {
         $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
             array(
@@ -431,7 +433,7 @@ class ImportProcess
      *
      * @return ModelImport
      */
-    protected function getImport($row, $lineNumber)
+    protected function getImport(array $row, $lineNumber)
     {
         $import = new ModelImport();
         $tenant = $this->getTenant($row);
