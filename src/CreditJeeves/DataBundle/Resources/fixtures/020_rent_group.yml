@@ -49,4 +49,7 @@ fixtures:
     type:           rent
     created_at: '2012-11-29 14:35:44'
     updated_at: '2012-11-29 14:35:44'
-
+  RentTrack:
+    name:           RentTrack
+    code:           RentTrack
+    type:           generic
