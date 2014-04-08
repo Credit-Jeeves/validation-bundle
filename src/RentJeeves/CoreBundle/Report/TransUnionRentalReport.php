@@ -11,7 +11,7 @@ class TransUnionRentalReport extends RentalReport
 
     public function getSerializationType()
     {
-        return 'tu_rental1';
+        return 'trans_union_rental';
     }
 
     public function getReportFilename()
@@ -32,7 +32,7 @@ class TransUnionRentalReport extends RentalReport
     {
         $this->records = array();
         $contracts = $this->em->getRepository('RjDataBundle:Contract')
-            ->getContractsForTURentalReport($month, $year);
+            ->getContractsForTransUnionRentalReport($month, $year);
 
         $operationRepo = $this->em->getRepository('DataBundle:Operation');
 

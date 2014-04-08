@@ -284,7 +284,8 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.tenant', 't');
         $query->where('t.id = :tenant');
         $query->andWhere(
-            'c.reportToTU = 1 OR c.reportToExperian = 1 OR c.experianStartAt is not NULL OR c.tuStartAt is not NULL'
+            'c.reportToTransUnion = 1 OR c.reportToExperian = 1
+            OR c.experianStartAt is not NULL OR c.transUnionStartAt is not NULL'
         );
         $query->andWhere('c.status = :status');
         $query->setParameter('tenant', $tenant->getId());
@@ -459,13 +460,15 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getContractsForTURentalReport($monthNo, $yearNo)
+    public function getContractsForTransUnionRentalReport($monthNo, $yearNo)
     {
         $firstDate = new DateTime("$yearNo-$monthNo-01");
         $lastDate = new DateTime($firstDate->format('Y-m-t'));
 
         $query = $this->createQueryBuilder('c');
-        $query->where('c.reportToTU = 1 AND c.tuStartAt is not NULL AND c.tuStartAt <= :startDate');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
+        );
         $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('finished', ContractStatus::FINISHED);

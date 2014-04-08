@@ -12,10 +12,10 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 use RuntimeException;
 
 /**
- * @Service("jms_serializer.tu_serialization_visitor")
- * @Tag("jms_serializer.serialization_visitor", attributes = {"format" = "tu_rental1"})
+ * @Service("jms_serializer.trans_union_serialization_visitor")
+ * @Tag("jms_serializer.serialization_visitor", attributes = {"format" = "trans_union_rental"})
  */
-class TURentalSerializationVisitor extends AbstractVisitor
+class TransUnionRentalSerializationVisitor extends AbstractVisitor
 {
     private $content;
     private $navigator;
@@ -25,67 +25,31 @@ class TURentalSerializationVisitor extends AbstractVisitor
         $this->content = '';
     }
 
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
     public function visitNull($data, array $type, Context $context)
     {
         throw new RuntimeException('Trans Union Rental 1 Format can not contain null value.');
     }
 
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
     public function visitString($data, array $type, Context $context)
     {
         $this->content .= strtoupper($data);
     }
 
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
     public function visitBoolean($data, array $type, Context $context)
     {
         throw new RuntimeException('Trans Union Rental 1 Format can not contain boolean value.');
     }
 
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
     public function visitDouble($data, array $type, Context $context)
     {
         $this->content .= $data;
     }
 
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
     public function visitInteger($data, array $type, Context $context)
     {
         $this->content .= $data;
     }
 
-    /**
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
     public function visitArray($data, array $type, Context $context)
     {
         foreach ($data as $k => $v) {
@@ -93,26 +57,11 @@ class TURentalSerializationVisitor extends AbstractVisitor
         }
     }
 
-    /**
-     * Called before the properties of the object are being visited.
-     *
-     * @param ClassMetadata $metadata
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return void
-     */
     public function startVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
 
     }
 
-    /**
-     * @param PropertyMetadata $metadata
-     * @param mixed $data
-     *
-     * @return void
-     */
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
         $value = $metadata->getValue($data);
@@ -120,44 +69,21 @@ class TURentalSerializationVisitor extends AbstractVisitor
         $this->navigator->accept($value, $metadata->type, $context);
     }
 
-    /**
-     * Called after all properties of the object have been visited.
-     *
-     * @param ClassMetadata $metadata
-     * @param mixed $data
-     * @param array $type
-     *
-     * @return mixed
-     */
     public function endVisitingObject(ClassMetadata $metadata, $data, array $type, Context $context)
     {
         $this->content .= "\r\n";
     }
 
-    /**
-     * Called before serialization/deserialization starts.
-     *
-     * @param GraphNavigator $navigator
-     *
-     * @return void
-     */
     public function setNavigator(GraphNavigator $navigator)
     {
         $this->navigator = $navigator;
     }
 
-    /**
-     * @deprecated use Context::getNavigator/Context::accept instead
-     * @return GraphNavigator
-     */
     public function getNavigator()
     {
         return $this->navigator;
     }
 
-    /**
-     * @return object|array|scalar
-     */
     public function getResult()
     {
         return $this->content;

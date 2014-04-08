@@ -19,7 +19,7 @@ class TransUnionRentalReportCase extends BaseTestCase
         $year = '2014';
         $report = new TransUnionRentalReport($em, $month, $year);
 
-        $this->assertEquals('tu_rental1', $report->getSerializationType());
+        $this->assertEquals('trans_union_rental', $report->getSerializationType());
 
         $today = new DateTime();
         $expectedReportName = sprintf('renttrack-%s.txt', $today->format('Ymd'));
@@ -27,7 +27,7 @@ class TransUnionRentalReportCase extends BaseTestCase
         $this->assertEquals($expectedReportName, $report->getReportFilename());
 
         // check only record, b/c header doesn't contain important info and has changeable data
-        $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'tu_rental1');
+        $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'trans_union_rental');
         $reportRecord = trim(explode("\n", $report)[1]);
         $expectedResult = trim(file_get_contents(__DIR__.'/../Fixtures/Report/transunion.txt'));
 

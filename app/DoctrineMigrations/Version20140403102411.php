@@ -16,8 +16,8 @@ class Version20140403102411 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_contract
-                ADD report_to_tu TINYINT(1) DEFAULT '0',
-                ADD tu_start_at DATE DEFAULT NULL,
+                ADD report_to_trans_union TINYINT(1) DEFAULT '0',
+                ADD trans_union_start_at DATE DEFAULT NULL,
                 CHANGE reporting report_to_experian TINYINT(1) DEFAULT '0',
                 ADD experian_start_at DATE DEFAULT NULL"
         );
@@ -34,9 +34,9 @@ class Version20140403102411 extends AbstractMigration
             "ALTER TABLE rj_contract
                 ADD reporting TINYINT(1) DEFAULT '0',
                 DROP report_to_experian,
-                DROP report_to_tu,
+                DROP report_to_trans_union,
                 DROP experian_start_at,
-                DROP tu_start_at"
+                DROP trans_union_start_at"
         );
     }
 }

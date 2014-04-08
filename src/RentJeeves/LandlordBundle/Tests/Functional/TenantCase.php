@@ -219,7 +219,7 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
-        $this->assertEquals('All (5)', $allh2->getText(), 'Wrong count');
+        $this->assertEquals('All (6)', $allh2->getText(), 'Wrong count');
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->setDefaultSession('goutte');
@@ -357,7 +357,7 @@ class TenantCase extends BaseTestCase
         );
         $form->pressButton('continue');
         $this->assertNotNull($contracts = $this->page->findAll('css', 'div.table-margin table tbody tr'));
-        $this->assertCount(1, $contracts, 'wrong number of contracts');
+        $this->assertCount(2, $contracts, 'wrong number of contracts');
     }
 
     /**
@@ -437,7 +437,7 @@ class TenantCase extends BaseTestCase
         $this->setDefaultSession('goutte');
         $this->login('robyn@rentrack.com', 'pass');
         $this->assertNotNull($contracts = $this->page->findAll('css', 'div.table-margin table tbody tr'));
-        $this->assertCount(1, $contracts, 'wrong number of contracts');
+        $this->assertCount(2, $contracts, 'wrong number of contracts');
         $this->logout();
     }
 

@@ -70,8 +70,8 @@ class IndexController extends Controller
                 $contract->setExperianStartAt($now);
             }
             if ($includeTransUnion) {
-                $contract->setReportToTU(true);
-                $contract->setTuStartAt($now);
+                $contract->setReportToTransUnion(true);
+                $contract->setTransUnionStartAt($now);
             }
         }
 

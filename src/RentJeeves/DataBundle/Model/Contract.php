@@ -232,7 +232,7 @@ abstract class Contract
 
     /**
      * @ORM\Column(
-     *     name="report_to_tu",
+     *     name="report_to_trans_union",
      *     type="boolean",
      *     nullable=true,
      *     options={
@@ -241,7 +241,7 @@ abstract class Contract
      * )
      * @Serializer\Exclude
      */
-    protected $reportToTU = 0;
+    protected $reportToTransUnion = 0;
 
     /**
      * @ORM\Column(
@@ -261,7 +261,7 @@ abstract class Contract
      * )
      * @Serializer\Exclude
      */
-    protected $tuStartAt;
+    protected $transUnionStartAt;
 
     /**
      * @ORM\Column(
@@ -839,34 +839,34 @@ abstract class Contract
     }
 
     /**
-     * @param boolean $reportTU
+     * @param boolean $reportTransUnion
      */
-    public function setReportToTU($reportTU)
+    public function setReportToTransUnion($reportTransUnion)
     {
-        $this->reportToTU = $reportTU;
+        $this->reportToTransUnion = $reportTransUnion;
     }
 
     /**
      * @return boolean
      */
-    public function getReportToTU()
+    public function getReportToTransUnion()
     {
-        return $this->reportToTU;
+        return $this->reportToTransUnion;
     }
 
     /**
-     * @param \DateTime $tuStartAt
+     * @param \DateTime $transUnionStartAt
      */
-    public function setTuStartAt($tuStartAt)
+    public function setTransUnionStartAt($transUnionStartAt)
     {
-        $this->tuStartAt = $tuStartAt;
+        $this->transUnionStartAt = $transUnionStartAt;
     }
 
     /**
      * @return \DateTime
      */
-    public function getTuStartAt()
+    public function getTransUnionStartAt()
     {
-        return $this->tuStartAt;
+        return $this->transUnionStartAt;
     }
 }

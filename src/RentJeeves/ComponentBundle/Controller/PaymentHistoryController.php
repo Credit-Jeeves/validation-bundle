@@ -59,7 +59,7 @@ class PaymentHistoryController extends Controller
             }
             $item['tenant'] = $contract->getTenant()->getFullName();
             $item['reporting']['experian'] = $contract->getReportToExperian();
-            $item['reporting']['tu'] = $contract->getReportToTU();
+            $item['reporting']['trans_union'] = $contract->getReportToTransUnion();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::APPROVED:
                     $history = $contract->getFuturePaymentHistory($em);
@@ -99,21 +99,16 @@ class PaymentHistoryController extends Controller
      */
     public function paymentsAction()
     {
-        $context = new SerializationContext();
-        $context->setSerializeNull(true);
-        $context->setGroups('tenantPayment');
-
         $orders = $this->getDoctrine()->getManager()
             ->getRepository('DataBundle:Order')->getTenantPayments($this->getUser());
+
+        // can't use jms_serializer since order already has handlerCallback used in another serialization
         array_walk(
             $orders,
-            function (&$order)
-            {
-                $order = $order->getTenantPayment();
-            }
+            function (&$order) { $order = $order->getTenantPayment(); }
         );
+
         $result = json_encode(array('payments' => $orders));
-//        $data = $this->get('jms_serializer')->serialize(array('payments' => $orders), 'json', $context);
 
         return array('payments' => $result);
     }
