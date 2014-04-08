@@ -664,9 +664,6 @@ class Order extends BaseOrder
     }
 
     /**
-     * @Serializer\Groups({"tenantPayment"})
-     * @Serializer\HandlerCallback("json", direction = "serialization")
-     *
      * @return array
      */
     public function getTenantPayment()
@@ -676,7 +673,7 @@ class Order extends BaseOrder
         if ($this->getStatus() == OrderStatus::ERROR) {
             $result['errorMessage'] = $this->getHeartlandErrorMessage();
         }
-        $result['statusStyle'] = $this->getOrderStatusStyle();
+        $result['style'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
         $result['property'] = $this->getContract()->getRentAddress();
 

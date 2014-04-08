@@ -7,7 +7,6 @@ fixtures:
         property: Property_1
         unit:     Unit_1_1
         status:   pending
-        disputeCode: 'BLANK'
         createdAt: '-50 days'
         updatedAt: '-50 days'
     Contract_2:
@@ -18,7 +17,6 @@ fixtures:
         unit:     Unit_1_2
         rent:     1400
         status:   approved
-        disputeCode: 'BLANK'
         paidTo:  '60 days'
         startAt:   '60 days'
         finishAt:  '90 days'
@@ -33,7 +31,6 @@ fixtures:
         unit:     Unit_1_4
         rent:     1500
         status:   finished
-        disputeCode: 'BLANK'
         paidTo:  '-60 days'
         startAt:   '-365 days'
         finishAt: '-60 days'
@@ -47,7 +44,6 @@ fixtures:
         unit:     Unit_1_4
         rent:     1500
         status:   finished
-        disputeCode: 'BLANK'
         paidTo:  '-120 days'
         startAt:   '-290 days'
         finishAt: '-160 days'
@@ -59,7 +55,6 @@ fixtures:
         group:    RentGroup_1
         property: Property_1
         status:   pending
-        disputeCode: 'BLANK'
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
@@ -71,7 +66,6 @@ fixtures:
         unit:     Unit_1_6
         rent:     1700
         status:   approved
-        disputeCode: 'BLANK'
         paidTo:  '-1 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -85,7 +79,6 @@ fixtures:
         unit:     Unit_1_6
         rent:     3700
         status:   approved
-        disputeCode: 'BLANK'
         paidTo:  '-1 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -99,7 +92,6 @@ fixtures:
         unit:     Unit_1_7
         rent:     1750
         status:   current
-        disputeCode: 'BLANK'
         paidTo:  '20 days'
         startAt:   '-10 month'
         finishAt: '2 month'
@@ -113,7 +105,6 @@ fixtures:
         unit:     Unit_1_8
         rent:     1750
         status:   current
-        disputeCode: 'BLANK'
         paidTo:  '3 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -127,7 +118,6 @@ fixtures:
         unit:     Unit_1_9
         rent:     1750
         status:   current
-        disputeCode: 'BLANK'
         paidTo:  '15 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -141,7 +131,6 @@ fixtures:
         unit:     Unit_1_10
         rent:     1750
         status:   current
-        disputeCode: 'BLANK'
         paidTo:  '15 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -155,7 +144,6 @@ fixtures:
         unit:     Unit_1_11
         rent:     2100
         status:   current
-        disputeCode: 'BLANK'
         paidTo:  '-1 days'
         startAt:   '-90 days'
         finishAt: '60 days'
@@ -169,7 +157,6 @@ fixtures:
         unit:     Unit_1_12
         rent:     2100
         status:   approved
-        disputeCode: 'BLANK'
         startAt:   '-90 days'
         finishAt: '60 days'
         createdAt: '-50 days'
@@ -182,7 +169,6 @@ fixtures:
         unit:     Unit_1_1
         rent:     2100
         status:   finished
-        disputeCode: 'BLANK'
         paidTo:  '-120 days'
         startAt:   '-360 days'
         finishAt: '-120 days'
@@ -196,7 +182,6 @@ fixtures:
         unit:     Unit_1_2
         rent:     1400
         status:   finished
-        disputeCode: 'BLANK'
         paidTo:  '-120 days'
         startAt:   '-360 days'
         finishAt: '-120 days'
@@ -210,7 +195,6 @@ fixtures:
         unit:     Unit_1_2
         rent:     1400
         status:   finished
-        disputeCode: 'BLANK'
         paidTo:  '-120 days'
         startAt:   '-360 days'
         finishAt: '-120 days'
@@ -224,7 +208,6 @@ fixtures:
         unit:     Unit_1_2
         rent:     1400
         status:   invite
-        disputeCode: 'BLANK'
         paidTo:  '1 days'
         startAt:   '30 days'
         createdAt: '-20 days'
@@ -237,7 +220,6 @@ fixtures:
         unit:     Unit_1_2
         rent:     1400
         status:   invite
-        disputeCode: 'BLANK'
         paidTo:  '1 days'
         startAt:   '30 days'
         createdAt: '-20 days'
@@ -251,7 +233,6 @@ fixtures:
         unit:     Unit_1_2
         rent:     1400
         status:   current
-        disputeCode: 'BLANK'
         paidTo:  '1 days'
         startAt:   '30 days'
         createdAt: '-20 days'
@@ -263,7 +244,6 @@ fixtures:
         property: Property_1
         unit:     Unit_1_1
         status:   pending
-        disputeCode: 'BLANK'
         createdAt: '-50 days'
         updatedAt: '-50 days'        
     Contract_18:
@@ -274,7 +254,6 @@ fixtures:
         unit:     Unit_1_11
         rent:     199.10
         status:   current
-        disputeCode: 'BLANK'
         paidTo:  '1 days'
         startAt:   '-90 days'
         finishAt: '-10 days'
@@ -292,7 +271,6 @@ fixtures:
         tuStartAt: '2014-01-01'
         reportToExperian: true
         experianStartAt: '2014-01-01'
-        disputeCode: 'BLANK'
         paidTo:    '2014-04-01'
         startAt:   '2014-01-01'
         finishAt:  '2015-01-01'

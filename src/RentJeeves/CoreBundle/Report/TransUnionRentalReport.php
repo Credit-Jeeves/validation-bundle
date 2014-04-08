@@ -28,17 +28,17 @@ class TransUnionRentalReport extends RentalReport
         $this->header->setActivityDate(new DateTime($lastActivityDate));
     }
 
-    public function createRecords($reportMonth, $reportYear)
+    public function createRecords($month, $year)
     {
         $this->records = array();
         $contracts = $this->em->getRepository('RjDataBundle:Contract')
-            ->getContractsForTURentalReport($reportMonth, $reportYear);
+            ->getContractsForTURentalReport($month, $year);
 
         $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
         foreach ($contracts as $contract) {
-            $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $reportMonth, $reportYear);
-            $this->records[] = new TransUnionReportRecord($contract, $reportMonth, $reportYear, $rentOperation);
+            $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $month, $year);
+            $this->records[] = new TransUnionReportRecord($contract, $month, $year, $rentOperation);
         }
     }
 }

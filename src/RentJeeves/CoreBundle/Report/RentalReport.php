@@ -18,8 +18,11 @@ abstract class RentalReport
         $this->createRecords($reportMonth, $reportYear);
     }
 
-    abstract function getSerializationType();
-    abstract function getReportFilename();
-    abstract function createHeader();
-    abstract function createRecords($reportMonth, $reportYear);
-} 
+    abstract public function getSerializationType();
+
+    abstract public function getReportFilename();
+
+    abstract public function createHeader();
+
+    abstract public function createRecords($month, $year);
+}

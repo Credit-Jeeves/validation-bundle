@@ -18,4 +18,4 @@ class IndexCase extends BaseTestCase
         $this->assertNotNull($payments = $this->page->findAll('css', '#tenant-payments table>tbody>tr'));
         $this->assertEquals(36, count($payments));
     }
-} 
+}

@@ -105,8 +105,16 @@ class PaymentHistoryController extends Controller
 
         $orders = $this->getDoctrine()->getManager()
             ->getRepository('DataBundle:Order')->getTenantPayments($this->getUser());
-        $data = $this->get('jms_serializer')->serialize(array('payments' => $orders), 'json', $context);
+        array_walk(
+            $orders,
+            function (&$order)
+            {
+                $order = $order->getTenantPayment();
+            }
+        );
+        $result = json_encode(array('payments' => $orders));
+//        $data = $this->get('jms_serializer')->serialize(array('payments' => $orders), 'json', $context);
 
-        return array('payments' => $data);
+        return array('payments' => $result);
     }
 }

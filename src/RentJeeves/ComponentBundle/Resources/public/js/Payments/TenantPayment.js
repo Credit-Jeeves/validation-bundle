@@ -1,7 +1,7 @@
 function TenantPayment(data) {
     this.status = ko.observable(null);
     this.errorMessage = ko.observable(null);
-    this.statusStyle = ko.observable(null);
+    this.style = ko.observable(null);
     this.date = ko.observable(null);
     this.property = ko.observable(null);
     this.rent = ko.observable(null);

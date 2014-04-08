@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -367,7 +368,7 @@ abstract class Contract
      * )
      * @Serializer\Exclude
      */
-    protected $disputeCode;
+    protected $disputeCode = DisputeCode::DISPUTE_CODE_BLANK;
 
     public function __construct()
     {

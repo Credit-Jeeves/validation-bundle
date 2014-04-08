@@ -69,7 +69,7 @@ class PayCase extends BaseTestCase
         $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
         $closeButton->click();
 
-        $this->page->pressButton('contract-pay-3');
+        $this->page->pressButton('contract-pay-2');
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 
