@@ -45,6 +45,7 @@ class ContractAdmin extends Admin
             ->add('status')
             ->add('rent')
             ->add('paidTo', null, array('label' => 'Paid Through'))
+            ->add('disputeCode', 'string', ['template' => 'AdminBundle:CRUD:contract_dispute_code_choice.html.twig'])
             ->add(
                 '_action',
                 'actions',

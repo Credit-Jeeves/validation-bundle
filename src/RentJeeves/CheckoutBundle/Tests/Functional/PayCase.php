@@ -54,7 +54,7 @@ class PayCase extends BaseTestCase
         }
         $this->login('tenant11@example.com', 'pass');
         $this->assertNotNull($payButtons = $this->page->findAll('css', '.button-contract-pay'));
-        $this->assertCount(3, $payButtons, 'Wrong number of contracts');
+        $this->assertCount(4, $payButtons, 'Wrong number of contracts');
         $payButtons[2]->click();
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));
         $this->assertNotNull($payPopup = $payPopup->getParent());
@@ -69,7 +69,7 @@ class PayCase extends BaseTestCase
         $this->assertNotNull($closeButton = $payPopup->find('css', '.ui-dialog-titlebar-close'));
         $closeButton->click();
 
-        $this->page->pressButton('contract-pay-3');
+        $this->page->pressButton('contract-pay-2');
 
         $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
 

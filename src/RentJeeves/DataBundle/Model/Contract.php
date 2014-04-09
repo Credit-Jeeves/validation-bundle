@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -218,15 +219,49 @@ abstract class Contract
 
     /**
      * @ORM\Column(
+     *     name="report_to_experian",
      *     type="boolean",
      *     nullable=true,
      *     options={
      *         "default"="0"
      *     }
      * )
-     * @Gedmo\Versioned
+     * @Serializer\Exclude
      */
-    protected $reporting = 0;
+    protected $reportToExperian = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="report_to_trans_union",
+     *     type="boolean",
+     *     nullable=true,
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $reportToTransUnion = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="experian_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $experianStartAt;
+
+    /**
+     * @ORM\Column(
+     *     name="trans_union_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $transUnionStartAt;
 
     /**
      * @ORM\Column(
@@ -322,6 +357,18 @@ abstract class Contract
      * )
      */
     protected $histories;
+
+    /**
+     * @ORM\Column(
+     *     type="DisputeCode",
+     *     nullable=true,
+     *     options={
+     *         "default"="BLANK"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $disputeCode = DisputeCode::DISPUTE_CODE_BLANK;
 
     public function __construct()
     {
@@ -592,28 +639,6 @@ abstract class Contract
     }
 
     /**
-     * Set Reporting
-     *
-     * @param boolean $reporting
-     * @return Contract
-     */
-    public function setReporting($reporting)
-    {
-        $this->reporting = $reporting;
-        return $this;
-    }
-
-    /**
-     * Get Reporting
-     *
-     * @return boolean
-     */
-    public function getReporting()
-    {
-        return $this->reporting;
-    }
-
-    /**
      * Set startAt
      *
      * @param \DateTime $startAt
@@ -763,5 +788,85 @@ abstract class Contract
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * @param mixed $disputeCode
+     */
+    public function setDisputeCode($disputeCode)
+    {
+        $this->disputeCode = $disputeCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisputeCode()
+    {
+        return $this->disputeCode;
+    }
+
+    /**
+     * @param \DateTime $experianStartAt
+     */
+    public function setExperianStartAt($experianStartAt)
+    {
+        $this->experianStartAt = $experianStartAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExperianStartAt()
+    {
+        return $this->experianStartAt;
+    }
+
+    /**
+     * @param boolean $reportExperian
+     */
+    public function setReportToExperian($reportExperian)
+    {
+        $this->reportToExperian = $reportExperian;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToExperian()
+    {
+        return $this->reportToExperian;
+    }
+
+    /**
+     * @param boolean $reportTransUnion
+     */
+    public function setReportToTransUnion($reportTransUnion)
+    {
+        $this->reportToTransUnion = $reportTransUnion;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToTransUnion()
+    {
+        return $this->reportToTransUnion;
+    }
+
+    /**
+     * @param \DateTime $transUnionStartAt
+     */
+    public function setTransUnionStartAt($transUnionStartAt)
+    {
+        $this->transUnionStartAt = $transUnionStartAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTransUnionStartAt()
+    {
+        return $this->transUnionStartAt;
     }
 }

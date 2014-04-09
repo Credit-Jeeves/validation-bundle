@@ -259,3 +259,20 @@ fixtures:
         finishAt: '-10 days'
         createdAt: '-150 days'
         updatedAt: '-150 days'
+    Contract_19:
+        tenant:    Tenant_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        property:  Property_1
+        unit:      Unit_1_3
+        rent:      987
+        status:    current
+        reportToTransUnion: true
+        transUnionStartAt: '2014-01-01'
+        reportToExperian: true
+        experianStartAt: '2014-01-01'
+        paidTo:    '2014-04-01'
+        startAt:   '2014-01-01'
+        finishAt:  '2015-01-01'
+        createdAt: '2014-01-01'
+        updatedAt: '2014-01-01'

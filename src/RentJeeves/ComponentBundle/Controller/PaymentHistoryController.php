@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\ComponentBundle\Controller;
 
+use JMS\Serializer\SerializationContext;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -12,8 +14,9 @@ class PaymentHistoryController extends Controller
      * @Template("RjComponentBundle:PaymentHistory:index.html.twig")
      * @return mixed
      */
-    public function indexAction(\CreditJeeves\DataBundle\Entity\User $user, $short = false)
+    public function indexAction()
     {
+        $user = $this->getUser();
         $active = array();
         $finished = array();
         $aMonthes = array();
@@ -55,6 +58,8 @@ class PaymentHistoryController extends Controller
                 $item['balance_month'] = $finishedDate->format('m');
             }
             $item['tenant'] = $contract->getTenant()->getFullName();
+            $item['reporting']['experian'] = $contract->getReportToExperian();
+            $item['reporting']['trans_union'] = $contract->getReportToTransUnion();
             switch ($status = $contract->getStatus()) {
                 case ContractStatus::APPROVED:
                     $history = $contract->getFuturePaymentHistory($em);
@@ -62,7 +67,6 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = $translator->trans('contract.status.pay');
-                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::CURRENT:
@@ -71,7 +75,6 @@ class PaymentHistoryController extends Controller
                     $item['last_date'] = $history['last_date'];
                     $item['last_amount'] = $history['last_amount'];
                     $item['status'] = $translator->trans('contract.status.current');
-                    $item['reporting'] = $contract->getReporting();
                     $active[] = $item;
                     break;
                 case ContractStatus::FINISHED:
@@ -88,7 +91,27 @@ class PaymentHistoryController extends Controller
             'aActiveContracts' => $active,
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,
-            'short' => $short,
         );
+    }
+
+    /**
+     * @Template
+     */
+    public function paymentsAction()
+    {
+        $orders = $this->getDoctrine()->getManager()
+            ->getRepository('DataBundle:Order')->getTenantPayments($this->getUser());
+
+        // can't use jms_serializer since order already has handlerCallback used in another serialization
+        array_walk(
+            $orders,
+            function (&$order) {
+                $order = $order->getTenantPayment();
+            }
+        );
+
+        $result = json_encode(array('payments' => $orders));
+
+        return array('payments' => $result);
     }
 }

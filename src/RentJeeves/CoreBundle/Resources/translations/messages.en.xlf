@@ -653,19 +653,52 @@
                 <source>bureau.reporting.setup</source>
                 <target>Set Up Bureau Reporting</target>
            </trans-unit>
-           <trans-unit id="bureau.reporting.text">
-                <source>bureau.reporting.text</source>
+           <trans-unit id="bureau.reporting.text1">
+                <source>bureau.reporting.text1</source>
                 <target><![CDATA[RentTrack can report your payments to a credit reporting agency.
-                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br />
-                                 Within a few months after signing up, you will notice a new entry on your credit report titled "RentTrack."
-                                 This entry will reflect your payment status on a particular property and is updated monthly.
-                                 Once this entry exists, it will begin to affect any credit score models that take rent payments into account.<br /><br />
-                                 You can stop reporting at any time. However, once eligible payments have been reported to the credit reporting agency,
-                                 they cannot be erased. Furthermore, stopping and subsequently starting reporting again
-                                 may have a negative on your credit history.<br /><br />
+                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br /> ]]>
+             </target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.text2">
+               <source>bureau.reporting.text2</source>
+               <target><![CDATA[Within a few months, you will notice a new "RentTrack" entry on your credit report.
+                                 This will reflect your current payment status and is updated monthly.
+                                 You can stop reporting at any time. However, once eligible payments have been reported to the credit bureau,
+                                 they cannot be erased.<br /><br />
                                  Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>. Please review the terms, then click on the button below
                                  to begin building credit.]]>
-                                 </target>
+               </target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.select">
+               <source>bureau.reporting.select</source>
+               <target>Select which bureaus you want to report to:</target>
+           </trans-unit>
+            <trans-unit id="bureau.reporting.select.for">
+                <source>bureau.reporting.select.for</source>
+                <target>Select which bureaus you want to report to for:</target>
+            </trans-unit>
+           <trans-unit id="bureau.reporting.experian">
+               <source>bureau.reporting.experian</source>
+               <target>Experian (Positive Payment History Only)</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.trans_union">
+               <source>bureau.reporting.trans_union</source>
+               <target>TransUnion (All Payment History)</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.manage">
+               <source>bureau.reporting.manage</source>
+               <target>Manage Bureau Reporting</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.manage.description">
+               <source>bureau.reporting.manage.description</source>
+               <target><![CDATA[If you uncheck a bureau above, your payments will no longer be reported to that bureau
+                                and you may not receive credit for your payments. Note that stopping and subsequently
+                                starting reporting again may have a negative impact on your credit history.<br />
+                                Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>.]]></target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.save">
+               <source>bureau.reporting.save</source>
+               <target>Save</target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -677,7 +710,7 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by choosing to report your payments to a major credit bureau. This optional activity helps establish good credit when you make your rent payments on-time.</target>
+                <target>Put RentTrack to work by choosing to report your payments to a major credit bureaus. This optional activity helps establish good credit when you make your rent payments on-time.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
@@ -854,9 +887,9 @@
                 <source>action.required</source>
                 <target>Action Required</target>
             </trans-unit>
-            <trans-unit id="current_payments.title">
-                <source>current_payments.title</source>
-                <target>Payments</target>
+            <trans-unit id="current_contracts.title">
+                <source>current_contracts.title</source>
+                <target>Contracts</target>
             </trans-unit>
             <trans-unit id="pay_to">
                 <source>pay_to</source>
@@ -2191,6 +2224,38 @@
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
+            </trans-unit>
+            <trans-unit id="tenant.payments.title">
+                <source>tenant.payments.title</source>
+                <target>Payment History</target>
+            </trans-unit>
+            <trans-unit id="payment.status">
+                <source>payment.status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="payment.date">
+                <source>payment.date</source>
+                <target>Date</target>
+            </trans-unit>
+            <trans-unit id="payment.property">
+                <source>payment.property</source>
+                <target>Property</target>
+            </trans-unit>
+            <trans-unit id="payment.rent">
+                <source>payment.rent</source>
+                <target>Rent</target>
+            </trans-unit>
+            <trans-unit id="payment.other">
+                <source>payment.other</source>
+                <target>Other</target>
+            </trans-unit>
+            <trans-unit id="payment.total">
+                <source>payment.total</source>
+                <target>Total</target>
+            </trans-unit>
+            <trans-unit id="payment.type">
+                <source>payment.type</source>
+                <target>Type</target>
             </trans-unit>
         </body>
     </file>

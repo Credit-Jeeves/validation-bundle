@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Doctrine\ORM\Query\Expr;
@@ -309,5 +310,15 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getSingleScalarResult();
+    }
+
+    public function getTenantPayments(Tenant $tenant)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->where('o.user = :user');
+        $query->orderBy('o.created_at', 'DESC');
+        $query->setParameter('user', $tenant);
+
+        return $query->getQuery()->execute();
     }
 }
