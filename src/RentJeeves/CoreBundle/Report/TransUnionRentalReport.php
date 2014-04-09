@@ -21,11 +21,18 @@ class TransUnionRentalReport extends RentalReport
         return sprintf('renttrack-%s.txt', $today->format('Ymd'));
     }
 
-    public function createHeader()
+    public function createHeader($params)
     {
-        $this->header = new TransUnionReportHeader();
         $lastActivityDate = $this->em->getRepository('RjDataBundle:Contract')->getLastActivityDate();
+        $propertyManagementName = isset($params['name'])? $params['name'] : '';
+        $propertyManagementAddress = isset($params['address'])? $params['address'] : '';
+        $propertyManagementPhoneNumber = isset($params['phone'])? $params['phone'] : '';
+
+        $this->header = new TransUnionReportHeader($params);
         $this->header->setActivityDate(new DateTime($lastActivityDate));
+        $this->header->setPropertyManagementName($propertyManagementName);
+        $this->header->setPropertyManagementAddress($propertyManagementAddress);
+        $this->header->setPropertyManagementPhone($propertyManagementPhoneNumber);
     }
 
     public function createRecords($month, $year)

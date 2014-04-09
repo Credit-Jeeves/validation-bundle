@@ -48,10 +48,11 @@ class CoreController extends BaseController
             $year = $request->request->get('year');
 
             $em = $this->getDoctrine()->getManager();
+            $params = $this->container->getParameter('property_management');
 
             switch ($type) {
                 case 'trans_union':
-                    $report = new TransUnionRentalReport($em, $month, $year);
+                    $report = new TransUnionRentalReport($em, $month, $year, $params);
                     break;
                 case 'experian':
                     $report = new ExperianRentalReport($em, $month, $year);

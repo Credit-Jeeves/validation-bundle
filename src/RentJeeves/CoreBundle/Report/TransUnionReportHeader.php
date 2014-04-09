@@ -7,9 +7,7 @@ use DateTime;
 
 class TransUnionReportHeader
 {
-    const PROPERTY_MANAGEMENT_ADDRESS = '13911 RIDGEDALE DR # 401C MINNETONKA MN 55305';
-    const PROPERTY_MANAGEMENT_PHONE_NUMBER = '8618419090';
-
+                                                                        // Field Length
     protected $recordLength = '0426';                                   // 4
     protected $recordIdentifier = 'HEADER';                             // 6
     protected $reserved1 = '  ';                                        // 2
@@ -22,11 +20,8 @@ class TransUnionReportHeader
     protected $dateCreated;                                             // 8
     protected $programDate = '        ';                                // 8
     protected $reserved5 = '00000000';                                  // 8
-    /** @Serializer\Accessor(getter="getPropertyManagementName") */
     protected $propertyManagementName;                                  // 40
-    /** @Serializer\Accessor(getter="getPropertyManagementAddress") */
     protected $propertyManagementAddress;                               // 96
-    /** @Serializer\Accessor(getter="getPropertyManagementPhone") */
     protected $propertyManagementPhoneNumber;                           // 10
     /** @Serializer\Accessor(getter="getReserved6") */
     protected $reserved6;                                               // 201
@@ -43,19 +38,19 @@ class TransUnionReportHeader
         return $today->format('mdY');
     }
 
-    public function getPropertyManagementName()
+    public function setPropertyManagementName($name)
     {
-        return str_pad('RENTTRACK', 40);
+        $this->propertyManagementName = str_pad($name, 40);
     }
 
-    public function getPropertyManagementAddress()
+    public function setPropertyManagementAddress($address)
     {
-        return str_pad(self::PROPERTY_MANAGEMENT_ADDRESS, 96);
+        $this->propertyManagementAddress = str_pad($address, 96);
     }
 
-    public function getPropertyManagementPhone()
+    public function setPropertyManagementPhone($phoneNumber)
     {
-        return self::PROPERTY_MANAGEMENT_PHONE_NUMBER;
+        $this->propertyManagementPhoneNumber = $phoneNumber;
     }
 
     public function getReserved6()

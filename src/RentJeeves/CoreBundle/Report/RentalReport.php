@@ -11,10 +11,16 @@ abstract class RentalReport
      */
     protected $em;
 
-    public function __construct($em, $reportMonth, $reportYear)
+    /**
+     * @Serializer\Exclude
+     */
+    protected $params;
+
+    public function __construct($em, $reportMonth, $reportYear, $params = array())
     {
         $this->em = $em;
-        $this->createHeader();
+        $this->params = $params;
+        $this->createHeader($params);
         $this->createRecords($reportMonth, $reportYear);
     }
 
@@ -22,7 +28,7 @@ abstract class RentalReport
 
     abstract public function getReportFilename();
 
-    abstract public function createHeader();
+    abstract public function createHeader($params);
 
     abstract public function createRecords($month, $year);
 }

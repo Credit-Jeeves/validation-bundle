@@ -45,7 +45,7 @@ class TransUnionReportRecord
      * @Serializer\Exclude
      */
     protected $operation;
-
+                                                                        // Field Length
     protected $recordLength = '0426';                                   // 4
     protected $processingIndicator = '1';                               // 1
     /** @Serializer\Accessor(getter="getAccountUpdateTimestamp") */
