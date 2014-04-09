@@ -264,7 +264,7 @@ fixtures:
         holding:   rjHolding_1
         group:     RentGroup_1
         property:  Property_1
-        unit:      Unit_1_2
+        unit:      Unit_1_3
         rent:      987
         status:    current
         reportToTransUnion: true
