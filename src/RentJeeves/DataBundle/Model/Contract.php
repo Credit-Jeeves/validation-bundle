@@ -255,7 +255,7 @@ abstract class Contract
 
     /**
      * @ORM\Column(
-     *     name="tu_start_at",
+     *     name="trans_union_start_at",
      *     type="date",
      *     nullable=true
      * )
