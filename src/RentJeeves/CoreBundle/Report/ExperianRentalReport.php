@@ -1,0 +1,42 @@
+<?php
+
+namespace RentJeeves\CoreBundle\Report;
+
+use DateTime;
+
+class ExperianRentalReport extends RentalReport
+{
+    protected $records;
+
+    public function getSerializationType()
+    {
+        return 'csv';
+    }
+
+    public function getReportFilename()
+    {
+        $today = new DateTime();
+
+        return sprintf('renttrack-full-%s.csv', $today->format('Ymd'));
+    }
+
+    public function createHeader($params)
+    {
+
+    }
+
+    public function createRecords($month, $year)
+    {
+        if (!$this->records) {
+            $this->records = array();
+            $contractRepo = $this->em->getRepository('RjDataBundle:Contract');
+            $contracts = $contractRepo->getContractsForExperianRentalReport($month, $year);
+            $operationRepo = $this->em->getRepository('DataBundle:Operation');
+
+            foreach ($contracts as $contract) {
+                $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $month, $year);
+                $this->records[] = new ExperianReportRecord($contract, $rentOperation);
+            }
+        }
+    }
+}

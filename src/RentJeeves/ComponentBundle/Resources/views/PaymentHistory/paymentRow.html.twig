@@ -54,9 +54,8 @@
         <b>{{ 'tradeline.details.type' | trans }}:</b>&nbsp;{{ 'payments.type.rent' | trans() }}
         <b>{{ 'tradeline.details.responsibility' | trans }}:</b>&nbsp;{{ 'payments.individual' | trans() }}
         <b>{{ 'tradeline.details.date_opened' | trans }}:</b>&nbsp;{{ aContract.start }}
-        {% if aContract.reporting is defined %}
-        <div style="display: none;" id="tenant-{{ aContract.id }}">{{ aContract.tenant }}</div>
-        {% endif %}
+        <b><a><span class="reporting-action" id="id-{{ aContract.id }}">{{ 'bureau.reporting.manage' | trans }}</span></a></b>
     </div>
     <div class="clearboth"></div>
 </div>
+{% include 'RjComponentBundle:PaymentHistory:reporting.html.twig' with {'contract': aContract, 'link': link} %}
