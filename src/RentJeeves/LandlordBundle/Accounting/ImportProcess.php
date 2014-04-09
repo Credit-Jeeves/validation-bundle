@@ -250,7 +250,7 @@ class ImportProcess
                 $row[ImportMapping::KEY_UNIT]
             );
             //Check for don't send many invite for the same contract
-            $contractInvite = $this->em->getRepository('RjDataBundle:Contract')->getForImportContractInvite(
+            $contractInvite = $this->em->getRepository('RjDataBundle:Contract')->getContractInviteForImport(
                 $tenant->getId(),
                 $row[ImportMapping::KEY_UNIT]
             );
