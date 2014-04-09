@@ -176,7 +176,7 @@ class ImportMapping
 
     public function isHavePaymentMapping($row)
     {
-        if (!isset($row[self::KEY_PAYMENT_AMOUNT]) && !isset($row[self::KEY_PAYMENT_DATE])) {
+        if (!isset($row[self::KEY_PAYMENT_AMOUNT]) || !isset($row[self::KEY_PAYMENT_DATE])) {
             return false;
         }
 

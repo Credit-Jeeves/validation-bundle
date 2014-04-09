@@ -209,7 +209,7 @@ class AccountingController extends Controller
          */
         $importProcess = $this->get('accounting.import.process');
         $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm();
-        $formContract = $importProcess->getContractForm();
+        $formContract = $importProcess->getContractForm(new Tenant());
         $formContractFinish = $importProcess->getContractFinishForm();
 
         return array(

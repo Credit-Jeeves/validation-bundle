@@ -233,11 +233,8 @@ class Import
         $this->operation = $operation;
     }
 
-
-
     /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("is_valid")
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("boolean")
      */

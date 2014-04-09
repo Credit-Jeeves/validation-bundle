@@ -151,9 +151,11 @@ class ImportProcess
     /**
      * @return Form
      */
-    public function getContractForm($isUseToken = true, $isUseOperation = true)
+    public function getContractForm(Tenant $tenant, $isUseToken = true, $isUseOperation = true)
     {
-        return $this->createForm(new ImportContractType($isUseToken, $isUseOperation));
+        return $this->createForm(
+            new ImportContractType($tenant, $this->em, $this->translator, $isUseToken, $isUseOperation)
+        );
     }
 
     /**
@@ -161,7 +163,7 @@ class ImportProcess
      */
     public function getCreateUserAndCreateContractForm()
     {
-        return $this->createForm(new ImportNewUserWithContractType());
+        return $this->createForm(new ImportNewUserWithContractType(new Tenant(), $this->em, $this->translator));
     }
 
     /**
@@ -186,12 +188,14 @@ class ImportProcess
         } else {
             $contract->setStatus(ContractStatus::INVITE);
         }
+
         $contract->setProperty($this->getProperty());
         $contract->setGroup($this->user->getCurrentGroup());
         $contract->setHolding($this->user->getHolding());
-        $tenant->addContract($contract);
         $contract->setTenant($tenant);
         $contract->setUnit($this->getUnit($row));
+
+        $tenant->addContract($contract);
 
         return $contract;
     }
@@ -241,12 +245,12 @@ class ImportProcess
         if (!$tenant->getId()) {
             $contract = $this->createContract($row, $tenant);
         } else {
-            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
+            $contractCurrentApprove = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
                 $row[ImportMapping::KEY_UNIT]
             );
             //Check for don't send many invite for the same contract
-            $contractInvite = $this->em->getRepository('RjDataBundle:Contract')->getImportContractInvite(
+            $contractInvite = $this->em->getRepository('RjDataBundle:Contract')->getForImportContractInvite(
                 $tenant->getId(),
                 $row[ImportMapping::KEY_UNIT]
             );
@@ -254,9 +258,9 @@ class ImportProcess
             /**
              * Checking exist contract in DB
              */
-            if (empty($contractInvite) && !empty($contract)) {
-                $contract = $contract;
-            } elseif (!empty($contractInvite) && empty($contract)) {
+            if (empty($contractInvite) && !empty($contractCurrentApprove)) {
+                $contract = $contractCurrentApprove;
+            } elseif (!empty($contractInvite) && empty($contractCurrentApprove)) {
                 $contract = $contractInvite;
             } else {
                 $contract = $this->createContract($row, $tenant);
@@ -299,7 +303,7 @@ class ImportProcess
         $paidFor = $this->getDateByField($row[ImportMapping::KEY_PAYMENT_DATE]);
 
         if ($paidFor instanceof DateTime && $amount > 0) {
-            $operation = $this->em->getRepository('DataBundle:Operation')->getOperationImport(
+            $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
                 $tenant,
                 $contract,
                 $paidFor,
@@ -315,6 +319,7 @@ class ImportProcess
         $operation = new Operation();
         $operation->setPaidFor($paidFor);
         $operation->setAmount($amount);
+        $operation->setType(OperationType::RENT);
 
         return $operation;
     }
@@ -375,7 +380,7 @@ class ImportProcess
             || ($tenantId && empty($contractId))
         ) {
             $isUseOperation = ($import->getOperation() === null)? false : true;
-            $form = $this->getContractForm($isUseToken = true, $isUseOperation);
+            $form = $this->getContractForm($tenant, $isUseToken = true, $isUseOperation);
             $form->setData($contract);
 
             return $form;
@@ -566,13 +571,13 @@ class ImportProcess
                 case 'import_contract':
                     $contract = $form->getData();
                     $this->em->persist($contract->getUnit());
-                    $this->processContract($import, $contract);
+                    $this->persistContract($import, $contract);
                     if (!$contract->getId()) {
                         $this->emailSendingQueue[] = $import;
                     } elseif (!is_null($import->getOperation())) {
                         //see logic in setOperation method
                         $operation = $form->get('operation')->getData();
-                        $this->processOperation($import, $operation);
+                        $this->persistOperation($import->getTenant(), $operation, $contract);
                     }
                     break;
                 case 'import_new_user_with_contract':
@@ -583,7 +588,7 @@ class ImportProcess
                     $sendInvite = $data['sendInvite'];
                     $this->em->persist($tenant);
                     $this->em->persist($unit);
-                    $this->processContract($import, $contract);
+                    $this->persistContract($import, $contract);
                     if ($sendInvite) {
                         $this->emailSendingQueue[] = $import;
                     }
@@ -602,54 +607,39 @@ class ImportProcess
     }
 
     /**
-     * It's not clear logic, status must be changed in one place need move it to crontask
-     * @TODO talk with Darryl and create new task for it
-     *
      * @param Import $import
      * @param Contract $contract
      */
-    protected function processContract(ModelImport $import, Contract $contract)
+    protected function persistContract(ModelImport $import, Contract $contract)
     {
         $today = new DateTime();
         if ($contract->getFinishAt() <= $today) { //set status of contract to finished...
             $contract->setStatus(ContractStatus::FINISHED);
         }
 
+        if ($contract->getImportedBalance() > 0) {
+            $contract->setUncollectedBalance($contract->getImportedBalance());
+        }
+
         $this->em->persist($contract);
     }
 
     /**
-     *
      * @param Import $import
      * @param Operation $operation
      */
-    protected function processOperation(ModelImport $import, Operation $operation)
+    protected function persistOperation(Tenant $tenant, Operation $operation, Contract $contract)
     {
-        $amount = $operation->getAmount();
-        $paidFor = $operation->getPaidFor();
-        //It can be empty, so if empty skip that
-        $operationInDb = $this->em->getRepository('DataBundle:Operation')->getOperationImport(
-            $import->getTenant(),
-            $import->getContract(),
-            $paidFor,
-            $amount
-        );
-
-        //We can't create double payment and need check if user edit it incorrectly
-        if ($operationInDb) {
-            return;
-        }
-
-        $operation->setContract($import->getContract());
-        $operation->setType(OperationType::RENT);
-
         $order = new Order();
-        $order->addOperation($operation);
-        $operation->setOrder($order);
         $order->setStatus(OrderStatus::COMPLETE);
         $order->setType(OrderType::CASH);
-        $order->setUser($import->getTenant());
-        $order->setSum($amount);
+        $order->setUser($tenant);
+        $order->addOperation($operation);
+        $order->setSum($operation->getAmount());
+
+        $operation->setContract($contract);
+        $operation->setOrder($order);
+        $contract->addOperation($operation);
 
         $this->em->persist($order);
         $this->em->persist($operation);

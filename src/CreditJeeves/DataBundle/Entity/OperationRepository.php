@@ -16,7 +16,7 @@ use \DateTime;
  */
 class OperationRepository extends EntityRepository
 {
-    public function getOperationImport(
+    public function getOperationForImport(
         Tenant $tenant,
         Contract $contract,
         DateTime $paidFor,

@@ -455,7 +455,7 @@ class ContractRepository extends EntityRepository
         return $query->getOneOrNullResult();
     }
 
-    public function getImportContractInvite($tenant, $unitName)
+    public function getForImportContractInvite($tenant, $unitName)
     {
         $query = $this->createQueryBuilder('contract');
         $query->innerJoin('contract.unit', 'unit');

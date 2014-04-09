@@ -35,7 +35,7 @@ class ImportMatchFileType extends AbstractType
         $choicesRequired =  array(
             ImportMapping::KEY_BALANCE         => $this->translator->trans('common.balance'),
             ImportMapping::KEY_RESIDENT_ID     => $this->translator->trans('import.residentId'),
-            ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('tenant.name'),
+            ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('common.tenant_name'),
             ImportMapping::KEY_UNIT            => $this->translator->trans('import.unit'),
             ImportMapping::KEY_RENT            => $this->translator->trans('import.rent'),
             ImportMapping::KEY_EMAIL           => $this->translator->trans('email'),
@@ -57,7 +57,7 @@ class ImportMatchFileType extends AbstractType
         );
 
         $choices = array_merge(
-            array(self::EMPTY_VALUE => $this->translator->trans('choose.an.option')),
+            array(self::EMPTY_VALUE => $this->translator->trans('common.choose_an_option')),
             $choicesRequired,
             $choicesNoneRequired
         );
