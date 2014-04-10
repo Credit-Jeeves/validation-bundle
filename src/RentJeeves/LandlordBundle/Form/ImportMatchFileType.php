@@ -52,8 +52,8 @@ class ImportMatchFileType extends AbstractType
         );
         
         $choicesNoneRequired = array(
-            ImportMapping::KEY_PAYMENT_AMOUNT  => $this->translator->trans('payment.amount'),
-            ImportMapping::KEY_PAYMENT_DATE    => $this->translator->trans('payment.date'),
+            ImportMapping::KEY_PAYMENT_AMOUNT  => $this->translator->trans('import.payment.amount'),
+            ImportMapping::KEY_PAYMENT_DATE    => $this->translator->trans('import.payment.date'),
         );
 
         $choices = array_merge(

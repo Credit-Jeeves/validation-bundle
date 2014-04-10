@@ -479,12 +479,12 @@
                 <source>amount</source>
                 <target>Amount</target>
             </trans-unit>
-            <trans-unit id="payment.amount">
-                <source>payment.amount</source>
+            <trans-unit id="import.payment.amount">
+                <source>import.payment.amount</source>
                 <target>Payment Amount</target>
             </trans-unit>
-            <trans-unit id="payment.date">
-                <source>payment.date</source>
+            <trans-unit id="import.payment.date">
+                <source>import.payment.date</source>
                 <target>Payment Date</target>
             </trans-unit>
             <trans-unit id="start">
