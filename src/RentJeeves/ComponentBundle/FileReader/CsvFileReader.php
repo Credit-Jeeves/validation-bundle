@@ -82,16 +82,8 @@ class CsvFileReader
 
     public function read($filename)
     {
-        if (!file_exists($filename)) {
-            throw new RuntimeException(sprintf('File "%s" not found.', $filename));
-        }
-
         $result = array();
-
-        $file = new SplFileObject($filename, 'rb');
-        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
-        $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
-
+        $file = $this->getFile($filename);
         $header = $this->readHeader($file);
 
         while ($row = $file->current()) {
@@ -102,6 +94,18 @@ class CsvFileReader
         }
 
         return $result;
+    }
+
+    protected function getFile($filename)
+    {
+        if (!file_exists($filename)) {
+            throw new RuntimeException(sprintf('File "%s" not found.', $filename));
+        }
+
+        $file = new SplFileObject($filename, 'rb');
+        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
+        return $file;
     }
 
     protected function readHeader(SplFileObject $file)

@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Model;
 
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,6 +20,7 @@ abstract class Contract
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -89,6 +91,7 @@ abstract class Contract
      *     name="unit_id",
      *     referencedColumnName="id"
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $unit;
 
@@ -116,6 +119,7 @@ abstract class Contract
      *     }
      * )
      * @Gedmo\Versioned
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $status;
 
@@ -129,10 +133,18 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.rent.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Gedmo\Versioned
+     * @Assert\Regex(
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $rent = null;
 
@@ -176,6 +188,19 @@ abstract class Contract
      *          "default":"0.00"
      *     }
      * )
+     * @Assert\NotBlank(
+     *     message="error.balance.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $importedBalance = 0.00;
@@ -187,21 +212,56 @@ abstract class Contract
      *     nullable=true
      * )
      * @Serializer\SerializedName("paidTo")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $paidTo;
 
     /**
      * @ORM\Column(
+     *     name="report_to_experian",
      *     type="boolean",
      *     nullable=true,
      *     options={
      *         "default"="0"
      *     }
      * )
-     * @Gedmo\Versioned
+     * @Serializer\Exclude
      */
-    protected $reporting = 0;
+    protected $reportToExperian = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="report_to_trans_union",
+     *     type="boolean",
+     *     nullable=true,
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $reportToTransUnion = 0;
+
+    /**
+     * @ORM\Column(
+     *     name="experian_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $experianStartAt;
+
+    /**
+     * @ORM\Column(
+     *     name="trans_union_start_at",
+     *     type="date",
+     *     nullable=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $transUnionStartAt;
 
     /**
      * @ORM\Column(
@@ -212,10 +272,12 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.start.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("startAt")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $startAt;
@@ -229,10 +291,12 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.finish.empty",
      *     groups={
-     *         "tenant_invite"
+     *         "tenant_invite",
+     *         "import"
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
+     * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
     protected $finishAt;
@@ -293,6 +357,18 @@ abstract class Contract
      * )
      */
     protected $histories;
+
+    /**
+     * @ORM\Column(
+     *     type="DisputeCode",
+     *     nullable=true,
+     *     options={
+     *         "default"="BLANK"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $disputeCode = DisputeCode::DISPUTE_CODE_BLANK;
 
     public function __construct()
     {
@@ -563,28 +639,6 @@ abstract class Contract
     }
 
     /**
-     * Set Reporting
-     *
-     * @param boolean $reporting
-     * @return Contract
-     */
-    public function setReporting($reporting)
-    {
-        $this->reporting = $reporting;
-        return $this;
-    }
-
-    /**
-     * Get Reporting
-     *
-     * @return boolean
-     */
-    public function getReporting()
-    {
-        return $this->reporting;
-    }
-
-    /**
      * Set startAt
      *
      * @param \DateTime $startAt
@@ -734,5 +788,85 @@ abstract class Contract
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    /**
+     * @param mixed $disputeCode
+     */
+    public function setDisputeCode($disputeCode)
+    {
+        $this->disputeCode = $disputeCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDisputeCode()
+    {
+        return $this->disputeCode;
+    }
+
+    /**
+     * @param \DateTime $experianStartAt
+     */
+    public function setExperianStartAt($experianStartAt)
+    {
+        $this->experianStartAt = $experianStartAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExperianStartAt()
+    {
+        return $this->experianStartAt;
+    }
+
+    /**
+     * @param boolean $reportExperian
+     */
+    public function setReportToExperian($reportExperian)
+    {
+        $this->reportToExperian = $reportExperian;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToExperian()
+    {
+        return $this->reportToExperian;
+    }
+
+    /**
+     * @param boolean $reportTransUnion
+     */
+    public function setReportToTransUnion($reportTransUnion)
+    {
+        $this->reportToTransUnion = $reportTransUnion;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReportToTransUnion()
+    {
+        return $this->reportToTransUnion;
+    }
+
+    /**
+     * @param \DateTime $transUnionStartAt
+     */
+    public function setTransUnionStartAt($transUnionStartAt)
+    {
+        $this->transUnionStartAt = $transUnionStartAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTransUnionStartAt()
+    {
+        return $this->transUnionStartAt;
     }
 }

@@ -106,7 +106,7 @@ class PayCommand extends ContainerAwareCommand
         }
 
         $order->setUser($paymentAccount->getUser());
-        $order->setAmount($amount);
+        $order->setSum($amount);
         $order->setStatus(OrderStatus::NEWONE);
 
         $request = new MakePaymentRequest();

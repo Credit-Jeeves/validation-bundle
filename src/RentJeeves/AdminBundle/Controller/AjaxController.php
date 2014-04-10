@@ -6,6 +6,7 @@ use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Entity\BillingAccount;
 use RentJeeves\DataBundle\Entity\Heartland;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -114,6 +115,40 @@ class AjaxController extends Controller
         $user->setIsVerified($status);
 
         $em->flush($user);
+
+        return new JsonResponse(
+            array(
+                'success' => true
+            )
+        );
+    }
+
+    /**
+     * @Route("contract/dispute_code", name="admin_contract_dispute_code", options={"expose"=true})
+     * @Method({"POST"})
+     */
+    public function changeContractDisputeCode(Request $request)
+    {
+        $contractId = $request->request->get('contract_id');
+        $disputeCode = $request->request->get('dispute_code');
+
+        $em = $this->getDoctrine()->getManager();
+
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+
+        if (empty($contract)) {
+            throw $this->createNotFoundException("Contract not found");
+        }
+
+        $disputeCodeConstant = DisputeCode::search($disputeCode);
+
+        if (empty($disputeCodeConstant)) {
+            throw $this->createNotFoundException("Specified dispute code does not exist");
+        }
+
+        $contract->setDisputeCode($disputeCode);
+
+        $em->flush($contract);
 
         return new JsonResponse(
             array(

@@ -42,7 +42,6 @@ class Builder extends ContainerAware
 
         switch ($sRoute) {
             case 'tenant_homepage':
-            case 'tenant_payment_history':
             case 'property_add':
             case 'property_add_id':
             case 'tenant_invite_landlord':
@@ -124,12 +123,6 @@ class Builder extends ContainerAware
             )
         );
         $menu->addChild(
-            'rent.history',
-            array(
-                'route' => 'tenant_payment_history'
-            )
-        );
-        $menu->addChild(
             'rent.sources',
             array(
                 'route' => 'tenant_payment_sources'
@@ -138,9 +131,6 @@ class Builder extends ContainerAware
         switch ($sRoute) {
             case 'tenant_homepage':
                 $menu['rent.properties']->setUri('');
-                break;
-            case 'tenant_payment_history':
-                $menu['rent.history']->setUri('');
                 break;
             case 'tenant_payment_sources':
                 $menu['rent.sources']->setUri('');

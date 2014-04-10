@@ -25,6 +25,11 @@ parameters:
 
     rt_merchant_name: 'RentTrackCorp'
 
+    property_management:
+        name: 'RENTTRACK'
+        address: '13911 RIDGEDALE DR # 401C MINNETONKA MN 55305'
+        phone: '8618419090'
+
     external_urls:
         main_site: 'www.renttrack.com'
         user_voice: 'renttrack.uservoice.com'

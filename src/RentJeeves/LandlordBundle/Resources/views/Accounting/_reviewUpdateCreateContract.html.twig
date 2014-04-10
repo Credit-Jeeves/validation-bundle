@@ -1,0 +1,98 @@
+{% form_theme form "LandlordBundle::form_widget_attributes.html.twig" %}
+
+<tr data-bind="
+    attr: {'class': $root.getClassLine($data)},
+    if: !is_skipped && is_valid && ((contract.id && contract.status != 'finished') || (!contract.id && tenant.id && contract.status != 'finished'))">
+    {{ form_start(form) }}
+    <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
+    <td data-bind="text:contract.unit.name"></td>
+    <td data-bind="text:tenant.resident_id"></td>
+    <td data-bind="text:tenant.first_name"></td>
+    <td data-bind="text:tenant.last_name"></td>
+    <td data-bind="text:tenant.email"></td>
+    <td>
+        {{
+            form_widget(
+                form.rent,
+                {
+                    "attr":
+                    {
+                        "data-bind":
+                        "value: contract.rent,
+                         attr:
+                            {
+                                'class': number+'_rent import_contract_rent '+$root.getErrorClass($data, 'import_contract_rent'),
+                                'title': $root.getErrorTitle($data, 'import_contract_rent')
+                            }"
+                    }
+                }
+            )
+        }}
+        {{ form_widget(
+            form.importedBalance,
+            {
+                "attr":
+                {
+                "data-bind":
+                    "value: contract.imported_balance,
+                     attr:
+                        {
+                            'class': number+'_balance import_contract_importedBalance '+$root.getErrorClass($data, 'import_contract_importedBalance'),
+                            'title': $root.getErrorTitle($data, 'import_contract_importedBalance')
+                        }"
+                }
+            }
+        ) }}
+    </td>
+    <td>
+        {{ form_widget(
+            form.startAt,
+            {
+                "attr":
+                {
+                "data-bind": "
+                    value: $root.formatDate(contract.startAt),
+                    attr: {
+                        'class': number+'_startAt import_contract_startAt datepicker '+$root.getErrorClass($data, 'import_contract_startAt'),
+                        'title': $root.getErrorTitle($data, 'import_contract_startAt')
+                    },
+                    datepicker: $root.formatDate(contract.startAt),
+                    datepickerOptions: $root.getDatePickerOptions(),
+                    datepickerFieldName: 'startAt'
+                    ",
+                }
+            }
+        ) }}
+        {{ form_widget(
+            form.finishAt,
+            {
+                "attr":
+                {
+                "data-bind":
+                    "value: $root.formatDate(contract.finishAt),
+                     datepicker: $root.formatDate(contract.finishAt),
+                     datepickerOptions: $root.getDatePickerOptions(),
+                     datepickerFieldName: 'finishAt',
+                     attr: {
+                        'class': number+'_finishAt import_contract_finishAt datepicker '+$root.getErrorClass($data, 'import_contract_finishAt'),
+                        'title': $root.getErrorTitle($data, 'import_contract_finishAt')
+                     }"
+                }
+            }
+        ) }}
+    </td>
+    <td>
+    </td>
+    <td>
+        {{ form_widget(
+        form.skip,
+        {
+            "attr": {
+                "class": "skipCheckbox"
+            }
+        }
+        )}} {{ 'skip'|trans }}
+    </td>
+    {{ form_widget(form._token, {"attr": {"data-bind": "value: csrf_token, attr: {'class': number+'_token import_contract__token'}"}}) }}
+    {{ form_end(form) }}
+</tr>

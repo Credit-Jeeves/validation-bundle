@@ -1,0 +1,9 @@
+{% extends 'SonataAdminBundle:CRUD:base_list_field.html.twig' %}
+
+{% block field %}
+    <select onchange="changeDisputeCode(this)" onfocus="savePreviousStatus(this)" contract_id="{{ object.getId }}">
+        {% for value in object.getAvailableDisputeCodes %}
+            <option value="{{ value }}" {% if object.getDisputeCode == value %}selected{% endif %}>{{ value }}</option>
+        {% endfor %}
+    </select>
+{% endblock %}

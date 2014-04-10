@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
-use \DateTime;
+use DateTime;
 use Doctrine\ORM\Query\Expr;
 
 class ContractRepository extends EntityRepository
@@ -274,27 +274,6 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param Tenant $tenant
-     * @param null $status
-     *
-     * @return mixed
-     */
-    public function getCountByStatus($tenant, $status = null)
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->select('count(c.id)');
-        $query->innerJoin('c.tenant', 't');
-        $query->where('t.id = :tenant');
-        if (!is_null($status)) {
-            $query->andWhere('c.status =:status');
-            $query->setParameter('status', $status);
-        }
-        $query->setParameter('tenant', $tenant->getId());
-        $query = $query->getQuery();
-        return $query->getSingleScalarResult();
-    }
-
-    /**
-     * @param Tenant $tenant
      *
      * @return mixed
      */
@@ -304,7 +283,10 @@ class ContractRepository extends EntityRepository
         $query->select('count(c.id)');
         $query->innerJoin('c.tenant', 't');
         $query->where('t.id = :tenant');
-        $query->andWhere('c.reporting = 1');
+        $query->andWhere(
+            'c.reportToTransUnion = 1 OR c.reportToExperian = 1
+            OR c.experianStartAt is not NULL OR c.transUnionStartAt is not NULL'
+        );
         $query->andWhere('c.status = :status');
         $query->setParameter('tenant', $tenant->getId());
         $query->setParameter('status', ContractStatus::CURRENT);
@@ -342,7 +324,7 @@ class ContractRepository extends EntityRepository
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.amount) AS amount, h.id, g.id as group_id');
+        $query->select('SUM(o.sum) AS amount, h.id, g.id as group_id');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operation');
@@ -372,7 +354,7 @@ class ContractRepository extends EntityRepository
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
-        $query->select('SUM(o.amount)');
+        $query->select('SUM(o.sum)');
         $query->innerJoin('c.holding', 'h');
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operation');
@@ -431,5 +413,69 @@ class ContractRepository extends EntityRepository
         $query->setParameter('date', new DateTime());
         $query = $query->getQuery();
         return $query->iterate();
+    }
+
+    public function getImportContract($tenant, $unitName)
+    {
+        $query = $this->createQueryBuilder('contract');
+        $query->leftJoin('contract.unit', 'unit');
+        $query->leftJoin('contract.tenant', 'tenant');
+        $query->where('contract.status = :approved OR contract.status = :current');
+        $query->andWhere('tenant.id = :tenantId');
+        $query->andWhere('unit.name = :unitName');
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('tenantId', $tenant);
+        $query->setParameter('unitName', $unitName);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function getLastActivityDate()
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->select('c.updatedAt');
+        $query->orderBy('c.updatedAt', 'DESC');
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        return $query->getSingleScalarResult();
+    }
+
+    public function getContractsForExperianRentalReport($monthNo, $yearNo)
+    {
+        $firstDate = new DateTime("$yearNo-$monthNo-01");
+        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.reportToExperian = 1 AND c.experianStartAt is not NULL AND c.experianStartAt <= :startDate');
+        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setParameter('startDate', $firstDate);
+        $query->setParameter('lastDate', $lastDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    public function getContractsForTransUnionRentalReport($monthNo, $yearNo)
+    {
+        $firstDate = new DateTime("$yearNo-$monthNo-01");
+        $lastDate = new DateTime($firstDate->format('Y-m-t'));
+
+        $query = $this->createQueryBuilder('c');
+        $query->where(
+            'c.reportToTransUnion = 1 AND c.transUnionStartAt is not NULL AND c.transUnionStartAt <= :startDate'
+        );
+        $query->andWhere('c.status = :current OR c.status = :finished and c.finishAt BETWEEN :startDate AND :lastDate');
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('finished', ContractStatus::FINISHED);
+        $query->setParameter('startDate', $firstDate);
+        $query->setParameter('lastDate', $lastDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
     }
 }

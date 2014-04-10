@@ -1,11 +1,14 @@
 <?php
 namespace CreditJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>
@@ -193,7 +196,8 @@ class OrderRepository extends EntityRepository
     public function getContractHistory(\RentJeeves\DataBundle\Entity\Contract $contract)
     {
         $query = $this->createQueryBuilder('o');
-        $query->innerJoin('o.operations', 'p');
+        $query->innerJoin('o.operations', 'p', Expr\Join::WITH, "p.type = :rent");
+        $query->setParameter('rent', OperationType::RENT);
         $query->where('p.contract = :contract');
         $query->setParameter('contract', $contract);
         $query->orderBy('o.created_at', 'ASC');
@@ -247,7 +251,7 @@ class OrderRepository extends EntityRepository
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
         $query->select(
-            "h.batchId, sum(o.amount) as order_amount, date_format(h.depositDate, '%m/%d/%Y') as depositDate"
+            "h.batchId, sum(o.sum) as order_amount, date_format(h.depositDate, '%m/%d/%Y') as depositDate"
         );
         $query->innerJoin('o.operations', 'p');
         $query->innerJoin('p.contract', 't');
@@ -306,5 +310,15 @@ class OrderRepository extends EntityRepository
         $query = $query->getQuery();
 
         return $query->getSingleScalarResult();
+    }
+
+    public function getTenantPayments(Tenant $tenant)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->where('o.user = :user');
+        $query->orderBy('o.created_at', 'DESC');
+        $query->setParameter('user', $tenant);
+
+        return $query->getQuery()->execute();
     }
 }

@@ -61,7 +61,7 @@ class DefaultController extends Controller
         $this->order = new Order();
         $this->order->addAuthorize(new CheckoutAuthorizeNetAim());
         $this->order->setUser($user);
-        $this->order->setAmount(static::AMOUNT);
+        $this->order->setSum(static::AMOUNT);
         $this->form = $this->createForm(new OrderAuthorizeType(), $this->order);
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -92,6 +92,7 @@ class DefaultController extends Controller
                     $operation = new Operation();
                     $operation->setReportD2c($report);
                     $operation->setPaidFor(new DateTime());
+                    $operation->setAmount(static::AMOUNT);
                     $this->order->addOperation($operation);
                     $em->persist($operation);
                     $em->persist($report);

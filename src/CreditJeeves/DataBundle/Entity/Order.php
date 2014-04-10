@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Entity\Heartland;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
+use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass="CreditJeeves\DataBundle\Entity\OrderRepository")
@@ -345,7 +346,7 @@ class Order extends BaseOrder
      */
     public function getTotalAmount()
     {
-        return number_format($this->getAmount(), 2, '.', '');
+        return number_format($this->getSum(), 2, '.', '');
     }
 
     /**
@@ -530,6 +531,50 @@ class Order extends BaseOrder
     }
 
     /**
+     * @throws RuntimeException
+     *
+     * @return Operation
+     */
+    public function getRentOperation()
+    {
+        $operationCollection = $this->getOperations()
+            ->filter(
+                function (Operation $operation) {
+                    if (OperationType::RENT == $operation->getType()) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+        if (1 < $operationCollection->count()) {
+            throw new RuntimeException("Order has more than ONE 'RENT' operation");
+        }
+        if (0 == $operationCollection->count()) {
+            return null;
+        }
+        return $operationCollection->last();
+    }
+
+    public function getOtherOperation()
+    {
+        $operationCollection = $this->getOperations()
+            ->filter(
+                function (Operation $operation) {
+                    if (OperationType::OTHER == $operation->getType()) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+
+        if (0 == $operationCollection->count()) {
+            return null;
+        }
+
+        return $operationCollection->last();
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("PostMonth")
      * @Serializer\Groups({"xmlReport"})
@@ -540,24 +585,16 @@ class Order extends BaseOrder
      */
     public function getPostMonth()
     {
-        $date = $this->getUpdatedAt();
-        $daysLate = $this->getDaysLate();
-        if ($daysLate < 0) {
-            $date->modify('-'.$daysLate.' day');
-        } elseif ($daysLate > 0) {
-            $daysLate = $daysLate * -1;
-            $date->modify($daysLate.' day');
-        }
-
-        return $date->format('Y-m-d\TH:m:n');
+        return $this->getRentOperation()?$this->getRentOperation()->getPaidFor()->format('Y-m-d\TH:m:n'):'';
     }
 
     public function addOperation(\CreditJeeves\DataBundle\Entity\Operation $operation)
     {
+        $return = parent::addOperation($operation);
         if (!$operation->getOrder()) {
             $operation->setOrder($this);
         }
-        return parent::addOperation($operation);
+        return $return;
     }
 
     public function setOperations($operations)
@@ -581,19 +618,18 @@ class Order extends BaseOrder
         $result = array();
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
-        $result['amount'] = $this->getAmount();
+        $result['amount'] = $this->getSum(); //TODO check. May be it must be operation getAmount()
         $result['tenant'] = $contract->getTenant()->getFullName();
         $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $result['finish'] = '--';
-        $result['style'] = 'contract-pending';
+        $result['style'] = $this->getOrderStatusStyle();
         $result['icon'] = $this->getOrderTypes();
         $status = $this->getStatus();
         $result['status'] = 'order.status.text.'.$status;
         switch ($status) {
             case OrderStatus::COMPLETE:
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
-                $result['style'] = '';
                 break;
             case OrderStatus::PENDING:
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
@@ -603,9 +639,52 @@ class Order extends BaseOrder
             case OrderStatus::REFUNDED:
             case OrderStatus::RETURNED:
                 $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
-                $result['style'] = 'late';
                 break;
         }
+        return $result;
+    }
+
+    protected function getOrderStatusStyle()
+    {
+        switch ($this->getStatus()) {
+            case OrderStatus::COMPLETE:
+                $style = '';
+                break;
+            case OrderStatus::ERROR:
+            case OrderStatus::CANCELLED:
+            case OrderStatus::REFUNDED:
+            case OrderStatus::RETURNED:
+                $style = 'late';
+                break;
+            default:
+                $style = 'contract-pending';
+        }
+
+        return $style;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTenantPayment()
+    {
+        $result = array();
+        $result['status'] = $this->getStatus();
+        if ($this->getStatus() == OrderStatus::ERROR) {
+            $result['errorMessage'] = $this->getHeartlandErrorMessage();
+        }
+        $result['style'] = $this->getOrderStatusStyle();
+        $result['date'] = $this->getCreatedAt()->format('m/d/Y');
+        $result['property'] = $this->getContract()->getRentAddress();
+
+        $rentOperation = $this->getRentOperation();
+        $otherOperation = $this->getOtherOperation();
+
+        $result['rent'] = $rentOperation? $rentOperation->getFormatedAmount() : '';
+        $result['other'] = $otherOperation? $otherOperation->getFormatedAmount() : '';
+        $result['total'] = $this->getTotalAmount();
+        $result['type'] = $this->getOrderTypes();
+
         return $result;
     }
 
@@ -682,22 +761,6 @@ class Order extends BaseOrder
         }
 
         return $result;
-    }
-
-    public function countDaysLate()
-    {
-        /** @var Operation $operation */
-        $operation = $this->getOperations()->last();
-        $type = OperationType::REPORT;
-        $type = $operation ? $operation->getType() : $type;
-        switch ($type) {
-            case OperationType::RENT:
-                $contract = $operation->getContract();
-                $paidTo = $contract->getPaidTo();
-                $interval = $this->getDiffDays($paidTo);
-                $this->setDaysLate($interval);
-                break;
-        }
     }
 
     /**
