@@ -602,7 +602,7 @@ fixtures:
         <tbody>
           {% for tenant in tenants %}
           <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ common.tenant_name }}</td>
+            <td style="padding:5px;">{{ tenant.name }}</td>
             <td style="padding:5px;">{{ tenant.email }}</td>
             <td style="padding:5px;">{{ tenant.address }}</td>
             <td style="padding:5px;">{{ tenant.late }}</td>
