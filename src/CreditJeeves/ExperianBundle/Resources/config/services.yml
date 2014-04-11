@@ -1,0 +1,10 @@
+parameters:
+    experian.config.class: CreditJeeves\ExperianBundle\ExperianConfig
+
+services:
+    experian.config:
+        class: "%experian.config.class%"
+        arguments:
+            - "%server_name%"
+            - "@doctrine.orm.default_entity_manager"
+            - "%experian.logging%"

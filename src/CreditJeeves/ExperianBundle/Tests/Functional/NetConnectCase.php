@@ -53,8 +53,7 @@ class NetConnectCase extends BaseTestCase
         while ($tries--) {
             try {
                 try {
-                    $netConnect = new NetConnect();
-                    $netConnect->execute();
+                    $netConnect = $this->getContainer()->get('experian.net_connect');
                     return $netConnect->getResponseOnUserData($aplicant);
                 } catch (\ExperianException $e) {
                     if (4000 != $e->getCode()) {
@@ -68,7 +67,7 @@ class NetConnectCase extends BaseTestCase
     }
 
     /**
-     * @test
+     * @~test
      * @expectedException \ExperianException
      * @expectedExceptionMessage Generated XML is invalid
      */

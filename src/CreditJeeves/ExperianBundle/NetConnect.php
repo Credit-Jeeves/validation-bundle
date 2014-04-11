@@ -1,7 +1,6 @@
 <?php
 namespace CreditJeeves\ExperianBundle;
 
-use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 
 require_once __DIR__.'/../CoreBundle/sfConfig.php';
@@ -30,31 +29,17 @@ class NetConnect extends \NetConnect
 
     /**
      * @DI\InjectParams({
-     *     "serverName" = @DI\Inject("%server_name%"),
-     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
+     *     "config" = @DI\Inject("experian.config"),
      * })
      *
-     * @param string $serverName
-     * @param EntityManager $em
+     * @param ExperianConfig $config
      */
-    public function initConfigs($serverName, EntityManager $em)
+    public function initConfigs($config)
     {
-        \sfConfig::set('global_host', $serverName);
-        /** @var \CreditJeeves\DataBundle\Entity\Settings $settings */
-        $settings = $em->getRepository('DataBundle:Settings')->find(1);
-
-        if (empty($settings)) {
-            return;
-        }
-
-        \sfConfig::set('experian_net_connect_userpwd', $settings->getNetConnectPassword());
-        $xmlRoot = \sfConfig::get('experian_net_connect_XML_root');
-        $xmlRoot['EAI'] = $settings->getNetConnectEai();
-        \sfConfig::set('experian_net_connect_XML_root', $xmlRoot);
+        parent::__construct();
     }
 
     public function execute()
     {
-        parent::__construct();
     }
 }

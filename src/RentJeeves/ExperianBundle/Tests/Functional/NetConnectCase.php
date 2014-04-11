@@ -26,6 +26,8 @@ class NetConnectCase extends BaseTestCase
         $this->assertTrue(is_string($arf));
         $parser = new ArfParser($arf);
         $this->assertEquals(234, $parser->getReport()->getScore(ScoreModelType::VANTAGE3));
+
+        $this->getContainer()->get('experian.net_connect');
     }
 
 }

@@ -11,7 +11,7 @@ class GetNewReportCase extends BaseTestCase
     public function success()
     {
         $this->load(true);
-        //$this->setDefaultSession('Selenium2');
+        $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($tableTr = $this->page->find('css', '#id_block_applicants'));
         $tableTr->clickLink('link_list');

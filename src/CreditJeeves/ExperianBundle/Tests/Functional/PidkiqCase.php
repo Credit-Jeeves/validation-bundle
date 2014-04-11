@@ -120,8 +120,11 @@ class PidkiqCase extends BaseTestCase
     protected function getPidkiq()
     {
         $pidkiq = new Pidkiq();
-        $pidkiq->execute(self::getContainer());
-
+        $pidkiq->initConfigs(
+            $this->getContainer()->get('experian.config'),
+            $this->getContainer()->getParameter('experian.logging'),
+            $this->getContainer()->getParameter('kernel.logs_dir')
+        );
         return $pidkiq;
     }
 
@@ -144,7 +147,7 @@ class PidkiqCase extends BaseTestCase
     {
         $data = $this->users[0];
         $data['CurrentAddress']['Zip'] = '99999';
-        $resp = $this->getResponseOnUserData($data);
+        $this->getResponseOnUserData($data);
     }
 
     /**
@@ -222,8 +225,6 @@ class PidkiqCase extends BaseTestCase
             try {
                 $resp = $this->getResponseOnUserData($this->users[$i]);
                 $this->assertTrue(is_array($resp));
-                $resp = $this->getObjectOnUserData($this->users[$i]);
-                $this->assertTrue(($resp instanceof NetConnectResponse));
                 return;
             } catch (\ExperianException $e) {
                 if ('No questions returned due to excessive use' == $e->getMessage()) {
@@ -254,17 +255,5 @@ class PidkiqCase extends BaseTestCase
     public function getResponseOnUserDataTimeout()
     {
         $this->getResponseOnUserData($this->users[0]);
-    }
-
-    /**
-     * Tests Pidkiq->getObjectOnUserData()
-     *
-     * @expectedException \ExperianException
-     * @expectedExceptionMessage No questions returned due to excessive use
-     */
-    protected function getObjectOnUserData($data)
-    {
-        $applicant = $this->getApplicant($data);
-        return $this->getPidkiq()->getObjectOnUserData($applicant);
     }
 }

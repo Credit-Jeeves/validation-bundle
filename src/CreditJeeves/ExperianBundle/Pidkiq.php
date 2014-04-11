@@ -45,39 +45,28 @@ class Pidkiq extends \Pidkiq
     }
 
     /**
-     *
      * @DI\InjectParams({
-     *     "serverName"     = @DI\Inject("%server_name%"),
-     *     "em"             = @DI\Inject("doctrine.orm.default_entity_manager"),
-     *     "isLogging"      = @DI\Inject("%experian.logging%"),
-     *     "logPath"        = @DI\Inject("%kernel.logs_dir%"),
+     *     "config"     = @DI\Inject("experian.config"),
+     *     "isLogging"  = @DI\Inject("%experian.logging%"),
+     *     "logPath"    = @DI\Inject("%kernel.logs_dir%"),
      *
      * })
      *
-     * @param string $serverName
-     * @param EntityManager $em
+     * @param ExperianConfig $config
+     * @param bool $isLogging
+     * @param string $logPath
      */
-    public function initConfigs($serverName, EntityManager $em, $isLogging, $logPath)
+    public function initConfigs($config, $isLogging, $logPath)
     {
+        $config->init();
         $this->isLogging = $isLogging;
         $this->logPath = $logPath;
-        \sfConfig::set('global_host', $serverName);
-        /** @var \CreditJeeves\DataBundle\Entity\Settings $settings */
-        $settings = $em->getRepository('DataBundle:Settings')->find(1);
-        if (empty($settings)) {
-            parent::__construct();
-            return;
-        }
-        \sfConfig::set('experian_pidkiq_userpwd', $settings->getPidkiqPassword());
-        $xmlRoot = \sfConfig::get('experian_pidkiq_XML_root');
-        $xmlRoot['EAI'] = $settings->getPidkiqEai();
-        \sfConfig::set('experian_pidkiq_XML_root', $xmlRoot);
+
         parent::__construct();
     }
 
     public function execute()
     {
-        parent::__construct();
     }
 
     protected function getSerializer()

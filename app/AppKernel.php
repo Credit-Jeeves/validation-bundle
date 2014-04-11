@@ -79,33 +79,42 @@ abstract class AppKernel extends Kernel
      *
      * @link http://kriswallsmith.net/post/27979797907/get-fast-an-easy-symfony2-phpunit-optimization
      */
-//    protected function initializeContainer()
-//    {
-//        if (!static::IS_TEST) {
-//            return parent::initializeContainer();
-//        }
-//
-//        static $first = true;
-//
-//        $debug = $this->debug;
-//
-//        if (false == $first) {
-//            // disable debug mode on all but the first initialization
-//            $this->debug = false;
-//        }
-//
-//        // will not work with --process-isolation
-//        $first = false;
-//
-//        try {
-//            parent::initializeContainer();
-//        } catch (\Exception $e) {
-//            $this->debug = $debug;
-//            throw $e;
-//        }
-//
-//        $this->debug = $debug;
-//    }
+    protected function initializeContainer()
+    {
+        if (!static::IS_TEST) {
+            return parent::initializeContainer();
+        }
+
+        static $first = true;
+
+        $debug = $this->debug;
+
+        if (false == $first) {
+            // disable debug mode on all but the first initialization
+            $this->debug = false;
+        }
+
+        // will not work with --process-isolation
+        $first = false;
+
+        try {
+            parent::initializeContainer();
+        } catch (\Exception $e) {
+            $this->debug = $debug;
+            throw $e;
+        }
+
+        $this->debug = $debug;
+    }
+
+    protected function getExperianConfigs($parameters)
+    {
+        $parameters['experian_pidkiq_userpwd'] = sfConfig::get('global_experian_pidkiq_userpwd');
+        $parameters['experian_pidkiq_eai'] = sfConfig::get('global_experian_pidkiq_eai');
+        $parameters['experian_net_connect_userpwd'] = sfConfig::get('global_experian_net_connect_userpwd');
+        $parameters['experian_net_connect_eai'] = sfConfig::get('global_experian_net_connect_eai');
+        return $parameters;
+    }
 
     /**
      * {@inheritdoc}
@@ -117,11 +126,7 @@ abstract class AppKernel extends Kernel
         $parameters['web.dir'] = $parameters['project.root'] . '/web';
         $parameters['data.dir'] = $parameters['project.root'] . '/data';
         $parameters['web.upload.dir'] = $parameters['web.dir'] . '/uploads';
-        $parameters['experian_pidkiq_userpwd'] = sfConfig::get('global_experian_pidkiq_userpwd');
-        $parameters['experian_pidkiq_eai'] = sfConfig::get('global_experian_pidkiq_eai');
-        $parameters['experian_net_connect_userpwd'] = sfConfig::get('global_experian_net_connect_userpwd');
-        $parameters['experian_net_connect_eai'] = sfConfig::get('global_experian_net_connect_eai');
-        return $parameters;
+        return $this->getExperianConfigs($parameters);
     }
 
     public function init()
