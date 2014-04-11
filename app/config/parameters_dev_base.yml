@@ -23,3 +23,8 @@ parameters:
         application_id: 3
         username: RTAPI
         password: $RTapi13
+
+    experian: # only for RentTrack for now
+        pidkiq_userpwd: 'renttrack_pid_demo:l0c2PYXrKa'
+        net_connect_userpwd: 'renttrack_nc_demo:8MzPvkOhS6'
+

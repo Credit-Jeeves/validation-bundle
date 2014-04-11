@@ -79,33 +79,33 @@ abstract class AppKernel extends Kernel
      *
      * @link http://kriswallsmith.net/post/27979797907/get-fast-an-easy-symfony2-phpunit-optimization
      */
-    protected function initializeContainer()
-    {
-        if (!static::IS_TEST) {
-            return parent::initializeContainer();
-        }
-
-        static $first = true;
-
-        $debug = $this->debug;
-
-        if (false == $first) {
-            // disable debug mode on all but the first initialization
-            $this->debug = false;
-        }
-
-        // will not work with --process-isolation
-        $first = false;
-
-        try {
-            parent::initializeContainer();
-        } catch (\Exception $e) {
-            $this->debug = $debug;
-            throw $e;
-        }
-
-        $this->debug = $debug;
-    }
+//    protected function initializeContainer()
+//    {
+//        if (!static::IS_TEST) {
+//            return parent::initializeContainer();
+//        }
+//
+//        static $first = true;
+//
+//        $debug = $this->debug;
+//
+//        if (false == $first) {
+//            // disable debug mode on all but the first initialization
+//            $this->debug = false;
+//        }
+//
+//        // will not work with --process-isolation
+//        $first = false;
+//
+//        try {
+//            parent::initializeContainer();
+//        } catch (\Exception $e) {
+//            $this->debug = $debug;
+//            throw $e;
+//        }
+//
+//        $this->debug = $debug;
+//    }
 
     /**
      * {@inheritdoc}

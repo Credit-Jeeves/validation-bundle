@@ -54,7 +54,7 @@ class NetConnectCase extends BaseTestCase
             try {
                 try {
                     $netConnect = new NetConnect();
-                    $netConnect->execute(self::getContainer());
+                    $netConnect->execute();
                     return $netConnect->getResponseOnUserData($aplicant);
                 } catch (\ExperianException $e) {
                     if (4000 != $e->getCode()) {
