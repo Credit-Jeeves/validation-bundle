@@ -365,6 +365,10 @@ abstract class User extends BaseUser
      *         "import_not_editable"
      *     }
      * )
+     * @deprecated will be removed at all. When implement waiting room
+     * https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
+     * do no use it at all please.
+     *
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $residentId;

@@ -122,6 +122,18 @@ abstract class Unit
     protected $contracts;
 
     /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
+     *     mappedBy="unit",
+     *     cascade={
+     *       "persist"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $contractsWaiting;
+
+    /**
      * @ORM\Column(
      *      name="deleted_at",
      *      type="datetime",
