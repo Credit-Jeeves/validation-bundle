@@ -4,8 +4,11 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\TestBundle\BaseTestCase;
-use CreditJeeves\ExperianBundle\NetConnect;
 use CreditJeeves\DataBundle\Entity\Applicant;
+use sfConfig;
+use PHPUnit_Framework_AssertionFailedError;
+use ExperianException;
+use CurlException;
 
 /**
  * NetConnect test case.
@@ -49,26 +52,26 @@ class NetConnectCase extends BaseTestCase
         $aplicant->addAddress($address);
 
         $tries = 6;
-        $e = new \PHPUnit_Framework_AssertionFailedError('NetConnect fail');
+        $e = new PHPUnit_Framework_AssertionFailedError('NetConnect fail');
         while ($tries--) {
             try {
                 try {
                     $netConnect = $this->getContainer()->get('experian.net_connect');
                     return $netConnect->getResponseOnUserData($aplicant);
-                } catch (\ExperianException $e) {
+                } catch (ExperianException $e) {
                     if (4000 != $e->getCode()) {
                         throw $e;
                     }
                 }
-            } catch (\CurlException $e) {
+            } catch (CurlException $e) {
             }
         }
         throw $e;
     }
 
     /**
-     * @~test
-     * @expectedException \ExperianException
+     * @test
+     * @expectedException ExperianException
      * @expectedExceptionMessage Generated XML is invalid
      */
     public function getResponseOnUserDataXmlInvalid()
@@ -76,20 +79,6 @@ class NetConnectCase extends BaseTestCase
         $data = $this->user;
         $data['Name']['Surname'] = '';
         $this->getResponseOnUserData($data);
-    }
-
-    /**
-     * @ Experian does not response as it should be test
-     *
-     * @expectedException \ExperianException
-     * @expectedExceptionMessage Cannot formulate questions for this consumer.
-     */
-    public function getResponseOnUserDataIncorrect()
-    {
-        $data = $this->user;
-        $data['Name']['Surname'] = 'dfgsdfgsdfg';
-        $data['Name']['First'] = 'dfg';
-        $resp = $this->getResponseOnUserData($data);
     }
 
     /**
@@ -116,8 +105,8 @@ class NetConnectCase extends BaseTestCase
         );
 
         $settings = new Settings();
-        $settings->setNetConnectPassword(\sfConfig::get('experian_net_connect_userpwd'));
-        $xmlRoot = \sfConfig::get('experian_net_connect_XML_root');
+        $settings->setNetConnectPassword(sfConfig::get('experian_net_connect_userpwd'));
+        $xmlRoot = sfConfig::get('experian_net_connect_XML_root');
         $settings->setNetConnectEai($xmlRoot['EAI']);
 
         $repo = $this->getMock(
@@ -137,7 +126,7 @@ class NetConnectCase extends BaseTestCase
             ->will($this->returnValue($repo));
 
 
-        \sfConfig::set('experian_net_connect_userpwd', '');
+        sfConfig::set('experian_net_connect_userpwd', '');
 
         $this->getContainer()->get('experian.net_connect')->initConfigs(
             $this->getContainer()->getParameter('server_name'),
