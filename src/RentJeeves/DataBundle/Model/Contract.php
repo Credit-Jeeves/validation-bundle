@@ -140,7 +140,7 @@ abstract class Contract
      * )
      * @Gedmo\Versioned
      * @Assert\Regex(
-     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     pattern = "/^\d+(\.\d{1,2})?$/",
      *     groups = {
      *         "import"
      *     }
