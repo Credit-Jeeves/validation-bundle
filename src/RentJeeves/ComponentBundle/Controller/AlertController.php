@@ -10,6 +10,7 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 class AlertController extends Controller
 {
     /**
+     * FIXME in this controller we have more query, which we can modify by one.
      * @Template
      *
      * @return array

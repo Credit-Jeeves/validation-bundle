@@ -413,7 +413,8 @@ class ImportProcess
     /**
      * This magic method change validation need find out way to remove magic
      * and make it more horizontal expansion
-     * @TODO refactoring
+     * @TODO refactoring: create new field type for form and form theme which we use only for show data, not edit.
+     * and run form validation.
      *
      * @param Import $import
      */
