@@ -347,33 +347,6 @@ abstract class User extends BaseUser
     protected $invite_code;
 
     /**
-     * @ORM\Column(
-     *      type="string",
-     *      name="resident_id",
-     *      length=128,
-     *      nullable=true
-     * )
-     * @Assert\NotBlank(
-     *     groups={
-     *         "import_not_editable"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=5,
-     *     max=128,
-     *     groups={
-     *         "import_not_editable"
-     *     }
-     * )
-     * @deprecated will be removed at all. When implement waiting room
-     * https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
-     * do no use it at all please.
-     *
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $residentId;
-
-    /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
      */
     protected $score_changed_notification = true;
@@ -697,22 +670,6 @@ abstract class User extends BaseUser
         $this->authCodes = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
-    }
-
-    /**
-     * @param string $residentId
-     */
-    public function setResidentId($residentId)
-    {
-        $this->residentId = $residentId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResidentId()
-    {
-        return $this->residentId;
     }
 
 

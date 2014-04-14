@@ -427,7 +427,7 @@ class ImportProcess
             $import->setIsValidUnit(true);
         }
 
-        if (preg_match('/^[A-Za-z_0-9]{1,100}$/i', $tenant->getResidentId())) {
+        if (preg_match('/^[A-Za-z_0-9]{1,128}$/i', $tenant->getResidentId())) {
             $import->setIsValidResidentId(true);
         }
     }
