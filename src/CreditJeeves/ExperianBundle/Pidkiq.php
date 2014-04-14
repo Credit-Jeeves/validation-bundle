@@ -58,7 +58,6 @@ class Pidkiq extends \Pidkiq
      */
     public function initConfigs($config, $isLogging, $logPath)
     {
-        $config->init();
         $this->isLogging = $isLogging;
         $this->logPath = $logPath;
 

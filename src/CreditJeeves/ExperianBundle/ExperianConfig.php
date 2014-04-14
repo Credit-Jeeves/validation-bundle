@@ -28,15 +28,10 @@ class ExperianConfig
         $xmlRoot = sfConfig::get('experian_net_connect_XML_root');
         $xmlRoot['EAI'] = $settings->getNetConnectEai();
         sfConfig::set('experian_net_connect_XML_root', $xmlRoot);
-        
+
         sfConfig::set('experian_pidkiq_userpwd', $settings->getPidkiqPassword());
         $xmlRoot = sfConfig::get('experian_pidkiq_XML_root');
         $xmlRoot['EAI'] = $settings->getPidkiqEai();
         sfConfig::set('experian_pidkiq_XML_root', $xmlRoot);
-    }
-
-    public function init()
-    {
-        $dfgsdfg = 'sdfgsdfg';
     }
 }

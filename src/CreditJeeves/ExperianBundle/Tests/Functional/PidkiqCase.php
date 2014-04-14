@@ -152,57 +152,6 @@ class PidkiqCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \ExperianException
-     * @expectedExceptionMessage Unable to standardize current address
-     */
-    public function getResponseOnUserDataErrorAddressUserPwdFromSettings()
-    {
-        require_once __DIR__.'/../../../CoreBundle/sfConfig.php';
-
-        $em = $this->getMock(
-            '\Doctrine\ORM\EntityManager',
-            array('getRepository'),
-            array(),
-            '',
-            false
-        );
-
-        $settings = new Settings();
-        $settings->setPidkiqPassword(\sfConfig::get('experian_pidkiq_userpwd'));
-        $xmlRoot = \sfConfig::get('experian_pidkiq_XML_root');
-        $settings->setPidkiqEai($xmlRoot['EAI']);
-
-        $repo = $this->getMock(
-            '\Doctrine\ORM\EntityRepository',
-            array('find'),
-            array(),
-            '',
-            false
-        );
-
-        $repo->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($settings));
-
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($repo));
-
-
-        \sfConfig::set('experian_net_connect_userpwd', '');
-
-        $this->getContainer()->get('experian.pidkiq')->initConfigs(
-            $this->getContainer()->getParameter('server_name'),
-            $em
-        );
-
-        $data = $this->users[0];
-        $data['CurrentAddress']['Zip'] = '99999';
-        $this->getResponseOnUserData($data);
-    }
-
-    /**
-     * @test
      *
      * @expectedException \ExperianException
      * @expectedExceptionMessage Consumer Not Found on File One

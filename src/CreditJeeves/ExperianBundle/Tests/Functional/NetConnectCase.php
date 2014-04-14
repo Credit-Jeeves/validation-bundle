@@ -3,6 +3,7 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
+use CreditJeeves\ExperianBundle\ExperianConfig;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use sfConfig;
@@ -64,6 +65,9 @@ class NetConnectCase extends BaseTestCase
                     }
                 }
             } catch (CurlException $e) {
+                if (302 == $e->getCode()) {
+                    break;
+                }
             }
         }
         throw $e;
@@ -86,52 +90,6 @@ class NetConnectCase extends BaseTestCase
      */
     public function getResponseOnUserDataCorrect()
     {
-        $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
-    }
-
-    /**
-     * @test
-     */
-    public function getResponseOnUserDataCorrectFromSettings()
-    {
-        require_once __DIR__.'/../../../CoreBundle/sfConfig.php';
-
-        $em = $this->getMock(
-            '\Doctrine\ORM\EntityManager',
-            array('getRepository'),
-            array(),
-            '',
-            false
-        );
-
-        $settings = new Settings();
-        $settings->setNetConnectPassword(sfConfig::get('experian_net_connect_userpwd'));
-        $xmlRoot = sfConfig::get('experian_net_connect_XML_root');
-        $settings->setNetConnectEai($xmlRoot['EAI']);
-
-        $repo = $this->getMock(
-            '\Doctrine\ORM\EntityRepository',
-            array('find'),
-            array(),
-            '',
-            false
-        );
-
-        $repo->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($settings));
-
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($repo));
-
-
-        sfConfig::set('experian_net_connect_userpwd', '');
-
-        $this->getContainer()->get('experian.net_connect')->initConfigs(
-            $this->getContainer()->getParameter('server_name'),
-            $em
-        );
         $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
     }
 }
