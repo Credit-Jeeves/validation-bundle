@@ -18,7 +18,7 @@
 <script type="text/javascript">
   google.setOnLoadCallback(function() {
     var data = new google.visualization.arrayToDataTable([
-          ['Year', 'Applicant'],
+          ['Year', 'Score'],
           {% autoescape false %}{{ chartData }}{% endautoescape %}
           ]);
 
