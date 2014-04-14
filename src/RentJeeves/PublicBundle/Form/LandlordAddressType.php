@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use RentJeeves\PublicBundle\Form\AddressType;
 use RentJeeves\PublicBundle\Form\LandlordType;
-use RentJeeves\PublicBundle\Form\BankAccountType;
 
 class LandlordAddressType extends AbstractType
 {
@@ -42,11 +41,6 @@ class LandlordAddressType extends AbstractType
                     'attr'      => array('class' => 'unit-box')
                 ),
             )
-        );
-
-        $builder->add(
-            'deposit',
-            new BankAccountType()
         );
     }
 

@@ -38,7 +38,7 @@ class LandlordCase extends BaseTestCase
         $submit->click();
         $this->session->wait($this->timeout, "$('.error_list').length > 0");
         $errorList = $this->page->findAll('css', '.error_list');
-        $this->assertCount(12, $errorList, 'Error list');
+        $this->assertCount(8, $errorList, 'Error list');
         $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY 10112';
         $this->fillGoogleAddress($fillAddress);
         $this->page->clickLink('Pricing');
@@ -63,11 +63,6 @@ class LandlordCase extends BaseTestCase
                 'LandlordAddressType_address_city'                       => 'Test',
                 'LandlordAddressType_address_zip'                        =>'1231',
                 'numberOfUnit'                                           => 3,
-                'LandlordAddressType_deposit_nickname'                   => 'Nick',
-                'LandlordAddressType_deposit_PayorName'                  => 'Nick Staut',
-                'LandlordAddressType_deposit_AccountNumber'              => '123245678',
-                'LandlordAddressType_deposit_RoutingNumber'              => '062202574',
-                'LandlordAddressType_deposit_ACHDepositType_0'           => true,
             )
         );
         $this->assertNotNull($addUnit = $this->page->find('css', '#addUnit>span'));
@@ -80,12 +75,7 @@ class LandlordCase extends BaseTestCase
         $this->assertNotNull($submit = $this->page->find('css', '#submitForm'));
         $submit->click();
 
-        $this->session->wait($this->timeout, "$('#main-content-wrapper').is(':visible')");
-
-        $this->assertEquals(
-            'https://onlineboarding.heartlandpaymentsystems.com/Wizard/Wizard/CardProcessing',
-            $this->session->getCurrentUrl()
-        );
+        $this->assertEquals($this->getUrl() . 'landlord/tenants', $this->session->getCurrentUrl());
     }
 
     /**
