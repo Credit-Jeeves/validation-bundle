@@ -17,6 +17,7 @@ use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -201,6 +202,49 @@ class ImportProcess
     }
 
     /**
+     * @param Tenant $tenant
+     * @param array $row
+     *
+     * @return ResidentMapping
+     */
+    protected function createResident(Tenant $tenant, array $row)
+    {
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setTenant($tenant);
+        $residentMapping->setHolding($this->user->getHolding());
+        $residentMapping->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
+
+        return $residentMapping;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param array $row
+     *
+     * @return ResidentMapping
+     */
+    public function getResident(Tenant $tenant, array $row)
+    {
+        if (is_null($tenant->getId())) {
+            return $this->createResident($tenant, $row);
+        }
+
+        $residentMapping = $this->em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
+            array(
+                'tenant'        => $tenant->getId(),
+                'holding'       => $this->user->getHolding()->getId(),
+                'residentId'    => $row[ImportMapping::KEY_RESIDENT_ID],
+            )
+        );
+
+        if (empty($residentMapping)) {
+            return $this->createResident($tenant, $row);
+        }
+
+        return $residentMapping;
+    }
+
+    /**
      * @param $row
      *
      * @return Unit
@@ -245,6 +289,7 @@ class ImportProcess
         if (!$tenant->getId()) {
             $contract = $this->createContract($row, $tenant);
         } else {
+            //@TODO make one query, not two as now
             $contractCurrentApprove = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
                 $row[ImportMapping::KEY_UNIT]
@@ -382,7 +427,7 @@ class ImportProcess
             $isUseOperation = ($import->getOperation() === null)? false : true;
             $form = $this->getContractForm($tenant, $isUseToken = true, $isUseOperation);
             $form->setData($contract);
-
+            $form->get('residentMapping')->setData($import->getResidentMapping());
             return $form;
         }
 
@@ -395,7 +440,7 @@ class ImportProcess
             $form = $this->getCreateUserAndCreateContractForm();
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
-
+            $form->get('contract')->get('residentMapping')->setData($import->getResidentMapping());
             return $form;
         }
 
@@ -420,7 +465,7 @@ class ImportProcess
      */
     protected function validateFieldWhichNotCheckByForm(ModelImport $import)
     {
-        $tenant   = $import->getTenant();
+/*        $tenant   = $import->getTenant();
         $contract = $import->getContract();
 
         if (preg_match('/^[A-Za-z_0-9\-]{1,50}$/i', $contract->getUnit()->getName())) {
@@ -429,7 +474,7 @@ class ImportProcess
 
         if (preg_match('/^[A-Za-z_0-9]{1,128}$/i', $tenant->getResidentId())) {
             $import->setIsValidResidentId(true);
-        }
+        }*/
     }
 
     /**
@@ -448,10 +493,6 @@ class ImportProcess
             $import->setIsSkipped(true);
         }
 
-        if (!$tenant->getResidentId() && !empty($row[ImportMapping::KEY_RESIDENT_ID])) {
-            $tenant->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
-        }
-
         $contract = $this->getContract($import, $row);
         if ($contract) {
             $import->setContract($contract);
@@ -465,11 +506,47 @@ class ImportProcess
             $import->setOperation($operation);
         }
 
-        if ($import->isValid() && $form = $this->getForm($import)) {
+        $import->setResidentMapping($this->getResident($tenant, $row));
+
+        if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
         }
 
+        if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
+            $viewForm = $form->createView();
+            $submittedData = $this->getSubmittedDataFromForm($viewForm->children);
+            $submittedData['_token'] = $token;
+            $form->submit($submittedData);
+            if (!$form->isValid()) {
+                $errors = array(
+                    $lineNumber => $this->getFormErrors($form)
+                );
+                $import->setErrors($errors);
+            }
+        }
+
         return $import;
+    }
+
+    /**
+     * This method get field from form and create array from it, which we can use
+     * for $form->submit($data); And after that we can run validation.
+     *
+     * @param array $children
+     * @return array
+     */
+    protected function getSubmittedDataFromForm(array $children)
+    {
+        $submittedData = array();
+        foreach ($children as $fieldName => $data) {
+            if (!empty($data->children)) {
+                $submittedData[$data->vars['name']] = $this->getSubmittedDataFromForm($data->children);
+                continue;
+            }
+            $submittedData[$data->vars['name']] = $data->vars['value'];
+        }
+
+        return $submittedData;
     }
 
     /**
@@ -497,11 +574,11 @@ class ImportProcess
      */
     public function saveForms(array $data)
     {
+        $this->isCreateCsrfToken = true;
+
         $mappedData = $this->getImportModelCollection();
         $errors     = array();
         $lines      = array();
-
-        $this->isCreateCsrfToken = true;
 
         foreach ($data as $formData) {
             $formData['line'] = (int)$formData['line'];
@@ -544,12 +621,10 @@ class ImportProcess
         if (!$form) {
             return;
         }
-
         self::prepareSubmit($postData, $form->getName());
         if ($import->getIsSkipped() ||
             isset($postData['contract']['skip']) ||
-            isset($postData['skip']) ||
-            !$import->isValid()
+            isset($postData['skip'])
         ) {
             return;
         }

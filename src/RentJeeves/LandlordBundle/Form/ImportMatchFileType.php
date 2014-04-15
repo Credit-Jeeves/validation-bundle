@@ -97,22 +97,25 @@ class ImportMatchFileType extends AbstractType
                     }
                 }
 
-                if (count($used) < count($choicesRequired)) {
-                    $fieldsMissed = array();
-                    foreach ($choicesRequired as $key => $value) {
-                        if (!isset($used[$key])) {
-                            $fieldsMissed[] = str_replace('*', '', $value);
-                        }
+                $fieldsMissed = array();
+                foreach ($choicesRequired as $key => $value) {
+                    if (!isset($used[$key])) {
+                        $fieldsMissed[] = str_replace('*', '', $value);
                     }
-                    $fieldsMissed = implode(',', $fieldsMissed);
-                    $errorMessage = $self->translator->trans(
-                        'you.need.map',
-                        array(
-                            '%VALUE_WHICH_NEED_SELECT%' => $fieldsMissed
-                        )
-                    );
-                    $form->addError(new FormError($errorMessage));
                 }
+
+                if (empty($fieldsMissed)) {
+                    return;
+                }
+
+                $fieldsMissed = implode(',', $fieldsMissed);
+                $errorMessage = $self->translator->trans(
+                    'you.need.map',
+                    array(
+                        '%VALUE_WHICH_NEED_SELECT%' => $fieldsMissed
+                    )
+                );
+                $form->addError(new FormError($errorMessage));
             }
         );
     }

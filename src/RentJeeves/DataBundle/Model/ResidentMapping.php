@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use RentJeeves\DataBundle\Entity\Tenant;
 use CreditJeeves\DataBundle\Entity\Holding;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -15,6 +16,7 @@ abstract class ResidentMapping
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $id;
 
@@ -29,6 +31,7 @@ abstract class ResidentMapping
      *     nullable=false
      * )
      * @Assert\NotBlank
+     * @Serializer\Exclude
      */
     protected $tenant;
 
@@ -43,6 +46,7 @@ abstract class ResidentMapping
      *     nullable=false
      * )
      * @Assert\NotBlank
+     * @Serializer\Exclude
      */
     protected $holding;
 
@@ -54,14 +58,26 @@ abstract class ResidentMapping
      *      length=128,
      *      nullable=false
      * )
-     * @Assert\NotBlank
+     * @Assert\NotBlank(
+     *     groups = {
+     *         "import"
+     *     }
+     * )
      * @Assert\Length(
      *     min=1,
-     *     max=128
+     *     max=128,
+     *     groups = {
+     *         "import"
+     *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[A-Za-z_0-9]{1,128}$/"
+     *     pattern = "/^[A-Za-z_0-9]{1,128}$/",
+     *     message = "import.error.residentId",
+     *     groups = {
+     *         "import"
+     *     }
      * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $residentId;
 

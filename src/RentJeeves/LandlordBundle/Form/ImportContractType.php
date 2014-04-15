@@ -96,6 +96,19 @@ class ImportContractType extends AbstractType
             )
         );
 
+        $builder->add(
+            'unit',
+            new ImportUnitType()
+        );
+
+        $builder->add(
+            'residentMapping',
+            new ImportResidentMappingType(),
+            array(
+                'mapped' => false,
+            )
+        );
+
         if ($this->isUseToken) {
             $builder->add(
                 '_token',

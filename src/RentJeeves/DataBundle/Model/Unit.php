@@ -27,6 +27,19 @@ abstract class Unit
      *     type="string",
      *     length=50
      * )
+     * @Assert\NotBlank(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     message="error.unit.regexp",
+     *     pattern = "/^[A-Za-z_0-9\-]{1,50}$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $name;

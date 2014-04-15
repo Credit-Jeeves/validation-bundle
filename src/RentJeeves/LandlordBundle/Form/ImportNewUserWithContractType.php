@@ -63,7 +63,9 @@ class ImportNewUserWithContractType extends AbstractType
         $builder->add(
             '_token',
             'hidden',
-            array()
+            array(
+                'required'  => true
+            )
         );
     }
 
