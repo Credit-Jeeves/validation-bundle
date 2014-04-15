@@ -218,7 +218,7 @@
         "payum/payum": "dev-master as 0.5.x-dev",
         "payum/payum-bundle": "dev-heartland",
         "payum/authorize-net-aim": "0.5.*",
-        "payum/heartland": "dev-master",
+        "payum/heartland": "dev-testing",
         "besimple/soap-common": "dev-ton as dev-master",
         "ass/xmlsecurity": "dev-master",
         "hat/environment": "dev-ton",

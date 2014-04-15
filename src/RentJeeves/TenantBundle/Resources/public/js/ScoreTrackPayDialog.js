@@ -21,16 +21,9 @@ function ScoreTrackPayDialog(options) {
         this.step(steps[current]);
     };
 
-    this.getTotalAmount = function(paymentCardFee) {
-        var fee = 0;
-        if (this.paymentSource.type() == 'card') {
-            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
-        }
-        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
-    };
-
     var forms = {
-        'source': 'rentjeeves_checkoutbundle_paymentaccounttype'
+        'source': 'rentjeeves_checkoutbundle_paymentaccounttype',
+        'details': 'rentjeeves_checkoutbundle_paymenttype'
     };
 
     var steps = ['source', 'pay'];
@@ -92,6 +85,18 @@ function ScoreTrackPayDialog(options) {
         }
     });
 
+    this.getAmount = function(){
+      return '$' + self.payment.amount();
+    };
+
+    this.getTotalAmount = function(paymentCardFee) {
+        var fee = 0;
+        if (this.paymentSource.type() == 'card') {
+            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
+        }
+        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+    };
+
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
 
     this.notEmptyPaymentAccount = ko.computed(function() {
@@ -134,6 +139,10 @@ function ScoreTrackPayDialog(options) {
 
     this.paymentSource = new PaymentSource(this, false, this.propertyFullAddress);
     this.paymentSource.groupId(this.paymentGroup.id);
+
+    this.getLastPaymentDay = ko.computed(function() {
+        return 'no finish date';
+    }, this);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
 
@@ -251,7 +260,7 @@ function ScoreTrackPayDialog(options) {
                 }
                 break;
             case 'pay':
-                sendData(Routing.generate('checkout_pay_exec'), forms['source']);
+                sendData(Routing.generate('scoretrack_pay_exec'), forms['details']);
                 break;
         }
 
@@ -278,9 +287,8 @@ function ScoreTrackPayDialog(options) {
     ko.applyBindings(this, $('#pay-popup').get(0));
 
     jQuery.each(forms, function(key, formName) {
-        // WHAT?
-        // jsfv[formName].addError = window.formProcess.addFormError;
-        // jsfv[formName].removeErrors = function(field) {};
+        jsfv[formName].addError = window.formProcess.addFormError;
+        jsfv[formName].removeErrors = function(field) {};
         jQuery('#' + formName).submit(function() {
             self.next();
             return false;

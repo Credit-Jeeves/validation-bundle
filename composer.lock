@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "922e90c9d7b3bb779a47992dbaeaf4be",
+    "hash": "95b791874e645a1b8beeb69c39898cac",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -3314,11 +3314,11 @@
         },
         {
             "name": "payum/heartland",
-            "version": "dev-master",
+            "version": "dev-testing",
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/Heartland.git",
-                "reference": "46d38f9387eebd79eca16da5f72d3642d0aa2974"
+                "reference": "358915008b9aef1a3b69442fa620144b47358874"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -3327,8 +3327,9 @@
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "besimple/wsdl2php": "dev-dev",
-                "ext-curl": "*"
+                "besimple/wsdl2php": "dev-master",
+                "ext-curl": "*",
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "library",
             "extra": {
@@ -3351,6 +3352,7 @@
                 }
             ],
             "description": "Heartland pro checkout",
+            "homepage": "https://github.com/66Ton99/Heartland",
             "keywords": [
                 "heartland",
                 "library",
@@ -3358,7 +3360,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2014-01-10 13:43:43"
+            "time": "2014-04-10 18:47:27"
         },
         {
             "name": "payum/payum",
