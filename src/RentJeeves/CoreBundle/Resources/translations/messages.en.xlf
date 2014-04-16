@@ -479,6 +479,14 @@
                 <source>amount</source>
                 <target>Amount</target>
             </trans-unit>
+            <trans-unit id="import.payment.amount">
+                <source>import.payment.amount</source>
+                <target>Payment Amount</target>
+            </trans-unit>
+            <trans-unit id="import.payment.date">
+                <source>import.payment.date</source>
+                <target>Payment Date</target>
+            </trans-unit>
             <trans-unit id="start">
                 <source>start</source>
                 <target>Start</target>
@@ -2103,7 +2111,7 @@
             </trans-unit>
             <trans-unit id="you.need.map">
               <source>you.need.map</source>
-              <target>You need map at least 9 fields</target>
+              <target>You need to map at least 9 fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
             </trans-unit>
             <trans-unit id="auto.import">
               <source>auto.import</source>
@@ -2256,6 +2264,18 @@
             <trans-unit id="payment.type">
                 <source>payment.type</source>
                 <target>Type</target>
+            </trans-unit>
+            <trans-unit id="common.choose_an_option">
+                <source>common.choose_an_option</source>
+                <target>Choose an option</target>
+            </trans-unit>
+            <trans-unit id="common.tenant_name">
+                <source>common.tenant_name</source>
+                <target>Tenant Name</target>
+            </trans-unit>
+            <trans-unit id="error.operation.exist">
+                <source>error.operation.exist</source>
+                <target>For that date already have payment with such sum.</target>
             </trans-unit>
         </body>
     </file>

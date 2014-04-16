@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as Serializer;
 use DateTime;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -33,12 +34,25 @@ abstract class Operation
 
     /**
      * @var float
+     *
      * @ORM\Column(
      *     type="decimal",
      *     precision=10,
      *     scale=2,
      *     nullable=false
      * )
+     * @Assert\Regex(
+     *     pattern = "/^\d+(\.\d{1,2})?$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Assert\NotBlank(
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $amount = 0;
 
@@ -47,7 +61,8 @@ abstract class Operation
      *
      * @ORM\Column(
      *     name="cj_applicant_report_id",
-     *     type="bigint", nullable=true
+     *     type="bigint",
+     *     nullable=true
      * )
      */
     protected $cjApplicantReportId;
@@ -58,6 +73,12 @@ abstract class Operation
      *     type="date",
      *     nullable=false
      * )
+     * @Assert\NotBlank(
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
      *
      * @var DateTime
      */

@@ -165,7 +165,7 @@ class AccountingController extends Controller
 
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
-            new ImportMatchFileType(count($dataView))
+            new ImportMatchFileType(count($dataView), $this->get('translator'))
         );
         $form->handleRequest($this->get('request'));
         if ($form->isValid()) {
@@ -209,7 +209,7 @@ class AccountingController extends Controller
          */
         $importProcess = $this->get('accounting.import.process');
         $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm();
-        $formContract = $importProcess->getContractForm();
+        $formContract = $importProcess->getContractForm(new Tenant());
         $formContractFinish = $importProcess->getContractFinishForm();
 
         return array(
@@ -262,7 +262,7 @@ class AccountingController extends Controller
         $total = $importMapping->countLines();
 
         if ($total > 0) {
-            $rows = $importProcess->getMappedData();
+            $rows = $importProcess->getImportModelCollection();
         }
 
         $context = new SerializationContext();

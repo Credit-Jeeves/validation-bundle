@@ -2,9 +2,12 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityManager;
+use CreditJeeves\CoreBundle\Translation\Translator;
 
 /**
  * This form for new Tenant, new Contract
@@ -14,6 +17,25 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
  */
 class ImportNewUserWithContractType extends AbstractType
 {
+
+    protected $tenant;
+
+    protected $em;
+
+    protected $translator;
+
+    /**
+     * @param Tenant $tenant
+     * @param EntityManager $em
+     * @param bool $token
+     * @param bool $operation
+     */
+    public function __construct(Tenant $tenant, EntityManager $em, Translator $translator)
+    {
+        $this->tenant = $tenant;
+        $this->em = $em;
+        $this->translator = $translator;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -25,7 +47,7 @@ class ImportNewUserWithContractType extends AbstractType
 
         $builder->add(
             'contract',
-            new ImportContractType($token = false),
+            new ImportContractType($this->tenant, $this->em, $this->translator, $token = false, $useOperation = false),
             array()
         );
 

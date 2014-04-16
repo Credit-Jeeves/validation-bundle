@@ -39,6 +39,19 @@ class ImportMapping
 
     const KEY_EMAIL = 'email';
 
+    const KEY_PAYMENT_AMOUNT = 'payment_amount';
+
+    const KEY_PAYMENT_DATE = 'payment_date';
+
+    /**
+     * Values which we skip
+     *
+     * @var array
+     */
+    protected $skipValues = array(
+        ImportMapping::KEY_RESIDENT_ID => 'VACANT',
+    );
+
     /**
      * @var ImportStorage
      */
@@ -159,6 +172,29 @@ class ImportMapping
 
         $this->storage->setMapping($result);
         $this->storage->setFileLine(0);
+    }
+
+    public function isHavePaymentMapping($row)
+    {
+        if (!isset($row[self::KEY_PAYMENT_AMOUNT]) || !isset($row[self::KEY_PAYMENT_DATE])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function isSkipped($row)
+    {
+        $skip = false;
+
+        foreach ($this->skipValues as $keySkip => $valueSkip) {
+            if ($row[$keySkip] === $valueSkip) {
+                $skip = true;
+                break;
+            }
+        }
+
+        return $skip;
     }
 
     public static function parseName($name)
