@@ -4,6 +4,7 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
 use CreditJeeves\ExperianBundle\ExperianConfig;
+use CreditJeeves\ExperianBundle\NetConnect;
 use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
 use sfConfig;
@@ -18,7 +19,6 @@ use CurlException;
  */
 class NetConnectCase extends BaseTestCase
 {
-
     protected $user = array(
         'Name' => array(
             'Surname' => 'BREEN',
@@ -33,6 +33,13 @@ class NetConnectCase extends BaseTestCase
             'Zip' => '09061',
         )
     );
+
+    protected function getNetConnect()
+    {
+        $netConnect = new NetConnect();
+        $netConnect->initConfigs($this->getContainer()->get('experian.config'));
+        return $netConnect;
+    }
 
     /**
      * Tests NetConnect->getResponseOnUserData()
@@ -57,7 +64,7 @@ class NetConnectCase extends BaseTestCase
         while ($tries--) {
             try {
                 try {
-                    $netConnect = $this->getContainer()->get('experian.net_connect');
+                    $netConnect = $this->getNetConnect();
                     return $netConnect->getResponseOnUserData($aplicant);
                 } catch (ExperianException $e) {
                     if (4000 != $e->getCode()) {

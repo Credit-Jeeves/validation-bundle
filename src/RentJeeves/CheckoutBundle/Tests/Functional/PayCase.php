@@ -47,6 +47,7 @@ class PayCase extends BaseTestCase
      */
     public function recurring($summary, $skipVerification, $infoMessage)
     {
+        $this->page->attachFileToField()
         $this->setDefaultSession('selenium2');
         $this->load(true);
         if ($skipVerification) {

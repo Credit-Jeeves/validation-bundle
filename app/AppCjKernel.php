@@ -49,7 +49,7 @@ class AppCjKernel extends AppKernel
             new CreditJeeves\CoreBundle\CreditJeevesCoreBundle(),
             new CreditJeeves\CoreBundle\CoreBundle(),
             new CreditJeeves\DataBundle\DataBundle(),
-            new RentJeeves\DataBundle\RjDataBundle(), // TODO remove
+            new RentJeeves\DataBundle\RjDataBundle(), // TODO remove #RT-407
             new CreditJeeves\SimulationBundle\SimulationBundle(),
             new CreditJeeves\ComponentBundle\ComponentBundle(),
             new CreditJeeves\PublicBundle\PublicBundle(),

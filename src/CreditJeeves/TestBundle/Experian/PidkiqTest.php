@@ -19,34 +19,16 @@ class PidkiqTest extends \PidkiqTest
 {
     public function __construct()
     {
-        parent::__construct();
     }
 
     /**
      * @DI\InjectParams({
-     *     "serverName" = @DI\Inject("%server_name%"),
-     *     "em" = @DI\Inject("doctrine.orm.default_entity_manager"),
+     *     "config"     = @DI\Inject("experian.config")
      * })
      *
-     * @param string $serverName
-     * @param EntityManager $em
+     * @param ExperianConfig $config
      */
-    public function initConfigs($serverName, EntityManager $em)
-    {
-        \sfConfig::set('global_host', $serverName);
-        /** @var \CreditJeeves\DataBundle\Entity\Settings $settings */
-        $settings = $em->getRepository('DataBundle:Settings')->find(1);
-
-        if (empty($settings)) {
-            return;
-        }
-        \sfConfig::set('experian_pidkiq_userpwd', $settings->getPidkiqPassword());
-        $xmlRoot = \sfConfig::get('experian_pidkiq_XML_root');
-        $xmlRoot['EAI'] = $settings->getPidkiqEai();
-        \sfConfig::set('experian_pidkiq_XML_root', $xmlRoot);
-    }
-
-    public function execute()
+    public function initConfigs($config)
     {
         parent::__construct();
     }
