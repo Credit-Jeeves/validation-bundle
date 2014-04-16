@@ -5,7 +5,7 @@ namespace RentJeeves\LandlordBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ViewType  extends AbstractType
+class ViewType extends AbstractType
 {
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -21,4 +21,4 @@ class ViewType  extends AbstractType
     {
         return 'view';
     }
-} 
+}

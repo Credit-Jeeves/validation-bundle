@@ -150,6 +150,10 @@ class ImportContractType extends AbstractType
                      */
                     $operation = $operationField->getData();
 
+                    if (!$operation->getPaidFor() || !$operation->getAmount()) {
+                        return;
+                    }
+
                     $operation = $self->em->getRepository('DataBundle:Operation')->getOperationForImport(
                         $self->tenant,
                         $contract,

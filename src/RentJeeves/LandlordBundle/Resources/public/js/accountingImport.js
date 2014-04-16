@@ -40,7 +40,6 @@ function accountingImport() {
                         errors[value.number] = value.errors[value.number];
                     });
                     //Finish
-                    console.info(errors);
                     self.formErrors(errors);
                     self.rows(response.rows);
                     self.rowsTotal(response.total);

@@ -149,8 +149,9 @@ class ImportCase extends BaseTestCase
             5000,
             "$('.errorField').length > 0"
         );
-        $this->assertNotNull($errorField = $this->page->find('css', '.errorField'));
-        $this->assertEquals($errorField->getHtml(), 't0*013202');
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertEquals(count($errorFields), 2);
+        $this->assertEquals($errorFields[1]->getHtml(), 't0*013202');
 
         $trs = $this->getParsedTrsByStatus();
 
@@ -219,7 +220,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
         $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
         $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
-        $this->assertEquals($tenant->getResidentId(), 't0019851');
+        $this->assertEquals($tenant->getResidentsMapping()->first()->getResidentId(), 't0019851');
         /**
          * @var $contract Contract
          */
@@ -327,8 +328,9 @@ class ImportCase extends BaseTestCase
             5000,
             "$('.errorField').length > 0"
         );
-        $this->assertNotNull($errorField = $this->page->find('css', '.errorField'));
-        $this->assertEquals($errorField->getHtml(), 't0*013202');
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertEquals(count($errorFields), 3);
+        $this->assertEquals($errorFields[2]->getHtml(), 't0*013202');
         //Make sure for this page we don't have operation
         $this->assertNull($errorField = $this->page->find('css', '.import_operation_paidFor'));
 

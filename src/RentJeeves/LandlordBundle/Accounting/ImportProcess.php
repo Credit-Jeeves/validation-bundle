@@ -21,6 +21,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Exception\ImportProcessException;
 use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
 use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
@@ -91,6 +92,14 @@ class ImportProcess
      */
     protected $isCreateCsrfToken = false;
 
+    /**
+     * @var string
+     */
+    protected $locale;
+
+    /**
+     * @var array
+     */
     protected $emailSendingQueue = array();
 
     /**
@@ -105,6 +114,7 @@ class ImportProcess
      *     "storage"          = @Inject("accounting.import.storage"),
      *     "mapping"          = @Inject("accounting.import.mapping"),
      *     "validator"        = @Inject("validator"),
+     *     "locale"           = @Inject("%kernel.default_locale%")
      * })
      */
     public function __construct(
@@ -117,7 +127,8 @@ class ImportProcess
         Mailer $mailer,
         ImportStorage $storage,
         ImportMapping $mapping,
-        Validator $validator
+        Validator $validator,
+        $locale
     ) {
         $this->em               = $em;
         $this->user             = $context->getToken()->getUser();
@@ -128,6 +139,7 @@ class ImportProcess
         $this->mapping          = $mapping;
         $this->storage          = $storage;
         $this->validator        = $validator;
+        $this->locale           = $locale;
     }
 
     /**
@@ -402,6 +414,7 @@ class ImportProcess
         $tenant->setEmail($row[ImportMapping::KEY_EMAIL]);
         $tenant->setEmailCanonical($row[ImportMapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
+        $tenant->setCulture($this->locale);
 
         return $tenant;
     }
@@ -519,19 +532,34 @@ class ImportProcess
         }
 
         if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
-            $viewForm = $form->createView();
-            $submittedData = $this->getSubmittedDataFromForm($viewForm->children);
-            $submittedData['_token'] = $token;
-            $form->submit($submittedData);
-            if (!$form->isValid()) {
-                $errors = array(
-                    $lineNumber => $this->getFormErrors($form)
-                );
-                $import->setErrors($errors);
-            }
+            $import->setErrors($this->runFormValidation($form, $lineNumber, $token));
         }
 
         return $import;
+    }
+
+    /**
+     * @param $form
+     * @param $lineNumber
+     *
+     * @return array
+     */
+    protected function runFormValidation($form, $lineNumber, $token = null)
+    {
+        $viewForm = $form->createView();
+        $submittedData = $this->getSubmittedDataFromForm($viewForm->children);
+        if (!is_null($token)) {
+            $submittedData['_token'] = $token;
+        }
+
+        $form->submit($submittedData);
+        if (!$form->isValid()) {
+            return array(
+                $lineNumber => $this->getFormErrors($form)
+            );
+        }
+
+        return array($lineNumber => array());
     }
 
     /**
@@ -585,6 +613,7 @@ class ImportProcess
         $mappedData = $this->getImportModelCollection();
         $errors     = array();
         $lines      = array();
+        $errorsNotEditableFields = array();
 
         foreach ($data as $formData) {
             $formData['line'] = (int)$formData['line'];
@@ -594,22 +623,37 @@ class ImportProcess
              */
             foreach ($mappedData as $import) {
                 if ($import->getNumber() === $formData['line']) {
-                    $lines[] = $formData['line'];
-                    $this->bindForm($import, $formData, $errors);
+                    $currentLine = $formData['line'];
+                    $lines[] = $currentLine;
+                    $resultBind = $this->bindForm($import, $formData, $errors);
+
+                    if (!$resultBind &&
+                        !is_null($form = $import->getForm()) &&
+                        !$this->isValidNotEditedFields($import)
+                    ) {
+                        $errorsNotEditableFields[$currentLine] = $this->runFormValidation(
+                            $form,
+                            $currentLine
+                        )[$currentLine];
+                    }
                 }
             }
         }
         $this->isCreateCsrfToken = false;
 
-        if (!empty($errors)) {
+        if (empty($errors)) {
+            $this->em->flush();
+            $this->clearTokens($lines);
+            $this->sendInviteEmail();
+
+            return array();
+        }
+
+        if (empty($errorsNotEditableFields)) {
             return $errors;
         }
 
-        $this->em->flush();
-        $this->clearTokens($lines);
-        $this->sendInviteEmail();
-
-        return array();
+        return $errors + $errorsNotEditableFields;
     }
 
     /**
@@ -619,27 +663,35 @@ class ImportProcess
      * @param $postData
      * @param array &$errors
      *
+     * @return boolean
      */
     protected function bindForm(ModelImport $import, $postData, &$errors)
     {
         $form = $import->getForm();
-
-        if (!$form) {
-            return;
-        }
-        self::prepareSubmit($postData, $form->getName());
-        if ($import->getIsSkipped() ||
-            isset($postData['contract']['skip']) ||
-            isset($postData['skip']) || !$this->isValidNotEditedFields($import)
-        ) {
-            return;
-        }
-
         $line = $postData['line'];
         unset($postData['line']);
+
+        if (!$form) {
+            return false;
+        }
+
+        if (!$this->isValidNotEditedFields($import)) {
+            return false;
+        }
+
+        self::prepareSubmit($postData, $form->getName(), $import);
+
+        if ($import->getIsSkipped() ||
+            isset($postData['contract']['skip']) ||
+            isset($postData['skip'])
+        ) {
+            return false;
+        }
+
+
         $form = $import->getForm();
         if (!isset($postData['_token'])) {
-            return;
+            return false;
         }
         $form->submit($postData);
         $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
@@ -681,7 +733,7 @@ class ImportProcess
                     break;
             }
 
-            return;
+            return true;
         }
 
         $errors[$line] = $this->getFormErrors($form);
@@ -689,7 +741,7 @@ class ImportProcess
             $errors[$line]['_global'] = $this->translator->trans('csrf.token.is.invalid');
         }
 
-        return;
+        return false;
     }
 
     /**
@@ -774,7 +826,7 @@ class ImportProcess
      * We need remove form name from key of array and leave just name form field
      * it's need for form submit
      */
-    public static function prepareSubmit(&$formData, $formName)
+    public static function prepareSubmit(&$formData, $formName, ModelImport $import)
     {
         $length = strlen($formName) + 1;
         foreach ($formData as $key => $value) {
@@ -784,6 +836,33 @@ class ImportProcess
             $newKey            = substr($key, $length, strlen($key) - 1);
             $formData[$newKey] = $value;
             unset($formData[$key]);
+        }
+
+        //@TODO find better way
+        // We need setup data which we use only for view on the client side.
+        // See new form type,just for view cj2/src/RentJeeves/LandlordBundle/Form/Type/ViewType.php
+        switch ($formName) {
+            case 'import_new_user_with_contract':
+                $formData['contract']['unit'] = array(
+                    'name' => $import->getContract()->getUnit()->getName()
+                );
+                $formData['contract']['residentMapping'] = array(
+                    'residentId' => $import->getResidentMapping()->getResidentId()
+                );
+                break;
+            case 'import_contract':
+                $formData['unit'] = array(
+                    'name' => $import->getContract()->getUnit()->getName()
+                );
+                $formData['residentMapping'] = array(
+                    'residentId' => $import->getResidentMapping()->getResidentId()
+                );
+                break;
+            case 'import_contract_finish':
+                break;
+            default:
+                throw new ImportProcessException("We have new form({$formName}) which must be added to this switch.");
+
         }
     }
 }

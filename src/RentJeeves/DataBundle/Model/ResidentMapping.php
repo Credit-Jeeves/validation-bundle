@@ -150,6 +150,4 @@ abstract class ResidentMapping
     {
         return $this->holding;
     }
-
-
 }
