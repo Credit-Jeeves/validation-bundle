@@ -33,6 +33,7 @@ use \DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Validator\Validator;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -81,6 +82,11 @@ class ImportProcess
     protected $storage;
 
     /**
+     * @var Validator
+     */
+    protected $validator;
+
+    /**
      * @var bool
      */
     protected $isCreateCsrfToken = false;
@@ -97,7 +103,8 @@ class ImportProcess
      *     "formCsrfProvider" = @Inject("form.csrf_provider"),
      *     "mailer"           = @Inject("project.mailer"),
      *     "storage"          = @Inject("accounting.import.storage"),
-     *     "mapping"          = @Inject("accounting.import.mapping")
+     *     "mapping"          = @Inject("accounting.import.mapping"),
+     *     "validator"        = @Inject("validator"),
      * })
      */
     public function __construct(
@@ -109,7 +116,8 @@ class ImportProcess
         CsrfTokenManagerAdapter $formCsrfProvider,
         Mailer $mailer,
         ImportStorage $storage,
-        ImportMapping $mapping
+        ImportMapping $mapping,
+        Validator $validator
     ) {
         $this->em               = $em;
         $this->user             = $context->getToken()->getUser();
@@ -119,6 +127,7 @@ class ImportProcess
         $this->mailer           = $mailer;
         $this->mapping          = $mapping;
         $this->storage          = $storage;
+        $this->validator        = $validator;
     }
 
     /**
@@ -456,25 +465,23 @@ class ImportProcess
     }
 
     /**
-     * This magic method change validation need find out way to remove magic
-     * and make it more horizontal expansion
-     * @TODO refactoring: create new field type for form and form theme which we use only for show data, not edit.
-     * and run form validation.
-     *
      * @param Import $import
      */
-    protected function validateFieldWhichNotCheckByForm(ModelImport $import)
+    protected function isValidNotEditedFields(ModelImport $import)
     {
-/*        $tenant   = $import->getTenant();
-        $contract = $import->getContract();
-
-        if (preg_match('/^[A-Za-z_0-9\-]{1,50}$/i', $contract->getUnit()->getName())) {
-            $import->setIsValidUnit(true);
+        $unit = $import->getContract()->getUnit();
+        $errors = $this->validator->validate($unit, array("import"));
+        if (count($errors) > 0) {
+            return false;
         }
 
-        if (preg_match('/^[A-Za-z_0-9]{1,128}$/i', $tenant->getResidentId())) {
-            $import->setIsValidResidentId(true);
-        }*/
+        $residentMapping = $import->getResidentMapping();
+        $errors = $this->validator->validate($residentMapping, array("import"));
+        if (count($errors) > 0) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -500,7 +507,6 @@ class ImportProcess
 
         $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $import->setCsrfToken($token);
-        $this->validateFieldWhichNotCheckByForm($import);
 
         if ($operation = $this->getOperation($import, $row)) {
             $import->setOperation($operation);
@@ -624,7 +630,7 @@ class ImportProcess
         self::prepareSubmit($postData, $form->getName());
         if ($import->getIsSkipped() ||
             isset($postData['contract']['skip']) ||
-            isset($postData['skip'])
+            isset($postData['skip']) || !$this->isValidNotEditedFields($import)
         ) {
             return;
         }
@@ -655,14 +661,18 @@ class ImportProcess
                         $operation = $form->get('operation')->getData();
                         $this->persistOperation($import->getTenant(), $operation, $contract);
                     }
+                    $residentMapping = $form->get('residentMapping')->getData();
+                    $this->em->persist($residentMapping);
                     break;
                 case 'import_new_user_with_contract':
                     $data       = $form->getData();
+                    $residentMapping = $form->get('contract')->get('residentMapping')->getData();
                     $tenant     = $data['tenant'];
                     $contract   = $data['contract'];
                     $unit       = $contract->getUnit();
                     $sendInvite = $data['sendInvite'];
                     $this->em->persist($tenant);
+                    $this->em->persist($residentMapping);
                     $this->em->persist($unit);
                     $this->persistContract($import, $contract);
                     if ($sendInvite) {

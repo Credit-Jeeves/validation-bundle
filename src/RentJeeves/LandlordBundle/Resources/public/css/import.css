@@ -34,6 +34,9 @@
 .properties-th>.operation{
     width: 90px;
 }
+.properties-th>.action{
+    width: 73px;
+}
 .datepicker{
     float: left;
     clear: both;
