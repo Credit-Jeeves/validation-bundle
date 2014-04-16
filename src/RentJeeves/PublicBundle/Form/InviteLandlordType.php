@@ -14,10 +14,6 @@ class InviteLandlordType extends AbstractType
             'landlord',
             new LandlordType()
         );
-        $builder->add(
-            'deposit',
-            new BankAccountType()
-        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
