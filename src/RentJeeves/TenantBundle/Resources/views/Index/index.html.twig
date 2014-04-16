@@ -17,6 +17,6 @@
         {{ render(controller('RjComponentBundle:ContractsList:tenant')) }}
     <div class="row-20"></div>
 
-    {{ render(controller('RjComponentBundle:PaymentHistory:payments', {'user': user})) }}
+    {% include 'RjComponentBundle:PaymentHistory:payments.html.twig' with {'contracts': user.contracts} %}
 
 {% endblock %}

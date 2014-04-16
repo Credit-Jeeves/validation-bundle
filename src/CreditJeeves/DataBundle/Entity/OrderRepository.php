@@ -312,13 +312,40 @@ class OrderRepository extends EntityRepository
         return $query->getSingleScalarResult();
     }
 
-    public function getTenantPayments(Tenant $tenant)
+    public function getTenantPayments(Tenant $tenant, $page = 1, $contractId = null, $limit = 20)
     {
+        $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('o');
         $query->where('o.user = :user');
         $query->orderBy('o.created_at', 'DESC');
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
         $query->setParameter('user', $tenant);
 
+        if ($contractId) {
+            $query->innerJoin('o.operations', 'op');
+            $query->innerJoin('op.contract', 'c');
+            $query->andWhere('c.id = :contractId');
+            $query->setParameter('contractId', $contractId);
+        }
+
         return $query->getQuery()->execute();
+    }
+
+    public function getTenantPaymentsAmount(Tenant $tenant, $contractId = null)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->select('count(distinct o.id)');
+        $query->where('o.user = :user');
+        $query->setParameter('user', $tenant);
+
+        if ($contractId) {
+            $query->innerJoin('o.operations', 'op');
+            $query->innerJoin('op.contract', 'c');
+            $query->andWhere('c.id = :contractId');
+            $query->setParameter('contractId', $contractId);
+        }
+
+        return $query->getQuery()->getSingleScalarResult();
     }
 }

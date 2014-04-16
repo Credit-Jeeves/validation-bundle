@@ -2237,6 +2237,10 @@
                 <source>tenant.payments.title</source>
                 <target>Payment History</target>
             </trans-unit>
+            <trans-unit id="tenant.payments.filter">
+                <source>tenant.payments.filter</source>
+                <target>Filter by Property</target>
+            </trans-unit>
             <trans-unit id="payment.status">
                 <source>payment.status</source>
                 <target>Status</target>
