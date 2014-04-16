@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Tenant;
@@ -32,6 +33,12 @@ class Import
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $contract;
+
+    /**
+     * @Serializer\Type("CreditJeeves\DataBundle\Entity\Operation")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $operation = null;
 
     /**
      * @Serializer\Type("string")
@@ -211,8 +218,23 @@ class Import
     }
 
     /**
+     * @return Operation
+     */
+    public function getOperation()
+    {
+        return $this->operation;
+    }
+
+    /**
+     * @param Operation $operation
+     */
+    public function setOperation(Operation $operation)
+    {
+        $this->operation = $operation;
+    }
+
+    /**
      * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("is_valid")
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("boolean")
      */

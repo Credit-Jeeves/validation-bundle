@@ -85,7 +85,8 @@ abstract class Contract
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Unit",
-     *     inversedBy="contracts"
+     *     inversedBy="contracts",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="unit_id",
@@ -139,7 +140,7 @@ abstract class Contract
      * )
      * @Gedmo\Versioned
      * @Assert\Regex(
-     *     pattern = "/^-?\d+(\.\d{1,2})?$/",
+     *     pattern = "/^\d+(\.\d{1,2})?$/",
      *     groups = {
      *         "import"
      *     }

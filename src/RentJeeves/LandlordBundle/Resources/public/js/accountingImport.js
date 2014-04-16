@@ -80,7 +80,11 @@ function accountingImport() {
             return Translator.trans('import.status.ended');
         }
 
-        if (data.contract.id !== null && data.tenant.id !== null) {
+        if (data.contract.is_late && data.operation !== null) {
+            return Translator.trans('conflict.resolve.action');
+        }
+
+        if (data.contract.id !== null) {
             return Translator.trans('import.status.match');
         }
 
@@ -152,7 +156,11 @@ function accountingImport() {
             var month = jQuery(elementHtml).datepicker('getDate').getMonth() + 1;
             var year = jQuery(elementHtml).datepicker('getDate').getFullYear();
             var fullDate = month + "/" + day + "/" + year;
-            currentRow.contract[datepickerFieldName] = fullDate;
+            if (datepickerFieldName == 'paid_for') {
+                currentRow.operation[datepickerFieldName] = fullDate;
+            } else {
+                currentRow.contract[datepickerFieldName] = fullDate;
+            }
         } catch (e) {
             currentRow.contract[datepickerFieldName] = '';
         }
@@ -186,7 +194,6 @@ function accountingImport() {
                 }
             })
         });
-
         return result;
     }
 
@@ -232,6 +239,7 @@ function accountingImport() {
         return result[nameField][0];
     };
 
+    //Don't like this block. I want to find out better solution
     this.getUnitClass = function(data) {
         if (data.is_skipped) {
             return '';
@@ -279,4 +287,5 @@ function accountingImport() {
 
         return Translator.trans('import.error.residentId');
     }
+    //End don't like block
 }

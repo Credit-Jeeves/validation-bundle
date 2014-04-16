@@ -232,7 +232,7 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
             $interval = $now->diff($date);
-            if ($interval->days > 0) {
+            if ($interval->format("%r%a") < 0) {
                 $result = $interval->days.self::PAYMENT_LATE;
             }
         }
@@ -638,5 +638,33 @@ class Contract extends Base
             return null;
         }
         return $collection[0];
+    }
+
+
+    /**
+     * Have test by path: src/RentJeeves/DataBundle/Tests/Unit/ContractEntityCase.php
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Type("boolean")
+     *
+     * @return bool
+     */
+    public function isLate()
+    {
+        $paidTo = $this->getPaidTo();
+
+        if (empty($paidTo) || !is_null($this->getId())) {
+            return false;
+        }
+
+        $today = new DateTime();
+        $interval = $today->diff($paidTo)->format("%r%a");
+
+        if ($interval > 0) {
+            return false;
+        }
+
+        return true;
     }
 }

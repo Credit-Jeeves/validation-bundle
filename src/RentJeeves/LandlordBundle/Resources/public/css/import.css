@@ -31,6 +31,9 @@
 .properties-th>.dates{
     width: 95px
 }
+.properties-th>.operation{
+    width: 90px;
+}
 .datepicker{
     float: left;
     clear: both;
@@ -94,4 +97,12 @@ table tbody tr td {
 }
 .finishedTitle {
     text-align: center;
+}
+.import_operation_amount {
+    margin-left: -24px !important;
+}
+
+.import_operation_amount, .import_operation_paidFor {
+    width: 55px !important;
+    margin-top: 5px !important;
 }

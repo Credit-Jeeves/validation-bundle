@@ -2,10 +2,18 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use CreditJeeves\DataBundle\Entity\Operation;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use CreditJeeves\CoreBundle\Translation\Translator;
 
 /**
  * This form for Contract
@@ -17,9 +25,32 @@ class ImportContractType extends AbstractType
 {
     protected $isUseToken;
 
-    public function __construct($token = true)
-    {
+    protected $isUseOperation;
+
+    protected $tenant;
+
+    protected $em;
+
+    protected $translator;
+
+    /**
+     * @param Tenant $tenant
+     * @param EntityManager $em
+     * @param bool $token
+     * @param bool $operation
+     */
+    public function __construct(
+        Tenant $tenant,
+        EntityManager $em,
+        Translator $translator,
+        $token = true,
+        $operation = true
+    ) {
         $this->isUseToken =  $token;
+        $this->isUseOperation = $operation;
+        $this->tenant = $tenant;
+        $this->em = $em;
+        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -72,6 +103,55 @@ class ImportContractType extends AbstractType
                 array(
                     'mapped' => false,
                 )
+            );
+        }
+
+        if ($this->isUseOperation) {
+            $builder->add(
+                'operation',
+                new ImportOperationType(),
+                array(
+                    'mapped'=> false
+                )
+            );
+
+            $self = $this;
+            $builder->addEventListener(
+                FormEvents::SUBMIT,
+                function (FormEvent $event) use ($options, $self) {
+                    $form = $event->getForm();
+                    if (is_null($self->tenant->getId())) {
+                        return;
+                    }
+                    /**
+                     * @var $contract Contract
+                     */
+                    $contract = $form->getData();
+                    if (is_null($contract->getId())) {
+                        return;
+                    }
+
+                    $operationField = $form->get('operation');
+                    /**
+                     * @var $operation Operation
+                     */
+                    $operation = $operationField->getData();
+
+                    $operation = $self->em->getRepository('DataBundle:Operation')->getOperationForImport(
+                        $self->tenant,
+                        $contract,
+                        $operation->getPaidFor(),
+                        $operation->getAmount()
+                    );
+
+                    if (empty($operation)) {
+                        return;
+                    }
+
+                    $errorMessage = $self->translator->trans('error.operation.exist');
+                    $amount = $operationField->get('amount')->addError(new FormError($errorMessage));
+                    $paidFor = $operationField->get('paidFor')->addError(new FormError($errorMessage));
+                }
             );
         }
     }
