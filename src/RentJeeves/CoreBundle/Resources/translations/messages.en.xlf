@@ -663,8 +663,8 @@
            </trans-unit>
            <trans-unit id="bureau.reporting.text1">
                 <source>bureau.reporting.text1</source>
-                <target><![CDATA[RentTrack can report your payments to a credit reporting agency.
-                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br /> ]]>
+                <target><![CDATA[RentTrack can report your rent payments to major credit reporting agencies.
+                                 This optional activity helps establish or build credit history in your credit profile.<br /><br /> ]]>
              </target>
            </trans-unit>
            <trans-unit id="bureau.reporting.text2">
@@ -683,15 +683,15 @@
            </trans-unit>
             <trans-unit id="bureau.reporting.select.for">
                 <source>bureau.reporting.select.for</source>
-                <target>Select which bureaus you want to report to for:</target>
+                <target>You are currently reporting to the checked bureaus for:</target>
             </trans-unit>
            <trans-unit id="bureau.reporting.experian">
                <source>bureau.reporting.experian</source>
-               <target>Experian (Positive Payment History Only)</target>
+               <target>Experian RentBureau</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.trans_union">
                <source>bureau.reporting.trans_union</source>
-               <target>TransUnion (All Payment History)</target>
+               <target>TransUnion</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.manage">
                <source>bureau.reporting.manage</source>
@@ -701,8 +701,7 @@
                <source>bureau.reporting.manage.description</source>
                <target><![CDATA[If you uncheck a bureau above, your payments will no longer be reported to that bureau
                                 and you may not receive credit for your payments. Note that stopping and subsequently
-                                starting reporting again may have a negative impact on your credit history.<br />
-                                Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>.]]></target>
+                                starting reporting again may have a negative impact on your credit history.]]></target>
            </trans-unit>
            <trans-unit id="bureau.reporting.save">
                <source>bureau.reporting.save</source>
@@ -718,7 +717,7 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by choosing to report your payments to a major credit bureaus. This optional activity helps establish good credit when you make your rent payments on-time.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This optional activity helps establish or build credit history when you make your rent payments on-time.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
