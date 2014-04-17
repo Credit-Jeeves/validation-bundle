@@ -132,7 +132,7 @@ class ImportMapping
             }
         }
 
-        return $this->makeSureAllKeyExist($mappedData);
+        return $this->makeSureAllKeysExist($mappedData);
     }
 
     /**
@@ -142,7 +142,7 @@ class ImportMapping
      * @param array $mappedData
      * @return array
      */
-    protected function makeSureAllKeyExist(array $mappedData)
+    protected function makeSureAllKeysExist(array $mappedData)
     {
         if (empty($mappedData)) {
             return $mappedData;
@@ -223,7 +223,7 @@ class ImportMapping
      *
      * @return bool
      */
-    public function isHavePaymentMapping(array $row)
+    public function hasPaymentMapping(array $row)
     {
         if (!isset($row[self::KEY_PAYMENT_AMOUNT]) || !isset($row[self::KEY_PAYMENT_DATE])) {
             return false;

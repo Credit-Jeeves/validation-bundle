@@ -108,7 +108,7 @@ class TenantRepository extends EntityRepository
                 'resident'
             );
         }
-
+        //@TODO ask about priority for getting user from DB
         if (!empty($email)) {
             $query->where('tenant.email = :email');
             $query->setParameter('email', $email);

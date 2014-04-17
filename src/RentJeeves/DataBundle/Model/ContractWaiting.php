@@ -152,7 +152,7 @@ abstract class ContractWaiting
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
+     *     pattern = "/^[a-zA-Z \-'\s]{2,65}$/",
      *     message="regexp.error.name",
      *     groups = {
      *         "import"
@@ -187,7 +187,7 @@ abstract class ContractWaiting
      *     }
      * )
      * @Assert\Regex(
-     *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
+     *     pattern = "/^[a-zA-Z \-'\s]{2,65}$/",
      *     message="regexp.error.name",
      *     groups = {
      *         "import"

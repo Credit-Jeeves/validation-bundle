@@ -343,7 +343,7 @@ class ImportProcess
      */
     protected function getOperation(ModelImport $import, array $row)
     {
-        if (!$this->mapping->isHavePaymentMapping($row)) {
+        if (!$this->mapping->hasPaymentMapping($row)) {
             return null;
         }
 
@@ -729,7 +729,7 @@ class ImportProcess
                     $this->em->persist($contract->getUnit());
                     $this->persistContract($import, $contract);
                     if (!$contract->getId()) {
-                        $this->emailSendingQueue[] = $import;
+                        $this->emailSendingQueue[] = $contract;
                     } elseif (!is_null($import->getOperation())) {
                         //see logic in setOperation method
                         $operation = $form->get('operation')->getData();
@@ -755,7 +755,7 @@ class ImportProcess
                         $this->em->persist($unit);
                         $this->persistContract($import, $contract);
                         if ($sendInvite) {
-                            $this->emailSendingQueue[] = $import;
+                            $this->emailSendingQueue[] = $contract;
                         }
                     }
                     break;
@@ -833,10 +833,10 @@ class ImportProcess
             return;
         }
         /**
-         * @var $import Import
+         * @var $contract Contract
          */
-        foreach ($this->emailSendingQueue as $import) {
-            $this->mailer->sendRjTenantInvite($import->getTenant(), $this->user, $import->getContract());
+        foreach ($this->emailSendingQueue as $contract) {
+            $this->mailer->sendRjTenantInvite($contract->getTenant(), $this->user, $contract);
         }
 
         $this->emailSendingQueue = array();
