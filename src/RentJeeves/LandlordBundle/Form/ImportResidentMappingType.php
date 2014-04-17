@@ -2,18 +2,11 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
-use CreditJeeves\DataBundle\Entity\Operation;
-use RentJeeves\DataBundle\Entity\Contract;
-use RentJeeves\DataBundle\Entity\Tenant;
-use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use RentJeeves\LandlordBundle\Form\Type\ViewType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+
 use CreditJeeves\CoreBundle\Translation\Translator;
 
 /**
