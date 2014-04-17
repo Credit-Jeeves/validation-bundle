@@ -8,8 +8,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
- * This form for Unit
- *
  * Class ImportResidentMappingType
  * @package RentJeeves\LandlordBundle\Form
  */
