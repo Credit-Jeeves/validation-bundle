@@ -7,8 +7,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-use CreditJeeves\CoreBundle\Translation\Translator;
-
 /**
  * This form for Unit
  *
