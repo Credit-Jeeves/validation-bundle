@@ -19,6 +19,8 @@ class Version20140414121505 extends AbstractMigration
                 tenant_id BIGINT NOT NULL,
                 holding_id BIGINT NOT NULL,
                 resident_id VARCHAR(128) NOT NULL,
+                first_name VARCHAR(255) NOT NULL,
+                last_name VARCHAR(255) NOT NULL,
                 INDEX IDX_A9845E989033212A (tenant_id),
                 INDEX IDX_A9845E986CD5FBA3 (holding_id),
                 UNIQUE INDEX unique_index_constraint (tenant_id,
@@ -56,7 +58,7 @@ class Version20140414121505 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_user
-                ADD resident_id VARCHAR(128) DEFAULT NULLsss"
+                ADD resident_id VARCHAR(128) DEFAULT NULL"
         );
     }
 }

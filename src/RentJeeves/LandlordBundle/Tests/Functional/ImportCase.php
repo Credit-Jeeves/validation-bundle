@@ -402,7 +402,7 @@ class ImportCase extends BaseTestCase
     {
         $this->load(true);
         $this->setDefaultSession('selenium2');
-        for($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; $i++) {
             $this->login('landlord1@example.com', 'pass');
             $this->page->clickLink('tab.accounting');
             //First Step
@@ -433,7 +433,11 @@ class ImportCase extends BaseTestCase
             $trs = $this->getParsedTrsByStatus();
 
             $this->assertEquals(count($trs), 2, "Count statuses is wrong");
-            $this->assertEquals(count($trs['import.status.waiting']), 1, "Waiting contract on first page is wrong number");
+            $this->assertEquals(
+                count($trs['import.status.waiting']),
+                1,
+                "Waiting contract on first page is wrong number"
+            );
             $this->assertEquals(count($trs['import.status.ended']), 1, "Ended contract on first page is wrong number");
 
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));

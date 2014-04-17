@@ -379,22 +379,17 @@ class ImportProcess
     }
 
     /**
-     * @TODO need check by residentId too
-     *
      * @param array $row
      *
      * @return Tenant
      */
     protected function getTenant(array $row)
     {
-        $tenant = null;
-        if (!empty($row[ImportMapping::KEY_EMAIL])) {
-            $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
-                array(
-                    'email' => $row[ImportMapping::KEY_EMAIL]
-                )
-            );
-        }
+        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
+            $row[ImportMapping::KEY_EMAIL],
+            $row[ImportMapping::KEY_RESIDENT_ID],
+            $this->user->getHolding()->getId()
+        );
 
         if (!empty($tenant)) {
             return $tenant;

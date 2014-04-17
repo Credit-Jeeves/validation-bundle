@@ -148,7 +148,7 @@ class ImportMapping
             return $mappedData;
         }
 
-        foreach($this->requiredKeys as $requiredKey) {
+        foreach ($this->requiredKeys as $requiredKey) {
             if (!isset($mappedData[$requiredKey])) {
                 $mappedData[$requiredKey] = null;
             }
