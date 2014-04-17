@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\DataBundle\Tests\EventListener;
+namespace CreditJeeves\DataBundle\Tests\EventListener;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
