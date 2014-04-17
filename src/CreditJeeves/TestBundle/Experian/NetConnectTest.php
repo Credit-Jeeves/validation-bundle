@@ -6,15 +6,15 @@ use JMS\DiExtraBundle\Annotation as DI;
 use RuntimeException;
 
 /**
- * @DI\Service("experian.net_connect")
+ * DI\Service("experian.net_connect") It is deffined in services.yml
  */
 class NetConnectTest extends Base
 {
     protected $dataDir;
 
     /**
-     * @DI\InjectParams({
-     *     "config" = @DI\Inject("%data.dir%"),
+     * DI\InjectParams({ It is deffined in services.yml
+     *     "config" = DI\Inject("%data.dir%"),
      * })
      *
      * @param string $dataDir
@@ -24,23 +24,37 @@ class NetConnectTest extends Base
         $this->dataDir = $dataDir;
     }
 
-    public function getResponseOnUserData($aplicant)
+    protected function getFixturesDir()
     {
-        $this->xml->__construct();
-        $this->xml->userRequestXML($this->modelToData($aplicant)); // It need to pass XML validation
+        return $this->dataDir . '/experian/netConnect/';
+    }
 
-        $fixturesDir = $this->dataDir . '/experian/netConnect/';
-
+    protected function getResponse($aplicant)
+    {
         switch ($aplicant->getEmail()) {
             case 'emilio@example.com':
-                $responce = file_get_contents($fixturesDir . 'emilio.arf');
-                break;
+                return file_get_contents($this->getFixturesDir() . 'emilio.xml');
             case 'marion@example.com':
-                $responce = file_get_contents($fixturesDir . 'marion.arf');
-                break;
-            default:
-                throw new RuntimeException();
+                return file_get_contents($this->getFixturesDir() . 'marion.xml');
+            case 'alex@example.com':
+                return file_get_contents($this->getFixturesDir() . 'alex.xml');
+            case 'mamazza@example.com':
+                return file_get_contents($this->getFixturesDir() . 'mamazza.xml');
+            case 'john@example.com':
+                return file_get_contents($this->getFixturesDir() . 'john.xml');
+            case 'app14@example.com':
+                return file_get_contents($this->getFixturesDir() . 'app14.xml');
+            case 'alexey.karpik+app1334753295955955@gmail.com':
+                return file_get_contents($this->getFixturesDir() . 'alexey.karpik.xml');
         }
+        throw new RuntimeException(sprintf('Please add fixture for user %s', $aplicant->getEmail()));
+    }
+
+    public function getResponseOnUserData($aplicant)
+    {
+        $responce = $this->getResponse($aplicant);
+        $this->xml->__construct();
+        $this->xml->userRequestXML($this->modelToData($aplicant)); // It need to pass XML validation
 
         return $this->retriveUserDataFromXML($responce);
     }

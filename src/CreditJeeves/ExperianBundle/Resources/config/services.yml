@@ -1,5 +1,6 @@
 parameters:
     experian.config.class: CreditJeeves\ExperianBundle\ExperianConfig
+    experian.net_connect.class: CreditJeeves\ExperianBundle\NetConnect
 
 services:
     experian.config:
@@ -8,3 +9,7 @@ services:
             - "%server_name%"
             - "@doctrine.orm.default_entity_manager"
             - "%experian.logging%"
+    experian.net_connect:
+        class: "%experian.net_connect.class%"
+        calls:
+            - [initConfigs, ["@experian.config"]]

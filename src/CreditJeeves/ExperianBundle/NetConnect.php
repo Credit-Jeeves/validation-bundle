@@ -17,9 +17,9 @@ require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/
 require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/netConnect/NetConnectXml.class.php';
 
 /**
- * NetConnect is used for getting credit reports through API
+ * NetConnect service is used for getting credit reports through API
  *
- * @DI\Service("experian.net_connect")
+ * DI\Service("experian.net_connect") It is deffined in services.yml
  */
 class NetConnect extends \NetConnect
 {
@@ -28,8 +28,8 @@ class NetConnect extends \NetConnect
     }
 
     /**
-     * @DI\InjectParams({
-     *     "config" = @DI\Inject("experian.config"),
+     * DI\InjectParams({ It is deffined in services.yml
+     *     "config" = DI\Inject("experian.config"),
      * })
      *
      * @param ExperianConfig $config

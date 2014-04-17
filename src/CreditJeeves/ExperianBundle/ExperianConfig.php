@@ -6,6 +6,9 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use sfConfig;
 
+/**
+ * DI\Service("experian.config") It is deffined in services.yml
+ */
 class ExperianConfig
 {
     /**

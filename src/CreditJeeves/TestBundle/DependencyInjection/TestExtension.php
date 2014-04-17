@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\TestBundle\DependencyInjection;
+namespace CreditJeeves\TestBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
