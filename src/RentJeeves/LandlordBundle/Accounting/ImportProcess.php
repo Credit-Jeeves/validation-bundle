@@ -535,7 +535,7 @@ class ImportProcess
 
     public function getContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
     {
-        $contractWaiting = $this->mapping->mappingContractWaiting(
+        $contractWaiting = $this->mapping->createContractWaiting(
             $tenant,
             $contract,
             $residentMapping

@@ -258,7 +258,7 @@ class ImportMapping
      *
      * @return ContractWaiting
      */
-    public function mappingContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
+    public function createContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
     {
         $waitingRoom = new ContractWaiting();
         $waitingRoom->setStartAt($contract->getStartAt());
