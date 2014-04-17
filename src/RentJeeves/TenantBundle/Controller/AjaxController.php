@@ -21,7 +21,7 @@ use DateTime;
  */
 class AjaxController extends Controller
 {
-    const TENANT_PAYMENTS_LIMIT = 5;
+    const TENANT_PAYMENTS_LIMIT = 10;
     /**
      * @Route("/contracts", name="tenant_contracts")
      * @Template()
