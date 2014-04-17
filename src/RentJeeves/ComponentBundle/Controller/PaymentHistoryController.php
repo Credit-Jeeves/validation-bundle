@@ -5,7 +5,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PaymentHistoryController extends Controller
 {
