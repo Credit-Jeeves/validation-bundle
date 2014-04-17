@@ -320,14 +320,6 @@ abstract class Group
 
     /**
      * @ORM\OneToMany(
-     *     targetEntity="RentJeeves\DataBundle\Entity\PaymentAccount",
-     *     mappedBy="group"
-     * )
-     */
-    protected $paymentAccounts;
-
-    /**
-     * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\GroupPhone",
      *     mappedBy="group",
      *     cascade={"persist", "remove", "merge"}
@@ -365,7 +357,6 @@ abstract class Group
         $this->group_properties = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
-        $this->paymentAccounts = new ArrayCollection();
         $this->groupPhones = new ArrayCollection();
         $this->billingAccounts = new ArrayCollection();
     }
@@ -1055,38 +1046,6 @@ abstract class Group
     public function getDepositAccount()
     {
         return $this->deposit_account;
-    }
-
-    /**
-     * Add PaymentAccount
-     *
-     * @param \RentJeeves\DataBundle\Entity\Contract $paymentAccount
-     * @return Group
-     */
-    public function addPaymentAccounts(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts[] = $paymentAccount;
-        return $this;
-    }
-
-    /**
-     * Remove PaymentAccount
-     *
-     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
-     */
-    public function removePaymentAccounts(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
-    {
-        $this->paymentAccounts->removeElement($paymentAccount);
-    }
-
-    /**
-     * Get PaymentAccounts
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPaymentAccounts()
-    {
-        return $this->paymentAccounts;
     }
 
     /**

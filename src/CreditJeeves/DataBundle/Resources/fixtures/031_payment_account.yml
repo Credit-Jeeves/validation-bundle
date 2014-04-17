@@ -2,7 +2,6 @@ model: RentJeeves\DataBundle\Entity\PaymentAccount
 fixtures:
     PaymentAccount_1:
         user: Tenant_1
-        group: RentGroup_1
         address: rjAddress_1
         type: card
         name: Card
@@ -12,7 +11,6 @@ fixtures:
         updatedAt: '-5 days'
     PaymentAccount_2:
         user: Tenant_1
-        group: RentGroup_2
         type: bank
         name: Bank
         token: '13201893-2913-433C-8551-19DE6FA61655'
@@ -20,7 +18,6 @@ fixtures:
         updatedAt: '-5 days'
     PaymentAccount_3:
         user: Tenant_2
-        group: RentGroup_1
         type: bank
         name: Bank
         token: '13201893-2913-433C-8551-19DE6FA61655'
@@ -28,7 +25,6 @@ fixtures:
         updatedAt: '-5 days'
     PaymentAccount_4:
         user: Tenant_2
-        group: RentGroup_1
         address: TenantAddres_2
         type: card
         name: Card
@@ -38,7 +34,6 @@ fixtures:
         updatedAt: '-5 days'
     PaymentAccount_6:
         user: Tenant_4
-        group: RentGroup_1
         address: TenantAddres_4
         type: card
         name: Card
@@ -48,7 +43,6 @@ fixtures:
         updatedAt: '-5 days'
     PaymentAccount_11:
         user: Tenant_9
-        group: RentGroup_1
         type: bank
         name: Bank account
         token: '13201893-2913-433C-8551-19DE6FA61655'
@@ -56,7 +50,6 @@ fixtures:
         updatedAt: '-5 days'
     PaymentAccount_12:
         user: Tenant_10
-        group: RentGroup_1
         type: bank
         name: Bank account
         token: '13201893-2913-433C-8551-19DE6FA61655'

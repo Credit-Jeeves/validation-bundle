@@ -39,17 +39,13 @@ abstract class PaymentAccount
     protected $user;
 
     /**
-     * @ORM\ManyToOne(
-     *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     * @ORM\ManyToMany(
+     *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
      *      inversedBy="paymentAccounts"
      * )
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
-     * @Assert\Type(type="CreditJeeves\DataBundle\Entity\Group")
-     *
-     * @Serializer\SerializedName("groupId")
-     * @Serializer\Accessor(getter="getGroupId")
+     * @ORM\JoinTable(name="rj_paymentaccount_depositaccount")
      */
-    protected $group;
+    protected $deposit_accounts;
 
     /**
      * @ORM\ManyToOne(
@@ -188,36 +184,35 @@ abstract class PaymentAccount
     }
 
     /**
-     * Set Group
+     * Add deposit account
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param \RentJeeves\DataBundle\Entity\DepositAccount $deposit_account
      * @return PaymentAccount
      */
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    public function addDepositAccount(\RentJeeves\DataBundle\Entity\DepositAccount $deposit_account)
     {
-        $this->group = $group;
-
+        $this->deposit_accounts[] = $deposit_account;
         return $this;
     }
 
     /**
-     * Get Group
+     * Remove deposit account
      *
-     * @return \CreditJeeves\DataBundle\Entity\Group
+     * @param \RentJeeves\DataBundle\Entity\DepositAccount $deposit_account
      */
-    public function getGroup()
+    public function removeDepositAccount(\RentJeeves\DataBundle\Entity\DepositAccount $deposit_account)
     {
-        return $this->group;
+        $this->deposit_accounts->removeElement($deposit_account);
     }
 
     /**
-     * Get Group Id
+     * Get deposit accounts
      *
-     * @return int
+     * @return \Doctrine\Common\Collections\Collection
      */
-    public function getGroupId()
+    public function getDepositAccounts()
     {
-        return $this->group->getId();
+        return $this->deposit_accounts;
     }
 
     /**

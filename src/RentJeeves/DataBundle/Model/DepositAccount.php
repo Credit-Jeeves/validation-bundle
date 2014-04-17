@@ -63,6 +63,11 @@ abstract class DepositAccount
     protected $message;
 
     /**
+     * The other side is the 'owning' side of this ManyToMany relationship
+     */
+    protected $deposit_accounts;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -138,5 +143,37 @@ abstract class DepositAccount
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Add payment account
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $payment_account
+     * @return DepositAccount
+     */
+    public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $payment_account)
+    {
+        $this->payment_accounts[] = $payment_account;
+        return $this;
+    }
+
+    /**
+     * Remove payment account
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $payment_account
+     */
+    public function removePaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $payment_account)
+    {
+        $this->payment_accounts->removeElement($payment_account);
+    }
+
+    /**
+     * Get payment accounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPaymentAccounts()
+    {
+        return $this->payment_accounts;
     }
 }
