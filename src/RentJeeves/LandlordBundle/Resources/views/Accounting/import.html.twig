@@ -23,7 +23,7 @@
                             text: $root.errorLoadDataMessage()
                     ">
                     </div>
-                    <table class="properties-table zebra-grid" data-bind="visible: $root.isVisibleTable()">
+                    <table id="importTable" class="properties-table zebra-grid" data-bind="visible: $root.isVisibleTable()">
                         <thead>
                         <tr class="properties-th">
                             <th class="pie-el status"><span>{{ 'import.status'|trans }}</span></th>

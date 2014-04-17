@@ -110,7 +110,6 @@ abstract class ContractWaiting
      */
     protected $finishAt;
     
-
     /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
@@ -130,6 +129,108 @@ abstract class ContractWaiting
      * @Serializer\Exclude
      */
     protected $updatedAt;
+
+    /**
+     * @ORM\Column(
+     *     name="first_name",
+     *     type="string",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank(
+     *     message="error.user.first_name.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     minMessage="error.user.first_name.short",
+     *     maxMessage="error.user.first_name.long",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
+     *     message="regexp.error.name",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $firstName;
+
+    /**
+     * @ORM\Column(
+     *     name="last_name",
+     *     type="string",
+     *     nullable=false
+     * )
+     * @Assert\NotBlank(
+     *     message="error.user.last_name.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Length(
+     *     min=2,
+     *     max=255,
+     *     minMessage="error.user.last_name.short",
+     *     maxMessage="error.user.last_name.long",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     pattern = "/^[a-zA-Z \-'\s]{1,65}$/",
+     *     message="regexp.error.name",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Type("string")
+     *
+     * @var string
+     */
+    protected $lastName;
+
+    /**
+     * @param string $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string $lastName
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
 
     /**
      * Get id

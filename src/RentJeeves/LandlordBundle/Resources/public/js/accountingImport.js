@@ -105,6 +105,10 @@ function accountingImport() {
             return Translator.trans('import.status.match');
         }
 
+        if (data.tenant.email === null) {
+            return Translator.trans('import.status.waiting');
+        }
+
         return Translator.trans('import.status.new');
     };
 

@@ -13,4 +13,17 @@ use JMS\Serializer\Annotation as Serializer;
  */
 class ContractWaiting extends Base
 {
+    /**
+     * @return array
+     */
+    public function getImportDataForFind()
+    {
+        //@TODO ask Darryl about field which use for waiting room
+        return array(
+            'unit'          => $this->getUnit()->getId(),
+            'residentId'    => $this->getResidentId(),
+            'firstName'     => $this->getFirstName(),
+            'lastName'      => $this->getLastName()
+        );
+    }
 }

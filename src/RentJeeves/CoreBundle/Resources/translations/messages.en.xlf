@@ -2209,6 +2209,10 @@
               <source>import.status.new</source>
               <target>New</target>
             </trans-unit>
+            <trans-unit id="import.status.waiting">
+              <source>import.status.waiting</source>
+              <target>Waiting</target>
+            </trans-unit>
             <trans-unit id="import.review.and.post">
               <source>import.review.and.post</source>
               <target>Import data and review next</target>

@@ -15,6 +15,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -310,25 +311,12 @@ class ImportProcess
         if (!$tenant->getId()) {
             $contract = $this->createContract($row, $tenant);
         } else {
-            //@TODO make one query, not two as now
-            $contractCurrentApprove = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
-                $tenant->getId(),
-                $row[ImportMapping::KEY_UNIT]
-            );
-            //Check for don't send many invite for the same contract
-            $contractInvite = $this->em->getRepository('RjDataBundle:Contract')->getContractInviteForImport(
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
                 $row[ImportMapping::KEY_UNIT]
             );
 
-            /**
-             * Checking exist contract in DB
-             */
-            if (empty($contractInvite) && !empty($contractCurrentApprove)) {
-                $contract = $contractCurrentApprove;
-            } elseif (!empty($contractInvite) && empty($contractCurrentApprove)) {
-                $contract = $contractInvite;
-            } else {
+            if (empty($contract)) {
                 $contract = $this->createContract($row, $tenant);
             }
         }
@@ -391,17 +379,22 @@ class ImportProcess
     }
 
     /**
+     * @TODO need check by residentId too
+     *
      * @param array $row
      *
      * @return Tenant
      */
     protected function getTenant(array $row)
     {
-        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => $row[ImportMapping::KEY_EMAIL]
-            )
-        );
+        $tenant = null;
+        if (!empty($row[ImportMapping::KEY_EMAIL])) {
+            $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
+                array(
+                    'email' => $row[ImportMapping::KEY_EMAIL]
+                )
+            );
+        }
 
         if (!empty($tenant)) {
             return $tenant;
@@ -430,6 +423,7 @@ class ImportProcess
     {
         $tenant   = $import->getTenant();
         $contract = $import->getContract();
+        $operation = $import->getOperation();
 
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
@@ -449,6 +443,9 @@ class ImportProcess
             $isUseOperation = ($import->getOperation() === null)? false : true;
             $form = $this->getContractForm($tenant, $isUseToken = true, $isUseOperation);
             $form->setData($contract);
+            if ($operation instanceof Operation) {
+                $form->get('operation')->setData($operation);
+            }
             $form->get('residentMapping')->setData($import->getResidentMapping());
             return $form;
         }
@@ -462,6 +459,9 @@ class ImportProcess
             $form = $this->getCreateUserAndCreateContractForm();
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
+            if ($operation instanceof Operation) {
+                $form->get('contract')->get('operation')->setData($operation);
+            }
             $form->get('contract')->get('residentMapping')->setData($import->getResidentMapping());
             return $form;
         }
@@ -538,6 +538,33 @@ class ImportProcess
         return $import;
     }
 
+    public function getContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
+    {
+        $contractWaiting = $this->mapping->mappingContractWaiting(
+            $tenant,
+            $contract,
+            $residentMapping
+        );
+
+        /**
+         * @var $contractWaitingInDb ContractWaiting
+         */
+        $contractWaitingInDb = $this->em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            $contractWaiting->getImportDataForFind()
+        );
+
+        if ($contractWaitingInDb) {
+            //Do update some fields
+            $contractWaitingInDb->setRent($contractWaiting->getRent());
+            $contractWaitingInDb->setImportedBalance($contractWaiting->getImportedBalance());
+            $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
+            $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
+            return $contractWaitingInDb;
+        }
+
+        return $contractWaiting;
+
+    }
     /**
      * @param $form
      * @param $lineNumber
@@ -721,14 +748,20 @@ class ImportProcess
                     $residentMapping = $form->get('contract')->get('residentMapping')->getData();
                     $tenant     = $data['tenant'];
                     $contract   = $data['contract'];
-                    $unit       = $contract->getUnit();
-                    $sendInvite = $data['sendInvite'];
-                    $this->em->persist($tenant);
-                    $this->em->persist($residentMapping);
-                    $this->em->persist($unit);
-                    $this->persistContract($import, $contract);
-                    if ($sendInvite) {
-                        $this->emailSendingQueue[] = $import;
+                    $email = $tenant->getEmail();
+                    if (empty($email)) {
+                        $waitingContract = $this->getContractWaiting($tenant, $contract, $residentMapping);
+                        $this->em->persist($waitingContract);
+                    } else {
+                        $unit       = $contract->getUnit();
+                        $sendInvite = $data['sendInvite'];
+                        $this->em->persist($tenant);
+                        $this->em->persist($residentMapping);
+                        $this->em->persist($unit);
+                        $this->persistContract($import, $contract);
+                        if ($sendInvite) {
+                            $this->emailSendingQueue[] = $import;
+                        }
                     }
                     break;
             }

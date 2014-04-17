@@ -152,8 +152,7 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite",
-     *         "import"
+     *         "tenant_invite"
      *     }
      * )
      * @Assert\Email(

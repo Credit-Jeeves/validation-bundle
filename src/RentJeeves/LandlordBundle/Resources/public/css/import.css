@@ -63,7 +63,7 @@ table tbody tr td {
     margin-top: 4px !important;
 }
 
-.New {
+.New, .Waiting {
     border-left: 3px solid #77ef21;
     background: #77ef21; /* Old browsers */
     background: -moz-linear-gradient(left,  #77ef21 0%, #ffffff 43%); /* FF3.6+ */

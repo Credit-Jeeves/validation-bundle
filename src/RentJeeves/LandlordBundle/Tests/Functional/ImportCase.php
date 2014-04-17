@@ -4,6 +4,7 @@ namespace RentJeeves\LandlordBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Operation;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\Unit;
@@ -392,5 +393,75 @@ class ImportCase extends BaseTestCase
         $user = $operation->getOrder()->getUser();
         $this->assertNotNull($user);
         $this->assertEquals($user->getEmail(), $tenant->getEmail());
+    }
+
+    /**
+     * @test
+     */
+    public function waitingRoom()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        for($i = 0; $i < 2; $i++) {
+            $this->login('landlord1@example.com', 'pass');
+            $this->page->clickLink('tab.accounting');
+            //First Step
+            $this->session->wait(5000, "typeof jQuery != 'undefined'");
+            $filePath = $this->getFilePathByName('import_waiting_room.csv');
+            $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+            $attFile->attachFile($filePath);
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+            $submitImportFile->click();
+            $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+            $this->assertNotNull($table = $this->page->find('css', 'table'));
+            //Second step
+            $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+            for ($i = 1; $i <= 14; $i++) {
+                $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+                if (isset($this->mapFile[$i])) {
+                    $choice->selectOption($this->mapFile[$i]);
+                }
+            }
+            //Map Payment
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+            $submitImportFile->click();
+            $this->session->wait(
+                5000,
+                "$('#importTable').length > 0"
+            );
+            $trs = $this->getParsedTrsByStatus();
+
+            $this->assertEquals(count($trs), 2, "Count statuses is wrong");
+            $this->assertEquals(count($trs['import.status.waiting']), 1, "Waiting contract on first page is wrong number");
+            $this->assertEquals(count($trs['import.status.ended']), 1, "Ended contract on first page is wrong number");
+
+            $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+            $submitImportFile->click();
+            $this->session->wait(
+                5000,
+                "$('.finishedTitle').length > 0"
+            );
+
+            $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+            $this->assertEquals($finishedTitle->getHtml(), 'import.review.finish');
+            $this->logout();
+        }
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /**
+         * @var $contractWaiting ContractWaiting
+         */
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findBy(
+            array(
+                'residentId' => 't0019851',
+            )
+        );
+
+        $this->assertNotNull($contractWaiting);
+        $this->assertEquals(count($contractWaiting), 1);
     }
 }
