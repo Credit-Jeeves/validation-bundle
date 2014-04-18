@@ -44,6 +44,8 @@ class NetConnectTest extends Base
                 return file_get_contents($this->getFixturesDir() . 'john.xml');
             case 'app14@example.com':
                 return file_get_contents($this->getFixturesDir() . 'app14.xml');
+            case 'robert@example.com':
+                return file_get_contents($this->getFixturesDir() . 'robert.xml');
             case 'alexey.karpik+app1334753295955955@gmail.com':
                 return file_get_contents($this->getFixturesDir() . 'alexey.karpik.xml');
         }

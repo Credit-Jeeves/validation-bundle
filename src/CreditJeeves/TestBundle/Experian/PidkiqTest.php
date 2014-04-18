@@ -61,4 +61,8 @@ class PidkiqTest extends \PidkiqTest
         );
         return $netConnectResponse;
     }
+
+    public function execute()
+    {
+    }
 }

@@ -8,9 +8,23 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class OrderListener
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     public function postUpdate(LifecycleEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
