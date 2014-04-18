@@ -58,11 +58,14 @@ class PaymentReport
                 case 'Payment':
                     $this->processCompletePayment($paymentData);
                     break;
-                case 'Payment Return':
+                case 'Payment  Return':
                     $this->processReturnedPayment($paymentData);
                     break;
-                case 'Payment Reversal':
+                case 'Payment  Refund':
                     $this->processRefundedPayment($paymentData);
+                    break;
+                case 'Payment  Void':
+                    $this->processCancelledPayment($paymentData);
                     break;
             }
         }
@@ -114,6 +117,19 @@ class PaymentReport
         if ($transaction) {
             $order = $transaction->getOrder();
             $order->setStatus(OrderStatus::REFUNDED);
+
+            $this->em->flush();
+        }
+    }
+
+    protected function processCancelledPayment($paymentData)
+    {
+        $transaction = $this->findTransaction($paymentData['OriginalTransactionID']);
+
+        // @TODO: process 'else' case in future
+        if ($transaction) {
+            $order = $transaction->getOrder();
+            $order->setStatus(OrderStatus::CANCELLED);
 
             $this->em->flush();
         }
