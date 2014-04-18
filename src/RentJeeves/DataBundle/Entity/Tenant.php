@@ -56,10 +56,43 @@ class Tenant extends User
      */
     protected $payment_accounts;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ResidentMapping",
+     *     mappedBy="tenant",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $residentsMapping;
+
     public function __construct()
     {
         parent::__construct();
         $this->contracts = new ArrayCollection();
+        $this->residentsMapping = new ArrayCollection();
+    }
+
+    /**
+     * @param ResidentMapping $resident
+     */
+    public function addResidentsMapping(ResidentMapping $resident)
+    {
+        $this->residentsMapping[] = $resident;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getResidentsMapping()
+    {
+        return $this->residentsMapping;
     }
 
     /**

@@ -3,6 +3,7 @@ namespace CreditJeeves\DataBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -95,6 +96,24 @@ abstract class Holding
      */
     protected $contracts;
 
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ResidentMapping",
+     *     mappedBy="holding",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     *
+     * @var ArrayCollection
+     */
+    protected $residentsMapping;
+
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
@@ -102,6 +121,23 @@ abstract class Holding
         $this->users = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
+        $this->residentsMapping = new ArrayCollection();
+    }
+
+    /**
+     * @param ResidentMapping $resident
+     */
+    public function addResidentsMapping(ResidentMapping $resident)
+    {
+        $this->residentsMapping[] = $resident;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getResidentsMapping()
+    {
+        return $this->residentsMapping;
     }
 
     /**

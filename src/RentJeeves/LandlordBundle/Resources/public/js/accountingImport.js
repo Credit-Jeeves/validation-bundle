@@ -1,5 +1,11 @@
 function accountingImport() {
     var self = this;
+    this.fieldsWhichNotContaintInForm = [
+        "import_new_user_with_contract_contract_residentMapping_residentId",
+        "import_new_user_with_contract_contract_unit_name",
+        "import_contract_unit_name",
+        "import_contract_residentMapping_residentId"
+    ];
     this.rowsTotal = ko.observable(0);
     this.errorLoadDataMessage = ko.observable('');
     this.isFinishReview =  ko.observable(false);
@@ -24,6 +30,17 @@ function accountingImport() {
                 self.setProcessing(false);
                 self.errorLoadDataMessage(response.message);
                 if (response.error === false) {
+                    var errors = new Array();
+                    //Fill error by line
+                    ko.utils.arrayForEach(response.rows, function (value) {
+                        if (value.errors.length === 0) {
+                            return;
+                        }
+
+                        errors[value.number] = value.errors[value.number];
+                    });
+                    //Finish
+                    self.formErrors(errors);
                     self.rows(response.rows);
                     self.rowsTotal(response.total);
 
@@ -72,7 +89,7 @@ function accountingImport() {
             return Translator.trans('import.status.skip');
         }
 
-        if (!data.is_valid) {
+        if (!self.isValidFieldsWhichNotContainsInForm(data)) {
             return Translator.trans('import.status.error');
         }
 
@@ -86,6 +103,10 @@ function accountingImport() {
 
         if (data.contract.id !== null) {
             return Translator.trans('import.status.match');
+        }
+
+        if (data.tenant.email === null) {
+            return Translator.trans('import.status.waiting');
         }
 
         return Translator.trans('import.status.new');
@@ -180,6 +201,7 @@ function accountingImport() {
         return true;
     };
 
+    //TODO find out better way
     this.getErrorsFields = function(data){
         var result = {};
         //use jquery, because knockout function can't get key of array/object - just value
@@ -187,11 +209,20 @@ function accountingImport() {
             jQuery.each(values1, function(keys2, values2) {
                 if (values2 instanceof Array) {
                     result[keys2] = values2;
-                } else {
-                    jQuery.each(values2, function (fieldName, errors) {
-                        result[fieldName] = errors;
-                    });
+                    return;
                 }
+
+                jQuery.each(values2, function (fieldName, errors) {
+                    if (errors instanceof Array) {
+                        result[fieldName] = errors;
+                        return;
+                    }
+
+                    jQuery.each(errors, function (fieldName2, errors2) {
+                        result[fieldName2] = errors2;
+                        return;
+                    });
+                });
             })
         });
         return result;
@@ -212,13 +243,25 @@ function accountingImport() {
     }
 
     this.getErrorClass = function(data, nameField) {
+        if (nameField instanceof Array) {
+            var errorClass = '';
+            ko.utils.arrayForEach(nameField, function (value) {
+                var result = self.getErrorClass(data, value);
+                if (result.length > 0) {
+                    errorClass = result;
+                }
+            });
+
+            return errorClass;
+        }
+
         if (!self.getErrorsList(data)) {
             return '';
         }
 
         var result = self.getErrorsFields(self.getErrorsList(data));
 
-        if (result[nameField] == undefined) {
+        if (result[nameField] === undefined) {
             return '';
         }
 
@@ -226,66 +269,47 @@ function accountingImport() {
     };
 
     this.getErrorTitle = function(data, nameField) {
+        if (nameField instanceof Array) {
+            var title = '';
+            ko.utils.arrayForEach(nameField, function (value) {
+                var result = self.getErrorTitle(data, value);
+                if (result.length > 0) {
+                    title = result;
+                }
+            });
+
+            return title;
+        }
+
         if (!self.getErrorsList(data)) {
-            return;
+            return '';
         }
 
-        var result = self.getErrorsFields(self.getErrorsList(data));
+        var errorList = self.getErrorsFields(self.getErrorsList(data));
 
-        if (result[nameField] == undefined) {
-            return;
+        if (errorList[nameField] === undefined) {
+            return '';
         }
 
-        return result[nameField][0];
+        return errorList[nameField][0];
     };
 
-    //Don't like this block. I want to find out better solution
-    this.getUnitClass = function(data) {
-        if (data.is_skipped) {
-            return '';
+    this.isValidFieldsWhichNotContainsInForm = function(data) {
+        var isValid = true;
+
+        if (!self.getErrorsList(data)) {
+            return isValid;
         }
 
-        if (data.is_valid_unit) {
-            return '';
-        }
+        var errorList = self.getErrorsFields(self.getErrorsList(data));
+        var isValid = true;
 
-        return 'errorField';
+        ko.utils.arrayForEach(self.fieldsWhichNotContaintInForm, function (value) {
+            if (errorList[value] !== undefined) {
+                isValid = false;
+            }
+        });
+
+        return isValid
     }
-
-    this.getUnitTitle = function(data) {
-        if (data.is_skipped) {
-            return '';
-        }
-
-        if (data.is_valid_unit) {
-            return '';
-        }
-
-        return Translator.trans('import.error.unit');
-    }
-
-    this.getResidentIdClass = function(data) {
-        if (data.is_skipped) {
-            return '';
-        }
-
-        if (data.is_valid_resident_id) {
-            return '';
-        }
-
-        return 'errorField';
-    }
-
-    this.getResidentIdTitle = function(data) {
-        if (data.is_skipped) {
-            return '';
-        }
-
-        if (data.is_valid_resident_id) {
-            return '';
-        }
-
-        return Translator.trans('import.error.residentId');
-    }
-    //End don't like block
 }

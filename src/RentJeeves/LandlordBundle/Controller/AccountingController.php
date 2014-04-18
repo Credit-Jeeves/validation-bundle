@@ -10,7 +10,9 @@ use JMS\Serializer\SerializerBuilder;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportProcess;
 use RentJeeves\LandlordBundle\Accounting\ImportStorage;
@@ -208,8 +210,15 @@ class AccountingController extends Controller
          * @var $importProcess ImportProcess
          */
         $importProcess = $this->get('accounting.import.process');
-        $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm();
-        $formContract = $importProcess->getContractForm(new Tenant());
+        $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm(
+            new Unit(),
+            new ResidentMapping()
+        );
+        $formContract = $importProcess->getContractForm(
+            new Tenant(),
+            new Unit(),
+            new ResidentMapping()
+        );
         $formContractFinish = $importProcess->getContractFinishForm();
 
         return array(

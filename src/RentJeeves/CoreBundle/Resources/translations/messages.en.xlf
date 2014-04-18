@@ -727,6 +727,10 @@
                 <source>error.unit.empty</source>
                 <target>Unit can't be empty.</target>
             </trans-unit>
+           <trans-unit id="error.unit.regexp">
+                <source>error.unit.regexp</source>
+                <target>Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.</target>
+            </trans-unit>
            <trans-unit id="error.rent.empty">
                 <source>error.rent.empty</source>
                 <target>Please specify the rent amount.</target>
@@ -2203,6 +2207,10 @@
             <trans-unit id="import.status.new">
               <source>import.status.new</source>
               <target>New</target>
+            </trans-unit>
+            <trans-unit id="import.status.waiting">
+              <source>import.status.waiting</source>
+              <target>Waiting</target>
             </trans-unit>
             <trans-unit id="import.review.and.post">
               <source>import.review.and.post</source>
