@@ -34,6 +34,9 @@ class NetConnectCase extends BaseTestCase
         )
     );
 
+    /**
+     * @return NetConnect
+     */
     protected function getNetConnect()
     {
         $netConnect = new NetConnect();

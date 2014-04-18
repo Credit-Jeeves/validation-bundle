@@ -13,7 +13,7 @@ require_once __DIR__ . '/../../ExperianBundle/Pidkiq.php';
 require_once __DIR__ . '/../../../../vendor/credit-jeeves/credit-jeeves/lib/experian/pidkiq/PidkiqTest.class.php';
 
 /**
- * @DI\Service("experian.pidkiq")
+ * DI\Service("experian.pidkiq") It is deffined in services.yml
  */
 class PidkiqTest extends \PidkiqTest
 {
@@ -22,8 +22,8 @@ class PidkiqTest extends \PidkiqTest
     }
 
     /**
-     * @DI\InjectParams({
-     *     "config"     = @DI\Inject("experian.config")
+     * DI\InjectParams({It is deffined in services.yml
+     *     "config"     = DI\Inject("experian.config")
      * })
      *
      * @param ExperianConfig $config

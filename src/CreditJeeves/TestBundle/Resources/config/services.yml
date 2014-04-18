@@ -1,5 +1,6 @@
 parameters:
     experian.net_connect.class: CreditJeeves\TestBundle\Experian\NetConnectTest
+    experian.pidkiq.class: CreditJeeves\TestBundle\Experian\PidkiqTest
 
 services:
     experian.net_connect:

@@ -28,7 +28,7 @@ require_once __DIR__.'/../../../vendor/credit-jeeves/credit-jeeves/lib/experian/
  * Precise ID.
  * Pidkiq is used for verifying user's identity.
  *
- * @DI\Service("experian.pidkiq")
+ * DI\Service("experian.pidkiq") It is deffined in services.yml
  */
 class Pidkiq extends \Pidkiq
 {
@@ -45,10 +45,10 @@ class Pidkiq extends \Pidkiq
     }
 
     /**
-     * @DI\InjectParams({
-     *     "config"     = @DI\Inject("experian.config"),
-     *     "isLogging"  = @DI\Inject("%experian.logging%"),
-     *     "logPath"    = @DI\Inject("%kernel.logs_dir%"),
+     * DI\InjectParams({ It is deffined in services.yml
+     *     "config"     = DI\Inject("experian.config"),
+     *     "isLogging"  = DI\Inject("%experian.logging%"),
+     *     "logPath"    = DI\Inject("%kernel.logs_dir%"),
      *
      * })
      *
