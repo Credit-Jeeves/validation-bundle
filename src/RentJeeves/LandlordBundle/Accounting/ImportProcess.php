@@ -174,19 +174,39 @@ class ImportProcess
     /**
      * @return Form
      */
-    public function getContractForm(Tenant $tenant, $isUseToken = true, $isUseOperation = true)
-    {
+    public function getContractForm(
+        Tenant $tenant,
+        Unit $unit,
+        ResidentMapping $residentMapping,
+        $isUseToken = true,
+        $isUseOperation = true
+    ) {
         return $this->createForm(
-            new ImportContractType($tenant, $this->em, $this->translator, $isUseToken, $isUseOperation)
+            new ImportContractType(
+                $tenant,
+                $unit,
+                $residentMapping,
+                $this->em,
+                $this->translator,
+                $isUseToken,
+                $isUseOperation
+            )
         );
     }
 
     /**
      * @return Form
      */
-    public function getCreateUserAndCreateContractForm()
+    public function getCreateUserAndCreateContractForm(Unit $unit, ResidentMapping $residentMapping)
     {
-        return $this->createForm(new ImportNewUserWithContractType(new Tenant(), $this->em, $this->translator));
+        return $this->createForm(new ImportNewUserWithContractType(
+                new Tenant(),
+                $unit,
+                $residentMapping,
+                $this->em,
+                $this->translator
+            )
+        );
     }
 
     /**
@@ -419,6 +439,7 @@ class ImportProcess
         $tenant   = $import->getTenant();
         $contract = $import->getContract();
         $operation = $import->getOperation();
+        $residentMapping = $import->getResidentMapping();
 
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
@@ -436,7 +457,13 @@ class ImportProcess
             || ($tenantId && empty($contractId))
         ) {
             $isUseOperation = ($import->getOperation() === null)? false : true;
-            $form = $this->getContractForm($tenant, $isUseToken = true, $isUseOperation);
+            $form = $this->getContractForm(
+                $tenant,
+                $contract->getUnit(),
+                $residentMapping,
+                $isUseToken = true,
+                $isUseOperation
+            );
             $form->setData($contract);
             if ($operation instanceof Operation) {
                 $form->get('operation')->setData($operation);
@@ -451,7 +478,7 @@ class ImportProcess
             $contract->getStatus() === ContractStatus::INVITE &&
             empty($contractId)
         ) {
-            $form = $this->getCreateUserAndCreateContractForm();
+            $form = $this->getCreateUserAndCreateContractForm($contract->getUnit(), $residentMapping);
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
             if ($operation instanceof Operation) {
@@ -649,9 +676,9 @@ class ImportProcess
                     $lines[] = $currentLine;
                     $resultBind = $this->bindForm($import, $formData, $errors);
 
-                    if (!$resultBind &&
-                        !is_null($form = $import->getForm()) &&
-                        !$this->isValidNotEditedFields($import)
+                    if (!isset($errors[$currentLine]) &&
+                        !$resultBind &&
+                        !is_null($form = $import->getForm())
                     ) {
                         $errorsNotEditableFields[$currentLine] = $this->runFormValidation(
                             $form,
@@ -869,7 +896,7 @@ class ImportProcess
         //@TODO find better way
         // We need setup data which we use only for view on the client side.
         // See new form type,just for view cj2/src/RentJeeves/LandlordBundle/Form/Type/ViewType.php
-        switch ($formName) {
+/*        switch ($formName) {
             case 'import_new_user_with_contract':
                 $formData['contract']['unit'] = array(
                     'name' => $import->getContract()->getUnit()->getName()
@@ -891,6 +918,6 @@ class ImportProcess
             default:
                 throw new ImportProcessException("We have new form({$formName}) which must be added to this switch.");
 
-        }
+        }*/
     }
 }

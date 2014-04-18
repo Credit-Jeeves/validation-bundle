@@ -4,7 +4,9 @@ namespace RentJeeves\LandlordBundle\Form;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,6 +31,10 @@ class ImportContractType extends AbstractType
 
     protected $tenant;
 
+    protected $unit;
+
+    protected $residentMapping;
+
     protected $em;
 
     protected $translator;
@@ -41,6 +47,8 @@ class ImportContractType extends AbstractType
      */
     public function __construct(
         Tenant $tenant,
+        Unit $unit,
+        ResidentMapping $residentMapping,
         EntityManager $em,
         Translator $translator,
         $token = true,
@@ -51,6 +59,8 @@ class ImportContractType extends AbstractType
         $this->tenant = $tenant;
         $this->em = $em;
         $this->translator = $translator;
+        $this->unit = $unit;
+        $this->residentMapping = $residentMapping;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -132,45 +142,66 @@ class ImportContractType extends AbstractType
             $builder->addEventListener(
                 FormEvents::SUBMIT,
                 function (FormEvent $event) use ($options, $self) {
-                    $form = $event->getForm();
-                    if (is_null($self->tenant->getId())) {
-                        return;
-                    }
-                    /**
-                     * @var $contract Contract
-                     */
-                    $contract = $form->getData();
-                    if (is_null($contract->getId())) {
-                        return;
-                    }
-
-                    $operationField = $form->get('operation');
-                    /**
-                     * @var $operation Operation
-                     */
-                    $operation = $operationField->getData();
-
-                    if (!$operation->getPaidFor() || !$operation->getAmount()) {
-                        return;
-                    }
-
-                    $operation = $self->em->getRepository('DataBundle:Operation')->getOperationForImport(
-                        $self->tenant,
-                        $contract,
-                        $operation->getPaidFor(),
-                        $operation->getAmount()
-                    );
-
-                    if (empty($operation)) {
-                        return;
-                    }
-
-                    $errorMessage = $self->translator->trans('error.operation.exist');
-                    $amount = $operationField->get('amount')->addError(new FormError($errorMessage));
-                    $paidFor = $operationField->get('paidFor')->addError(new FormError($errorMessage));
+                    //$self->processUnit($event);
+                    //$self->processResidentMapping($event);
+                    $self->processOperation($event);
                 }
             );
         }
+    }
+
+    protected function processUnit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $form->get('unit')->setData($this->unit);
+        //$event->setData($form);
+    }
+
+    protected function processResidentMapping(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $form->get('residentMapping')->setData($this->residentMapping);
+        //$event->setData($form);
+    }
+
+    protected function processOperation(FormEvent $event)
+    {
+        $form = $event->getForm();
+        if (is_null($this->tenant->getId())) {
+            return;
+        }
+        /**
+         * @var $contract Contract
+         */
+        $contract = $form->getData();
+        if (is_null($contract->getId())) {
+            return;
+        }
+
+        $operationField = $form->get('operation');
+        /**
+         * @var $operation Operation
+         */
+        $operation = $operationField->getData();
+
+        if (!$operation->getPaidFor() || !$operation->getAmount()) {
+            return;
+        }
+
+        $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
+            $this->tenant,
+            $contract,
+            $operation->getPaidFor(),
+            $operation->getAmount()
+        );
+
+        if (empty($operation)) {
+            return;
+        }
+
+        $errorMessage = $this->translator->trans('error.operation.exist');
+        $amount = $operationField->get('amount')->addError(new FormError($errorMessage));
+        $paidFor = $operationField->get('paidFor')->addError(new FormError($errorMessage));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -113,7 +113,7 @@ class TenantRepository extends EntityRepository
             $query->where('tenant.email = :email');
             $query->setParameter('email', $email);
         } elseif (!empty($residentId)) {
-            $query->where('resident.residentId = :email');
+            $query->where('resident.residentId = :residentId');
             $query->andWhere('resident.holding = :holdingId');
             $query->setParameter('residentId', $residentId);
             $query->setParameter('holdingId', $holdingId);
