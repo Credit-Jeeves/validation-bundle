@@ -17,6 +17,8 @@ use CurlException;
 class ExperianConfigCase extends BaseTestCase
 {
     /**
+     * If it is fail all experian libs will fail too
+     *
      * @test
      */
     public function constructor()
@@ -58,15 +60,21 @@ class ExperianConfigCase extends BaseTestCase
 
 
         sfConfig::set('experian_net_connect_userpwd', '');
-        sfConfig::set('experian_net_connect_XML_root', '');
-        sfConfig::set('experian_pidkiq_userpwd', '');
-        sfConfig::set('experian_pidkiq_XML_root', '');
+        $netConnectXMLRoot = sfConfig::get('experian_net_connect_XML_root');
+        $netConnectXMLRoot['EAI'] = '';
+        sfConfig::set('experian_net_connect_XML_root', $netConnectXMLRoot);
 
-        $config = new ExperianConfig('soemUrl', $em, false);
+        sfConfig::set('experian_pidkiq_userpwd', '');
+        $pidkiqXMLRoot = sfConfig::get('experian_pidkiq_XML_root');
+        $pidkiqXMLRoot['EAI'] = '';
+        sfConfig::set('experian_pidkiq_XML_root', $pidkiqXMLRoot);
+        new ExperianConfig('soemUrl', $em, false);
 
         $this->assertNotEmpty(sfConfig::get('experian_net_connect_userpwd'));
-        $this->assertNotEmpty(sfConfig::get('experian_net_connect_XML_root'));
+        $netConnectXMLRoot = sfConfig::get('experian_net_connect_XML_root');
+        $this->assertNotEmpty($netConnectXMLRoot['EAI']);
         $this->assertNotEmpty(sfConfig::get('experian_pidkiq_userpwd'));
-        $this->assertNotEmpty(sfConfig::get('experian_pidkiq_XML_root'));
+        $pidkiqXMLRoot = sfConfig::get('experian_pidkiq_XML_root');
+        $this->assertNotEmpty($pidkiqXMLRoot['EAI']);
     }
 }

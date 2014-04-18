@@ -14,7 +14,7 @@ class NetConnectTest extends Base
 
     /**
      * DI\InjectParams({ It is deffined in services.yml
-     *     "config" = DI\Inject("%data.dir%"),
+     *     "dataDir" = DI\Inject("%data.dir%"),
      * })
      *
      * @param string $dataDir
