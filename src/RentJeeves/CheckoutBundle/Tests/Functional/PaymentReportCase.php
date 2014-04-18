@@ -38,4 +38,4 @@ class PaymentReportCase extends BaseTestCase
             array('456456', 'complete', 'cancelled'),
         );
     }
-} 
+}
