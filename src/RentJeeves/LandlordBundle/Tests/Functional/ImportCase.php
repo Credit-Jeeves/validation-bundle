@@ -428,7 +428,7 @@ class ImportCase extends BaseTestCase
             $submitImportFile->click();
             $this->session->wait(
                 5000,
-                "$('#importTable').length > 0"
+                "$('#importTable').length > 0 && $('#importTable').is(':visible')"
             );
             $trs = $this->getParsedTrsByStatus();
 
