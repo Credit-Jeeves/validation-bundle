@@ -199,7 +199,8 @@ class ImportProcess
      */
     public function getCreateUserAndCreateContractForm(Unit $unit, ResidentMapping $residentMapping)
     {
-        return $this->createForm(new ImportNewUserWithContractType(
+        return $this->createForm(
+            new ImportNewUserWithContractType(
                 new Tenant(),
                 $unit,
                 $residentMapping,
@@ -892,32 +893,5 @@ class ImportProcess
             $formData[$newKey] = $value;
             unset($formData[$key]);
         }
-
-        //@TODO find better way
-        // We need setup data which we use only for view on the client side.
-        // See new form type,just for view cj2/src/RentJeeves/LandlordBundle/Form/Type/ViewType.php
-/*        switch ($formName) {
-            case 'import_new_user_with_contract':
-                $formData['contract']['unit'] = array(
-                    'name' => $import->getContract()->getUnit()->getName()
-                );
-                $formData['contract']['residentMapping'] = array(
-                    'residentId' => $import->getResidentMapping()->getResidentId()
-                );
-                break;
-            case 'import_contract':
-                $formData['unit'] = array(
-                    'name' => $import->getContract()->getUnit()->getName()
-                );
-                $formData['residentMapping'] = array(
-                    'residentId' => $import->getResidentMapping()->getResidentId()
-                );
-                break;
-            case 'import_contract_finish':
-                break;
-            default:
-                throw new ImportProcessException("We have new form({$formName}) which must be added to this switch.");
-
-        }*/
     }
 }

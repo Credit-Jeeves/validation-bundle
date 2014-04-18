@@ -3,7 +3,6 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -129,6 +128,8 @@ class ImportContractType extends AbstractType
             );
         }
 
+        $self = $this;
+
         if ($this->isUseOperation) {
             $builder->add(
                 'operation',
@@ -137,31 +138,51 @@ class ImportContractType extends AbstractType
                     'mapped'=> false
                 )
             );
-
-            $self = $this;
             $builder->addEventListener(
                 FormEvents::SUBMIT,
                 function (FormEvent $event) use ($options, $self) {
-                    //$self->processUnit($event);
-                    //$self->processResidentMapping($event);
                     $self->processOperation($event);
                 }
             );
         }
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($options, $self) {
+                $self->setUnitName($event);
+                $self->setResidentId($event);
+            }
+        );
     }
 
-    protected function processUnit(FormEvent $event)
+    public function setUnitName(FormEvent $event)
     {
-        $form = $event->getForm();
-        $form->get('unit')->setData($this->unit);
-        //$event->setData($form);
+        $data = $event->getData();
+        if (empty($data)) {
+            return;
+        }
+        if (!isset($data['unit'])) {
+            $data['unit'] = array();
+        }
+        $data['unit'] = array(
+            'name' => $this->unit->getName(),
+        );
+        $event->setData($data);
     }
 
-    protected function processResidentMapping(FormEvent $event)
+    public function setResidentId(FormEvent $event)
     {
-        $form = $event->getForm();
-        $form->get('residentMapping')->setData($this->residentMapping);
-        //$event->setData($form);
+        $data = $event->getData();
+        if (empty($data)) {
+            return;
+        }
+        if (!isset($data['residentMapping'])) {
+            $data['residentMapping'] = array();
+        }
+        $data['residentMapping'] = array(
+            'residentId' => $this->residentMapping->getResidentId(),
+        );
+        $event->setData($data);
     }
 
     protected function processOperation(FormEvent $event)
