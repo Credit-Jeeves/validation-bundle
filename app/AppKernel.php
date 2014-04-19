@@ -129,19 +129,19 @@ abstract class AppKernel extends Kernel
         return $this->getExperianConfigs($parameters);
     }
 
-    public function init()
-    {
-        $this->exceptionCatcher = new ExceptionCatcher;
-        $this->chainNodeManager = new SafeChainNodeManager;
-
-        $this->exceptionCatcher->start($this->isDebug());
-
-        $this->initializeChainNodeManager();
-
-        foreach ($this->chainNodeManager->all() as $chainNode) {
-            $this->exceptionCatcher->registerChainNode($chainNode);
-        }
-    }
+//    public function init()
+//    {
+//        $this->exceptionCatcher = new ExceptionCatcher;
+//        $this->chainNodeManager = new SafeChainNodeManager;
+//
+//        $this->exceptionCatcher->start($this->isDebug());
+//
+//        $this->initializeChainNodeManager();
+//
+//        foreach ($this->chainNodeManager->all() as $chainNode) {
+//            $this->exceptionCatcher->registerChainNode($chainNode);
+//        }
+//    }
 
     public function initializeChainNodeManager()
     {

@@ -446,7 +446,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "6b7922c50d962cbd7c3f6a3ab58e338b5225178b"
+                "reference": "30bf8b19bbafa0f4dc240e998a88552a03fd5090"
             },
             "type": "library",
             "description": "Legacy code",

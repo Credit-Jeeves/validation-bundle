@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\TestBundle\Tests\Experian;
+namespace CreditJeeves\TestBundle\Tests\Experian;
 
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
@@ -18,12 +18,12 @@ class NetConnectTestCase extends BaseTestCase
     public function getResponseOnUserData()
     {
         $applicant = new Applicant();
-        $applicant->setEmail('emilio@example.com');
+        $applicant->setEmail('mamazza@example.com');
         $applicant->setSsn('666042073');
         $applicant->setFirstName('Ton');
         $applicant->setLastName('Sharp');
         $this->assertStringEqualsFile(
-            $this->getContainer()->getParameter('data.dir') . '/experian/netConnect/emilio.arf',
+            $this->getContainer()->getParameter('data.dir') . '/experian/netConnect/mamazza.arf',
             $this->getContainer()->get('experian.net_connect')->getResponseOnUserData($applicant)
         );
     }
