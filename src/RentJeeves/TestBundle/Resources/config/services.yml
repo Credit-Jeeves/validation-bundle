@@ -1,0 +1,2 @@
+parameters:
+    experian.net_connect.class: RentJeeves\TestBundle\Experian\NetConnectTest

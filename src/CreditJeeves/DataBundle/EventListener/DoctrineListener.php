@@ -2,35 +2,18 @@
 namespace CreditJeeves\DataBundle\EventListener;
 
 use CreditJeeves\ArfBundle\Parser\ArfParser;
+use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\Tradeline;
 use CreditJeeves\DataBundle\Entity\ApplicantIncentive;
 use CreditJeeves\ArfBundle\Map\ArfTradelines;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Tag;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
- *
- * @Service("data.event_listener.doctrine")
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes={
- *         "event"="prePersist",
- *         "method"="prePersist"
- *     }
- * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes={
- *         "event"="postUpdate",
- *         "method"="postUpdate"
- *     }
- * )
  */
-class Doctrine
+class DoctrineListener
 {
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
@@ -51,17 +34,26 @@ class Doctrine
         
     }
 
-    private function setScore(ReportPrequal $Report, $em)
+    /**
+     * @param Report $report
+     *
+     * @return int
+     */
+    protected function getReportScore($report)
     {
-        $arfReport = $Report->getArfReport();
-        $newScore = $arfReport->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
+        return $report->getArfReport()->getScore();
+    }
+
+    protected function setScore(ReportPrequal $report, $em)
+    {
+        $newScore = $this->getReportScore($report);
         if ($newScore > 1000) {
             $newScore = 0;
         }
-            $score = new Score();
-            $score->setUser($Report->getUser());
-            $score->setScore($newScore);
-            $em->persist($score);
+        $score = new Score();
+        $score->setUser($report->getUser());
+        $score->setScore($newScore);
+        $em->persist($score);
     }
 
     private function checkCompleted(Tradeline $tradeline, $em)

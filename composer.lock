@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "e424f12153c49f807a3a144c972d2ad0",
+    "hash": "5b20d7be30d12034d5897eea0b5c4402",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -380,7 +380,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/ArfBundle.git",
-                "reference": "aee9f3f411b6b7dfd660adaa5dac243fa75ca74e"
+                "reference": "2e6451bbf60a36e714463c90c6c42da6005e93fa"
             },
             "require": {
                 "credit-jeeves/core-bundle": "dev-master",
@@ -402,7 +402,7 @@
                 }
             ],
             "description": "CreditJeeves ARF Bundle",
-            "time": "2014-02-25 23:50:32"
+            "time": "2014-04-08 19:48:26"
         },
         {
             "name": "credit-jeeves/core-bundle",
@@ -411,7 +411,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/CoreBundle.git",
-                "reference": "c8b6f23b9430355e2006ef31eda8601f3916131c"
+                "reference": "9ce30546634c1eae9d69c7b06b802273facbf484"
             },
             "require": {
                 "doctrine/dbal": "~2.4",
@@ -438,7 +438,7 @@
                 }
             ],
             "description": "CreditJeeves Core Bundle",
-            "time": "2014-02-26 15:45:22"
+            "time": "2014-04-08 19:49:00"
         },
         {
             "name": "credit-jeeves/credit-jeeves",
@@ -446,11 +446,11 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:Credit-Jeeves/Credit-Jeeves.git",
-                "reference": "0b098fd654f3a651d6af91ef1ee715089f0081d6"
+                "reference": "f976af102f8bf7f4a8fa35dbb78d72e43a546ebf"
             },
             "type": "library",
             "description": "Legacy code",
-            "time": "2014-02-25 13:45:28"
+            "time": "2014-04-10 14:44:26"
         },
         {
             "name": "credit-jeeves/simulation-bundle",
@@ -3316,7 +3316,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/Heartland.git",
-                "reference": "46d38f9387eebd79eca16da5f72d3642d0aa2974"
+                "reference": "faa6dde14133998b3775fb79af9b3386f07a8f0c"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -3325,8 +3325,9 @@
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "besimple/wsdl2php": "dev-dev",
-                "ext-curl": "*"
+                "besimple/wsdl2php": "dev-master",
+                "ext-curl": "*",
+                "satooshi/php-coveralls": "dev-master"
             },
             "type": "library",
             "extra": {
@@ -3349,6 +3350,7 @@
                 }
             ],
             "description": "Heartland pro checkout",
+            "homepage": "https://github.com/66Ton99/Heartland",
             "keywords": [
                 "heartland",
                 "library",
@@ -3356,7 +3358,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2014-01-10 13:43:43"
+            "time": "2014-04-10 17:14:12"
         },
         {
             "name": "payum/payum",
