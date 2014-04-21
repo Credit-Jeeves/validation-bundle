@@ -55,7 +55,8 @@ abstract class PaymentAccount
      * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
      *      inversedBy="payment_accounts",
-     *      cascade={"persist"}
+     *      cascade={"persist"},
+     *      fetch="EAGER"
      * )
      * @ORM\JoinColumn(
      *      name="address_id",
