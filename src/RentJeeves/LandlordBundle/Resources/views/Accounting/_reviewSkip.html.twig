@@ -1,9 +1,27 @@
-{% form_theme form "LandlordBundle::form_widget_attributes.html.twig" %}
+{% form_theme form "LandlordBundle::form_import.html.twig" %}
 
-<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: is_skipped || contract.status == 'finished' || !is_valid">
+<tr data-bind="attr: {'class': $root.getClassLine($data)}, if: is_skipped || contract.status == 'finished' || !$root.isValidFieldsWhichNotContainsInForm($data)">
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data) }"></td>
-    <td data-bind="text:contract.unit.name, attr: {'class': $root.getUnitClass($data), 'title': $root.getUnitTitle($data) }"></td>
-    <td data-bind="text:tenant.resident_id, attr: {'class': $root.getResidentIdClass($data), 'title': $root.getResidentIdTitle($data) }"></td>
+    <td data-bind="
+        text:contract.unit.name,
+        attr:
+        {
+            'class': $root.getErrorClass($data, ['import_new_user_with_contract_contract_unit_name', 'import_contract_unit_name']),
+            'title': $root.getErrorTitle($data, ['import_new_user_with_contract_contract_unit_name', 'import_contract_unit_name'])
+        }
+    ">
+
+    </td>
+    <td data-bind="
+        text:resident_mapping.resident_id,
+        attr:
+        {
+            'class': $root.getErrorClass($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId']),
+            'title': $root.getErrorTitle($data, ['import_new_user_with_contract_contract_residentMapping_residentId', 'import_contract_residentMapping_residentId'])
+        }
+    ">
+
+    </td>
     <td data-bind="text:tenant.first_name"></td>
     <td data-bind="text:tenant.last_name"></td>
     <td data-bind="text:tenant.email"></td>
@@ -12,7 +30,7 @@
     </td>
     <td></td>
     <td>
-        <span  class="finishContract" data-bind="if: contract.status == 'finished' && $data.move_out && !is_skipped && contract.id && is_valid">
+        <span  class="finishContract" data-bind="if: contract.status == 'finished' && $data.move_out && !is_skipped && contract.id && $root.isValidFieldsWhichNotContainsInForm($data)">
         {{ form_start(form) }}
             {{ 'import.move_out'|trans }}:<br />
             {{ form_widget(

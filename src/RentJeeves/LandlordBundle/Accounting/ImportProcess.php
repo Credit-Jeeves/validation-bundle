@@ -15,11 +15,14 @@ use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\LandlordBundle\Exception\ImportProcessException;
 use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
 use RentJeeves\LandlordBundle\Form\ImportContractType;
 use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
@@ -32,6 +35,7 @@ use \DateTime;
 use \Exception;
 use Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfTokenManagerAdapter;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Validator\Validator;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -80,10 +84,23 @@ class ImportProcess
     protected $storage;
 
     /**
+     * @var Validator
+     */
+    protected $validator;
+
+    /**
      * @var bool
      */
     protected $isCreateCsrfToken = false;
 
+    /**
+     * @var string
+     */
+    protected $locale;
+
+    /**
+     * @var array
+     */
     protected $emailSendingQueue = array();
 
     /**
@@ -96,7 +113,9 @@ class ImportProcess
      *     "formCsrfProvider" = @Inject("form.csrf_provider"),
      *     "mailer"           = @Inject("project.mailer"),
      *     "storage"          = @Inject("accounting.import.storage"),
-     *     "mapping"          = @Inject("accounting.import.mapping")
+     *     "mapping"          = @Inject("accounting.import.mapping"),
+     *     "validator"        = @Inject("validator"),
+     *     "locale"           = @Inject("%kernel.default_locale%")
      * })
      */
     public function __construct(
@@ -108,7 +127,9 @@ class ImportProcess
         CsrfTokenManagerAdapter $formCsrfProvider,
         Mailer $mailer,
         ImportStorage $storage,
-        ImportMapping $mapping
+        ImportMapping $mapping,
+        Validator $validator,
+        $locale
     ) {
         $this->em               = $em;
         $this->user             = $context->getToken()->getUser();
@@ -118,6 +139,8 @@ class ImportProcess
         $this->mailer           = $mailer;
         $this->mapping          = $mapping;
         $this->storage          = $storage;
+        $this->validator        = $validator;
+        $this->locale           = $locale;
     }
 
     /**
@@ -151,19 +174,40 @@ class ImportProcess
     /**
      * @return Form
      */
-    public function getContractForm(Tenant $tenant, $isUseToken = true, $isUseOperation = true)
-    {
+    public function getContractForm(
+        Tenant $tenant,
+        Unit $unit,
+        ResidentMapping $residentMapping,
+        $isUseToken = true,
+        $isUseOperation = true
+    ) {
         return $this->createForm(
-            new ImportContractType($tenant, $this->em, $this->translator, $isUseToken, $isUseOperation)
+            new ImportContractType(
+                $tenant,
+                $unit,
+                $residentMapping,
+                $this->em,
+                $this->translator,
+                $isUseToken,
+                $isUseOperation
+            )
         );
     }
 
     /**
      * @return Form
      */
-    public function getCreateUserAndCreateContractForm()
+    public function getCreateUserAndCreateContractForm(Unit $unit, ResidentMapping $residentMapping)
     {
-        return $this->createForm(new ImportNewUserWithContractType(new Tenant(), $this->em, $this->translator));
+        return $this->createForm(
+            new ImportNewUserWithContractType(
+                new Tenant(),
+                $unit,
+                $residentMapping,
+                $this->em,
+                $this->translator
+            )
+        );
     }
 
     /**
@@ -198,6 +242,49 @@ class ImportProcess
         $tenant->addContract($contract);
 
         return $contract;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param array $row
+     *
+     * @return ResidentMapping
+     */
+    protected function createResident(Tenant $tenant, array $row)
+    {
+        $residentMapping = new ResidentMapping();
+        $residentMapping->setTenant($tenant);
+        $residentMapping->setHolding($this->user->getHolding());
+        $residentMapping->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
+
+        return $residentMapping;
+    }
+
+    /**
+     * @param Tenant $tenant
+     * @param array $row
+     *
+     * @return ResidentMapping
+     */
+    public function getResident(Tenant $tenant, array $row)
+    {
+        if (is_null($tenant->getId())) {
+            return $this->createResident($tenant, $row);
+        }
+
+        $residentMapping = $this->em->getRepository('RjDataBundle:ResidentMapping')->findOneBy(
+            array(
+                'tenant'        => $tenant->getId(),
+                'holding'       => $this->user->getHolding()->getId(),
+                'residentId'    => $row[ImportMapping::KEY_RESIDENT_ID],
+            )
+        );
+
+        if (empty($residentMapping)) {
+            return $this->createResident($tenant, $row);
+        }
+
+        return $residentMapping;
     }
 
     /**
@@ -245,24 +332,12 @@ class ImportProcess
         if (!$tenant->getId()) {
             $contract = $this->createContract($row, $tenant);
         } else {
-            $contractCurrentApprove = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
-                $tenant->getId(),
-                $row[ImportMapping::KEY_UNIT]
-            );
-            //Check for don't send many invite for the same contract
-            $contractInvite = $this->em->getRepository('RjDataBundle:Contract')->getContractInviteForImport(
+            $contract = $this->em->getRepository('RjDataBundle:Contract')->getImportContract(
                 $tenant->getId(),
                 $row[ImportMapping::KEY_UNIT]
             );
 
-            /**
-             * Checking exist contract in DB
-             */
-            if (empty($contractInvite) && !empty($contractCurrentApprove)) {
-                $contract = $contractCurrentApprove;
-            } elseif (!empty($contractInvite) && empty($contractCurrentApprove)) {
-                $contract = $contractInvite;
-            } else {
+            if (empty($contract)) {
                 $contract = $this->createContract($row, $tenant);
             }
         }
@@ -289,7 +364,7 @@ class ImportProcess
      */
     protected function getOperation(ModelImport $import, array $row)
     {
-        if (!$this->mapping->isHavePaymentMapping($row)) {
+        if (!$this->mapping->hasPaymentMapping($row)) {
             return null;
         }
 
@@ -331,10 +406,10 @@ class ImportProcess
      */
     protected function getTenant(array $row)
     {
-        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email' => $row[ImportMapping::KEY_EMAIL]
-            )
+        $tenant = $this->em->getRepository('RjDataBundle:Tenant')->getTenantForImportWithResident(
+            $row[ImportMapping::KEY_EMAIL],
+            $row[ImportMapping::KEY_RESIDENT_ID],
+            $this->user->getHolding()->getId()
         );
 
         if (!empty($tenant)) {
@@ -348,6 +423,7 @@ class ImportProcess
         $tenant->setEmail($row[ImportMapping::KEY_EMAIL]);
         $tenant->setEmailCanonical($row[ImportMapping::KEY_EMAIL]);
         $tenant->setPassword(md5(md5(1)));
+        $tenant->setCulture($this->locale);
 
         return $tenant;
     }
@@ -363,6 +439,8 @@ class ImportProcess
     {
         $tenant   = $import->getTenant();
         $contract = $import->getContract();
+        $operation = $import->getOperation();
+        $residentMapping = $import->getResidentMapping();
 
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
@@ -380,9 +458,18 @@ class ImportProcess
             || ($tenantId && empty($contractId))
         ) {
             $isUseOperation = ($import->getOperation() === null)? false : true;
-            $form = $this->getContractForm($tenant, $isUseToken = true, $isUseOperation);
+            $form = $this->getContractForm(
+                $tenant,
+                $contract->getUnit(),
+                $residentMapping,
+                $isUseToken = true,
+                $isUseOperation
+            );
             $form->setData($contract);
-
+            if ($operation instanceof Operation) {
+                $form->get('operation')->setData($operation);
+            }
+            $form->get('residentMapping')->setData($import->getResidentMapping());
             return $form;
         }
 
@@ -392,10 +479,13 @@ class ImportProcess
             $contract->getStatus() === ContractStatus::INVITE &&
             empty($contractId)
         ) {
-            $form = $this->getCreateUserAndCreateContractForm();
+            $form = $this->getCreateUserAndCreateContractForm($contract->getUnit(), $residentMapping);
             $form->get('tenant')->setData($tenant);
             $form->get('contract')->setData($contract);
-
+            if ($operation instanceof Operation) {
+                $form->get('contract')->get('operation')->setData($operation);
+            }
+            $form->get('contract')->get('residentMapping')->setData($import->getResidentMapping());
             return $form;
         }
 
@@ -411,25 +501,23 @@ class ImportProcess
     }
 
     /**
-     * This magic method change validation need find out way to remove magic
-     * and make it more horizontal expansion
-     * @TODO refactoring: create new field type for form and form theme which we use only for show data, not edit.
-     * and run form validation.
-     *
      * @param Import $import
      */
-    protected function validateFieldWhichNotCheckByForm(ModelImport $import)
+    protected function isValidNotEditedFields(ModelImport $import)
     {
-        $tenant   = $import->getTenant();
-        $contract = $import->getContract();
-
-        if (preg_match('/^[A-Za-z_0-9\-]{1,50}$/i', $contract->getUnit()->getName())) {
-            $import->setIsValidUnit(true);
+        $unit = $import->getContract()->getUnit();
+        $errors = $this->validator->validate($unit, array("import"));
+        if (count($errors) > 0) {
+            return false;
         }
 
-        if (preg_match('/^[A-Za-z_0-9]{1,100}$/i', $tenant->getResidentId())) {
-            $import->setIsValidResidentId(true);
+        $residentMapping = $import->getResidentMapping();
+        $errors = $this->validator->validate($residentMapping, array("import"));
+        if (count($errors) > 0) {
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -448,10 +536,6 @@ class ImportProcess
             $import->setIsSkipped(true);
         }
 
-        if (!$tenant->getResidentId() && !empty($row[ImportMapping::KEY_RESIDENT_ID])) {
-            $tenant->setResidentId($row[ImportMapping::KEY_RESIDENT_ID]);
-        }
-
         $contract = $this->getContract($import, $row);
         if ($contract) {
             $import->setContract($contract);
@@ -459,17 +543,94 @@ class ImportProcess
 
         $token      = (!$this->isCreateCsrfToken) ? $this->formCsrfProvider->generateCsrfToken($lineNumber) : '';
         $import->setCsrfToken($token);
-        $this->validateFieldWhichNotCheckByForm($import);
 
         if ($operation = $this->getOperation($import, $row)) {
             $import->setOperation($operation);
         }
 
-        if ($import->isValid() && $form = $this->getForm($import)) {
+        $import->setResidentMapping($this->getResident($tenant, $row));
+
+        if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
         }
 
+        if (!$this->isCreateCsrfToken && !$import->getIsSkipped()) {
+            $import->setErrors($this->runFormValidation($form, $lineNumber, $token));
+        }
+
         return $import;
+    }
+
+    public function getContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
+    {
+        $contractWaiting = $this->mapping->createContractWaiting(
+            $tenant,
+            $contract,
+            $residentMapping
+        );
+
+        /**
+         * @var $contractWaitingInDb ContractWaiting
+         */
+        $contractWaitingInDb = $this->em->getRepository('RjDataBundle:ContractWaiting')->findOneBy(
+            $contractWaiting->getImportDataForFind()
+        );
+
+        if ($contractWaitingInDb) {
+            //Do update some fields
+            $contractWaitingInDb->setRent($contractWaiting->getRent());
+            $contractWaitingInDb->setImportedBalance($contractWaiting->getImportedBalance());
+            $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
+            $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
+            return $contractWaitingInDb;
+        }
+
+        return $contractWaiting;
+
+    }
+    /**
+     * @param $form
+     * @param $lineNumber
+     *
+     * @return array
+     */
+    protected function runFormValidation($form, $lineNumber, $token = null)
+    {
+        $viewForm = $form->createView();
+        $submittedData = $this->getSubmittedDataFromForm($viewForm->children);
+        if (!is_null($token)) {
+            $submittedData['_token'] = $token;
+        }
+
+        $form->submit($submittedData);
+        if (!$form->isValid()) {
+            return array(
+                $lineNumber => $this->getFormErrors($form)
+            );
+        }
+
+        return array($lineNumber => array());
+    }
+
+    /**
+     * This method get field from form and create array from it, which we can use
+     * for $form->submit($data); And after that we can run validation.
+     *
+     * @param array $children
+     * @return array
+     */
+    protected function getSubmittedDataFromForm(array $children)
+    {
+        $submittedData = array();
+        foreach ($children as $fieldName => $data) {
+            if (!empty($data->children)) {
+                $submittedData[$data->vars['name']] = $this->getSubmittedDataFromForm($data->children);
+                continue;
+            }
+            $submittedData[$data->vars['name']] = $data->vars['value'];
+        }
+
+        return $submittedData;
     }
 
     /**
@@ -497,11 +658,12 @@ class ImportProcess
      */
     public function saveForms(array $data)
     {
+        $this->isCreateCsrfToken = true;
+
         $mappedData = $this->getImportModelCollection();
         $errors     = array();
         $lines      = array();
-
-        $this->isCreateCsrfToken = true;
+        $errorsNotEditableFields = array();
 
         foreach ($data as $formData) {
             $formData['line'] = (int)$formData['line'];
@@ -511,22 +673,37 @@ class ImportProcess
              */
             foreach ($mappedData as $import) {
                 if ($import->getNumber() === $formData['line']) {
-                    $lines[] = $formData['line'];
-                    $this->bindForm($import, $formData, $errors);
+                    $currentLine = $formData['line'];
+                    $lines[] = $currentLine;
+                    $resultBind = $this->bindForm($import, $formData, $errors);
+
+                    if (!isset($errors[$currentLine]) &&
+                        !$resultBind &&
+                        !is_null($form = $import->getForm())
+                    ) {
+                        $errorsNotEditableFields[$currentLine] = $this->runFormValidation(
+                            $form,
+                            $currentLine
+                        )[$currentLine];
+                    }
                 }
             }
         }
         $this->isCreateCsrfToken = false;
 
-        if (!empty($errors)) {
+        if (empty($errors)) {
+            $this->em->flush();
+            $this->clearTokens($lines);
+            $this->sendInviteEmail();
+
+            return array();
+        }
+
+        if (empty($errorsNotEditableFields)) {
             return $errors;
         }
 
-        $this->em->flush();
-        $this->clearTokens($lines);
-        $this->sendInviteEmail();
-
-        return array();
+        return $errors + $errorsNotEditableFields;
     }
 
     /**
@@ -536,29 +713,35 @@ class ImportProcess
      * @param $postData
      * @param array &$errors
      *
+     * @return boolean
      */
     protected function bindForm(ModelImport $import, $postData, &$errors)
     {
         $form = $import->getForm();
-
-        if (!$form) {
-            return;
-        }
-
-        self::prepareSubmit($postData, $form->getName());
-        if ($import->getIsSkipped() ||
-            isset($postData['contract']['skip']) ||
-            isset($postData['skip']) ||
-            !$import->isValid()
-        ) {
-            return;
-        }
-
         $line = $postData['line'];
         unset($postData['line']);
+
+        if (!$form) {
+            return false;
+        }
+
+        if (!$this->isValidNotEditedFields($import)) {
+            return false;
+        }
+
+        self::prepareSubmit($postData, $form->getName(), $import);
+
+        if ($import->getIsSkipped() ||
+            isset($postData['contract']['skip']) ||
+            isset($postData['skip'])
+        ) {
+            return false;
+        }
+
+
         $form = $import->getForm();
         if (!isset($postData['_token'])) {
-            return;
+            return false;
         }
         $form->submit($postData);
         $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
@@ -574,29 +757,39 @@ class ImportProcess
                     $this->em->persist($contract->getUnit());
                     $this->persistContract($import, $contract);
                     if (!$contract->getId()) {
-                        $this->emailSendingQueue[] = $import;
+                        $this->emailSendingQueue[] = $contract;
                     } elseif (!is_null($import->getOperation())) {
                         //see logic in setOperation method
                         $operation = $form->get('operation')->getData();
                         $this->persistOperation($import->getTenant(), $operation, $contract);
                     }
+                    $residentMapping = $form->get('residentMapping')->getData();
+                    $this->em->persist($residentMapping);
                     break;
                 case 'import_new_user_with_contract':
                     $data       = $form->getData();
+                    $residentMapping = $form->get('contract')->get('residentMapping')->getData();
                     $tenant     = $data['tenant'];
                     $contract   = $data['contract'];
-                    $unit       = $contract->getUnit();
-                    $sendInvite = $data['sendInvite'];
-                    $this->em->persist($tenant);
-                    $this->em->persist($unit);
-                    $this->persistContract($import, $contract);
-                    if ($sendInvite) {
-                        $this->emailSendingQueue[] = $import;
+                    $email = $tenant->getEmail();
+                    if (empty($email)) {
+                        $waitingContract = $this->getContractWaiting($tenant, $contract, $residentMapping);
+                        $this->em->persist($waitingContract);
+                    } else {
+                        $unit       = $contract->getUnit();
+                        $sendInvite = $data['sendInvite'];
+                        $this->em->persist($tenant);
+                        $this->em->persist($residentMapping);
+                        $this->em->persist($unit);
+                        $this->persistContract($import, $contract);
+                        if ($sendInvite) {
+                            $this->emailSendingQueue[] = $contract;
+                        }
                     }
                     break;
             }
 
-            return;
+            return true;
         }
 
         $errors[$line] = $this->getFormErrors($form);
@@ -604,7 +797,7 @@ class ImportProcess
             $errors[$line]['_global'] = $this->translator->trans('csrf.token.is.invalid');
         }
 
-        return;
+        return false;
     }
 
     /**
@@ -668,10 +861,10 @@ class ImportProcess
             return;
         }
         /**
-         * @var $import Import
+         * @var $contract Contract
          */
-        foreach ($this->emailSendingQueue as $import) {
-            $this->mailer->sendRjTenantInvite($import->getTenant(), $this->user, $import->getContract());
+        foreach ($this->emailSendingQueue as $contract) {
+            $this->mailer->sendRjTenantInvite($contract->getTenant(), $this->user, $contract);
         }
 
         $this->emailSendingQueue = array();
@@ -689,7 +882,7 @@ class ImportProcess
      * We need remove form name from key of array and leave just name form field
      * it's need for form submit
      */
-    public static function prepareSubmit(&$formData, $formName)
+    public static function prepareSubmit(&$formData, $formName, ModelImport $import)
     {
         $length = strlen($formName) + 1;
         foreach ($formData as $key => $value) {

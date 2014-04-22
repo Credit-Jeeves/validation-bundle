@@ -51,6 +51,7 @@ class TenantRepository extends EntityRepository
     /**
      *
      * Don't use for now, but saved, maybe we can use it in future
+     * because have problem with doctrine cache for different unit
      *
      * @param $email
      * @param $propertyId
@@ -96,6 +97,35 @@ class TenantRepository extends EntityRepository
         $result = $query->getResult();
 
         return reset($result);
+    }
 
+    public function getTenantForImportWithResident($email, $residentId, $holdingId)
+    {
+        $query = $this->createQueryBuilder('tenant');
+        if (!empty($residentId)) {
+            $query->leftJoin(
+                'tenant.residentsMapping',
+                'resident'
+            );
+        }
+        //@TODO ask about priority for getting user from DB
+        if (!empty($email)) {
+            $query->where('tenant.email = :email');
+            $query->setParameter('email', $email);
+        } elseif (!empty($residentId)) {
+            $query->where('resident.residentId = :residentId');
+            $query->andWhere('resident.holding = :holdingId');
+            $query->setParameter('residentId', $residentId);
+            $query->setParameter('holdingId', $holdingId);
+        } else {
+            return;
+        }
+
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        $result = $query->getResult();
+
+        return reset($result);
     }
 }

@@ -2,6 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Accounting;
 
+use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
+use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
@@ -42,6 +46,18 @@ class ImportMapping
     const KEY_PAYMENT_AMOUNT = 'payment_amount';
 
     const KEY_PAYMENT_DATE = 'payment_date';
+
+    protected $requiredKeys = array(
+        self::KEY_EMAIL,
+        self::KEY_UNIT,
+        self::KEY_RESIDENT_ID,
+        self::KEY_BALANCE,
+        self::KEY_LEASE_END,
+        self::KEY_MOVE_IN,
+        self::KEY_MOVE_OUT,
+        self::KEY_RENT,
+        self::KEY_TENANT_NAME
+    );
 
     /**
      * Values which we skip
@@ -110,9 +126,31 @@ class ImportMapping
         $countedFields = count($row);
         $data = array_values($row);
         for ($i = 1; $i <= $countedFields; $i++) {
-            if (isset($mapping[$i])) {
-                $indexData = $i-1;
+            $indexData = $i-1;
+            if (isset($mapping[$i]) && isset($data[$indexData])) {
                 $mappedData[$mapping[$i]] = $data[$indexData];
+            }
+        }
+
+        return $this->makeSureAllKeysExist($mappedData);
+    }
+
+    /**
+     * Sometimes storage(specific situation when csv file not so good)
+     * can return not correct array, so we need be sure, all key will exist
+     *
+     * @param array $mappedData
+     * @return array
+     */
+    protected function makeSureAllKeysExist(array $mappedData)
+    {
+        if (empty($mappedData)) {
+            return $mappedData;
+        }
+
+        foreach ($this->requiredKeys as $requiredKey) {
+            if (!isset($mappedData[$requiredKey])) {
+                $mappedData[$requiredKey] = null;
             }
         }
 
@@ -149,7 +187,7 @@ class ImportMapping
             $dataView[] = array(
                 'name' => $headers[$i-1],
                 'row1' => $data[1][$headers[$i-1]],
-                'row2' => (isset($data[2]))? $data[2][$headers[$i-1]] : null,
+                'row2' => (isset($data[2]) && isset($data[2][$headers[$i-1]]))? $data[2][$headers[$i-1]] : null,
                 'form' => ImportMatchFileType::getFieldNameByNumber($i),
             );
         }
@@ -157,6 +195,12 @@ class ImportMapping
         return $dataView;
     }
 
+    /**
+     * Set mapping into session
+     *
+     * @param Form $form
+     * @param array $data
+     */
     public function setupMapping(Form $form, array $data)
     {
         $result = array();
@@ -174,7 +218,12 @@ class ImportMapping
         $this->storage->setFileLine(0);
     }
 
-    public function isHavePaymentMapping($row)
+    /**
+     * @param array $row
+     *
+     * @return bool
+     */
+    public function hasPaymentMapping(array $row)
     {
         if (!isset($row[self::KEY_PAYMENT_AMOUNT]) || !isset($row[self::KEY_PAYMENT_DATE])) {
             return false;
@@ -183,7 +232,12 @@ class ImportMapping
         return true;
     }
 
-    public function isSkipped($row)
+    /**
+     * @param array $row
+     *
+     * @return bool
+     */
+    public function isSkipped(array $row)
     {
         $skip = false;
 
@@ -197,6 +251,35 @@ class ImportMapping
         return $skip;
     }
 
+    /**
+     * @param Tenant $tenant
+     * @param Contract $contract
+     * @param ResidentMapping $residentMapping
+     *
+     * @return ContractWaiting
+     */
+    public function createContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
+    {
+        $waitingRoom = new ContractWaiting();
+        $waitingRoom->setStartAt($contract->getStartAt());
+        $waitingRoom->setFinishAt($contract->getFinishAt());
+        $waitingRoom->setRent($contract->getRent());
+        $waitingRoom->setImportedBalance($contract->getImportedBalance());
+        $waitingRoom->setUnit($contract->getUnit());
+
+        $waitingRoom->setFirstName($tenant->getFirstName());
+        $waitingRoom->setLastName($tenant->getLastName());
+
+        $waitingRoom->setResidentId($residentMapping->getResidentId());
+
+        return $waitingRoom;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return array
+     */
     public static function parseName($name)
     {
         $names = explode(' ', $name);

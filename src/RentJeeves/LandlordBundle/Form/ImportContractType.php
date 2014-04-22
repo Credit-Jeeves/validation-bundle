@@ -3,8 +3,9 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\LandlordBundle\Accounting\AccountingImport;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,6 +30,10 @@ class ImportContractType extends AbstractType
 
     protected $tenant;
 
+    protected $unit;
+
+    protected $residentMapping;
+
     protected $em;
 
     protected $translator;
@@ -41,6 +46,8 @@ class ImportContractType extends AbstractType
      */
     public function __construct(
         Tenant $tenant,
+        Unit $unit,
+        ResidentMapping $residentMapping,
         EntityManager $em,
         Translator $translator,
         $token = true,
@@ -51,6 +58,8 @@ class ImportContractType extends AbstractType
         $this->tenant = $tenant;
         $this->em = $em;
         $this->translator = $translator;
+        $this->unit = $unit;
+        $this->residentMapping = $residentMapping;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -96,6 +105,19 @@ class ImportContractType extends AbstractType
             )
         );
 
+        $builder->add(
+            'unit',
+            new ImportUnitType()
+        );
+
+        $builder->add(
+            'residentMapping',
+            new ImportResidentMappingType(),
+            array(
+                'mapped' => false,
+            )
+        );
+
         if ($this->isUseToken) {
             $builder->add(
                 '_token',
@@ -106,6 +128,8 @@ class ImportContractType extends AbstractType
             );
         }
 
+        $self = $this;
+
         if ($this->isUseOperation) {
             $builder->add(
                 'operation',
@@ -114,46 +138,91 @@ class ImportContractType extends AbstractType
                     'mapped'=> false
                 )
             );
-
-            $self = $this;
             $builder->addEventListener(
                 FormEvents::SUBMIT,
                 function (FormEvent $event) use ($options, $self) {
-                    $form = $event->getForm();
-                    if (is_null($self->tenant->getId())) {
-                        return;
-                    }
-                    /**
-                     * @var $contract Contract
-                     */
-                    $contract = $form->getData();
-                    if (is_null($contract->getId())) {
-                        return;
-                    }
-
-                    $operationField = $form->get('operation');
-                    /**
-                     * @var $operation Operation
-                     */
-                    $operation = $operationField->getData();
-
-                    $operation = $self->em->getRepository('DataBundle:Operation')->getOperationForImport(
-                        $self->tenant,
-                        $contract,
-                        $operation->getPaidFor(),
-                        $operation->getAmount()
-                    );
-
-                    if (empty($operation)) {
-                        return;
-                    }
-
-                    $errorMessage = $self->translator->trans('error.operation.exist');
-                    $amount = $operationField->get('amount')->addError(new FormError($errorMessage));
-                    $paidFor = $operationField->get('paidFor')->addError(new FormError($errorMessage));
+                    $self->processOperation($event);
                 }
             );
         }
+
+        $builder->addEventListener(
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($options, $self) {
+                $self->setUnitName($event);
+                $self->setResidentId($event);
+            }
+        );
+    }
+
+    public function setUnitName(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (empty($data)) {
+            return;
+        }
+        if (!isset($data['unit'])) {
+            $data['unit'] = array();
+        }
+        $data['unit'] = array(
+            'name' => $this->unit->getName(),
+        );
+        $event->setData($data);
+    }
+
+    public function setResidentId(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (empty($data)) {
+            return;
+        }
+        if (!isset($data['residentMapping'])) {
+            $data['residentMapping'] = array();
+        }
+        $data['residentMapping'] = array(
+            'residentId' => $this->residentMapping->getResidentId(),
+        );
+        $event->setData($data);
+    }
+
+    protected function processOperation(FormEvent $event)
+    {
+        $form = $event->getForm();
+        if (is_null($this->tenant->getId())) {
+            return;
+        }
+        /**
+         * @var $contract Contract
+         */
+        $contract = $form->getData();
+        if (is_null($contract->getId())) {
+            return;
+        }
+
+        $operationField = $form->get('operation');
+        /**
+         * @var $operation Operation
+         */
+        $operation = $operationField->getData();
+
+        if (!$operation->getPaidFor() || !$operation->getAmount()) {
+            return;
+        }
+
+        $operation = $this->em->getRepository('DataBundle:Operation')->getOperationForImport(
+            $this->tenant,
+            $contract,
+            $operation->getPaidFor(),
+            $operation->getAmount()
+        );
+
+        if (empty($operation)) {
+            return;
+        }
+
+        $errorMessage = $this->translator->trans('error.operation.exist');
+        $amount = $operationField->get('amount')->addError(new FormError($errorMessage));
+        $paidFor = $operationField->get('paidFor')->addError(new FormError($errorMessage));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
