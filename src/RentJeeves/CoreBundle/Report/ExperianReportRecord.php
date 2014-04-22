@@ -255,7 +255,7 @@ class ExperianReportRecord
             $unitNo = 1;
         }
 
-        return sprintf('p%u%', $this->contract->getProperty()->getId(), $unitNo);
+        return sprintf('p%su%s', $this->contract->getProperty()->getId(), $unitNo);
     }
 
     public function getTenantCity()
