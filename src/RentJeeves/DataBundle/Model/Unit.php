@@ -30,14 +30,16 @@ abstract class Unit
      * @Assert\NotBlank(
      *     message="error.unit.empty",
      *     groups={
-     *         "import"
+     *         "import",
+     *         "registration_tos"
      *     }
      * )
      * @Assert\Regex(
      *     message="error.unit.regexp",
      *     pattern = "/^[A-Za-z_0-9\-]{1,50}$/",
      *     groups = {
-     *         "import"
+     *         "import",
+     *         "registration_tos"
      *     }
      * )
      * @Serializer\Groups({"RentJeevesImport"})

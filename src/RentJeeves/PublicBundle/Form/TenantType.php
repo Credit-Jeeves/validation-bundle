@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use RentJeeves\PublicBundle\Form\UnitType;
 
 class TenantType extends AbstractType
 {
@@ -69,6 +70,7 @@ class TenantType extends AbstractType
                 ),
             )
         );
+
         $builder->add(
             'tos',
             'checkbox',
@@ -82,6 +84,32 @@ class TenantType extends AbstractType
                         'groups'    => 'registration_tos'
                     )
                 ),
+            )
+        );
+
+        $builder->add(
+            'propertyId',
+            'hidden',
+            array(
+                'label'         => '',
+                'data'          => false,
+                'mapped'        => false,
+                'error_bubbling' => true,
+                'constraints'    => new NotBlank(
+                        array(
+                            'message'   => 'error.property.empty',
+                            'groups'    => 'registration_tos'
+                        )
+                    ),
+            )
+        );
+
+        $builder->add(
+            'unit',
+            new UnitType(),
+            array(
+                'mapped'         => false,
+                'error_bubbling' => true,
             )
         );
     }

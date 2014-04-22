@@ -1,5 +1,6 @@
 $(document).ready(function(){
-
+//TODO in future this must be refactor, because such think much more better build with knockoutjs and I don't like this
+// code it's hard to support it
     function initScroll() {
       $('#search-result-text').slimScroll({
         alwaysVisible:true,
@@ -44,7 +45,7 @@ $(document).ready(function(){
             );
 
             contentString += '<hr /><a href="'+link+'" class="button small inviteLandlord" >';
-            contentString += '<span>Invite Your Landlord</span></a>';
+            contentString += '<span>'+Translator.trans('invite.landlord')+'</span></a>';
 
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
@@ -79,14 +80,94 @@ $(document).ready(function(){
         }
     });
 
+
+    function getUnitName(element)
+    {
+        var selectBox = element.find('.select-unit').find(':selected');
+        var inputBox = element.find('.unitNew');
+
+        if (inputBox.parent().css('display') !== 'none') {
+            return inputBox.val();
+        }
+
+        if (selectBox.hasClass('noneField') || selectBox.hasClass('addNewUnit')) {
+            return '';
+        }
+
+        return selectBox.val();
+    }
+
+    function selectProperty(propertyId, isHide)
+    {
+        var propertyElement = null;
+
+        if (isHide === false) {
+            $.each($('.addressText'), function(index, value) {
+                var id = $(this).attr('data');
+                if(id != propertyId) {
+                    $(this).show();
+                } else {
+                    $(this).css({backgroundColor:'#FFFFFF'});
+                    propertyElement = $(this);
+                }
+            });
+        } else {
+            $.each($('.addressText'), function(index, value) {
+                var id = $(this).attr('data');
+                if(id != propertyId) {
+                    $(this).hide();
+                } else {
+                    $(this).css({backgroundColor:'#EEEEEE'});
+                    propertyElement = $(this);
+                }
+            });
+        }
+
+        return propertyElement;
+    }
+
+    function selectUnit(propertyElement, unitName)
+    {
+        var isSelected = false;
+        $.each(propertyElement.find('.select-unit option'), function(index, value) {
+            if ($(value).attr('value') === unitName) {
+                $(this).attr("selected","selected");
+                isSelected = true;
+            }
+        });
+
+        if (isSelected) {
+            return;
+        }
+
+        propertyElement.find('.createNewUnit').show();
+        propertyElement.find('.lab1').show();
+        propertyElement.find('.lab2').hide();
+        propertyElement.find('div>.selectUnit').hide();
+        propertyElement.find('.unitNew').val(unitName);
+    }
+
+    $('.unitNew').change(function(){
+        console.info('Hiii');
+        console.info($(this).val());
+        $('.FormUnitName').val(getUnitName($(this).parent().parent()));
+    });
+
     $('.select-unit').change(function(){
       val = $(this).val();
-      if(val == 'new') {
+      if(val === 'new') {
         $(this).parent().hide();
         $(this).parent().parent().find('.createNewUnit').show();
         $(this).parent().parent().find('.lab1').show();
         $(this).parent().parent().find('.lab2').hide();
+        $('.FormUnitName').val('');
       }
+
+      if (val === 'none') {
+        $('.FormUnitName').val('');
+      }
+
+      $('.FormUnitName').val(getUnitName($(this).parent().parent().parent()));
     });
 
     $('.see-all').click(function() {
@@ -96,6 +177,7 @@ $(document).ready(function(){
       $(this).parent().parent().find('.noneField').attr('selected', true);
       $(this).parent().parent().find('.lab2').show();
       $(this).parent().parent().find('.lab1').hide();
+      $('.FormUnitName').val('');
       return false;
     });
 
@@ -110,39 +192,26 @@ $(document).ready(function(){
       }
     });
 
+
     $('.thisIsMyRental').click(function(){
         if($(this).hasClass('match')) {
           propertyId = $(this).attr('data');
-          $.each($('.addressText'), function(index, value) {
-              var id = $(this).attr('data');
-              if(id != propertyId) {
-                $(this).show();
-              } else {
-                $(this).css({backgroundColor:'#FFFFFF'});
-              }
-          });
-          
-          $('#propertyId').val('');
+          selectProperty(propertyId, isHide = false);
+          $('.FormPropertyId').val('');
+          $('.FormUnitName').val('');
           $('#register').addClass('greyButton');
           initScroll();
           $(this).removeClass('match');
         } else {
           propertyId = $(this).attr('data');
-          $.each($('.addressText'), function(index, value) {
-              var id = $(this).attr('data');
-              if(id != propertyId) {
-                $(this).hide();
-              } else {
-                $(this).css({backgroundColor:'#EEEEEE'});
-              }
-          });
-          
-          $('#propertyId').val(propertyId);
+          selectProperty(propertyId, isHide = true);
+          $('.FormPropertyId').val(propertyId);
+          $('.FormUnitName').val(getUnitName($(this).parent().parent().parent()));
           $('#register').removeClass('greyButton');
           initScroll();
           $(this).addClass('match');
-          //$(this).hide();
         }
+
         return false;
     });
     
@@ -161,4 +230,23 @@ $(document).ready(function(){
     $('#pricing-popup button.button-close').click(function(){
       $("#pricing-popup").dialog('close');
     });
+
+    function initSelectedOption()
+    {
+        var propertyId = $('.FormPropertyId').val();
+        var unitName = $('.FormUnitName').val();
+
+        if (propertyId === undefined || propertyId.length === 0) {
+            return;
+        }
+
+        var propertyElement = selectProperty(propertyId, isHide = true);
+        if (propertyElement === null || unitName.length === 0) {
+            return;
+        }
+
+        selectUnit(propertyElement, unitName);
+    }
+
+    initSelectedOption();
 });
