@@ -10,10 +10,11 @@ use CreditJeeves\ExperianBundle\Pidkiq;
 
 /**
  * PIDKIQ test case.
+ * @see src/RentJeeves/ExperianBundle/Tests/Functional/PidkiqCase.php
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class PidkiqCase extends BaseTestCase
+abstract class PidkiqCase extends BaseTestCase
 {
 
     protected $users = array(
