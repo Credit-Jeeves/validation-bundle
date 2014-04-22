@@ -250,10 +250,12 @@ class ExperianReportRecord
     public function getTenantAddressUniqueIdentifier()
     {
         if ($unit = $this->contract->getUnit()) {
-            return $unit->getId();
+            $unitNo = $unit->getId();
+        } else {
+            $unitNo = 1;
         }
 
-        return $this->contract->getProperty()->getId();
+        return sprintf('p%u%', $this->contract->getProperty()->getId(), $unitNo);
     }
 
     public function getTenantCity()
