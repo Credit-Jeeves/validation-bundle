@@ -707,6 +707,14 @@
                <source>bureau.reporting.save</source>
                <target>Save</target>
            </trans-unit>
+           <trans-unit id="bureau.reporting.experian.title">
+               <source>bureau.reporting.experian.title</source>
+               <target>Experian Reporting</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.trans_union.title">
+               <source>bureau.reporting.trans_union.title</source>
+               <target>TransUnion Reporting</target>
+           </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
                 <target>Payment Reporting</target>
@@ -2283,6 +2291,14 @@
             <trans-unit id="error.operation.exist">
                 <source>error.operation.exist</source>
                 <target>For that date already have payment with such sum.</target>
+            </trans-unit>
+            <trans-unit id="common.on">
+                <source>common.on</source>
+                <target>On</target>
+            </trans-unit>
+            <trans-unit id="common.off">
+                <source>common.off</source>
+                <target>Off</target>
             </trans-unit>
         </body>
     </file>
