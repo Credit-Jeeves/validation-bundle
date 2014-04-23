@@ -10,10 +10,11 @@ use CreditJeeves\ExperianBundle\Pidkiq;
 
 /**
  * PIDKIQ test case.
+ * @see src/RentJeeves/ExperianBundle/Tests/Functional/PidkiqCase.php
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class PidkiqCase extends BaseTestCase
+abstract class PidkiqCase extends BaseTestCase
 {
 
     protected $users = array(
@@ -199,8 +200,8 @@ class PidkiqCase extends BaseTestCase
      * 2013.06.17 It works again
      * 2014.04.18 It does not work
      *
-     * @~expectedException \ExperianException
-     * @~expectedExceptionMessage No questions returned due to excessive use
+     * @expectedException \ExperianException
+     * @expectedExceptionMessage No questions returned due to excessive use
      */
     public function getResponseOnUserDataTimeout()
     {

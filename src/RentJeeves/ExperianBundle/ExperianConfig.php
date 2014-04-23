@@ -27,6 +27,10 @@ class ExperianConfig extends Base
         $netConnectXmlContent['AddOns']['RiskModels']['VantageScore3'] = 'Y';
         $netConnectXmlContent['OutputType']['ARF']['Segment130'] = 'Y';
         sfConfig::set('experian_net_connect_XML_content', $netConnectXmlContent);
+
+        $pidkiqXmlContent = sfConfig::get('experian_pidkiq_XML_content');
+        $pidkiqXmlContent['Options']['AccessChannel'] = 'PPQ';
+        sfConfig::set('experian_pidkiq_XML_content', $pidkiqXmlContent);
         parent::__construct($serverName, $em, $isLogging);
     }
 }
