@@ -165,6 +165,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/DoctrineExtensions.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/BackupRestoreBundle.git"
         }
     ],
     "require": {
@@ -249,7 +253,8 @@
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
         "sensio/generator-bundle": "dev-master",
-        "khepin/yaml-fixtures-bundle": "dev-master"
+        "khepin/yaml-fixtures-bundle": "dev-master",
+        "comfortablynumb/backup-restore-bundle": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [

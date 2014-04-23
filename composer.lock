@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "8c04b59dff2ea337916851889e65ff73",
+    "hash": "a46e2b28c5a4dc238442f74a514427b1",
     "packages": [
         {
             "name": "a2lix/translation-form-bundle",
@@ -5316,6 +5316,38 @@
             "time": "2014-04-14 01:29:34"
         },
         {
+            "name": "comfortablynumb/backup-restore-bundle",
+            "version": "dev-master",
+            "target-dir": "ENC/Bundle/BackupRestoreBundle",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:66Ton99/BackupRestoreBundle.git",
+                "reference": "4bb8882241a554490be7218d1244537373fba56b"
+            },
+            "require": {
+                "doctrine/dbal": ">=2.0",
+                "ext-mcrypt": "*",
+                "php": ">=5.3.3"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "ENC\\Bundle\\BackupRestoreBundle": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gustavo Falco",
+                    "email": ""
+                }
+            ],
+            "description": "Backup and Restore helper classes to run DB vendor's utilities for such tasks",
+            "time": "2014-03-13 17:31:06"
+        },
+        {
             "name": "doctrine/data-fixtures",
             "version": "dev-master",
             "source": {
@@ -5703,7 +5735,8 @@
         "doctrine/data-fixtures": 20,
         "doctrine/doctrine-fixtures-bundle": 15,
         "sensio/generator-bundle": 20,
-        "khepin/yaml-fixtures-bundle": 20
+        "khepin/yaml-fixtures-bundle": 20,
+        "comfortablynumb/backup-restore-bundle": 20
     },
     "platform": {
         "php": ">=5.4.12,<5.5.0",

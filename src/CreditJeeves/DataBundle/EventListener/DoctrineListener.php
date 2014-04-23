@@ -35,7 +35,7 @@ class DoctrineListener
 
     }
 
-    private function getReportScore(ReportPrequal $Report, $em)
+    protected function getReportScore($report)
     {
         return $report->getArfReport()->getScore();
     }
