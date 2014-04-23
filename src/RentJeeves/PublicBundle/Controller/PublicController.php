@@ -5,6 +5,8 @@ namespace RentJeeves\PublicBundle\Controller;
 use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Validators\TenantEmail;
 use RentJeeves\DataBundle\Validators\TenantEmailValidator;
@@ -174,64 +176,64 @@ class PublicController extends Controller
     public function newAction($propertyId)
     {
         $request = $this->get('request');
-        $em = $this->get('doctrine.orm.entity_manager');
+        $em = $this->getDoctrine()->getManager();
         $google = $this->get('google');
-        $propertyIdForm = (int)$request->request->get('propertyId');
-        
-        if ($propertyIdForm <= 0) {
-            $Property = $em->getRepository('RjDataBundle:Property')
-                ->findOneWithUnitAndAlphaNumericSort($propertyId);
-        } else {
-            $Property = $em->getRepository('RjDataBundle:Property')
-                ->findOneWithUnitAndAlphaNumericSort($propertyIdForm);
-        }
 
-        if (!$Property) {
+        $property = $em->getRepository('RjDataBundle:Property')
+            ->findOneWithUnitAndAlphaNumericSort($propertyId);
+
+
+        if (!$property) {
             return $this->redirect($this->generateUrl("iframe"));
         }
 
         $tenant = new Tenant();
         $form = $this->createForm(
-            new TenantType(),
+            $tenantType = new TenantType($this->getDoctrine()->getManager()),
             $tenant
         );
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $password = $form->get('password')->getData();
+            /**
+             * @var $tenant Tenant
+             */
             $tenant = $form->getData();
-            $aForm = $request->request->get($form->getName());
-            $unitName = $request->request->get('unit'.$Property->getId());
-            $unitNew = $request->request->get('unitNew'.$Property->getId());
-            $unitSearch = null;
-            if (!empty($unitName) && $unitName != 'new') {
-                $unitSearch = $unitName;
-            } elseif (!empty($unitNew) && $unitNew != 'none') {
-                $unitSearch = $unitNew;
-            }
-
             $password = $this->container->get('user.security.encoder.digest')
-                    ->encodePassword($aForm['password']['Password'], $tenant->getSalt());
-
+                    ->encodePassword($password, $tenant->getSalt());
             $tenant->setPassword($password);
             $tenant->setCulture($this->container->parameters['kernel.default_locale']);
-            $em = $this->getDoctrine()->getManager();
+            /**
+             * @var $unit Unit
+             */
+            $unit = $form->get('unit')->getData();
+            $propertyIdForm = $form->get('propertyId')->getData();
+            /**
+             * @var $propertyForm Property
+             */
+            $propertyForm = $em->getRepository('RjDataBundle:Property')
+                ->findOneWithUnitAndAlphaNumericSort($propertyIdForm);
+
+
             $em->persist($tenant);
             $em->flush();
-            $Property->createContract($em, $tenant, $unitSearch);
             $this->get('project.mailer')->sendRjCheckEmail($tenant);
+
+            $propertyForm->createContract($em, $tenant, $unit->getName(), $tenantType->getWaitingContract());
 
             return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }
 
-        $propertyList = $google->searchPropertyInRadius($Property);
+        $propertyList = $google->searchPropertyInRadius($property);
         
-        if (isset($propertyList[$Property->getId()])) {
-            unset($propertyList[$Property->getId()]);
+        if (isset($propertyList[$property->getId()])) {
+            unset($propertyList[$property->getId()]);
         }
 
-        $propertyList = array_merge(array($Property), $propertyList);
+        $propertyList = array_merge(array($property), $propertyList);
 
-        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($Property->getId());
+        $countGroup = $em->getRepository('RjDataBundle:Property')->countGroup($property->getId());
 
         if ($countGroup <= 0) {
             return $this->redirect($this->generateUrl("iframe_invite", array('propertyId'=>$propertyId)));
@@ -239,7 +241,7 @@ class PublicController extends Controller
 
         return array(
             'form'              => $form->createView(),
-            'property'          => $Property,
+            'property'          => $property,
             'propertyList'      => $propertyList,
             'countPropery'      => count($propertyList),
         );

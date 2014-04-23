@@ -1,6 +1,7 @@
 <?php
 namespace RentJeeves\DataBundle\Entity;
 
+use CreditJeeves\DataBundle\Entity\Holding;
 use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\UserIsVerified;
 use CreditJeeves\DataBundle\Enum\UserType;
@@ -235,5 +236,23 @@ class Tenant extends User
     public function getAvailableVerificationStatuses()
     {
         return UserIsVerified::all();
+    }
+
+    public function hasResident(Holding $holding, $residentId)
+    {
+        $residentsMapping = $this->getResidentsMapping();
+        $hasResident = false;
+        /**
+         * @var $residentMapping ResidentMapping
+         */
+        foreach($residentsMapping as $residentMapping) {
+            if ($residentMapping->getResidentId() ===  $residentId
+                && $residentMapping->getHolding() === $holding->getId()
+            ) {
+                $hasResident = true;
+            }
+        }
+
+        return $hasResident;
     }
 }

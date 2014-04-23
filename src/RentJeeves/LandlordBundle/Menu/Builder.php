@@ -3,6 +3,7 @@ namespace RentJeeves\LandlordBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
+use RentJeeves\LandlordBundle\Accounting\Permission;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Builder extends ContainerAware
@@ -30,16 +31,25 @@ class Builder extends ContainerAware
             )
         );
         /**
-         * @var $user Landlord
+         * @var $permission Permission
          */
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        if ($user->haveAccessToReports()) {
-            $menu->addChild(
-                'tab.accounting',
-                array(
-                    'route' => 'accounting_import_file'
-                )
-            );
+        $permission = $this->container->get('accounting.permission');
+        if ($permission->hasAccessToAccountingTab()) {
+            if ($permission->hasAccessToImport()) {
+                $menu->addChild(
+                    'tab.accounting',
+                    array(
+                        'route' => 'accounting_import_file'
+                    )
+                );
+            } else {
+                $menu->addChild(
+                    'tab.accounting',
+                    array(
+                        'route' => 'accounting_export'
+                    )
+                );
+            }
         }
 
         switch ($sRoute) {
@@ -92,18 +102,27 @@ class Builder extends ContainerAware
     public function accountingMenu(FactoryInterface $factory, array $options)
     {
         $menu = $factory->createItem('root');
-        $menu->addChild(
-            'import',
-            array(
-                'route' => 'accounting_import_file'
-            )
-        );
-        $menu->addChild(
-            'export',
-            array(
-                'route' => 'accounting_export'
-            )
-        );
+        /**
+         * @var $permission Permission
+         */
+        $permission = $this->container->get('accounting.permission');
+
+        if ($permission->hasAccessToImport()) {
+            $menu->addChild(
+                'import',
+                array(
+                    'route' => 'accounting_import_file'
+                )
+            );
+        }
+        if ($permission->hasAccessToExport()) {
+            $menu->addChild(
+                'export',
+                array(
+                    'route' => 'accounting_export'
+                )
+            );
+        }
 
         $route = $this->container->get('request')->get('_route');
         switch ($route) {

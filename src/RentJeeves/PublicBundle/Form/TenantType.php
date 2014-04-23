@@ -2,18 +2,58 @@
 
 namespace RentJeeves\PublicBundle\Form;
 
-use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Validators\TenantEmail;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\True;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use RentJeeves\PublicBundle\Form\UnitType;
+use CreditJeeves\DataBundle\Entity\Group;
 
 class TenantType extends AbstractType
 {
+    protected $em;
+
+    /**
+     * @var ContractWaiting
+     */
+    protected $waitingContract = null;
+
+    /**
+     * @param ContractWaiting $waitingContract
+     */
+    public function setWaitingContract(ContractWaiting $waitingContract)
+    {
+        $this->waitingContract = $waitingContract;
+    }
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getWaitingContract()
+    {
+        return $this->waitingContract;
+    }
+
+
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(
+        EntityManager $em
+    ) {
+        $this->em = $em;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
@@ -111,6 +151,82 @@ class TenantType extends AbstractType
                 'mapped'         => false,
                 'error_bubbling' => true,
             )
+        );
+
+        $self = $this;
+        $builder->addEventListener(
+            FormEvents::SUBMIT,
+            function (FormEvent $event) use ($options, $self) {
+                $form = $event->getForm();
+                $unit = $form->get('unit');
+                /**
+                 * @var $unit Unit
+                 */
+                $unit = $unit->getData();
+                $propertyId = $form->get('propertyId')->getData();
+                $unitName = $unit->getName();
+                if (empty($propertyId) || empty($unitName)) {
+                    return;
+                }
+                /**
+                 * @var $property Property
+                 */
+                $property = $self->em->getRepository('RjDataBundle:Property')->find($propertyId);
+
+                if (empty($property)) {
+                    $form->addError(new FormError('error.property.empty'));
+                }
+
+                /**
+                 * @var $unitInDb Unit
+                 */
+                $unitInDb = $property->searchUnit($unit->getName());
+
+                if (empty($unitInDb)) {
+                    return;
+                }
+                /**
+                 * @var $group Group
+                 */
+                $group = $unitInDb->getGroup();
+                $isIntegratedUnit = $group->getGroupSettings()->getIsIntegrated();
+
+                if (!$isIntegratedUnit) {
+                    return;
+                }
+
+                /**
+                 * @var $tenant Tenant
+                 */
+                $tenant = $form->getData();
+                $firstName = strtolower($tenant->getFirstName());
+                $lastName = strtolower($tenant->getLastName());
+                $contractsWaiting = $unitInDb->getContractsWaiting();
+
+                /**
+                 * @var $contractWaiting ContractWaiting
+                 */
+                foreach ($contractsWaiting as $contractWaiting) {
+                    if (strtolower($contractWaiting->getFirstName()) !== $firstName) {
+                        continue;
+                    }
+
+                    if (strtolower($contractWaiting->getLastName()) !== $lastName) {
+                        continue;
+                    }
+
+                    $self->setWaitingContract($contractWaiting);
+                    break;
+                }
+
+                /**
+                 * Seems we have waiting contract for this unit and first_name, last_name not the same
+                 * block with error
+                 */
+                if (is_null($self->getWaitingContract()) && !empty($contractsWaiting)) {
+                    $form->addError(new FormError('error.unit.reserved'));
+                }
+            }
         );
     }
 

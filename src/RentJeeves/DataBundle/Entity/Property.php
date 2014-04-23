@@ -117,28 +117,75 @@ class Property extends Base
         return $result;
     }
 
+    public function searchUnit($unitSearch)
+    {
+        $result = null;
+        foreach ($this->getUnits() as $unit) {
+            if ($unitSearch === $unit->getName()) {
+                $result = $unit;
+                break;
+            }
+        }
+
+        return $result;
+    }
+
     /**
-     * 
+     * @TODO this method so big, maybe we create some service for work with contract? Because seems it's wrong way.
+     *
      * @param string $search
      */
-    public function createContract($em, $tenant, $search = null)
+    public function createContract($em, Tenant $tenant, $search = null, $contractWaiting = null)
     {
         // Search for unit
         $units = $this->getUnits();
-        foreach ($units as $unit) {
-            if ($search == $unit->getName()) {
-                $contract = new Contract();
-                $contract->setTenant($tenant);
-                $contract->setHolding($unit->getHolding());
-                $contract->setGroup($unit->getGroup());
-                $contract->setProperty($unit->getProperty());
-                $contract->setStatus(ContractStatus::PENDING);
-                $contract->setUnit($unit);
-                $em->persist($contract);
-                $em->flush();
-                return true;
+        if ($unit = $this->searchUnit($search)) {
+            $contract = new Contract();
+            $contract->setTenant($tenant);
+            $contract->setHolding($unit->getHolding());
+            $contract->setGroup($unit->getGroup());
+            $contract->setProperty($unit->getProperty());
+            $contract->setStatus(ContractStatus::PENDING);
+            $contract->setUnit($unit);
+
+            /**
+             * @var $contractWaiting ContractWaiting
+             */
+            if (!empty($contractWaiting)) {
+                $contract->setStatus(ContractStatus::APPROVED);
+                $contract->setStartAt($contractWaiting->getStartAt());
+                $contract->setFinishAt($contractWaiting->getFinishAt());
+                $contract->setImportedBalance($contractWaiting->getImportedBalance());
+                $contract->setRent($contractWaiting->getRent());
+
+                $group = $contract->getUnit()->getGroup();
+                $hasResident = true;
+                /**
+                 * On the database level it can be null, so we must check
+                 */
+                if (!empty($group) && $holding = $group->getHolding()) {
+                    $hasResident = $tenant->hasResident(
+                        $holding,
+                        $contractWaiting->getResidentId()
+                    );
+                }
+
+                if (!$hasResident) {
+                    $residentMapping = new ResidentMapping();
+                    $residentMapping->setResidentId($contractWaiting->getResidentId());
+                    $residentMapping->setHolding($holding);
+                    $residentMapping->setTenant($tenant);
+                    $em->persist($residentMapping);
+                }
+
+                $em->remove($contractWaiting);
             }
+
+            $em->persist($contract);
+            $em->flush();
+            return true;
         }
+
         // If there is no such unit we'll send contract for all potential landlords
         $groups = $this->getPropertyGroups();
         foreach ($groups as $group) {
@@ -151,6 +198,7 @@ class Property extends Base
             $contract->setSearch($search);
             $em->persist($contract);
         }
+
         $em->flush();
         return true;
     }

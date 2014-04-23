@@ -2,10 +2,12 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use CreditJeeves\DataBundle\Entity\Group;
 
 /**
  * @ORM\MappedSuperclass
@@ -30,8 +32,7 @@ abstract class Unit
      * @Assert\NotBlank(
      *     message="error.unit.empty",
      *     groups={
-     *         "import",
-     *         "registration_tos"
+     *         "import"
      *     }
      * )
      * @Assert\Regex(
@@ -156,6 +157,23 @@ abstract class Unit
      * )
      */
     protected $deletedAt;
+
+    /**
+     * @param ContractWaiting $contractsWaiting
+     */
+    public function setContractsWaiting(ContractWaiting $contractsWaiting)
+    {
+        $this->contractsWaiting = $contractsWaiting;
+    }
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
+    }
+
 
     /**
      * @param mixed $deletedAt

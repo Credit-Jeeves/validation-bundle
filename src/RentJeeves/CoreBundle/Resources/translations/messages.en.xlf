@@ -727,6 +727,14 @@
                 <source>error.unit.empty</source>
                 <target>Unit can't be empty.</target>
             </trans-unit>
+            <trans-unit id="error.unit.reserved">
+                <source>error.unit.reserved</source>
+                <target><![CDATA[
+                    We're sorry, but we could not find a resident with that name
+                    for specified unit. Please contact your property manager.
+                    ]]>
+                </target>
+            </trans-unit>
            <trans-unit id="error.unit.regexp">
                 <source>error.unit.regexp</source>
                 <target>Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.</target>
