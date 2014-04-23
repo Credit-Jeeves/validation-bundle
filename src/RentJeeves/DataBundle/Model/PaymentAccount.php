@@ -43,9 +43,9 @@ abstract class PaymentAccount
      *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
      *      inversedBy="paymentAccounts"
      * )
-     * @ORM\JoinTable(name="rj_paymentaccount_depositaccount")
+     * @ORM\JoinTable(name="rj_payment_account_deposit_account")
      */
-    protected $deposit_accounts;
+    protected $depositAccounts;
 
     /**
      * @ORM\ManyToOne(
@@ -191,7 +191,7 @@ abstract class PaymentAccount
      */
     public function addDepositAccount(\RentJeeves\DataBundle\Entity\DepositAccount $deposit_account)
     {
-        $this->deposit_accounts[] = $deposit_account;
+        $this->depositAccounts[] = $deposit_account;
         return $this;
     }
 
@@ -202,7 +202,7 @@ abstract class PaymentAccount
      */
     public function removeDepositAccount(\RentJeeves\DataBundle\Entity\DepositAccount $deposit_account)
     {
-        $this->deposit_accounts->removeElement($deposit_account);
+        $this->depositAccounts->removeElement($deposit_account);
     }
 
     /**
@@ -212,7 +212,7 @@ abstract class PaymentAccount
      */
     public function getDepositAccounts()
     {
-        return $this->deposit_accounts;
+        return $this->depositAccounts;
     }
 
     /**

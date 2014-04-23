@@ -15,7 +15,7 @@ class Version20140415120630 extends AbstractMigration
         );
 
         $this->addSql(
-          "CREATE TABLE rj_paymentaccount_depositaccount (deposit_account_id INT NOT NULL,
+          "CREATE TABLE rj_payment_account_deposit_account (deposit_account_id INT NOT NULL,
                 payment_account_id BIGINT NOT NULL,
                 INDEX IDX_3171B7F46E60BC73 (deposit_account_id),
                 INDEX IDX_3171B7F4AE9DDE6F (payment_account_id),
@@ -23,19 +23,19 @@ class Version20140415120630 extends AbstractMigration
                 payment_account_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB"
         );
         $this->addSql(
-          "ALTER TABLE rj_paymentaccount_depositaccount
+          "ALTER TABLE rj_payment_account_deposit_account
                 ADD CONSTRAINT FK_3171B7F46E60BC73
                 FOREIGN KEY (deposit_account_id)
                 REFERENCES rj_deposit_account (id)"
         );
         $this->addSql(
-            "ALTER TABLE rj_paymentaccount_depositaccount
+            "ALTER TABLE rj_payment_account_deposit_account
                 ADD CONSTRAINT FK_3171B7F4AE9DDE6F
                 FOREIGN KEY (payment_account_id)
                 REFERENCES rj_payment_account (id)"
         );
         $this->addSql(
-            "INSERT INTO rj_paymentaccount_depositaccount
+            "INSERT INTO rj_payment_account_deposit_account
              SELECT rj_deposit_account.id deposit_account_id, rj_payment_account.id payment_account_id
              FROM rj_payment_account
              LEFT JOIN cj_account_group on rj_payment_account.group_id=cj_account_group.id
@@ -72,16 +72,16 @@ class Version20140415120630 extends AbstractMigration
           UPDATE rj_payment_account
                 SET rj_payment_account.group_id=(
                     SELECT cj_account_group.id
-                    FROM rj_paymentaccount_depositaccount
-                    LEFT JOIN rj_deposit_account ON rj_deposit_account.id=rj_paymentaccount_depositaccount.deposit_account_id
+                    FROM rj_payment_account_deposit_account
+                    LEFT JOIN rj_deposit_account ON rj_deposit_account.id=rj_payment_account_deposit_account.deposit_account_id
                     LEFT JOIN cj_account_group ON cj_account_group.id=rj_deposit_account.group_id
-                    WHERE rj_paymentaccount_depositaccount.payment_account_id=rj_payment_account.id
+                    WHERE rj_payment_account_deposit_account.payment_account_id=rj_payment_account.id
                 )
                 "
         );
 
         $this->addSql(
-            "DROP TABLE rj_paymentaccount_depositaccount"
+            "DROP TABLE rj_payment_account_deposit_account"
         );
         $this->addSql(
             "ALTER TABLE rj_payment_account
