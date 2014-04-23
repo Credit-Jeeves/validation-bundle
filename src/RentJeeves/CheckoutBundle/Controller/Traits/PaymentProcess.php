@@ -60,7 +60,8 @@ trait PaymentProcess
             $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
         }
 
-        $paymentAccountEntity->setGroup($group);
+        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findByGroup($group)[0];
+        $paymentAccountEntity->addDepositAccount($depositAccount);
 
         $merchantName = $this->getMerchantName($group);
 
