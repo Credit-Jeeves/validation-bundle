@@ -24,10 +24,11 @@ class RjCoreExtension extends Extension
             $configuration,
             $configs
         );
-        $loader = new Loader\XmlFileLoader(
-            $container,
-            new FileLocator(__DIR__.'/../Resources/config')
-        );
-        $loader->load('services.xml');
+        $fileLocator = new FileLocator(__DIR__.'/../Resources/config');
+        $loader = new Loader\XmlFileLoader($container, $fileLocator);
+        $loader->load('services.xml');//TODO change it to YML
+
+        $loader = new Loader\YamlFileLoader($container, $fileLocator);
+        $loader->load('services.yml');
     }
 }

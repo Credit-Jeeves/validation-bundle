@@ -342,7 +342,7 @@ abstract class Contract
      *     mappedBy="contract",
      *     cascade={"persist", "remove", "merge"},
      *     orphanRemoval=true,
-     *     fetch = "EAGER"
+     *     fetch="EAGER"
      * )
      * @Serializer\Exclude
      * @var ArrayCollection
