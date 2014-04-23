@@ -20,7 +20,8 @@ class Permission
      *     "context" = @Inject("security.context")
      * })
      */
-    public function __construct(SecurityContext $context) {
+    public function __construct(SecurityContext $context)
+    {
         $this->user = $context->getToken()->getUser();
     }
 

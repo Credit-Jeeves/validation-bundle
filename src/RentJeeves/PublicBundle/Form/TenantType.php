@@ -131,16 +131,16 @@ class TenantType extends AbstractType
             'propertyId',
             'hidden',
             array(
-                'label'         => '',
-                'data'          => false,
-                'mapped'        => false,
-                'error_bubbling' => true,
-                'constraints'    => new NotBlank(
-                        array(
-                            'message'   => 'error.property.empty',
-                            'groups'    => 'registration_tos'
-                        )
-                    ),
+                'label'             => '',
+                'data'              => false,
+                'mapped'            => false,
+                'error_bubbling'    => true,
+                'constraints'       => new NotBlank(
+                    array(
+                        'message' => 'error.property.empty',
+                        'groups' => 'registration_tos'
+                    )
+                ),
             )
         );
 
