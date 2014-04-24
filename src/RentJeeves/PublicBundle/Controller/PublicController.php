@@ -70,7 +70,7 @@ class PublicController extends Controller
         $landlord = $em->getRepository('RjDataBundle:Landlord')->getLandlordByContract($contract);
 
         if (empty($landlord)) {
-            throw new LogicException("Contract which such id {$contract->getId()} don't have Landlord");
+            throw new LogicException("Contract which such id {$contract->getId()} doesn't have Landlord");
         }
 
         if (!$reminderInvite->sendTenant($contract->getId(), $landlord)) {
