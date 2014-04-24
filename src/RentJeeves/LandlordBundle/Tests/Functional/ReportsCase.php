@@ -20,7 +20,7 @@ class ReportsCase extends BaseTestCase
         $this->page->clickLink('tabs.reports');
 
         $beginD = new DateTime();
-        $beginD->modify('-1 month');
+        $beginD->modify('-1 year');
         $endD = new DateTime();
 
         $this->page->pressButton('base.order.report.download');
@@ -66,7 +66,7 @@ class ReportsCase extends BaseTestCase
 
         $this->assertEquals('1500.00', (string) $totalAmount);
         $this->assertEquals('false', (string) $isCash);
-        $this->assertEquals('PMTCRED 789789', (string) $checkNumber);
+        $this->assertEquals('PMTCRED 123456', (string) $checkNumber);
         $this->assertEquals('TIMOTHY APPLEGATE', (string) $payerName);
         $this->assertEquals('37200.00', (string)$amount);
         $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a', (string)$notes);
@@ -83,7 +83,7 @@ class ReportsCase extends BaseTestCase
         $this->page->clickLink('tabs.reports');
 
         $beginD = new DateTime();
-        $beginD->modify('-1 month');
+        $beginD->modify('-1 year');
         $endD = new DateTime();
 
         $this->page->pressButton('base.order.report.download');
@@ -116,6 +116,6 @@ class ReportsCase extends BaseTestCase
         $this->assertEquals('TIMOTHY', $csvArr[4]);
         $this->assertEquals('APPLEGATE', $csvArr[5]);
         $this->assertEquals('PMTCRED', $csvArr[6]);
-        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a PMTCRED 789789', $csvArr[7]);
+        $this->assertEquals('770 Broadway, Manhattan, New York, NY 10003 #2-a PMTCRED 123456', $csvArr[7]);
     }
 }
