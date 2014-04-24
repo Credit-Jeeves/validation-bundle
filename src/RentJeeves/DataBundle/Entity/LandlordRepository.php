@@ -24,16 +24,13 @@ class LandlordRepository extends EntityRepository
 
         $query = $this->createQueryBuilder('landlord');
         $query->leftJoin('landlord.agent_groups', 'groupLandlord');
-        $query->where('groupLandlord.id = :groupId');
+        $query->leftJoin('landlord.holding', 'holding');
 
-        if (!empty($holding)) {
-            $query->leftJoin('landlord.holding', 'holding');
-            $query->orWhere('holding.id = :holdingId');
-            $query->setParameter('holdingId', $holding->getId());
-        }
-
+        $query->where('groupLandlord.id = :groupId OR holding.id = :holdingId');
         $query->orderBy('landlord.is_super_admin', 'DESC');
+
         $query->setParameter('groupId', $group->getId());
+        $query->setParameter('holdingId', $holding->getId());
 
         $query->setMaxResults(1);
         $query = $query->getQuery();

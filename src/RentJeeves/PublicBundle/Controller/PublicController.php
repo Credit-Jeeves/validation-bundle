@@ -68,9 +68,9 @@ class PublicController extends Controller
         //So we select random landlord for group, it's main problem in architecture
         $reminderInvite = $this->get('reminder.invite');
         $landlord = $em->getRepository('RjDataBundle:Landlord')->getLandlordByContract($contract);
-        //Something happen and we can't find landlord, but anyway we must send email
+
         if (empty($landlord)) {
-            $landlord = new Landlord();
+            throw new LogicException("Contract which such id {$contract->getId()} don't have Landlord");
         }
 
         if (!$reminderInvite->sendTenant($contract->getId(), $landlord)) {
