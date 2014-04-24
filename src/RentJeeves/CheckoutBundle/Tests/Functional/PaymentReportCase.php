@@ -23,8 +23,14 @@ class PaymentReportCase extends BaseTestCase
 
         $this->assertEquals($firstStatus, $order->getStatus());
 
+        $this->clearEmail();
         $count = $paymentReport->synchronize();
-        $this->assertEquals(6, $count);
+        $this->assertEquals(7, $count);
+
+        $this->setDefaultSession('goutte');
+        $this->visitEmailsPage();
+        $this->assertNotNull($emails = $this->page->findAll('css', 'a'));
+        $this->assertCount(4, $emails);
 
         $this->assertEquals($secondStatus, $order->getStatus());
     }
@@ -33,7 +39,7 @@ class PaymentReportCase extends BaseTestCase
     {
         return array(
             array('369369', 'complete', 'returned'),
-            array('258258', 'new', 'complete'),
+            array('258258', 'new', 'cancelled'),
             array('123123', 'complete', 'refunded'),
             array('456456', 'complete', 'cancelled'),
         );
