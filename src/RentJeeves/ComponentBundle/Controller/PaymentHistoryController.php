@@ -1,8 +1,6 @@
 <?php
 namespace RentJeeves\ComponentBundle\Controller;
 
-use JMS\Serializer\SerializationContext;
-use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -92,26 +90,5 @@ class PaymentHistoryController extends Controller
             'aFinishedContracts' => $finished,
             'aMonthes' => $aMonthes,
         );
-    }
-
-    /**
-     * @Template
-     */
-    public function paymentsAction()
-    {
-        $orders = $this->getDoctrine()->getManager()
-            ->getRepository('DataBundle:Order')->getTenantPayments($this->getUser());
-
-        // can't use jms_serializer since order already has handlerCallback used in another serialization
-        array_walk(
-            $orders,
-            function (&$order) {
-                $order = $order->getTenantPayment();
-            }
-        );
-
-        $result = json_encode(array('payments' => $orders));
-
-        return array('payments' => $result);
     }
 }
