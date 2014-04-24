@@ -81,7 +81,7 @@ class PaymentReport
     {
         $reversedPayment = array_filter(
             $data,
-            function($transaction) use ($paymentData) {
+            function ($transaction) use ($paymentData) {
                 if ($transaction['OriginalTransactionID'] == $paymentData['TransactionID'] &&
                     $transaction['TransactionType'] != $paymentData['TransactionType']
                 ) {
