@@ -132,7 +132,22 @@ class ImportMapping
             }
         }
 
-        return $this->makeSureAllKeysExist($mappedData);
+        return $this->specificProcessingFields($this->makeSureAllKeysExist($mappedData));
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     */
+    protected function specificProcessingFields($data)
+    {
+        $rent = $data[self::KEY_RENT];
+        $rent = str_replace(',', '', $rent);
+        $rent = str_replace(' ', '', $rent);
+        $data[self::KEY_RENT] = $rent;
+
+        return $data;
     }
 
     /**

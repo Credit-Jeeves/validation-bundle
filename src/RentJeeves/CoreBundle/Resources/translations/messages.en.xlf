@@ -2080,9 +2080,9 @@
                 <source>csv.file</source>
                 <target>CSV File</target>
             </trans-unit>
-            <trans-unit id="collumn.name">
-                <source>collumn.name</source>
-                <target>Collumn Name</target>
+            <trans-unit id="common.column">
+                <source>common.column</source>
+                <target>Column</target>
             </trans-unit>
             <trans-unit id="import.data.row1">
                 <source>import.data.row1</source>
@@ -2130,7 +2130,7 @@
             </trans-unit>
             <trans-unit id="you.need.map">
               <source>you.need.map</source>
-              <target>You need to map at least 9 fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
+              <target>You need to map at least %NUMBER% fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
             </trans-unit>
             <trans-unit id="auto.import">
               <source>auto.import</source>
@@ -2230,7 +2230,7 @@
             </trans-unit>
             <trans-unit id="import.review.and.post">
               <source>import.review.and.post</source>
-              <target>Import data and review next</target>
+              <target>Import and Review Next Page</target>
             </trans-unit>
             <trans-unit id="import.review.finish">
               <source>import.review.finish</source>

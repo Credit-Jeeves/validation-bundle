@@ -530,6 +530,7 @@ class ImportProcess
     {
         $import = new ModelImport();
         $tenant = $this->getTenant($row);
+        $import->setEmail($row[ImportMapping::KEY_EMAIL]);
         $import->setTenant($tenant);
         $import->setIsSkipped(false);
         if ($this->mapping->isSkipped($row)) {
@@ -770,6 +771,9 @@ class ImportProcess
                     $data       = $form->getData();
                     $residentMapping = $form->get('contract')->get('residentMapping')->getData();
                     $tenant     = $data['tenant'];
+                    /**
+                     * @var $contract Contract
+                     */
                     $contract   = $data['contract'];
                     $email = $tenant->getEmail();
                     if (empty($email)) {
