@@ -21,6 +21,7 @@ use DateTime;
  */
 class AjaxController extends Controller
 {
+    const TENANT_PAYMENTS_LIMIT = 10;
     /**
      * @Route("/contracts", name="tenant_contracts")
      * @Template()
@@ -130,5 +131,35 @@ class AjaxController extends Controller
 
         $em->flush();
         return new JsonResponse(array());
+    }
+
+    /**
+     * @Route(
+     *      "/tenant_payments/{page}/{contractId}",
+     *      name="tenant_payments",
+     *      defaults={"_format"="json"},
+     *      requirements={"_format"="json"},
+     *      options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function paymentsAction($page = 1, $contractId = null)
+    {
+        $repo = $this->getDoctrine()->getManager()->getRepository('DataBundle:Order');
+
+        $orders = $repo->getTenantPayments($this->getUser(), $page, $contractId, self::TENANT_PAYMENTS_LIMIT);
+
+        $totalOrdersAmount = $repo->getTenantPaymentsAmount($this->getUser(), $contractId);
+        $pages = ceil($totalOrdersAmount / self::TENANT_PAYMENTS_LIMIT);
+
+        // can't use jms_serializer since order already has handlerCallback used in another serialization
+        array_walk(
+            $orders,
+            function (&$order) {
+                $order = $order->getTenantPayment();
+            }
+        );
+
+        return new JsonResponse(array('tenantPayments' => $orders, 'pages' => array($pages)));
     }
 }
