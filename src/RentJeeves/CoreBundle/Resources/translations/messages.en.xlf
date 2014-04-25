@@ -1100,7 +1100,7 @@
             </trans-unit>
             <trans-unit id="popup.landlord.monthly.minimum">
                 <source>popup.landlord.monthly.minimum</source>
-                <target>Monthly Minimum</target>
+                <target>Monthly</target>
             </trans-unit>
             <trans-unit id="popup.landlord.electronic.check.online">
                 <source>popup.landlord.electronic.check.online</source>
@@ -1935,10 +1935,9 @@
             <trans-unit id="already.invited.error">
                 <source>already.invited.error</source>
                 <target><![CDATA[
-                    This email address already invited. We recommmend you
+                    This email was address already invited. We recommend you
                     <a href="%%LINK%%" class="resend-email">
-                    click here to resend the invite.
-                    </a>
+                    click here to resend the invite.</a>
                  ]]>
                 </target>
             </trans-unit>
