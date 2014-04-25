@@ -56,7 +56,7 @@ class PaymentReport
         foreach ($data as $paymentData) {
             switch ($paymentData['TransactionType']) {
                 case 'Payment':
-                    $this->processCompletePayment($paymentData);
+                    $this->processCompletePayment($paymentData, $data);
                     break;
                 case 'Payment  Return':
                     $this->processReturnedPayment($paymentData);
@@ -77,22 +77,36 @@ class PaymentReport
         return count($data);
     }
 
-    protected function processCompletePayment($paymentData)
+    protected function processCompletePayment($paymentData, $data)
     {
-        $transaction = $this->findTransaction($paymentData['TransactionID']);
+        $reversedPayment = array_filter(
+            $data,
+            function ($transaction) use ($paymentData) {
+                if ($transaction['OriginalTransactionID'] == $paymentData['TransactionID'] &&
+                    $transaction['TransactionType'] != $paymentData['TransactionType']
+                ) {
+                    return true;
+                }
+                return false;
+            }
+        );
+        if (!$reversedPayment) {
 
-        if ($transaction && $batchId = $paymentData['BatchID']) {
-            $transaction->setBatchId($batchId);
+            $transaction = $this->findTransaction($paymentData['TransactionID']);
 
-            $transaction->setBatchDate($this->batchDate);
-            
-            $depositDate = $this->getDepositDate($transaction);
-            $transaction->setDepositDate($depositDate);
+            if ($transaction && $batchId = $paymentData['BatchID']) {
+                $transaction->setBatchId($batchId);
 
-            $order = $transaction->getOrder();
-            $order->setStatus(OrderStatus::COMPLETE);
+                $transaction->setBatchDate($this->batchDate);
 
-            $this->em->flush();
+                $depositDate = $this->getDepositDate($transaction);
+                $transaction->setDepositDate($depositDate);
+
+                $order = $transaction->getOrder();
+                $order->setStatus(OrderStatus::COMPLETE);
+
+                $this->em->flush();
+            }
         }
     }
 

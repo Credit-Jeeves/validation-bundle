@@ -32,6 +32,6 @@ class PaymentReportCase extends BaseTestCase
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
         $this->assertCount(4, $count);
-        $this->assertContains('Amount of synchronized payments: 6', $commandTester->getDisplay());
+        $this->assertContains('Amount of synchronized payments: 7', $commandTester->getDisplay());
     }
 }
