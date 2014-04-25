@@ -1999,10 +1999,9 @@
             <trans-unit id="already.invited.error">
                 <source>already.invited.error</source>
                 <target><![CDATA[
-                    This email address already invited. We recommmend you
+                    This email address has already been invited. We recommend you
                     <a href="%%LINK%%" class="resend-email">
-                    click here to resend the invite.
-                    </a>
+                    click here to resend the invite.</a>
                  ]]>
                 </target>
             </trans-unit>
@@ -2259,6 +2258,10 @@
             <trans-unit id="tenant.payments.title">
                 <source>tenant.payments.title</source>
                 <target>Payment History</target>
+            </trans-unit>
+            <trans-unit id="tenant.payments.filter">
+                <source>tenant.payments.filter</source>
+                <target>Filter by Property</target>
             </trans-unit>
             <trans-unit id="payment.status">
                 <source>payment.status</source>

@@ -1,5 +1,8 @@
+# It moved here because #RT-407
+
 parameters:
     data.event_listener.order.class: RentJeeves\DataBundle\EventListener\OrderListener
+    data.event_listener.doctrine.class: RentJeeves\DataBundle\EventListener\DoctrineListener
 
 services:
     data.event_listener.order:

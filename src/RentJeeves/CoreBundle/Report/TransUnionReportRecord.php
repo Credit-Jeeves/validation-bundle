@@ -141,7 +141,7 @@ class TransUnionReportRecord
     {
         $propertyNumber = $this->contract->getProperty()->getId();
 
-        return str_pad($propertyNumber, 20);
+        return str_pad(sprintf('p%s', $propertyNumber), 20);
     }
 
     public function getLeaseNumber()

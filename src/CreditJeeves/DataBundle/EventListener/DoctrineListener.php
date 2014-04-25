@@ -2,6 +2,7 @@
 namespace CreditJeeves\DataBundle\EventListener;
 
 use CreditJeeves\ArfBundle\Parser\ArfParser;
+use CreditJeeves\DataBundle\Entity\Report;
 use CreditJeeves\DataBundle\Entity\ReportPrequal;
 use CreditJeeves\DataBundle\Entity\Score;
 use CreditJeeves\DataBundle\Entity\Tradeline;
@@ -9,29 +10,11 @@ use CreditJeeves\DataBundle\Entity\ApplicantIncentive;
 use CreditJeeves\ArfBundle\Map\ArfTradelines;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Tag;
 
 /**
  * @author Ton Sharp <66ton99@gmail.com>
- *
- * @Service("data.event_listener.doctrine")
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes={
- *         "event"="prePersist",
- *         "method"="prePersist"
- *     }
- * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes={
- *         "event"="postUpdate",
- *         "method"="postUpdate"
- *     }
- * )
  */
-class Doctrine
+class DoctrineListener
 {
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
@@ -49,24 +32,29 @@ class Doctrine
         if ($entity instanceof Tradeline) {
             $this->checkCompleted($entity, $em);
         }
-        
+
+    }
+
+    protected function getReportScore($report)
+    {
+        return $report->getArfReport()->getScore();
     }
 
     /**
-     * @param ReportPrequal $Report
-     * @param EntityManager $em
+     * @param Report $report
+     *
+     * @return int
      */
-    private function setScore(ReportPrequal $Report, $em)
+    protected function setScore(ReportPrequal $report, $em)
     {
-        $arfReport = $Report->getArfReport();
-        $newScore = $arfReport->getValue(ArfParser::SEGMENT_RISK_MODEL, ArfParser::REPORT_SCORE);
+        $newScore = $this->getReportScore($report);
         if ($newScore > 1000) {
             $newScore = 0;
         }
-            $score = new Score();
-            $score->setUser($Report->getUser());
-            $score->setScore($newScore);
-            $em->persist($score);
+        $score = new Score();
+        $score->setUser($report->getUser());
+        $score->setScore($newScore);
+        $em->persist($score);
     }
 
     /**

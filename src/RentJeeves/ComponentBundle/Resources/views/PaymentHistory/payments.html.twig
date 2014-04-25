@@ -1,7 +1,17 @@
-<div class="pod-large pod-border pod-padding shadow" id="tenant-payments" data-bind="visible: tenantPayments().length > 0">
-    <h1>{{ 'tenant.payments.title' | trans() }}</h1>
+<div class="pod-large pod-border pod-padding shadow" id="tenant-payments">
+    <div class="fiter-box" style="margin-bottom: 40px;">
+        <h1>{{ 'tenant.payments.title' | trans() }}</h1>
+        <label>{{ 'tenant.payments.filter'|trans }}</label>
+        <select id="selContract" class="select custom-select blue-arrow selectBox" style="display: none;" data-bind="event: {change: filterPayments}">
+            <option value=''>- {{'all'|trans}} -</option>
+            {% for contract in contracts %}
+                <option value='{{ contract.id }}'>{{ contract.getRentAddress }}</option>
+            {% endfor %}
+        </select>
+    </div>
     <div class="row-20"></div>
-    <div class="properties-table-block table-wrap">
+    <h3 class="notHaveData" data-bind="visible: tenantPayments().length == 0 && isLoading() == false">{{ 'donthavedata'|trans }}</h3>
+    <div class="properties-table-block table-wrap" data-bind="visible: tenantPayments().length > 0">
         <div class="table-margin">
             <table class="properties-table zebra-grid contracts-table">
                 <thead>
@@ -31,11 +41,27 @@
             </table>
         </div>
     </div>
+
+    <nav class="pagination-box" data-bind="visible: pages().length > 0">
+        <ul data-bind="foreach: pages()[0]">
+            <li data-bind="visible: $data == $root.currentPage()"><span data-bind="text: $data"></span></li>
+            <li data-bind="visible: $data != $root.currentPage()"><a href="" data-bind="click: $root.goToPage, text: $data"></a></li>
+        </ul>
+    </nav>
 </div>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var viewModel = new TenantPaymentsViewModel({{ payments|raw }});
+        var viewModel = new TenantPaymentsViewModel();
         ko.applyBindings(viewModel, $('#tenant-payments').get(0));
+
+        $('#selContract').linkselect("destroy");
+        $('#selContract').linkselect({
+            change: function (li, value, text) {
+                viewModel.filterPayments(li, value, text);
+            }
+        });
+
+        viewModel.loadData();
     });
 </script>

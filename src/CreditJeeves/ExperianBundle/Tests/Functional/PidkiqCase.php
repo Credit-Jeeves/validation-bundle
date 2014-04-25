@@ -10,10 +10,11 @@ use CreditJeeves\ExperianBundle\Pidkiq;
 
 /**
  * PIDKIQ test case.
+ * @see src/RentJeeves/ExperianBundle/Tests/Functional/PidkiqCase.php
  *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
-class PidkiqCase extends BaseTestCase
+abstract class PidkiqCase extends BaseTestCase
 {
 
     protected $users = array(
@@ -120,8 +121,11 @@ class PidkiqCase extends BaseTestCase
     protected function getPidkiq()
     {
         $pidkiq = new Pidkiq();
-        $pidkiq->execute(self::getContainer());
-
+        $pidkiq->initConfigs(
+            $this->getContainer()->get('experian.config'),
+            $this->getContainer()->getParameter('experian.logging'),
+            $this->getContainer()->getParameter('kernel.logs_dir')
+        );
         return $pidkiq;
     }
 
@@ -142,57 +146,6 @@ class PidkiqCase extends BaseTestCase
      */
     public function getResponseOnUserDataErrorAddress()
     {
-        $data = $this->users[0];
-        $data['CurrentAddress']['Zip'] = '99999';
-        $resp = $this->getResponseOnUserData($data);
-    }
-
-    /**
-     * @test
-     * @expectedException \ExperianException
-     * @expectedExceptionMessage Unable to standardize current address
-     */
-    public function getResponseOnUserDataErrorAddressUserPwdFromSettings()
-    {
-        require_once __DIR__.'/../../../CoreBundle/sfConfig.php';
-
-        $em = $this->getMock(
-            '\Doctrine\ORM\EntityManager',
-            array('getRepository'),
-            array(),
-            '',
-            false
-        );
-
-        $settings = new Settings();
-        $settings->setPidkiqPassword(\sfConfig::get('experian_pidkiq_userpwd'));
-        $xmlRoot = \sfConfig::get('experian_pidkiq_XML_root');
-        $settings->setPidkiqEai($xmlRoot['EAI']);
-
-        $repo = $this->getMock(
-            '\Doctrine\ORM\EntityRepository',
-            array('find'),
-            array(),
-            '',
-            false
-        );
-
-        $repo->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($settings));
-
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($repo));
-
-
-        \sfConfig::set('experian_net_connect_userpwd', '');
-
-        $this->getContainer()->get('experian.pidkiq')->initConfigs(
-            $this->getContainer()->getParameter('server_name'),
-            $em
-        );
-
         $data = $this->users[0];
         $data['CurrentAddress']['Zip'] = '99999';
         $this->getResponseOnUserData($data);
@@ -222,8 +175,6 @@ class PidkiqCase extends BaseTestCase
             try {
                 $resp = $this->getResponseOnUserData($this->users[$i]);
                 $this->assertTrue(is_array($resp));
-                $resp = $this->getObjectOnUserData($this->users[$i]);
-                $this->assertTrue(($resp instanceof NetConnectResponse));
                 return;
             } catch (\ExperianException $e) {
                 if ('No questions returned due to excessive use' == $e->getMessage()) {
@@ -247,6 +198,7 @@ class PidkiqCase extends BaseTestCase
      * 2013.05.15 It works again
      * 2013.06.12 It does not work
      * 2013.06.17 It works again
+     * 2014.04.18 It does not work
      *
      * @expectedException \ExperianException
      * @expectedExceptionMessage No questions returned due to excessive use
@@ -254,17 +206,5 @@ class PidkiqCase extends BaseTestCase
     public function getResponseOnUserDataTimeout()
     {
         $this->getResponseOnUserData($this->users[0]);
-    }
-
-    /**
-     * Tests Pidkiq->getObjectOnUserData()
-     *
-     * @expectedException \ExperianException
-     * @expectedExceptionMessage No questions returned due to excessive use
-     */
-    protected function getObjectOnUserData($data)
-    {
-        $applicant = $this->getApplicant($data);
-        return $this->getPidkiq()->getObjectOnUserData($applicant);
     }
 }
