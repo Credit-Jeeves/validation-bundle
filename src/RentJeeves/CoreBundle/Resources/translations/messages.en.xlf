@@ -314,6 +314,10 @@
                 <source>nameofunit</source>
                 <target>Name Of Units</target>
             </trans-unit>
+            <trans-unit id="landlord.register.single_property">
+                <source>landlord.register.single_property</source>
+                <target>This is a Single Property with no Units</target>
+            </trans-unit>
             <trans-unit id="savechanges">
                 <source>savechanges</source>
                 <target>Save Changes</target>
@@ -2330,6 +2334,10 @@
             <trans-unit id="common.date_format">
                 <source>common.date_format</source>
                 <target>Date format</target>
+            </trans-unit>
+            <trans-unit id="units.collection.error">
+                <source>units.collection.error</source>
+                <target>You need to specify at least one unit if this property is not single.</target>
             </trans-unit>
         </body>
     </file>

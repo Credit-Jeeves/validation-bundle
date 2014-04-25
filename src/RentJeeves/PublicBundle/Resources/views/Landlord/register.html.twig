@@ -100,20 +100,30 @@
                     <div class="errorsGoogleSearch"></div>
                     <div id="search-result-map"></div>
                 </div>
-                <div class="form-row clearfix">
-                    <label>{{ 'unit.numberof'|trans }}<b>*</b></label>
-                    <div class="fields-box">
-                        <input type="text" placeholder="" id="numberOfUnit" class="zc-width">
-                        <button type="button" id="addUnit" class="button small grey"><span>{{ 'add'|trans }}</span></button>
-                    </div>
+                <div class="single-property-checkbox clearfix">
+                    <label class="checkbox register-tos">
+                        {{ form_errors(form.isSingleProperty) }}
+                        {{ form_widget(form.isSingleProperty) }}
+                        <span>{{ 'landlord.register.single_property'|trans }}</span>
+                    </label>
                 </div>
-                <div class="form-row clearfix full show">
-                    <label>{{ 'nameofunit'|trans}}<b>*</b></label>
-                    <div id="unit-fields-list" class="fields-box unitsListNames">
-                        {% for unitField in form.units %}
-                            {{ form_errors(unitField) }}
-                            {{ form_widget(unitField) }}
-                        {% endfor %}
+                <div id="property-units">
+                    <div class="form-row clearfix">
+                        {{ form_errors(form.units) }}
+                        <label>{{ 'unit.numberof'|trans }}</label>
+                        <div class="fields-box">
+                            <input type="text" placeholder="" id="numberOfUnit" class="zc-width">
+                            <button type="button" id="addUnit" class="button small grey"><span>{{ 'add'|trans }}</span></button>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix full show">
+                        <label>{{ 'nameofunit'|trans}}</label>
+                        <div id="unit-fields-list" class="fields-box unitsListNames">
+                            {% for unitField in form.units %}
+                                {{ form_errors(unitField) }}
+                                {{ form_widget(unitField) }}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
                 <input type="hidden" value="{{ form.units | length }}" id="unitCount">

@@ -33,3 +33,8 @@ form li, .errorsGoogleSearch {
 .tos-input-field {
     transform: none !important;
 }
+.single-property-checkbox {
+    position: relative;
+    margin-left: -50px;
+    padding: 10px 0 10px 0;
+}

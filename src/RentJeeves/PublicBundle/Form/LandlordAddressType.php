@@ -4,9 +4,11 @@ namespace RentJeeves\PublicBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use RentJeeves\PublicBundle\Form\AddressType;
 use RentJeeves\PublicBundle\Form\LandlordType;
+use Symfony\Component\Validator\Constraints\Count;
 
 class LandlordAddressType extends AbstractType
 {
@@ -36,10 +38,30 @@ class LandlordAddressType extends AbstractType
                 'type'          => 'text',
                 'required'      => false,
                 'allow_add'     => true,
+                'error_bubbling' => false,
                 'options'       => array(
                     'required'  => false,
-                    'attr'      => array('class' => 'unit-box')
+                    'attr'      => array('class' => 'unit-box'),
                 ),
+                'constraints'   => new Count(
+                        array(
+                            'min' => 1,
+                            'max' => 100000,
+                            'groups' => 'multi_unit_property',
+                            'minMessage' => 'units.collection.error'
+                        )
+                    ),
+            )
+        );
+
+        $builder->add(
+            'isSingleProperty',
+            'checkbox',
+            array(
+                'label'         => 'landlord.register.single_property',
+//                'data'          => false,
+//                'mapped'        => false,
+                'required'      => false,
             )
         );
     }
@@ -51,7 +73,15 @@ class LandlordAddressType extends AbstractType
                 'csrf_protection'    => true,
                 'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
-                'inviteEmail'        => false
+                'inviteEmail'        => false,
+                'validation_groups' => function(FormInterface $form) {
+                        $data = $form->getData();
+                        if ($data['isSingleProperty'] == false) {
+                            return array('multi_unit_property');
+                        } else {
+                            return array('default');
+                        }
+                    },
             )
         );
     }

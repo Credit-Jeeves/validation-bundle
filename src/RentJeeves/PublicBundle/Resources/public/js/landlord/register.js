@@ -61,4 +61,15 @@ $(document).ready(function(){
     if($('.propertyId').val().length > 0) {
         markAsValid();
     }
+
+    $('.single-property-checkbox input[type=checkbox]').click(function(){
+        if ($('#property-units').is(":visible") === true) {
+            $('#property-units').hide();
+            $('.unit-name').remove();
+            $('#numberOfUnit').val('')
+            $('#unitCount').val(0)
+        } else {
+            $('#property-units').show();
+        }
+    });
 });
