@@ -11,12 +11,11 @@ class EmailTenantCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function testExecuteAutoPayment()
+    public function executeAutoPayment()
     {
         $this->load(true);
         static::$kernel = null;
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
+        $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
 
         $plugin = $this->registerEmailListener();
@@ -28,7 +27,6 @@ class EmailTenantCommandCase extends BaseTestCase
             array(
                 'command' => $command->getName(),
                 '--auto' => true,
-                '--days' => 5
             )
         );
         $this->assertRegExp('/Start processing auto payment contracts/', $commandTester->getDisplay());
@@ -37,10 +35,9 @@ class EmailTenantCommandCase extends BaseTestCase
     /**
      * @test
      */
-    public function testExecuteNonAutoPayment()
+    public function executeNonAutoPayment()
     {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
+        $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
     
         $plugin = $this->registerEmailListener();
@@ -51,19 +48,46 @@ class EmailTenantCommandCase extends BaseTestCase
         $commandTester->execute(
             array(
                 'command' => $command->getName(),
+                '--days' => 0,
             )
         );
         $this->assertRegExp('/Start processing non auto contracts/', $commandTester->getDisplay());
     }
 
     /**
+     * @test
+     */
+    public function executeDueAutoPayment()
+    {
+        $application = new Application($this->getKernel());
+        $application->add(new EmailTenantCommand());
+
+        $plugin = $this->registerEmailListener();
+        $plugin->clean();
+
+        $command = $application->find('Email:tenant');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute(
+            array(
+                'command' => $command->getName(),
+                '--days' => 0,
+                '--auto' => true,
+            )
+        );
+        $this->assertRegExp(
+            '/Start processing auto payment contracts.*Finished command/',
+            $commandTester->getDisplay()
+        );
+        $this->assertCount(1, $plugin->getPreSendMessages());
+    }
+
+    /**
      * Late payment
      * @test
      */
-    public function textExecuteLate()
+    public function executeLate()
     {
-        $kernel = $this->getKernel();
-        $application = new Application($kernel);
+        $application = new Application($this->getKernel());
         $application->add(new EmailTenantCommand());
         
         $plugin = $this->registerEmailListener();
@@ -78,7 +102,6 @@ class EmailTenantCommandCase extends BaseTestCase
             )
         );
         $this->assertRegExp('/Start processing late contracts/', $commandTester->getDisplay());
-        $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(2, $count);
+        $this->assertCount(1, $plugin->getPreSendMessages());
     }
 }

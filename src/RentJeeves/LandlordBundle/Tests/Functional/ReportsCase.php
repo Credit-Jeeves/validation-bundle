@@ -20,7 +20,7 @@ class ReportsCase extends BaseTestCase
         $this->page->clickLink('tabs.reports');
 
         $beginD = new DateTime();
-        $beginD->modify('-1 month');
+        $beginD->modify('-1 year');
         $endD = new DateTime();
 
         $this->page->pressButton('base.order.report.download');
@@ -83,7 +83,7 @@ class ReportsCase extends BaseTestCase
         $this->page->clickLink('tabs.reports');
 
         $beginD = new DateTime();
-        $beginD->modify('-1 month');
+        $beginD->modify('-1 year');
         $endD = new DateTime();
 
         $this->page->pressButton('base.order.report.download');

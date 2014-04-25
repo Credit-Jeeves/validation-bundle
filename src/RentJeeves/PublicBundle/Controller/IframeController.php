@@ -37,13 +37,9 @@ class IframeController extends Controller
         );
         $csrfToken = $this->container->get('form.csrf_provider')->generateCsrfToken('authenticate');
         $form->get('_csrf_token')->setData($csrfToken);
-        $url = 'http://www.renttrack.com/';
-        if (!empty($propertyId)) {
-            $url = $this->generateUrl('iframe_new', array('propertyId' => $propertyId), true);
-        }
+
         return array(
             'form' => $form->createView(),
-            'url' => $url,
         );
     }
 }

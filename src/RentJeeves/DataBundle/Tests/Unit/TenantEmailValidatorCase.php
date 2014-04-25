@@ -42,7 +42,7 @@ class TenantEmailValidatorCase extends BaseTestCase
          */
         $session = $this->getContainer()->get('session');
         $errors = $session->getFlashBag()->get(TenantEmailValidator::ERROR_NAME);
-        $this->assertTrue(('tenant.already.invited' === $errors[0]));
+        $this->assertTrue(('already.invited.error' === $errors[0]));
 
         $errors = $validator->validateValue(
             $email = 'landlord1@example.com',

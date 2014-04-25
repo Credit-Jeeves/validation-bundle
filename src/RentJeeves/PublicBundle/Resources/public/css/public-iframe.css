@@ -89,6 +89,7 @@ form label {
     border: 1px solid #A9A9A9;
     text-shadow: none;
     margin-top: 0;
+    width: 165px;
 }
 
 .iframe-questions {

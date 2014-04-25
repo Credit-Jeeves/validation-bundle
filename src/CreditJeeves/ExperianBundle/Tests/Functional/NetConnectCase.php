@@ -3,9 +3,14 @@ namespace CreditJeeves\ExperianBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\DataBundle\Entity\Settings;
-use CreditJeeves\TestBundle\BaseTestCase;
+use CreditJeeves\ExperianBundle\ExperianConfig;
 use CreditJeeves\ExperianBundle\NetConnect;
+use CreditJeeves\TestBundle\BaseTestCase;
 use CreditJeeves\DataBundle\Entity\Applicant;
+use sfConfig;
+use PHPUnit_Framework_AssertionFailedError;
+use ExperianException;
+use CurlException;
 
 /**
  * NetConnect test case.
@@ -14,7 +19,6 @@ use CreditJeeves\DataBundle\Entity\Applicant;
  */
 class NetConnectCase extends BaseTestCase
 {
-
     protected $user = array(
         'Name' => array(
             'Surname' => 'BREEN',
@@ -29,6 +33,16 @@ class NetConnectCase extends BaseTestCase
             'Zip' => '09061',
         )
     );
+
+    /**
+     * @return NetConnect
+     */
+    protected function getNetConnect()
+    {
+        $netConnect = new NetConnect();
+        $netConnect->initConfigs($this->getContainer()->get('experian.config'));
+        return $netConnect;
+    }
 
     /**
      * Tests NetConnect->getResponseOnUserData()
@@ -49,19 +63,21 @@ class NetConnectCase extends BaseTestCase
         $aplicant->addAddress($address);
 
         $tries = 6;
-        $e = new \PHPUnit_Framework_AssertionFailedError('NetConnect fail');
+        $e = new PHPUnit_Framework_AssertionFailedError('NetConnect fail');
         while ($tries--) {
             try {
                 try {
-                    $netConnect = new NetConnect();
-                    $netConnect->execute(self::getContainer());
+                    $netConnect = $this->getNetConnect();
                     return $netConnect->getResponseOnUserData($aplicant);
-                } catch (\ExperianException $e) {
+                } catch (ExperianException $e) {
                     if (4000 != $e->getCode()) {
                         throw $e;
                     }
                 }
-            } catch (\CurlException $e) {
+            } catch (CurlException $e) {
+                if (302 == $e->getCode()) {
+                    break;
+                }
             }
         }
         throw $e;
@@ -69,7 +85,7 @@ class NetConnectCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \ExperianException
+     * @expectedException ExperianException
      * @expectedExceptionMessage Generated XML is invalid
      */
     public function getResponseOnUserDataXmlInvalid()
@@ -80,70 +96,10 @@ class NetConnectCase extends BaseTestCase
     }
 
     /**
-     * @ Experian does not response as it should be test
-     *
-     * @expectedException \ExperianException
-     * @expectedExceptionMessage Cannot formulate questions for this consumer.
-     */
-    public function getResponseOnUserDataIncorrect()
-    {
-        $data = $this->user;
-        $data['Name']['Surname'] = 'dfgsdfgsdfg';
-        $data['Name']['First'] = 'dfg';
-        $resp = $this->getResponseOnUserData($data);
-    }
-
-    /**
      * @test
      */
     public function getResponseOnUserDataCorrect()
     {
-        $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
-    }
-
-    /**
-     * @test
-     */
-    public function getResponseOnUserDataCorrectFromSettings()
-    {
-        require_once __DIR__.'/../../../CoreBundle/sfConfig.php';
-
-        $em = $this->getMock(
-            '\Doctrine\ORM\EntityManager',
-            array('getRepository'),
-            array(),
-            '',
-            false
-        );
-
-        $settings = new Settings();
-        $settings->setNetConnectPassword(\sfConfig::get('experian_net_connect_userpwd'));
-        $xmlRoot = \sfConfig::get('experian_net_connect_XML_root');
-        $settings->setNetConnectEai($xmlRoot['EAI']);
-
-        $repo = $this->getMock(
-            '\Doctrine\ORM\EntityRepository',
-            array('find'),
-            array(),
-            '',
-            false
-        );
-
-        $repo->expects($this->once())
-            ->method('find')
-            ->will($this->returnValue($settings));
-
-        $em->expects($this->once())
-            ->method('getRepository')
-            ->will($this->returnValue($repo));
-
-
-        \sfConfig::set('experian_net_connect_userpwd', '');
-
-        $this->getContainer()->get('experian.net_connect')->initConfigs(
-            $this->getContainer()->getParameter('server_name'),
-            $em
-        );
         $this->assertTrue(is_string($this->getResponseOnUserData($this->user)));
     }
 }

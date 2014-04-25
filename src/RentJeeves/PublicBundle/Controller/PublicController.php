@@ -5,6 +5,7 @@ namespace RentJeeves\PublicBundle\Controller;
 use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Validators\TenantEmail;
 use RentJeeves\DataBundle\Validators\TenantEmailValidator;
@@ -35,7 +36,7 @@ class PublicController extends Controller
 
     /**
      * @Route("/tenant/invite/resend/{userId}", name="tenant_invite_resend", options={"expose"=true})
-     * @Template()
+     * @Template("RjPublicBundle:Public:resendInvite.html.twig")
      *
      */
     public function resendInviteTenantAction($userId)
@@ -65,9 +66,14 @@ class PublicController extends Controller
         //Save as is but, in general can be problem on this line
         //Because in group we have many landlord and don't know what exactly Landlord send invite
         //So we select random landlord for group, it's main problem in architecture
-        $landlord = $contract->getGroup()->getGroupAgents()->first();
         $reminderInvite = $this->get('reminder.invite');
-        if (!$reminderInvite->send($contract->getId(), $landlord)) {
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->getLandlordByContract($contract);
+
+        if (empty($landlord)) {
+            throw new LogicException("Contract which such id {$contract->getId()} doesn't have Landlord");
+        }
+
+        if (!$reminderInvite->sendTenant($contract->getId(), $landlord)) {
             return array(
                 'error' => $reminderInvite->getError()
             );
@@ -166,7 +172,7 @@ class PublicController extends Controller
     }
 
     /**
-     * @Route("/user/new/{propertyId}", name="iframe_new")
+     * @Route("/user/new/{propertyId}", name="iframe_new", options={"expose"=true})
      * @Template()
      *
      * @return array

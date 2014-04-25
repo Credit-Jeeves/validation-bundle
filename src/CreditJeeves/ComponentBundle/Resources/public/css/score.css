@@ -1,7 +1,7 @@
 .vertical-rainbow-chart {
     background: url("/bundles/component/images/vertical-rainbow.png") no-repeat scroll right bottom transparent;
-    width: 320px;
-    height: 171px;
+    width: 375px;
+    height: 181px;
     margin-right: 19px;
 }
 
@@ -63,6 +63,7 @@
 .score-tenant {
     margin-top: 15px;
     height: 192px;
+    width: 375px;
 }
 .scoreType {
     color: #ff6600;

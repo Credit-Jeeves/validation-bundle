@@ -548,14 +548,6 @@ class Order extends BaseOrder
         return $date->format('Y-m-d\TH:m:n');
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function prePersist()
-    {
-        $this->updated_at = new \DateTime();
-    }
-
     public function setOperations($operations)
     {
         if (is_object($operations)) {

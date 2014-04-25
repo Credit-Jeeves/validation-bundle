@@ -266,7 +266,7 @@ function Pay(parent, contractId) {
     };
 
     this.currentAddress = ko.computed(function() {
-        if (self.paymentSource) {
+        if (self.paymentSource && self.paymentSource.address.addressChoice()) {
             var result = ko.utils.arrayFirst(window.addressesViewModels, function(address) {
                 return address.id() == self.paymentSource.address.addressChoice();
             });

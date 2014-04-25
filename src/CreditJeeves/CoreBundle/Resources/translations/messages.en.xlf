@@ -1455,6 +1455,43 @@
                     ]]>
                 </target>
             </trans-unit>
+            <trans-unit id="reject.header">
+                <source>reject.header</source>
+                <target>Did you know that your Internet Browser is out of date?</target>
+            </trans-unit>
+            <trans-unit id="reject.paragraph1">
+                <source>reject.paragraph1</source>
+                <target>
+                        Your browser is out of date, and may not be compatible with
+                        our website. A list of the most popular web browsers can be
+                        found below.
+                </target>
+            </trans-unit>
+            <trans-unit id="reject.paragraph2">
+                <source>reject.paragraph2</source>
+                <target>Just click on the icons to get to the download page</target>
+            </trans-unit>
+            <trans-unit id="reject.closeMessage">
+                <source>reject.closeMessage</source>
+                <target>
+                        By closing this window you acknowledge that your experience on this
+                        website may be degraded
+                </target>
+            </trans-unit>
+            <trans-unit id="reject.closeWindow">
+                <source>reject.closeWindow</source>
+                <target>
+                        Close This Window
+                </target>
+            </trans-unit>
+            <trans-unit id="access.denied">
+                <source>access.denied</source>
+                <target>Aww Shucks.</target>
+            </trans-unit>
+            <trans-unit id="access.denied.description">
+                <source>access.denied.description</source>
+                <target>It looks like you are trying to access the RentTrack application from a mobile device. We currently do not support mobile devices - please log in using a browser on your computer. We're sorry for the inconvenience!</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

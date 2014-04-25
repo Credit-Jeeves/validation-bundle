@@ -19,7 +19,10 @@ class LandlordAddressType extends AbstractType
         );
         $builder->add(
             'landlord',
-            new LandlordType()
+            new LandlordType(),
+            array(
+                'inviteEmail' => $options['inviteEmail']
+            )
         );
 
         $builder->add(
@@ -54,6 +57,7 @@ class LandlordAddressType extends AbstractType
                 'csrf_protection'    => true,
                 'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
+                'inviteEmail'        => false
             )
         );
     }

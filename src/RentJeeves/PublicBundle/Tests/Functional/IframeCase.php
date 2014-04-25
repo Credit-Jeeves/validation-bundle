@@ -92,7 +92,7 @@ class IframeCase extends BaseTestCase
         );
         $url = $this->session->getCurrentUrl();
         $propertySearch->click();
-        $this->session->wait($this->timeout+5000, "typeof $ !== undefined");
+        $this->session->wait($this->timeout+10000, "typeof $ !== undefined");
         $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
@@ -373,7 +373,7 @@ class IframeCase extends BaseTestCase
     protected function checkResendInvite()
     {
         $this->assertNotNull($userExistMessage = $this->page->find('css', '#userExistMessage'));
-        $this->assertEquals('tenant.already.invited', $userExistMessage->getText());
+        $this->assertEquals('already.invited.error', $userExistMessage->getText());
         $user = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('DataBundle:User')
             ->findOneBy(
                 array(

@@ -5,6 +5,7 @@ namespace RentJeeves\TenantBundle\Services;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -24,6 +25,9 @@ class InviteLandlord
 
     protected $em;
 
+    /**
+     * @var Mailer
+     */
     protected $mailer;
 
     protected $locale;
