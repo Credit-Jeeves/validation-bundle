@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Accounting;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
@@ -13,8 +14,13 @@ use Symfony\Component\Security\Core\SecurityContext;
  *
  * @Service("accounting.permission")
  */
-class Permission
+class AccountingPermission
 {
+    /**
+     * @var User
+     */
+    protected $user;
+
     /**
      * @InjectParams({
      *     "context" = @Inject("security.context")
@@ -25,6 +31,9 @@ class Permission
         $this->user = $context->getToken()->getUser();
     }
 
+    /**
+     * @return bool
+     */
     public function hasAccessToImport()
     {
         /**
@@ -41,26 +50,24 @@ class Permission
             return false;
         }
 
-        if ($setting->getIsIntegrated()) {
-            return true;
-        }
-
-        return false;
+        return $setting->getIsIntegrated();
     }
 
+    /**
+     * @return bool
+     */
     public function hasAccessToExport()
     {
         if (!$this->user->getSettings()) {
             return false;
         }
 
-        if ($this->user->getSettings()->getIsBaseOrderReport()) {
-            return true;
-        }
-
-        return false;
+        return $this->user->getSettings()->getIsBaseOrderReport();
     }
 
+    /**
+     * @return bool
+     */
     public function hasAccessToAccountingTab()
     {
         if ($this->hasAccessToExport() || $this->hasAccessToImport()) {

@@ -44,13 +44,10 @@ class TenantType extends AbstractType
         return $this->waitingContract;
     }
 
-
     /**
      * @param EntityManager $em
      */
-    public function __construct(
-        EntityManager $em
-    ) {
+    public function __construct(EntityManager $em) {
         $this->em = $em;
     }
 

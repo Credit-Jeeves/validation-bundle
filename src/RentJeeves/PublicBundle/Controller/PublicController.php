@@ -4,6 +4,7 @@ namespace RentJeeves\PublicBundle\Controller;
 
 use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -220,7 +221,16 @@ class PublicController extends Controller
             $em->flush();
             $this->get('project.mailer')->sendRjCheckEmail($tenant);
 
-            $propertyForm->createContract($em, $tenant, $unit->getName(), $tenantType->getWaitingContract());
+            /**
+             * @var $contractProcess ContractProcess
+             */
+            $contractProcess = $this->get('contract.process');
+            $contractProcess->createContractFromTenantSide(
+                $tenant,
+                $propertyForm,
+                $unit->getName(),
+                $tenantType->getWaitingContract()
+            );
 
             return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }

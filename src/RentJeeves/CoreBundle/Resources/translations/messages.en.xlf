@@ -926,6 +926,10 @@
                 <source>status</source>
                 <target>Status To</target>
             </trans-unit>
+            <trans-unit id="next">
+                <source>next</source>
+                <target>Next</target>
+            </trans-unit>
             <trans-unit id="next_due_date">
                 <source>next_due_date</source>
                 <target>Next Due Date</target>

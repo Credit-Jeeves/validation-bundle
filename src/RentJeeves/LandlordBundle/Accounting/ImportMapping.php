@@ -142,10 +142,11 @@ class ImportMapping
      */
     protected function specificProcessingFields($data)
     {
-        $rent = $data[self::KEY_RENT];
-        $rent = str_replace(',', '', $rent);
-        $rent = str_replace(' ', '', $rent);
-        $data[self::KEY_RENT] = $rent;
+        $data[self::KEY_RENT] = str_replace(
+            array(',',' '),
+            '',
+            $data[self::KEY_RENT]
+        );
 
         return $data;
     }
