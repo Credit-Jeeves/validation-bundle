@@ -635,7 +635,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(
             count($trs['import.status.match']),
             1,
-            "Matched contract on first page is wrong number"
+            "Match contract on first page has wrong count"
         );
         $this->assertEquals(count($trs['import.status.ended']), 1, "Ended contract on first page is wrong number");
 
