@@ -5,6 +5,8 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Model\Unit;
@@ -395,6 +397,28 @@ class ImportCase extends BaseTestCase
         $this->assertEquals($user->getEmail(), $tenant->getEmail());
     }
 
+    protected function getWaitingRoom()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findBy(
+            array(
+                'residentId' => 't0019851',
+            )
+        );
+
+        $this->assertNotNull($contractWaiting);
+        $this->assertEquals(count($contractWaiting), 1);
+        /**
+         * @var $contractWaiting ContractWaiting
+         */
+        $contractWaiting = reset($contractWaiting);
+        $this->assertNotNull($contractWaiting);
+
+        return $contractWaiting;
+    }
     /**
      * @test
      */
@@ -452,20 +476,178 @@ class ImportCase extends BaseTestCase
             $this->logout();
         }
 
+        $this->getWaitingRoom();
+    }
+
+    /**
+     * @depends waitingRoom
+     * @test
+     */
+    public function createContractFromWaiting()
+    {
+        $contractWaiting = $this->getWaitingRoom();
         /**
          * @var $em EntityManager
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /**
-         * @var $contractWaiting ContractWaiting
+         * @var $property Property
          */
-        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->findBy(
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
             array(
-                'residentId' => 't0019851',
+                'jb' => '40.7308443',
+                'kb' => '-73.9913642',
             )
         );
 
+        $this->assertNotNull($property);
+
+        $this->session->visit($this->getUrl() . 'user/new/'.$property->getId());
+        $this->assertNotNull($thisIsMyRental = $this->page->find('css', '.thisIsMyRental'));
+        $thisIsMyRental->click();
+        $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_tenanttype_first_name'                => $contractWaiting->getFirstName().'Wr',
+                'rentjeeves_publicbundle_tenanttype_last_name'                 => $contractWaiting->getLastName(),
+                'rentjeeves_publicbundle_tenanttype_email'                     => 'hi@mail.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+            )
+        );
+
+        $this->assertNotNull($selectUnit = $this->page->find('css', '.select-unit'));
+        $selectUnit->selectOption($contractWaiting->getUnit()->getName());
+
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+        $submit->click();
+        $this->assertNotNull($unitReserved = $this->page->find('css', '.error_list>li'));
+        $this->assertEquals($unitReserved->getHtml(), 'error.unit.reserved');
+
+        $this->assertNotNull($form = $this->page->find('css', '#formNewUser'));
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_publicbundle_tenanttype_first_name'                => $contractWaiting->getFirstName(),
+                'rentjeeves_publicbundle_tenanttype_last_name'                 => $contractWaiting->getLastName(),
+                'rentjeeves_publicbundle_tenanttype_email'                     => 'hi@mail.com',
+                'rentjeeves_publicbundle_tenanttype_password_Password'         => 'pass',
+                'rentjeeves_publicbundle_tenanttype_password_Verify_Password'  => 'pass',
+                'rentjeeves_publicbundle_tenanttype_tos'                       => true,
+            )
+        );
+
+        $this->assertNotNull($submit = $this->page->find('css', '#register'));
+        $submit->click();
+        $fields = $this->page->findAll('css', '#inviteText>h4');
+        $this->assertCount(2, $fields, 'wrong number of text h4');
+
+        //Check contract
+
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'hi@mail.com',
+            )
+        );
+        $this->assertNotNull($tenant);
+        $contracts = $tenant->getContracts();
+        $this->assertEquals(count($contracts), 1);
+        /**
+         * @var $contract Contract
+         */
+        $contract = $contracts[0];
+        $this->assertEquals($contract->getStartAt(), $contractWaiting->getStartAt());
+        $this->assertEquals($contract->getFinishAt(), $contractWaiting->getFinishAt());
+        $this->assertEquals($contract->getRent(), $contractWaiting->getRent());
+        $this->assertEquals($contract->getImportedBalance(), $contractWaiting->getImportedBalance());
+        $this->assertEquals($contract->getStartAt(), $contractWaiting->getStartAt());
+        $this->assertEquals($contract->getUnit()->getId(), $contractWaiting->getUnit()->getId());
+
+        $mapping = $tenant->getResidentsMapping();
+        $this->assertEquals(count($mapping), 1);
+        /**
+         * @var $mapping ResidentMapping
+         */
+        $mapping = $mapping[0];
+        $this->assertEquals($mapping->getResidentId(), $contractWaiting->getResidentId());
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($contractWaiting->getId());
         $this->assertNotNull($contractWaiting);
-        $this->assertEquals(count($contractWaiting), 1);
+    }
+
+    /**
+     * @depends createContractFromWaiting
+     * @test
+     */
+    public function checkFindingUserByResidentId()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'hi@mail.com',
+            )
+        );
+
+        $tenant->setEmail('h1_changed@mail.com');
+        $em->persist($tenant);
+        $em->flush();
+
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $filePath = $this->getFilePathByName('import_waiting_room.csv');
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        //Second step
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        for ($i = 1; $i <= 14; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            if (isset($this->mapFile[$i])) {
+                $choice->selectOption($this->mapFile[$i]);
+            }
+        }
+        //Map Payment
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('#importTable').length > 0 && $('#importTable').is(':visible')"
+        );
+        $trs = $this->getParsedTrsByStatus();
+
+        $this->assertEquals(count($trs), 2, "Count statuses is wrong");
+        $this->assertEquals(
+            count($trs['import.status.match']),
+            1,
+            "Matched contract on first page is wrong number"
+        );
+        $this->assertEquals(count($trs['import.status.ended']), 1, "Ended contract on first page is wrong number");
+
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('.finishedTitle').length > 0"
+        );
+
+        $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
+        $this->assertEquals($finishedTitle->getHtml(), 'import.review.finish');
+        $this->logout();
     }
 }

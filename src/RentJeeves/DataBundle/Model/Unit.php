@@ -2,7 +2,6 @@
 namespace RentJeeves\DataBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use RentJeeves\DataBundle\Entity\ContractWaiting;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
