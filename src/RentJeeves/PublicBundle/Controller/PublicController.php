@@ -6,6 +6,7 @@ use FOS\UserBundle\Entity\Group;
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
 use RentJeeves\CoreBundle\Services\ContractProcess;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -68,8 +69,13 @@ class PublicController extends Controller
         //Save as is but, in general can be problem on this line
         //Because in group we have many landlord and don't know what exactly Landlord send invite
         //So we select random landlord for group, it's main problem in architecture
-        $landlord = $contract->getGroup()->getGroupAgents()->first();
         $reminderInvite = $this->get('reminder.invite');
+        $landlord = $em->getRepository('RjDataBundle:Landlord')->getLandlordByContract($contract);
+
+        if (empty($landlord)) {
+            throw new LogicException("Contract which such id {$contract->getId()} doesn't have Landlord");
+        }
+
         if (!$reminderInvite->sendTenant($contract->getId(), $landlord)) {
             return array(
                 'error' => $reminderInvite->getError()

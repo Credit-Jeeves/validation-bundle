@@ -16,4 +16,25 @@ class LandlordRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    public function getLandlordByContract(Contract $contract)
+    {
+        $group = $contract->getGroup();
+        $holding = $contract->getHolding();
+
+        $query = $this->createQueryBuilder('landlord');
+        $query->leftJoin('landlord.agent_groups', 'groupLandlord');
+        $query->leftJoin('landlord.holding', 'holding');
+
+        $query->where('groupLandlord.id = :groupId OR holding.id = :holdingId');
+        $query->orderBy('landlord.is_super_admin', 'DESC');
+
+        $query->setParameter('groupId', $group->getId());
+        $query->setParameter('holdingId', $holding->getId());
+
+        $query->setMaxResults(1);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
 }
