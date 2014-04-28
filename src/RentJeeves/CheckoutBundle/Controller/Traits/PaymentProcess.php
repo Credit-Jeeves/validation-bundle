@@ -52,14 +52,10 @@ trait PaymentProcess
      *
      * @return JsonResponse
      */
-    protected function savePaymentAccount(Form $paymentAccountType, User $user, $group = null)
+    protected function savePaymentAccount(Form $paymentAccountType, User $user, $group)
     {
         $em = $this->getDoctrine()->getManager();
         $paymentAccountEntity = $paymentAccountType->getData();
-
-        if (empty($group)) {
-            $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
-        }
 
         if ($paymentAccountEntity instanceof GroupAwareInterface) {
             // if the account can have the group set directly, then set it

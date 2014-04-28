@@ -86,8 +86,12 @@ class PayController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
+        // TODO: deal with multiple groups
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
+
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser());
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
         } catch (Exception $e) {
             return new JsonResponse(
                 array(
