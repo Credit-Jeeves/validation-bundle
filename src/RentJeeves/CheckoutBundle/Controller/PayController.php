@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use JMS\Serializer\SerializationContext;
 use Exception;
 
 /**
@@ -102,7 +103,8 @@ class PayController extends Controller
                 'success' => true,
                 'paymentAccount' => $this->get('jms_serializer')->serialize(
                     $paymentAccountEntity,
-                    'array'
+                    'array',
+                    SerializationContext::create()->setGroups(array('basic'))
                 ),
                 'newAddress' => $this->hasNewAddress ?
                     $this->get('jms_serializer')->serialize(

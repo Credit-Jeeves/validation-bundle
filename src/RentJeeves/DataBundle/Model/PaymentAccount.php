@@ -17,6 +17,7 @@ abstract class PaymentAccount
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"basic", "details"});
      */
     protected $id;
 
@@ -32,6 +33,7 @@ abstract class PaymentAccount
      *      nullable=false
      * )
      *
+     * @Serializer\Groups({"basic", "details"});
      * @Serializer\Exclude
      *
      * @var \RentJeeves\DataBundle\Entity\Tenant
@@ -44,6 +46,8 @@ abstract class PaymentAccount
      *      inversedBy="paymentAccounts"
      * )
      * @ORM\JoinTable(name="rj_payment_account_deposit_account")
+     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
+     * @Serializer\Groups({"details"});
      */
     protected $depositAccounts;
 
@@ -61,6 +65,7 @@ abstract class PaymentAccount
      *
      * @Serializer\SerializedName("addressId")
      * @Serializer\Accessor(getter="getAddressId")
+     * @Serializer\Groups({"basic", "details"});
      *
      * @var \CreditJeeves\DataBundle\Entity\Address
      */
@@ -78,6 +83,7 @@ abstract class PaymentAccount
      *          "bank"
      *      }
      * )
+     * @Serializer\Groups({"basic", "details"});
      */
     protected $type;
 
@@ -93,6 +99,7 @@ abstract class PaymentAccount
      *          "save"
      *      }
      * )
+     * @Serializer\Groups({"basic", "details"});
      */
     protected $name;
 
@@ -102,6 +109,7 @@ abstract class PaymentAccount
      *      type="string",
      *      length=255
      * )
+     * @Serializer\Groups({"basic", "details"});
      */
     protected $token;
 
@@ -129,6 +137,7 @@ abstract class PaymentAccount
      *     name="updated_at",
      *     type="datetime"
      * )
+     * @Serializer\Groups({"basic", "details"});
      */
     protected $updatedAt;
 
@@ -158,6 +167,7 @@ abstract class PaymentAccount
     public function __construct()
     {
         $this->payments = new ArrayCollection();
+        $this->depositAccounts = new ArrayCollection();
     }
 
     /**
@@ -191,7 +201,7 @@ abstract class PaymentAccount
      */
     public function addDepositAccount(\RentJeeves\DataBundle\Entity\DepositAccount $deposit_account)
     {
-        $this->depositAccounts[] = $deposit_account;
+        $this->depositAccounts->add($deposit_account);
         return $this;
     }
 
@@ -208,7 +218,8 @@ abstract class PaymentAccount
     /**
      * Get deposit accounts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
+     * @return ArrayCollection
      */
     public function getDepositAccounts()
     {
