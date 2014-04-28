@@ -59,8 +59,10 @@
     </div>
   </div>
 </div>
-{{ form_widget(form.propertyId, {'attr': {'class': 'FormPropertyId'}}) }}
-{{ form_widget(form.unit.name, {'attr': {'class': 'FormUnitName'}}) }}
+{% if form.propertyId is defined %}
+    {{ form_widget(form.propertyId, {'attr': {'class': 'FormPropertyId'}}) }}
+    {{ form_widget(form.unit.name, {'attr': {'class': 'FormUnitName'}}) }}
+{% endif %}
 {% if showTos is not defined %}
     {% set showTos = true %}
 {% endif %}

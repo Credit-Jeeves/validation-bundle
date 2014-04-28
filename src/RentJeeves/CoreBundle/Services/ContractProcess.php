@@ -7,6 +7,7 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
@@ -50,12 +51,11 @@ class ContractProcess
         $contract->setProperty($unit->getProperty());
         $contract->setStatus(ContractStatus::PENDING);
         $contract->setUnit($unit);
-
+        $this->em->persist($contract);
         /**
          * @var $contractWaiting ContractWaiting
          */
         if (empty($contractWaiting)) {
-            $this->em->persist($contract);
             $this->em->flush();
             return;
         }

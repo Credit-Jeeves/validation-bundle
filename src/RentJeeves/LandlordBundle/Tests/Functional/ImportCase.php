@@ -164,6 +164,9 @@ class ImportCase extends BaseTestCase
         $this->assertEquals(3, count($trs['import.status.skip']), "Skip contract on first page is wrong number");
         $this->assertEquals(1, count($trs['import.status.match']), "Match contract on first page is wrong number");
         $this->assertEquals(2, count($trs['import.status.ended']), "Ended contract on first page is wrong number");
+        $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
+        $this->assertEquals(2, count($errorFields));
+
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile>span'));
         $submitImportFile->click();
         $this->waitReviewAndPost();
@@ -183,7 +186,7 @@ class ImportCase extends BaseTestCase
         $this->waitReviewAndPost();
 
         $this->assertNotNull($errorFields = $this->page->findAll('css', '.errorField'));
-        $this->assertEquals(4, count($errorFields));
+        $this->assertEquals(2, count($errorFields));
         $trs = $this->getParsedTrsByStatus();
 
         $this->assertEquals(2, count($trs), "Count statuses is wrong");
@@ -220,10 +223,10 @@ class ImportCase extends BaseTestCase
             )
         );
         $this->assertNotNull($tenant);
-        $this->assertEquals('Trent Direnna', $tenant->getFirstName());
-        $this->assertEquals('Jacquelyn Dacey', $tenant->getLastName());
-        $this->assertEquals('Jacquelyn Dacey', $tenant->getLastName());
-        $this->assertEquals('t0019851', $tenant->getResidentsMapping()->first()->getResidentId());
+        $this->assertEquals($tenant->getFirstName(), 'Trent Direnna');
+        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
+        $this->assertEquals($tenant->getLastName(), 'Jacquelyn Dacey');
+        $this->assertEquals($tenant->getResidentsMapping()->first()->getResidentId(), 't0019851');
         /**
          * @var $contract Contract
          */

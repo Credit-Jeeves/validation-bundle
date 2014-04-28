@@ -125,6 +125,13 @@ class TenantType extends AbstractType
             )
         );
 
+        /**
+         * If we don't have entity manager it's means it's sub-form and we don't need field below
+         */
+        if (is_null($this->em)) {
+            return;
+        }
+
         $builder->add(
             'propertyId',
             'hidden',
@@ -150,10 +157,6 @@ class TenantType extends AbstractType
                 'error_bubbling' => true,
             )
         );
-
-        if (is_null($this->em)) {
-            return;
-        }
 
         $self = $this;
         /**

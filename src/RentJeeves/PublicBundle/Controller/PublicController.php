@@ -222,11 +222,8 @@ class PublicController extends Controller
             $propertyForm = $em->getRepository('RjDataBundle:Property')
                 ->findOneWithUnitAndAlphaNumericSort($propertyIdForm);
 
-
             $em->persist($tenant);
             $em->flush();
-            $this->get('project.mailer')->sendRjCheckEmail($tenant);
-
             /**
              * @var $contractProcess ContractProcess
              */
@@ -238,6 +235,8 @@ class PublicController extends Controller
                 $tenantType->getWaitingContract()
             );
 
+
+            $this->get('project.mailer')->sendRjCheckEmail($tenant);
             return $this->redirect($this->generateUrl('user_new_send', array('userId' =>$tenant->getId())));
         }
 
