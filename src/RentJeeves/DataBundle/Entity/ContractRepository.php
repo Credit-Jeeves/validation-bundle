@@ -420,13 +420,19 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('contract');
         $query->leftJoin('contract.unit', 'unit');
         $query->leftJoin('contract.tenant', 'tenant');
-        $query->where('contract.status = :approved OR contract.status = :current');
+        $query->where('contract.status = :approved OR contract.status = :current OR contract.status = :invite');
         $query->andWhere('tenant.id = :tenantId');
         $query->andWhere('unit.name = :unitName');
+        // if 2 or more contract get contract with status current in first priority
+        $query->addOrderBy('contract.status', "DESC");
+        //If 2 or more contract, get last updated
+        $query->addOrderBy('contract.updatedAt', "DESC");
         $query->setParameter('approved', ContractStatus::APPROVED);
         $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('invite', ContractStatus::INVITE);
         $query->setParameter('tenantId', $tenant);
         $query->setParameter('unitName', $unitName);
+        $query->setMaxResults(1);
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();

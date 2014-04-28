@@ -152,8 +152,7 @@ abstract class User extends BaseUser
      *     groups={
      *         "user_admin",
      *         "invite",
-     *         "tenant_invite",
-     *         "import"
+     *         "tenant_invite"
      *     }
      * )
      * @Assert\Email(
@@ -345,29 +344,6 @@ abstract class User extends BaseUser
      * @ORM\Column(type="string", length=128, nullable=true, unique=true)
      */
     protected $invite_code;
-
-    /**
-     * @ORM\Column(
-     *      type="string",
-     *      name="resident_id",
-     *      length=128,
-     *      nullable=true
-     * )
-     * @Assert\NotBlank(
-     *     groups={
-     *         "import_not_editable"
-     *     }
-     * )
-     * @Assert\Length(
-     *     min=5,
-     *     max=128,
-     *     groups={
-     *         "import_not_editable"
-     *     }
-     * )
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $residentId;
 
     /**
      * @ORM\Column(type="boolean", nullable=true, options={"default"="1"})
@@ -693,22 +669,6 @@ abstract class User extends BaseUser
         $this->authCodes = new ArrayCollection();
         $this->refreshTokens = new ArrayCollection();
         $this->created_at = new \DateTime();
-    }
-
-    /**
-     * @param string $residentId
-     */
-    public function setResidentId($residentId)
-    {
-        $this->residentId = $residentId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResidentId()
-    {
-        return $this->residentId;
     }
 
 

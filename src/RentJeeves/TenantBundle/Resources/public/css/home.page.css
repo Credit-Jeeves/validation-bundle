@@ -215,3 +215,38 @@ button.contract-delete {
     line-height: 100%;
     font-size: 15px;
 }
+.filter-box {
+    margin-bottom: 40px;
+}
+.fiter-box h1 {
+    float:left;
+    padding-right: 350px;
+}
+
+.fiter-box label {
+    float:left;
+    margin:5px 5px 0 0;
+    font:14px/15px "PT Sans",sans-serif;
+}
+
+.fiter-box .select {
+    float:left;
+    margin-left:10px;
+    font-size:12px;
+    font-family:"PT Sans",sans-serif;
+}
+a.linkselect-link {
+    width: 200px;
+    font-size: 12px;
+    height: 25px;
+}
+a.linkselect-link .linkselect-link-text {
+    padding-top: 3px;
+}
+.linkselect-link-icon {
+    width: 28px;
+    height: 25px;
+}
+.properties-table-block.table-wrap {
+    overflow: visible;
+}

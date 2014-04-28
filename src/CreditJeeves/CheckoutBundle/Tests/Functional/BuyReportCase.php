@@ -4,8 +4,6 @@ namespace CreditJeeves\CheckoutBundle\Tests\Functional;
 use CreditJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
- * Dealer's login tests
- *
  * @author Ton Sharp <Forma-PRO@66ton99.org.ua>
  */
 class BuyReportCase extends BaseTestCase

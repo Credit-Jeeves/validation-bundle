@@ -50,45 +50,10 @@ class LandlordController extends Controller
             $landlord = $this->get('landlord.registration')->register($form, $formData);
             $this->get('project.mailer')->sendRjCheckEmail($landlord);
 
-            // Login a user to be able to show his dashboard when he comes back from HPS
-            $this->get('common.login.manager')->login($landlord);
-
-            try {
-                $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
-                $this->savePaymentAccount($form->get('deposit'), $landlord, $landlord->getCurrentGroup());
-
-                $merchantAccount = new MerchantAccountModel(
-                    $formData['deposit']['RoutingNumber'],
-                    $formData['deposit']['AccountNumber'],
-                    $formData['deposit']['ACHDepositType']
-                );
-                $saml = new SAMLEnvelope(
-                    $landlord,
-                    $merchantAccount,
-                    $this->generateUrl('landlord_hps_success', array(), UrlGenerator::ABSOLUTE_URL),
-                    $this->generateUrl('landlord_hps_error', array(), UrlGenerator::ABSOLUTE_URL)
-                );
-                $signedSaml = $this->get('signature.manager')->sign($saml->getAssertionResponse());
-
-                // Init DepositAccount before redirecting to HPS
-                $depositAccount = new DepositAccount($landlord->getCurrentGroup());
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($depositAccount);
-                $em->flush();
-
-                return $this->render(
-                    'RjPublicBundle:Landlord:redirectHeartland.html.twig',
-                    array(
-                        'saml' => $saml->encodeAssertionResponse($signedSaml),
-                        'url' => $saml::ONLINE_BOARDING
-                    )
-                );
-            } catch (Exception $e) {
-                return $this->get('common.login.manager')->loginAndRedirect(
-                    $landlord,
-                    $this->generateUrl('landlord_tenants')
-                );
-            }
+            return $this->get('common.login.manager')->loginAndRedirect(
+                $landlord,
+                $this->generateUrl('landlord_tenants')
+            );
         }
 
         return array(
@@ -190,13 +155,6 @@ class LandlordController extends Controller
             $landlord->setInviteCode(null);
             $em->persist($landlord);
             $em->flush();
-
-            try {
-                $this->setMerchantName($this->container->getParameter('rt_merchant_name'));
-                $this->savePaymentAccount($form->get('deposit'), $landlord, $group);
-            } catch (Exception $e) {
-                // do nothing, just prevent user from seeing broken app
-            }
 
             return $this->get('common.login.manager')->loginAndRedirect(
                 $landlord,

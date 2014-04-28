@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\ComponentBundle\Tests\Command;
+namespace RentJeeves\CheckoutBundle\Tests\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -31,7 +31,7 @@ class PaymentReportCase extends BaseTestCase
             )
         );
         $this->assertNotNull($count = $plugin->getPreSendMessages());
-        $this->assertCount(2, $count);
-        $this->assertContains('Amount of synchronized payments: 6', $commandTester->getDisplay());
+        $this->assertCount(4, $count);
+        $this->assertContains('Amount of synchronized payments: 7', $commandTester->getDisplay());
     }
 }

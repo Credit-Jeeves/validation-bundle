@@ -27,6 +27,19 @@ abstract class Unit
      *     type="string",
      *     length=50
      * )
+     * @Assert\NotBlank(
+     *     message="error.unit.empty",
+     *     groups={
+     *         "import"
+     *     }
+     * )
+     * @Assert\Regex(
+     *     message="error.unit.regexp",
+     *     pattern = "/^[A-Za-z_0-9\-]{1,50}$/",
+     *     groups = {
+     *         "import"
+     *     }
+     * )
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $name;
@@ -120,6 +133,18 @@ abstract class Unit
      * @Serializer\Exclude
      */
     protected $contracts;
+
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\ContractWaiting",
+     *     mappedBy="unit",
+     *     cascade={
+     *       "persist"
+     *     }
+     * )
+     * @Serializer\Exclude
+     */
+    protected $contractsWaiting;
 
     /**
      * @ORM\Column(

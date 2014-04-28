@@ -479,6 +479,14 @@
                 <source>amount</source>
                 <target>Amount</target>
             </trans-unit>
+            <trans-unit id="import.payment.amount">
+                <source>import.payment.amount</source>
+                <target>Payment Amount</target>
+            </trans-unit>
+            <trans-unit id="import.payment.date">
+                <source>import.payment.date</source>
+                <target>Payment Date</target>
+            </trans-unit>
             <trans-unit id="start">
                 <source>start</source>
                 <target>Start</target>
@@ -655,8 +663,8 @@
            </trans-unit>
            <trans-unit id="bureau.reporting.text1">
                 <source>bureau.reporting.text1</source>
-                <target><![CDATA[RentTrack can report your payments to a credit reporting agency.
-                                 This optional activity helps establish a history of on-time payments in your credit profile.<br /><br /> ]]>
+                <target><![CDATA[RentTrack can report your rent payments to major credit reporting agencies.
+                                 This optional activity helps establish or build credit history in your credit profile.<br /><br /> ]]>
              </target>
            </trans-unit>
            <trans-unit id="bureau.reporting.text2">
@@ -675,15 +683,15 @@
            </trans-unit>
             <trans-unit id="bureau.reporting.select.for">
                 <source>bureau.reporting.select.for</source>
-                <target>Select which bureaus you want to report to for:</target>
+                <target>You are currently reporting to the checked bureaus for:</target>
             </trans-unit>
            <trans-unit id="bureau.reporting.experian">
                <source>bureau.reporting.experian</source>
-               <target>Experian (Positive Payment History Only)</target>
+               <target>Experian RentBureau</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.trans_union">
                <source>bureau.reporting.trans_union</source>
-               <target>TransUnion (All Payment History)</target>
+               <target>TransUnion</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.manage">
                <source>bureau.reporting.manage</source>
@@ -693,12 +701,19 @@
                <source>bureau.reporting.manage.description</source>
                <target><![CDATA[If you uncheck a bureau above, your payments will no longer be reported to that bureau
                                 and you may not receive credit for your payments. Note that stopping and subsequently
-                                starting reporting again may have a negative impact on your credit history.<br />
-                                Reporting is covered in more detail in our <a href="%link%" type="Terms of Service">Terms of Service</a>.]]></target>
+                                starting reporting again may have a negative impact on your credit history.]]></target>
            </trans-unit>
            <trans-unit id="bureau.reporting.save">
                <source>bureau.reporting.save</source>
                <target>Save</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.experian.title">
+               <source>bureau.reporting.experian.title</source>
+               <target>Experian Reporting</target>
+           </trans-unit>
+           <trans-unit id="bureau.reporting.trans_union.title">
+               <source>bureau.reporting.trans_union.title</source>
+               <target>TransUnion Reporting</target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -710,7 +725,7 @@
            </trans-unit>
            <trans-unit id="info.reporting.text">
                 <source>info.reporting.text</source>
-                <target>Put RentTrack to work by choosing to report your payments to a major credit bureaus. This optional activity helps establish good credit when you make your rent payments on-time.</target>
+                <target>Put RentTrack to work by reporting your payments to major credit bureaus. This optional activity helps establish or build credit history when you make your rent payments on-time.</target>
            </trans-unit>
            <trans-unit id="error.property.empty">
                 <source>error.property.empty</source>
@@ -719,6 +734,10 @@
            <trans-unit id="error.unit.empty">
                 <source>error.unit.empty</source>
                 <target>Unit can't be empty.</target>
+            </trans-unit>
+           <trans-unit id="error.unit.regexp">
+                <source>error.unit.regexp</source>
+                <target>Unit name is invalid, it should contain only A-Za-z_0-9- and not be blank.</target>
             </trans-unit>
            <trans-unit id="error.rent.empty">
                 <source>error.rent.empty</source>
@@ -1972,10 +1991,9 @@
             <trans-unit id="already.invited.error">
                 <source>already.invited.error</source>
                 <target><![CDATA[
-                    This email address already invited. We recommmend you
+                    This email address has already been invited. We recommend you
                     <a href="%%LINK%%" class="resend-email">
-                    click here to resend the invite.
-                    </a>
+                    click here to resend the invite.</a>
                  ]]>
                 </target>
             </trans-unit>
@@ -2055,7 +2073,7 @@
             </trans-unit>
             <trans-unit id="collumn.name">
                 <source>collumn.name</source>
-                <target>Collumn Name</target>
+                <target>Column Name</target>
             </trans-unit>
             <trans-unit id="import.data.row1">
                 <source>import.data.row1</source>
@@ -2103,7 +2121,7 @@
             </trans-unit>
             <trans-unit id="you.need.map">
               <source>you.need.map</source>
-              <target>You need map at least 9 fields</target>
+              <target>You need to map at least 9 fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
             </trans-unit>
             <trans-unit id="auto.import">
               <source>auto.import</source>
@@ -2197,6 +2215,10 @@
               <source>import.status.new</source>
               <target>New</target>
             </trans-unit>
+            <trans-unit id="import.status.waiting">
+              <source>import.status.waiting</source>
+              <target>Waiting</target>
+            </trans-unit>
             <trans-unit id="import.review.and.post">
               <source>import.review.and.post</source>
               <target>Import data and review next</target>
@@ -2229,6 +2251,10 @@
                 <source>tenant.payments.title</source>
                 <target>Payment History</target>
             </trans-unit>
+            <trans-unit id="tenant.payments.filter">
+                <source>tenant.payments.filter</source>
+                <target>Filter by Property</target>
+            </trans-unit>
             <trans-unit id="payment.status">
                 <source>payment.status</source>
                 <target>Status</target>
@@ -2256,6 +2282,26 @@
             <trans-unit id="payment.type">
                 <source>payment.type</source>
                 <target>Type</target>
+            </trans-unit>
+            <trans-unit id="common.choose_an_option">
+                <source>common.choose_an_option</source>
+                <target>Choose an option</target>
+            </trans-unit>
+            <trans-unit id="common.tenant_name">
+                <source>common.tenant_name</source>
+                <target>Tenant Name</target>
+            </trans-unit>
+            <trans-unit id="error.operation.exist">
+                <source>error.operation.exist</source>
+                <target>For that date already have payment with such sum.</target>
+            </trans-unit>
+            <trans-unit id="common.on">
+                <source>common.on</source>
+                <target>On</target>
+            </trans-unit>
+            <trans-unit id="common.off">
+                <source>common.off</source>
+                <target>Off</target>
             </trans-unit>
         </body>
     </file>

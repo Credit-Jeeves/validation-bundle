@@ -206,8 +206,12 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 
-    public function sendRjTenantInviteReminder($tenant, $landlord, $contract, $sTemplate = 'rjTenantInviteReminder')
-    {
+    public function sendRjTenantInviteReminder(
+        Tenant $tenant,
+        Landlord $landlord,
+        Contract $contract,
+        $sTemplate = 'rjTenantInviteReminder'
+    ) {
         $unit = $contract->getUnit();
         $vars = array(
             'fullNameLandlord'      => $landlord->getFullName(),

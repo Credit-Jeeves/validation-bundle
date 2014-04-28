@@ -9,7 +9,6 @@
 <form action="{{ path('landlord_invite', {'code': code }) }}" method="post" {{ form_enctype(form) }} >
 
     {{ include('RjPublicBundle:Public:_formTenant.html.twig', {"form": form.landlord, "inviteCodeLandlord": code, "showTos": false }) }}
-    {{ include('RjPublicBundle:Public:bankAccount.html.twig', {"form": form.deposit }) }}
 
     <div class="accept-terms-box pie-el">
         <div class="form-row checkboxes clearfix">

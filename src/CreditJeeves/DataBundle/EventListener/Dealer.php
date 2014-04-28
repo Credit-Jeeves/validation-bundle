@@ -29,8 +29,6 @@ class Dealer
      */
     public function preRemove(LifecycleEventArgs $eventArgs)
     {
-        $user = false;
-        $em = $eventArgs->getEntityManager();
         $entity = $eventArgs->getEntity();
 
         if ($entity instanceof DealerEntity) {

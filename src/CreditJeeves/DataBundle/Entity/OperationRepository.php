@@ -6,6 +6,9 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\Expr;
+use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Tenant;
+use \DateTime;
 
 class OperationRepository extends EntityRepository
 {
@@ -23,6 +26,36 @@ class OperationRepository extends EntityRepository
         $query->setParameter('orderStatus', OrderStatus::COMPLETE);
         $query->setParameter('month', $monthNo);
         $query->setParameter('year', $yearNo);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function getOperationForImport(
+        Tenant $tenant,
+        Contract $contract,
+        DateTime $paidFor,
+        $amount
+    ) {
+        $query = $this->createQueryBuilder("operation");
+        $query->innerJoin("operation.order", "ord");
+        $query->innerJoin("operation.contract", "contract");
+        $query->innerJoin("contract.tenant", "tenant");
+        $query->where("tenant.id = :tenant");
+        $query->andWhere("ord.status = :status");
+        $query->andWhere("operation.amount = :amount");
+        $query->andWhere("contract.id = :contract");
+        $query->andWhere("MONTH(operation.paidFor) = :paidForMonth");
+        $query->andWhere("YEAR(operation.paidFor) = :paidForYear");
+
+        $query->setParameter("amount", $amount);
+        $query->setParameter("contract", $contract->getId());
+        $query->setParameter("paidForMonth", $paidFor->format("n"));
+        $query->setParameter("paidForYear", $paidFor->format("Y"));
+        $query->setParameter("tenant", $tenant->getId());
+        $query->setParameter("status", OrderStatus::COMPLETE);
+
+        $query->setMaxResults(1);
         $query = $query->getQuery();
 
         return $query->getOneOrNullResult();
