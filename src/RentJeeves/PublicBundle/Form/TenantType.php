@@ -29,6 +29,14 @@ class TenantType extends AbstractType
     protected $waitingContract = null;
 
     /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
      * @param ContractWaiting $waitingContract
      */
     public function setWaitingContract(ContractWaiting $waitingContract)
@@ -42,13 +50,6 @@ class TenantType extends AbstractType
     public function getWaitingContract()
     {
         return $this->waitingContract;
-    }
-
-    /**
-     * @param EntityManager $em
-     */
-    public function __construct(EntityManager $em) {
-        $this->em = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -151,6 +152,10 @@ class TenantType extends AbstractType
         );
 
         $self = $this;
+        /**
+         * Logic which we must have in this event describe here
+         * https://credit.atlassian.net/wiki/display/RT/Tenant+Sign+up+for+Integrated+Property
+         */
         $builder->addEventListener(
             FormEvents::SUBMIT,
             function (FormEvent $event) use ($options, $self) {

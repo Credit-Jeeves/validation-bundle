@@ -4,7 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use RentJeeves\DataBundle\Model\Unit as Base;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use \Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Common\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventArgs;
 
 /**
  * Property
@@ -22,11 +22,10 @@ class Unit extends Base
     }
 
     /**
-     * @TODO need test for it.
      * Documentation link https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
      * @ORM\PostRemove
      */
-    public function deleteAllWaitingContracts(LifecycleEventArgs $args)
+    public function deleteAllWaitingContracts(BaseLifecycleEventArgs $args)
     {
         $contractsWaiting = $this->getContractsWaiting();
 

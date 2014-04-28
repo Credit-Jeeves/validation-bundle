@@ -3,7 +3,7 @@ namespace RentJeeves\LandlordBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use RentJeeves\DataBundle\Entity\Landlord;
-use RentJeeves\LandlordBundle\Accounting\Permission;
+use RentJeeves\LandlordBundle\Accounting\AccountingPermission as Permission;
 use Symfony\Component\DependencyInjection\ContainerAware;
 
 class Builder extends ContainerAware

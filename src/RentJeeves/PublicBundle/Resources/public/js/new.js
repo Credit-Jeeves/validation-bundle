@@ -148,8 +148,6 @@ $(document).ready(function(){
     }
 
     $('.unitNew').change(function(){
-        console.info('Hiii');
-        console.info($(this).val());
         $('.FormUnitName').val(getUnitName($(this).parent().parent()));
     });
 

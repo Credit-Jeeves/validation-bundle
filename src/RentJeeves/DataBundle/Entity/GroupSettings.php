@@ -4,7 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use RentJeeves\DataBundle\Model\GroupSettings as Base;
 use Doctrine\ORM\Mapping as ORM;
-use \Exception;
+use Symfony\Component\Form\Exception\LogicException;
 
 /**
  * GroupSettings
@@ -38,7 +38,7 @@ class GroupSettings extends Base
          * https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
          */
         if ($isIntegratedBefore && !$isIntegratedNew) {
-            throw new \Exception("Once a client is set up as integrated, we not allow to turn off afterwards.");
+            throw new LogicException("Once a client is set up as integrated, we not allow to turn off afterwards.");
         }
     }
 }
