@@ -141,4 +141,40 @@ class OrderListener
             }
         }
     }
+
+    /**
+     * When tenant pays first time, set start_at = paid_for for first payment.
+     * More description on this page https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
+     * See table Possible Paths
+     *
+     * @param LifecycleEventArgs $event
+     */
+    public function updateStartAtOfContract(LifecycleEventArgs $event)
+    {
+        /**
+         * @var $order Order
+         */
+        $order = $event->getEntity();
+        $contract = $order->getContract();
+
+        if (empty($contract)) {
+            return;
+        }
+
+        $ordersNumber = count($order->getUser()->getOrders());
+
+        if ($order->getStatus() !== OrderStatus::COMPLETE || $ordersNumber > 1) {
+            return;
+        }
+        /**
+         * @var $operation Operation
+         */
+        $operation = $order->getOperations()->first();
+        if ($operation->getType() !== OperationType::RENT || !$operation->getPaidFor()) {
+            return;
+        }
+
+        $contract->setStartAt($operation->getPaidFor());
+        $event->getEntityManager()->flush($contract);
+    }
 }
