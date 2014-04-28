@@ -31,7 +31,7 @@ class TenantType extends AbstractType
     /**
      * @param EntityManager $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em = null)
     {
         $this->em = $em;
     }
@@ -150,6 +150,10 @@ class TenantType extends AbstractType
                 'error_bubbling' => true,
             )
         );
+
+        if (is_null($this->em)) {
+            return;
+        }
 
         $self = $this;
         /**
