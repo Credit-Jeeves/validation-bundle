@@ -12,4 +12,10 @@ class SinglePropertyConstraint extends Constraint
     {
         return 'single_property_validator';
     }
+
+    public function getTargets()
+    {
+        return self::CLASS_CONSTRAINT;
+    }
+
 }

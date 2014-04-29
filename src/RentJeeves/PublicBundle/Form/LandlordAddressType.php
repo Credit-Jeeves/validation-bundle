@@ -81,7 +81,7 @@ class LandlordAddressType extends AbstractType
                 'validation_groups' => function(FormInterface $form) {
                         $data = $form->getData();
                         if ($data['isSingleProperty'] == true) {
-                            return array('single_property');
+                            return array('single_property', 'default');
                         } else {
                             return array('multi_unit_property');
                         }

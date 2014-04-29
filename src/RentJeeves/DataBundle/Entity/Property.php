@@ -169,7 +169,14 @@ class Property extends Base
         return false;
     }
 
-//    public function has
+    public function hasGroups()
+    {
+        if ($this->getPropertyGroups()->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
 
     public function __toString()
     {

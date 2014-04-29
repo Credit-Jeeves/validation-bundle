@@ -6,11 +6,12 @@ use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Validator;
+use RentJeeves\DataBundle\Entity\Property;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * @Validator("tenant_email_validator")
+ * @Validator("single_property_validator")
  */
 class SinglePropertyValidator extends ConstraintValidator
 {
@@ -28,13 +29,15 @@ class SinglePropertyValidator extends ConstraintValidator
 
     public function validate($value, Constraint $constraint)
     {
-        $user = $this->em->getRepository('DataBundle:User')->findOneBy(
-            array(
-                'email'     => $value,
-            )
-        );
-        if ($user) {
-            return true;
+        $formData = $this->context->getRoot()->getData();
+        if (isset($formData['property'])) {
+            $propertyId = $formData['property'];
+
+            /** @var Property $property */
+            $property = $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
+            if ($property && ($property->hasUnits() || $property->hasGroups() || ($property->getIsSingle() !== $value && $property->getIsSingle() !== null))) {
+
+            }
         }
     }
 }
