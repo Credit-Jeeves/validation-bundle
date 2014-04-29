@@ -108,15 +108,22 @@ class TenantRepository extends EntityRepository
                 'resident'
             );
         }
-        //@TODO ask about priority for getting user from DB
-        if (!empty($email)) {
+
+        //Priority have inside table https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
+        if (!empty($email) && !empty($residentId)) {
             $query->where('tenant.email = :email');
+            $query->orWhere('resident.residentId = :residentId AND resident.holding = :holdingId');
+            $query->setParameter('residentId', $residentId);
+            $query->setParameter('holdingId', $holdingId);
             $query->setParameter('email', $email);
         } elseif (!empty($residentId)) {
             $query->where('resident.residentId = :residentId');
             $query->andWhere('resident.holding = :holdingId');
             $query->setParameter('residentId', $residentId);
             $query->setParameter('holdingId', $holdingId);
+        } elseif (!empty($email)) {
+            $query->where('tenant.email = :email');
+            $query->setParameter('email', $email);
         } else {
             return;
         }

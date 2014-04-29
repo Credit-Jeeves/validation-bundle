@@ -38,7 +38,11 @@ class ImportFileAccountingType extends AbstractType
                     'class' => 'original widthSelect',
                 ),
                 'constraints'   => array(
-                    new NotBlank(),
+                    new NotBlank(
+                        array(
+                            'message' => 'error.property.empty'
+                        )
+                    ),
                 ),
                 'query_builder' => function (EntityRepository $er) use ($groups) {
                     if (empty($groups)) {
@@ -68,7 +72,11 @@ class ImportFileAccountingType extends AbstractType
                 'error_bubbling' => true,
                 'label'          => 'csv.file',
                 'constraints'    => array(
-                    new NotBlank(),
+                    new NotBlank(
+                        array(
+                            'message' => 'error.file.empty'
+                        )
+                    ),
                     new File(
                         array(
                             'maxSize' => '2M',

@@ -27,6 +27,11 @@ class SoftDeleteableControl
         $this->doctrine = $doctrine;
     }
 
+    public function setDoctrine($doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     public function disable()
     {
         if ($this->isEnable()) {
@@ -40,6 +45,19 @@ class SoftDeleteableControl
             $this->doctrine->getManager()->getFilters()->enable(self::NAME);
         }
 
+    }
+
+    /**
+     * Values must contains full path like RentJeeves\DataBundle\Entity\Unit
+     *
+     * @param array $entities
+     */
+    public function enableForAllAndDisableForEntities(array $entities)
+    {
+        $filter = $this->doctrine->getManager()->getFilters()->enable(self::NAME);
+        foreach ($entities as $entity) {
+            $filter->disableForEntity($entity);
+        }
     }
 
     public function isEnable()

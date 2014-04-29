@@ -38,7 +38,6 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_TENANT_NAME     => $this->translator->trans('common.tenant_name'),
             ImportMapping::KEY_UNIT            => $this->translator->trans('import.unit'),
             ImportMapping::KEY_RENT            => $this->translator->trans('import.rent'),
-            ImportMapping::KEY_EMAIL           => $this->translator->trans('email'),
             ImportMapping::KEY_LEASE_END       => $this->translator->trans('import.lease_end'),
             ImportMapping::KEY_MOVE_IN         => $this->translator->trans('import.move_in'),
             ImportMapping::KEY_MOVE_OUT        => $this->translator->trans('import.move_out'),
@@ -52,6 +51,7 @@ class ImportMatchFileType extends AbstractType
         );
         
         $choicesNoneRequired = array(
+            ImportMapping::KEY_EMAIL           => $this->translator->trans('email'),
             ImportMapping::KEY_PAYMENT_AMOUNT  => $this->translator->trans('import.payment.amount'),
             ImportMapping::KEY_PAYMENT_DATE    => $this->translator->trans('import.payment.date'),
         );
@@ -112,7 +112,8 @@ class ImportMatchFileType extends AbstractType
                 $errorMessage = $self->translator->trans(
                     'you.need.map',
                     array(
-                        '%VALUE_WHICH_NEED_SELECT%' => $fieldsMissed
+                        '%VALUE_WHICH_NEED_SELECT%' => $fieldsMissed,
+                        '%NUMBER%'                  => count($choicesRequired)
                     )
                 );
                 $form->addError(new FormError($errorMessage));

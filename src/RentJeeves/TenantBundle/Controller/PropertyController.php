@@ -3,6 +3,7 @@
 namespace RentJeeves\TenantBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\TenantController as Controller;
+use RentJeeves\CoreBundle\Services\ContractProcess;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\PublicBundle\Form\InviteType;
@@ -100,7 +101,12 @@ class PropertyController extends Controller
             $unitSearch = $unitNew;
         }
         $tenant = $this->getUser();
-        $property->createContract($em, $tenant, $unitSearch);
+
+        /**
+         * @var $contractProcess ContractProcess
+         */
+        $contractProcess = $this->get('contract.process');
+        $contractProcess->createContractFromTenantSide($tenant, $property, $unitSearch);
 
         return $this->redirect($this->generateUrl('tenant_homepage'), 301);
     }
