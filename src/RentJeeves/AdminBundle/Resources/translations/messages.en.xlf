@@ -54,6 +54,10 @@
                 <source>admin.rental_report</source>
                 <target>Rental report</target>
             </trans-unit>
+            <trans-unit id="admin.report.notice">
+                <source>admin.report.notice</source>
+                <target>Data to report for %m%/%y% not found</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

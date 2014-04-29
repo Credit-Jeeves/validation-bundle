@@ -31,4 +31,6 @@ abstract class RentalReport
     abstract public function createHeader($params);
 
     abstract public function createRecords($month, $year);
+
+    abstract public function isEmpty();
 }

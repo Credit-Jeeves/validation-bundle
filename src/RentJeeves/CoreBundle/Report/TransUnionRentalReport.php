@@ -14,6 +14,11 @@ class TransUnionRentalReport extends RentalReport
         return 'trans_union_rental';
     }
 
+    public function isEmpty()
+    {
+        return count($this->records) == 0;
+    }
+
     public function getReportFilename()
     {
         $today = new DateTime();

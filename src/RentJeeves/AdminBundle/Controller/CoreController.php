@@ -61,16 +61,21 @@ class CoreController extends BaseController
                     throw new RuntimeException(sprintf('Given report type "\'%s\'" does not exist', $type));
             }
 
-            $result = $this->get('jms_serializer')->serialize($report, $report->getSerializationType());
-
-            $response = new Response($result, 200);
-            $attachment = $response->headers->makeDisposition(
-                ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-                $report->getReportFilename()
-            );
-            $response->headers->set('Content-Disposition', $attachment);
-
-            return $response;
+            if ($report->isEmpty()) {
+                $this->get('session')->getFlashBag()->add(
+                    'notice',
+                    $this->get('translator')->trans('admin.report.notice', array('%m%' => $month, '%y%' => $year))
+                );
+            } else {
+                $result = $this->get('jms_serializer')->serialize($report, $report->getSerializationType());
+                $response = new Response($result, 200);
+                $attachment = $response->headers->makeDisposition(
+                    ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+                    $report->getReportFilename()
+                );
+                $response->headers->set('Content-Disposition', $attachment);
+                return $response;
+            }
         }
 
         $months = array();
