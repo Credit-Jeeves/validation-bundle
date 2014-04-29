@@ -6,7 +6,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use JMS\DiExtraBundle\Annotation\Inject;
-use \RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\Unit;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>

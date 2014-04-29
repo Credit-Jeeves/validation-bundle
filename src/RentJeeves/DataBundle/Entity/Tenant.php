@@ -241,7 +241,6 @@ class Tenant extends User
     public function hasResident(Holding $holding, $residentId)
     {
         $residentsMapping = $this->getResidentsMapping();
-        $hasResident = false;
         /**
          * @var $residentMapping ResidentMapping
          */
@@ -249,10 +248,10 @@ class Tenant extends User
             if ($residentMapping->getResidentId() ===  $residentId
                 && $residentMapping->getHolding() === $holding->getId()
             ) {
-                $hasResident = true;
+                return true;
             }
         }
 
-        return $hasResident;
+        return false;
     }
 }

@@ -731,6 +731,14 @@
                 <source>error.property.empty</source>
                 <target>Property can't be empty.</target>
             </trans-unit>
+            <trans-unit id="error.file.empty">
+                <source>error.file.empty</source>
+                <target>File can't be empty.</target>
+            </trans-unit>
+            <trans-unit id="error.file.size.big">
+                <source>error.file.size.big</source>
+                <target>File size is too big.</target>
+            </trans-unit>
            <trans-unit id="error.unit.empty">
                 <source>error.unit.empty</source>
                 <target>Unit can't be empty.</target>

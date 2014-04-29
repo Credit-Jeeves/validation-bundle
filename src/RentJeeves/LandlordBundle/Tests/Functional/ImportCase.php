@@ -118,7 +118,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNotNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertEquals('This value should not be blank.', $error->getHtml());
+        $this->assertEquals('error.file.empty', $error->getHtml());
 
         // attach file to file input:
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));

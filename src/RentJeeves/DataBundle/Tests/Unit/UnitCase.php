@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\TestBundle\BaseTestCase;
-use \DateTime;
+use DateTime;
 
 class UnitCase extends BaseTestCase
 {
