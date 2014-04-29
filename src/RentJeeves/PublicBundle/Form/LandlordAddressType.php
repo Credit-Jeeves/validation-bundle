@@ -2,6 +2,7 @@
 
 namespace RentJeeves\PublicBundle\Form;
 
+use RentJeeves\DataBundle\Validators\SinglePropertyConstraint as SingleProperty;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -59,9 +60,12 @@ class LandlordAddressType extends AbstractType
             'checkbox',
             array(
                 'label'         => 'landlord.register.single_property',
-//                'data'          => false,
-//                'mapped'        => false,
                 'required'      => false,
+                'constraints'   => new SingleProperty(
+                        array(
+                            'groups' => 'single_property',
+                        )
+                    ),
             )
         );
     }
@@ -76,10 +80,10 @@ class LandlordAddressType extends AbstractType
                 'inviteEmail'        => false,
                 'validation_groups' => function(FormInterface $form) {
                         $data = $form->getData();
-                        if ($data['isSingleProperty'] == false) {
-                            return array('multi_unit_property');
+                        if ($data['isSingleProperty'] == true) {
+                            return array('single_property');
                         } else {
-                            return array('default');
+                            return array('multi_unit_property');
                         }
                     },
             )

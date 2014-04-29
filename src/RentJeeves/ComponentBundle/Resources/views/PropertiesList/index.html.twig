@@ -108,25 +108,32 @@
             <div class="errorsGoogleSearch"></div>
         </div>
         <div class="col">
-            <h4>{{ 'unit.info'|trans }} ({{ 'unit.live.it.empty'|trans }})</h4>
-            <div class="form-row clearfix">
-                <label>{{'unit.numberof'|trans}}<b></b></label>
-                <div class="fields-box">
-                    <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
-                    <button class="button small grey buttonFixPopupAddUnit" data-bind="click: addUnits" id="addUnitToNewProperty" type="button">
-                        <span>{{ 'add'|trans }}</span>
-                    </button> 
-                </div>
+            <div class="single-property-checkbox clearfix">
+                <label class="checkbox register-tos">
+                    <input type="checkbox" value="1" name="LandlordAddressType[isSingleProperty]" id="LandlordAddressType_isSingleProperty"><i></i>
+                    <span>{{ 'landlord.register.single_property'|trans }}</span>
+                </label>
             </div>
-            <div class="form-row clearfix full show">
-                <label style="width: 78px;">{{ 'nameofunit'|trans }}<b></b></label>
-                <div class="fields-box" style="width:375px;margin-left: -12px;">
-                    <!-- ko foreach: { data: aUnits() } -->
-                    <div class="units-item">
-                        <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
-                        <div class="floatleft unit-delete" data-bind="click: $root.removeUnit"></div>
+            <div id="property-units">
+                <div class="form-row clearfix">
+                    <label>{{'unit.numberof'|trans}}<b></b></label>
+                    <div class="fields-box">
+                        <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
+                        <button class="button small grey buttonFixPopupAddUnit" data-bind="click: addUnits" id="addUnitToNewProperty" type="button">
+                            <span>{{ 'add'|trans }}</span>
+                        </button>
                     </div>
-                    <!-- /ko -->
+                </div>
+                <div class="form-row clearfix full show">
+                    <label style="width: 78px;">{{ 'nameofunit'|trans }}<b></b></label>
+                    <div class="fields-box" style="width:375px;margin-left: -12px;">
+                        <!-- ko foreach: { data: aUnits() } -->
+                        <div class="units-item">
+                            <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
+                            <div class="floatleft unit-delete" data-bind="click: $root.removeUnit"></div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
                 </div>
             </div>
         </div>

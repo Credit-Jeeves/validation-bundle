@@ -160,6 +160,17 @@ class Property extends Base
         return $merchantExist;
     }
 
+    public function hasUnits()
+    {
+        if ($this->getUnits()->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+//    public function has
+
     public function __toString()
     {
         return $this->getFullAddress();

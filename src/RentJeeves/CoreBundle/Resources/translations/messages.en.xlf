@@ -1734,10 +1734,6 @@
                 <source>iframe.powered</source>
                 <target>Powered by</target>
             </trans-unit>
-            <trans-unit id="unit.live.it.empty">
-                <source>unit.live.it.empty</source>
-                <target>leave blank if this is a single property</target>
-            </trans-unit>
             <trans-unit id="property.number.not.exist">
                 <source>property.number.not.exist</source>
                 <target>Please put number for property.</target>

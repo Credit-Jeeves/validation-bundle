@@ -11,6 +11,9 @@ function addProperties()
     };
 
     this.addUnits = function() {
+        if($('#addUnitToNewProperty').hasClass("grey")) {
+            return;
+        }
         for(var i=0; i < self.add(); i++) {
             self.aUnits.push({'name': '', 'id': ''});
         }
@@ -62,4 +65,16 @@ function addProperties()
             self.aUnits.remove(unit);
         }
     };
+
+    $('.single-property-checkbox input[type=checkbox]').click(function(){
+        if ($('#property-units').is(":visible") === true) {
+            $('#property-units').hide();
+            $('.unit-name').remove();
+            $('.units-item').remove();
+            $('#numberOfUnit').val('')
+            $('#unitCount').val(0)
+        } else {
+            $('#property-units').show();
+        }
+    });
 }
