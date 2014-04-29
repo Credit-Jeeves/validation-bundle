@@ -21,6 +21,8 @@ class PaymentHistoryController extends Controller
         for ($i = 1; $i < 13; $i++) {
             $aMonthes[] = date('M', mktime(0, 0, 0, $i, 1));
         }
+
+        $this->get('soft.deleteable.control')->disable();
         $em = $this->get('doctrine.orm.default_entity_manager');
         $translator = $this->get('translator.default');
         $contracts = $user->getContracts();
