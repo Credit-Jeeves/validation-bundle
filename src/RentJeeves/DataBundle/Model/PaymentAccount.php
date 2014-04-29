@@ -45,7 +45,11 @@ abstract class PaymentAccount
      *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
      *      inversedBy="paymentAccounts"
      * )
-     * @ORM\JoinTable(name="rj_payment_account_deposit_account")
+     * @ORM\JoinTable(
+     *      name="rj_payment_account_deposit_account",
+     *      joinColumns={@ORM\JoinColumn(name="payment_account_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="deposit_account_id", referencedColumnName="id")}
+     * )
      * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
      * @Serializer\Groups({"details"});
      */
