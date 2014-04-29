@@ -17,18 +17,12 @@ use RentJeeves\TestBundle\BaseTestCase as Base;
 
 class OrderListenerCase extends Base
 {
-    /**
-     * @test
-     */
-    public function testUpdateStartAtOfContract()
+    protected function getContract($startAt, $finishAt)
     {
         $contract = new Contract();
         $contract->setRent(1200);
-        $startAt = new DateTime();
-        $startAt->modify('-5 month');
+
         $contract->setStartAt($startAt);
-        $finishAt = new DateTime();
-        $finishAt->modify('+24 month');
         $contract->setFinishAt($finishAt);
 
         /**
@@ -66,10 +60,28 @@ class OrderListenerCase extends Base
         $em->persist($contract);
         $em->flush();
 
+        return $contract;
+    }
+
+    /**
+     * @test
+     */
+    public function testUpdateStartAtOfContract()
+    {
+        $startAt = new DateTime();
+        $startAt->modify('-5 month');
+        $finishAt = new DateTime();
+        $finishAt->modify('+24 month');
+        $contract = $this->getContract($startAt, $finishAt);
+
         $operations = $contract->getOperations();
         $this->assertTrue(($operations->count() === 0));
         $this->assertTrue(($contract->getStartAt() === $startAt));
         $contractId = $contract->getId();
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $em->clear();
 
         /**
@@ -168,5 +180,56 @@ class OrderListenerCase extends Base
         $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
 
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
+
+
+        /**
+         * @var $contract Contract
+         */
+        $contract = $this->getContract($startAt, $finishAt);
+        $contractId = $contract->getId();
+        $startAtContract = $contract->getStartAt();
+        /**
+         * @var $unit Unit
+         */
+        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
+            array(
+                'name'  => '1-a'
+            )
+        );
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email'  => 'tenant11@example.com'
+            )
+        );
+        $order = new Order();
+        $order->setUser($tenant);
+        $order->setSum(500);
+        $order->setType(OrderType::AUTHORIZE_CARD);
+        $order->setStatus(OrderStatus::PENDING);
+
+        $operation = new Operation();
+        $operation->setContract($contract);
+        $operation->setAmount(500);
+        $operation->setGroup($unit->getGroup());
+        $operation->setType(OperationType::RENT);
+        $paidFor3 = new DateTime();
+        $paidFor3->modify('+2 month');
+        $operation->setPaidFor($paidFor3);
+        $operation->setOrder($order);
+        $order->addOperation($operation);
+
+        $em->persist($operation);
+        $em->persist($order);
+        $em->flush();
+        $em->clear();
+
+        /**
+         * @var $contract Contract
+         */
+        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+        $this->assertEquals($startAt->format('Ymd'), $contract->getStartAt()->format('Ymd'));
     }
 }
