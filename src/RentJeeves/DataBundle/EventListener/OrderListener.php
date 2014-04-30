@@ -189,7 +189,7 @@ class OrderListener
          */
         $operation = $order->getOperations()->first();
         $paidFor = $operation->getPaidFor();
-        if ($operation->getType() !== OperationType::RENT || empty($paidFor)) {
+        if (empty($paidFor)) {
             return;
         }
 

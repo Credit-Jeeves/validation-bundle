@@ -17,15 +17,6 @@ use RentJeeves\TestBundle\BaseTestCase as Base;
 
 class OrderListenerCase extends Base
 {
-    public function providerUpdateStartAtOfContract3()
-    {
-        return array(
-            array(OperationType::REPORT),
-            array(OperationType::CHARGE),
-            array(OperationType::OTHER),
-        );
-    }
-
     protected function getContract(DateTime $startAt = null, DateTime $finishAt = null)
     {
         /**
@@ -169,59 +160,5 @@ class OrderListenerCase extends Base
         $em->refresh($contract);
 
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
-    }
-
-    /**
-     * We must do not update startAt of contract, if operation type != rent
-     *
-     * @dataProvider providerUpdateStartAtOfContract3
-     * @test
-     */
-    public function updateStartAtOfContract3($operationType)
-    {
-        $this->load(true);
-        $startAt = new DateTime();
-        $startAt->modify('-5 month');
-        $finishAt = new DateTime();
-        $finishAt->modify('+24 month');
-        /**
-         * @var $contract Contract
-         */
-        $contract = $this->getContract($startAt, $finishAt);
-        /**
-         * @var $em EntityManager
-         */
-        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $tenant Tenant
-         */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email'  => 'tenant11@example.com'
-            )
-        );
-        $order = new Order();
-        $order->setUser($tenant);
-        $order->setSum(500);
-        $order->setType(OrderType::AUTHORIZE_CARD);
-        $order->setStatus(OrderStatus::NEWONE);
-
-        $operation = new Operation();
-        $operation->setContract($contract);
-        $operation->setAmount(500);
-        $operation->setGroup($contract->getGroup());
-        $operation->setType($operationType);
-        $paidFor3 = new DateTime();
-        $paidFor3->modify('+2 month');
-        $operation->setPaidFor($paidFor3);
-        $operation->setOrder($order);
-        $order->addOperation($operation);
-
-        $em->persist($operation);
-        $em->persist($order);
-        $em->flush();
-        $em->refresh($contract);
-
-        $this->assertEquals($startAt->format('Ymd'), $contract->getStartAt()->format('Ymd'));
     }
 }
