@@ -176,9 +176,14 @@ class OrderListener
             )
         );
 
-        if ($order->getStatus() !== OrderStatus::COMPLETE || !empty($operation)) {
+        /**
+         * If we have operation for particular contract it's means we already pay
+         * so we must do not change it
+         */
+        if (!empty($operation)) {
             return;
         }
+
         /**
          * @var $operation Operation
          */

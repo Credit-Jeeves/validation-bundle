@@ -20,11 +20,9 @@ class OrderListenerCase extends Base
     public function providerUpdateStartAtOfContract3()
     {
         return array(
-            array(OrderStatus::CANCELLED, OperationType::RENT),
-            array(OrderStatus::ERROR, OperationType::REPORT),
-            array(OrderStatus::PENDING, OperationType::CHARGE),
-            array(OrderStatus::REFUNDED, OperationType::OTHER),
-            array(OrderStatus::RETURNED, OperationType::OTHER),
+            array(OperationType::REPORT),
+            array(OperationType::CHARGE),
+            array(OperationType::OTHER),
         );
     }
 
@@ -174,12 +172,12 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * We must do not update startAt of contract, if status of order not complete
+     * We must do not update startAt of contract, if operation type != rent
      *
      * @dataProvider providerUpdateStartAtOfContract3
      * @test
      */
-    public function updateStartAtOfContract3($statusOrder, $operationType)
+    public function updateStartAtOfContract3($operationType)
     {
         $this->load(true);
         $startAt = new DateTime();
@@ -206,7 +204,7 @@ class OrderListenerCase extends Base
         $order->setUser($tenant);
         $order->setSum(500);
         $order->setType(OrderType::AUTHORIZE_CARD);
-        $order->setStatus($statusOrder);
+        $order->setStatus(OrderStatus::NEWONE);
 
         $operation = new Operation();
         $operation->setContract($contract);
