@@ -13,6 +13,11 @@ class ExperianRentalReport extends RentalReport
         return 'csv';
     }
 
+    public function isEmpty()
+    {
+        return count($this->records) == 0;
+    }
+
     public function getReportFilename()
     {
         $today = new DateTime();

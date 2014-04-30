@@ -675,7 +675,7 @@ class Order extends BaseOrder
         }
         $result['style'] = $this->getOrderStatusStyle();
         $result['date'] = $this->getCreatedAt()->format('m/d/Y');
-        $result['property'] = $this->getContract()->getRentAddress();
+        $result['property'] = $this->getContract()? $this->getContract()->getRentAddress() : 'N/A';
 
         $rentOperation = $this->getRentOperation();
         $otherOperation = $this->getOtherOperation();

@@ -16,6 +16,7 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportProcess;
 use RentJeeves\LandlordBundle\Accounting\ImportStorage;
+use RentJeeves\LandlordBundle\Accounting\Permission;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use RentJeeves\LandlordBundle\Form\ExportType;
@@ -39,10 +40,32 @@ use JMS\Serializer\SerializationContext;
  */
 class AccountingController extends Controller
 {
-    protected function checkAccessToReport()
+    const IMPORT = 'import';
+
+    const EXPORT = 'export';
+
+    protected function checkAccessToAccounting($type = self::IMPORT)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
-        if (!$user->haveAccessToReports()) {
+        /**
+         * @var $accountingPermission Permission
+         */
+        $accountingPermission = $this->get('accounting.permission');
+        if (!$accountingPermission->hasAccessToAccountingTab()) {
+            throw new Exception("Don't have access");
+        }
+
+        switch ($type) {
+            case self::IMPORT:
+                $methodName = 'hasAccessToImport';
+                break;
+            case self::EXPORT:
+                $methodName = 'hasAccessToExport';
+                break;
+            default:
+                throw new Exception("Don't have access");
+        }
+
+        if (!$accountingPermission->$methodName()) {
             throw new Exception("Don't have access");
         }
     }
@@ -56,7 +79,7 @@ class AccountingController extends Controller
      */
     public function exportAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting(self::EXPORT);
         if ($request->getMethod() == 'POST') {
             $form = $request->request->get('base_order_report_type');
             $validationRule = array(
@@ -103,7 +126,7 @@ class AccountingController extends Controller
      */
     public function importFileAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         $form = $this->createForm(
             new ImportFileAccountingType($this->getUser())
         );
@@ -144,7 +167,7 @@ class AccountingController extends Controller
      */
     public function matchFileAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         try {
             /**
              * @var ImportStorage $importStorage
@@ -192,7 +215,7 @@ class AccountingController extends Controller
      */
     public function importAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         /**
          * @var ImportStorage $importStorage
          */
@@ -296,7 +319,7 @@ class AccountingController extends Controller
      */
     public function saveRowsAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         $result = array(
             'error'   => false,
             'message' => '',
@@ -327,7 +350,7 @@ class AccountingController extends Controller
 
     protected function isAjaxRequestValid()
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         /**
          * @var ImportStorage $importStorage
          */

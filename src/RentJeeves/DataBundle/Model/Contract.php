@@ -292,8 +292,7 @@ abstract class Contract
      * @Assert\NotBlank(
      *     message="error.finish.empty",
      *     groups={
-     *         "tenant_invite",
-     *         "import"
+     *         "tenant_invite"
      *     }
      * )
      * @Serializer\SerializedName("finishAt")
