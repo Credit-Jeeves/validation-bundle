@@ -17,18 +17,38 @@ use RentJeeves\TestBundle\BaseTestCase as Base;
 
 class OrderListenerCase extends Base
 {
-    protected function getContract($startAt, $finishAt)
+    public function providerUpdateStartAtOfContract3()
     {
-        $contract = new Contract();
-        $contract->setRent(1200);
+        return array(
+            array(OrderStatus::CANCELLED, OperationType::RENT),
+            array(OrderStatus::ERROR, OperationType::REPORT),
+            array(OrderStatus::PENDING, OperationType::CHARGE),
+            array(OrderStatus::REFUNDED, OperationType::OTHER),
+            array(OrderStatus::RETURNED, OperationType::OTHER),
+        );
+    }
 
-        $contract->setStartAt($startAt);
-        $contract->setFinishAt($finishAt);
-
+    protected function getContract(DateTime $startAt = null, DateTime $finishAt = null)
+    {
         /**
          * @var $em EntityManager
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+
+        if (empty($startAt) || empty($finishAt)) {
+            return $em->getRepository('RjDataBundle:Contract')->findOneBy(
+                array(
+                    'rent'    => 999999.99,
+                    'balance' => 9999.89
+                )
+            );
+        }
+        $contract = new Contract();
+        $contract->setRent(999999.99);
+        $contract->setBalance(9999.89);
+        $contract->setStartAt($startAt);
+        $contract->setFinishAt($finishAt);
+
         /**
          * @var $tenant Tenant
          */
@@ -64,48 +84,31 @@ class OrderListenerCase extends Base
     }
 
     /**
+     * We test updated startAt on the table rj_contract when user create first payment
+     *
      * @test
      */
-    public function testUpdateStartAtOfContract()
+    public function updateStartAtOfContract1()
     {
+        $this->load(true);
         $startAt = new DateTime();
         $startAt->modify('-5 month');
         $finishAt = new DateTime();
         $finishAt->modify('+24 month');
+        /**
+         * @var $contract Contract
+         */
         $contract = $this->getContract($startAt, $finishAt);
-
         $operations = $contract->getOperations();
         $this->assertTrue(($operations->count() === 0));
         $this->assertTrue(($contract->getStartAt() === $startAt));
-        $contractId = $contract->getId();
+
         /**
          * @var $em EntityManager
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $em->clear();
-
-        /**
-         * @var $contract Contract
-         */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
-        /**
-         * @var $unit Unit
-         */
-        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
-            array(
-                'name'  => '1-a'
-            )
-        );
-        /**
-         * @var $tenant Tenant
-         */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email'  => 'tenant11@example.com'
-            )
-        );
         $order = new Order();
-        $order->setUser($tenant);
+        $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::AUTHORIZE_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
@@ -113,7 +116,7 @@ class OrderListenerCase extends Base
         $operation = new Operation();
         $operation->setContract($contract);
         $operation->setAmount(500);
-        $operation->setGroup($unit->getGroup());
+        $operation->setGroup($contract->getGroup());
         $operation->setType(OperationType::RENT);
         $paidFor = new DateTime();
         $operation->setPaidFor($paidFor);
@@ -123,37 +126,27 @@ class OrderListenerCase extends Base
         $em->persist($operation);
         $em->persist($order);
         $em->flush();
-        $em->clear();
-
-        /**
-         * @var $contract Contract
-         */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
-
+        $em->refresh($contract);
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
+        //Make sure we don't update startAt two times
 
+    }
+
+    /**
+     * We test do not update startAt on the table rj_contract when user create second payment
+     *
+     * @depends updateStartAtOfContract1
+     * @test
+     */
+    public function updateStartAtOfContract2()
+    {
         /**
          * @var $contract Contract
          */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
-        /**
-         * @var $unit Unit
-         */
-        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
-            array(
-                'name'  => '1-a'
-            )
-        );
-        /**
-         * @var $tenant Tenant
-         */
-        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
-            array(
-                'email'  => 'tenant11@example.com'
-            )
-        );
+        $contract = $this->getContract();
+        $paidFor = new DateTime();
         $order = new Order();
-        $order->setUser($tenant);
+        $order->setUser($contract->getTenant());
         $order->setSum(500);
         $order->setType(OrderType::AUTHORIZE_CARD);
         $order->setStatus(OrderStatus::COMPLETE);
@@ -161,41 +154,46 @@ class OrderListenerCase extends Base
         $operation = new Operation();
         $operation->setContract($contract);
         $operation->setAmount(500);
-        $operation->setGroup($unit->getGroup());
+        $operation->setGroup($contract->getGroup());
         $operation->setType(OperationType::RENT);
         $paidFor2 = new DateTime();
         $paidFor2->modify('+1 month');
         $operation->setPaidFor($paidFor2);
         $operation->setOrder($order);
         $order->addOperation($operation);
-
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $em->persist($operation);
         $em->persist($order);
         $em->flush();
-        $em->clear();
-
-        /**
-         * @var $contract Contract
-         */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
+        $em->refresh($contract);
 
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
+    }
 
-
+    /**
+     * We must do not update startAt of contract, if status of order not complete
+     *
+     * @dataProvider providerUpdateStartAtOfContract3
+     * @test
+     */
+    public function updateStartAtOfContract3($statusOrder, $operationType)
+    {
+        $this->load(true);
+        $startAt = new DateTime();
+        $startAt->modify('-5 month');
+        $finishAt = new DateTime();
+        $finishAt->modify('+24 month');
         /**
          * @var $contract Contract
          */
         $contract = $this->getContract($startAt, $finishAt);
-        $contractId = $contract->getId();
-        $startAtContract = $contract->getStartAt();
         /**
-         * @var $unit Unit
+         * @var $em EntityManager
          */
-        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
-            array(
-                'name'  => '1-a'
-            )
-        );
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         /**
          * @var $tenant Tenant
          */
@@ -208,13 +206,13 @@ class OrderListenerCase extends Base
         $order->setUser($tenant);
         $order->setSum(500);
         $order->setType(OrderType::AUTHORIZE_CARD);
-        $order->setStatus(OrderStatus::PENDING);
+        $order->setStatus($statusOrder);
 
         $operation = new Operation();
         $operation->setContract($contract);
         $operation->setAmount(500);
-        $operation->setGroup($unit->getGroup());
-        $operation->setType(OperationType::RENT);
+        $operation->setGroup($contract->getGroup());
+        $operation->setType($operationType);
         $paidFor3 = new DateTime();
         $paidFor3->modify('+2 month');
         $operation->setPaidFor($paidFor3);
@@ -224,12 +222,8 @@ class OrderListenerCase extends Base
         $em->persist($operation);
         $em->persist($order);
         $em->flush();
-        $em->clear();
+        $em->refresh($contract);
 
-        /**
-         * @var $contract Contract
-         */
-        $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
         $this->assertEquals($startAt->format('Ymd'), $contract->getStartAt()->format('Ymd'));
     }
 }
