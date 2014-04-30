@@ -66,9 +66,9 @@ fixtures:
         unit:     Unit_1_6
         rent:     1700
         status:   approved
-        paidTo:  '+1 days'
+        paidTo:  '-1 days'
         startAt:   '-9 month'
-        finishAt: '-2 days'
+        finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
     Contract_66:
@@ -79,9 +79,9 @@ fixtures:
         unit:     Unit_1_6
         rent:     3700
         status:   approved
-        paidTo:  '-1 days'
+        paidTo:  '20 days'
         startAt:   '-90 days'
-        finishAt: '60 days'
+        finishAt: '-20 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
     Contract_7:
