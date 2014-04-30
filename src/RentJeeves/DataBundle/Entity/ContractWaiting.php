@@ -18,7 +18,7 @@ class ContractWaiting extends Base
      */
     public function getImportDataForFind()
     {
-        //@TODO ask Darryl about field which use for waiting room
+        //Documentation about field: https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
         return array(
             'unit'          => $this->getUnit()->getId(),
             'residentId'    => $this->getResidentId(),

@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use CreditJeeves\DataBundle\Entity\Group;
 
 /**
  * @ORM\MappedSuperclass
@@ -37,7 +38,8 @@ abstract class Unit
      *     message="error.unit.regexp",
      *     pattern = "/^[A-Za-z_0-9\-]{1,50}$/",
      *     groups = {
-     *         "import"
+     *         "import",
+     *         "registration_tos"
      *     }
      * )
      * @Serializer\Groups({"RentJeevesImport"})
@@ -154,6 +156,23 @@ abstract class Unit
      * )
      */
     protected $deletedAt;
+
+    /**
+     * @param ContractWaiting $contractsWaiting
+     */
+    public function setContractsWaiting(ContractWaiting $contractsWaiting)
+    {
+        $this->contractsWaiting = $contractsWaiting;
+    }
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
+    }
+
 
     /**
      * @param mixed $deletedAt

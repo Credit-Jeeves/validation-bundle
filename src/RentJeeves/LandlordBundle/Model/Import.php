@@ -71,6 +71,13 @@ class Import
     protected $errors = array();
 
     /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $email;
+
+
+    /**
      * @param ResidentMapping $residentMapping
      */
     public function setResidentMapping(ResidentMapping $residentMapping)
@@ -84,6 +91,22 @@ class Import
     public function getResidentMapping()
     {
         return $this->residentMapping;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     /**

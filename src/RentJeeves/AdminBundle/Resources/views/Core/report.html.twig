@@ -7,6 +7,9 @@
 
 {% block content %}
     <h1>{{ 'admin.rental_report'|trans }}</h1>
+    {% for flash in app.session.flashbag.get('notice') %}
+        <div class="alert">{{ flash }}</div>
+    {% endfor %}
     <form method="post">
         <div>
 

@@ -731,9 +731,25 @@
                 <source>error.property.empty</source>
                 <target>Property can't be empty.</target>
             </trans-unit>
+            <trans-unit id="error.file.empty">
+                <source>error.file.empty</source>
+                <target>File can't be empty.</target>
+            </trans-unit>
+            <trans-unit id="error.file.size.big">
+                <source>error.file.size.big</source>
+                <target>File size is too big.</target>
+            </trans-unit>
            <trans-unit id="error.unit.empty">
                 <source>error.unit.empty</source>
                 <target>Unit can't be empty.</target>
+            </trans-unit>
+            <trans-unit id="error.unit.reserved">
+                <source>error.unit.reserved</source>
+                <target><![CDATA[
+                    We're sorry, but we could not find a resident with that name
+                    for specified unit. Please contact your property manager.
+                    ]]>
+                </target>
             </trans-unit>
            <trans-unit id="error.unit.regexp">
                 <source>error.unit.regexp</source>
@@ -917,6 +933,10 @@
             <trans-unit id="status">
                 <source>status</source>
                 <target>Status To</target>
+            </trans-unit>
+            <trans-unit id="next">
+                <source>next</source>
+                <target>Next</target>
             </trans-unit>
             <trans-unit id="next_due_date">
                 <source>next_due_date</source>
@@ -2071,9 +2091,9 @@
                 <source>csv.file</source>
                 <target>CSV File</target>
             </trans-unit>
-            <trans-unit id="collumn.name">
-                <source>collumn.name</source>
-                <target>Column Name</target>
+            <trans-unit id="common.column">
+                <source>common.column</source>
+                <target>Column</target>
             </trans-unit>
             <trans-unit id="import.data.row1">
                 <source>import.data.row1</source>
@@ -2121,7 +2141,7 @@
             </trans-unit>
             <trans-unit id="you.need.map">
               <source>you.need.map</source>
-              <target>You need to map at least 9 fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
+              <target>You need to map at least %NUMBER% fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
             </trans-unit>
             <trans-unit id="auto.import">
               <source>auto.import</source>
@@ -2221,7 +2241,7 @@
             </trans-unit>
             <trans-unit id="import.review.and.post">
               <source>import.review.and.post</source>
-              <target>Import data and review next</target>
+              <target>Import and Review Next Page</target>
             </trans-unit>
             <trans-unit id="import.review.finish">
               <source>import.review.finish</source>

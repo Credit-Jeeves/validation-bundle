@@ -142,7 +142,7 @@ class ExperianReportRecord
      */
     protected $datePaid;
 
-    public function __construct(Contract $contract, Operation $operation)
+    public function __construct(Contract $contract, Operation $operation = null)
     {
         $this->contract = $contract;
         $this->operation = $operation;
@@ -154,7 +154,7 @@ class ExperianReportRecord
             return $this->operation->getCreatedAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
         }
 
-        return null;
+        return '';
     }
 
     public function getDueDate()
@@ -163,7 +163,7 @@ class ExperianReportRecord
             return $this->operation->getPaidFor()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
         }
 
-        return $this->contract->getPaidTo();
+        return $this->contract->getPaidTo()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
     }
 
     public function getEnrollmentDate()
@@ -177,7 +177,7 @@ class ExperianReportRecord
             return $finishAt->format(self::EXPERIAN_REPORT_DATE_FORMAT);
         }
 
-        return null;
+        return '';
     }
 
     public function getLeaseMoveOutDate()
@@ -186,7 +186,7 @@ class ExperianReportRecord
             return $this->contract->getFinishAt()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
         }
 
-        return null;
+        return '';
     }
 
     public function getLeaseUniqueIdentifier()
@@ -214,7 +214,7 @@ class ExperianReportRecord
             return $this->contract->getUncollectedBalance();
         }
 
-        return null;
+        return '';
     }
 
     public function getPaymentUniqueIdentifier()
@@ -244,7 +244,7 @@ class ExperianReportRecord
             return $unit->getName();
         }
 
-        return null;
+        return '';
     }
 
     public function getTenantAddressUniqueIdentifier()
@@ -309,6 +309,6 @@ class ExperianReportRecord
             return (int)$this->operation->getAmount();
         }
 
-        return null;
+        return '';
     }
 }
