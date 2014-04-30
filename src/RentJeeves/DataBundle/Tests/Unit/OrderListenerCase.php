@@ -73,11 +73,11 @@ class OrderListenerCase extends Base
     }
 
     /**
-     * We test updated startAt on the table rj_contract when user create first payment
+     * We test updated startAt on the table rj_contract when user create first order
      *
      * @test
      */
-    public function updateStartAtOfContract1()
+    public function updateStartAtOfContract()
     {
         $this->load(true);
         $startAt = new DateTime();
@@ -117,17 +117,15 @@ class OrderListenerCase extends Base
         $em->flush();
         $em->refresh($contract);
         $this->assertEquals($paidFor->format('Ymd'), $contract->getStartAt()->format('Ymd'));
-        //Make sure we don't update startAt two times
-
     }
 
     /**
-     * We test do not update startAt on the table rj_contract when user create second payment
+     * We test do not update startAt on the table rj_contract when user create second order
      *
-     * @depends updateStartAtOfContract1
+     * @depends updateStartAtOfContract
      * @test
      */
-    public function updateStartAtOfContract2()
+    public function doNotUpdateStartAtOfContract()
     {
         /**
          * @var $contract Contract
