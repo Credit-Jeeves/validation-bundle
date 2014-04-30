@@ -17,6 +17,7 @@ use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
 use RentJeeves\DataBundle\Enum\PaymentAccountType as PaymentAccountTypeEnum;
 use RentJeeves\DataBundle\Entity\UserAwareInterface;
+use RentJeeves\DataBundle\Entity\GroupAwareInterface;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,16 +52,23 @@ trait PaymentProcess
      *
      * @return JsonResponse
      */
-    protected function savePaymentAccount(Form $paymentAccountType, User $user, $group = null)
+    protected function savePaymentAccount(Form $paymentAccountType, User $user, Group $group)
     {
         $em = $this->getDoctrine()->getManager();
         $paymentAccountEntity = $paymentAccountType->getData();
 
-        if (empty($group)) {
-            $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
-        }
+        if ($paymentAccountEntity instanceof GroupAwareInterface) {
+            // if the account can have the group set directly, then set it
+            $paymentAccountEntity->setGroup($group);
+        } else {
+            // otherwise add the the associated depositAccount
+            $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneByGroup($group);
 
-        $paymentAccountEntity->setGroup($group);
+            // make sure this deposit account is added only once!
+            if (!$paymentAccountEntity->getDepositAccounts()->contains($depositAccount)) {
+                $paymentAccountEntity->addDepositAccount($depositAccount);
+            }
+        }
 
         $merchantName = $this->getMerchantName($group);
 

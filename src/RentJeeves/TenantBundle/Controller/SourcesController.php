@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use JMS\Serializer\SerializationContext;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
@@ -80,8 +81,11 @@ class SourcesController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
+        // TODO: deal with multiple gruops
+        $group = $paymentAccount->getDepositAccounts()->first()->getGroup();
+
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser());
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
         } catch (\Exception $e) {
             return new JsonResponse(
                 array(
@@ -97,7 +101,8 @@ class SourcesController extends Controller
                 'success' => true,
                 'paymentAccount' => $this->get('jms_serializer')->serialize(
                     $paymentAccountEntity,
-                    'array'
+                    'array',
+                    SerializationContext::create()->setGroups(array('basic'))
                 ),
                 'newAddress' => $this->hasNewAddress ?
                     $this->get('jms_serializer')->serialize(

@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\MappedSuperclass
@@ -61,6 +62,16 @@ abstract class DepositAccount
      * )
      */
     protected $message;
+
+    /**
+     * The other side is the 'owning' side of this ManyToMany relationship
+     */
+    protected $paymentAccounts;
+
+    public function __construct()
+    {
+        $this->paymentAccounts = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -138,5 +149,37 @@ abstract class DepositAccount
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Add payment account
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
+     * @return DepositAccount
+     */
+    public function addPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
+    {
+        $this->paymentAccounts->add($paymentAccount);
+        return $this;
+    }
+
+    /**
+     * Remove payment account
+     *
+     * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
+     */
+    public function removePaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount)
+    {
+        $this->paymentAccounts->removeElement($paymentAccount);
+    }
+
+    /**
+     * Get payment accounts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPaymentAccounts()
+    {
+        return $this->paymentAccounts;
     }
 }

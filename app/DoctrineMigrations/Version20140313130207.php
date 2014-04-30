@@ -14,7 +14,8 @@ class Version20140313130207 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        $sql = "SELECT ord.*, o.*, op.*, ord.amount AS order_amount, h.amount AS h_amount, op.cj_order_id AS cj_order_id
+        $sql = "SELECT ord.*, o.*, op.*,
+        ord.amount AS order_amount, h.amount AS h_amount, op.cj_order_id AS cj_order_id, o.created_at AS order_create
         FROM `cj_order_operation` AS op
         INNER JOIN cj_operation AS o ON op.cj_operation_id = o.id
         INNER JOIN cj_order AS ord ON op.cj_order_id = ord.id
@@ -41,7 +42,7 @@ class Version20140313130207 extends AbstractMigration
                 `order_id` = {$row['cj_order_id']},
                 `amount` = {$amount},
                 `type` = '{$oldRow['type']}',
-                `created_at` = '{$oldRow['created_at']}'
+                `created_at` = '{$oldRow['order_create']}'
                 ";
                 if ($oldRow['cj_applicant_report_id']) {
                     $sql .= ",`cj_applicant_report_id` = {$oldRow['cj_applicant_report_id']}";
