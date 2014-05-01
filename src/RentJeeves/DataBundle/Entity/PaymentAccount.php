@@ -22,11 +22,6 @@ class PaymentAccount extends Base implements UserAwareInterface
 
     public function setDepositAccounts($depositAccounts)
     {
-        if (!is_array($depositAccounts)) {
-            $this->addDepositAccount($depositAccounts);
-            return;
-        }
-
         foreach ($depositAccounts as $depositAccount) {
             $this->addDepositAccount($depositAccount);
         }

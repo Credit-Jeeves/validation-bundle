@@ -52,7 +52,7 @@ trait PaymentProcess
      *
      * @return JsonResponse
      */
-    protected function savePaymentAccount(Form $paymentAccountType, User $user, $group)
+    protected function savePaymentAccount(Form $paymentAccountType, User $user, Group $group)
     {
         $em = $this->getDoctrine()->getManager();
         $paymentAccountEntity = $paymentAccountType->getData();

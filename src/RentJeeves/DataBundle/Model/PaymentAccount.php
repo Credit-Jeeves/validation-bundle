@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Model\DepositAccount;
 
 /**
  * @ORM\MappedSuperclass
@@ -17,7 +18,7 @@ abstract class PaymentAccount
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Serializer\Groups({"basic", "details"});
+     * @Serializer\Groups({"basic"});
      */
     protected $id;
 
@@ -33,7 +34,6 @@ abstract class PaymentAccount
      *      nullable=false
      * )
      *
-     * @Serializer\Groups({"basic", "details"});
      * @Serializer\Exclude
      *
      * @var \RentJeeves\DataBundle\Entity\Tenant
@@ -42,7 +42,7 @@ abstract class PaymentAccount
 
     /**
      * @ORM\ManyToMany(
-     *      targetEntity="RentJeeves\DataBundle\Entity\DepositAccount",
+     *      targetEntity="DepositAccount",
      *      inversedBy="paymentAccounts"
      * )
      * @ORM\JoinTable(
@@ -69,7 +69,7 @@ abstract class PaymentAccount
      *
      * @Serializer\SerializedName("addressId")
      * @Serializer\Accessor(getter="getAddressId")
-     * @Serializer\Groups({"basic", "details"});
+     * @Serializer\Groups({"basic"});
      *
      * @var \CreditJeeves\DataBundle\Entity\Address
      */
@@ -87,7 +87,7 @@ abstract class PaymentAccount
      *          "bank"
      *      }
      * )
-     * @Serializer\Groups({"basic", "details"});
+     * @Serializer\Groups({"basic"});
      */
     protected $type;
 
@@ -103,7 +103,7 @@ abstract class PaymentAccount
      *          "save"
      *      }
      * )
-     * @Serializer\Groups({"basic", "details"});
+     * @Serializer\Groups({"basic"});
      */
     protected $name;
 
@@ -113,7 +113,7 @@ abstract class PaymentAccount
      *      type="string",
      *      length=255
      * )
-     * @Serializer\Groups({"basic", "details"});
+     * @Serializer\Groups({"basic"});
      */
     protected $token;
 
@@ -141,7 +141,7 @@ abstract class PaymentAccount
      *     name="updated_at",
      *     type="datetime"
      * )
-     * @Serializer\Groups({"basic", "details"});
+     * @Serializer\Groups({"basic"});
      */
     protected $updatedAt;
 
@@ -200,10 +200,10 @@ abstract class PaymentAccount
     /**
      * Add deposit account
      *
-     * @param \RentJeeves\DataBundle\Entity\DepositAccount $deposit_account
+     * @param DepositAccount $deposit_account
      * @return PaymentAccount
      */
-    public function addDepositAccount(\RentJeeves\DataBundle\Entity\DepositAccount $deposit_account)
+    public function addDepositAccount(DepositAccount $deposit_account)
     {
         $this->depositAccounts->add($deposit_account);
         return $this;
@@ -212,9 +212,9 @@ abstract class PaymentAccount
     /**
      * Remove deposit account
      *
-     * @param \RentJeeves\DataBundle\Entity\DepositAccount $deposit_account
+     * @param DepositAccount $deposit_account
      */
-    public function removeDepositAccount(\RentJeeves\DataBundle\Entity\DepositAccount $deposit_account)
+    public function removeDepositAccount(DepositAccount $deposit_account)
     {
         $this->depositAccounts->removeElement($deposit_account);
     }
@@ -222,7 +222,7 @@ abstract class PaymentAccount
     /**
      * Get deposit accounts
      *
-     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
+     * @Serializer\Type("ArrayCollection<DepositAccount>")
      * @return ArrayCollection
      */
     public function getDepositAccounts()
