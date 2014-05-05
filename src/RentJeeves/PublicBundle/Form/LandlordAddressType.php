@@ -42,16 +42,8 @@ class LandlordAddressType extends AbstractType
                 'error_bubbling' => false,
                 'options'       => array(
                     'required'  => false,
-                    'attr'      => array('class' => 'unit-box'),
-                ),
-                'constraints'   => new Count(
-                        array(
-                            'min' => 1,
-                            'max' => 100000,
-                            'groups' => 'multi_unit_property',
-                            'minMessage' => 'units.collection.error'
-                        )
-                    ),
+                    'attr'      => array('class' => 'unit-name'),
+                )
             )
         );
 
@@ -61,11 +53,7 @@ class LandlordAddressType extends AbstractType
             array(
                 'label'         => 'landlord.register.single_property',
                 'required'      => false,
-                'constraints'   => new SingleProperty(
-                        array(
-                            'groups' => 'single_property',
-                        )
-                    ),
+                'constraints'   => new SingleProperty(),
             )
         );
     }
@@ -78,14 +66,6 @@ class LandlordAddressType extends AbstractType
                 'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
                 'inviteEmail'        => false,
-                'validation_groups' => function(FormInterface $form) {
-                        $data = $form->getData();
-                        if ($data['isSingleProperty'] == true) {
-                            return array('single_property', 'default');
-                        } else {
-                            return array('multi_unit_property');
-                        }
-                    },
             )
         );
     }

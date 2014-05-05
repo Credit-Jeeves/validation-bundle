@@ -516,3 +516,7 @@ a.linkselect-link .linkselect-link-text {
     margin-left: -18px;
     padding: 10px 0 10px 0;
 }
+.single-property-checkbox .error {
+    margin-left: 25px;
+    color: red;
+}

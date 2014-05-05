@@ -109,12 +109,13 @@
         </div>
         <div class="col">
             <div class="single-property-checkbox clearfix">
+                <span class="error" data-bind="html: singlePropertyErrorMessage"></span>
                 <label class="checkbox register-tos">
-                    <input type="checkbox" value="1" name="LandlordAddressType[isSingleProperty]" id="LandlordAddressType_isSingleProperty"><i></i>
+                    <input type="checkbox" name="isSingleProperty" id="isSingleProperty" data-bind="checked: isSingle"><i></i>
                     <span>{{ 'landlord.register.single_property'|trans }}</span>
                 </label>
             </div>
-            <div id="property-units">
+            <div id="property-units" data-bind="visible: !isSingle()">
                 <div class="form-row clearfix">
                     <label>{{'unit.numberof'|trans}}<b></b></label>
                     <div class="fields-box">

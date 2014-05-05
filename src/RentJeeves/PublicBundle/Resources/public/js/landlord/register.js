@@ -62,6 +62,10 @@ $(document).ready(function(){
         markAsValid();
     }
 
+    if ($('.single-property-checkbox input[type=checkbox]').is(':checked') === true) {
+        $('#property-units').hide();
+    }
+
     $('.single-property-checkbox input[type=checkbox]').click(function(){
         if ($('#property-units').is(":visible") === true) {
             $('#property-units').hide();

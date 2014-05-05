@@ -25,8 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
-use \DateTime;
-use \Exception;
+use DateTime;
+use Exception;
 
 /**
  * 
@@ -257,11 +257,10 @@ class AjaxController extends Controller
      *
      * @return array
      */
-    public function addProperty()
+    public function addProperty(Request $request)
     {
         $property = array();
         $itsNewProperty = false;
-        $request = $this->getRequest();
         $data = $request->request->all('address');
         $addGroup = $request->request->all('addGroup');
         $data = json_decode($data['data'], true);
@@ -280,7 +279,11 @@ class AjaxController extends Controller
             );
         }
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
+        /** @var Property $property */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
+        if ($property) {
+            $property->setIsSingle($request->request->get('isSingle') == 'true');
+        }
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
@@ -311,7 +314,17 @@ class AjaxController extends Controller
                     'message' => $this->get('translator')->trans('fill.full.address')
                 )
             );
+        } catch (Exception $e) {
+            return new JsonResponse(
+                array(
+                    'message' => $this->get('translator')->trans(
+                            'property.error.can_not_be_added',
+                            array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')))
+                ),
+                500
+            );
         }
+
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $google = $this->container->get('google');
             $google->savePlace($property);

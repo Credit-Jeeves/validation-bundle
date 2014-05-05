@@ -17,14 +17,18 @@ class SinglePropertyValidator extends ConstraintValidator
 {
     protected $em;
 
+    protected $supportEmail;
+
     /**
      * @InjectParams({
-     *     "em" = @Inject("doctrine.orm.entity_manager")
+     *     "em" = @Inject("doctrine.orm.entity_manager"),
+     *     "supportEmail" = @Inject("%support_email%")
      * })
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, $supportEmail)
     {
         $this->em = $em;
+        $this->supportEmail = $supportEmail;
     }
 
     public function validate($value, Constraint $constraint)
@@ -35,8 +39,20 @@ class SinglePropertyValidator extends ConstraintValidator
 
             /** @var Property $property */
             $property = $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
-            if ($property && ($property->hasUnits() || $property->hasGroups() || ($property->getIsSingle() !== $value && $property->getIsSingle() !== null))) {
+            if ($property &&
+                ($property->hasUnits() || $property->hasGroups() ||
+                    ($property->getIsSingle() !== $value && $property->getIsSingle() !== null)
+                )
+            ) {
+                $this->context->addViolation(
+                    $constraint->commonMessage,
+                    array('%SUPPORT_EMAIL%' => $this->supportEmail)
+                );
+                return false;
+            }
 
+            if ($value == false && count($formData['units']) == 0) {
+                $this->context->addViolation($constraint->emptyUnitsMessage);
             }
         }
     }

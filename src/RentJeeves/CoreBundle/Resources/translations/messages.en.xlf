@@ -408,7 +408,7 @@
                 <source>landlord.register.text1</source>
                 <target><![CDATA[
                         <p>This information is used to help tenants find you in the RentTrack system.</p>
-                        <p>If you have no units, just leave that field blank.</p>
+                        <p>If this is a standalone property, please check "This is a Single Property with no Units".</p>
                         <p> 
                           You will be able to add additional properties and invite tenants to pay you directly through RentTrack after you have created your account.
                         </p>]]>
@@ -2334,6 +2334,14 @@
             <trans-unit id="units.collection.error">
                 <source>units.collection.error</source>
                 <target>You need to specify at least one unit if this property is not single.</target>
+            </trans-unit>
+            <trans-unit id="property.error.can_not_be_added">
+                <source>property.error.can_not_be_added</source>
+                <target><![CDATA[This property can not be added. Please, contact <a href="mailto:%SUPPORT_EMAIL%">%SUPPORT_EMAIL%</a>]]></target>
+            </trans-unit>
+            <trans-unit id="units.error.add_or_mark_single">
+                <source>units.error.add_or_mark_single</source>
+                <target>You should either add units to the property or mark it as single.</target>
             </trans-unit>
         </body>
     </file>

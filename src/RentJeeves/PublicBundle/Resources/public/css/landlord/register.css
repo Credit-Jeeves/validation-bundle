@@ -38,3 +38,6 @@ form li, .errorsGoogleSearch {
     margin-left: -50px;
     padding: 10px 0 10px 0;
 }
+.single-property-checkbox ul {
+    padding-left: 50px;
+}

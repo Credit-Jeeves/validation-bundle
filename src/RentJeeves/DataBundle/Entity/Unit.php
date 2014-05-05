@@ -16,6 +16,8 @@ use Doctrine\Common\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventAr
  */
 class Unit extends Base
 {
+    const SINGLE_PROPERTY_UNIT_NAME = 'SYSTEM';
+
     public function __toString()
     {
         return $this->getName();
