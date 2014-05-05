@@ -271,7 +271,7 @@ fixtures:
         transUnionStartAt: '2014-01-01'
         reportToExperian: true
         experianStartAt: '2014-01-01'
-        paidTo:    '2014-04-01'
+        paidTo:    '-27 days'
         startAt:   '2014-01-01'
         finishAt:  '2015-01-01'
         createdAt: '2014-01-01'
