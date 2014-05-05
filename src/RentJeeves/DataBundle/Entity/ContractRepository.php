@@ -216,9 +216,10 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
+        $query->innerJoin('c.operations', 'o');
         $query->where(
-            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)'
+            '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            ' AND (c.paidTo < :date OR c.finishAt < :today)) AND o.id IS NOT NULL'
         );
         $query->setParameter('group', $group);
         $query->setParameter('date', new DateTime());
@@ -255,9 +256,10 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
+        $query->innerJoin('c.operations', 'o');
         $query->where(
-            'c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)'
+            '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
+            ' AND (c.paidTo < :date OR c.finishAt < :today)) AND o.id IS NOT NULL'
         );
         $query->setParameter('group', $group);
         $query->setParameter('date', new DateTime());

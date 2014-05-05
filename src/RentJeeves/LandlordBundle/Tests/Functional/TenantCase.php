@@ -23,8 +23,11 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
-        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
-        $this->assertCount(2, $contractPendings, 'Wrong number of pending');
+        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
+        $this->assertCount(3, $contractPendings, 'Wrong number of pending');
+        $this->assertEquals('PENDING', $contractPendings[0]->getHtml());
+        $this->assertEquals('PENDING', $contractPendings[1]->getHtml());
+        $this->assertEquals('CONTRACT ENDED', $contractPendings[2]->getHtml());
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('approve.tenant');
@@ -43,8 +46,10 @@ class TenantCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
         $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
-        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending'));
-        $this->assertCount(1, $contractPendings, 'Wrong number of pending');
+        $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
+        $this->assertCount(2, $contractPendings, 'Wrong number of pending');
+        $this->assertEquals('PENDING', $contractPendings[0]->getHtml());
+        $this->assertEquals('CONTRACT ENDED', $contractPendings[1]->getHtml());
         $this->logout();
     }
 
