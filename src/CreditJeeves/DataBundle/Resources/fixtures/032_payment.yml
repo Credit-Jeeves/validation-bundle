@@ -56,7 +56,7 @@ fixtures:
         type: recurring
         status: active
         amount: 2100
-        dueDate: 31
+        dueDate: 27
         startMonth: 2
         startYear: 2014
         createdAt: '2014-02-27'
