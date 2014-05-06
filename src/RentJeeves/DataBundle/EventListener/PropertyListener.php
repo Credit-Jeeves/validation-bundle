@@ -21,13 +21,6 @@ use RentJeeves\DataBundle\Entity\Unit;
  *         "method"="preUpdate"
  *     }
  * )
- * @Tag(
- *     "doctrine.event_listener",
- *     attributes = {
- *         "event"="postUpdate",
- *         "method"="postUpdate"
- *     }
- * )
  */
 class PropertyListener 
 {
@@ -44,14 +37,4 @@ class PropertyListener
             throw new LogicException('You can not modify standalone property');
         }
     }
-
-    public function postUpdate(LifecycleEventArgs $eventArgs)
-    {
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof Property) {
-            return;
-        }
-
-
-    }
-} 
+}

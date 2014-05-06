@@ -51,11 +51,6 @@
 .properties-table>tbody>tr>td, .tenant-box {
     word-wrap: break-word !important;
 }
-.notHaveData {
-    height: 50px;
-    padding-top: 50px;
-    text-align: center;
-}
 .properties-table-block {
     display: none;
 }

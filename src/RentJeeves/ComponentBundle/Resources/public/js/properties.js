@@ -52,9 +52,6 @@ function properties() {
       success: function(response) {
         self.aProperties([]);
         self.aProperties(response.properties);
-        if (self.aProperties().length <= 0 && self.searchText().length == 0) {
-          return location.href = Routing.generate('landlord_property_new');
-        }
         self.total(response.total);
         self.pages(response.pagination);
         self.processProperty(false);

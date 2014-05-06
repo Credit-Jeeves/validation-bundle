@@ -25,7 +25,7 @@
     <img src="/bundles/core/images/img_loading.gif" id="processLoading" class="processLoading" data-bind="style: { display: processProperty() ? 'block' : 'none' }">
     <div class="properties-table-block table-wrap" data-bind="style: { display: processProperty() ? 'none' : 'block' }">
       <div class="table-margin">
-        <table class="properties-table zebra-grid">
+        <table class="properties-table zebra-grid" data-bind="visible: aProperties().length > 0">
           <thead>
             <tr class="properties-th" >
               <th class="pie-el" ><span>{{ 'address'|trans }}<i> </i></span></th>
@@ -47,8 +47,7 @@
               <th class="pie-el">&nbsp;</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- ko foreach: { data: aProperties() } -->
+          <tbody data-bind="foreach: aProperties">
             <tr>
               <td data-bind="text: address"></td>
               <td data-bind="text: zip"></td>
@@ -60,9 +59,9 @@
                 <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits"></a>
               </td>
             </tr>
-            <!-- /ko -->
           </tbody>
         </table>
+        <h3 data-bind="visible: aProperties().length == 0" class="notHaveData">{{ 'donthavedata'|trans }}</h3>
       </div>
     </div>
     <br />

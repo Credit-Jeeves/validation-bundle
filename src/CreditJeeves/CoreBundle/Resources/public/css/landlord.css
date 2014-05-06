@@ -520,3 +520,8 @@ a.linkselect-link .linkselect-link-text {
     margin-left: 25px;
     color: red;
 }
+.notHaveData {
+    height: 50px;
+    padding-top: 50px;
+    text-align: center;
+}
