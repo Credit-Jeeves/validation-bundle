@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -114,6 +115,21 @@ class ImportFileAccountingType extends AbstractType
                 'label'          => 'text.delimiter',
                 'attr'           => array(
                     'class' => 'half-width'
+                ),
+                'constraints'    => array(
+                    new NotBlank(),
+                ),
+            )
+        );
+
+        $builder->add(
+            'dateFormat',
+            'choice',
+            array(
+                'choices'   => ImportMapping::$mappingDates,
+                'label'     => 'common.date_format',
+                'attr'      => array(
+                    'class' => 'half-width original'
                 ),
                 'constraints'    => array(
                     new NotBlank(),

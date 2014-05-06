@@ -2323,6 +2323,10 @@
                 <source>common.off</source>
                 <target>Off</target>
             </trans-unit>
+            <trans-unit id="common.date_format">
+                <source>common.date_format</source>
+                <target>Date format</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

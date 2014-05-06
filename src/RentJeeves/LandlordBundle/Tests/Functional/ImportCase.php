@@ -422,6 +422,7 @@ class ImportCase extends BaseTestCase
 
         return $contractWaiting;
     }
+
     /**
      * @test
      */
@@ -651,6 +652,64 @@ class ImportCase extends BaseTestCase
 
         $this->assertNotNull($finishedTitle = $this->page->find('css', '.finishedTitle'));
         $this->assertEquals('import.review.finish', $finishedTitle->getHtml());
+        $this->logout();
+    }
+
+
+    /**
+     * @test
+     */
+    public function checkFormatDate()
+    {
+        $this->load(true);
+        $this->setDefaultSession('selenium2');
+        $this->login('landlord1@example.com', 'pass');
+        $this->page->clickLink('tab.accounting');
+        //First Step
+        $this->session->wait(5000, "typeof jQuery != 'undefined'");
+        $filePath = $this->getFilePathByName('import_date_format.csv');
+        $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $attFile->attachFile($filePath);
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->assertNotNull($dateFormat = $this->page->find('css', '#import_file_type_dateFormat'));
+        $dateFormat->selectOption('n-j-Y');
+        $submitImportFile->click();
+        $this->assertNull($error = $this->page->find('css', '.error_list>li'));
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+        //Second step
+        $this->assertNotNull($table = $this->page->find('css', 'table'));
+
+        for ($i = 1; $i <= 14; $i++) {
+            $this->assertNotNull($choice = $this->page->find('css', '#import_match_file_type_column'.$i));
+            if (isset($this->mapFile[$i])) {
+                $choice->selectOption($this->mapFile[$i]);
+            }
+        }
+        $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $submitImportFile->click();
+        $this->session->wait(
+            5000,
+            "$('#importTable').length > 0 && $('#importTable').is(':visible')"
+        );
+
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $counterTr = count($tr);
+        $result = array();
+        for ($k = 0; $k < $counterTr; $k++) {
+            $td = $tr[$k]->findAll('css', 'td');
+            $countedTd = count($td);
+            if ($countedTd > 1 && !empty($td)) {
+                $result[] = $tr[$k];
+            }
+        }
+
+        $this->assertEquals(2, count($result));
+        $td = $result[0]->findAll('css', 'td');
+        $this->assertEquals('12/29/2012<br>12/28/2013', $td[7]->getHtml());
+        $datepicker = $result[1]->findAll('css', '.datepicker');
+        $this->assertEquals(2, count($datepicker));
+        $this->assertEquals('11/09/2013', $datepicker[0]->getValue());
+        $this->assertEquals('11/08/2014', $datepicker[1]->getValue());
         $this->logout();
     }
 }

@@ -142,6 +142,7 @@ class AccountingController extends Controller
         $property = $form['property']->getData();
         $textDelimiter = $form['textDelimiter']->getData();
         $fieldDelimiter = $form['fieldDelimiter']->getData();
+        $dateFormat = $form['dateFormat']->getData();
         $tmpDir = sys_get_temp_dir();
         $newFileName = uniqid().'.csv';
         $file->move($tmpDir, $newFileName);
@@ -154,6 +155,7 @@ class AccountingController extends Controller
         $importStorage->setTextDelimiter($textDelimiter);
         $importStorage->setFilePath($newFileName);
         $importStorage->setPropertyId($property->getId());
+        $importStorage->setDateFormat($dateFormat);
 
         return $this->redirect($this->generateUrl('accounting_match_file'));
     }
