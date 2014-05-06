@@ -66,7 +66,7 @@ class ImportMapping
         'dmY' => 'ddmmyyyy  (24091998)',
         'mdY' => 'mmddyyyy  (09241998)',
         'Y/m/d' => 'yyyy/mm/dd (1998/09/24)',
-        'j/n/yy' => 'd/m/yy (4/9/98)',
+        'j/n/y' => 'd/m/yy (4/9/98)',
         'd/m/y' => 'dd/mm/yy  (24/09/98)',
         'm/d/y' => 'mm/dd/yy  (12/24/98)',
         'm-d-y' => 'mm-dd-yy  (09-24-98)',
@@ -74,7 +74,7 @@ class ImportMapping
         'n-j-Y' => 'm-d-yyyy  (24-9-1998)',
         'n-j-y' => 'm-d-yy  (9-1-98)',
         'F d, Y' => 'Month dd, yyyy (December 12, 1998)',
-        'dd-M-yy' => 'dd-mon-yy (25-Dec-98)',
+        'dd-M-y' => 'dd-mon-yy (25-Dec-98)',
     );
 
     /**
