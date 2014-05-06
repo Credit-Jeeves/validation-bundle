@@ -14,6 +14,8 @@ class IndexCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('tenant11@example.com', 'pass');
+        $this->session->wait($this->timeout, "typeof $ != 'undefined'");
+        $this->session->wait($this->timeout, "($('#tenant-payments table>tbody>tr').length === 10)");
         $this->assertNotNull($paymentsTable = $this->page->find('css', '#tenant-payments'));
         $this->assertNotNull($payments = $this->page->findAll('css', '#tenant-payments table>tbody>tr'));
         $this->assertEquals(10, count($payments));
