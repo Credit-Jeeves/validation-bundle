@@ -84,6 +84,7 @@ class Property extends Base
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
         $item['address'] = $this->getAddress();
+        $item['isSingle'] = $this->getIsSingle();
         if ($group) {
             $item['units'] = $this->countUnitsByGroup($group);
         } else {

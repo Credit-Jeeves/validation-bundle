@@ -73,7 +73,8 @@ function properties() {
     });
   };
   this.editUnits = function(property){
-    UnitsViewModel.ajaxAction(property.id);
+      $('#edit-property-popup').dialog('open');
+      UnitsViewModel.ajaxAction(property.id);
   };
   this.countProperties = ko.computed(function(){
     return parseInt(self.aProperties().length);
@@ -88,4 +89,14 @@ function properties() {
     }
     self.ajaxAction();
   };
+    this.getUnitsText = function(property) {
+        if (property.isSingle) {
+            return Translator.trans('property.is_standalone');
+        }
+        return property.units;
+    }
+
+    this.removeSingleProperty = function(property) {
+        removeProperty.showStandalone(property);
+    }
 }

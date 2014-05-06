@@ -10,7 +10,6 @@ function Units() {
     this.process = ko.observable(true);
     this.ajaxAction = function(nPropertyId) {
         self.errors([]);
-        $('#edit-property-popup').dialog('open');
         self.property(nPropertyId);
         self.process(true);
         $.ajax({
@@ -97,18 +96,5 @@ function Units() {
     {
         $('#edit-property-popup').dialog('close');
         removeProperty.show();
-    };
-
-    this.deleteProperty = function() {
-        $.ajax({
-            url: Routing.generate('landlord_property_delete'),
-            type: 'POST',
-            dataType: 'json',
-            data: {'property_id': self.property()},
-            success: function(response) {
-                self.clearUnits();
-                PropertiesViewModel.ajaxAction();
-            }
-        });
     };
 }

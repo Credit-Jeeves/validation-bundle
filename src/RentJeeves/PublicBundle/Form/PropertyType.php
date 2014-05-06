@@ -5,34 +5,14 @@ namespace RentJeeves\PublicBundle\Form;
 use RentJeeves\DataBundle\Validators\SinglePropertyConstraint as SingleProperty;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use RentJeeves\PublicBundle\Form\AddressType;
-use RentJeeves\PublicBundle\Form\LandlordType;
-use Symfony\Component\Validator\Constraints\Count;
 
-class LandlordAddressType extends AbstractType
+class PropertyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
-            'address',
-            new AddressType()
-        );
-        $builder->add(
-            'landlord',
-            new LandlordType(),
-            array(
-                'inviteEmail' => $options['inviteEmail']
-            )
-        );
-        $builder->add(
-            'property',
-            new PropertyType()
-        );
-
-        /*$builder->add(
-            'property',
+            'propertyId',
             'hidden'
         );
 
@@ -59,23 +39,22 @@ class LandlordAddressType extends AbstractType
                 'required'      => false,
                 'constraints'   => new SingleProperty(),
             )
-        );*/
+        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
-                'csrf_protection'    => true,
-                'csrf_field_name'    => '_token',
-                'cascade_validation' => true,
-                'inviteEmail'        => false,
+                'csrf_protection' => true,
+                'csrf_field_name' => '_token',
+                'cascade_validation' => true
             )
         );
     }
 
     public function getName()
     {
-        return 'LandlordAddressType';
+        return 'propertyType';
     }
 }

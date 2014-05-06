@@ -64,12 +64,12 @@ class RegistrationManager
         $landlord->setAgentGroups($group);
 
         /** @var Property $property */
-        $property = $this->em->getRepository('RjDataBundle:Property')->find($formData['property']);
+        $property = $this->em->getRepository('RjDataBundle:Property')->find($formData['property']['propertyId']);
         if ($property) {
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
 
-            if ($formData['isSingleProperty'] == true) {
+            if ($formData['property']['isSingleProperty'] == true) {
                 $property->setIsSingle(true);
                 $unit = new Unit();
                 $unit->setProperty($property);
@@ -79,7 +79,7 @@ class RegistrationManager
                 $this->em->persist($unit);
             } else {
                 $property->setIsSingle(false);
-                $units = (isset($formData['units']))? $formData['units'] : array();
+                $units = (isset($formData['property']['units']))? $formData['property']['units'] : array();
 
                 if (!empty($units)) {
                     foreach ($units as $name) {

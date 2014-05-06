@@ -2343,6 +2343,14 @@
                 <source>units.error.add_or_mark_single</source>
                 <target>You should either add units to the property or mark it as single.</target>
             </trans-unit>
+            <trans-unit id="property.standalone">
+                <source>property.standalone</source>
+                <target>Standalone property</target>
+            </trans-unit>
+            <trans-unit id="property.is_standalone">
+                <source>property.is_standalone</source>
+                <target>Standalone</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

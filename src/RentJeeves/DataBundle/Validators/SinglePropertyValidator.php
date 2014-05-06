@@ -34,8 +34,7 @@ class SinglePropertyValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         $formData = $this->context->getRoot()->getData();
-        if (isset($formData['property'])) {
-            $propertyId = $formData['property'];
+        if ($propertyId = $formData['property']['propertyId']) {
 
             /** @var Property $property */
             $property = $this->em->getRepository('RjDataBundle:Property')->find($propertyId);
@@ -51,7 +50,7 @@ class SinglePropertyValidator extends ConstraintValidator
                 return false;
             }
 
-            if ($value == false && count($formData['units']) == 0) {
+            if ($value == false && count($formData['property']['units']) == 0) {
                 $this->context->addViolation($constraint->emptyUnitsMessage);
             }
         }
