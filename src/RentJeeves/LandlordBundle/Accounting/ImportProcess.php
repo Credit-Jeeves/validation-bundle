@@ -163,7 +163,7 @@ class ImportProcess
     public function getDateByField($field)
     {
         try {
-            $date = DateTime::createFromFormat('m/d/Y', $field);
+            $date = DateTime::createFromFormat($this->storage->getDateFormat(), $field);
         } catch (Exception $e) {
             return null;
         }

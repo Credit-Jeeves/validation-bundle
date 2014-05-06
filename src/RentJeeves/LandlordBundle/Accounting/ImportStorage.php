@@ -27,6 +27,8 @@ class ImportStorage
 
     const IMPORT_MAPPING = 'importMapping';
 
+    const IMPORT_DATE_FORMAT = 'importDateFormat';
+
     protected $session;
 
     protected $em;
@@ -39,6 +41,19 @@ class ImportStorage
     public function __construct(Session $session)
     {
         $this->session     = $session;
+    }
+
+    public function setDateFormat($format)
+    {
+        if (!isset(ImportMapping::$mappingDates[$format])) {
+            throw new ImportStorageException("Not supported format {$format}");
+        }
+        $this->session->set(self::IMPORT_DATE_FORMAT, $format);
+    }
+
+    public function getDateFormat()
+    {
+        return $this->session->get(self::IMPORT_DATE_FORMAT);
     }
 
     public function setFilePath($fileName)
