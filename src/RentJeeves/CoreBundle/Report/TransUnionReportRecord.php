@@ -11,6 +11,7 @@ use RentJeeves\DataBundle\Enum\DisputeCode;
 
 class TransUnionReportRecord
 {
+    const LEASE_STATUS_TRANSFERRED = '05';
     const LEASE_STATUS_CURRENT = 11;
     const LEASE_STATUS_CLOSED_AND_PAID = 13;
     const LEASE_STATUS_CLOSED_AND_UNPAID = 97;
@@ -63,8 +64,7 @@ class TransUnionReportRecord
     protected $reserved1 = '000000000';                                 // 9
     /** @Serializer\Accessor(getter="getTotalRentalObligationAmount") */
     protected $totalRentalObligationAmount;                             // 9
-    /** @Serializer\Accessor(getter="getLeaseDuration") */
-    protected $leaseDuration;                                           // 3
+    protected $leaseDuration = '001';                                   // 3
     protected $leasePaymentFrequency = 'M';                             // 1
     /** @Serializer\Accessor(getter="getLeaseAmount") */
     protected $leaseAmount;                                             // 9
@@ -159,19 +159,6 @@ class TransUnionReportRecord
         return $this->getFormattedRentAmount();
     }
 
-    // rj_contract.finish_at - rj_contract.start_at
-    // if month-to-month, put in '001'
-    public function getLeaseDuration()
-    {
-        if ($this->contract->getFinishAt() == null) {
-            $duration = 1;
-        } else {
-            $duration = $this->contract->getStartAt()->diff($this->contract->getFinishAt())->m;
-        }
-
-        return str_pad($duration, 3, '0', STR_PAD_LEFT);
-    }
-
     public function getLeaseAmount()
     {
         return $this->getFormattedRentAmount();
@@ -190,24 +177,12 @@ class TransUnionReportRecord
     public function getLeaseStatus()
     {
         if ($this->contract->getStatus() == ContractStatus::FINISHED) {
+            $this->reportLeaseStatus = self::LEASE_STATUS_CLOSED_AND_PAID;
             if ($this->contract->getUncollectedBalance() > 0) {
-                return self::LEASE_STATUS_CLOSED_AND_UNPAID;
+                $this->reportLeaseStatus = self::LEASE_STATUS_CLOSED_AND_UNPAID;
             }
-            return self::LEASE_STATUS_CLOSED_AND_PAID;
-        }
-
-        if ($this->operation) {
-            $paidFor = $this->operation->getPaidFor();
-            $paidAt = $this->operation->getOrder()->getUpdatedAt();
-            $interval = $paidFor->diff($paidAt)->format('%r%a');
-            $this->reportLeaseStatus = $this->getLateLeaseStatus($interval);
         } else {
-            // If we reach this point - contract is definitely late
-            // paidTo is "zero point" for calculating days late
-            $paidTo = $this->contract->getPaidTo();
-            $requiredMonth = new DateTime("{$this->year}-{$this->month}-1");
-            $lastDayOfRequiredMonth = new DateTime($requiredMonth->format('Y-m-t'));
-            $interval = $paidTo->diff($lastDayOfRequiredMonth)->format('%r%a');
+            $interval = $this->getUnpaidInterval();
             $this->reportLeaseStatus = $this->getLateLeaseStatus($interval);
         }
 
@@ -216,30 +191,34 @@ class TransUnionReportRecord
 
     public function getPaymentRating()
     {
-        if ($this->contract->getStatus() == ContractStatus::FINISHED) {
-            return ' ';
-        }
-
         if (!$this->reportLeaseStatus) {
             $this->getLeaseStatus();
         }
+        if ($this->reportLeaseStatus == self::LEASE_STATUS_CLOSED_AND_PAID ||
+            $this->reportLeaseStatus == self::LEASE_STATUS_TRANSFERRED
+        ) {
+            $interval = $this->getUnpaidInterval();
+            $leaseStatus = $this->getLateLeaseStatus($interval);
 
-        switch ($this->reportLeaseStatus) {
-            case self::LEASE_STATUS_30_59_DAYS_LATE:
-                return 1;
-            case self::LEASE_STATUS_60_89_DAYS_LATE:
-                return 2;
-            case self::LEASE_STATUS_90_119_DAYS_LATE:
-                return 3;
-            case self::LEASE_STATUS_120_149_DAYS_LATE:
-                return 4;
-            case self::LEASE_STATUS_150_179_DAYS_LATE:
-                return 5;
-            case self::LEASE_STATUS_MORE_THAN_180_DAYS_LATE:
-                return 6;
-            default:
-                return 0;
+            switch ($leaseStatus) {
+                case self::LEASE_STATUS_30_59_DAYS_LATE:
+                    return 1;
+                case self::LEASE_STATUS_60_89_DAYS_LATE:
+                    return 2;
+                case self::LEASE_STATUS_90_119_DAYS_LATE:
+                    return 3;
+                case self::LEASE_STATUS_120_149_DAYS_LATE:
+                    return 4;
+                case self::LEASE_STATUS_150_179_DAYS_LATE:
+                    return 5;
+                case self::LEASE_STATUS_MORE_THAN_180_DAYS_LATE:
+                    return 6;
+                default:
+                    return 0;
+            }
         }
+
+        return ' ';
     }
 
     public function getRentalHistoryProfile()
@@ -284,6 +263,11 @@ class TransUnionReportRecord
 
     public function getLeaseBalance()
     {
+        if ($this->contract->getStatus() == ContractStatus::FINISHED) {
+            $uncollectedBalance = (int)$this->contract->getUncollectedBalance();
+            return str_pad($uncollectedBalance, 9, '0', STR_PAD_LEFT);
+        }
+
         return $this->getFormattedRentAmount();
     }
 
@@ -391,6 +375,24 @@ class TransUnionReportRecord
         $rent = (int)$this->contract->getRent();
 
         return str_pad($rent, 9, '0', STR_PAD_LEFT);
+    }
+
+    private function getUnpaidInterval()
+    {
+        if ($this->operation) {
+            $paidFor = $this->operation->getPaidFor();
+            $paidAt = $this->operation->getOrder()->getUpdatedAt();
+            $interval = $paidFor->diff($paidAt)->format('%r%a');
+        } else {
+            // If we reach this point - contract is definitely late
+            // paidTo is "zero point" for calculating days late
+            $paidTo = $this->contract->getPaidTo();
+            $requiredMonth = new DateTime("{$this->year}-{$this->month}-1");
+            $lastDayOfRequiredMonth = new DateTime($requiredMonth->format('Y-m-t'));
+            $interval = $paidTo->diff($lastDayOfRequiredMonth)->format('%r%a');
+        }
+
+        return $interval;
     }
 
     private function getLateLeaseStatus($interval)
