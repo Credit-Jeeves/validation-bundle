@@ -39,5 +39,12 @@ function removeProperty()
         self.name(property.address);
         self.countUnit(0);
     }
+
+    this.isVisibleStandalone = function() {
+        if (self.property()) {
+            return self.property().isSingle;
+        }
+        return false;
+    }
 }
 

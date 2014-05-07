@@ -57,7 +57,7 @@
               <td data-bind="text: $root.getUnitsText($data)"></td>
               <td class="type-box" >
                 <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits, visible: !isSingle"></a>
-                <a href="#" class="type-ico pie-el" title="Remove" data-bind="click: $root.removeSingleProperty, visible: isSingle"></a>
+                <a href="#" class="type-ico pie-el delete" title="Remove" data-bind="click: $root.removeSingleProperty, visible: isSingle"></a>
               </td>
             </tr>
           </tbody>
@@ -242,7 +242,7 @@
                     <!-- /ko -->
                 </div>
             </div>
-            <div class="form-row clearfix" data-bind="visible: property() && property().isSingle">
+            <div class="form-row clearfix" data-bind="visible: isVisibleStandalone()">
                 <div class="fields-box clearfix">
                     <span class="value">{{ 'property.standalone'|trans }}</span>
                 </div>
