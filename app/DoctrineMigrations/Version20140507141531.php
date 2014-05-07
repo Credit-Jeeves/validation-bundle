@@ -48,9 +48,5 @@ EOT;
 
     public function down(Schema $schema)
     {
-        $this->abortIf(
-            $this->connection->getDatabasePlatform()->getName() != "mysql",
-            "Migration can only be executed safely on 'mysql'."
-        );
     }
 }
