@@ -42,11 +42,8 @@ EOT;
         $sql = "UPDATE email_translation as trans INNER JOIN email as em ON em.id= trans.translatable_id";
         $sql .= " SET trans.value = '{$template}'";
         $sql .= " WHERE em.name = 'rjOrderCancelToLandlord.html' AND trans.property='body'";
-       /* print_r($sql);
-        exit;*/
+
         $this->addSql($sql);
-
-
     }
 
     public function down(Schema $schema)
@@ -55,7 +52,5 @@ EOT;
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-
-
     }
 }
