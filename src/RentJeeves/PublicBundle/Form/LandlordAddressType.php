@@ -30,36 +30,6 @@ class LandlordAddressType extends AbstractType
             'property',
             new PropertyType()
         );
-
-        /*$builder->add(
-            'property',
-            'hidden'
-        );
-
-        $builder->add(
-            'units',
-            'collection',
-            array(
-                'type'          => 'text',
-                'required'      => false,
-                'allow_add'     => true,
-                'error_bubbling' => false,
-                'options'       => array(
-                    'required'  => false,
-                    'attr'      => array('class' => 'unit-name'),
-                )
-            )
-        );
-
-        $builder->add(
-            'isSingleProperty',
-            'checkbox',
-            array(
-                'label'         => 'landlord.register.single_property',
-                'required'      => false,
-                'constraints'   => new SingleProperty(),
-            )
-        );*/
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

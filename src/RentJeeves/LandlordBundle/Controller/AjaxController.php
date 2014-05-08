@@ -415,6 +415,7 @@ class AjaxController extends Controller
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $result['property'] = $property->getAddress();
+        $result['isSingle'] = $property->getIsSingle();
         $result['units'] = $this->getDoctrine()
             ->getRepository('RjDataBundle:Unit')
             ->getUnitsArray(

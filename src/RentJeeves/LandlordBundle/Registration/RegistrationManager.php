@@ -71,12 +71,12 @@ class RegistrationManager
 
             if ($formData['property']['isSingleProperty'] == true) {
                 $property->setIsSingle(true);
-                $unit = new Unit();
+                /*$unit = new Unit();
                 $unit->setProperty($property);
                 $unit->setHolding($holding);
                 $unit->setGroup($group);
                 $unit->setName(UNIT::SINGLE_PROPERTY_UNIT_NAME);
-                $this->em->persist($unit);
+                $this->em->persist($unit);*/
             } else {
                 $property->setIsSingle(false);
                 $units = (isset($formData['property']['units']))? $formData['property']['units'] : array();
