@@ -328,11 +328,13 @@ class Mailer extends BaseMailer
 
     public function sendOrderCancelToLandlord(Order $order, $template = 'rjOrderCancelToLandlord')
     {
+        $tenant = $order->getContract()->getTenant();
         $vars = array(
             'landlordFirstName' => '',
             'orderStatus' => $order->getStatus(),
             'rentAmount' => $order->getSum(),
-            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s')
+            'orderDate' => $order->getUpdatedAt()->format('m/d/Y H:i:s'),
+            'tenantName' => $tenant->getFullName(),
         );
 
         $group = $order->getContract()->getGroup();
