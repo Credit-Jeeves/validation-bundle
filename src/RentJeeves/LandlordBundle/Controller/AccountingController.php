@@ -155,7 +155,11 @@ class AccountingController extends Controller
         $importStorage->setFieldDelimiter($fieldDelimiter);
         $importStorage->setTextDelimiter($textDelimiter);
         $importStorage->setFilePath($newFileName);
-        $importStorage->setPropertyId($property->getId());
+        if ($property instanceof Property) {
+            $importStorage->setPropertyId($property->getId());
+        } else {
+            $importStorage->setIsMultipleProperty();
+        }
         $importStorage->setDateFormat($dateFormat);
 
         return $this->redirect($this->generateUrl('accounting_match_file'));
@@ -193,7 +197,11 @@ class AccountingController extends Controller
 
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
-            new ImportMatchFileType(count($dataView), $this->get('translator'))
+            new ImportMatchFileType(
+                count($dataView),
+                $this->get('translator'),
+                $this->get('accounting.import.storage')
+            )
         );
         $form->handleRequest($this->get('request'));
         if ($form->isValid()) {

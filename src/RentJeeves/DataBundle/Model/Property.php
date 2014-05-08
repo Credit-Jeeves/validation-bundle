@@ -195,11 +195,42 @@ abstract class Property
      */
     protected $contracts;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="RentJeeves\DataBundle\Entity\PropertyMapping",
+     *     mappedBy="property",
+     *     cascade={
+     *         "persist",
+     *         "remove",
+     *         "merge"
+     *     },
+     *     orphanRemoval=true
+     * )
+     * @Serializer\Exclude
+     */
+    protected $propertyMapping;
+
     public function __construct()
     {
         $this->property_groups = new ArrayCollection();
         $this->units = new ArrayCollection();
         $this->contracts = new ArrayCollection();
+    }
+
+    /**
+     * @param PropertyMapping $propertyMapping
+     */
+    public function setPropertyMapping(PropertyMapping $propertyMapping)
+    {
+        $this->propertyMapping = $propertyMapping;
+    }
+
+    /**
+     * @return PropertyMapping
+     */
+    public function getPropertyMapping()
+    {
+        return $this->propertyMapping;
     }
 
     /**

@@ -2271,6 +2271,10 @@
               <source>import.error.residentId</source>
               <target><![CDATA[Resident ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
             </trans-unit>
+            <trans-unit id="import.error.propertyId">
+              <source>import.error.propertyId</source>
+              <target><![CDATA[Property ID is invalid, it should contain only A-Za-z_0-9- and not be blank.]]></target>
+            </trans-unit>
             <trans-unit id="csrf.token.is.invalid">
               <source>csrf.token.is.invalid</source>
               <target>The CSRF token is invalid. Please try to resubmit the form.</target>
@@ -2370,6 +2374,30 @@
             <trans-unit id="email.other_amount">
                 <source>email.other_amount</source>
                 <target>Other Amount</target>
+            </trans-unit>
+            <trans-unit id="common.street">
+                <source>common.street</source>
+                <target>Street</target>
+            </trans-unit>
+            <trans-unit id="common.city">
+                <source>common.city</source>
+                <target>City</target>
+            </trans-unit>
+            <trans-unit id="common.state">
+                <source>common.state</source>
+                <target>State</target>
+            </trans-unit>
+            <trans-unit id="common.zip">
+                <source>common.zip</source>
+                <target>Zip</target>
+            </trans-unit>
+            <trans-unit id="common.property.id">
+                <source>common.property.id</source>
+                <target>Property ID</target>
+            </trans-unit>
+            <trans-unit id="landlord.form.import.multiple.property">
+                <source>landlord.form.import.multiple.property</source>
+                <target><![CDATA[(Multi-Property Import)]]></target>
             </trans-unit>
         </body>
     </file>

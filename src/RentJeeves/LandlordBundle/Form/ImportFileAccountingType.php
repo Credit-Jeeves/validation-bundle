@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\ImportStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -28,6 +29,7 @@ class ImportFileAccountingType extends AbstractType
             'property',
             'entity',
             array(
+                'empty_value'   => 'landlord.form.import.multiple.property',
                 'class'         => 'RjDataBundle:Property',
                 'attr'          => array(
                     'class' => 'original widthSelect',

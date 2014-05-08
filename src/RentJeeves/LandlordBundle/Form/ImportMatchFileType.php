@@ -3,6 +3,7 @@
 namespace RentJeeves\LandlordBundle\Form;
 
 use RentJeeves\LandlordBundle\Accounting\ImportMapping as ImportMapping;
+use RentJeeves\LandlordBundle\Accounting\ImportStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -19,10 +20,13 @@ class ImportMatchFileType extends AbstractType
 
     protected $translator;
 
-    public function __construct($number, Translator $translator)
+    protected $storage;
+
+    public function __construct($number, Translator $translator, ImportStorage $storage)
     {
         $this->numberRow  = $number;
         $this->translator = $translator;
+        $this->storage = $storage;
     }
 
     public static function getFieldNameByNumber($i)
@@ -42,6 +46,14 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_MOVE_IN         => $this->translator->trans('import.move_in'),
             ImportMapping::KEY_MOVE_OUT        => $this->translator->trans('import.move_out'),
         );
+
+        if ($this->storage->isMultipleProperty()) {
+            $choicesRequired[ImportMapping::KEY_STREET] = $this->translator->trans('common.street');
+            $choicesRequired[ImportMapping::KEY_ZIP] = $this->translator->trans('common.zip');
+            $choicesRequired[ImportMapping::KEY_STATE] = $this->translator->trans('common.state');
+            $choicesRequired[ImportMapping::KEY_LANDLORD_PROPERTY_ID] = $this->translator->trans('common.property.id');
+            $choicesRequired[ImportMapping::KEY_CITY] = $this->translator->trans('common.city');
+        }
 
         $choicesRequired =  array_map(
             function ($value) {

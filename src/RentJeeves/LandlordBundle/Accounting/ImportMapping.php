@@ -47,7 +47,17 @@ class ImportMapping
 
     const KEY_PAYMENT_DATE = 'payment_date';
 
-    protected $requiredKeys = array(
+    const KEY_STREET = 'street';
+
+    const KEY_CITY = 'city';
+
+    const KEY_STATE = 'state';
+
+    const KEY_ZIP = 'zip';
+
+    const KEY_LANDLORD_PROPERTY_ID = 'landlord_property_id';
+
+    protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
         self::KEY_UNIT,
         self::KEY_RESIDENT_ID,
@@ -56,7 +66,15 @@ class ImportMapping
         self::KEY_MOVE_IN,
         self::KEY_MOVE_OUT,
         self::KEY_RENT,
-        self::KEY_TENANT_NAME
+        self::KEY_TENANT_NAME,
+    );
+
+    protected $requiredKeysMultipleProperty = array(
+        self::KEY_CITY,
+        self::KEY_STREET,
+        self::KEY_STATE,
+        self::KEY_ZIP,
+        self::KEY_LANDLORD_PROPERTY_ID,
     );
 
     public static $mappingDates = array(
@@ -182,7 +200,7 @@ class ImportMapping
             return $mappedData;
         }
 
-        foreach ($this->requiredKeys as $requiredKey) {
+        foreach ($this->requiredKeysDefault as $requiredKey) {
             if (!isset($mappedData[$requiredKey])) {
                 $mappedData[$requiredKey] = null;
             }
