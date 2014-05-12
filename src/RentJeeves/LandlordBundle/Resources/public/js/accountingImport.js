@@ -1,5 +1,6 @@
 function accountingImport() {
     var self = this;
+    this.isMultipleProperty = ko.observable(false);
     this.fieldsWhichNotContaintInForm = [
         "import_new_user_with_contract_contract_residentMapping_residentId",
         "import_new_user_with_contract_contract_unit_name",

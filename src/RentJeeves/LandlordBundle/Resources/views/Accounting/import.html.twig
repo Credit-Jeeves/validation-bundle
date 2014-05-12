@@ -110,6 +110,7 @@
 
     $(document).ready(function() {
         ko.applyBindings(accountingImport, $('#reviewContainer').get(0));
+        accountingImport.isMultipleProperty({{isMultipleProperty}});
         accountingImport.loadData(false);
     });
 </script>

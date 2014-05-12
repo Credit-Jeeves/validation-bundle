@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting;
 
+use Proxies\__CG__\RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -326,6 +327,22 @@ class ImportMapping
         $waitingRoom->setResidentId($residentMapping->getResidentId());
 
         return $waitingRoom;
+    }
+
+    /**
+     * @param array $row
+     *
+     * @return Property
+     */
+    public function createProperty($row)
+    {
+        $property = new Property();
+        $property->setCity($row[self::KEY_CITY]);
+        $property->setStreet($row[self::KEY_STREET]);
+        $property->setZip($row[self::KEY_ZIP]);
+        $property->setArea($row[self::KEY_STATE]);
+
+        return $property;
     }
 
     /**

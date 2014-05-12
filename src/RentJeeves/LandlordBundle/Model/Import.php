@@ -77,6 +77,8 @@ class Import
     protected $email;
 
 
+    protected $isMultipleProperty;
+
     /**
      * @param ResidentMapping $residentMapping
      */

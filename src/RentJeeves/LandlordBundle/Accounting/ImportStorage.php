@@ -133,10 +133,13 @@ class ImportStorage
     {
         $data = array(
             self::IMPORT_FILE_PATH       => $this->session->get(self::IMPORT_FILE_PATH),
-            self::IMPORT_PROPERTY_ID     => $this->session->get(self::IMPORT_PROPERTY_ID),
             self::IMPORT_TEXT_DELIMITER  => $this->session->get(self::IMPORT_TEXT_DELIMITER),
             self::IMPORT_FIELD_DELIMITER => $this->session->get(self::IMPORT_FIELD_DELIMITER),
         );
+
+        if (!$this->isMultipleProperty()) {
+            $data[self::IMPORT_PROPERTY_ID] = $this->getPropertyId();
+        }
 
         foreach ($data as $key => $value) {
             if (empty($value)) {

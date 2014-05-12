@@ -315,15 +315,20 @@ class ImportProcess
             $params['holding'] = $holding;
         }
 
-        $unit = $this->em->getRepository('RjDataBundle:Unit')->findOneBy($params);
-        if ($unit) {
+        if ($this->storage->getPropertyId()) {
+            $unit = $this->em->getRepository('RjDataBundle:Unit')->findOneBy($params);
+        }
+
+        if (isset($unit) && !empty($unit)) {
             return $unit;
         }
+
         $unit = new Unit();
         $unit->setName($row[ImportMapping::KEY_UNIT]);
         $unit->setProperty($this->getProperty());
         $unit->setHolding($this->group->getHolding());
         $unit->setGroup($this->group);
+
         return $unit;
     }
 
@@ -885,9 +890,13 @@ class ImportProcess
     /**
      * @return Property|null
      */
-    protected function getProperty()
+    protected function getProperty($row)
     {
-        return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
+        if (!$this->storage->isMultipleProperty()) {
+            return $this->em->getRepository('RjDataBundle:Property')->find($this->storage->getPropertyId());
+        }
+
+        return $this->mapping->createProperty($row);
     }
 
     /**

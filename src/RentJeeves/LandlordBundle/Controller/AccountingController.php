@@ -259,6 +259,8 @@ class AccountingController extends Controller
             'formNewUserWithContract' => $formNewUserWithContract->createView(),
             'formContract'            => $formContract->createView(),
             'formContractFinish'      => $formContractFinish->createView(),
+            //Make it string because it's var for js and I want boolean
+            'isMultipleProperty'      => ($importStorage->isMultipleProperty())? "true" : "false",
         );
     }
 
