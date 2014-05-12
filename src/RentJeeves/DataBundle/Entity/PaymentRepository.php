@@ -63,7 +63,7 @@ class PaymentRepository extends EntityRepository
             OR
             (p.endYear > :year)
             OR
-            (p.endYear = :year AND p.endMonth >= :month)'
+            (p.endYear = :year AND p.endMonth > :month)'
         );
         if (!empty($ids)) {
             $query->andWhere('p.id IN (:ids)');
