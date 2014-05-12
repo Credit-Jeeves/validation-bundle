@@ -219,11 +219,10 @@ function Pay(parent, contractId) {
         if ('on' == this.payment.ends()) {
             finishDate.setMonth(this.payment.endMonth() - 1);
             finishDate.setYear(this.payment.endYear());
-            var dayInMonth = finishDate.getDate();
-
+            var daysInMonth = Date.getDaysInMonth(this.payment.endYear(), this.payment.endMonth() - 1);
             finishDate.setDate(
-                this.payment.dueDate() > dayInMonth ?
-                    dayInMonth :
+                this.payment.dueDate() > daysInMonth ?
+                    daysInMonth :
                     this.payment.dueDate()
             );
         }
