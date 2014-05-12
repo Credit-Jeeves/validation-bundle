@@ -223,7 +223,7 @@ function Pay(parent, contractId) {
 
             finishDate.setDate(
                 this.payment.dueDate() > dayInMonth ?
-                    finishDate.getDaysInMonth() :
+                    dayInMonth :
                     this.payment.dueDate()
             );
         }
