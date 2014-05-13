@@ -29,6 +29,24 @@ class GroupSettings extends Base
             )
         );
 
+        $dueDate = array();
+        foreach (range(1, 31, 1) as $key => $value) {
+            $key++;
+            $dueDate[$key] = $value;
+        }
+
+        $builder->add(
+            'dueDate',
+            'choice',
+            array(
+                'choices'           => $dueDate,
+                'error_bubbling'    => true,
+                'label'             => 'due_date',
+                'required'          => false,
+                'empty_data'        => 1,
+            )
+        );
+
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -80,6 +80,34 @@ abstract class GroupSettings
     protected $updatedAt;
 
     /**
+     * @ORM\Column(
+     *      type="integer",
+     *      name="due_date",
+     *      options={
+     *          "default":1
+     *      },
+     *      nullable=false
+     * )
+     */
+    protected $dueDate = 1;
+
+    /**
+     * @param integer $dueDate
+     */
+    public function setDueDate($dueDate)
+    {
+        $this->dueDate = $dueDate;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getDueDate()
+    {
+        return $this->dueDate;
+    }
+
+    /**
      * @param DateTime $createdAt
      */
     public function setCreatedAt(DateTime $createdAt)
