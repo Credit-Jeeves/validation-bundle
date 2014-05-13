@@ -69,7 +69,8 @@ abstract class Unit
      * )
      * @ORM\JoinColumn(
      *     name="property_id",
-     *     referencedColumnName="id"
+     *     referencedColumnName="id",
+     *     nullable=false
      * )
      * @Serializer\Exclude
      */
