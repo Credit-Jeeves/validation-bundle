@@ -182,7 +182,7 @@ class AccountingController extends Controller
             $importMapping = $this->get('accounting.import.mapping');
             $data = $importMapping->getDataForMapping();
         } catch (ImportStorageException $e) {
-            $this->redirect($this->generateUrl('accounting_import_file'));
+            return $this->redirect($this->generateUrl('accounting_import_file'));
         } catch (ImportMappingException $e) {
             return array(
                 'error' => $e->getMessage()
@@ -225,11 +225,11 @@ class AccountingController extends Controller
         try {
             $data = $importStorage->getImportData();
         } catch (ImportStorageException $e) {
-            $this->redirect($this->generateUrl('accounting_import_file'));
+            return $this->redirect($this->generateUrl('accounting_import_file'));
         }
 
         if (empty($data[ImportStorage::IMPORT_MAPPING])) {
-            $this->redirect($this->generateUrl('accounting_import_file'));
+            return $this->redirect($this->generateUrl('accounting_import_file'));
         }
         /**
          * @var $importProcess ImportProcess
