@@ -63,7 +63,8 @@ class DateTimeCase extends BaseTestCase
 
     /**
      * @test
-     * @expectedException \PHPUnit_Framework_Error_Warning
+     * @expectedException \Exception
+     * @expectedExceptionMessage DateTime::modify(): Failed to parse time string (2 month sdfg year) at position 8 (s)
      */
     public function modifyError()
     {
