@@ -63,8 +63,7 @@ class TenantRepository extends EntityRepository
         $query = $this->createQueryBuilder('tenant')
             ->addSelect(
                 array('contract', 'unit')
-            )
-        ;
+            );
         $query->leftJoin(
             'tenant.contracts',
             'contract',

@@ -38,7 +38,7 @@ class DateTime extends \DateTime
         $pattern = '/( ?[-+]?\d?\w* months?)?( ?[-+]?\d?\w* years?)?/i';
         $modify = preg_replace_callback(
             $pattern,
-            function($matches) use ($pattern) {
+            function ($matches) use ($pattern) {
                 if (empty($matches[0])) {
                     return;
                 }
@@ -58,4 +58,3 @@ class DateTime extends \DateTime
         return $this;
     }
 }
-
