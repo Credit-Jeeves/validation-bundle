@@ -31,8 +31,7 @@ class GroupSettings extends Base
 
         $dueDate = array();
         foreach (range(1, 31, 1) as $key => $value) {
-            $key++;
-            $dueDate[$key] = $value;
+            $dueDate[$value] = $value;
         }
 
         $builder->add(
