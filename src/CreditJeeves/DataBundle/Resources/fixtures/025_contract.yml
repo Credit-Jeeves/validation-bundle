@@ -44,11 +44,11 @@ fixtures:
         unit:     Unit_1_4
         rent:     1500
         status:   finished
-        paidTo:  '-120 days'
-        startAt:   '-290 days'
-        finishAt: '-160 days'
-        createdAt: '-50 days'
-        updatedAt: '-50 days'
+        paidTo:  '-2 months'
+        startAt:   '-8 months'
+        finishAt: '1 months'
+        createdAt: '-8 months -4 days'
+        updatedAt: '-1 months'
     Contract_5:
         tenant:   Tenant_3
         holding:  rjHolding_1

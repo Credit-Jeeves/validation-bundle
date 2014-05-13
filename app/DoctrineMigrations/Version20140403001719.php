@@ -33,9 +33,6 @@ class Version20140403001719 extends AbstractMigration
             $paidFor = $date->format('Y-m-d');
             $this->addSql("UPDATE `cj_operation` SET paid_for = '{$paidFor}' WHERE id = {$row['operation_id']}");
         }
-
-
-//        exit;
     }
 
     public function down(Schema $schema)

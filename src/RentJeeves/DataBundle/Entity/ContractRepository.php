@@ -486,4 +486,38 @@ class ContractRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    /**
+     * @param int $contractId
+     * @param OrderStatus $orderStatus
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Contract | null
+     */
+    public function getOneWithOperationsOrders($contractId, $orderStatus = OrderStatus::COMPLETE, $monthAgo = 6)
+    {
+        $paidTo = new DateTime();
+        $paidTo->modify("-{$monthAgo} months");
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin(
+            'c.operations',
+            'op',
+            Expr\Join::WITH,
+            "op.paidFor > :paidTo"
+        );
+        $query->setParameter('paidTo', $paidTo->format('Y-m-d'));
+        $query->innerJoin(
+            'op.order',
+            'o',
+            Expr\Join::WITH,
+            "o.status = :orderStatus"
+        );
+        $query->setParameter('orderStatus', $orderStatus);
+        $query->andWhere('c.id = :contractId');
+        $query->setParameter('contractId', $contractId);
+        $query = $query->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
 }

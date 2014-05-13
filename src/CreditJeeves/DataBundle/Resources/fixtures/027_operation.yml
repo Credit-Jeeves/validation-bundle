@@ -142,42 +142,49 @@ fixtures:
     type: rent
     amount: 1250
     paidFor: '-8 month'
+    createdAt: '-8 month'
   rjOperation_4_2:
     order: rjOrder_4_2
     contract: Contract_4
     type: rent
     amount: 1250
     paidFor: '-7 month'
+    createdAt: '-7 month'
   rjOperation_4_3:
     order: rjOrder_4_3
     contract: Contract_4
     type: rent
     amount: 1250
     paidFor: '-6 month'
+    createdAt: '-6 month'
   rjOperation_4_4:
     order: rjOrder_4_4
     contract: Contract_4
     type: rent
     amount: 1250
     paidFor: '-5 month'
+    createdAt: '-5 month'
   rjOperation_4_5:
     order: rjOrder_4_5
     contract: Contract_4
     type: rent
     amount: 1250
     paidFor: '-4 month'
+    createdAt: '-4 month'
   rjOperation_4_6:
     order: rjOrder_4_6
     contract: Contract_4
     type: rent
     amount: 1250
     paidFor: '-3 month'
+    createdAt: '-3 month'
   rjOperation_4_7:
     order: rjOrder_4_7
     contract: Contract_4
     type: rent
     amount: 1250
-    paidFor: '-2 month'
+    paidFor: '-1 month'
+    createdAt: '-1 month'
 
   rjOperation_5_1:
     order: rjOrder_5_1

@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use \DateTime;
+use DateTime;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -85,9 +85,6 @@ class Payment
      *      precision=10,
      *      scale=2
      * )
-     * @Assert\NotBlank(
-     *      message="checkout.error.amount.empty"
-     * )
      * @Assert\Range(
      *      min=1,
      *      minMessage="checkout.error.amount.min",
@@ -97,6 +94,30 @@ class Payment
      * @var double
      */
     protected $amount;
+
+    /**
+     * @ORM\Column(
+     *      type="decimal",
+     *      precision=10,
+     *      scale=2,
+     *      nullable=true
+     * )
+     * @Assert\Range(
+     *      min=1,
+     *      minMessage="checkout.error.amountOther.min",
+     *      invalidMessage="checkout.error.amountOther.valid"
+     * )
+     *
+     * @var double
+     */
+    protected $amountOther = 0;
+
+    /**
+     * @ORM\Column(name="paid_for", type="datetime", nullable=true)
+     *
+     * @var DateTime
+     */
+    protected $paidFor;
 
     /**
      * @ORM\Column(name="due_date", type="integer")
@@ -193,7 +214,7 @@ class Payment
      * Set type
      *
      * @param PaymentType $type
-     * @return Payment
+     * @return $this
      */
     public function setType($type)
     {
@@ -205,7 +226,7 @@ class Payment
     /**
      * Get type
      *
-     * @return PaymentType
+     * @return $thisType
      */
     public function getType()
     {
@@ -216,7 +237,7 @@ class Payment
      * Set status
      *
      * @param PaymentStatus $status
-     * @return Payment
+     * @return $this
      */
     public function setStatus($status)
     {
@@ -228,7 +249,7 @@ class Payment
     /**
      * Get status
      *
-     * @return PaymentStatus
+     * @return $thisStatus
      */
     public function getStatus()
     {
@@ -239,7 +260,7 @@ class Payment
      * Set amount
      *
      * @param float $amount
-     * @return Payment
+     * @return $this
      */
     public function setAmount($amount)
     {
@@ -259,10 +280,52 @@ class Payment
     }
 
     /**
+     * Set amountOther
+     *
+     * @param float $amount
+     * @return $this
+     */
+    public function setAmountOther($amount)
+    {
+        $this->amountOther = $amount;
+
+        return $this;
+    }
+
+    /**
+     * Get amountOther
+     *
+     * @return float
+     */
+    public function getAmountOther()
+    {
+        return $this->amountOther;
+    }
+
+    /**
+     * @param DateTime $paidFor
+     * @return $this
+     */
+    public function setPaidFor($paidFor)
+    {
+        $this->paidFor = $paidFor;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getPaidFor()
+    {
+        return $this->paidFor;
+    }
+
+    /**
      * Set dueDate
      *
      * @param integer $dueDate
-     * @return Payment
+     * @return $this
      */
     public function setDueDate($dueDate)
     {
@@ -285,7 +348,7 @@ class Payment
      * Set startMonth
      *
      * @param integer $startMonth
-     * @return Payment
+     * @return $this
      */
     public function setStartMonth($startMonth)
     {
@@ -308,7 +371,7 @@ class Payment
      * Set startYear
      *
      * @param integer $startYear
-     * @return Payment
+     * @return $this
      */
     public function setStartYear($startYear)
     {
@@ -331,7 +394,7 @@ class Payment
      * Set endMonth
      *
      * @param integer $endMonth
-     * @return Payment
+     * @return $this
      */
     public function setEndMonth($endMonth)
     {
@@ -354,7 +417,7 @@ class Payment
      * Set endYear
      *
      * @param integer $endYear
-     * @return Payment
+     * @return $this
      */
     public function setEndYear($endYear)
     {
@@ -376,8 +439,8 @@ class Payment
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
-     * @return Payment
+     * @param DateTime $createdAt
+     * @return $this
      */
     public function setCreatedAt($createdAt)
     {
@@ -389,7 +452,7 @@ class Payment
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -399,8 +462,8 @@ class Payment
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
-     * @return Payment
+     * @param DateTime $updatedAt
+     * @return $this
      */
     public function setUpdatedAt($updatedAt)
     {
@@ -412,7 +475,7 @@ class Payment
     /**
      * Get updatedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {
@@ -423,7 +486,7 @@ class Payment
      * Set contract
      *
      * @param \RentJeeves\DataBundle\Entity\Contract $contract
-     * @return Payment
+     * @return $this
      */
     public function setContract(\RentJeeves\DataBundle\Entity\Contract $contract = null)
     {
@@ -446,7 +509,7 @@ class Payment
      * Set PaymentAccount
      *
      * @param \RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount
-     * @return Payment
+     * @return $this
      */
     public function setPaymentAccount(\RentJeeves\DataBundle\Entity\PaymentAccount $paymentAccount = null)
     {

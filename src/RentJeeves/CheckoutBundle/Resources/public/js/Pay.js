@@ -8,10 +8,9 @@ function Pay(parent, contractId) {
     this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
     this.infoMessage = ko.observable(null);
 
-    this.getCurrentStep = function()
-    {
+    this.getCurrentStep = function() {
         return steps[current];
-    }
+    };
 
     this.previous = function() {
         window.formProcess.removeAllErrors('#pay-popup');
@@ -47,7 +46,7 @@ function Pay(parent, contractId) {
 
     this.isPassed = function(step) {
         return this.passedSteps().indexOf(step) >= 0;
-    }
+    };
 
 
     this.step.subscribe(function(newValue) {

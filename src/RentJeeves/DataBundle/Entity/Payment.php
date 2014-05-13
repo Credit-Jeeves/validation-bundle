@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\Table(name="rj_payment")
@@ -87,7 +87,7 @@ class Payment extends Base
     /**
      * @return DateTime
      */
-    public function getNextPaymentDate(DateTime $lastPaymentDate = null)
+    public function getNextPaymentDate(\DateTime $lastPaymentDate = null)
     {
         // 1. Get start date
         $day = $this->getDueDate();
@@ -116,12 +116,6 @@ class Payment extends Base
             $month = $currentMonth;
             $year = $currentYear;
         }
-
-        $daysInMont = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        if ($day > $daysInMont) {
-            $day = $daysInMont;
-        }
-
-        return new DateTime(implode('-', array($year, $month, $day)));
+        return $now->setDate($year, $month, $day);
     }
 }

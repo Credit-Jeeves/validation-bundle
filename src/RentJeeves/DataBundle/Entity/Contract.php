@@ -13,8 +13,8 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
-use \DateTime;
-use \RuntimeException;
+use RentJeeves\CoreBundle\DateTime;
+use RuntimeException;
 
 /**
  * Contract
@@ -125,6 +125,30 @@ class Contract extends Base
     }
 
     /**
+     * @inheritdoc
+     */
+    public function getDueDate()
+    {
+        $day = parent::getDueDate();
+        if (empty($day) && ($startAt = $this->getStartAt())) {
+            $day = $startAt->format('j');
+        }
+        return $day;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPaidTo()
+    {
+        $date = parent::getPaidTo();
+        if (empty($date)) {
+            $date = $this->getStartAt();
+        }
+        return $date;
+    }
+
+    /**
      * @Serializer\VirtualProperty
      * @Serializer\SerializedName("payToName")
      * @return string
@@ -228,7 +252,7 @@ class Contract extends Base
 
     private function getLateDays()
     {
-        $result = '1 DAY LATE';
+        $result = '1 DAY LATE'; //TODO it is wrong because PaidTo==null can't be 1 day late
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
             $interval = $now->diff($date);
@@ -666,5 +690,24 @@ class Contract extends Base
         }
 
         return true;
+    }
+
+    /**
+     * @return DateTime | null
+     */
+    public function getPaidToWithDueDate()
+    {
+        if (!$this->getPaidTo() || !$this->getDueDate()) {
+            return null;
+        }
+        if ($this->getDueDate() == $this->getPaidTo()->format('j')) {
+            return $this->getPaidTo();
+        }
+        $startAt = clone $this->getPaidTo();
+        if ($this->getDueDate() < $startAt->format('j')) {
+            $startAt->modify('+1 month');
+        }
+
+        return $startAt->setDate(null, null, $this->getDueDate());
     }
 }

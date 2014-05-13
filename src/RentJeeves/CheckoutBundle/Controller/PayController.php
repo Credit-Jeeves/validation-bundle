@@ -34,10 +34,13 @@ class PayController extends Controller
     use FormErrors;
     use Traits\PaymentProcess;
 
-    protected function createPaymentForm()
+    protected function createPaymentForm(Request $request)
     {
-        $formType = new PaymentType($this->container->getParameter('payment_one_time_until_value'));
-        $formData = $this->getRequest()->get($formType->getName());
+        $formData = $request->get(PaymentType::NAME);
+        $formType = new PaymentType(
+            $this->container->getParameter('payment_one_time_until_value'),
+            $this->container->get('checkout.paid_for')->getArray($formData['contract_id'])
+        );
         /** @var Payment $paymentEntity */
         $paymentEntity = null;
         if (!empty($formData['id'])) {
@@ -61,7 +64,7 @@ class PayController extends Controller
      */
     public function paymentAction(Request $request)
     {
-        $paymentType = $this->createPaymentForm();
+        $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
@@ -169,13 +172,13 @@ class PayController extends Controller
      */
     public function execAction(Request $request)
     {
-        $paymentType = $this->createPaymentForm();
+        $paymentType = $this->createPaymentForm($request);
         $paymentType->handleRequest($request);
         if (!$paymentType->isValid()) {
             return $this->renderErrors($paymentType);
         }
 
-        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em = $this->getDoctrine()->getManager();
 
         /** @var Payment $paymentEntity */
         $paymentEntity = $paymentType->getData();

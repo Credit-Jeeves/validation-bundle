@@ -3,18 +3,20 @@
 {% block form_rows %}
     {% for child in form %}
         {% set type = child.vars.block_prefixes[1]|default('text') %}
-        {% if child.vars.label or loop.first or child.vars.attr.force_row is defined %}
-            {% if loop.first != true %}
-                </div>
+        {% if child.vars.attr.force_row is not defined or child.vars.attr.force_row == true %}
+            {% if child.vars.label or loop.first or child.vars.attr.force_row is defined %}
+                {% if loop.first != true %}
+                    </div>
+                {% endif %}
+                {% set attr = child.vars.attr.row_attr|default({}) %}
+                {% set row_class = attr.class|default('form-row clearfix type-' ~ type) %}
+                {% if child.attr.tooltip_title is defined %}
+                    {% set row_class = row_class ~ ' with-tooltip' %}
+                {% endif%}
+                {% set attr = attr|merge({'class': row_class}) %}
+                {% set id = child.vars.id ~ '_row' %}
+                <div {{ block('widget_attributes') }}>
             {% endif %}
-            {% set attr = child.vars.attr.row_attr|default({}) %}
-            {% set row_class = attr.class|default('form-row clearfix type-' ~ type) %}
-            {% if child.attr.tooltip_title is defined %}
-                {% set row_class = row_class ~ ' with-tooltip' %}
-            {% endif%}
-            {% set attr = attr|merge({'class': row_class}) %}
-            {% set id = child.vars.id ~ '_row' %}
-            <div {{ block('widget_attributes') }}>
         {% endif %}
         {{ form_row(child) }}
     {% endfor %}

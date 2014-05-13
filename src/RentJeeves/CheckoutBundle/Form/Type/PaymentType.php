@@ -2,6 +2,8 @@
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use RentJeeves\CheckoutBundle\Constraint\StartDate;
+use RentJeeves\CheckoutBundle\Form\DataTransformer\DateTimeToStringTransformer;
+use RentJeeves\LandlordBundle\Form\Type\ViewType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -18,17 +20,25 @@ use DateTime;
 
 class PaymentType extends AbstractType
 {
+    const NAME = 'rentjeeves_checkoutbundle_paymenttype';
+
     /**
      * @var string
      */
     protected $oneTimeUntilValue;
 
     /**
+     * @var array
+     */
+    protected $paidFor = array();
+
+    /**
      * @param string $oneTimeUntilValue
      */
-    public function __construct($oneTimeUntilValue)
+    public function __construct($oneTimeUntilValue, array $paidFor)
     {
         $this->oneTimeUntilValue = $oneTimeUntilValue;
+        $this->paidFor = $paidFor;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -37,16 +47,63 @@ class PaymentType extends AbstractType
             'amount',
             null,
             array(
+                'required' => false,
                 'label' => 'checkout.amount',
                 'attr' => array(
                     'min' => 1,
                     'step' => '0.01',
                     'class' => 'half-of-right',
-                    'data-bind' => 'value: payment.amount'
+                    'data-bind' => 'value: payment.amount',
                 ),
                 'invalid_message' => 'checkout.error.amount.valid'
             )
         );
+        $builder->add(
+            $builder->create(
+                'paidFor',
+                'choice',
+                array(
+                    'label' => 'checkout.paidFor',
+                    'choices' => $this->paidFor,
+                    'attr' => array(
+                        'class' => 'original',
+                        'data-bind' => 'value: payment.paidFor',
+                        'force_row' => false
+                    ),
+                    'invalid_message' => 'checkout.error.paidFor.invalid',
+                )
+            )->addModelTransformer(new DateTimeToStringTransformer())
+        );
+
+        $builder->add(
+            'amountOther',
+            null,
+            array(
+                'required' => false,
+                'label' => 'checkout.amountOther',
+                'attr' => array(
+                    'min' => 0,
+                    'step' => '0.01',
+                    'class' => 'half-of-right',
+                    'data-bind' => 'value: payment.amountOther'
+                ),
+                'invalid_message' => 'checkout.error.amountOther.valid'
+            )
+        );
+
+        $builder->add(
+            'total',
+            new ViewType(),
+            array(
+                'label' => 'checkout.total',
+                'mapped' => false,
+                'required' => true,
+                'attr' => array(
+                    'data-bind' => 'text: payment.total',
+                )
+            )
+        );
+
 
         $builder->add(
             'type',
@@ -130,6 +187,7 @@ class PaymentType extends AbstractType
                 'invalid_message' => 'checkout.error.dueDate.invalid',
             )
         );
+        setlocale(LC_ALL, 'ru_RU.utf8');
         $months = array();
         foreach (range(1, 12) as $month) {
             $months[$month] = date('M', strtotime("2000-{$month}-1"));
@@ -176,7 +234,6 @@ class PaymentType extends AbstractType
                 'input'           => 'string',
                 'widget'          => 'single_text',
                 'format'          => 'MM/dd/yyyy',
-                'mapped'          => false,
                 'empty_data'      => '',
                 'attr'            => array(
                     'class'     => 'datepicker-field',
@@ -336,7 +393,7 @@ class PaymentType extends AbstractType
 
     public function getName()
     {
-        return 'rentjeeves_checkoutbundle_paymenttype';
+        return static::NAME;
     }
 
     public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)
