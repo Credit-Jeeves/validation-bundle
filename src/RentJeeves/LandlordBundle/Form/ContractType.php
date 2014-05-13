@@ -42,6 +42,7 @@ class ContractType extends AbstractType
                 'error_bubbling'    => true,
             )
         );
+
         $builder->add(
             'startAt',
             'date',
@@ -52,6 +53,15 @@ class ContractType extends AbstractType
                 'error_bubbling'    => true,
             )
         );
+
+        $builder->add(
+            'dueDate',
+            'choices',
+            array(
+                'error_bubbling'    => true,
+            )
+        );
+
         $builder->add(
             'property',
             'entity',
