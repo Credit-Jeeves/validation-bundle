@@ -86,6 +86,25 @@ function Payment(parent, paidTo) {
     });
 
     this.ends = ko.observable('cancelled');
+
     this.endMonth = ko.observable(null);
     this.endYear = ko.observable(null);
+
+    /**
+     * Make sure month and year it integer, because library for work with date(datejs)
+     * show such error: Uncaught TypeError: 2026 is not a Number.
+     */
+    this.endMonth.subscribe(function(newValue) {
+        if (typeof newValue === 'number') {
+            return;
+        }
+        self.endMonth(parseInt(newValue));
+    });
+
+    this.endYear.subscribe(function(newValue) {
+        if (typeof newValue === 'number') {
+            return;
+        }
+        self.endYear(parseInt(newValue));
+    });
 }
