@@ -41,7 +41,7 @@ class GroupSettings extends Base
             array(
                 'choices'           => $dueDate,
                 'error_bubbling'    => true,
-                'label'             => 'due_date',
+                'label'             => 'common.default.due_date',
                 'required'          => false,
                 'empty_data'        => 1,
             )
