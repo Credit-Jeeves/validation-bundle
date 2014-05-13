@@ -179,6 +179,20 @@ class Property extends Base
         return false;
     }
 
+    public function isSingle()
+    {
+        return $this->getIsSingle() == true;
+    }
+
+    public function getSingleUnit()
+    {
+        if ($this->isSingle()) {
+            return $this->getUnits()->first();
+        }
+
+        return null;
+    }
+
     public function __toString()
     {
         return $this->getFullAddress();

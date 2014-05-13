@@ -84,8 +84,8 @@ function addProperties()
             $('#property-units').hide();
             $('.unit-name').remove();
             $('.units-item').remove();
-            $('#numberOfUnit').val('')
-            $('#unitCount').val(0)
+            $('#numberOfUnit').val('');
+            $('#unitCount').val(0);
         } else {
             $('#property-units').show();
         }

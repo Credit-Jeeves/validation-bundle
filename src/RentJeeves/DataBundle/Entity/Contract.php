@@ -180,6 +180,7 @@ class Contract extends Base
         if ($unit) {
             $result['unit_id'] = $unit->getId();
         }
+        $result['isSingleProperty'] = $property->getIsSingle();
         $result['tenant'] = ucwords(strtolower($tenant->getFullName()));
         $result['first_name'] = $tenant->getFirstName();
         $result['last_name'] = $tenant->getLastName();
@@ -334,7 +335,7 @@ class Contract extends Base
             $unit = $this->getUnit();
         }
         $result[] = $property->getAddress();
-        if ($unit) {
+        if (!$property->isSingle() && $unit) {
             $result[] = $unit->getName();
             $result = implode(' #', $result);
         } else {

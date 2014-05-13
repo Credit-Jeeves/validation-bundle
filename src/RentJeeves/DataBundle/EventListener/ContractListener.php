@@ -3,6 +3,7 @@
 namespace RentJeeves\DataBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -16,6 +17,13 @@ use LogicException;
  *     attributes = {
  *         "event"="prePersist",
  *         "method"="prePersist"
+ *     }
+ * )
+ * @Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="preUpdate",
+ *         "method"="preUpdate"
  *     }
  * )
  */
@@ -32,17 +40,31 @@ class ContractListener
         if (!$entity instanceof Contract) {
             return;
         }
+        $this->checkContract($entity);
+    }
 
-        if ($entity->getUnit() instanceof Unit) {
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Contract) {
+            return;
+        }
+        $this->checkContract($entity);
+    }
+
+    public function checkContract(Contract $contract)
+    {
+        $property = $contract->getProperty();
+        if ($property->isSingle() && $unit = $property->getSingleUnit()) {
+            $contract->setUnit($unit);
             return;
         }
 
-        $property = $entity->getProperty();
-        if ($property->getIsSingle() == true && $unit = $property->getUnits()->first()) {
-            $entity->setUnit($unit);
+        $unit = $contract->getUnit();
+        if ($unit instanceof Unit && $unit->getProperty()->getId() == $property->getId()) {
             return;
         }
 
-        throw new LogicException('Unit for contract was not found');
+        throw new LogicException('Invalid contract parameters');
     }
 }

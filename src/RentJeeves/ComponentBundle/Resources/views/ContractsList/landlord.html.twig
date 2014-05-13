@@ -254,7 +254,7 @@
                     <!-- /ko -->
                 </div>
                 <!-- ko if: status == 'PENDING' || status == 'INVITE' || status == 'APPROVED' -->
-                <div class="form-row clearfix">
+                <div class="form-row clearfix" data-bind="visible: $root.unitsList().length > 0">
                     <label>{{ 'unit'|trans|capitalize }}<b>*</b></label>
                     <select id="unit-edit" data-bind="
                                 options: $root.unitsList,

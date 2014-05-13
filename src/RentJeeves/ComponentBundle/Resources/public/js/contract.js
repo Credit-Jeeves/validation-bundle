@@ -43,6 +43,7 @@ function Contract() {
             success: function (response) {
                 $('#unit-edit').parent().find('.loader').hide();
                 self.unitsList(response.units);
+                self.currentUnitId(self.contract().unit_id);
             }
         });
     };
@@ -92,7 +93,6 @@ function Contract() {
 
         self.currentPropertyId(self.contract().property_id);
         self.getProperties(self.contract().property_id);
-        self.currentUnitId(self.contract().unit_id);
         self.getUnits(self.contract().property_id);
 
 
