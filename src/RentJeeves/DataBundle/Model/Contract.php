@@ -9,6 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\MappedSuperclass
@@ -263,6 +264,13 @@ abstract class Contract
      * @Serializer\Exclude
      */
     protected $transUnionStartAt;
+
+    /**
+     * @ORM\Column(name="due_date", type="integer", nullable=true)
+     *
+     * @var int
+     */
+    protected $dueDate;
 
     /**
      * @ORM\Column(
@@ -615,7 +623,7 @@ abstract class Contract
     /**
      * Set Paid to
      *
-     * @param \DateTime $paidTo
+     * @param DateTime $paidTo
      * @return Contract
      */
     public function setPaidTo($paidTo)
@@ -627,21 +635,40 @@ abstract class Contract
     /**
      * Get startAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getPaidTo()
     {
-        $date = $this->paidTo;
-        if (empty($date)) {
-            $date = $this->getStartAt();
-        }
-        return $date;
+        return $this->paidTo;
+    }
+
+    /**
+     * Set dueDate
+     *
+     * @param integer $dueDate
+     * @return $this
+     */
+    public function setDueDate($dueDate)
+    {
+        $this->dueDate = $dueDate;
+
+        return $this;
+    }
+
+    /**
+     * Get dueDate
+     *
+     * @return integer
+     */
+    public function getDueDate()
+    {
+        return $this->dueDate;
     }
 
     /**
      * Set startAt
      *
-     * @param \DateTime $startAt
+     * @param DateTime $startAt
      * @return Contract
      */
     public function setStartAt($startAt)
@@ -653,7 +680,7 @@ abstract class Contract
     /**
      * Get startAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getStartAt()
     {
@@ -663,7 +690,7 @@ abstract class Contract
     /**
      * Set finishAt
      *
-     * @param \DateTime $finishAt
+     * @param DateTime $finishAt
      * @return Contract
      */
     public function setFinishAt($finishAt)
@@ -675,7 +702,7 @@ abstract class Contract
     /**
      * Get finishAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getFinishAt()
     {
@@ -685,7 +712,7 @@ abstract class Contract
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
      * @return Contract
      */
     public function setCreatedAt($createdAt)
@@ -697,7 +724,7 @@ abstract class Contract
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {
@@ -707,7 +734,7 @@ abstract class Contract
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
+     * @param DateTime $updatedAt
      * @return Contract
      */
     public function setUpdatedAt($updatedAt)
@@ -719,7 +746,7 @@ abstract class Contract
     /**
      * Get updatedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getUpdatedAt()
     {
@@ -807,7 +834,7 @@ abstract class Contract
     }
 
     /**
-     * @param \DateTime $experianStartAt
+     * @param DateTime $experianStartAt
      */
     public function setExperianStartAt($experianStartAt)
     {
@@ -815,7 +842,7 @@ abstract class Contract
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getExperianStartAt()
     {
@@ -855,7 +882,7 @@ abstract class Contract
     }
 
     /**
-     * @param \DateTime $transUnionStartAt
+     * @param DateTime $transUnionStartAt
      */
     public function setTransUnionStartAt($transUnionStartAt)
     {
@@ -863,7 +890,7 @@ abstract class Contract
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
     public function getTransUnionStartAt()
     {
