@@ -23,7 +23,6 @@ class TenantsController extends Controller
             new InviteTenantContractType($this->getUser(), $this->getCurrentGroup())
         );
 
-        $formView = $form->createView();
         $data = array(
             'nGroups'   => $groups->count(),
             'Group'     => $this->getCurrentGroup(),
@@ -102,11 +101,7 @@ class TenantsController extends Controller
                 $em->flush();
 
                 $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
-            } else {
-                print_r($form->getErrors());
-                exit;
             }
-
         }
 
         return $this->redirect($this->generateUrl('landlord_tenants'));
