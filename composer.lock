@@ -3397,7 +3397,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/Heartland.git",
-                "reference": "90a470a975f941265231444dfafde2bc1d5d3dac"
+                "reference": "0df39e515d53eb1a242e6fe161ea98a11894e71c"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -3439,7 +3439,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2014-05-05 06:08:24"
+            "time": "2014-05-13 13:57:42"
         },
         {
             "name": "payum/payum",
@@ -4341,12 +4341,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/stof/StofDoctrineExtensionsBundle.git",
-                "reference": "f1c7993863f83f22f187f11d2a8eb462b836701e"
+                "reference": "7370d18f511653d39c33d75c2190caaafdebb492"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/f1c7993863f83f22f187f11d2a8eb462b836701e",
-                "reference": "f1c7993863f83f22f187f11d2a8eb462b836701e",
+                "url": "https://api.github.com/repos/stof/StofDoctrineExtensionsBundle/zipball/7370d18f511653d39c33d75c2190caaafdebb492",
+                "reference": "7370d18f511653d39c33d75c2190caaafdebb492",
                 "shasum": ""
             },
             "require": {
@@ -4394,7 +4394,7 @@
                 "translatable",
                 "tree"
             ],
-            "time": "2014-04-09 14:29:58"
+            "time": "2014-05-14 08:12:32"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4846,12 +4846,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Twig.git",
-                "reference": "cd4a3727386db46709f1c98f23622e6101f2a6eb"
+                "reference": "6af8182fbd3ead19f8f9e01d33e9b09063e1a1b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/cd4a3727386db46709f1c98f23622e6101f2a6eb",
-                "reference": "cd4a3727386db46709f1c98f23622e6101f2a6eb",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/6af8182fbd3ead19f8f9e01d33e9b09063e1a1b0",
+                "reference": "6af8182fbd3ead19f8f9e01d33e9b09063e1a1b0",
                 "shasum": ""
             },
             "require": {
@@ -4895,7 +4895,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-05-12 14:45:36"
+            "time": "2014-05-14 11:51:43"
         },
         {
             "name": "willdurand/js-translation-bundle",

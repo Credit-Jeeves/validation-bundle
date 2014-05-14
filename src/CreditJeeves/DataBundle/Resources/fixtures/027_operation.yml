@@ -68,7 +68,6 @@ fixtures:
     paidFor: 'now'
 
 # finished contract
-    paidFor: ''
   rjOperation_3_1:
     order: rjOrder_3_1
     contract: Contract_3
@@ -203,7 +202,7 @@ fixtures:
     contract: Contract_2
     type: rent
     amount: 1250
-    paidFor: '-10 month'
+    paidFor: '-9 month'
   rjOperation_5_4:
     order: rjOrder_5_4
     contract: Contract_2
@@ -221,7 +220,7 @@ fixtures:
     contract: Contract_2
     type: rent
     amount: 1250
-    paidFor: '-5 month'
+    paidFor: '-6 month'
   rjOperation_5_7:
     order: rjOrder_5_7
     contract: Contract_2
@@ -257,7 +256,7 @@ fixtures:
     contract: Contract_2
     type: rent
     amount: 1250
-    paidFor: '-1 days'
+    paidFor: 'now'
 
   rjOperation_6_1:
     order: rjOrder_6_1

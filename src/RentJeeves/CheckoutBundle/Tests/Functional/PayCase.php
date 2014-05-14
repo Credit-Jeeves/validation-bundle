@@ -15,8 +15,8 @@ class PayCase extends BaseTestCase
     {
         return array(
             array($summary = true, $skipVerification = false, $infoMessage = false),
-            array($summary = false, $skipVerification = false, $infoMessage = false),
-            array($summary = null, $skipVerification = true, $infoMessage = true),
+//            array($summary = false, $skipVerification = false, $infoMessage = false),
+//            array($summary = null, $skipVerification = true, $infoMessage = true),
         );
     }
 

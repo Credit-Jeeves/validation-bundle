@@ -71,4 +71,15 @@ class DateTimeCase extends BaseTestCase
         $dateTime = new DateTime();
         $dateTime->modify('2 month sdfg year');
     }
+
+    /**
+     * @test
+     */
+    public function setDateTime()
+    {
+        $dateTime = new \DateTime();
+        $newDateTime = new DateTime();
+        $newDateTime->setDateTime($dateTime);
+        $this->assertEquals($dateTime->format('c'), $newDateTime->format('c'));
+    }
 }

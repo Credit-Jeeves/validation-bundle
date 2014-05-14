@@ -526,7 +526,7 @@ class Contract extends Base
     {
         $property = $this->getProperty();
         $unit = $this->getUnit();
-        $repo = $em->getRepository('DataBundle:Order');
+        $orderRepository = $em->getRepository('DataBundle:Order');
         $result = array();
         $result['id'] = $this->getId();
         $result['full_address'] = $this->getRentAddress($property, $unit).' '.$property->getLocationAddress();
@@ -543,7 +543,7 @@ class Contract extends Base
         $result['isPayment'] = false;
         $result['payment_status'] = false;
         /** @var Order $lastOrder */
-        $lastOrder = $repo->getLastContractPayment($this);
+        $lastOrder = $orderRepository->getLastContractPayment($this);
         $lastPaymentDate = null;
         if ($lastOrder) {
             $result['payment_last'] = $lastOrder->getUpdatedAt()->format('m/d/Y');
@@ -703,7 +703,8 @@ class Contract extends Base
         if ($this->getDueDate() == $this->getPaidTo()->format('j')) {
             return $this->getPaidTo();
         }
-        $startAt = clone $this->getPaidTo();
+        $startAt = new DateTime();
+        $startAt->setDateTime($this->getPaidTo());
         if ($this->getDueDate() < $startAt->format('j')) {
             $startAt->modify('+1 month');
         }

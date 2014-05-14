@@ -27,6 +27,7 @@ function Payment(parent, paidTo) {
     this.contractId = null;
     this.paymentAccountId = ko.observable(null);
     this.amount = ko.observable(null);
+    this.paidForOptions = ko.observableArray(null);
     this.paidFor = ko.observable(null);
     this.amountOther = ko.observable(null);
     this.total = ko.computed(function() {

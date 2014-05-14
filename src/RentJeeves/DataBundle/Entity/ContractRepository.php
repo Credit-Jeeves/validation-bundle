@@ -3,10 +3,11 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 
 class ContractRepository extends EntityRepository
@@ -488,36 +489,70 @@ class ContractRepository extends EntityRepository
     }
 
     /**
-     * @param int $contractId
-     * @param OrderStatus $orderStatus
+     * @param QueryBuilder $query
+     * @param string $orderStatus
+     * @param int $monthAgo
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     *
-     * @return Contract | null
+     * @return QueryBuilder
      */
-    public function getOneWithOperationsOrders($contractId, $orderStatus = OrderStatus::COMPLETE, $monthAgo = 6)
+    public static function queryOperationsOrdersHistory(&$query, $orderStatus = OrderStatus::COMPLETE, $monthAgo = 6)
     {
         $paidTo = new DateTime();
         $paidTo->modify("-{$monthAgo} months");
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin(
+        $query->leftJoin(
             'c.operations',
             'op',
             Expr\Join::WITH,
             "op.paidFor > :paidTo"
         );
         $query->setParameter('paidTo', $paidTo->format('Y-m-d'));
-        $query->innerJoin(
+        $query->leftJoin(
             'op.order',
             'o',
             Expr\Join::WITH,
             "o.status = :orderStatus"
         );
         $query->setParameter('orderStatus', $orderStatus);
-        $query->andWhere('c.id = :contractId');
-        $query->setParameter('contractId', $contractId);
-        $query = $query->getQuery();
+
+        return $query;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Contract
+     */
+    public function findOneWithOperationsOrders($id)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->andWhere('c.id = :id');
+        $query->setParameter('id', $id);
+
+        $query = static::queryOperationsOrdersHistory($query)->getQuery();
 
         return $query->getOneOrNullResult();
+    }
+
+    public function findByTenantIdInvertedStatusesForPayments(
+        $tenantId,
+        $statuses = array(ContractStatus::DELETED)
+    ) {
+        $query = $this->createQueryBuilder('c');
+        $query->leftJoin('c.holding', 'h');
+        $query->leftJoin('c.property', 'p');
+        $query->leftJoin('c.unit', 'u');
+        $query->leftJoin('c.group', 'g');
+        $query->leftJoin('g.deposit_account', 'da');
+        $query->leftJoin('c.payments', 'pay');
+        if (!empty($status)) {
+            $query->andWhere('c.status NOT IN :statuses');
+            $query->setParameter('statuses', $statuses);
+        }
+        $query->andWhere('c.tenant = :tenantId');
+        $query->setParameter('tenantId', $tenantId);
+
+        $query = static::queryOperationsOrdersHistory($query)->getQuery();
+
+        return $query->execute();
     }
 }

@@ -37,18 +37,27 @@ class PayController extends Controller
     protected function createPaymentForm(Request $request)
     {
         $formData = $request->get(PaymentType::NAME);
-        $formType = new PaymentType(
-            $this->container->getParameter('payment_one_time_until_value'),
-            $this->container->get('checkout.paid_for')->getArray($formData['contract_id'])
-        );
         /** @var Payment $paymentEntity */
         $paymentEntity = null;
+        $contract = null;
         if (!empty($formData['id'])) {
             $paymentEntity = $this->getDoctrine()
                 ->getManager()
                 ->getRepository('RjDataBundle:Payment')
-                ->find($formData['id']);
+                ->findOneWithContractOrdersOperations($formData['id']);
+            $contract = $paymentEntity->getContract();
         }
+        if (null == $contract) {
+            $contract = $this->getDoctrine()
+                ->getManager()
+                ->getRepository('RjDataBundle:Contract')
+                ->findOneWithOperationsOrders($formData['contractId']);
+        }
+
+        $formType = new PaymentType(
+            $this->container->getParameter('payment_one_time_until_value'),
+            $this->container->get('checkout.paid_for')->getArray($contract)
+        );
         if (!empty($paymentEntity) &&
             $paymentEntity->getPaymentAccount()->getUser()->getId() != $this->getUser()->getId()
         ) {

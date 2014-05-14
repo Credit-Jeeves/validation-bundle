@@ -67,7 +67,8 @@ class PaymentType extends AbstractType
                     'choices' => $this->paidFor,
                     'attr' => array(
                         'class' => 'original',
-                        'data-bind' => 'value: payment.paidFor',
+                        'data-bind' => "options: payment.paidForOptions, optionsText: 'text', optionsValue: 'value', ".
+                        "value: payment.paidFor",
                         'force_row' => false
                     ),
                     'invalid_message' => 'checkout.error.paidFor.invalid',

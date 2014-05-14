@@ -148,6 +148,7 @@ function Pay(parent, contractId) {
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
     this.payment.endYear(finishDate.getYear());
+    this.payment.paidForOptions(associativeArrayToOptions(parent.getPaidForArrContractById(contractId)));
 
     this.newUserAddress = ko.observableArray([]);
     this.payment.paymentAccountId.subscribe(function(newValue) {

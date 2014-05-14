@@ -54,7 +54,7 @@ class StartDateCase extends BaseTestCase
             $paidFor->createItem($dateTime) +
             $paidFor->createItem($dateTime->modify('+2 month')) +
             $paidFor->createItem($dateTime->modify('+1 month')),
-            $paidFor->getArray($contract->getId())
+            $paidFor->getArray($contract)
         );
 
     }

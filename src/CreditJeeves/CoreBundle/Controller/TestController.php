@@ -20,7 +20,7 @@ class TestController extends Controller
     public function indexAction()
     {
 
-        $this->get('fp_badaboom.exception_catcher')->handleException(new \Exception('test'));
+//        $this->get('fp_badaboom.exception_catcher')->handleException(new \Exception('test'));
         return array();
     }
 
@@ -31,6 +31,6 @@ class TestController extends Controller
      */
     public function errorAction()
     {
-        sdfgsdfgdsg();
+//        sdfgsdfgdsg();
     }
 }

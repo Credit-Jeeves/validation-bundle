@@ -5,6 +5,7 @@ use CreditJeeves\DataBundle\Entity\Operation;
 use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\Contract;
 
 /**
  * @DI\Service("checkout.paid_for")
@@ -12,23 +13,12 @@ use RentJeeves\CoreBundle\DateTime;
 class PaidFor
 {
     /**
-     * @var EntityManager
+     * @param Contract $contract
+     *
+     * @return array
      */
-    protected $em;
-
-    /**
-     * @DI\InjectParams({
-     *     "em" = @DI\Inject("doctrine.orm.entity_manager")
-     * })
-     */
-    public function __construct(EntityManager $em)
+    public function getArray(Contract $contract)
     {
-        $this->em = $em;
-    }
-
-    public function getArray($contractId)
-    {
-        $contract = $this->em->getRepository('RjDataBundle:Contract')->getOneWithOperationsOrders($contractId);
         $return = array();
         if ($paidTo = $contract->getPaidToWithDueDate()) {
             $return = $this->makeDatesFromDate($paidTo);
