@@ -150,17 +150,17 @@ class ContractType extends AbstractType
             return;
         }
 
-        $property = $data['property'];
+        $propertyId = $data['property'];
 
         $formOptions = array(
             'class'             => 'RjDataBundle:Unit',
             'error_bubbling'    => true,
-            'query_builder'     => function (EntityRepository $er) use ($group, $property) {
+            'query_builder'     => function (EntityRepository $er) use ($group, $propertyId) {
 
                     $query = $er->createQueryBuilder('u');
-                    $query->where('u.property = :property');
+                    $query->where('u.property = :propertyId');
                     $query->andWhere('u.group = :groupId');
-                    $query->setParameter('property', $property);
+                    $query->setParameter('property', $propertyId);
                     $query->setParameter('groupId', $group->getId());
 
                     return $query;

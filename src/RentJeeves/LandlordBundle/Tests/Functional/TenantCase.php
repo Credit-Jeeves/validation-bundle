@@ -295,6 +295,8 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'test@email.ru',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_1' => true,
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_dueDate'   => 23,
             )
         );
         $start = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt');
