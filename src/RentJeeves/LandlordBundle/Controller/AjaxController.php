@@ -717,6 +717,11 @@ class AjaxController extends Controller
         $tenant->setEmail($details['email']);
         $tenant->setPhone($details['phone']);
         $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
+
+        if (!$property->isSingle() && empty($details['unit_id'])) {
+            $errors[] = $translator->trans('contract.error.unit');
+        }
+
         $unit = $em->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
         $contract->setDueDate($details['dueDate']);
