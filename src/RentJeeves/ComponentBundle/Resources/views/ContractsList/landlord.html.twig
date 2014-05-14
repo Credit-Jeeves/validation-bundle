@@ -268,8 +268,21 @@
                 <!-- /ko -->
                 <div class="form-row clearfix">
                     <label>{{ 'amount'|trans }}<b>*</b></label>
-                    <div class="fields-box">
+                    <div class="fields-box width150">
                         <input type="text" id="amount-edit" data-bind="value: amount" value="" class="half-of-right">
+                    </div>
+                    <div class="fields-box width150">
+                        <label>{{ 'due_date'|trans }}</label>
+                        <select name="dueDate"
+                                class="half-width original"
+                                data-bind="
+                                    options: $root.dueDateList,
+                                    optionsText: 'text',
+                                    optionsValue: 'value',
+                                    value: dueDate
+                                "
+                        >
+                        </select>
                     </div>
                 </div>
                 <div class="form-row clearfix">
@@ -372,8 +385,21 @@
                 </div>
                 <div class="form-row clearfix">
                     <label>{{ 'amount'|trans }}<b>*</b></label>
-                    <div class="fields-box">
+                    <div class="fields-box width150">
                         <input type="text" id="amount-approve" data-bind="value: amount" value="" class="half-of-right">
+                    </div>
+                    <div class="fields-box width150">
+                        <label>{{ 'due_date'|trans }}</label>
+                        <select name="dueDate"
+                                class="half-width original"
+                                data-bind="
+                                    options: $root.dueDateList,
+                                    optionsText: 'text',
+                                    optionsValue: 'value',
+                                    value: dueDate
+                                "
+                                >
+                        </select>
                     </div>
                 </div>
                 <div class="form-row clearfix">
