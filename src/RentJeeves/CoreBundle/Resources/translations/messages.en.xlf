@@ -314,8 +314,8 @@
                 <source>nameofunit</source>
                 <target>Name Of Units</target>
             </trans-unit>
-            <trans-unit id="landlord.register.single_property">
-                <source>landlord.register.single_property</source>
+            <trans-unit id="property.single.checkbox_label">
+                <source>property.single.checkbox_label</source>
                 <target>This is a Single Property with no Units</target>
             </trans-unit>
             <trans-unit id="savechanges">

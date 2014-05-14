@@ -39,7 +39,7 @@
                 <span class="contentAddress">{{ prop.city }}, {{ prop.area }} {{ prop.zip }}</span>
               </a>
               </strong>
-              {% if prop.hasLandlord %}
+              {% if prop.hasLandlord and not prop.isSingle %}
                 <div class="form-row clearfix">
                   <label class="lab1">{{ 'add.unit'|trans }}</label>
                   <label class="lab2">{{ 'select.unit'|trans }}</label>

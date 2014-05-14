@@ -67,6 +67,10 @@ class PropertyController extends Controller
 
         foreach ($propertyList as $key => $propertyValue) {
             if ($propertyValue->hasLandlord()) {
+                // exclude property if it is not single but doesn't have units
+                if (!$propertyValue->isSingle() && count($propertyValue->getUnits()) == 0) {
+                    continue;
+                }
                 $propertyListHaveLandlord[$key] = $propertyValue;
             } else {
                 $propertyListInvite[$key] = $propertyValue;

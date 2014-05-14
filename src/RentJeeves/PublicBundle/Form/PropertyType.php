@@ -35,7 +35,7 @@ class PropertyType extends AbstractType
             'isSingleProperty',
             'checkbox',
             array(
-                'label'         => 'landlord.register.single_property',
+                'label'         => 'property.single.checkbox_label',
                 'required'      => false,
                 'constraints'   => new SingleProperty(),
             )

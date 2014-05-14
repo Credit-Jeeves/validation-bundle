@@ -9,6 +9,7 @@ use JMS\DiExtraBundle\Annotation\Tag;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 
 /**
  * @Service("data.event_listener.contract")
@@ -54,14 +55,21 @@ class ContractListener
 
     public function checkContract(Contract $contract)
     {
+        // if property is standalone we just add system unit to the contract
         $property = $contract->getProperty();
         if ($property->isSingle() && $unit = $property->getSingleUnit()) {
             $contract->setUnit($unit);
             return;
         }
 
+        // contract should have unit and that unit should belong to the contract's property
         $unit = $contract->getUnit();
         if ($unit instanceof Unit && $unit->getProperty()->getId() == $property->getId()) {
+            return;
+        }
+
+        // contract can be without unit ONLY if it is in a PENDING status
+        if (!$unit && $contract->getStatus() == ContractStatus::PENDING) {
             return;
         }
 
