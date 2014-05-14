@@ -84,6 +84,7 @@ class ContractType extends AbstractType
                 'multiple'  => false,
                 'required'  => true,
                 'mapped'    => false,
+                'data'      => self::FINISH_AT
             )
         );
 
