@@ -8,7 +8,7 @@ use RentJeeves\CoreBundle\DateTime;
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
  */
-class PaymentCase extends BaseTestCase
+class ContractCase extends BaseTestCase
 {
     public function providerForgetStartAtWithDueDate()
     {
