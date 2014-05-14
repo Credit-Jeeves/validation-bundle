@@ -160,7 +160,7 @@ class ContractType extends AbstractType
                     $query = $er->createQueryBuilder('u');
                     $query->where('u.property = :propertyId');
                     $query->andWhere('u.group = :groupId');
-                    $query->setParameter('property', $propertyId);
+                    $query->setParameter('propertyId', $propertyId);
                     $query->setParameter('groupId', $group->getId());
 
                     return $query;
