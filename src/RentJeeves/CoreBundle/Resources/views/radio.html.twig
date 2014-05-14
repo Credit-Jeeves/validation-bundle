@@ -1,0 +1,8 @@
+{% use ':Form:form_errors.html.twig' %}
+
+{% block radio_widget %}
+    {% spaceless %}
+        <input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+    {% endspaceless %}
+    <i></i>
+{% endblock radio_widget %}

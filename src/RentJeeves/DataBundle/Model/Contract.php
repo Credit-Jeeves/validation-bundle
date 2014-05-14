@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Model;
 use CreditJeeves\DataBundle\Entity\Holding;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\DisputeCode;
+use Symfony\Component\Process\Exception\LogicException;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -307,7 +308,7 @@ abstract class Contract
      * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
-    protected $finishAt;
+    protected $finishAt = null;
     
 
     /**
@@ -650,6 +651,9 @@ abstract class Contract
      */
     public function setDueDate($dueDate)
     {
+        if ($dueDate > 31) {
+            throw new LogicException("Due date can't be more than 31");
+        }
         $this->dueDate = $dueDate;
 
         return $this;
@@ -663,6 +667,16 @@ abstract class Contract
     public function getDueDate()
     {
         return $this->dueDate;
+    }
+
+    public static function getRangeDueDate()
+    {
+        $dueDate = array();
+        foreach (range(1, 31, 1) as $value) {
+            $dueDate[$value] = $value;
+        }
+
+        return $dueDate;
     }
 
     /**

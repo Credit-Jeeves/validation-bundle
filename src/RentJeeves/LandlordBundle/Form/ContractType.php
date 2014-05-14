@@ -2,8 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\DataBundle\Entity\Contract;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormEvent;
@@ -12,7 +14,12 @@ use Symfony\Component\Form\FormEvents;
 class ContractType extends AbstractType
 {
 
+    const MONTH_TO_MONTH = 'monthToMonth';
+
+    const FINISH_AT = 'finishAt';
+
     protected $user;
+
     protected $group;
 
     public function __construct($user, $group = null)
@@ -56,9 +63,27 @@ class ContractType extends AbstractType
 
         $builder->add(
             'dueDate',
-            'choices',
+            'choice',
             array(
+                'label'             => 'due_date',
+                'choices'           => Contract::getRangeDueDate(),
                 'error_bubbling'    => true,
+                'required'          => true,
+            )
+        );
+
+        $builder->add(
+            'finishAtType',
+            'choice',
+            array(
+                'choices' => array(
+                    'monthToMonth' => self::MONTH_TO_MONTH,
+                    'finishAt'     => self::FINISH_AT
+                ),
+                'expanded'  => true,
+                'multiple'  => false,
+                'required'  => true,
+                'mapped'    => false,
             )
         );
 
@@ -107,36 +132,41 @@ class ContractType extends AbstractType
                 'error_bubbling'    => true
             )
         );
-
+        $self = $this;
         $builder->addEventListener(
-            FormEvents::PRE_BIND,
-            function (FormEvent $event) use ($group) {
-                $form = $event->getForm();
-                $data = $event->getData();
-                if (!isset($data['property'])) {
-                    return;
-                }
-
-                $property = $data['property'];
-
-                $formOptions = array(
-                    'class'             => 'RjDataBundle:Unit',
-                    'error_bubbling'    => true,
-                    'query_builder'     => function (EntityRepository $er) use ($group, $property) {
-
-                        $query = $er->createQueryBuilder('u');
-                        $query->where('u.property = :property');
-                        $query->andWhere('u.group = :groupId');
-                        $query->setParameter('property', $property);
-                        $query->setParameter('groupId', $group->getId());
-                        
-                        return $query;
-                    },
-                );
-
-                $form->add('unit', 'entity', $formOptions);
+            FormEvents::PRE_SUBMIT,
+            function (FormEvent $event) use ($group, $self) {
+                $self->processUnit($event, $group);
             }
         );
+    }
+
+    protected function processUnit(FormEvent $event, $group)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+        if (!isset($data['property'])) {
+            return;
+        }
+
+        $property = $data['property'];
+
+        $formOptions = array(
+            'class'             => 'RjDataBundle:Unit',
+            'error_bubbling'    => true,
+            'query_builder'     => function (EntityRepository $er) use ($group, $property) {
+
+                    $query = $er->createQueryBuilder('u');
+                    $query->where('u.property = :property');
+                    $query->andWhere('u.group = :groupId');
+                    $query->setParameter('property', $property);
+                    $query->setParameter('groupId', $group->getId());
+
+                    return $query;
+                },
+        );
+
+        $form->add('unit', 'entity', $formOptions);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -144,9 +174,7 @@ class ContractType extends AbstractType
         $resolver->setDefaults(
             array(
                 'data_class' => 'RentJeeves\DataBundle\Entity\Contract',
-                'validation_groups' => array(
-                    'tenant_invite',
-                ),
+                'validation_groups' => array('tenant_invite'),
             )
         );
     }

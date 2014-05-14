@@ -1,5 +1,5 @@
 
-{% form_theme form ':Form:form_errors.html.twig' %}
+{% form_theme form 'RjCoreBundle::radio.html.twig' %}
 
 <div id="contract-actions">
 
@@ -543,8 +543,12 @@
           </h4>
           <div class="form-row clearfix">
             <label>{{'amount'|trans}}<b>*</b></label>
-            <div class="fields-box">
+            <div class="fields-box width150">
               {{ form_widget(form.contract.rent, { 'attr': {'class': 'half-width', 'placeholder':"$"} }) }}
+            </div>
+            <div class="fields-box width150">
+                {{ form_label(form.contract.dueDate) }}
+                {{ form_widget(form.contract.dueDate, { 'attr': {'class': 'half-width original'} }) }}
             </div>
           </div>
           <div class="form-row clearfix">
@@ -563,14 +567,12 @@
                     )
                     }}
                     <label class="checkbox radio">
-                        <input type="radio" name="optionsFinishAt" value="monthToMonth" >
-                        <i></i>
+                        {{ form_widget(form.contract.finishAtType[0]) }}
                         <span>{{ 'when.cancelled' | trans }}</span>
                         <div class="clearboth"></div>
                     </label>
                     <label class="checkbox radio finishAtLabel">
-                        <input type="radio" name="optionsFinishAt" value="finishAt"  >
-                        <i></i>
+                        {{ form_widget(form.contract.finishAtType[1]) }}
                         <span class="onFinishAt">{{ 'on' | trans }}</span>
                         {{ form_widget(
                                 form.contract.finishAt,
@@ -586,8 +588,6 @@
                         <div class="clearboth"></div>
                     </label>
                 </div>
-              <!--
-               -->
             </div>
           </div>
         </div>

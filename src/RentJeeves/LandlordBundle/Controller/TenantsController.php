@@ -3,10 +3,12 @@
 namespace RentJeeves\LandlordBundle\Controller;
 
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
+use RentJeeves\LandlordBundle\Form\ContractType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\LandlordBundle\Form\InviteTenantContractType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use \DateTime;
 
 class TenantsController extends Controller
 {
@@ -20,6 +22,8 @@ class TenantsController extends Controller
         $form = $this->createForm(
             new InviteTenantContractType($this->getUser(), $this->getCurrentGroup())
         );
+
+        $formView = $form->createView();
         $data = array(
             'nGroups'   => $groups->count(),
             'Group'     => $this->getCurrentGroup(),
@@ -62,6 +66,11 @@ class TenantsController extends Controller
             if ($form->isValid()) {
                 $tenant = $form->getData()['tenant'];
                 $contract = $form->getData()['contract'];
+                $finishAtType = $form->get('contract')->get('finishAtType')->getData();
+
+                if ($finishAtType === ContractType::MONTH_TO_MONTH) {
+                    $contract->setFinishAt(null);
+                }
                 $tenant->setCulture($this->container->parameters['kernel.default_locale']);
                 $tenantInDb = $this->getDoctrine()->getRepository('RjDataBundle:Tenant')->findOneBy(
                     array(
@@ -82,17 +91,22 @@ class TenantsController extends Controller
                 $group = $this->getCurrentGroup();
                 $contract->setHolding($holding);
                 $contract->setGroup($group);
-                $date = \DateTime::createFromFormat('Y-m-d', $contract->getStartAt());
+                $date = DateTime::createFromFormat('Y-m-d', $contract->getStartAt());
                 $contract->setStartAt($date);
-                $date = \DateTime::createFromFormat('Y-m-d', $contract->getFinishAt());
-                $contract->setFinishAt($date);
-
+                if ($contract->getFinishAt() !== null) {
+                    $date = DateTime::createFromFormat('Y-m-d', $contract->getFinishAt());
+                    $contract->setFinishAt($date);
+                }
                 $em->persist($contract);
                 $em->persist($tenant);
                 $em->flush();
 
                 $this->get('project.mailer')->sendRjTenantInvite($tenant, $user, $contract);
+            } else {
+                print_r($form->getErrors());
+                exit;
             }
+
         }
 
         return $this->redirect($this->generateUrl('landlord_tenants'));
