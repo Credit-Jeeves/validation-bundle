@@ -163,7 +163,7 @@ class ContractType extends AbstractType
                     $query->setParameter('groupId', $group->getId());
 
                     return $query;
-                },
+            },
         );
 
         $form->add('unit', 'entity', $formOptions);
