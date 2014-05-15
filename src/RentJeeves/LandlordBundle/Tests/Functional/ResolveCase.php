@@ -2,9 +2,11 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use RentJeeves\TestBundle\Functional\BaseTestCase;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
+ * FIXME https://credit.atlassian.net/browse/RT-446
  */
 class ResolveCase extends BaseTestCase
 {
@@ -13,7 +15,7 @@ class ResolveCase extends BaseTestCase
     /**
      * @test
      */
-    public function resolveCancel()
+    public function resolveEmail()
     {
         $this->setDefaultSession('selenium2');
         $this->load(true);
@@ -22,27 +24,7 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
-        $this->assertCount(3, $resolve, 'Wrong number of resolve contracts');
-        $resolve[0]->click();
-        $this->session->wait($this->timeout, "jQuery('#contract-resolve').is(':visible')");
-        $this->assertNotNull($buttons = $this->page->findAll('css', '#blockPopupEditProperty button.button'));
-        $this->assertCount(2, $buttons, 'Wrong number of buttons');
-        $buttons[1]->click();
-        $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
-        $this->logout();
-    }
-
-    /**
-     * @test
-     */
-    public function resolveEmail()
-    {
-        $this->login('landlord1@example.com', 'pass');
-        $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
-        $this->assertNotNull(
-            $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
-        );
-        $this->assertCount(3, $resolve, 'Wrong number of resolve contracts');
+        $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
         $resolve[0]->click();
         $this->session->wait($this->timeout, "jQuery('#contract-resolve').is(':visible')");
         $this->assertNotNull($buttons = $this->page->findAll('css', '#blockPopupEditProperty button.button'));
@@ -53,7 +35,7 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
-        $this->assertCount(3, $resolve, 'Wrong number of resolve contracts');
+        $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
@@ -75,7 +57,7 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
-        $this->assertCount(3, $resolve, 'Wrong number of resolve contracts');
+        $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
         $resolve[0]->click();
         $this->session->wait($this->timeout, "jQuery('#contract-resolve-late').is(':visible')");
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve-late .checkbox'));
@@ -87,7 +69,7 @@ class ResolveCase extends BaseTestCase
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve-late').is(':visible')");
         $this->session->wait($this->timeout, "!jQuery('#actions-block .processPayment').is(':visible')");
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
-        $this->assertCount(static::CONTRACTS_COUNT, $contracts);
+        $this->assertCount(static::CONTRACTS_COUNT - 1, $contracts);
         $this->logout();
     }
 
@@ -107,11 +89,13 @@ class ResolveCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('selenium2');
         $this->login('landlord1@example.com', 'pass');
+
+        $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
-        $this->assertCount(3, $resolve, 'Wrong number of resolve contracts');
+        $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
         $resolve[2]->click();
         $this->session->wait($this->timeout, "jQuery('#contract-resolve-ended').is(':visible')");
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve-ended .checkbox'));
@@ -122,8 +106,8 @@ class ResolveCase extends BaseTestCase
         );
         $this->assertCount(2, $buttons, 'Wrong number of buttons');
         $buttons[0]->click();
-        $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
-        $this->session->wait($this->timeout, "!jQuery('#actions-block .processPayment').is(':visible')");
+        $this->session->wait($this->timeout, "!jQuery('#contract-resolve-ended').is(':visible')");
+        $this->session->wait($this->timeout, "jQuery('#actions-block table tbody tr').length > 0");
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
         $this->assertCount(static::CONTRACTS_COUNT, $contracts);
         $this->logout();
@@ -141,7 +125,7 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
-        $this->assertCount(3, $resolve, 'Wrong number of resolve contracts');
+        $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
         $resolve[2]->click();
         $this->session->wait($this->timeout, "jQuery('#contract-resolve-ended').is(':visible')");
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve-ended .checkbox'));
@@ -149,7 +133,7 @@ class ResolveCase extends BaseTestCase
         $checkboxes[1]->click();
         $this->assertNotNull($inputs = $this->page->findAll('css', '#contract-resolve-ended input[type=text]'));
         $this->assertCount(2, $inputs, 'Wrong number of inputs');
-        $date = new \DateTime();
+        $date = new DateTime();
         $date->modify('+18 year');
         $inputs[0]->setValue($date->format('m/d/Y'));
         $this->assertNotNull(
@@ -160,7 +144,7 @@ class ResolveCase extends BaseTestCase
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
         $this->session->wait($this->timeout, "!jQuery('#actions-block .processPayment').is(':visible')");
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
-        $this->assertCount(static::CONTRACTS_COUNT, $contracts);
+        $this->assertCount(static::CONTRACTS_COUNT-1, $contracts);
         $this->logout();
 
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -184,7 +168,7 @@ class ResolveCase extends BaseTestCase
         $this->assertNotNull(
             $resolve = $this->page->findAll('css', '#actions-block table tbody tr td a.action-alert')
         );
-        $this->assertCount(3, $resolve, 'Wrong number of resolve contracts');
+        $this->assertCount(static::CONTRACTS_COUNT, $resolve, 'Wrong number of resolve contracts');
         $resolve[2]->click();
         $this->session->wait($this->timeout, "jQuery('#contract-resolve-ended').is(':visible')");
         $this->assertNotNull($checkboxes = $this->page->findAll('css', '#contract-resolve-ended .checkbox'));
@@ -203,7 +187,7 @@ class ResolveCase extends BaseTestCase
         $this->session->wait($this->timeout, "!jQuery('#contract-resolve').is(':visible')");
         $this->session->wait($this->timeout, "!jQuery('#actions-block .processPayment').is(':visible')");
         $this->assertNotNull($contracts = $this->page->findAll('css', '#actions-block table tbody tr'));
-        $this->assertCount(static::CONTRACTS_COUNT, $contracts);
+        $this->assertCount(static::CONTRACTS_COUNT - 1, $contracts);
         $this->logout();
         //Check email notify tenant about removed contract by landlord
         $this->setDefaultSession('goutte');
@@ -218,6 +202,6 @@ class ResolveCase extends BaseTestCase
                 'status'             => 'finished',
             )
         );
-        $this->assertCount(1, $contracts, 'Wrong count contract');
+        $this->assertCount(static::CONTRACTS_COUNT - 2, $contracts, 'Wrong count contract');
     }
 }

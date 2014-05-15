@@ -637,7 +637,7 @@ class AjaxController extends Controller
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
         $total = $repo->countActionsRequired($group, $searchField, $searchText);
         $total = count($total);
         if ($total) {
