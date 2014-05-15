@@ -143,6 +143,9 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($unitEdit = $this->page->find('css', '#unit-edit'));
         $unitEdit->selectOption('2-e'); //
 
+        $this->assertNotNull($unitEdit = $this->page->find('css', '.dueDateEdit'));
+        $unitEdit->selectOption('14'); //
+
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -158,6 +161,15 @@ class TenantCase extends BaseTestCase
         $this->assertEquals('200', $amount->getValue(), 'Wrong edit amount');
         $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong edit unit');
         $this->logout();
+
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'dueDate' => 14,
+                'rent'  => 200.00,
+            )
+        );
+        $this->assertCount(1, $contracts, 'Wrong count contract');
     }
 
     /**
