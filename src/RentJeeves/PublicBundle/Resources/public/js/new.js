@@ -168,6 +168,13 @@ $(document).ready(function(){
       $('.FormUnitName').val(getUnitName($(this).parent().parent().parent()));
     });
 
+    $('.addNewUnit').click(function(){
+        $(this).parent().parent().hide();
+        $(this).parent().parent().parent().find('.createNewUnit').show();
+        $(this).parent().parent().parent().find('.lab1').show();
+        $(this).parent().parent().parent().find('.lab2').hide();
+    });
+
     $('.see-all').click(function() {
       $(this).parent().parent().find('.selectUnit').show();
       $(this).parent().hide();

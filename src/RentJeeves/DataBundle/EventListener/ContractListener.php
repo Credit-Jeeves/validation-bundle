@@ -68,8 +68,8 @@ class ContractListener
             return;
         }
 
-        // contract can be without unit ONLY if it is in a PENDING status
-        if (!$unit && $contract->getStatus() == ContractStatus::PENDING) {
+        // contract can be without unit ONLY if it is in a PENDING status and 'search' is not null
+        if (!$unit && $contract->getStatus() == ContractStatus::PENDING && $contract->getSearch()) {
             return;
         }
 

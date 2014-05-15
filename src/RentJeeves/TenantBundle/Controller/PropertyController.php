@@ -67,10 +67,6 @@ class PropertyController extends Controller
 
         foreach ($propertyList as $key => $propertyValue) {
             if ($propertyValue->hasLandlord()) {
-                // exclude property if it is not single but doesn't have units
-                if (!$propertyValue->isSingle() && count($propertyValue->getUnits()) == 0) {
-                    continue;
-                }
                 $propertyListHaveLandlord[$key] = $propertyValue;
             } else {
                 $propertyListInvite[$key] = $propertyValue;
@@ -98,10 +94,10 @@ class PropertyController extends Controller
         }
         $unitName = $request->request->get('unit'.$property->getId());
         $unitNew = $request->request->get('unitNew'.$property->getId());
-        $unitSearch = null;
+        $unitSearch = 'new';
         if (!empty($unitName) && $unitName != 'new') {
             $unitSearch = $unitName;
-        } elseif (!empty($unitNew) && $unitNew != 'none') {
+        } elseif (!empty($unitNew)) {
             $unitSearch = $unitNew;
         }
         $tenant = $this->getUser();
