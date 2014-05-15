@@ -94,7 +94,7 @@ class PropertyController extends Controller
         }
         $unitName = $request->request->get('unit'.$property->getId());
         $unitNew = $request->request->get('unitNew'.$property->getId());
-        $unitSearch = 'new';
+        $unitSearch = Unit::SEARCH_PROPERTY_NEW_NAME;
         if (!empty($unitName) && $unitName != 'new') {
             $unitSearch = $unitName;
         } elseif (!empty($unitNew)) {

@@ -2,14 +2,9 @@
 
 namespace RentJeeves\PublicBundle\Form;
 
-use RentJeeves\DataBundle\Validators\SinglePropertyConstraint as SingleProperty;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use RentJeeves\PublicBundle\Form\AddressType;
-use RentJeeves\PublicBundle\Form\LandlordType;
-use Symfony\Component\Validator\Constraints\Count;
 
 class LandlordAddressType extends AbstractType
 {
@@ -39,7 +34,7 @@ class LandlordAddressType extends AbstractType
                 'csrf_protection'    => true,
                 'csrf_field_name'    => '_token',
                 'cascade_validation' => true,
-                'inviteEmail'        => false,
+                'inviteEmail'        => false
             )
         );
     }

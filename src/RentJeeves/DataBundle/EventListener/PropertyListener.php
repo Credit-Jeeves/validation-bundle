@@ -3,15 +3,12 @@
 namespace RentJeeves\DataBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use JMS\DiExtraBundle\Annotation\InjectParams;
-use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Tag;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Property;
-use LogicException;
 use RentJeeves\DataBundle\Entity\Unit;
+use LogicException;
 
 /**
  * Controls adding new unit if property marked as single..
@@ -35,18 +32,6 @@ use RentJeeves\DataBundle\Entity\Unit;
  */
 class PropertyListener
 {
-    protected $user;
-
-    /**
-     * @InjectParams({
-     *     "container" = @Inject("service_container", required = true)
-     * })
-     */
-    public function __construct($container)
-    {
-        $this->user = $container;
-    }
-
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
