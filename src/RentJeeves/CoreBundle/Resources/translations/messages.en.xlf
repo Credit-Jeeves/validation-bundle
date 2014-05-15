@@ -575,6 +575,12 @@
                 <source>due_date</source>
                 <target>Due Date</target>
             </trans-unit>
+            <trans-unit id="common.default.due_date">
+                <source>common.default.due_date</source>
+                <target>
+                   Default Due Date
+                </target>
+            </trans-unit>
             <trans-unit id="paid_to">
                 <source>paid_to</source>
                 <target>
