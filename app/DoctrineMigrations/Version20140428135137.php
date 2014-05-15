@@ -18,6 +18,10 @@ class Version20140428135137 extends AbstractMigration
             "ALTER TABLE rj_property
                 ADD is_single TINYINT(1) DEFAULT NULL"
         );
+        $this->addSql(
+            "ALTER TABLE rj_unit
+                CHANGE property_id property_id BIGINT NOT NULL"
+        );
     }
 
     public function down(Schema $schema)
@@ -30,6 +34,10 @@ class Version20140428135137 extends AbstractMigration
         $this->addSql(
             "ALTER TABLE rj_property
                 DROP is_single"
+        );
+        $this->addSql(
+            "ALTER TABLE rj_unit
+                CHANGE property_id property_id BIGINT DEFAULT NULL"
         );
     }
 }
