@@ -88,7 +88,7 @@ class TenantCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function edit()
     {
@@ -420,7 +420,6 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'robyn@rentrack.com',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_0' => true,
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_dueDate'   => 13,
             )
         );
@@ -447,6 +446,12 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($future);
         $future[count($future)-1]->click();
 
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_0' => true,
+            )
+        );
 
         $this->session->wait($this->timeout, "$('#userExistMessage').is(':visible')");
         $this->page->pressButton('invite.tenant');
