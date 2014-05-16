@@ -693,7 +693,9 @@ class AjaxController extends Controller
         if (empty($details['start'])) {
             $errors[] = $translator->trans('contract.error.start');
         }
-
+        /**
+         * @var $contract Contract
+         */
         $contract = $em->getRepository('RjDataBundle:Contract')->find($details['id']);
         $tenant = $contract->getTenant();
         $tenant->setFirstName($details['first_name']);
@@ -703,6 +705,7 @@ class AjaxController extends Controller
         $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
         $unit = $em->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
+        $contract->setDueDate($details['dueDate']);
         $contract->setStartAt(new \Datetime($details['start']));
         if (!empty($details['finish'])) {
             $contract->setFinishAt(new \Datetime($details['finish']));

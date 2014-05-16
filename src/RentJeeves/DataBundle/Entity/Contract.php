@@ -192,6 +192,7 @@ class Contract extends Base
         $unit = $this->getUnit();
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
+        $result['dueDate'] = $this->getDueDate();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];

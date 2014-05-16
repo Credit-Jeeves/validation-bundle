@@ -119,7 +119,7 @@ $(document).ready(function () {
     });
 
     getUnits($(idProperty).linkselect('val'));
-
+    //@TODO make it by knokout
     $('#rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email').change(function () {
         $.ajax({
             url: Routing.generate('landlord_check_email'),
@@ -137,7 +137,9 @@ $(document).ready(function () {
                         $.each($('.userInfo').find('input'), function (index, value) {
                             var val = $.trim($(this).val());
                             if (val.length <= 0) {
-                                $(this).val('');
+                                //Fill value by wrong data for fix bug in js validation
+                                //It's temp hack, @TODO fix that to group validation by js
+                                $(this).val('Test');
                             }
                         });
                     }

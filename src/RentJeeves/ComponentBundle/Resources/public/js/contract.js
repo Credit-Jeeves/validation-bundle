@@ -2,6 +2,14 @@ function Contract() {
     var self = this;
     this.outstandingBalance = ko.observable(0);
     this.propertiesList = ko.observableArray([]);
+    this.dueDateList = ko.observableArray([]);
+    for(i = 1; i <= 31; i++) {
+        var data = {
+            'text': i,
+            'value': i
+        };
+        self.dueDateList().push(data);
+    }
     this.unitsList = ko.observableArray([]);
     this.currentPropertyId = ko.observable();
     this.currentUnitId = ko.observable();
