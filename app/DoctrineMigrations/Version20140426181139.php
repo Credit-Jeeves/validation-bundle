@@ -16,7 +16,6 @@ class Version20140426181139 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_payment
-                CHANGE amountOther amountOther NUMERIC(10, 2) NOT NULL,
                 CHANGE paid_for paid_for DATE NOT NULL"
         );
     }
@@ -30,7 +29,6 @@ class Version20140426181139 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_payment
-                CHANGE amountOther amountOther NUMERIC(10, 2) DEFAULT NULL,
                 CHANGE paid_for paid_for DATE DEFAULT NULL"
         );
     }

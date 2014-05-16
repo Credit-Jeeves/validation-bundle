@@ -16,8 +16,9 @@ class Version20140426181137 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE rj_payment
-                ADD amountOther NUMERIC(10, 2) DEFAULT NULL,
-                ADD paid_for DATE DEFAULT NULL"
+                ADD total NUMERIC(10, 2) NOT NULL,
+                ADD paid_for DATE DEFAULT NULL,
+                CHANGE amount amount NUMERIC(10, 2) DEFAULT NULL"
         );
     }
 
@@ -30,7 +31,9 @@ class Version20140426181137 extends AbstractMigration
         
         $this->addSql(
             "ALTER TABLE rj_payment
-                DROP amountOther"
+                DROP total
+                DROP paid_for,
+                CHANGE amount amount NUMERIC(10, 2) NOT NULL"
         );
     }
 }

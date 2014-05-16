@@ -83,7 +83,8 @@ class Payment
      * @ORM\Column(
      *      type="decimal",
      *      precision=10,
-     *      scale=2
+     *      scale=2,
+     *      nullable=true
      * )
      * @Assert\Range(
      *      min=1,
@@ -100,7 +101,7 @@ class Payment
      *      type="decimal",
      *      precision=10,
      *      scale=2,
-     *      nullable=true
+     *      nullable=false
      * )
      * @Assert\Range(
      *      min=1,
@@ -110,7 +111,7 @@ class Payment
      *
      * @var double
      */
-    protected $amountOther = 0;
+    protected $total = 0;
 
     /**
      * @ORM\Column(name="paid_for", type="datetime", nullable=true)
@@ -285,9 +286,9 @@ class Payment
      * @param float $amount
      * @return $this
      */
-    public function setAmountOther($amount)
+    public function setTotal($amount)
     {
-        $this->amountOther = $amount;
+        $this->total = $amount;
 
         return $this;
     }
@@ -297,9 +298,9 @@ class Payment
      *
      * @return float
      */
-    public function getAmountOther()
+    public function getTotal()
     {
-        return $this->amountOther;
+        return $this->total;
     }
 
     /**

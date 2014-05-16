@@ -1,0 +1,4 @@
+{% block view_hidden_widget %}
+    <span {{ block('widget_attributes') }}>{% if value is not empty %}{{ value }}{% endif %}</span>
+    <input data-bind="value: payment.total" name="{{ name }}" value="{{ value }}" type="hidden" />
+{% endblock %}

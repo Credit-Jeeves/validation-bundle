@@ -207,34 +207,6 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param Group $group
-     * @param string $searchField
-     * @param string $searchString
-     *
-     * @return mixed
-     */
-    public function countActionsRequired($group, $searchField = 'address', $searchString = '')
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.tenant', 't');
-        $query->innerJoin('c.operations', 'o');
-        $query->where(
-            '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)) AND o.id IS NOT NULL'
-        );
-        $query->setParameter('group', $group);
-        $query->setParameter('date', new DateTime());
-        $query->setParameter('today', new DateTime());
-        $query->setParameter('status1', ContractStatus::FINISHED);
-        $query->setParameter('status2', ContractStatus::DELETED);
-
-        $query = $this->applySearchFilter($query, $searchField, $searchString);
-        $query = $query->getQuery();
-        return $query->getScalarResult();
-    }
-
-    /**
-     * @param Group $group
      * @param int $page
      * @param int $limit
      * @param string $sortField
@@ -242,9 +214,9 @@ class ContractRepository extends EntityRepository
      * @param string $searchField
      * @param string $searchString
      *
-     * @return mixed
+     * @return QueryBuilder
      */
-    public function getActionsRequiredPage(
+    public function getActionsRequiredPageQuery(
         $group,
         $page = 1,
         $limit = 100,
@@ -257,10 +229,11 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
-        $query->innerJoin('c.operations', 'o');
         $query->where(
             '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)) AND o.id IS NOT NULL'
+            ' AND (c.paidTo < :date OR c.finishAt < :today))' .
+            ' AND c.id IN (SELECT IDENTITY(o.contract) FROM DataBundle:Operation o WHERE' .
+            ' o.contract = c.id )'
         );
         $query->setParameter('group', $group);
         $query->setParameter('date', new DateTime());
@@ -269,10 +242,13 @@ class ContractRepository extends EntityRepository
         $query->setParameter('status2', ContractStatus::DELETED);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $this->applySortOrder($query, $sortField, $sortOrder);
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-        $query = $query->getQuery();
-        return $query->execute();
+        if ($offset) {
+            $query->setFirstResult($offset);
+        }
+        if ($limit) {
+            $query->setMaxResults($limit);
+        }
+        return $query;
     }
 
     /**

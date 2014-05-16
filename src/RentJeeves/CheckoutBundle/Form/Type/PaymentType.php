@@ -3,7 +3,7 @@ namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use RentJeeves\CheckoutBundle\Constraint\StartDate;
 use RentJeeves\CheckoutBundle\Form\DataTransformer\DateTimeToStringTransformer;
-use RentJeeves\LandlordBundle\Form\Type\ViewType;
+use RentJeeves\CoreBundle\Form\Type\ViewHiddenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -78,8 +78,9 @@ class PaymentType extends AbstractType
 
         $builder->add(
             'amountOther',
-            null,
+            'number',
             array(
+                'mapped' => false,
                 'required' => false,
                 'label' => 'checkout.amountOther',
                 'attr' => array(
@@ -94,10 +95,9 @@ class PaymentType extends AbstractType
 
         $builder->add(
             'total',
-            new ViewType(),
+            new ViewHiddenType(),
             array(
                 'label' => 'checkout.total',
-                'mapped' => false,
                 'required' => true,
                 'attr' => array(
                     'data-bind' => 'text: payment.total',

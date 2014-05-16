@@ -623,9 +623,8 @@ class AjaxController extends Controller
         //@TODO find best way for this implementation
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $request = $this->getRequest();
-        $page = $request->request->all('data');
+        $page = $request->request->all();
         $data = $page['data'];
 
         $sortColumn = $data['sortColumn'];
@@ -638,25 +637,26 @@ class AjaxController extends Controller
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
         $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
-        $total = $repo->countActionsRequired($group, $searchField, $searchText);
-        $total = count($total);
-        if ($total) {
-            $contracts = $repo->getActionsRequiredPage(
-                $group,
-                $data['page'],
-                $data['limit'],
-                $sortColumn,
-                $sortType,
-                $searchField,
-                $searchText
-            );
-            foreach ($contracts as $contract) {
-                $contract->setStatusShowLateForce(true);
-                $item = $contract->getItem();
-                $items[] = $item;
-            }
+        $query = $repo->getActionsRequiredPageQuery(
+            $group,
+            $data['page'],
+            $data['limit'],
+            $sortColumn,
+            $sortType,
+            $searchField,
+            $searchText
+        );
+        $contracts = $query->getQuery()->execute();
+        foreach ($contracts as $contract) {
+            $contract->setStatusShowLateForce(true);
+            $item = $contract->getItem();
+            $items[] = $item;
         }
-        
+        $total = $query->select('count(c)')
+            ->setMaxResults(null)
+            ->setFirstResult(null)
+            ->getQuery()
+            ->getSingleScalarResult();
         $result['actions'] = $items;
         $result['total'] = $total;
         $result['pagination'] = $this->datagridPagination($total, $data['limit']);
