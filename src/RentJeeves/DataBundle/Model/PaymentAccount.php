@@ -7,6 +7,7 @@ use RentJeeves\DataBundle\Enum\PaymentAccountType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\DataBundle\Model\DepositAccount;
 
 /**
  * @ORM\MappedSuperclass
@@ -17,6 +18,7 @@ abstract class PaymentAccount
      * @ORM\Column(name="id", type="bigint")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"basic"});
      */
     protected $id;
 
@@ -39,23 +41,26 @@ abstract class PaymentAccount
     protected $user;
 
     /**
-     * @ORM\ManyToOne(
-     *      targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     * @ORM\ManyToMany(
+     *      targetEntity="DepositAccount",
      *      inversedBy="paymentAccounts"
      * )
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
-     * @Assert\Type(type="CreditJeeves\DataBundle\Entity\Group")
-     *
-     * @Serializer\SerializedName("groupId")
-     * @Serializer\Accessor(getter="getGroupId")
+     * @ORM\JoinTable(
+     *      name="rj_payment_account_deposit_account",
+     *      joinColumns={@ORM\JoinColumn(name="payment_account_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="deposit_account_id", referencedColumnName="id")}
+     * )
+     * @Serializer\Type("ArrayCollection<RentJeeves\DataBundle\Entity\DepositAccount>")
+     * @Serializer\Groups({"details"});
      */
-    protected $group;
+    protected $depositAccounts;
 
     /**
      * @ORM\ManyToOne(
      *      targetEntity="CreditJeeves\DataBundle\Entity\Address",
      *      inversedBy="payment_accounts",
-     *      cascade={"persist"}
+     *      cascade={"persist"},
+     *      fetch="EAGER"
      * )
      * @ORM\JoinColumn(
      *      name="address_id",
@@ -65,6 +70,7 @@ abstract class PaymentAccount
      *
      * @Serializer\SerializedName("addressId")
      * @Serializer\Accessor(getter="getAddressId")
+     * @Serializer\Groups({"basic"});
      *
      * @var \CreditJeeves\DataBundle\Entity\Address
      */
@@ -82,6 +88,7 @@ abstract class PaymentAccount
      *          "bank"
      *      }
      * )
+     * @Serializer\Groups({"basic"});
      */
     protected $type;
 
@@ -97,6 +104,7 @@ abstract class PaymentAccount
      *          "save"
      *      }
      * )
+     * @Serializer\Groups({"basic"});
      */
     protected $name;
 
@@ -106,6 +114,7 @@ abstract class PaymentAccount
      *      type="string",
      *      length=255
      * )
+     * @Serializer\Groups({"basic"});
      */
     protected $token;
 
@@ -133,6 +142,7 @@ abstract class PaymentAccount
      *     name="updated_at",
      *     type="datetime"
      * )
+     * @Serializer\Groups({"basic"});
      */
     protected $updatedAt;
 
@@ -162,6 +172,7 @@ abstract class PaymentAccount
     public function __construct()
     {
         $this->payments = new ArrayCollection();
+        $this->depositAccounts = new ArrayCollection();
     }
 
     /**
@@ -188,36 +199,36 @@ abstract class PaymentAccount
     }
 
     /**
-     * Set Group
+     * Add deposit account
      *
-     * @param \CreditJeeves\DataBundle\Entity\Group $group
+     * @param DepositAccount $deposit_account
      * @return PaymentAccount
      */
-    public function setGroup(\CreditJeeves\DataBundle\Entity\Group $group)
+    public function addDepositAccount(DepositAccount $deposit_account)
     {
-        $this->group = $group;
-
+        $this->depositAccounts->add($deposit_account);
         return $this;
     }
 
     /**
-     * Get Group
+     * Remove deposit account
      *
-     * @return \CreditJeeves\DataBundle\Entity\Group
+     * @param DepositAccount $deposit_account
      */
-    public function getGroup()
+    public function removeDepositAccount(DepositAccount $deposit_account)
     {
-        return $this->group;
+        $this->depositAccounts->removeElement($deposit_account);
     }
 
     /**
-     * Get Group Id
+     * Get deposit accounts
      *
-     * @return int
+     * @Serializer\Type("ArrayCollection<DepositAccount>")
+     * @return ArrayCollection
      */
-    public function getGroupId()
+    public function getDepositAccounts()
     {
-        return $this->group->getId();
+        return $this->depositAccounts;
     }
 
     /**

@@ -1,15 +1,51 @@
-{% form_theme form "LandlordBundle::form_widget_attributes.html.twig" %}
+{% form_theme form "LandlordBundle::form_import.html.twig" %}
 
 <tr data-bind="
     attr: {'class': $root.getClassLine($data)},
-    if: !is_skipped && is_valid && ((contract.id && contract.status != 'finished') || (!contract.id && tenant.id && contract.status != 'finished'))">
+    if: !is_skipped && ((contract.id && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)) || (!contract.id && tenant.id && contract.status != 'finished' && $root.isValidFieldsWhichNotContainsInForm($data)))">
     {{ form_start(form) }}
     <td data-bind="text: $root.getStatusText($data), attr: {'class': $root.getStatusText($data)}"></td>
-    <td data-bind="text:contract.unit.name"></td>
-    <td data-bind="text:tenant.resident_id"></td>
+    <td data-bind="
+        attr:
+        {
+            'class': $root.getErrorClass($data, 'import_contract_unit_name'),
+            'title': $root.getErrorTitle($data, 'import_contract_unit_name')
+        }
+    ">
+        {{
+            form_widget(
+                form.unit.name,
+                {"attr":
+                    {
+                    "data-bind":
+                    "html: contract.unit.name"
+                    }
+                }
+            )
+        }}
+    </td>
+    <td data-bind="
+        attr:
+        {
+            'class': $root.getErrorClass($data, 'import_contract_residentMapping_residentId'),
+            'title': $root.getErrorTitle($data, 'import_contract_residentMapping_residentId')
+        }
+    ">
+        {{
+            form_widget(
+                form.residentMapping.residentId,
+                {"attr":
+                    {
+                    "data-bind":
+                    "html: resident_mapping.resident_id"
+                    }
+                }
+            )
+        }}
+    </td>
     <td data-bind="text:tenant.first_name"></td>
     <td data-bind="text:tenant.last_name"></td>
-    <td data-bind="text:tenant.email"></td>
+    <td data-bind="text:email"></td>
     <td>
         {{
             form_widget(
@@ -82,6 +118,41 @@
         ) }}
     </td>
     <td>
+        <span data-bind="if: operation !== null">
+            {{ form_widget(
+                form.operation.amount,
+                {
+                    "attr":
+                    {
+                        "data-bind":
+                            "value: operation.amount,
+                             attr: {
+                                'class': number+'_amount import_operation_amount '+$root.getErrorClass($data, 'import_contract_operation_amount'),
+                                'title': $root.getErrorTitle($data, 'import_contract_operation_amount')
+                             }
+                            "
+                    }
+                }
+            ) }}
+            {{ form_widget(
+                form.operation.paidFor,
+                {
+                    "attr":
+                    {
+                        "data-bind":
+                            "value: $root.formatDate(operation.paid_for),
+                             datepicker: $root.formatDate(operation.paid_for),
+                             datepickerOptions: $root.getDatePickerOptions(),
+                             datepickerFieldName: 'paid_for',
+                             attr: {
+                                'class': number+'_paidFor import_operation_paidFor datepicker '+$root.getErrorClass($data, 'import_contract_operation_paidFor'),
+                                'title': $root.getErrorTitle($data, 'import_contract_operation_paidFor')
+                             }
+                            "
+                    }
+                }
+            ) }}
+        </span>
     </td>
     <td>
         {{ form_widget(

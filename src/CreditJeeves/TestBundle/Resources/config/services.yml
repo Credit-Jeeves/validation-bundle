@@ -1,0 +1,10 @@
+parameters:
+    experian.net_connect.class: CreditJeeves\TestBundle\Experian\NetConnectTest
+    experian.pidkiq.class: CreditJeeves\TestBundle\Experian\PidkiqTest
+
+services:
+    experian.net_connect:
+        class: "%experian.net_connect.class%"
+        calls:
+            - [initConfigs, ["@experian.config"]]
+            - [setDataDirPath, ["%data.dir%"]]

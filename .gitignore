@@ -1,6 +1,7 @@
 /web/*_dev.php
 /web/*_test.php
 /web/test.php
+/web/_intellij_phpdebug_validator.php
 /web/bundles/
 /web/uploads/*
 /app/bootstrap.php.cache

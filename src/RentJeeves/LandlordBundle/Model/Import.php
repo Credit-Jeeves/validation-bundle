@@ -2,8 +2,10 @@
 
 namespace RentJeeves\LandlordBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\Form\Form;
 
@@ -34,22 +36,22 @@ class Import
     protected $contract;
 
     /**
+     * @Serializer\Type("CreditJeeves\DataBundle\Entity\Operation")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $operation = null;
+
+    /**
+     * @Serializer\Type("RentJeeves\DataBundle\Entity\ResidentMapping")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $residentMapping = null;
+
+    /**
      * @Serializer\Type("string")
      * @Serializer\Groups({"RentJeevesImport"})
      */
     protected $csrfToken = '';
-
-    /**
-     * @Serializer\Type("boolean")
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $isValidUnit = false;
-
-    /**
-     * @Serializer\Type("boolean")
-     * @Serializer\Groups({"RentJeevesImport"})
-     */
-    protected $isValidResidentId = false;
 
     /**
      * @Serializer\Groups({"RentJeevesImport"})
@@ -63,38 +65,65 @@ class Import
     protected $form = null;
 
     /**
-     * @return boolean
+     * @Serializer\Type("array")
+     * @Serializer\Groups({"RentJeevesImport"})
      */
-    public function getIsValidResidentId()
+    protected $errors = array();
+
+    /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $email;
+
+
+    /**
+     * @param ResidentMapping $residentMapping
+     */
+    public function setResidentMapping(ResidentMapping $residentMapping)
     {
-        return $this->isValidResidentId;
+        $this->residentMapping = $residentMapping;
     }
 
     /**
-     * @param boolean $isValidResidentId
+     * @return ResidentMapping
      */
-    public function setIsValidResidentId($isValidResidentId)
+    public function getResidentMapping()
     {
-        $this->isValidResidentId = $isValidResidentId;
+        return $this->residentMapping;
     }
 
     /**
-     * @return boolean
+     * @param string $email
      */
-    public function getIsValidUnit()
+    public function setEmail($email)
     {
-        return $this->isValidUnit;
+        $this->email = $email;
     }
 
     /**
-     * @param boolean $isValidUnit
+     * @return string
      */
-    public function setIsValidUnit($isValidUnit)
+    public function getEmail()
     {
-        $this->isValidUnit = $isValidUnit;
+        return $this->email;
     }
 
+    /**
+     * @param array $errors
+     */
+    public function setErrors(array $errors)
+    {
+        $this->errors = $errors;
+    }
 
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
 
     /**
      * @return Contract
@@ -211,17 +240,18 @@ class Import
     }
 
     /**
-     * @Serializer\VirtualProperty
-     * @Serializer\SerializedName("is_valid")
-     * @Serializer\Groups({"RentJeevesImport"})
-     * @Serializer\Type("boolean")
+     * @return Operation
      */
-    public function isValid()
+    public function getOperation()
     {
-        if ($this->isValidResidentId && $this->isValidUnit) {
-            return true;
-        }
+        return $this->operation;
+    }
 
-        return false;
+    /**
+     * @param Operation $operation
+     */
+    public function setOperation(Operation $operation)
+    {
+        $this->operation = $operation;
     }
 }

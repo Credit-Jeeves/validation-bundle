@@ -1,4 +1,7 @@
 twig:
+    form:
+        resources:
+            - 'LandlordBundle:Form:view.html.twig'
     globals:
         serverName: '%server_name_rj%'
         external_urls: %external_urls%

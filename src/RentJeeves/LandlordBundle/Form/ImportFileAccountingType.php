@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Form;
 
+use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -38,7 +39,11 @@ class ImportFileAccountingType extends AbstractType
                     'class' => 'original widthSelect',
                 ),
                 'constraints'   => array(
-                    new NotBlank(),
+                    new NotBlank(
+                        array(
+                            'message' => 'error.property.empty'
+                        )
+                    ),
                 ),
                 'query_builder' => function (EntityRepository $er) use ($groups) {
                     if (empty($groups)) {
@@ -68,7 +73,11 @@ class ImportFileAccountingType extends AbstractType
                 'error_bubbling' => true,
                 'label'          => 'csv.file',
                 'constraints'    => array(
-                    new NotBlank(),
+                    new NotBlank(
+                        array(
+                            'message' => 'error.file.empty'
+                        )
+                    ),
                     new File(
                         array(
                             'maxSize' => '2M',
@@ -106,6 +115,21 @@ class ImportFileAccountingType extends AbstractType
                 'label'          => 'text.delimiter',
                 'attr'           => array(
                     'class' => 'half-width'
+                ),
+                'constraints'    => array(
+                    new NotBlank(),
+                ),
+            )
+        );
+
+        $builder->add(
+            'dateFormat',
+            'choice',
+            array(
+                'choices'   => ImportMapping::$mappingDates,
+                'label'     => 'common.date_format',
+                'attr'      => array(
+                    'class' => 'half-width original'
                 ),
                 'constraints'    => array(
                     new NotBlank(),

@@ -4,6 +4,7 @@ namespace RentJeeves\DataBundle\Entity;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Enum\DisputeCode;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Model\Contract as Base;
@@ -231,7 +232,7 @@ class Contract extends Base
         if ($date = $this->getPaidTo()) {
             $now = new DateTime();
             $interval = $now->diff($date);
-            if ($interval->days > 0) {
+            if ($interval->format("%r%a") < 0) {
                 $result = $interval->days.self::PAYMENT_LATE;
             }
         }
@@ -321,9 +322,15 @@ class Contract extends Base
      * @param $unit
      * @return string
      */
-    public function getRentAddress($property, $unit)
+    public function getRentAddress($property = null, $unit = null)
     {
         $result = array();
+        if (!$property) {
+            $property = $this->getProperty();
+        }
+        if (!$unit) {
+            $unit = $this->getUnit();
+        }
         $result[] = $property->getAddress();
         if ($unit) {
             $result[] = $unit->getName();
@@ -384,9 +391,10 @@ class Contract extends Base
                     }
                     $payments[$nYear][$nMonth]['status'] = self::STATUS_OK;
                     $payments[$nYear][$nMonth]['text'] = self::PAYMENT_OK;
-                    if ($late > 0) {
+                    if ($late >= 30) {
                         $payments[$nYear][$nMonth]['status'] = self::STATUS_LATE;
-                        $payments[$nYear][$nMonth]['text'] = $late;
+                        $lateText = floor($late / 30) * 30;
+                        $payments[$nYear][$nMonth]['text'] = $lateText;
                     }
                     if (!isset($payments[$nYear][$nMonth]['amount'])) {
                         $payments[$nYear][$nMonth]['amount'] = $operation->getAmount();
@@ -425,14 +433,14 @@ class Contract extends Base
         for ($i = $startYear; $i <= $finishYear; $i++) {
             $result[$i] = $aMonthes;
         }
-        if (ContractStatus::FINISHED != $this->getStatus()) {
+        /*if (ContractStatus::FINISHED != $this->getStatus()) {
             $paidTo = $this->getPaidTo();
             $result[$paidTo->format('Y')][$paidTo->format('m')] = array(
                 'status' => self::STATUS_PAY,
                 'text' => self::PAYMENT_PAY,
                 'amount' => 0,
             );
-        }
+        }*/
         return $result;
     }
 
@@ -597,6 +605,11 @@ class Contract extends Base
         return $this->getGroup()->getGroupSettings()->getIsPidVerificationSkipped();
     }
 
+    public function getAvailableDisputeCodes()
+    {
+        return DisputeCode::all();
+    }
+
     public function __toString()
     {
         return $this->getProperty()->getAddress() . ($this->getUnit()?' #' . $this->getUnit()->getName():'');
@@ -625,5 +638,33 @@ class Contract extends Base
             return null;
         }
         return $collection[0];
+    }
+
+
+    /**
+     * Have test by path: src/RentJeeves/DataBundle/Tests/Unit/ContractEntityCase.php
+     *
+     * @Serializer\VirtualProperty
+     * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Type("boolean")
+     *
+     * @return bool
+     */
+    public function isLate()
+    {
+        $paidTo = $this->getPaidTo();
+
+        if (empty($paidTo) || !is_null($this->getId())) {
+            return false;
+        }
+
+        $today = new DateTime();
+        $interval = $today->diff($paidTo)->format("%r%a");
+
+        if ($interval > 0) {
+            return false;
+        }
+
+        return true;
     }
 }

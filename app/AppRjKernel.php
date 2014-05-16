@@ -4,6 +4,8 @@ use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\Config\FileLocator;
 
 /**
  * @author Alex Emelyanov <alex.emelyanov.ua@gmail.com>

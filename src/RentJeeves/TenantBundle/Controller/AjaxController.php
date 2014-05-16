@@ -10,6 +10,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use RuntimeException;
+use DateTime;
 
 /**
  * @Route("/ajax")
@@ -18,6 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class AjaxController extends Controller
 {
+    const TENANT_PAYMENTS_LIMIT = 10;
     /**
      * @Route("/contracts", name="tenant_contracts")
      * @Template()
@@ -39,22 +43,36 @@ class AjaxController extends Controller
      *
      * @return array
      */
-    public function contractBureauReporting()
+    public function contractBureauReporting(Request $request)
     {
-        $request = $this->getRequest();
-        $data = $request->request->all('data');
-        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($data['contract_id']);
-        $action = $data['action'];
-        $user = $this->getUser();
-        $em = $this->getDoctrine()->getManager();
-        if ($action == 'start') {
-            $contract->setReporting(true);
-        } else {
-            $contract->setReporting(false);
+        $contractId = $request->request->get('contractId');
+        $reportToExperian = $request->request->get('experianReporting') === 'true';
+        $reportToTransUnion = $request->request->get('transUnionReporting') === 'true';
+
+        /** @var Contract $contract */
+        $contract = $this->getDoctrine()->getRepository('RjDataBundle:Contract')->find($contractId);
+        if (!$contract) {
+            throw new RuntimeException('Contract not found');
         }
+
+        $contract->setReportToExperian($reportToExperian);
+        $contract->setReportToTransUnion($reportToTransUnion);
+
+        // if reporting is being turning on for the first time - set start date
+        $now = new DateTime();
+        if (!$contract->getExperianStartAt() && $reportToExperian) {
+            $contract->setExperianStartAt($now);
+        }
+
+        if (!$contract->getTransUnionStartAt() && $reportToTransUnion) {
+            $contract->setTransUnionStartAt($now);
+        }
+
+        $em = $this->getDoctrine()->getManager();
         $em->persist($contract);
         $em->flush();
-        return new JsonResponse(array($action));
+
+        return new JsonResponse();
     }
 
     /**
@@ -113,5 +131,35 @@ class AjaxController extends Controller
 
         $em->flush();
         return new JsonResponse(array());
+    }
+
+    /**
+     * @Route(
+     *      "/tenant_payments/{page}/{contractId}",
+     *      name="tenant_payments",
+     *      defaults={"_format"="json"},
+     *      requirements={"_format"="json"},
+     *      options={"expose"=true}
+     * )
+     * @Method({"GET"})
+     */
+    public function paymentsAction($page = 1, $contractId = null)
+    {
+        $repo = $this->getDoctrine()->getManager()->getRepository('DataBundle:Order');
+
+        $orders = $repo->getTenantPayments($this->getUser(), $page, $contractId, self::TENANT_PAYMENTS_LIMIT);
+
+        $totalOrdersAmount = $repo->getTenantPaymentsAmount($this->getUser(), $contractId);
+        $pages = ceil($totalOrdersAmount / self::TENANT_PAYMENTS_LIMIT);
+
+        // can't use jms_serializer since order already has handlerCallback used in another serialization
+        array_walk(
+            $orders,
+            function (&$order) {
+                $order = $order->getTenantPayment();
+            }
+        );
+
+        return new JsonResponse(array('tenantPayments' => $orders, 'pages' => array($pages)));
     }
 }

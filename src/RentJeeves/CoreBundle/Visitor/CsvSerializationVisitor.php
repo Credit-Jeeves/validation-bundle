@@ -133,7 +133,7 @@ class CsvSerializationVisitor extends AbstractVisitor implements VisitorInterfac
      */
     public function visitProperty(PropertyMetadata $metadata, $data, Context $context)
     {
-        $name  = $metadata->serializedName;
+        $name  = $metadata->serializedName ?: $metadata->name;
         $value = $metadata->getValue($data);
         $type  = $metadata->type;
 

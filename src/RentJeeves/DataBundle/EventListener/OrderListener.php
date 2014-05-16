@@ -17,7 +17,6 @@ use RuntimeException;
 class OrderListener
 {
     /**
-     * 
      * @var ContainerInterface
      */
     private $container;
@@ -141,5 +140,60 @@ class OrderListener
                 $partnerCode->setFirstPaymentDate(new DateTime());
             }
         }
+    }
+
+    public function postPersist(LifecycleEventArgs $event)
+    {
+        $this->updateStartAtOfContract($event);
+    }
+
+    /**
+     * When tenant pays first time, set start_at = paid_for for first payment.
+     * More description on this page https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
+     * See table Possible Paths
+     *
+     * @param LifecycleEventArgs $event
+     */
+    public function updateStartAtOfContract(LifecycleEventArgs $event)
+    {
+        /**
+         * @var $order Order
+         */
+        $order = $event->getEntity();
+        if (!($order instanceof Order)) {
+            return;
+        }
+        $contract = $order->getContract();
+
+        if (empty($contract)) {
+            return;
+        }
+
+        $em = $event->getEntityManager();
+        $operation = $em->getRepository('DataBundle:Operation')->findOneBy(
+            array(
+                'contract' => $contract->getId(),
+            )
+        );
+
+        /**
+         * If we have operation for particular contract it's means we already pay
+         * so we must do not change it
+         */
+        if (!empty($operation)) {
+            return;
+        }
+
+        /**
+         * @var $operation Operation
+         */
+        $operation = $order->getOperations()->first();
+        $paidFor = $operation->getPaidFor();
+        if (empty($paidFor)) {
+            return;
+        }
+
+        $contract->setStartAt($paidFor);
+        $em->flush($contract);
     }
 }

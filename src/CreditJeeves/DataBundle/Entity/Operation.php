@@ -144,7 +144,7 @@ class Operation extends Base
 
     public function getDaysLate()
     {
-        $days = $this->getCreatedAt()->diff($this->getPaidFor())->format('%r%a');
+        $days = $this->getPaidFor()->diff($this->getCreatedAt())->format('%r%a');
         return $days;
     }
 }

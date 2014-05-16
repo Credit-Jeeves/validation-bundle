@@ -23,7 +23,7 @@
                             text: $root.errorLoadDataMessage()
                     ">
                     </div>
-                    <table class="properties-table zebra-grid" data-bind="visible: $root.isVisibleTable()">
+                    <table id="importTable" class="properties-table zebra-grid" data-bind="visible: $root.isVisibleTable()">
                         <thead>
                         <tr class="properties-th">
                             <th class="pie-el status"><span>{{ 'import.status'|trans }}</span></th>
@@ -45,14 +45,14 @@
                                     {{ 'import.lease_end'|trans }}
                                 </span>
                             </th>
-                            <th class="pie-el">
+                            <th class="pie-el operation">
                                 <span>
                                     {{ 'import.pmt.amt'|trans }}
                                     <br />
                                     {{ 'import.pmt.date'|trans }}
                                 </span>
                             </th>
-                            <th class="pie-el"><span>{{ 'import.action'|trans }}</span></th>
+                            <th class="pie-el action"><span>{{ 'import.action'|trans }}</span></th>
                         </tr>
                         </thead>
                         <tbody data-bind="foreach: $root.rows">

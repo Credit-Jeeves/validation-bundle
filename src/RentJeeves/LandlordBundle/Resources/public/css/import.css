@@ -31,6 +31,12 @@
 .properties-th>.dates{
     width: 95px
 }
+.properties-th>.operation{
+    width: 90px;
+}
+.properties-th>.action{
+    width: 73px;
+}
 .datepicker{
     float: left;
     clear: both;
@@ -57,7 +63,7 @@ table tbody tr td {
     margin-top: 4px !important;
 }
 
-.New {
+.New, .Waiting {
     border-left: 3px solid #77ef21;
     background: #77ef21; /* Old browsers */
     background: -moz-linear-gradient(left,  #77ef21 0%, #ffffff 43%); /* FF3.6+ */
@@ -94,4 +100,12 @@ table tbody tr td {
 }
 .finishedTitle {
     text-align: center;
+}
+.import_operation_amount {
+    margin-left: -24px !important;
+}
+
+.import_operation_amount, .import_operation_paidFor {
+    width: 55px !important;
+    margin-top: 5px !important;
 }

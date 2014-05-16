@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
+use JMS\Serializer\SerializationContext;
 use Exception;
 
 /**
@@ -85,8 +86,12 @@ class PayController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
+        // TODO: deal with multiple groups
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
+
         try {
-            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser());
+            $paymentAccountEntity = $this->savePaymentAccount($paymentAccountType, $this->getUser(), $group);
         } catch (Exception $e) {
             return new JsonResponse(
                 array(
@@ -102,7 +107,8 @@ class PayController extends Controller
                 'success' => true,
                 'paymentAccount' => $this->get('jms_serializer')->serialize(
                     $paymentAccountEntity,
-                    'array'
+                    'array',
+                    SerializationContext::create()->setGroups(array('basic'))
                 ),
                 'newAddress' => $this->hasNewAddress ?
                     $this->get('jms_serializer')->serialize(

@@ -10,10 +10,13 @@ use JMS\Serializer\SerializerBuilder;
 use RentJeeves\CoreBundle\Controller\LandlordController as Controller;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportProcess;
 use RentJeeves\LandlordBundle\Accounting\ImportStorage;
+use RentJeeves\LandlordBundle\Accounting\Permission;
 use RentJeeves\LandlordBundle\Exception\ImportMappingException;
 use RentJeeves\LandlordBundle\Exception\ImportStorageException;
 use RentJeeves\LandlordBundle\Form\ExportType;
@@ -37,10 +40,32 @@ use JMS\Serializer\SerializationContext;
  */
 class AccountingController extends Controller
 {
-    protected function checkAccessToReport()
+    const IMPORT = 'import';
+
+    const EXPORT = 'export';
+
+    protected function checkAccessToAccounting($type = self::IMPORT)
     {
-        $user = $this->get('security.context')->getToken()->getUser();
-        if (!$user->haveAccessToReports()) {
+        /**
+         * @var $accountingPermission Permission
+         */
+        $accountingPermission = $this->get('accounting.permission');
+        if (!$accountingPermission->hasAccessToAccountingTab()) {
+            throw new Exception("Don't have access");
+        }
+
+        switch ($type) {
+            case self::IMPORT:
+                $methodName = 'hasAccessToImport';
+                break;
+            case self::EXPORT:
+                $methodName = 'hasAccessToExport';
+                break;
+            default:
+                throw new Exception("Don't have access");
+        }
+
+        if (!$accountingPermission->$methodName()) {
             throw new Exception("Don't have access");
         }
     }
@@ -54,7 +79,7 @@ class AccountingController extends Controller
      */
     public function exportAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting(self::EXPORT);
         if ($request->getMethod() == 'POST') {
             $form = $request->request->get('base_order_report_type');
             $validationRule = array(
@@ -101,7 +126,7 @@ class AccountingController extends Controller
      */
     public function importFileAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         $form = $this->createForm(
             new ImportFileAccountingType($this->getUser())
         );
@@ -117,6 +142,7 @@ class AccountingController extends Controller
         $property = $form['property']->getData();
         $textDelimiter = $form['textDelimiter']->getData();
         $fieldDelimiter = $form['fieldDelimiter']->getData();
+        $dateFormat = $form['dateFormat']->getData();
         $tmpDir = sys_get_temp_dir();
         $newFileName = uniqid().'.csv';
         $file->move($tmpDir, $newFileName);
@@ -129,6 +155,7 @@ class AccountingController extends Controller
         $importStorage->setTextDelimiter($textDelimiter);
         $importStorage->setFilePath($newFileName);
         $importStorage->setPropertyId($property->getId());
+        $importStorage->setDateFormat($dateFormat);
 
         return $this->redirect($this->generateUrl('accounting_match_file'));
     }
@@ -142,7 +169,7 @@ class AccountingController extends Controller
      */
     public function matchFileAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         try {
             /**
              * @var ImportStorage $importStorage
@@ -165,7 +192,7 @@ class AccountingController extends Controller
 
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
-            new ImportMatchFileType(count($dataView))
+            new ImportMatchFileType(count($dataView), $this->get('translator'))
         );
         $form->handleRequest($this->get('request'));
         if ($form->isValid()) {
@@ -190,7 +217,7 @@ class AccountingController extends Controller
      */
     public function importAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         /**
          * @var ImportStorage $importStorage
          */
@@ -208,8 +235,15 @@ class AccountingController extends Controller
          * @var $importProcess ImportProcess
          */
         $importProcess = $this->get('accounting.import.process');
-        $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm();
-        $formContract = $importProcess->getContractForm();
+        $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm(
+            new Unit(),
+            new ResidentMapping()
+        );
+        $formContract = $importProcess->getContractForm(
+            new Tenant(),
+            new Unit(),
+            new ResidentMapping()
+        );
         $formContractFinish = $importProcess->getContractFinishForm();
 
         return array(
@@ -262,7 +296,7 @@ class AccountingController extends Controller
         $total = $importMapping->countLines();
 
         if ($total > 0) {
-            $rows = $importProcess->getMappedData();
+            $rows = $importProcess->getImportModelCollection();
         }
 
         $context = new SerializationContext();
@@ -287,7 +321,7 @@ class AccountingController extends Controller
      */
     public function saveRowsAction(Request $request)
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         $result = array(
             'error'   => false,
             'message' => '',
@@ -318,7 +352,7 @@ class AccountingController extends Controller
 
     protected function isAjaxRequestValid()
     {
-        $this->checkAccessToReport();
+        $this->checkAccessToAccounting();
         /**
          * @var ImportStorage $importStorage
          */

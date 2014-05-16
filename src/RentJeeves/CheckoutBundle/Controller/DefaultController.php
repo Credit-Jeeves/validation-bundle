@@ -54,7 +54,7 @@ class DefaultController extends Controller
 
         $this->get('payum')->getPayment('heartland')->execute(new CaptureRequest($paymentDetails));
 
-        var_dump($paymentDetails->getRequest()->getCredential());
+//        var_dump($paymentDetails->getRequest()->getCredential());
 
         $this->get('doctrine.orm.entity_manager')->persist($paymentDetails);
         $this->get('doctrine.orm.entity_manager')->flush($paymentDetails);
