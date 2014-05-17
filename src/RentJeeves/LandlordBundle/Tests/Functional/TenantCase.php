@@ -2,6 +2,9 @@
 namespace RentJeeves\LandlordBundle\Tests\Functional;
 
 use CreditJeeves\DataBundle\Model\User;
+use Doctrine\ORM\EntityManager;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Model\Contract;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 /**
@@ -140,6 +143,9 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($unitEdit = $this->page->find('css', '#unit-edit'));
         $unitEdit->selectOption('2-e'); //
 
+        $this->assertNotNull($unitEdit = $this->page->find('css', '.dueDateEdit'));
+        $unitEdit->selectOption('14'); //
+
         $this->page->pressButton('savechanges');
         $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
         $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
@@ -155,6 +161,15 @@ class TenantCase extends BaseTestCase
         $this->assertEquals('200', $amount->getValue(), 'Wrong edit amount');
         $this->assertEquals('770 Broadway, Manhattan #2-e', $address->getHtml(), 'Wrong edit unit');
         $this->logout();
+
+        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+        $contracts = $em->getRepository('RjDataBundle:Contract')->findBy(
+            array(
+                'dueDate' => 14,
+                'rent'  => 200.00,
+            )
+        );
+        $this->assertCount(1, $contracts, 'Wrong count contract');
     }
 
     /**
@@ -295,6 +310,8 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'test@email.ru',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_1' => true,
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_dueDate'   => 23,
             )
         );
         $start = $this->page->find('css', '#rentjeeves_landlordbundle_invitetenantcontracttype_contract_startAt');
@@ -363,6 +380,28 @@ class TenantCase extends BaseTestCase
         $form->pressButton('continue');
         $this->assertNotNull($contracts = $this->page->findAll('css', 'div.table-margin table tbody tr'));
         $this->assertCount(2, $contracts, 'wrong number of contracts');
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'test@email.ru',
+            )
+        );
+
+        $contracts = $tenant->getContracts();
+        $this->assertCount(1, $contracts, 'wrong number of contracts');
+        /**
+         * @var $contract Contract
+         */
+        $contract = $contracts->get(0);
+        $this->assertEquals(23, $contract->getDueDate());
+        $this->assertNotNull($contract->getFinishAt());
     }
 
     /**
@@ -392,7 +431,8 @@ class TenantCase extends BaseTestCase
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_last_name'  => 'Sharamko',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_phone'      => '12345',
                 'rentjeeves_landlordbundle_invitetenantcontracttype_tenant_email'      => 'robyn@rentrack.com',
-                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200'
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_rent'     => '200',
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_dueDate'   => 13,
             )
         );
 
@@ -418,6 +458,12 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($future);
         $future[count($future)-1]->click();
 
+        $this->fillForm(
+            $form,
+            array(
+                'rentjeeves_landlordbundle_invitetenantcontracttype_contract_finishAtType_0' => true,
+            )
+        );
 
         $this->session->wait($this->timeout, "$('#userExistMessage').is(':visible')");
         $this->page->pressButton('invite.tenant');
@@ -444,6 +490,28 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($contracts = $this->page->findAll('css', 'div.table-margin table tbody tr'));
         $this->assertCount(2, $contracts, 'wrong number of contracts');
         $this->logout();
+
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email' => 'robyn@rentrack.com',
+            )
+        );
+
+        $contracts = $tenant->getContracts();
+        $this->assertCount(1, $contracts, 'wrong number of contracts');
+        /**
+         * @var $contract Contract
+         */
+        $contract = $contracts->get(0);
+        $this->assertEquals(13, $contract->getDueDate());
+        $this->assertNull($contract->getFinishAt());
     }
 
     /**

@@ -1,5 +1,5 @@
 
-{% form_theme form ':Form:form_errors.html.twig' %}
+{% form_theme form 'RjCoreBundle::radio.html.twig' %}
 
 <div id="contract-actions">
 
@@ -268,8 +268,21 @@
                 <!-- /ko -->
                 <div class="form-row clearfix">
                     <label>{{ 'amount'|trans }}<b>*</b></label>
-                    <div class="fields-box">
+                    <div class="fields-box width150">
                         <input type="text" id="amount-edit" data-bind="value: amount" value="" class="half-of-right">
+                    </div>
+                    <div class="fields-box width150">
+                        <label>{{ 'due_date'|trans }}</label>
+                        <select name="dueDate"
+                                class="half-width original dueDateEdit"
+                                data-bind="
+                                    options: $root.dueDateList,
+                                    optionsText: 'text',
+                                    optionsValue: 'value',
+                                    value: dueDate
+                                "
+                        >
+                        </select>
                     </div>
                 </div>
                 <div class="form-row clearfix">
@@ -314,8 +327,6 @@
         </div>
     </div>
     <!-- End Action Edit -->
-
-
     <!-- Action Approve -->
     <div id="tenant-approve-property-popup" class="pricing-popup dashboard-popup properties-popup">
         <h1>{{ 'approve.tenant.info'|trans }}</h1>
@@ -374,8 +385,21 @@
                 </div>
                 <div class="form-row clearfix">
                     <label>{{ 'amount'|trans }}<b>*</b></label>
-                    <div class="fields-box">
+                    <div class="fields-box width150">
                         <input type="text" id="amount-approve" data-bind="value: amount" value="" class="half-of-right">
+                    </div>
+                    <div class="fields-box width150">
+                        <label>{{ 'due_date'|trans }}</label>
+                        <select name="dueDate"
+                                class="half-width original"
+                                data-bind="
+                                    options: $root.dueDateList,
+                                    optionsText: 'text',
+                                    optionsValue: 'value',
+                                    value: dueDate
+                                "
+                                >
+                        </select>
                     </div>
                 </div>
                 <div class="form-row clearfix">
@@ -545,36 +569,51 @@
           </h4>
           <div class="form-row clearfix">
             <label>{{'amount'|trans}}<b>*</b></label>
-            <div class="fields-box">
+            <div class="fields-box width150">
               {{ form_widget(form.contract.rent, { 'attr': {'class': 'half-width', 'placeholder':"$"} }) }}
+            </div>
+            <div class="fields-box width150">
+                {{ form_label(form.contract.dueDate) }}
+                {{ form_widget(form.contract.dueDate, { 'attr': {'class': 'half-width original'} }) }}
             </div>
           </div>
           <div class="form-row clearfix">
             <label>{{ 'next_payment_date'|trans }}<b>*</b></label>
             <div class="fields-box">
-              {{ form_widget(
-                form.contract.startAt,
-                   { 'attr': 
-                    {
-                      'class': 'datepicker-field payment-start',
-                      'placeholder':"mm/dd/YYYY",
-                      'value': start
-                    }
-                   }
-                ) 
-              }}
-              <label class="fixed">{{'end'|trans}}</label>
-              {{ form_widget(
-                form.contract.finishAt,
-                   { 'attr': 
-                    {
-                      'class': 'datepicker-field payment-end',
-                      'placeholder':"mm/dd/YYYY",
-                      'value': end
-                    }
-                   }
-                ) 
-              }}
+                <div class="fields-box">
+                    {{ form_widget(
+                        form.contract.startAt,
+                        { 'attr':
+                            {
+                            'class': 'datepicker-field payment-start',
+                            'placeholder':"mm/dd/YYYY",
+                            'value': start
+                            }
+                        }
+                    )
+                    }}
+                    <label class="checkbox radio">
+                        {{ form_widget(form.contract.finishAtType[0]) }}
+                        <span>{{ 'when.cancelled' | trans }}</span>
+                        <div class="clearboth"></div>
+                    </label>
+                    <label class="checkbox radio finishAtLabel">
+                        {{ form_widget(form.contract.finishAtType[1]) }}
+                        <span class="onFinishAt">{{ 'on' | trans }}</span>
+                        {{ form_widget(
+                                form.contract.finishAt,
+                                { 'attr':
+                                    {
+                                        'class': 'datepicker-field payment-end',
+                                        'placeholder':"mm/dd/YYYY",
+                                        'value': end
+                                    }
+                                }
+                            )
+                        }}
+                        <div class="clearboth"></div>
+                    </label>
+                </div>
             </div>
           </div>
         </div>
