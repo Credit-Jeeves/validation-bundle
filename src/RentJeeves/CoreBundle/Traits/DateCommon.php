@@ -1,7 +1,7 @@
 <?php
 namespace RentJeeves\CoreBundle\Traits;
 
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 trait DateCommon
 {

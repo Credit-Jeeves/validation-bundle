@@ -80,44 +80,6 @@ class PaymentRepository extends EntityRepository
     }
 
     /**
-     * @param DateTime $date
-     * @param array $types
-     * @param array $statuses
-     * @param array $contract
-     *
-     * @return \Doctrine\ORM\Internal\Hydration\IterableResult
-     */
-    public function getNonAutoPayments(
-        $date,
-        $types = array(PaymentType::ONE_TIME, PaymentType::IMMEDIATE),
-        $statuses = array(PaymentStatus::PAUSE, PaymentStatus::CLOSE),
-        $contract = array(ContractStatus::APPROVED, ContractStatus::CURRENT)
-    ) {
-        $query = $this->createQueryBuilder('p');
-        $query->select('p, c');
-        $query->innerJoin('p.contract', 'c');
-        $query->where('p.status IN (:status)');
-        $query->andWhere('p.type IN (:type)');
-        $query->andWhere('p.dueDate IN (:days)');
-        $query->andWhere('c.status IN (:contract)');
-        $query->andWhere(
-            self::getStartDateDQLString('p') . ' <= :startDate'
-        );
-        $query->andWhere('p.endYear IS NULL OR (p.endYear > :year) OR (p.endYear = :year AND p.endMonth >= :month)');
-
-        $query->setParameter('status', $statuses);
-        $query->setParameter('type', $types);
-        $query->setParameter('days', $this->getDueDays(0, $date));
-        $query->setParameter('contract', $contract);
-        $query->setParameter('month', $date->format('n'));
-        $query->setParameter('year', $date->format('Y'));
-        $query->setParameter('startDate', $date->format('Y-m-d'));
-    
-        $query = $query->getQuery();
-        return $query->iterate();
-    }
-
-    /**
      * @return array
      */
     public function collectToJobs(DateTime $date = null)

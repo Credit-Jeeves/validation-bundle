@@ -13,7 +13,7 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use CreditJeeves\DataBundle\Enum\UserType;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Entity\Payment;
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 class EmailTenantCommand extends ContainerAwareCommand
 {
@@ -119,7 +119,6 @@ class EmailTenantCommand extends ContainerAwareCommand
                 if ($auto) {//Email:tenant --auto=true
                     // Story-1544
                     $repo = $doctrine->getRepository('RjDataBundle:Payment');
-
                     $payments = $repo->getActivePayments($shiftedDate);
                     $output->write('Start processing auto payment contracts');
                     /** @var Payment $payment */
@@ -133,16 +132,16 @@ class EmailTenantCommand extends ContainerAwareCommand
                     $output->write('Finished command "Email:tenant --auto"');
                 } else {//Email:tenant
                     // Story-1542
-                    $repo = $doctrine->getRepository('RjDataBundle:Payment');
-                    $payments = $repo->getNonAutoPayments($shiftedDate);
+                    $contractRepository = $doctrine->getRepository('RjDataBundle:Contract');
+                    $contracts = $contractRepository->getPotentialLateContract($shiftedDate);
                     $output->write('Start processing non auto contracts');
-                    foreach ($payments as $row) {
-                        /** @var Payment $payment */
-                        $payment = $row[0];
-                        $contract = $payment->getContract();
+                    /**
+                     * @var $contract Contract
+                     */
+                    foreach ($contracts as $contract) {
                         $tenant = $contract->getTenant();
                         $mailer->sendRjPaymentDue($tenant, $contract->getHolding(), $contract);
-                        $doctrine->getManager()->detach($payment);
+                        $doctrine->getManager()->detach($contract);
                         $output->write('.');
                     }
                     $output->writeln('OK');
@@ -155,7 +154,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                 /** @var Contract $contract */
                 foreach ($contracts as $contract) {
                     $tenant = $contract->getTenant();
-                    $paidTo = $contract->getPaidTo();
+                    $paidTo = $contract->getPaidTo();// fixme to dueDate
                     $diff = $paidTo->diff($date);
                     $mailer->sendRjTenantLateContract($tenant, $contract, $diff->format('%d'));
                     $doctrine->getManager()->detach($contract);

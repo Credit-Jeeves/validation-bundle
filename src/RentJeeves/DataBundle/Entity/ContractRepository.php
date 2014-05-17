@@ -6,11 +6,14 @@ use Doctrine\ORM\EntityRepository;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
-use DateTime;
 use Doctrine\ORM\Query\Expr;
+use RentJeeves\CoreBundle\Traits\DateCommon;
+use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 class ContractRepository extends EntityRepository
 {
+    use DateCommon;
     /**
      * We'll use following aliases in this class
      * c - Contracts
@@ -482,6 +485,57 @@ class ContractRepository extends EntityRepository
         $query->setParameter('finished', ContractStatus::FINISHED);
         $query->setParameter('startDate', $firstDate);
         $query->setParameter('lastDate', $lastDate);
+        $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * We have test for this query because query not so clear as I want
+     * Test name ContractRepositoryCase
+     *
+     * @param DateTime $date
+     * @return mixed
+     */
+    public function getPotentialLateContract(DateTime $date)
+    {
+        $startPaymentDate = clone $date;
+        $startPaymentDate->modify("-1 month");
+
+        $endPaymentDate = clone $date;
+        $dueDays = $this->getDueDays(0, $date);
+
+        $startPaymentDateDql = PaymentRepository::getStartDateDQLString('p');
+        $dqlDefault = "c.dueDate IN(:dueDays) AND (c.status=:current OR c.status=:approved) AND ";
+        $dqlEndPaymentDate = "AND (
+            (p.endYear IS NULL AND p.endMonth IS NULL)
+            OR
+            (p.endYear > :endYear)
+            OR
+            (p.endYear = :endYear AND p.endMonth >= :endMonth)
+        )";
+
+        $query = $this->createQueryBuilder('c');
+        $query->leftJoin(
+            'c.payments',
+            'p',
+            Expr\Join::WITH,
+            "p.status = :active"
+        );
+
+        $query->where($dqlDefault."p.id IS NULL");
+        $query->orWhere(
+            $dqlDefault.'NOT ('.$startPaymentDateDql." < STR_TO_DATE(:startDate,'%Y-%c-%e') ".$dqlEndPaymentDate." )"
+        );
+
+        $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('active', PaymentStatus::ACTIVE);
+        $query->setParameter('startDate', $startPaymentDate->format('Y-m-d'));
+        $query->setParameter('endMonth', $endPaymentDate->format('n'));
+        $query->setParameter('endYear', $endPaymentDate->format('Y'));
+        $query->setParameter('dueDays', $dueDays);
+
         $query = $query->getQuery();
 
         return $query->execute();
