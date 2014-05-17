@@ -101,8 +101,8 @@ class ContractRepositoryCase extends BaseTestCase
 
 
     /**
-     * dataProvider dataForGetPotentialLateContract
-     * test
+     * @dataProvider dataForGetPotentialLateContract
+     * @test
      */
     public function getPotentialLateContract(
         $startAtOfContract,
