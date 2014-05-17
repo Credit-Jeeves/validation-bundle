@@ -394,17 +394,35 @@ class ContractRepository extends EntityRepository
     public function getLateContracts($days = 5)
     {
         $query = $this->createQueryBuilder('c');
-        $query->leftJoin('c.operations', 'op');
-        $query->leftJoin('op.order', 'o', Expr\Join::WITH, 'o.status = :orderStatus');
-        $query->setParameter('orderStatus', OrderStatus::PENDING);
+        $query->leftJoin(
+            'c.operations',
+            'op',
+            Expr\Join::WITH,
+            'MONTH(op.paidFor) = :month AND YEAR(op.paidFor) = :year'
+        );
+        $query->leftJoin(
+            'op.order',
+            'o',
+            Expr\Join::WITH,
+            '(o.status = :completed OR o.status = :pending)'
+        );
+
+        $query->where('c.status = :approved AND c.status = :current');
         $query->andWhere('o.id IS NULL');
-        $query->andWhere('c.paidTo BETWEEN :start AND :now');
-        $query->setParameter('start', new DateTime('-'.$days.' days'));
-        $query->setParameter('now', new DateTime());
-        $query->andWhere('c.status = :status');
-        $query->setParameter('status', ContractStatus::APPROVED);
+        $query->andWhere('c.dueDate IN (:dueDays)');
+
+        $date = new DateTime('-'.$days.' days');
+        $dueDays = $this->getDueDays(0, $date);
+
+        $query->setParameter('dueDays', $dueDays);
+        $query->setParameter('month', $date->format('j'));
+        $query->setParameter('year', $date->format('Y'));
+        $query->setParameter('approved', ContractStatus::APPROVED);
+        $query->setParameter('current', ContractStatus::CURRENT);
+
         $query = $query->getQuery();
         return $query->execute();
+
     }
 
     public function getAllLateContracts($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))
