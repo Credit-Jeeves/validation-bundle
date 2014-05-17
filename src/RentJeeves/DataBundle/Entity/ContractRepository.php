@@ -391,6 +391,12 @@ class ContractRepository extends EntityRepository
         return !empty($result) ? $result[1] : 0;
     }
 
+    /**
+     * Complicated query, have unit test
+     *
+     * @param int $days
+     * @return mixed
+     */
     public function getLateContracts($days = 5)
     {
         $query = $this->createQueryBuilder('c');
@@ -407,7 +413,7 @@ class ContractRepository extends EntityRepository
             '(o.status = :completed OR o.status = :pending)'
         );
 
-        $query->where('c.status = :approved AND c.status = :current');
+        $query->where('c.status = :approved OR c.status = :current');
         $query->andWhere('o.id IS NULL');
         $query->andWhere('c.dueDate IN (:dueDays)');
 
@@ -415,14 +421,16 @@ class ContractRepository extends EntityRepository
         $dueDays = $this->getDueDays(0, $date);
 
         $query->setParameter('dueDays', $dueDays);
-        $query->setParameter('month', $date->format('j'));
+        $query->setParameter('month', $date->format('n'));
         $query->setParameter('year', $date->format('Y'));
         $query->setParameter('approved', ContractStatus::APPROVED);
         $query->setParameter('current', ContractStatus::CURRENT);
+        $query->setParameter('completed', OrderStatus::COMPLETE);
+        $query->setParameter('pending', OrderStatus::PENDING);
 
         $query = $query->getQuery();
-        return $query->execute();
 
+        return $query->execute();
     }
 
     public function getAllLateContracts($holding, $status = array(ContractStatus::CURRENT, ContractStatus::APPROVED))

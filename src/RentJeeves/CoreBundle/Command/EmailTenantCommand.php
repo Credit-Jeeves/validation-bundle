@@ -154,9 +154,7 @@ class EmailTenantCommand extends ContainerAwareCommand
                 /** @var Contract $contract */
                 foreach ($contracts as $contract) {
                     $tenant = $contract->getTenant();
-                    $paidTo = $contract->getPaidTo();// fixme to dueDate
-                    $diff = $paidTo->diff($date);
-                    $mailer->sendRjTenantLateContract($tenant, $contract, $diff->format('%d'));
+                    $mailer->sendRjTenantLateContract($tenant, $contract, $days);
                     $doctrine->getManager()->detach($contract);
                     $output->write('.');
                 }

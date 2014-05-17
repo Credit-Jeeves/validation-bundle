@@ -12,10 +12,15 @@ use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\TestBundle\BaseTestCase;
+use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Entity\Order;
+use CreditJeeves\DataBundle\Enum\OperationType;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
+use CreditJeeves\DataBundle\Enum\OrderType;
 
 class ContractRepositoryCase extends BaseTestCase
 {
-    public function  dataForGetPotentialLateContract()
+    public function dataForGetPotentialLateContract()
     {
         return array(
             //When we don't have payment at all and dueDate today
@@ -96,8 +101,8 @@ class ContractRepositoryCase extends BaseTestCase
 
 
     /**
-     * @dataProvider dataForGetPotentialLateContract
-     * @test
+     * dataProvider dataForGetPotentialLateContract
+     * test
      */
     public function getPotentialLateContract(
         $startAtOfContract,
@@ -169,13 +174,114 @@ class ContractRepositoryCase extends BaseTestCase
         }
         $em->persist($contract);
         $em->flush();
+        $contractRepository = $em->getRepository('RjDataBundle:Contract');
+        $contracts = $contractRepository->getPotentialLateContract(new DateTime());
+        $this->assertCount($count, $contracts);
+    }
 
+    public function dataForGetLateContract()
+    {
+        return array(
+            //We don't have order at all and need send email
+            array(
+                $hasOrder = false,
+                $paidFor = false,
+                1
+            ),
+            //We have order for current month, so we don't need send email
+            array(
+                $hasOrder = true,
+                $paidFor = new DateTime("-5 days"),
+                0
+            ),
+            //We don't have order for current month send email
+            array(
+                $hasOrder = true,
+                $paidFor = new DateTime("-43 days"),
+                1
+            ),
+            //We don't have order for current month send email
+            array(
+                $hasOrder = true,
+                $paidFor = new DateTime("+43 days"),
+                1
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider dataForGetLateContract
+     * @test
+     */
+    public function getLateContract($hasOrder, $paidFor, $contractCount)
+    {
+        $this->load(true);
+        $today = new DateTime("-5 days");
         /**
          * @var $em EntityManager
          */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $contract = new Contract();
+        $contract->setRent(999999.99);
+        $contract->setBalance(9999.89);
+        $contract->setStartAt(new DateTime("-1 month"));
+        $contract->setFinishAt(new DateTime("+5 month"));
+        $contract->setDueDate($today->format('j'));
+
+        /**
+         * @var $tenant Tenant
+         */
+        $tenant = $em->getRepository('RjDataBundle:Tenant')->findOneBy(
+            array(
+                'email'  => 'tenant11@example.com'
+            )
+        );
+
+        $this->assertNotNull($tenant);
+        $contract->setTenant($tenant);
+
+        /**
+         * @var $unit Unit
+         */
+        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
+            array(
+                'name'  => '1-a'
+            )
+        );
+
+        $this->assertNotNull($unit);
+
+        $contract->setUnit($unit);
+        $contract->setGroup($unit->getGroup());
+        $contract->setHolding($unit->getHolding());
+        $contract->setProperty($unit->getProperty());
+        $contract->setStatus(ContractStatus::CURRENT);
+
+        if ($hasOrder) {
+            $order = new Order();
+            $order->setUser($contract->getTenant());
+            $order->setSum(500);
+            $order->setType(OrderType::AUTHORIZE_CARD);
+            $order->setStatus(OrderStatus::COMPLETE);
+
+            $operation = new Operation();
+            $operation->setContract($contract);
+            $operation->setAmount(500);
+            $operation->setGroup($contract->getGroup());
+            $operation->setType(OperationType::RENT);
+            $operation->setPaidFor($paidFor);
+            $operation->setOrder($order);
+            $order->addOperation($operation);
+
+            $em->persist($operation);
+            $em->persist($order);
+        }
+
+        $em->persist($contract);
+        $em->flush();
+
         $contractRepository = $em->getRepository('RjDataBundle:Contract');
-        $contracts = $contractRepository->getPotentialLateContract(new DateTime());
-        $this->assertCount($count, $contracts);
+        $contracts = $contractRepository->getLateContracts($days = 5);
+        $this->assertCount($contractCount, $contracts);
     }
 }
