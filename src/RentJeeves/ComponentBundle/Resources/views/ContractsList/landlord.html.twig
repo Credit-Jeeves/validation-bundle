@@ -712,7 +712,9 @@
                     <span class="pie-el">{{'contract.payment.last'|trans}}<i> </i></span>
                 </th>
                 <th class="pie-el column-paid">
-                    <span class="sort" id="paidTo" data-bind="click: sortFunction">{{'paid_to'|trans}}<i> </i></span>
+                    <span class="sort" id="balance" data-bind="click: sortFunction">
+                        {{'common.balance'|trans}}<i> </i>
+                    </span>
                 </th>
                 <th class="pie-el column-action">&nbsp;</th>
               </tr>
@@ -735,7 +737,7 @@
                 <td data-bind="text: '-' + amount"></td>
                 <!-- /ko -->
                 <td align="center"   data-bind="text: last_payment"></td>
-                <td align="center"  data-bind="text: paid_to"></td>
+                <td align="center"  data-bind="text: balance"></td>
                 <td class="type-box">
                     <!-- ko if: 'CURRENT' == status || 'INVITE' == status || 'APPROVED' == status  || 'CONTRACT ENDED' == status || 'late' == status_name -->
                     <a title="{{ 'edit'|trans }}" class="type-ico pie-el edit" href="#"
