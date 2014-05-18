@@ -20,7 +20,7 @@ class ContractCommand extends ContainerAwareCommand
     {
         $this
             ->setName('contract:update:balance')
-            ->setDescription('Update balance for contract');
+            ->setDescription('Update balance for contract for today as dueDate');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -33,8 +33,6 @@ class ContractCommand extends ContainerAwareCommand
          * @var $manager EntityManager
          */
         $manager = $doctrine->getManager();
-
-        $i = 0;
 
         foreach ($contracts as $row) {
             /**
@@ -51,12 +49,8 @@ class ContractCommand extends ContainerAwareCommand
             $balance = $contract->getBalance() + $contract->getRent();
             $contract->setBalance($balance);
             $manager->persist($contract);
-            $i++;
-            if ($i <= 50) {
-                $manager->flush();
-            }
+            $manager->flush();
+            $manager->detach($contract);
         }
-
-        $manager->flush();
     }
 }
