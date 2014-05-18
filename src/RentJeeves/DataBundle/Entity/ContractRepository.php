@@ -486,4 +486,16 @@ class ContractRepository extends EntityRepository
 
         return $query->execute();
     }
+
+    public function getContractsForUpdateBalance($dueDays)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->where('c.dueDate IN (:dueDays)');
+        $query->andWhere('c.status = :status');
+        $query->setParameter('status', ContractStatus::CURRENT);
+        $query->setParameter('dueDays', $dueDays);
+        $query = $query->getQuery();
+
+        return $query->iterate();
+    }
 }
