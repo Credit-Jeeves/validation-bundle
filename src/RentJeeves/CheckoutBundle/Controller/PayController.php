@@ -33,6 +33,7 @@ class PayController extends Controller
 {
     use FormErrors;
     use Traits\PaymentProcess;
+    use Traits\AccountAssociate;
 
     protected function createPaymentForm()
     {
@@ -86,7 +87,6 @@ class PayController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
-        // TODO: deal with multiple groups
         $em = $this->get('doctrine.orm.default_entity_manager');
         $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
 
@@ -201,6 +201,11 @@ class PayController extends Controller
             $paymentEntity->setEndMonth(null);
             $paymentEntity->setEndYear(null);
         }
+
+        // ensure group id is associated with payment account
+        $groupId = $paymentType->get('groupId')->getData();
+        $group = $em->getRepository('DataBundle:Group')->find($groupId);
+        $this->ensureAccountAssociation($paymentAccount, $group);
 
         $contract->setStatus(ContractStatus::APPROVED);
         $em->persist($contract);

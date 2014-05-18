@@ -3326,7 +3326,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/Heartland.git",
-                "reference": "017c6c76fbba0e3751c3b9dcef099fabf382aa22"
+                "reference": "0df39e515d53eb1a242e6fe161ea98a11894e71c"
             },
             "require": {
                 "ass/xmlsecurity": "dev-master",
@@ -3368,7 +3368,7 @@
                 "payment",
                 "src"
             ],
-            "time": "2014-04-20 22:12:58"
+            "time": "2014-05-13 13:57:42"
         },
         {
             "name": "payum/payum",
@@ -3438,7 +3438,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/PayumBundle.git",
-                "reference": "cfdfe54e917162331df347316ec0b489aa65a61d"
+                "reference": "248837181a7f961334f173cd52e1086a9802f64a"
             },
             "require": {
                 "payum/payum": "0.6.x-dev",
@@ -3501,7 +3501,7 @@
                 "paypal pro checkout",
                 "paypal recurring payment"
             ],
-            "time": "2013-08-24 12:08:58"
+            "time": "2014-05-06 14:54:32"
         },
         {
             "name": "phpcollection/phpcollection",
