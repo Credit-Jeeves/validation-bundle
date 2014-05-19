@@ -8,7 +8,7 @@ use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
-use \RuntimeException;
+use RuntimeException;
 
 /**
  * @author Stephen Crosby <stephen@brandedcrate.com>
