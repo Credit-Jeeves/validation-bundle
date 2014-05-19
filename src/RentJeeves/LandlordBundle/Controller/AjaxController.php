@@ -318,8 +318,9 @@ class AjaxController extends Controller
             return new JsonResponse(
                 array(
                     'message' => $this->get('translator')->trans(
-                            'property.error.can_not_be_added',
-                            array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email')))
+                        'property.error.can_not_be_added',
+                        array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                    )
                 ),
                 500
             );

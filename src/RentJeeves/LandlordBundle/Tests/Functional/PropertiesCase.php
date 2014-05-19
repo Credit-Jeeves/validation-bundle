@@ -35,7 +35,7 @@ class PropertiesCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function search()
     {
@@ -67,7 +67,7 @@ class PropertiesCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function addProperty()
     {
@@ -181,7 +181,7 @@ class PropertiesCase extends BaseTestCase
     }
 
     /**
-     * test
+     * @test
      */
     public function manageUnits()
     {
@@ -237,7 +237,7 @@ class PropertiesCase extends BaseTestCase
     }
 
     /**
-    * test
+    * @test
     */
     public function removeProperty()
     {
