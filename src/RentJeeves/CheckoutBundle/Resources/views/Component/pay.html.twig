@@ -178,6 +178,12 @@
                             <span class="value" data-bind="text: getAmount"></span>
                         </div>
                     </div>
+                    <div class="form-row clearfix">
+                        <label>{{ 'checkout.amountOther' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value" data-bind="text: getOtherAmount"></span>
+                        </div>
+                    </div>
                     <div class="form-row clearfix" data-bind="visible: 'on' == payment.ends()">
                         <label>{{ 'checkout.last_payment_on' | trans }}</label>
                         <div class="fields-box">

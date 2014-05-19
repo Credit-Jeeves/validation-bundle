@@ -52,7 +52,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.amount.min">
                 <source>checkout.error.amount.min</source>
-                <target>Amount should be 1 or more.</target>
+                <target>Amount should be nothing, 1 or more.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amount.valid">
                 <source>checkout.error.amount.valid</source>
@@ -72,19 +72,32 @@
             </trans-unit>
             <trans-unit id="checkout.amountOther">
                 <source>checkout.amountOther</source>
-                <target>Other</target>
+                <target>Other Amount</target>
             </trans-unit>
             <trans-unit id="checkout.error.amountOther.empty">
-                <source>checkout.error.amount.empty</source>
-                <target>Other is required.</target>
+                <source>checkout.error.amountOther.empty</source>
+                <target>Other Amount is required.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amountOther.min">
-                <source>checkout.error.amount.min</source>
-                <target>Other should be 1 or more.</target>
+                <source>checkout.error.amountOther.min</source>
+                <target>Other Amount should be 1 or more.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amountOther.valid">
-                <source>checkout.error.amount.valid</source>
-                <target>Other should be a valid number.</target>
+                <source>checkout.error.amountOther.valid</source>
+                <target>Other Amount should be a valid number.</target>
+            </trans-unit>
+
+            <trans-unit id="checkout.error.total.empty">
+                <source>checkout.error.total.empty</source>
+                <target>You must fill "Amount" or "Other" field.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.total.min">
+                <source>checkout.error.total.min</source>
+                <target>Total to Pay should be 1 or more.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.total.valid">
+                <source>checkout.error.total.valid</source>
+                <target>Total to Pay should be a valid number.</target>
             </trans-unit>
 
             <trans-unit id="checkout.error.date.empty">

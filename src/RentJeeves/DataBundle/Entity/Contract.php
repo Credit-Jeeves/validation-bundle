@@ -130,8 +130,8 @@ class Contract extends Base
     public function getDueDate()
     {
         $day = parent::getDueDate();
-        if (empty($day) && ($startAt = $this->getStartAt())) {
-            $day = $startAt->format('j');
+        if (empty($day) && ($this->getStartAt() instanceof \DateTime)) {
+            $day = $this->getStartAt()->format('j');
         }
         return $day;
     }

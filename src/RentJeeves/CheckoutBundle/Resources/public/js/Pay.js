@@ -22,9 +22,9 @@ function Pay(parent, contractId) {
     this.getTotalAmount = function(paymentCardFee) {
         var fee = 0;
         if (this.paymentSource.type() == 'card') {
-            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
+            fee = this.total()*parseFloat(paymentCardFee)/100;
         }
-        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+        return '$'+(parseFloat(this.total()) + fee).toFixed(2);
     };
 
     var forms = {
@@ -150,6 +150,18 @@ function Pay(parent, contractId) {
     this.payment.endYear(finishDate.getYear());
     this.payment.paidForOptions(associativeArrayToOptions(parent.getPaidForArrContractById(contractId)));
 
+
+    this.total = ko.computed(function() { // It will diplay to user
+        return total = (self.payment.amount()?parseFloat(self.payment.amount()):0) +
+            (self.payment.amountOther()?parseFloat(self.payment.amountOther()):0);
+    });
+    this.totalInput = ko.computed(function() { // It will be put into the hidden input
+        if (!self.payment.amount() && !self.payment.amountOther()) {
+            return null;
+        }
+        return self.total();
+    });
+
     this.newUserAddress = ko.observableArray([]);
     this.payment.paymentAccountId.subscribe(function(newValue) {
         if (null != newValue) {
@@ -238,11 +250,14 @@ function Pay(parent, contractId) {
     this.questions = ko.observable(parent.questions);
 
     this.getAmount = ko.computed(function() {
-        return '$' + this.payment.amount();
+        return '$' + parseFloat(this.payment.amount());
+    }, this);
+    this.getOtherAmount = ko.computed(function() {
+        return '$' + parseFloat(this.payment.amountOther());
     }, this);
 
     this.getFeeAmountText = function(paymentCardFee) {
-        return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
+        return '$' + (this.total() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };
 
     this.isForceSave = ko.computed(function() {

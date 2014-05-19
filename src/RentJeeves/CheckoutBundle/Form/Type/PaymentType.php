@@ -84,7 +84,6 @@ class PaymentType extends AbstractType
                 'required' => false,
                 'label' => 'checkout.amountOther',
                 'attr' => array(
-                    'min' => 0,
                     'step' => '0.01',
                     'class' => 'half-of-right',
                     'data-bind' => 'value: payment.amountOther'
@@ -100,7 +99,10 @@ class PaymentType extends AbstractType
                 'label' => 'checkout.total',
                 'required' => true,
                 'attr' => array(
-                    'data-bind' => 'text: payment.total',
+                    'data-bind' => 'value: totalInput',
+                    'view' => array(
+                        'data-bind' => 'text: total',
+                    )
                 )
             )
         );

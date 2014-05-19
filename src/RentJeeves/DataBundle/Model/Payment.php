@@ -103,15 +103,18 @@ class Payment
      *      scale=2,
      *      nullable=false
      * )
+     * @Assert\NotBlank(
+     *      message="checkout.error.total.empty"
+     * )
      * @Assert\Range(
      *      min=1,
-     *      minMessage="checkout.error.amountOther.min",
-     *      invalidMessage="checkout.error.amountOther.valid"
+     *      minMessage="checkout.error.total.min",
+     *      invalidMessage="checkout.error.total.valid"
      * )
      *
      * @var double
      */
-    protected $total = 0;
+    protected $total;
 
     /**
      * @ORM\Column(name="paid_for", type="datetime", nullable=true)

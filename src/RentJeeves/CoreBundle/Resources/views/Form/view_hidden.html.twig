@@ -1,4 +1,14 @@
 {% block view_hidden_widget %}
-    <span {{ block('widget_attributes') }}>{% if value is not empty %}{{ value }}{% endif %}</span>
-    <input data-bind="value: payment.total" name="{{ name }}" value="{{ value }}" type="hidden" />
+    {% set or_attr = attr %}
+    {% set or_id = id %}
+    {% set attr = attr.view %}
+    {% set id = id~'_view' %}
+    <span {{ block('widget_attributes', { 'attr': attr.view, 'id': id ~'_view'}) }}>
+        {% if value is not empty %}{{ value }}{% endif %}
+    </span>
+
+
+    {% set attr = or_attr|merge({'view': null}) %}
+    {% set id = or_id %}
+    {{ block('hidden_widget') }}
 {% endblock %}

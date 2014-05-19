@@ -30,9 +30,6 @@ function Payment(parent, paidTo) {
     this.paidForOptions = ko.observableArray(null);
     this.paidFor = ko.observable(null);
     this.amountOther = ko.observable(null);
-    this.total = ko.computed(function() {
-        return (self.amount()?parseFloat(self.amount()):0) + (self.amountOther()?parseFloat(self.amountOther()):0);
-    });
     this.type = ko.observable('recurring');
 
     this.frequency = ko.observable('monthly');

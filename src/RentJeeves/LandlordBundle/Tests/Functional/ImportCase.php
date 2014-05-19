@@ -704,7 +704,7 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(2, count($result));
         $td = $result[0]->findAll('css', 'td');
-        $this->assertEquals('12/29/2012<br>12/27/2013', $td[7]->getHtml(), $td[7]->getHtml());
+        $this->assertEquals('12/29/2012<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
         $datepicker = $result[1]->findAll('css', '.datepicker');
         $this->assertEquals(2, count($datepicker));
         $this->assertEquals('11/08/2013', $datepicker[0]->getValue(), $datepicker[0]->getValue());
