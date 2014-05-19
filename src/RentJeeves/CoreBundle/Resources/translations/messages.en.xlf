@@ -2195,8 +2195,8 @@
               <source>import.lease_end</source>
               <target>Lease End</target>
             </trans-unit>
-            <trans-unit id="import.balance">
-              <source>import.balance</source>
+            <trans-unit id="common.balance">
+              <source>common.balance</source>
               <target>Balance</target>
             </trans-unit>
             <trans-unit id="import.action">
