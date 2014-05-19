@@ -12,7 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\CoreBundle\DateTime;
 
-class ContractCommand extends ContainerAwareCommand
+class ContractBalanceCommand extends ContainerAwareCommand
 {
     use DateCommon;
 
