@@ -10,9 +10,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use DateTime;
 use RuntimeException;
+use RentJeeves\DataBundle\Entity\Contract;
 
 class OrderListener
 {
@@ -145,6 +147,7 @@ class OrderListener
     public function postPersist(LifecycleEventArgs $event)
     {
         $this->updateStartAtOfContract($event);
+        $this->updateBalanceContract($event);
     }
 
     /**
@@ -195,5 +198,104 @@ class OrderListener
 
         $contract->setStartAt($paidFor);
         $em->flush($contract);
+    }
+
+    /**
+     * @param Order $order
+     * @return null|Contract
+     */
+    private function getContract(Order $order)
+    {
+        $operations = $order->getOperations();
+        /**
+         * @var $operation  Operation
+         */
+        foreach ($operations as $operation) {
+            if ($contract = $operation->getContract()) {
+                return $contract;
+            }
+        }
+
+        return null;
+    }
+
+    public function updateBalanceContract(LifecycleEventArgs $eventArgs)
+    {
+        /**
+         * @var $order Order
+         */
+        $order = $eventArgs->getEntity();
+        if (!$order instanceof Order) {
+            return;
+        }
+
+        /**
+         * @var $contract Contract
+         */
+        $contract = $this->getContract($order);
+        if (!$contract) {
+            return;
+        }
+
+        if ($contract->getStatus() !== ContractStatus::CURRENT) {
+            return;
+        }
+
+        $group = $contract->getGroup();
+        $isIntegrated = $group->getGroupSettings()->getIsIntegrated();
+        $em = $eventArgs->getEntityManager();
+        $operations = $order->getOperations();
+        switch ($order->getStatus()) {
+            //Order complete so we must make minus
+            case OrderStatus::COMPLETE:
+                /**
+                 * @var $operation Operation
+                 */
+                foreach ($operations as $operation) {
+                    if ($operation->getType() === OperationType::RENT) {
+                        $contract->setBalance($contract->getBalance() - $operation->getAmount());
+                    }
+
+                    if ($isIntegrated &&
+                        in_array(
+                            $operation->getType(),
+                            array(
+                                OperationType::RENT,
+                                OperationType::OTHER
+                            )
+                        )
+                    ) {
+                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $operation->getAmount());
+                    }
+                }
+                break;
+            //Order comeback so we must make plus
+            case OrderStatus::RETURNED:
+            case OrderStatus::REFUNDED:
+                /**
+                 * @var $operation Operation
+                 */
+                foreach ($operations as $operation) {
+                    if ($operation->getType() === OperationType::RENT) {
+                        $contract->setBalance($contract->getBalance() + $operation->getAmount());
+                    }
+
+                    if ($isIntegrated &&
+                        in_array(
+                            $operation->getType(),
+                            array(
+                                OperationType::RENT,
+                                OperationType::OTHER
+                            )
+                        )
+                    ) {
+                        $contract->setIntegratedBalance($contract->getIntegratedBalance() + $operation->getAmount());
+                    }
+                }
+                break;
+        }
+
+        $em->persist($contract);
+        $em->flush();
     }
 }
