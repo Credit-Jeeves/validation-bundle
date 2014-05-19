@@ -67,5 +67,4 @@ class PaidFor
         } while ($date->modify('+1 month') < $now);
         return $return;
     }
-
 }

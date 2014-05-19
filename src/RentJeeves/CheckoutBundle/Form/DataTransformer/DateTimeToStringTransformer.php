@@ -40,7 +40,7 @@ class DateTimeToStringTransformer implements DataTransformerInterface
         }
         try {
             $dateTime = new DateTime($string);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw new TransformationFailedException(
                 sprintf(
                     'A string "%s" is not valid date!',

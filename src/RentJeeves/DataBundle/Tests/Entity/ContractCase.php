@@ -14,7 +14,6 @@ class ContractCase extends BaseTestCase
     {
         $now = new DateTime();
         return array(
-            array(null, null, null),
             array($now, $now->format('j'), $now),
             array(new DateTime('2001-01-01'), 3, new DateTime('2001-01-03')),
             array(new DateTime('2014-01-31'), 29, new DateTime('2014-02-28')),
