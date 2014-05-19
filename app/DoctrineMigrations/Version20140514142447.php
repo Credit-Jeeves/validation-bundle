@@ -30,6 +30,15 @@ class Version20140514142447 extends AbstractMigration
         );
         $update->execute();
 
+        $propertyName = Unit::SINGLE_PROPERTY_UNIT_NAME;
+        // Set new name to standalone property units
+        $update2 = $this->connection->prepare(
+            "UPDATE rj_unit u
+              INNER JOIN rj_property p ON (u.property_id = p.id AND p.is_single = 1)
+              SET u.name = '{$propertyName}'"
+        );
+        $update2->execute();
+
         // select contracts with no unit
         $sql = "
             select c.id, c.property_id, p.is_single, count(u.id) as count_units, u.id as unit_id
@@ -43,11 +52,23 @@ class Version20140514142447 extends AbstractMigration
         $select = $this->connection->prepare($sql);
         $select->execute();
 
+        $processedProperties = array();
         while ($row = $select->fetch(\PDO::FETCH_ASSOC)) {
             $propertyId = $row['property_id'];
             $contractId = $row['id'];
-            $propertyName = Unit::SINGLE_PROPERTY_UNIT_NAME;
             $singleUnit = $row['unit_id'];
+
+            // if property has already been processed, we should only update the contract
+            if (array_key_exists($propertyId, $processedProperties)) {
+                $propertyUnit = $processedProperties[$propertyId];
+                $updateContract = $this->connection->prepare(
+                    "UPDATE rj_contract
+                     SET unit_id = '{$propertyUnit}'
+                     WHERE id = '{$contractId}'"
+                );
+                $updateContract->execute();
+                continue;
+            }
 
             // if property has a contract but has no units, we count it as standalone
             if ($row['count_units'] == 0) {
@@ -74,6 +95,7 @@ class Version20140514142447 extends AbstractMigration
                      WHERE id = '{$contractId}'"
                 );
                 $stmt3->execute();
+                $processedProperties[$propertyId] = $unitId;
             }
 
             if ($row['count_units'] == 1 && $row['is_single'] == 1) {
@@ -83,6 +105,7 @@ class Version20140514142447 extends AbstractMigration
                      WHERE id = '{$contractId}'"
                 );
                 $stmt4->execute();
+                $processedProperties[$propertyId] = $singleUnit;
             }
         }
     }
