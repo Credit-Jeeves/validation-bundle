@@ -186,7 +186,7 @@ abstract class Contract
      *     precision=10,
      *     scale=2,
      *     nullable=false,
-     *     name="imported_balance",
+     *     name="integrated_balance",
      *     options={
      *          "default":"0.00"
      *     }
@@ -206,7 +206,7 @@ abstract class Contract
      * @Serializer\Groups({"RentJeevesImport"})
      * @Gedmo\Versioned
      */
-    protected $importedBalance = 0.00;
+    protected $integratedBalance = 0.00;
 
     /**
      * @ORM\Column(
@@ -589,19 +589,19 @@ abstract class Contract
     }
 
     /**
-     * @param float $importedBalance
+     * @param float $integratedBalance
      */
-    public function setImportedBalance($importedBalance)
+    public function setIntegratedBalance($integratedBalance)
     {
-        $this->importedBalance = $importedBalance;
+        $this->integratedBalance = $integratedBalance;
     }
 
     /**
      * @return float
      */
-    public function getImportedBalance()
+    public function getIntegratedBalance()
     {
-        return $this->importedBalance;
+        return $this->integratedBalance;
     }
 
 

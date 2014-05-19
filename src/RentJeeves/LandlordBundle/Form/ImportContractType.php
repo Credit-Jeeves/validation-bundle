@@ -84,7 +84,7 @@ class ImportContractType extends AbstractType
         );
 
         $builder->add(
-            'importedBalance',
+            'integratedBalance',
             'text',
             array()
         );
