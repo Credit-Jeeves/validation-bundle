@@ -131,57 +131,6 @@ class Property extends Base
         return $result;
     }
 
-    /**
-     * TODO: move it out of this class. Property can NEVER create contract.
-     */
-    public function createContract($em, $tenant, $search = null)
-    {
-        if ($this->isSingle()) {
-            $propertyGroup = $this->getPropertyGroups()->first();
-            $contract = new Contract();
-            $contract->setTenant($tenant);
-            $contract->setHolding($propertyGroup->getHolding());
-            $contract->setGroup($propertyGroup);
-            $contract->setProperty($this);
-            $contract->setStatus(ContractStatus::PENDING);
-            $em->persist($contract);
-            $em->flush();
-            return true;
-        } else {
-            // Search for unit
-            $units = $this->getUnits();
-            foreach ($units as $unit) {
-                if ($search == $unit->getName()) {
-                    $contract = new Contract();
-                    $contract->setTenant($tenant);
-                    $contract->setHolding($unit->getHolding());
-                    $contract->setGroup($unit->getGroup());
-                    $contract->setProperty($unit->getProperty());
-                    $contract->setStatus(ContractStatus::PENDING);
-                    $contract->setUnit($unit);
-                    $em->persist($contract);
-                    $em->flush();
-                    return true;
-                }
-            }
-        }
-
-        // If there is no such unit we'll send contract for all potential landlords
-        $groups = $this->getPropertyGroups();
-        foreach ($groups as $group) {
-            $contract = new Contract();
-            $contract->setTenant($tenant);
-            $contract->setHolding($group->getHolding());
-            $contract->setGroup($group);
-            $contract->setProperty($this);
-            $contract->setStatus(ContractStatus::PENDING);
-            $contract->setSearch($search);
-            $em->persist($contract);
-        }
-        $em->flush();
-        return true;
-    }
-
     public function getLocationAddress()
     {
         $result = array();
