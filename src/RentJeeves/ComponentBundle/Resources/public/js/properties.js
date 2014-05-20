@@ -52,9 +52,6 @@ function properties() {
       success: function(response) {
         self.aProperties([]);
         self.aProperties(response.properties);
-        if (self.aProperties().length <= 0 && self.searchText().length == 0) {
-          return location.href = Routing.generate('landlord_property_new');
-        }
         self.total(response.total);
         self.pages(response.pagination);
         self.processProperty(false);
@@ -76,7 +73,9 @@ function properties() {
     });
   };
   this.editUnits = function(property){
-    UnitsViewModel.ajaxAction(property.id);
+      $('#edit-property-popup').dialog('open');
+      removeProperty.property(property);
+      UnitsViewModel.ajaxAction(property.id);
   };
   this.countProperties = ko.computed(function(){
     return parseInt(self.aProperties().length);
@@ -91,4 +90,14 @@ function properties() {
     }
     self.ajaxAction();
   };
+    this.getUnitsText = function(property) {
+        if (property.isSingle) {
+            return Translator.trans('property.is_standalone');
+        }
+        return property.units;
+    }
+
+    this.removeSingleProperty = function(property) {
+        removeProperty.showStandalone(property);
+    }
 }

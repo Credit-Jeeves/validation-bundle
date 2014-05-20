@@ -56,7 +56,6 @@ class Builder extends ContainerAware
             case 'landlord_homepage':
                 $menu['tabs.dashboard']->setAttribute('class', 'active');
                 break;
-            case 'landlord_property_new':
             case 'landlord_properties':
                 $menu['tabs.properties']->setAttribute('class', 'active');
                 break;

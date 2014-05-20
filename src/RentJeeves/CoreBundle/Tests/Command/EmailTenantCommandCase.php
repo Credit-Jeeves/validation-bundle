@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CoreBundle\Tests\Connamd;
+namespace RentJeeves\CoreBundle\Tests\Command;
 
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;

@@ -100,23 +100,33 @@
                     <div class="errorsGoogleSearch"></div>
                     <div id="search-result-map"></div>
                 </div>
-                <div class="form-row clearfix">
-                    <label>{{ 'unit.numberof'|trans }}<b>*</b></label>
-                    <div class="fields-box">
-                        <input type="text" placeholder="" id="numberOfUnit" class="zc-width">
-                        <button type="button" id="addUnit" class="button small grey"><span>{{ 'add'|trans }}</span></button>
+                <div class="single-property-checkbox clearfix">
+                    {{ form_errors(form.property.isSingleProperty) }}
+                    <label class="checkbox register-tos">
+                        {{ form_widget(form.property.isSingleProperty) }}
+                        <span>{{ 'property.single.checkbox_label'|trans }}</span>
+                    </label>
+                </div>
+                <div id="property-units">
+                    <div class="form-row clearfix">
+                        {{ form_errors(form.property.units) }}
+                        <label>{{ 'unit.numberof'|trans }}</label>
+                        <div class="fields-box">
+                            <input type="text" placeholder="" id="numberOfUnit" class="zc-width">
+                            <button type="button" id="addUnit" class="button small grey"><span>{{ 'add'|trans }}</span></button>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix full show">
+                        <label>{{ 'nameofunit'|trans}}</label>
+                        <div id="unit-fields-list" class="fields-box unitsListNames">
+                            {% for unitField in form.property.units %}
+                                {{ form_errors(unitField) }}
+                                {{ form_widget(unitField) }}
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
-                <div class="form-row clearfix full show">
-                    <label>{{ 'nameofunit'|trans}}<b>*</b></label>
-                    <div id="unit-fields-list" class="fields-box unitsListNames">
-                        {% for unitField in form.units %}
-                            {{ form_errors(unitField) }}
-                            {{ form_widget(unitField) }}
-                        {% endfor %}
-                    </div>
-                </div>
-                <input type="hidden" value="{{ form.units | length }}" id="unitCount">
+                <input type="hidden" value="{{ form.property.units | length }}" id="unitCount">
                 <div class="tooltip-box with-header pie-el">{{'landlord.register.text1'|trans|raw}}</div>
             </div>
         </div>
@@ -135,7 +145,7 @@
             {{ 'landlord.register.text2'|trans }}
         </p>
     </div>
-    {{ form_widget(form.property, { 'attr': {'class': 'propertyId'}}) }}
+    {{ form_widget(form.property.propertyId, { 'attr': {'class': 'propertyId'}}) }}
     <div class="buttons-box clearfix">
         <div class="buttons left">
             <button id="submitForm" type="submit" class="button"><span>{{ 'continue'|trans }}</span></button>

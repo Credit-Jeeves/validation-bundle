@@ -193,6 +193,7 @@ class Contract extends Base
         $status = $this->getStatusArray();
         $result['id'] = $this->getId();
         $result['dueDate'] = $this->getDueDate();
+        $result['balance'] = $this->getBalance();
         $result['status'] = $status['status'];
         $result['status_name'] = $status['status_name'];
         $result['style'] = $status['class'];
@@ -203,6 +204,7 @@ class Contract extends Base
         if ($unit) {
             $result['unit_id'] = $unit->getId();
         }
+        $result['isSingleProperty'] = $property->getIsSingle();
         $result['tenant'] = ucwords(strtolower($tenant->getFullName()));
         $result['first_name'] = $tenant->getFirstName();
         $result['last_name'] = $tenant->getLastName();
@@ -357,7 +359,7 @@ class Contract extends Base
             $unit = $this->getUnit();
         }
         $result[] = $property->getAddress();
-        if ($unit) {
+        if (!$property->isSingle() && $unit) {
             $result[] = $unit->getName();
             $result = implode(' #', $result);
         } else {
@@ -585,7 +587,13 @@ class Contract extends Base
     public function setStatusApproved()
     {
         $startAt = $this->getStartAt();
-        $paidTo = clone $startAt;
+        $dueDateFromStartAt = (int)$startAt->format('j');
+        $paidTo = new DateTime();
+        $paidTo->setDate($startAt->format('Y'), $startAt->format('n'), null);
+        if ($dueDateFromStartAt >= $this->getDueDate()) {
+            $paidTo->modify("+1 month");
+        }
+        $paidTo->setDate(null, null, $this->getDueDate());
         $this->setPaidTo($paidTo);
         $this->setStatus(ContractStatus::APPROVED);
         return $this;

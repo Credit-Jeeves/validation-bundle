@@ -52,22 +52,25 @@
                 <input type="hidden" value="{{ 'you.rental.in.city.area'|trans({'%city%': prop.city, '%area%':prop.area}) }}" class="titleMach">
               </a>
               </strong>
+              {% if not prop.isSingle %}
               <div class="form-row clearfix">
-                <label class="lab1">{{ 'add.unit'|trans }}</label>
+                {% if not prop.hasIntegratedGroup %}<label class="lab1">{{ 'add.unit'|trans }}</label>{% endif %}
                 <label class="lab2">{{ 'select.unit'|trans }}</label>
                 <div class="fields-box selectUnit">
                   <select id="idUnit{{ prop.id }}" name="unit{{ prop.id }}" class="select-unit linkselect-link">
-                    <option value="none" class="noneField">{{ 'none'|trans}}</option>
                     {% for unit in  prop.units %}
                       <option value="{{ unit.name }}">{{ unit.name }}</option>
                     {% endfor %}
-                    <option value="new"  class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
+                    {% if not prop.hasIntegratedGroup %}
+                      <option value="new" class="addNewUnit"><a href="#">{{ 'add.new'|trans }}</a></option>
+                    {% endif %}
                   </select>
                 </div>
                 <div class="fields-box createNewUnit">
                     <input type="text" value="" name="unitNew{{ prop.id }}" class="unitNew" placeholder="e.g. 3A"> <a href="#" class="see-all">{{ 'see.all'|trans }}</a>
                 </div>
               </div>
+              {% endif %}
               <div class="buttons-box clearfix">
                 <div class="buttons left buttonsMapSelectProperty">
                   <button type="submit" class="button middle thisIsMyRental greyTenant" data="{{ prop.id }}">
