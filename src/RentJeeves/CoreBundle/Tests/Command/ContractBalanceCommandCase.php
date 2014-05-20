@@ -11,7 +11,7 @@ use RentJeeves\CoreBundle\Command\EmailTenantCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
-class EmailTenantCommandCase extends BaseTestCase
+class ContractBalanceCommandCase extends BaseTestCase
 {
     public function dataForUpdateBalance()
     {
