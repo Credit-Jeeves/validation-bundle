@@ -312,16 +312,6 @@ class PaymentType extends AbstractType
                 )
             )
         );
-        $builder->add(
-            'groupId',
-            'hidden',
-            array(
-                'mapped' => false,
-                'attr' => array(
-                    'data-bind' => 'value: paymentSource.groupId',
-                )
-            )
-        );
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

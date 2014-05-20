@@ -76,6 +76,40 @@ class PayController extends Controller
     }
 
     /**
+     * @Route("/source_existing", name="checkout_pay_existing_source", options={"expose"=true})
+     * @Method({"POST"})
+     */
+    public function sourceExistingAction(Request $request)
+    {
+        $formType = new PaymentAccountType($this->getUser());
+        $formData = $this->getRequest()->get($formType->getName());
+
+        $paymentAccountId = $formData['id'];
+        $groupId = $formData['groupId'];
+
+        $em = $this->getDoctrine()->getManager();
+        $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId);
+        $group = $em->getRepository('DataBundle:Group')->find($groupId);
+
+        // ensure group id is associated with payment account
+        try {
+            $this->ensureAccountAssociation($paymentAccount, $group);
+        } catch (Exception $e) {
+            return new JsonResponse(
+                array(
+                    $formType->getName() => array(
+                        '_globals' => explode('|', $e->getMessage())
+                    )
+                )
+            );
+        }
+
+        return new JsonResponse(
+            array('success' => true)
+        );
+    }
+
+    /**
      * @Route("/source", name="checkout_pay_source", options={"expose"=true})
      * @Method({"POST"})
      */
@@ -201,11 +235,6 @@ class PayController extends Controller
             $paymentEntity->setEndMonth(null);
             $paymentEntity->setEndYear(null);
         }
-
-        // ensure group id is associated with payment account
-        $groupId = $paymentType->get('groupId')->getData();
-        $group = $em->getRepository('DataBundle:Group')->find($groupId);
-        $this->ensureAccountAssociation($paymentAccount, $group);
 
         $contract->setStatus(ContractStatus::APPROVED);
         $em->persist($contract);

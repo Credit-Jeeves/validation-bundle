@@ -290,9 +290,12 @@ function Pay(parent, contractId) {
                 if (data.newAddress) {
                     addNewAddress(data.newAddress);
                 }
-                // Do not change order of next calls:
-                self.paymentAccounts.push(data.paymentAccount);
-                self.payment.paymentAccountId(data.paymentAccount.id);
+
+                if (data.paymentAccount) {
+                  // Do not change order of next calls:
+                  self.paymentAccounts.push(data.paymentAccount);
+                  self.payment.paymentAccountId(data.paymentAccount.id);
+                }
                 // End
                 break;
             case 'user':
@@ -387,8 +390,8 @@ function Pay(parent, contractId) {
                 } else if (self.newPaymentAccount()) {
                     sendData(Routing.generate('checkout_pay_source'), forms[currentStep]);
                 } else {
-                    window.formProcess.removeAllErrors('#pay-popup ');
-                    self.step(steps[++current]);
+                    self.paymentSource.id(self.payment.paymentAccountId());
+                    sendData(Routing.generate('checkout_pay_existing_source'), forms[currentStep]);
                 }
                 break;
             case 'user':
