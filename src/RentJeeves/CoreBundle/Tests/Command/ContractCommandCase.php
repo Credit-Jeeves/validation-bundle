@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CoreBundle\Tests\Connamd;
+namespace RentJeeves\CoreBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Command\ContractCommand;
