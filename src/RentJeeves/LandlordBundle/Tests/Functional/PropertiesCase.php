@@ -71,6 +71,8 @@ class PropertiesCase extends BaseTestCase
      */
     public function addProperty()
     {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
@@ -127,13 +129,13 @@ class PropertiesCase extends BaseTestCase
      */
     public function addSingleProperty()
     {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
         $this->login('landlord2@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
-
-
 
         $propertyButtonAdd->click();
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
@@ -148,6 +150,7 @@ class PropertiesCase extends BaseTestCase
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
         $propertySearch->setValue($fillAddress);
         $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
         $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty'));
         $saveProperty->click();

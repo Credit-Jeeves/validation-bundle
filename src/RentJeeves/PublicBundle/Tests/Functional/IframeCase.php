@@ -7,6 +7,7 @@ use CreditJeeves\DataBundle\Entity\User;
 use CreditJeeves\DataBundle\Enum\OperationType;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 use DateTime;
 
@@ -355,6 +356,12 @@ class IframeCase extends BaseTestCase
         $operation = new Operation();
         $contract = new Contract();
         $contract->setPaidTo(new DateTime());
+        $property = $em->getRepository('RjDataBundle:Property')
+            ->findOneByJbKbWithUnitAndAlphaNumericSort(40.7426129, -73.9828048);
+        $unit = $property->getSingleUnit();
+        $contract->setProperty($property);
+        $contract->setUnit($unit);
+        $contract->setStatus(ContractStatus::PENDING);
         $operation->setType(OperationType::RENT);
         $operation->setContract($contract);
         $operation->setPaidFor($contract->getPaidTo());

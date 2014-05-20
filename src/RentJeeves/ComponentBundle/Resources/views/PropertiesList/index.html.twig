@@ -120,8 +120,8 @@
                     <label>{{'unit.numberof'|trans}}<b></b></label>
                     <div class="fields-box">
                         <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
-                        <button class="button small grey buttonFixPopupAddUnit" data-bind="click: addUnits" id="addUnitToNewProperty" type="button">
-                            <span>{{ 'add'|trans }}</span>
+                        <button class="button small grey buttonFixPopupAddUnit" id="addUnitToNewProperty" type="button">
+                            <span data-bind="click: addUnits">{{ 'add'|trans }}</span>
                         </button>
                     </div>
                 </div>

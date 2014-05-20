@@ -13,7 +13,7 @@ function removeProperty()
         self.countUnit(UnitsViewModel.aUnits().length);
     };
 
-    this.deleteProperty = function()
+    this.deleteProperty = function(data)
     {
         $('#remove-property-popup').dialog('close');
         $.ajax({

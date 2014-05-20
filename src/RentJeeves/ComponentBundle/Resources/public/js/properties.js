@@ -74,6 +74,7 @@ function properties() {
   };
   this.editUnits = function(property){
       $('#edit-property-popup').dialog('open');
+      removeProperty.property(property);
       UnitsViewModel.ajaxAction(property.id);
   };
   this.countProperties = ko.computed(function(){
