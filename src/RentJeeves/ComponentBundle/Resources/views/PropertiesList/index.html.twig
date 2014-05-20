@@ -25,7 +25,7 @@
     <img src="/bundles/core/images/img_loading.gif" id="processLoading" class="processLoading" data-bind="style: { display: processProperty() ? 'block' : 'none' }">
     <div class="properties-table-block table-wrap" data-bind="style: { display: processProperty() ? 'none' : 'block' }">
       <div class="table-margin">
-        <table class="properties-table zebra-grid">
+        <table class="properties-table zebra-grid" data-bind="visible: aProperties().length > 0">
           <thead>
             <tr class="properties-th" >
               <th class="pie-el" ><span>{{ 'address'|trans }}<i> </i></span></th>
@@ -47,22 +47,22 @@
               <th class="pie-el">&nbsp;</th>
             </tr>
           </thead>
-          <tbody>
-            <!-- ko foreach: { data: aProperties() } -->
+          <tbody data-bind="foreach: aProperties">
             <tr>
               <td data-bind="text: address"></td>
               <td data-bind="text: zip"></td>
               <td data-bind="text: city"></td>
               <td data-bind="text: area"></td>
               <td data-bind="text: country"></td>
-              <td data-bind="text: units"></td>
+              <td data-bind="text: $root.getUnitsText($data)"></td>
               <td class="type-box" >
-                <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits"></a>
+                <a href="#" class="type-ico pie-el edit property-edit" title="Edit" data-bind="click: $root.editUnits, visible: !isSingle"></a>
+                <a href="#" class="type-ico pie-el delete" title="Remove" data-bind="click: $root.removeSingleProperty, visible: isSingle"></a>
               </td>
             </tr>
-            <!-- /ko -->
           </tbody>
         </table>
+        <h3 data-bind="visible: aProperties().length == 0" class="notHaveData">{{ 'donthavedata'|trans }}</h3>
       </div>
     </div>
     <br />
@@ -108,25 +108,33 @@
             <div class="errorsGoogleSearch"></div>
         </div>
         <div class="col">
-            <h4>{{ 'unit.info'|trans }} ({{ 'unit.live.it.empty'|trans }})</h4>
-            <div class="form-row clearfix">
-                <label>{{'unit.numberof'|trans}}<b></b></label>
-                <div class="fields-box">
-                    <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
-                    <button class="button small grey buttonFixPopupAddUnit" data-bind="click: addUnits" id="addUnitToNewProperty" type="button">
-                        <span>{{ 'add'|trans }}</span>
-                    </button> 
-                </div>
+            <div class="single-property-checkbox clearfix">
+                <span class="error" data-bind="html: singlePropertyErrorMessage"></span>
+                <label class="checkbox register-tos">
+                    <input type="checkbox" name="isSingleProperty" id="isSingleProperty" data-bind="checked: isSingle"><i></i>
+                    <span>{{ 'property.single.checkbox_label'|trans }}</span>
+                </label>
             </div>
-            <div class="form-row clearfix full show">
-                <label style="width: 78px;">{{ 'nameofunit'|trans }}<b></b></label>
-                <div class="fields-box" style="width:375px;margin-left: -12px;">
-                    <!-- ko foreach: { data: aUnits() } -->
-                    <div class="units-item">
-                        <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
-                        <div class="floatleft unit-delete" data-bind="click: $root.removeUnit"></div>
+            <div id="property-units" data-bind="visible: !isSingle()">
+                <div class="form-row clearfix">
+                    <label>{{'unit.numberof'|trans}}<b></b></label>
+                    <div class="fields-box">
+                        <input type="text" class="unit-input zc-width" id="numberOfUnit" data-bind="value: add">
+                        <button class="button small grey buttonFixPopupAddUnit" id="addUnitToNewProperty" type="button">
+                            <span data-bind="click: addUnits">{{ 'add'|trans }}</span>
+                        </button>
                     </div>
-                    <!-- /ko -->
+                </div>
+                <div class="form-row clearfix full show">
+                    <label style="width: 78px;">{{ 'nameofunit'|trans }}<b></b></label>
+                    <div class="fields-box" style="width:375px;margin-left: -12px;">
+                        <!-- ko foreach: { data: aUnits() } -->
+                        <div class="units-item">
+                            <input type="text" class="unit-input unit-name floatleft" data-bind="value: name" placeholder="Unit">
+                            <div class="floatleft unit-delete" data-bind="click: $root.removeUnit"></div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -226,12 +234,17 @@
                     <span class="value" data-bind="text: name"></span>
                 </div>
             </div>
-            <div class="form-row clearfix">
+            <div class="form-row clearfix" data-bind="visible: property() && !property().isSingle">
                 <label><span data-bind="text: countUnit"></span> {{'units'|trans}}</label>
                 <div class="fields-box clearfix">
                     <!-- ko foreach: { data: aUnits() } -->
                     <span class="value"  data-bind="text: name"></span>
                     <!-- /ko -->
+                </div>
+            </div>
+            <div class="form-row clearfix" data-bind="visible: isVisibleStandalone()">
+                <div class="fields-box clearfix">
+                    <span class="value">{{ 'property.standalone'|trans }}</span>
                 </div>
             </div>
         </div>

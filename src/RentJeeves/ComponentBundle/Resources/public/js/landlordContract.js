@@ -92,7 +92,8 @@ $(document).ready(function () {
             data: {'property_id': propertyId},
             success: function (response) {
 
-                if (response.units.length <= 0) {
+                if (response.units.length == 0 || response.isSingle == true) {
+                    $('#rentjeeves_landlordbundle_invitetenantcontracttype_contract_unit_link').hide();
                     return;
                 }
 

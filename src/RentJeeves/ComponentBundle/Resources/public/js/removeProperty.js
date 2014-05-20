@@ -4,6 +4,7 @@ function removeProperty()
     this.aUnits = ko.observableArray([]);
     this.name = ko.observable('gg');
     this.countUnit = ko.observable('333');
+    this.property = ko.observable(null);
     this.show = function(){
         self.aUnits([]);
         $('#remove-property-popup').dialog('open');
@@ -12,15 +13,38 @@ function removeProperty()
         self.countUnit(UnitsViewModel.aUnits().length);
     };
 
-    this.deleteProperty = function()
+    this.deleteProperty = function(data)
     {
         $('#remove-property-popup').dialog('close');
-        UnitsViewModel.deleteProperty();
+        $.ajax({
+            url: Routing.generate('landlord_property_delete'),
+            type: 'POST',
+            dataType: 'json',
+            data: {'property_id': self.property().id},
+            success: function(response) {
+                PropertiesViewModel.ajaxAction();
+            }
+        });
     };
 
     this.cancel = function()
     {
         $('#remove-property-popup').dialog('close');
-        $('#edit-property-popup').dialog('open');
     };
+
+    this.showStandalone = function(property) {
+        self.property(property);
+        $('#remove-property-popup').dialog('open');
+        self.aUnits([]);
+        self.name(property.address);
+        self.countUnit(0);
+    }
+
+    this.isVisibleStandalone = function() {
+        if (self.property()) {
+            return self.property().isSingle;
+        }
+        return false;
+    }
 }
+
