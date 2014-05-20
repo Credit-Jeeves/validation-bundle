@@ -57,29 +57,33 @@ class OrderListener
     {
         /** @var Order $entity */
         $entity = $eventArgs->getEntity();
-        if ($entity instanceof Order) {
-            $operation = $entity->getRentOperation();
-            if (!$operation) {
-                return;
-            }
-            $status = $entity->getStatus();
-            switch ($status) {
-                case OrderStatus::REFUNDED:
-                case OrderStatus::CANCELLED:
-                case OrderStatus::RETURNED:
-                    if ($eventArgs->hasChangedField('status')
-                        && !in_array(
-                            $eventArgs->getOldValue('status'),
-                            array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
-                        )
-                    ) {
-                        // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
-                        $contract = $operation->getContract();
-                        $contract->unshiftPaidTo($operation->getAmount());
-                    }
-                    break;
-            }
+        if (!$entity instanceof Order) {
+            return;
         }
+
+        $operation = $entity->getRentOperation();
+        if (!$operation) {
+            return;
+        }
+        $status = $entity->getStatus();
+        switch ($status) {
+            case OrderStatus::REFUNDED:
+            case OrderStatus::CANCELLED:
+            case OrderStatus::RETURNED:
+                if ($eventArgs->hasChangedField('status')
+                    && !in_array(
+                        $eventArgs->getOldValue('status'),
+                        array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
+                    )
+                ) {
+                    // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
+                    $contract = $operation->getContract();
+                    $contract->unshiftPaidTo($operation->getAmount());
+                }
+                break;
+        }
+
+        $this->updateBalanceContract($eventArgs);
     }
     
 
@@ -127,8 +131,6 @@ class OrderListener
                     break;
             }
         }
-
-        $this->updateBalanceContract($eventArgs);
     }
 
     private function chargePartner(Order $order, EntityManager $em)
@@ -211,6 +213,10 @@ class OrderListener
             return;
         }
 
+        if (!$eventArgs->hasChangedField('status')) {
+            return;
+        }
+
         /**
          * @var $contract Contract
          */
@@ -276,8 +282,5 @@ class OrderListener
                 }
                 break;
         }
-
-        $em->persist($contract);
-        $em->flush();
     }
 }

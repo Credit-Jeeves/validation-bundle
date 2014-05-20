@@ -284,6 +284,8 @@ class OrderListenerCase extends Base
         $order->setStatus($orderStatus);
         $em->persist($order);
         $em->flush();
+        $order->setStatus($orderStatus);
+        $em->persist($order);
 
         $this->assertEquals($balanceOrderMustBe, $contract->getBalance());
         $this->assertEquals($integratedBalanceMustBe, $contract->getIntegratedBalance());
