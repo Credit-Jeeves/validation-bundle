@@ -40,6 +40,20 @@ class ContractProcess
         ContractWaiting $contractWaiting = null
     ) {
 
+        if ($property->isSingle()) {
+            $propertyGroup = $property->getPropertyGroups()->first();
+            $contract = new Contract();
+            $contract->setTenant($tenant);
+            $contract->setHolding($propertyGroup->getHolding());
+            $contract->setGroup($propertyGroup);
+            $contract->setProperty($property);
+            $contract->setStatus(ContractStatus::PENDING);
+            $this->em->persist($contract);
+            $this->em->flush();
+            return;
+        }
+
+
         if (!$unit = $property->searchUnit($unitName)) {
             return $this->createContractForEachGroup($tenant, $property, $unitName);
         }
@@ -91,10 +105,6 @@ class ContractProcess
     }
 
     /**
-     * In current implementation unit can be null in contract, but in future, it can't be null
-     * that's why this method is deprecated
-     *
-     * @deprecated
      * @param Tenant $tenant
      * @param Property $property
      * @param $unitName
