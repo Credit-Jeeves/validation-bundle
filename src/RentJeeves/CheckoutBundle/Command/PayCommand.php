@@ -174,7 +174,6 @@ class PayCommand extends ContainerAwareCommand
         $message = 'OK';
         if ($statusRequest->isSuccess()) {
             $order->setStatus(OrderStatus::PENDING);
-            $contract->shiftPaidTo($total);
             $status = $contract->getStatus();
             if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
                 $contract->setStatus(ContractStatus::CURRENT);

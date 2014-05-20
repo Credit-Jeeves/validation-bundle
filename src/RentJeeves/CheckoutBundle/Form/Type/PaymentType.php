@@ -69,7 +69,14 @@ class PaymentType extends AbstractType
                         'class' => 'original',
                         'data-bind' => "options: payment.paidForOptions, optionsText: 'text', optionsValue: 'value', ".
                         "value: payment.paidFor",
-                        'force_row' => false
+                        'force_row' => false,
+                        'html' => '<div class="tooltip-box type3 pie-el">' .
+                            '<h4 data-bind="' .
+                                'text: \'checkout.rent_starting.title-%MONTH%\', ' .
+                                'i18n: {\'MONTH\': getPaidFor}' .
+                            '"></h4>' .
+                            '<p data-bind="text: \'checkout.rent_starting.text\', i18n: {}">' .
+                            '</p></div>',
                     ),
                     'invalid_message' => 'checkout.error.paidFor.invalid',
                 )
@@ -101,7 +108,7 @@ class PaymentType extends AbstractType
                 'attr' => array(
                     'data-bind' => 'value: totalInput',
                     'view' => array(
-                        'data-bind' => 'text: total',
+                        'data-bind' => 'text: getTotal',
                     )
                 )
             )
@@ -131,7 +138,7 @@ class PaymentType extends AbstractType
                             'text: \'checkout.recurring.\' + payment.frequency() + \'.\' + payment.ends() + ' .
                                 '\'.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%\', ' .
                             'i18n: {' .
-                                '\'AMOUNT\': getAmount, ' .
+                                '\'AMOUNT\': getTotal, ' .
                                 '\'DUE_DAY\': payment.dueDate, ' .
                                 '\'SETTLE_DAYS\': settleDays, ' .
                                 '\'ENDS_ON\': getLastPaymentDay' .

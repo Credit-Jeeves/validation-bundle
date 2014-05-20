@@ -70,9 +70,17 @@
                 <source>checkout.error.paidFor.invalid</source>
                 <target>Paid for is invalid</target>
             </trans-unit>
+            <trans-unit id="checkout.rent_starting.title">
+                <source>checkout.rent_starting.title-%MONTH%</source>
+                <target>Rent starting in %MONTH%</target>
+            </trans-unit>
+            <trans-unit id="checkout.rent_starting.text">
+                <source>checkout.rent_starting.text</source>
+                <target>Do not include late fee, deposits, etc. In your 'Rent' amount. Sum these payments in 'Other'.</target>
+            </trans-unit>
             <trans-unit id="checkout.amountOther">
                 <source>checkout.amountOther</source>
-                <target>Other Amount</target>
+                <target>Other</target>
             </trans-unit>
             <trans-unit id="checkout.error.amountOther.empty">
                 <source>checkout.error.amountOther.empty</source>
@@ -371,6 +379,10 @@
             <trans-unit id="checkout.rent_amount">
                 <source>checkout.rent_amount</source>
                 <target>Rent Amount</target>
+            </trans-unit>
+            <trans-unit id="checkout.other_amount">
+                <source>checkout.other_amount</source>
+                <target>Other Amount</target>
             </trans-unit>
             <trans-unit id="checkout.day.monthly.each_month">
                 <source>checkout.day.monthly.each_month-%DAY%</source>

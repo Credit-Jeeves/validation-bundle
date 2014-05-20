@@ -148,8 +148,12 @@ function Pay(parent, contractId) {
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
     this.payment.endYear(finishDate.getYear());
-    this.payment.paidForOptions(associativeArrayToOptions(parent.getPaidForArrContractById(contractId)));
+    var paidForArr = parent.getPaidForArrContractById(contractId);
+    this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
 
+    this.getPaidFor = ko.computed(function() {
+        return paidForArr[self.payment.paidFor()];
+    });
 
     this.total = ko.computed(function() { // It will diplay to user
         return total = (self.payment.amount()?parseFloat(self.payment.amount()):0) +
@@ -254,6 +258,9 @@ function Pay(parent, contractId) {
     }, this);
     this.getOtherAmount = ko.computed(function() {
         return '$' + parseFloat(this.payment.amountOther());
+    }, this);
+    this.getTotal = ko.computed(function() {
+        return '$' + parseFloat(this.total());
     }, this);
 
     this.getFeeAmountText = function(paymentCardFee) {

@@ -11,7 +11,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
 
 class OrderListener
@@ -57,26 +57,30 @@ class OrderListener
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
             $operation = $entity->getRentOperation();
-            if (!$operation) {
+            if (!$operation || !$eventArgs->hasChangedField('status')) {
                 return;
             }
-            $status = $entity->getStatus();
-            switch ($status) {
+            $contract = $operation->getContract();
+            $movePaidFor = null;
+            switch ($entity->getStatus()) {
                 case OrderStatus::REFUNDED:
                 case OrderStatus::CANCELLED:
                 case OrderStatus::RETURNED:
-                    if ($eventArgs->hasChangedField('status')
-                        && !in_array(
-                            $eventArgs->getOldValue('status'),
-                            array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
-                        )
-                    ) {
-                        // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
-                        $contract = $operation->getContract();
-                        $contract->unshiftPaidTo($operation->getAmount());
-                    }
+                    $contract->unshiftPaidTo($operation->getAmount());
+                    $movePaidFor = '-1';
+                    break;
+                case OrderStatus::COMPLETE:
+                    $contract->shiftPaidTo($operation->getAmount());
+                    $movePaidFor = '+1';
                     break;
             }
+
+            if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
+                $date = new DateTime($payment->getPaidFor()->format('c'));
+                $payment->setPaidFor($date->modify($movePaidFor . ' month'));
+                $eventArgs->getEntityManager()->flush($payment);
+            }
+            // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
         }
     }
     
@@ -85,10 +89,9 @@ class OrderListener
     {
         $entity = $eventArgs->getEntity();
         if ($entity instanceof Order) {
-            $type = OperationType::RENT;
+            /** @var Operation $operation */
             $operation = $entity->getOperations()->last();
-            $type = $operation ? $operation->getType(): $type;
-            switch ($type) {
+            switch ($operation->getType()) {
                 case OperationType::RENT:
                     $status = $entity->getStatus();
                     switch ($status) {
@@ -96,6 +99,9 @@ class OrderListener
                             $this->container->get('project.mailer')->sendPendingInfo($entity);
                             break;
                         case OrderStatus::COMPLETE:
+                            // changes to contract are made in preUpdate since only there we can check whether the order
+                            // status has been changed. But those changes aren't flushed. So the flush is here.
+                            $eventArgs->getEntityManager()->flush($operation->getContract());
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
                             break;
                         case OrderStatus::ERROR:
@@ -106,12 +112,11 @@ class OrderListener
                         case OrderStatus::RETURNED:
                             // changes to contract are made in preUpdate since only there we can check whether the order
                             // status has been changed. But those changes aren't flushed. So the flush is here.
-                            $contract = $operation->getContract();
-                            $eventArgs->getEntityManager()->flush($contract);
+                            $eventArgs->getEntityManager()->flush($operation->getContract());
 
                             $this->container->get('project.mailer')->sendOrderCancelToTenant($entity);
                             $this->container->get('project.mailer')->sendOrderCancelToLandlord($entity);
-                        
+
                             break;
                     }
                     break;
@@ -129,8 +134,8 @@ class OrderListener
 
     private function chargePartner(Order $order, EntityManager $em)
     {
-        $operation = $order->getOperations()->last();
-        if ($operation && $operation->getType() == OperationType::RENT) {
+        $operation = $order->getRentOperation();
+        if ($operation) {
             /** @var User $user */
             $user = $order->getUser();
             $countOrders = count($user->getOrders());
