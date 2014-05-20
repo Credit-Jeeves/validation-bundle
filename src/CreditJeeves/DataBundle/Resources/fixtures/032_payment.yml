@@ -36,8 +36,8 @@ fixtures:
         type: recurring
         status: active
         amount: 1700
-        startDate: '1 year -2 months'
-        endDate: '+9 months'
+        startDate: '+1 year +2 months'
+        endDate: '+1 year +3 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
     Payment_11:
