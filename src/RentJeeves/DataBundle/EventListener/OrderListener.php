@@ -127,6 +127,8 @@ class OrderListener
                     break;
             }
         }
+
+        $this->updateBalanceContract($eventArgs);
     }
 
     private function chargePartner(Order $order, EntityManager $em)
@@ -147,7 +149,6 @@ class OrderListener
     public function postPersist(LifecycleEventArgs $event)
     {
         $this->updateStartAtOfContract($event);
-        $this->updateBalanceContract($event);
     }
 
     /**
@@ -200,25 +201,6 @@ class OrderListener
         $em->flush($contract);
     }
 
-    /**
-     * @param Order $order
-     * @return null|Contract
-     */
-    private function getContract(Order $order)
-    {
-        $operations = $order->getOperations();
-        /**
-         * @var $operation  Operation
-         */
-        foreach ($operations as $operation) {
-            if ($contract = $operation->getContract()) {
-                return $contract;
-            }
-        }
-
-        return null;
-    }
-
     public function updateBalanceContract(LifecycleEventArgs $eventArgs)
     {
         /**
@@ -232,7 +214,7 @@ class OrderListener
         /**
          * @var $contract Contract
          */
-        $contract = $this->getContract($order);
+        $contract = $order->getContract();
         if (!$contract) {
             return;
         }

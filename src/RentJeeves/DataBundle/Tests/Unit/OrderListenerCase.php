@@ -75,7 +75,7 @@ class OrderListenerCase extends Base
     /**
      * We test updated startAt on the table rj_contract when user create first order
      *
-     * @test
+     * test
      */
     public function updateStartAtOfContract()
     {
@@ -122,8 +122,8 @@ class OrderListenerCase extends Base
     /**
      * We test do not update startAt on the table rj_contract when user create second order
      *
-     * @depends updateStartAtOfContract
-     * @test
+     * depends updateStartAtOfContract
+     * test
      */
     public function doNotUpdateStartAtOfContract()
     {
@@ -222,6 +222,7 @@ class OrderListenerCase extends Base
         $contract->setBalance(999.89);
         $contract->setStartAt(new DateTime("-1 month"));
         $contract->setFinishAt(new DateTime("+5 month"));
+        $contract->setPaidTo(new DateTime("+10 days"));
         $contract->setDueDate($today->format('j'));
         $contract->setBalance(0.00);
         $contract->setIntegratedBalance(0.00);
@@ -265,7 +266,7 @@ class OrderListenerCase extends Base
         $order->setUser($contract->getTenant());
         $order->setSum($orderAmount);
         $order->setType(OrderType::AUTHORIZE_CARD);
-        $order->setStatus($orderStatus);
+        $order->setStatus(OrderStatus::PENDING);
 
         $operation = new Operation();
         $operation->setContract($contract);
@@ -280,6 +281,9 @@ class OrderListenerCase extends Base
         $em->persist($order);
         $em->flush();
         $em->refresh($contract);
+        $order->setStatus($orderStatus);
+        $em->persist($order);
+        $em->flush();
 
         $this->assertEquals($balanceOrderMustBe, $contract->getBalance());
         $this->assertEquals($integratedBalanceMustBe, $contract->getIntegratedBalance());

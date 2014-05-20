@@ -2,7 +2,7 @@
 namespace RentJeeves\CoreBundle\Tests\Connamd;
 
 use CreditJeeves\DataBundle\Entity\Group;
-use RentJeeves\CoreBundle\Command\ContractCommand;
+use RentJeeves\CoreBundle\Command\ContractBalanceCommand;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -81,7 +81,7 @@ class ContractBalanceCommandCase extends BaseTestCase
         $contractId = $contract->getId();
         $kernel = $this->getKernel();
         $application = new Application($kernel);
-        $application->add(new ContractCommand());
+        $application->add(new ContractBalanceCommand());
 
         $command = $application->find('contract:update:balance');
         $commandTester = new CommandTester($command);
