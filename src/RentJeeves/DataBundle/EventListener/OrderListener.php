@@ -205,17 +205,14 @@ class OrderListener
 
     public function updateBalanceContract(LifecycleEventArgs $eventArgs)
     {
+        if (!$eventArgs->hasChangedField('status')) {
+            return;
+        }
+
         /**
          * @var $order Order
          */
         $order = $eventArgs->getEntity();
-        if (!$order instanceof Order) {
-            return;
-        }
-
-        if (!$eventArgs->hasChangedField('status')) {
-            return;
-        }
 
         /**
          * @var $contract Contract
