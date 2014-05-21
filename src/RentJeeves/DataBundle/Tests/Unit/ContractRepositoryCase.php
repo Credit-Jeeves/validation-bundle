@@ -33,7 +33,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $endPayment = null,
                 $statusPayment = null,
                 $typePayment =  null,
-                $countEmails = 1,
+                $isSendEmail = true,
             ),
             //When we have payment but payment in the past started and don't have finishAt
             //We don't need send email
@@ -45,7 +45,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $endPayment = null,
                 $statusPayment = PaymentStatus::ACTIVE,
                 $typePayment =  PaymentType::RECURRING,
-                $countEmails = 0,
+                $isSendEmail = false,
             ),
             //When we have payment but payment in the past started and finishAt in future
             //We don't need send email
@@ -57,7 +57,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $endPayment = new DateTime("+6 month"),
                 $statusPayment = PaymentStatus::ACTIVE,
                 $typePayment =  PaymentType::RECURRING,
-                $countEmails = 0,
+                $isSendEmail = false,
             ),
             //When we have payment but payment will started in future and don't have finish date
             //We must send email
@@ -69,7 +69,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $endPayment = null,
                 $statusPayment = PaymentStatus::ACTIVE,
                 $typePayment =  PaymentType::IMMEDIATE,
-                $countEmails =  1,
+                $isSendEmail =  true,
             ),
             //When we have payment but payment in the past started and finished
             //We must send email
@@ -81,7 +81,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $endPayment = new DateTime("-3 month"),
                 $statusPayment = PaymentStatus::ACTIVE,
                 $typePayment =  PaymentType::RECURRING,
-                $countEmails = 1,
+                $isSendEmail = true,
             ),
             //When we have payment but payment will started in future and  have finish date in future
             //We must send email
@@ -93,7 +93,7 @@ class ContractRepositoryCase extends BaseTestCase
                 $endPayment = new DateTime("+2 month"),
                 $statusPayment = PaymentStatus::ACTIVE,
                 $typePayment =  PaymentType::ONE_TIME,
-                $countEmails = 1
+                $isSendEmail = true,
             )
         );
     }
@@ -112,7 +112,7 @@ class ContractRepositoryCase extends BaseTestCase
         $endPayment,
         $statusPayment,
         $typePayment,
-        $count
+        $isSendEmail
     ) {
         $this->load(true);
         $today = new DateTime();
@@ -176,7 +176,21 @@ class ContractRepositoryCase extends BaseTestCase
         $em->flush();
         $contractRepository = $em->getRepository('RjDataBundle:Contract');
         $contracts = $contractRepository->getPotentialLateContract(new DateTime());
-        $this->assertCount($count, $contracts);
+        $testResult = false;
+        if ($isSendEmail) {
+            foreach ($contracts as $contractInDb) {
+                if ($contractInDb->getId() === $contract->getId()) {
+                    $testResult = true;
+                }
+            }
+        } else {
+            foreach ($contracts as $contractInDb) {
+                if ($contractInDb->getId() === $contract->getId()) {
+                    $testResult = false;
+                }
+            }
+        }
+        $this->assertEquals($isSendEmail, $testResult);
     }
 
     public function dataForGetLateContract()
@@ -186,25 +200,25 @@ class ContractRepositoryCase extends BaseTestCase
             array(
                 $hasOrder = false,
                 $paidFor = false,
-                1
+                true
             ),
             //We have order for current month, so we don't need send email
             array(
                 $hasOrder = true,
                 $paidFor = new DateTime("-5 days"),
-                0
+                false
             ),
             //We don't have order for current month send email
             array(
                 $hasOrder = true,
                 $paidFor = new DateTime("-43 days"),
-                1
+                true
             ),
             //We don't have order for current month send email
             array(
                 $hasOrder = true,
                 $paidFor = new DateTime("+43 days"),
-                1
+                true
             ),
         );
     }
@@ -213,7 +227,7 @@ class ContractRepositoryCase extends BaseTestCase
      * @dataProvider dataForGetLateContract
      * @test
      */
-    public function getLateContract($hasOrder, $paidFor, $contractCount)
+    public function getLateContract($hasOrder, $paidFor, $isLate)
     {
         $this->load(true);
         $today = new DateTime("-5 days");
@@ -282,6 +296,14 @@ class ContractRepositoryCase extends BaseTestCase
 
         $contractRepository = $em->getRepository('RjDataBundle:Contract');
         $contracts = $contractRepository->getLateContracts($days = 5);
-        $this->assertCount($contractCount, $contracts);
+
+        $isSend = false;
+        foreach ($contracts as $contractInDB) {
+            if ($contractInDB->getId() === $contract->getId()) {
+                $isSend = true;
+            }
+        }
+
+        $this->assertEquals($isLate, $isSend);
     }
 }
