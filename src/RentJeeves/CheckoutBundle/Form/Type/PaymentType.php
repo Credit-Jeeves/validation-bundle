@@ -197,7 +197,6 @@ class PaymentType extends AbstractType
                 'invalid_message' => 'checkout.error.dueDate.invalid',
             )
         );
-        setlocale(LC_ALL, 'ru_RU.utf8');
         $months = array();
         foreach (range(1, 12) as $month) {
             $months[$month] = date('M', strtotime("2000-{$month}-1"));
