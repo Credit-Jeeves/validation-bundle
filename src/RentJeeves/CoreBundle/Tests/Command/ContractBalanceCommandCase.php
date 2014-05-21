@@ -1,5 +1,5 @@
 <?php
-namespace RentJeeves\CoreBundle\Tests\Connamd;
+namespace RentJeeves\CoreBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use RentJeeves\CoreBundle\Command\ContractBalanceCommand;
@@ -7,7 +7,6 @@ use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
-use RentJeeves\CoreBundle\Command\EmailTenantCommand;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 

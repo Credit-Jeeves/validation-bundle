@@ -19,7 +19,7 @@ $(document).ready(function(){
         var unitCount = $('#unitCount').val();
         var i = parseInt($('#numberOfUnit').val());
         for(k = 1; k <= i; k++) {
-            var input = '<input type="text" value="" class="unit-name" name="LandlordAddressType[units]['+unitCount+']">';
+            var input = '<input type="text" value="" class="unit-name" name="LandlordAddressType[property][units]['+unitCount+']">';
             $('.unitsListNames').append(input);
             unitCount++;
         }
@@ -42,14 +42,14 @@ $(document).ready(function(){
             }
         },
         addPropertyCallbackNotValid: function(jqXHR, errorThrown, textStatus) {
-            $('#LandlordAddressType_property').val('');
+            $('#LandlordAddressType_property_propertyId').val('');
             markAsNotValid();
         },
         addPropertyCallback: function(data, textStatus, jqXHR){
-            $('#LandlordAddressType_property').val('');
+            $('#LandlordAddressType_property_propertyId').val('');
             var propertyId = data.property.id
             if(propertyId) {
-                $('#LandlordAddressType_property').val(propertyId);
+                $('#LandlordAddressType_property_propertyId').val(propertyId);
                 markAsValid();
                 return true;
             }
@@ -61,4 +61,19 @@ $(document).ready(function(){
     if($('.propertyId').val().length > 0) {
         markAsValid();
     }
+
+    if ($('.single-property-checkbox input[type=checkbox]').is(':checked') === true) {
+        $('#property-units').hide();
+    }
+
+    $('.single-property-checkbox input[type=checkbox]').click(function(){
+        if ($('#property-units').is(":visible") === true) {
+            $('#property-units').hide();
+            $('.unit-name').remove();
+            $('#numberOfUnit').val('')
+            $('#unitCount').val(0)
+        } else {
+            $('#property-units').show();
+        }
+    });
 });

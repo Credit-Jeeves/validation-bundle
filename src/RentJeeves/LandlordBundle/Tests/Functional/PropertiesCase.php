@@ -71,6 +71,8 @@ class PropertiesCase extends BaseTestCase
      */
     public function addProperty()
     {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.properties');
         $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
@@ -119,6 +121,65 @@ class PropertiesCase extends BaseTestCase
         $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
         $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
         $this->assertCount(9, $tr, 'wrong number of collum');
+        $this->logout();
+    }
+
+    /**
+     * @test
+     */
+    public function addSingleProperty()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('landlord2@example.com', 'pass');
+        $this->page->clickLink('tabs.properties');
+        $this->session->wait($this->timeout, "!$('.properties-table-block').is(':visible')");
+        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+        $this->assertNotNull($propertyButtonAdd = $this->page->find('css', '.property-button-add'));
+
+        $propertyButtonAdd->click();
+        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+        $this->assertNotNull($error = $this->page->find('css', '.single-property-checkbox .error'));
+        $this->assertEquals('', $error->getText());
+        $this->assertNotNull($unitsBox = $this->page->find('css', '#property-units'));
+        $this->assertTrue($unitsBox->isVisible());
+
+        $this->assertNotNull($propertySearch = $this->page->find('css', '#property-search'));
+        $propertySearch->click();
+        $fillAddress = 'Top of the Rock Observation Deck, Rockefeller Plaza, New York City, NY';
+        $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit'));
+        $propertySearch->setValue($fillAddress);
+        $searchSubmit->click();
+        $this->session->wait($this->timeout, "$('.loadingSpinner').is(':visible')");
+        $this->session->wait($this->timeout, "!$('.loadingSpinner').is(':visible')");
+        $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty'));
+        $saveProperty->click();
+        $this->assertNotNull($error = $this->page->find('css', '.single-property-checkbox .error'));
+        $this->assertEquals('units.error.add_or_mark_single', $error->getText());
+        $this->assertNotNull($checkbox = $this->page->find('css', '#isSingleProperty'));
+        $checkbox->click();
+        $this->session->wait($this->timeout, "!$('#property-units').is(':visible')");
+        $this->assertNotNull($unitsBox = $this->page->find('css', '#property-units'));
+        $this->assertFalse($unitsBox->isVisible());
+
+        $this->assertNotNull($saveProperty = $this->page->find('css', '#saveProperty'));
+        $saveProperty->click();
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(1, $tr);
+        $this->assertNotNull($edit = $tr[0]->find('css', '.property-edit'));
+        $this->assertFalse($edit->isVisible());
+        $this->assertNotNull($remove = $tr[0]->find('css', '.delete'));
+        $this->assertTrue($remove->isVisible());
+        $remove->click();
+        $this->session->wait($this->timeout, "$('#remove-property-popup').is(':visible')");
+        $this->page->pressButton('yep.remove.property');
+        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('.properties-table-block').is(':visible')");
+        $this->assertNotNull($tr = $this->page->findAll('css', '.properties-table>tbody>tr'));
+        $this->assertCount(0, $tr);
         $this->logout();
     }
 

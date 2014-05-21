@@ -232,7 +232,7 @@ class TenantType extends AbstractType
                  * Seems we have waiting contract for this unit and first_name, last_name not the same
                  * block with error
                  */
-                if (is_null($self->getWaitingContract()) && !empty($contractsWaiting)) {
+                if (is_null($self->getWaitingContract()) && count($contractsWaiting) > 0) {
                     $form->addError(new FormError('error.unit.reserved'));
                 }
             }
