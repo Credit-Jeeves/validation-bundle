@@ -78,7 +78,6 @@ class OrderListener
             if ($movePaidFor && ($payment = $operation->getContract()->getActivePayment())) {
                 $date = new DateTime($payment->getPaidFor()->format('c'));
                 $payment->setPaidFor($date->modify($movePaidFor . ' month'));
-                $eventArgs->getEntityManager()->flush($payment);
             }
             // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
         }
@@ -91,6 +90,7 @@ class OrderListener
         if ($entity instanceof Order) {
             /** @var Operation $operation */
             $operation = $entity->getOperations()->last();
+            $save = false;
             switch ($operation->getType()) {
                 case OperationType::RENT:
                     $status = $entity->getStatus();
@@ -99,9 +99,7 @@ class OrderListener
                             $this->container->get('project.mailer')->sendPendingInfo($entity);
                             break;
                         case OrderStatus::COMPLETE:
-                            // changes to contract are made in preUpdate since only there we can check whether the order
-                            // status has been changed. But those changes aren't flushed. So the flush is here.
-                            $eventArgs->getEntityManager()->flush($operation->getContract());
+                            $save = true;
                             $this->container->get('project.mailer')->sendRentReceipt($entity);
                             break;
                         case OrderStatus::ERROR:
@@ -110,24 +108,27 @@ class OrderListener
                         case OrderStatus::REFUNDED:
                         case OrderStatus::CANCELLED:
                         case OrderStatus::RETURNED:
-                            // changes to contract are made in preUpdate since only there we can check whether the order
-                            // status has been changed. But those changes aren't flushed. So the flush is here.
-                            $eventArgs->getEntityManager()->flush($operation->getContract());
-
+                            $save = true;
                             $this->container->get('project.mailer')->sendOrderCancelToTenant($entity);
                             $this->container->get('project.mailer')->sendOrderCancelToLandlord($entity);
-
                             break;
                     }
                     break;
                 case OperationType::REPORT:
-                    $status = $entity->getStatus();
-                    switch ($status) {
+                    switch ($entity->getStatus()) {
                         case OrderStatus::COMPLETE:
                             $this->container->get('project.mailer')->sendReportReceipt($entity);
                             break;
                     }
                     break;
+            }
+            if ($save) {
+                // changes to contract are made in preUpdate since only there we can check whether the order
+                // status has been changed. But those changes aren't flushed. So the flush is here.
+                $eventArgs->getEntityManager()->flush($operation->getContract());
+                if ($payment = $operation->getContract()->getActivePayment()) {
+                    $eventArgs->getEntityManager()->flush($payment);
+                }
             }
         }
     }
