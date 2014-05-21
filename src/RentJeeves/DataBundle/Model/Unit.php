@@ -156,6 +156,39 @@ abstract class Unit
      */
     protected $contractsWaiting;
 
+    /**
+     * @param ContractWaiting $contractsWaiting
+     */
+    public function addContractsWaiting(ContractWaiting $contractsWaiting)
+    {
+        $this->contractsWaiting = $contractsWaiting;
+    }
+
+    /**
+     * @return ContractWaiting
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
+    }
+
+
+    /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
@@ -283,22 +316,6 @@ abstract class Unit
     }
 
     /**
-     * @param mixed $deletedAt
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set Property
      *
      * @param Property $property
@@ -420,13 +437,5 @@ abstract class Unit
     {
         $this->contractsWaiting->removeElement($contract);
         return $this;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getContractsWaiting()
-    {
-        return $this->contractsWaiting;
     }
 }

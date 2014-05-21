@@ -5,6 +5,8 @@ use RentJeeves\DataBundle\Model\Property as Base;
 use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Traits\AddressTrait;
+use Geocoder\Result\Geocoded;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Property
@@ -15,7 +17,9 @@ use CreditJeeves\DataBundle\Traits\AddressTrait;
  */
 class Property extends Base
 {
-    use AddressTrait;
+    use AddressTrait {
+        getFullAddress as fullAddress;
+    }
 
     public function parseGoogleAddress($data)
     {
@@ -56,6 +60,46 @@ class Property extends Base
         return $property;
     }
 
+    public function parseGeocodeResponse(Geocoded $response)
+    {
+        $this->setLatitude($response->getLatitude());
+        $this->setLongtitude($response->getLongitude());
+        $this->setZip($response->getZipcode());
+        $this->setArea($response->getRegionCode());
+        $this->setCountry($response->getCountryCode());
+        $this->setCity($response->getCity());
+        $this->setNumber($response->getStreetNumber());
+        $this->setStreet($response->getStreetName());
+        $this->setDistrict($response->getCityDistrict());
+        return $this;
+    }
+
+    public function setLatitude($data)
+    {
+        return $this->setJb($data);
+    }
+
+    public function setLongtitude($data)
+    {
+        return $this->setKb($data);
+    }
+
+    public function getLatitude()
+    {
+        return $this->getJb();
+    }
+
+    public function getLongtitude()
+    {
+        return $this->getKb();
+    }
+    /**
+     *  jb = latitude, kb = longitude
+     *
+     * @param $data
+     * @return mixed
+     * @throws \Exception
+     */
     public function parseGoogleLocation($data)
     {
         if (isset($data['geometry']['location'])) {
@@ -211,5 +255,15 @@ class Property extends Base
     public function __toString()
     {
         return $this->getFullAddress();
+    }
+
+    /**
+     * @Serializer\VirtualProperty
+     * @Serializer\SerializedName("full_address")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    public function getFullAddress()
+    {
+        return $this->fullAddress();
     }
 }

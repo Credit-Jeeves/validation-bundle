@@ -30,10 +30,24 @@ abstract class ContractWaiting
      * @ORM\JoinColumn(
      *     name="unit_id",
      *     referencedColumnName="id",
-     *     nullable=false
+     *     nullable=true
      * )
      */
     protected $unit;
+
+    /**
+     * @ORM\ManyToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\Property",
+     *     inversedBy="contractsWaiting",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *     name="property_id",
+     *     referencedColumnName="id",
+     *     nullable=false
+     * )
+     */
+    protected $property;
 
     /**
      * @ORM\Column(
@@ -247,6 +261,23 @@ abstract class ContractWaiting
     {
         return $this->lastName;
     }
+
+    /**
+     * @param Property $property
+     */
+    public function setProperty(Property $property)
+    {
+        $this->property = $property;
+    }
+
+    /**
+     * @return Property
+     */
+    public function getProperty()
+    {
+        return $this->property;
+    }
+
 
     /**
      * Get id

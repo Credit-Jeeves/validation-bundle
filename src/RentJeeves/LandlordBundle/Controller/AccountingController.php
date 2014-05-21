@@ -157,8 +157,9 @@ class AccountingController extends Controller
         $importStorage->setFilePath($newFileName);
         if ($property instanceof Property) {
             $importStorage->setPropertyId($property->getId());
+            $importStorage->setIsMultipleProperty(false);
         } else {
-            $importStorage->setIsMultipleProperty();
+            $importStorage->setIsMultipleProperty(true);
         }
         $importStorage->setDateFormat($dateFormat);
 
@@ -193,7 +194,6 @@ class AccountingController extends Controller
                 'error' => $e->getMessage()
             );
         }
-
 
         $dataView = $importMapping->prepareDataForCreateMapping($data);
         $form = $this->createForm(
@@ -245,13 +245,13 @@ class AccountingController extends Controller
          */
         $importProcess = $this->get('accounting.import.process');
         $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm(
-            new Unit(),
-            new ResidentMapping()
+            new ResidentMapping(),
+            new Unit()
         );
         $formContract = $importProcess->getContractForm(
             new Tenant(),
-            new Unit(),
-            new ResidentMapping()
+            new ResidentMapping(),
+            new Unit()
         );
         $formContractFinish = $importProcess->getContractFinishForm();
 

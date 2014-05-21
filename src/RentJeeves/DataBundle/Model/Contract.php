@@ -81,7 +81,7 @@ abstract class Contract
      *         "tenant_invite"
      *     }
      * )
-     * @Serializer\Groups({"payRent"})
+     * @Serializer\Groups({"RentJeevesImport", "payRent"})
      */
     protected $property;
 

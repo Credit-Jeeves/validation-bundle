@@ -2,7 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting;
 
-use Proxies\__CG__\RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
@@ -60,7 +60,6 @@ class ImportMapping
 
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
-        self::KEY_UNIT,
         self::KEY_RESIDENT_ID,
         self::KEY_BALANCE,
         self::KEY_LEASE_END,
@@ -68,6 +67,7 @@ class ImportMapping
         self::KEY_MOVE_OUT,
         self::KEY_RENT,
         self::KEY_TENANT_NAME,
+        self::KEY_UNIT,
     );
 
     protected $requiredKeysMultipleProperty = array(
@@ -115,19 +115,23 @@ class ImportMapping
      */
     protected $reader;
 
+    protected $geocoder;
+
     /**
      * @InjectParams({
      *     "storage"          = @Inject("accounting.import.storage"),
-     *     "reader"           = @Inject("import.reader.csv")
+     *     "reader"           = @Inject("import.reader.csv"),
+     *     "geocoder"         = @Inject("bazinga_geocoder.geocoder")
      * })
      */
-    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader)
+    public function __construct(ImportStorage $storage, CsvFileReaderImport $reader, $geocoder)
     {
         $this->storage  = $storage;
         $this->reader   = $reader;
         $data = $this->storage->getImportData();
         $this->reader->setDelimiter($data[ImportStorage::IMPORT_FIELD_DELIMITER]);
         $this->reader->setEnclosure($data[ImportStorage::IMPORT_TEXT_DELIMITER]);
+        $this->geocoder = $geocoder;
     }
 
     public function getFileData($offset = null, $rowCount = null)
@@ -185,6 +189,10 @@ class ImportMapping
             $data[self::KEY_RENT]
         );
 
+        if (empty($data[self::KEY_UNIT])) {
+            $data = $this->splitUnitAndStreet($data);
+        }
+
         return $data;
     }
 
@@ -207,6 +215,14 @@ class ImportMapping
             }
         }
 
+        if ($this->storage->isMultipleProperty()) {
+            foreach ($this->requiredKeysMultipleProperty as $requiredKey) {
+                if (!isset($mappedData[$requiredKey])) {
+                    $mappedData[$requiredKey] = null;
+                }
+            }
+        }
+
         return $mappedData;
     }
 
@@ -222,7 +238,7 @@ class ImportMapping
             throw new ImportMappingException('csv.file.too.small1');
         }
 
-        if (count($data[1]) < 8) {
+        if (!isset($data[1])) {
             throw new ImportMappingException('csv.file.too.small2');
         }
 
@@ -342,7 +358,39 @@ class ImportMapping
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
 
-        return $property;
+        $result = $this->geocoder->using('google_maps')
+        ->geocode($property->getFullAddress());
+
+        if (empty($result)) {
+            return null;
+        }
+
+        return $property->parseGeocodeResponse($result);
+    }
+
+    /**
+     * @TODO test it
+     *
+     * @param $row
+     *
+     * @return array
+     */
+    protected function splitUnitAndStreet($row)
+    {
+        preg_match_all('/\h[\#]{1}[a-z0-9]{2,10}\h/', $row[self::KEY_STREET], $matches);
+
+        if (empty($matches)) {
+            return $row;
+        }
+        //get unit name
+        $matches = reset($matches);
+        $unit = reset($matches);
+
+        $row[self::KEY_STREET] = str_replace($unit, ' ', $row[self::KEY_STREET]);
+        $unit = trim($unit);
+        $row[self::KEY_UNIT] = str_replace('#', '', $unit);
+
+        return $row;
     }
 
     /**

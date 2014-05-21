@@ -19,11 +19,21 @@ class ContractWaiting extends Base
     public function getImportDataForFind()
     {
         //Documentation about field: https://credit.atlassian.net/wiki/display/RT/Tenant+Waiting+Room
-        return array(
-            'unit'          => $this->getUnit()->getId(),
+        $data = array(
             'residentId'    => $this->getResidentId(),
             'firstName'     => $this->getFirstName(),
-            'lastName'      => $this->getLastName()
+            'lastName'      => $this->getLastName(),
+            'property'      => $this->getProperty()->getId(),
         );
+
+        $unit = $this->getUnit();
+
+        if (!empty($unit) && !$this->getProperty()->isSingle()) {
+            $data['unit'] = $unit->getId();
+        } else {
+            $data['unit'] = null;
+        }
+
+        return $data;
     }
 }

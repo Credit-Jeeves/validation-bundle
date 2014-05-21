@@ -54,6 +54,12 @@ class Import
     protected $csrfToken = '';
 
     /**
+     * @Serializer\Type("string")
+     * @Serializer\Groups({"RentJeevesImport"})
+     */
+    protected $address = '';
+
+    /**
      * @Serializer\Groups({"RentJeevesImport"})
      * @Serializer\Type("DateTime")
      */
@@ -78,6 +84,22 @@ class Import
 
 
     protected $isMultipleProperty;
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
 
     /**
      * @param ResidentMapping $residentMapping

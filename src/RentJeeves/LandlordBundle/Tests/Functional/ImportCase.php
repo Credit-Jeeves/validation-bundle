@@ -127,7 +127,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNotNull($error = $this->page->find('css', '.error_list>li'));
-        $this->assertEquals('csv.file.too.small2', $error->getHtml());
+        $this->assertEquals('csv.file.too.small1', $error->getHtml());
         $this->assertNotNull($prev = $this->page->find('css', '.button'));
         $prev->click();
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
@@ -135,6 +135,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import.csv');
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -311,6 +312,7 @@ class ImportCase extends BaseTestCase
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+        $this->setProperty();
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -439,6 +441,7 @@ class ImportCase extends BaseTestCase
             $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
             $attFile->attachFile($filePath);
             $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
+            $this->setProperty();
             $submitImportFile->click();
             $this->assertNull($error = $this->page->find('css', '.error_list>li'));
             $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -613,6 +616,7 @@ class ImportCase extends BaseTestCase
         $filePath = $this->getFilePathByName('import_waiting_room.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
         $attFile->attachFile($filePath);
+        $this->setProperty();
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $submitImportFile->click();
         $this->assertNull($error = $this->page->find('css', '.error_list>li'));
@@ -668,6 +672,7 @@ class ImportCase extends BaseTestCase
         $this->session->wait(5000, "typeof jQuery != 'undefined'");
         $filePath = $this->getFilePathByName('import_date_format.csv');
         $this->assertNotNull($attFile = $this->page->find('css', '#import_file_type_attachment'));
+        $this->setProperty();
         $attFile->attachFile($filePath);
         $this->assertNotNull($submitImportFile = $this->page->find('css', '.submitImportFile'));
         $this->assertNotNull($dateFormat = $this->page->find('css', '#import_file_type_dateFormat'));
@@ -711,4 +716,22 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('11/08/2014', $datepicker[1]->getValue(), $datepicker[1]->getValue());
         $this->logout();
     }
+
+    protected function setProperty()
+    {
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $property = $em->getRepository('RjDataBundle:Property')->findOneBy(
+            array(
+                'street' => 'Broadway',
+                'number' => '770',
+                'zip'    => '10003'
+            )
+        );
+        $this->assertNotNull($propertySelector = $this->page->find('css', '#import_file_type_property'));
+        $propertySelector->selectOption($property->getId());
+    }
+
 }

@@ -318,6 +318,10 @@
                 <source>property.single.checkbox_label</source>
                 <target>This is a Single Property with no Units</target>
             </trans-unit>
+            <trans-unit id="property.cannot.map">
+                <source>property.cannot.map</source>
+                <target><![CDATA[We can not map this property with geocoding of google]]></target>
+            </trans-unit>
             <trans-unit id="savechanges">
                 <source>savechanges</source>
                 <target>Save Changes</target>
@@ -2398,6 +2402,10 @@
             <trans-unit id="landlord.form.import.multiple.property">
                 <source>landlord.form.import.multiple.property</source>
                 <target><![CDATA[(Multi-Property Import)]]></target>
+            </trans-unit>
+            <trans-unit id="import.error.add_single_property_or_add_unit">
+                <source>import.error.add_single_property_or_add_unit</source>
+                <target>Property should be standalone or have a unit</target>
             </trans-unit>
         </body>
     </file>
