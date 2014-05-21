@@ -532,15 +532,27 @@ class ContractRepository extends EntityRepository
         $dueDays = $this->getDueDays(0, $date);
 
         $startPaymentDateDql = PaymentRepository::getStartDateDQLString('p');
-        $dqlDefault = "c.dueDate IN(:dueDays) AND (c.status=:current OR c.status=:approved) AND ";
-        $dqlEndPaymentDate = "AND (
-            (p.endYear IS NULL AND p.endMonth IS NULL)
-            OR
-            (p.endYear > :endYear)
-            OR
-            (p.endYear = :endYear AND p.endMonth >= :endMonth)
-        )";
-
+        $dql = "
+            c.dueDate IN(:dueDays)
+            AND (
+                c.status=:current
+                OR
+                c.status=:approved
+            )
+            AND (
+                p.id IS NULL
+                OR NOT (
+                    {$startPaymentDateDql} < STR_TO_DATE(:startDate,'%Y-%c-%e')
+                    AND (
+                        (p.endYear IS NULL AND p.endMonth IS NULL)
+                        OR
+                        (p.endYear > :endYear)
+                        OR
+                        (p.endYear = :endYear AND p.endMonth >= :endMonth)
+                    )
+                )
+            )
+        ";
         $query = $this->createQueryBuilder('c');
         $query->leftJoin(
             'c.payments',
@@ -549,11 +561,7 @@ class ContractRepository extends EntityRepository
             "p.status = :active"
         );
 
-        $query->where($dqlDefault."p.id IS NULL");
-        $query->orWhere(
-            $dqlDefault.'NOT ('.$startPaymentDateDql." < STR_TO_DATE(:startDate,'%Y-%c-%e') ".$dqlEndPaymentDate." )"
-        );
-
+        $query->where($dql);
         $query->setParameter('current', ContractStatus::CURRENT);
         $query->setParameter('approved', ContractStatus::APPROVED);
         $query->setParameter('active', PaymentStatus::ACTIVE);
