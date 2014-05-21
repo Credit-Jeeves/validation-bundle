@@ -13,8 +13,8 @@ use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
-use \DateTime;
 use \RuntimeException;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * Contract
@@ -180,6 +180,7 @@ class Contract extends Base
         if ($unit) {
             $result['unit_id'] = $unit->getId();
         }
+        $result['isSingleProperty'] = $property->getIsSingle();
         $result['tenant'] = ucwords(strtolower($tenant->getFullName()));
         $result['first_name'] = $tenant->getFirstName();
         $result['last_name'] = $tenant->getLastName();
@@ -334,7 +335,7 @@ class Contract extends Base
             $unit = $this->getUnit();
         }
         $result[] = $property->getAddress();
-        if ($unit) {
+        if (!$property->isSingle() && $unit) {
             $result[] = $unit->getName();
             $result = implode(' #', $result);
         } else {
@@ -562,7 +563,13 @@ class Contract extends Base
     public function setStatusApproved()
     {
         $startAt = $this->getStartAt();
-        $paidTo = clone $startAt;
+        $dueDateFromStartAt = (int)$startAt->format('j');
+        $paidTo = new DateTime();
+        $paidTo->setDate($startAt->format('Y'), $startAt->format('n'), null);
+        if ($dueDateFromStartAt >= $this->getDueDate()) {
+            $paidTo->modify("+1 month");
+        }
+        $paidTo->setDate(null, null, $this->getDueDate());
         $this->setPaidTo($paidTo);
         $this->setStatus(ContractStatus::APPROVED);
         return $this;
