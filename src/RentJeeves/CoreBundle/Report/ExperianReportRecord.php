@@ -259,7 +259,7 @@ class ExperianReportRecord
         if (!$unit) {
             throw new InvalidContractException('Contract has no unit');
         }
-        
+
         return sprintf('p%su%s', $this->contract->getProperty()->getId(), $unit->getId());
     }
 

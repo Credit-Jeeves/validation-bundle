@@ -37,6 +37,4 @@ class ExperianRentalReportCase extends BaseTestCase
             array(1, 2014, __DIR__.'/../Fixtures/Report/experian_late.csv'),
         );
     }
-
-
 }
