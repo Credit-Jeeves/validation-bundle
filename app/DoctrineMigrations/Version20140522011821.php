@@ -14,19 +14,19 @@ class Version20140522011821 extends AbstractMigration
     {
         $this->addSql(
             "ALTER TABLE `rj_user_settings`
-             ADD COLUMN `credit_track_payment_account_id` bigint(20) DEFAULT NULL;");
-        $this->addSql(
-            "ALTER TABLE `rj_user_settings`
-             ADD CONSTRAINT `FK_EA6F98F69305140F` FOREIGN KEY (`credit_track_payment_account_id`) REFERENCES `rj_payment_account` (`id`);");
+             ADD COLUMN `credit_track_payment_account_id` bigint(20) DEFAULT NULL,
+             ADD COLUMN `credit_track_enabled_at` datetime DEFAULT NULL,
+             ADD CONSTRAINT `FK_EA6F98F69305140F` FOREIGN KEY (`credit_track_payment_account_id`) REFERENCES `rj_payment_account` (`id`);
+        ");
     }
 
     public function down(Schema $schema)
     {
         $this->addSql(
             "ALTER TABLE `rj_user_settings`
-             DROP FOREIGN KEY `FK_EA6F98F69305140F`;");
-        $this->addSql(
-            "ALTER TABLE `rj_user_settings`
-             DROP COLUMN `credit_track_payment_account_id`;");
+             DROP FOREIGN KEY `FK_EA6F98F69305140F`,
+             DROP COLUMN `credit_track_payment_account_id`,
+             DROP COLUMN `credit_track_enabled_at`;
+        ");
     }
 }
