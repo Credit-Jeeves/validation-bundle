@@ -28,6 +28,12 @@ abstract class UserSettings
     protected $user;
 
     /**
+     * @ORM\OneToOne(targetEntity="PaymentAccount")
+     * @ORM\JoinColumn(name="credit_track_payment_account_id", referencedColumnName="id", nullable=true)
+     */
+    protected $creditTrackPaymentAccount;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -65,5 +71,21 @@ abstract class UserSettings
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * @param PaymentAccount $paymentAccount
+     */
+    public function setCreditTrackPaymentAccount($paymentAccount)
+    {
+        $this->creditTrackPaymentAccount = $paymentAccount;
+    }
+
+    /**
+     * @return PaymentAccount
+     */
+    public function getCreditTrackPaymentAccount()
+    {
+        return $this->creditTrackPaymentAccount;
     }
 }
