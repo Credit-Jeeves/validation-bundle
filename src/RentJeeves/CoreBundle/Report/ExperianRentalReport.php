@@ -22,7 +22,7 @@ class ExperianRentalReport extends RentalReport
     {
         $today = new DateTime();
 
-        return sprintf('renttrack-full-%s.csv', $today->format('Ymd'));
+        return sprintf('renttrack-raw-%s.csv', $today->format('Ymd'));
     }
 
     public function createHeader($params)
