@@ -28,7 +28,7 @@ trait AccountAssociate
     protected function ensureAccountAssociation(PaymentAccount $paymentAccount, Group $group)
     {
         $em = $this->getDoctrine()->getManager();
-        $depositAccount = $em->getRepository('RjDataBundle:DepositAccount')->findOneByGroup($group);
+        $depositAccount = $group->getDepositAccount();
         $existingDepositAccounts = $paymentAccount->getDepositAccounts();
 
         if ($existingDepositAccounts->contains($depositAccount)) {
@@ -36,7 +36,7 @@ trait AccountAssociate
             return true;
         }
 
-        // the first deposit account is the one we initially registered
+        // any previously registered group will work
         $merchantName = $existingDepositAccounts->first()->getGroup()->getMerchantName();
         $registerToMerchantName = $group->getMerchantName();
         $token = $paymentAccount->getToken();
