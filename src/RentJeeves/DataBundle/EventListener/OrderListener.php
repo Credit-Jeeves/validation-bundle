@@ -10,9 +10,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use DateTime;
 use RuntimeException;
+use RentJeeves\DataBundle\Entity\Contract;
 
 class OrderListener
 {
@@ -55,29 +57,33 @@ class OrderListener
     {
         /** @var Order $entity */
         $entity = $eventArgs->getEntity();
-        if ($entity instanceof Order) {
-            $operation = $entity->getRentOperation();
-            if (!$operation) {
-                return;
-            }
-            $status = $entity->getStatus();
-            switch ($status) {
-                case OrderStatus::REFUNDED:
-                case OrderStatus::CANCELLED:
-                case OrderStatus::RETURNED:
-                    if ($eventArgs->hasChangedField('status')
-                        && !in_array(
-                            $eventArgs->getOldValue('status'),
-                            array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
-                        )
-                    ) {
-                        // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
-                        $contract = $operation->getContract();
-                        $contract->unshiftPaidTo($operation->getAmount());
-                    }
-                    break;
-            }
+        if (!$entity instanceof Order) {
+            return;
         }
+
+        $operation = $entity->getRentOperation();
+        if (!$operation) {
+            return;
+        }
+        $status = $entity->getStatus();
+        switch ($status) {
+            case OrderStatus::REFUNDED:
+            case OrderStatus::CANCELLED:
+            case OrderStatus::RETURNED:
+                if ($eventArgs->hasChangedField('status')
+                    && !in_array(
+                        $eventArgs->getOldValue('status'),
+                        array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
+                    )
+                ) {
+                    // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
+                    $contract = $operation->getContract();
+                    $contract->unshiftPaidTo($operation->getAmount());
+                }
+                break;
+        }
+
+        $this->updateBalanceContract($eventArgs);
     }
     
 
@@ -195,5 +201,83 @@ class OrderListener
 
         $contract->setStartAt($paidFor);
         $em->flush($contract);
+    }
+
+    public function updateBalanceContract(LifecycleEventArgs $eventArgs)
+    {
+        if (!$eventArgs->hasChangedField('status')) {
+            return;
+        }
+
+        /**
+         * @var $order Order
+         */
+        $order = $eventArgs->getEntity();
+
+        /**
+         * @var $contract Contract
+         */
+        $contract = $order->getContract();
+        if (!$contract) {
+            return;
+        }
+
+        if ($contract->getStatus() !== ContractStatus::CURRENT) {
+            return;
+        }
+
+        $group = $contract->getGroup();
+        $isIntegrated = $group->getGroupSettings()->getIsIntegrated();
+        $em = $eventArgs->getEntityManager();
+        $operations = $order->getOperations();
+        switch ($order->getStatus()) {
+            //Order complete so we must make minus
+            case OrderStatus::COMPLETE:
+                /**
+                 * @var $operation Operation
+                 */
+                foreach ($operations as $operation) {
+                    if ($operation->getType() === OperationType::RENT) {
+                        $contract->setBalance($contract->getBalance() - $operation->getAmount());
+                    }
+
+                    if ($isIntegrated &&
+                        in_array(
+                            $operation->getType(),
+                            array(
+                                OperationType::RENT,
+                                OperationType::OTHER
+                            )
+                        )
+                    ) {
+                        $contract->setIntegratedBalance($contract->getIntegratedBalance() - $operation->getAmount());
+                    }
+                }
+                break;
+            //Order comeback so we must make plus
+            case OrderStatus::RETURNED:
+            case OrderStatus::REFUNDED:
+                /**
+                 * @var $operation Operation
+                 */
+                foreach ($operations as $operation) {
+                    if ($operation->getType() === OperationType::RENT) {
+                        $contract->setBalance($contract->getBalance() + $operation->getAmount());
+                    }
+
+                    if ($isIntegrated &&
+                        in_array(
+                            $operation->getType(),
+                            array(
+                                OperationType::RENT,
+                                OperationType::OTHER
+                            )
+                        )
+                    ) {
+                        $contract->setIntegratedBalance($contract->getIntegratedBalance() + $operation->getAmount());
+                    }
+                }
+                break;
+        }
     }
 }

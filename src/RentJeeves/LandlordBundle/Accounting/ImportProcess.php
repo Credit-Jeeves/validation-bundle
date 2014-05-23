@@ -343,7 +343,7 @@ class ImportProcess
         }
 
         //set data from csv file
-        $contract->setImportedBalance($row[ImportMapping::KEY_BALANCE]);
+        $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
         $contract->setStartAt($this->getDateByField($row[ImportMapping::KEY_MOVE_IN]));
         $contract->setFinishAt($this->getDateByField($row[ImportMapping::KEY_LEASE_END]));
@@ -580,7 +580,7 @@ class ImportProcess
         if ($contractWaitingInDb) {
             //Do update some fields
             $contractWaitingInDb->setRent($contractWaiting->getRent());
-            $contractWaitingInDb->setImportedBalance($contractWaiting->getImportedBalance());
+            $contractWaitingInDb->setIntegratedBalance($contractWaiting->getIntegratedBalance());
             $contractWaitingInDb->setStartAt($contractWaiting->getStartAt());
             $contractWaitingInDb->setFinishAt($contractWaiting->getFinishAt());
             return $contractWaitingInDb;
@@ -815,8 +815,8 @@ class ImportProcess
             $contract->setStatus(ContractStatus::FINISHED);
         }
 
-        if ($contract->getImportedBalance() > 0) {
-            $contract->setUncollectedBalance($contract->getImportedBalance());
+        if ($contract->getIntegratedBalance() > 0) {
+            $contract->setUncollectedBalance($contract->getIntegratedBalance());
         }
 
         $this->em->persist($contract);

@@ -36,7 +36,7 @@ class UnitCase extends BaseTestCase
         $contractWaiting = new ContractWaiting();
         $contractWaiting->setUnit($unit);
         $contractWaiting->setResidentId('test');
-        $contractWaiting->setImportedBalance('3333');
+        $contractWaiting->setIntegratedBalance('3333');
         $contractWaiting->setFinishAt(new DateTime());
         $contractWaiting->setStartAt(new DateTime());
         $contractWaiting->setRent('7777');

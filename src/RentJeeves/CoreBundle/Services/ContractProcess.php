@@ -77,7 +77,7 @@ class ContractProcess
         $contract->setStatus(ContractStatus::APPROVED);
         $contract->setStartAt($contractWaiting->getStartAt());
         $contract->setFinishAt($contractWaiting->getFinishAt());
-        $contract->setImportedBalance($contractWaiting->getImportedBalance());
+        $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
 
         $group = $contract->getUnit()->getGroup();
