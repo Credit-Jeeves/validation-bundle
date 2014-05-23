@@ -2,6 +2,7 @@
 namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
+use CreditJeeves\DataBundle\Enum\OrderStatus;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -29,11 +30,22 @@ class PaidFor
         if (!$contract->getOperations()->count()) {
             return $return;
         }
+        $balances = array();
         $paidForDate = $contract->getOperations()->first()->getPaidFor();
+
         /** @var $operation Operation */
         foreach ($contract->getOperations() as $operation) {
             $stringDate = $operation->getPaidFor()->format('Y-m-d');
-            if (isset($return[$stringDate])) {
+
+            if (empty($balances[$stringDate])) {
+                $balances[$stringDate] = 0;
+            }
+
+            $balances[$stringDate] += $operation->getAmount();
+            if (isset($return[$stringDate]) &&
+                $balances[$stringDate] >= $contract->getRent() &&
+                OrderStatus::COMPLETE == $operation->getOrder()->getStatus()
+            ) {
                 unset($return[$stringDate]);
             }
 

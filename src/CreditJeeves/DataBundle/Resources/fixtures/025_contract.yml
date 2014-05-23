@@ -42,7 +42,7 @@ fixtures:
         group:    RentGroup_1
         property: Property_1
         unit:     Unit_1_4
-        rent:     1500
+        rent:     1250
         status:   finished
         paidTo:  '-2 months'
         startAt:   '-8 months'

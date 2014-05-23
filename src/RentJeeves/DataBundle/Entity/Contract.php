@@ -471,6 +471,29 @@ class Contract extends Base
         return $result;
     }
 
+    /**
+     * Fix mistake based on balance and due date
+     *
+     * @param DateTime $newDate
+     *
+     * @return DateTime
+     */
+    private function fixDay($newDate)
+    {
+        if (28 < $this->getDueDate() && $newDate->format('j') != $this->getDueDate() &&
+            (0 == $this->getBalance() || abs($this->getBalance()) == $this->getRent())
+        ) {
+            if ($newDate->format('t') >= $this->getDueDate() && 3 >= abs($newDate->format('j') - $this->getDueDate())) {
+                $newDate->setDate(null, null, $this->getDueDate());
+            }
+            if (3 >= $newDate->format('j')) {
+                $newDate->modify('-1 month');
+                $newDate->setDate(null, null, $this->getDueDate());
+            }
+        }
+        return $newDate;
+    }
+
     public function shiftPaidTo($amount = null)
     {
         $paidTo = $this->getPaidTo();
@@ -480,15 +503,15 @@ class Contract extends Base
         if ($amount > $rent) {
             $newDate->modify('+1 months');
             $diff = $amount - $rent;
-            $days = $this->countPaidDays($rent, $diff);
+            $days = $this->countPaidDays($rent, $diff, $paidTo);
             $newDate->modify('+'.$days.' days');
         } elseif ($amount < $rent) {
-            $days = $this->countPaidDays($rent, $amount);
+            $days = $this->countPaidDays($rent, $amount, $paidTo);
             $newDate->modify('+'.$days.' days');
         } else {
             $newDate->modify('+1 months');
         }
-        return $this->setPaidTo($newDate);
+        return $this->setPaidTo($this->fixDay($newDate));
     }
 
     /**
@@ -503,21 +526,29 @@ class Contract extends Base
         if ($amount > $rent) {
             $newDate->modify('-1 months');
             $diff = $amount - $rent;
-            $days = $this->countPaidDays($rent, $diff);
+            $days = $this->countPaidDays($rent, $diff, $newDate);
             $newDate->modify('-'.$days.' days');
         } elseif ($amount < $rent) {
-            $days = $this->countPaidDays($rent, $amount);
+            $days = $this->countPaidDays($rent, $amount, $newDate);
             $newDate->modify('-'.$days.' days');
         } else {
             $newDate->modify('-1 months');
         }
 
-        return $this->setPaidTo($newDate);
+        return $this->setPaidTo($this->fixDay($newDate));
     }
 
-    private function countPaidDays($rent, $paid)
+    /**
+     * @param float $rent
+     * @param float $paid
+     * @param DateTime $date
+     *
+     * @return float
+     */
+    private function countPaidDays($rent, $paid, $date)
     {
-        return floor($paid * 30/ $rent);
+        $days = $date->format('t');
+        return floor($paid * $days/ $rent);
     }
 
     /**

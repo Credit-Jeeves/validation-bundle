@@ -66,6 +66,7 @@ class OrderListener
             return;
         }
         $contract = $operation->getContract();
+        $this->updateBalanceContract($eventArgs);
         $movePaidFor = null;
         switch ($entity->getStatus()) {
             case OrderStatus::REFUNDED:
@@ -85,30 +86,6 @@ class OrderListener
             $payment->setPaidFor($date->modify($movePaidFor . ' month'));
         }
         // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
-
-        $operation = $entity->getRentOperation();
-        if (!$operation) {
-            return;
-        }
-        $status = $entity->getStatus();
-        switch ($status) {
-            case OrderStatus::REFUNDED:
-            case OrderStatus::CANCELLED:
-            case OrderStatus::RETURNED:
-                if ($eventArgs->hasChangedField('status')
-                    && !in_array(
-                        $eventArgs->getOldValue('status'),
-                        array(OrderStatus::REFUNDED, OrderStatus::CANCELLED, OrderStatus::RETURNED)
-                    )
-                ) {
-                    // Any changes to associations aren't flushed, that's why contract is flushed in postUpdate
-                    $contract = $operation->getContract();
-                    $contract->unshiftPaidTo($operation->getAmount());
-                }
-                break;
-        }
-
-        $this->updateBalanceContract($eventArgs);
     }
     
 
