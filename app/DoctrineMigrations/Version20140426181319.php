@@ -32,11 +32,6 @@ class Version20140426181319 extends AbstractMigration
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $date = new DateTime($row['created_at']);
-//            // don't you need to reverse sign of days_late below?
-//            if ($row['days_late']) {
-//                $modify = ($row['days_late'] * -1) . " days";
-//                $date->modify($modify);
-//            }
             if (OperationType::RENT == $row['op_type'] && $date->format('d') >= 22) {
                 //snap to next month on 1st
                 $date->modify('next month');

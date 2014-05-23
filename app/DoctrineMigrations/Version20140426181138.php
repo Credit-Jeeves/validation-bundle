@@ -7,6 +7,9 @@ use Doctrine\DBAL\Schema\Schema;
 use PDO;
 use DateTime;
 
+/**
+ * Fill new field paid_for in rj_payment table
+ */
 class Version20140426181138 extends AbstractMigration
 {
     public function up(Schema $schema)

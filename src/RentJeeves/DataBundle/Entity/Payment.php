@@ -87,7 +87,7 @@ class Payment extends Base
     /**
      * @return DateTime
      */
-    public function getNextPaymentDate(\DateTime $lastPaymentDate = null)
+    public function getNextPaymentDate(DateTime $lastPaymentDate = null)
     {
         // 1. Get start date
         $day = $this->getDueDate();

@@ -68,6 +68,9 @@
     {% if attr.html is defined %}
         {{ attr.html|raw }}
     {% endif %}
+    {% if attr.template is defined %}
+        <div data-bind="template: { name: '{{ attr.template }}' }"></div>
+    {% endif %}
 {% endblock aditional_attr_block %}
 
 {% block button_widget %}

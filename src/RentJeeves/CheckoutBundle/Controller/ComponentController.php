@@ -43,7 +43,6 @@ class ComponentController extends Controller
                 )
             )
         );
-
         return array(
             'paymentType' => $paymentType->createView(),
             'userDetailsType' => $userDetailsType->createView(),

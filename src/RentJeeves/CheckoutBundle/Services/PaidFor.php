@@ -2,7 +2,6 @@
 namespace RentJeeves\CheckoutBundle\Services;
 
 use CreditJeeves\DataBundle\Entity\Operation;
-use Doctrine\ORM\EntityManager;
 use JMS\DiExtraBundle\Annotation as DI;
 use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Contract;
@@ -13,9 +12,13 @@ use RentJeeves\DataBundle\Entity\Contract;
 class PaidFor
 {
     /**
+     * Return array of months to pay based on contract
+     *
      * @param Contract $contract
      *
-     * @return array
+     * @return array Payed for dates
+     *   key string Date in format 'Y-m-d'
+     *   val string Month in format 'M'
      */
     public function getArray(Contract $contract)
     {
@@ -52,12 +55,12 @@ class PaidFor
         return new DateTime();
     }
 
-    public function createItem(\DateTime $date)
+    public function createItem(DateTime $date)
     {
         return array($date->format('Y-m-d') => $date->format('M'));
     }
 
-    protected function makeDatesFromDate(\DateTime $start)
+    protected function makeDatesFromDate(DateTime $start)
     {
         $now = $this->getNow()->modify('+1 month');
         $date = clone $start;

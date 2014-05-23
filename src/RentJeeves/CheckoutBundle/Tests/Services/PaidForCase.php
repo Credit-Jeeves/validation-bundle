@@ -47,6 +47,9 @@ class StartDateCase extends BaseTestCase
         $em->persist($contract);
         $em->flush($contract);
 
+
+        $this->assertInstanceOf('RentJeeves\CoreBundle\DateTime', $contract->getPaidTo());
+
         $paidFor = $this->getContainer()->get('checkout.paid_for');
 
         $dateTime = clone $paidTo;

@@ -70,13 +70,7 @@ class PaymentType extends AbstractType
                         'data-bind' => "options: payment.paidForOptions, optionsText: 'text', optionsValue: 'value', ".
                         "value: payment.paidFor",
                         'force_row' => false,
-                        'html' => '<div class="tooltip-box type3 pie-el">' .
-                            '<h4 data-bind="' .
-                                'text: \'checkout.rent_starting.title-%MONTH%\', ' .
-                                'i18n: {\'MONTH\': getPaidFor}' .
-                            '"></h4>' .
-                            '<p data-bind="text: \'checkout.rent_starting.text\', i18n: {}">' .
-                            '</p></div>',
+                        'template' => 'paidFor-html',
                     ),
                     'invalid_message' => 'checkout.error.paidFor.invalid',
                 )

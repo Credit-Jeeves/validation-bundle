@@ -130,7 +130,7 @@ class Contract extends Base
     public function getDueDate()
     {
         $day = parent::getDueDate();
-        if (empty($day) && ($this->getStartAt() instanceof \DateTime)) {
+        if (empty($day) && ($this->getStartAt() instanceof DateTime)) {
             $day = $this->getStartAt()->format('j');
         }
         return $day;
@@ -712,8 +712,7 @@ class Contract extends Base
         if ($this->getDueDate() == $this->getPaidTo()->format('j')) {
             return $this->getPaidTo();
         }
-        $startAt = new DateTime();
-        $startAt->setDateTime($this->getPaidTo());
+        $startAt = new DateTime($this->getPaidTo()->format('c'));
         if ($this->getDueDate() < $startAt->format('j')) {
             $startAt->modify('+1 month');
         }

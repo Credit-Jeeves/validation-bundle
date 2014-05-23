@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Enum\PaymentType;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -284,7 +284,7 @@ class Payment
     }
 
     /**
-     * Set amountOther
+     * Set amountOther + amount
      *
      * @param float $amount
      * @return $this
@@ -297,7 +297,7 @@ class Payment
     }
 
     /**
-     * Get amountOther
+     * Get amountOther + amount
      *
      * @return float
      */

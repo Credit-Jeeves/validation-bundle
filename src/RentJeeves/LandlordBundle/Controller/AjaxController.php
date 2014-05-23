@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
@@ -860,6 +861,7 @@ class AjaxController extends Controller
 
         $result = array();
         $group = $this->getCurrentGroup();
+        /** @var OrderRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
 
         $total = $repo->countOrders($group, $searchCollum, $searchText);

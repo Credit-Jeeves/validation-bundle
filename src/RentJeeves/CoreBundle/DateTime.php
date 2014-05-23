@@ -57,11 +57,4 @@ class DateTime extends \DateTime
         }
         return $this;
     }
-
-    public function setDateTime(\DateTime $dateTime)
-    {
-        $this->setDate($dateTime->format('Y'), $dateTime->format('n'), $dateTime->format('j'));
-        $this->setTime($dateTime->format('G'), (int)$dateTime->format('i'), (int)$dateTime->format('s'));
-        $this->setTimezone($dateTime->getTimezone());
-    }
 }
