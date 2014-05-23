@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
-class ContractCommandCase extends BaseTestCase
+class ContractBalanceCommandCase extends BaseTestCase
 {
     public function dataForUpdateBalance()
     {

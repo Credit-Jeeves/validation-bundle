@@ -238,7 +238,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('1017B', $unit->getName());
         $this->assertEquals(ContractStatus::INVITE, $contract->getStatus());
         $this->assertEquals('1200', $contract->getRent());
-        $this->assertEquals('0', $contract->getImportedBalance());
+        $this->assertEquals('0', $contract->getIntegratedBalance());
         $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
         $this->assertEquals('11/08/2014', $contract->getFinishAt()->format('m/d/Y'));
 
@@ -270,7 +270,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals('03/01/2011', $contractEnded->getFinishAt()->format('m/d/Y'));
 
         $this->assertEquals('1190', $contractMatch->getRent());
-        $this->assertEquals('0', $contractMatch->getImportedBalance());
+        $this->assertEquals('0', $contractMatch->getIntegratedBalance());
         $this->assertEquals('04/22/2010', $contractMatch->getStartAt()->format('m/d/Y'));
         $this->assertEquals('10/21/2016', $contractMatch->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractMatch->getStatus());
@@ -290,7 +290,7 @@ class ImportCase extends BaseTestCase
         }
 
         $this->assertEquals('950', $contractNew->getRent());
-        $this->assertEquals('0', $contractNew->getImportedBalance());
+        $this->assertEquals('0', $contractNew->getIntegratedBalance());
         $this->assertEquals('03/18/2011', $contractNew->getStartAt()->format('m/d/Y'));
         $this->assertEquals('03/31/2015', $contractNew->getFinishAt()->format('m/d/Y'));
         $this->assertEquals(ContractStatus::APPROVED, $contractNew->getStatus());
@@ -568,7 +568,7 @@ class ImportCase extends BaseTestCase
         $this->assertEquals($contract->getStartAt(), $contractWaiting->getStartAt());
         $this->assertEquals($contract->getFinishAt(), $contractWaiting->getFinishAt());
         $this->assertEquals($contract->getRent(), $contractWaiting->getRent());
-        $this->assertEquals($contract->getImportedBalance(), $contractWaiting->getImportedBalance());
+        $this->assertEquals($contract->getIntegratedBalance(), $contractWaiting->getIntegratedBalance());
         $this->assertEquals($contract->getStartAt(), $contractWaiting->getStartAt());
         $this->assertEquals($contract->getUnit()->getId(), $contractWaiting->getUnit()->getId());
 
