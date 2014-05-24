@@ -7,7 +7,7 @@ use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use Doctrine\ORM\Query\Expr;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
@@ -23,6 +23,7 @@ class PaymentCase extends BaseTestCase
             array(1, '2014-03-31', '2014-04-01'),
         );
     }
+
     public function getNextPaymentDate($dueDate, $now, $will)
     {
         /** @var Payment $payment */
@@ -47,11 +48,11 @@ class PaymentCase extends BaseTestCase
      */
     public function getNextPaymentDateWithDifferentTimezones($dueDate, $now, $will)
     {
-        \date_default_timezone_set('Europe/Kiev');
+        date_default_timezone_set('Europe/Kiev');
         $this->getNextPaymentDate($dueDate, $now, $will);
-        \date_default_timezone_set('America/New_York');
+        date_default_timezone_set('America/New_York');
         $this->getNextPaymentDate($dueDate, $now, $will);
-        \date_default_timezone_set('GMT');
+        date_default_timezone_set('GMT');
         $this->getNextPaymentDate($dueDate, $now, $will);
     }
 

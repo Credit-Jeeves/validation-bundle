@@ -161,8 +161,7 @@ class Tenant extends User
         $contracts = $this->getContracts();
          
         foreach ($contracts as $contract) {
-            $status = $contract->getStatus();
-            if (in_array($status, array(ContractStatus::FINISHED, ContractStatus::DELETED))) {
+            if (in_array($contract->getStatus(), array(ContractStatus::FINISHED, ContractStatus::DELETED))) {
                 continue;
             }
             $result[] = $contract;
@@ -176,8 +175,7 @@ class Tenant extends User
         $contracts = $this->getContracts();
 
         foreach ($contracts as $contract) {
-            $status = $contract->getStatus();
-            if (in_array($status, array(ContractStatus::DELETED))) {
+            if (in_array($contract->getStatus(), array(ContractStatus::DELETED))) {
                 continue;
             }
             $result[] = $contract;

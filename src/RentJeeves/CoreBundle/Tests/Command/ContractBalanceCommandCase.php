@@ -90,11 +90,12 @@ class ContractBalanceCommandCase extends BaseTestCase
             )
         );
 
+        /** @var Contract $contract */
         $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
 
+
+        $this->assertEquals(999999.00, $contract->getBalance());
         if ($isIntegrated) {
-            $this->assertEquals(0, $contract->getBalance());
-        } else {
             $this->assertEquals($contract->getRent(), $contract->getBalance());
         }
 

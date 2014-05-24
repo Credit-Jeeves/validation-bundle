@@ -27,7 +27,7 @@ class ContractBalanceCommand extends ContainerAwareCommand
     {
         $doctrine = $this->getContainer()->get('doctrine');
         $contractRepository = $doctrine->getRepository('RjDataBundle:Contract');
-        $dueDays = $this->getDueDays(0, new DateTime());
+        $dueDays = $this->getDueDays();
         $contracts = $contractRepository->getContractsForUpdateBalance($dueDays);
         /**
          * @var $manager EntityManager
@@ -39,13 +39,6 @@ class ContractBalanceCommand extends ContainerAwareCommand
              * @var $contract Contract
              */
             $contract = end($row);
-            $group =$contract->getGroup();
-            $settingGroup = $group->getGroupSettings();
-
-            if ($settingGroup->getIsIntegrated()) {
-                continue;
-            }
-
             $balance = $contract->getBalance() + $contract->getRent();
             $contract->setBalance($balance);
             $manager->persist($contract);

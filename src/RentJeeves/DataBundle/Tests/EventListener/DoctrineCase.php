@@ -22,6 +22,8 @@ class DoctrineCase extends BaseTestCase
         $tenant = $em->getRepository('RjDataBundle:Tenant')
             ->findOneByEmail('tenant11@example.com');
 
+        $this->assertInstanceOf('RentJeeves\CoreBundle\DateTime', $tenant->getCreatedAt());
+
         $report = new ReportPrequal();
         $report->setUser($tenant);
         $report->setRawData(file_get_contents(__DIR__ . '/../Fixtures/EmilioVantageScore3.arf'));

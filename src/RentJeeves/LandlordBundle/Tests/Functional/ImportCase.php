@@ -235,12 +235,12 @@ class ImportCase extends BaseTestCase
          * @var $Unit Unit
          */
         $unit = $contract->getUnit();
-        $this->assertEquals($unit->getName(), '1017B');
-        $this->assertEquals($contract->getStatus(), ContractStatus::INVITE);
-        $this->assertEquals($contract->getRent(), '1200');
-        $this->assertEquals($contract->getIntegratedBalance(), '0');
-        $this->assertEquals($contract->getStartAt()->format('m/d/Y'), '11/09/2013');
-        $this->assertEquals($contract->getFinishAt()->format('m/d/Y'), '11/08/2014');
+        $this->assertEquals('1017B', $unit->getName());
+        $this->assertEquals(ContractStatus::INVITE, $contract->getStatus());
+        $this->assertEquals('1200', $contract->getRent());
+        $this->assertEquals('0', $contract->getIntegratedBalance());
+        $this->assertEquals('11/09/2013', $contract->getStartAt()->format('m/d/Y'));
+        $this->assertEquals('11/08/2014', $contract->getFinishAt()->format('m/d/Y'));
 
         /**
          * @var $tenant Tenant
@@ -422,7 +422,7 @@ class ImportCase extends BaseTestCase
 
         return $contractWaiting;
     }
-
+    
     /**
      * @test
      */
@@ -655,7 +655,6 @@ class ImportCase extends BaseTestCase
         $this->logout();
     }
 
-
     /**
      * @test
      */
@@ -705,11 +704,11 @@ class ImportCase extends BaseTestCase
 
         $this->assertEquals(2, count($result));
         $td = $result[0]->findAll('css', 'td');
-        $this->assertEquals('12/29/2012<br>12/28/2013', $td[7]->getHtml());
+        $this->assertEquals('12/29/2012<br>12/28/2013', $td[7]->getHtml(), $td[7]->getHtml());
         $datepicker = $result[1]->findAll('css', '.datepicker');
         $this->assertEquals(2, count($datepicker));
-        $this->assertEquals('11/09/2013', $datepicker[0]->getValue());
-        $this->assertEquals('11/08/2014', $datepicker[1]->getValue());
+        $this->assertEquals('11/09/2013', $datepicker[0]->getValue(), $datepicker[0]->getValue());
+        $this->assertEquals('11/08/2014', $datepicker[1]->getValue(), $datepicker[1]->getValue());
         $this->logout();
     }
 }

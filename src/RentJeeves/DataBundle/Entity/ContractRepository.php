@@ -3,10 +3,11 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
 use Doctrine\ORM\Query;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 
 class ContractRepository extends EntityRepository
@@ -206,34 +207,6 @@ class ContractRepository extends EntityRepository
 
     /**
      * @param Group $group
-     * @param string $searchField
-     * @param string $searchString
-     *
-     * @return mixed
-     */
-    public function countActionsRequired($group, $searchField = 'address', $searchString = '')
-    {
-        $query = $this->createQueryBuilder('c');
-        $query->innerJoin('c.property', 'p');
-        $query->innerJoin('c.tenant', 't');
-        $query->innerJoin('c.operations', 'o');
-        $query->where(
-            '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)) AND o.id IS NOT NULL'
-        );
-        $query->setParameter('group', $group);
-        $query->setParameter('date', new DateTime());
-        $query->setParameter('today', new DateTime());
-        $query->setParameter('status1', ContractStatus::FINISHED);
-        $query->setParameter('status2', ContractStatus::DELETED);
-
-        $query = $this->applySearchFilter($query, $searchField, $searchString);
-        $query = $query->getQuery();
-        return $query->getScalarResult();
-    }
-
-    /**
-     * @param Group $group
      * @param int $page
      * @param int $limit
      * @param string $sortField
@@ -241,9 +214,9 @@ class ContractRepository extends EntityRepository
      * @param string $searchField
      * @param string $searchString
      *
-     * @return mixed
+     * @return QueryBuilder
      */
-    public function getActionsRequiredPage(
+    public function getActionsRequiredPageQuery(
         $group,
         $page = 1,
         $limit = 100,
@@ -256,10 +229,11 @@ class ContractRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->innerJoin('c.property', 'p');
         $query->innerJoin('c.tenant', 't');
-        $query->innerJoin('c.operations', 'o');
         $query->where(
             '(c.group = :group AND c.status <> :status1 AND c.status <> :status2'.
-            ' AND (c.paidTo < :date OR c.finishAt < :today)) AND o.id IS NOT NULL'
+            ' AND (c.paidTo < :date OR c.finishAt < :today))' .
+            ' AND c.id IN (SELECT IDENTITY(o.contract) FROM DataBundle:Operation o WHERE' .
+            ' o.contract = c.id )'
         );
         $query->setParameter('group', $group);
         $query->setParameter('date', new DateTime());
@@ -268,10 +242,13 @@ class ContractRepository extends EntityRepository
         $query->setParameter('status2', ContractStatus::DELETED);
         $query = $this->applySearchFilter($query, $searchField, $searchString);
         $query = $this->applySortOrder($query, $sortField, $sortOrder);
-        $query->setFirstResult($offset);
-        $query->setMaxResults($limit);
-        $query = $query->getQuery();
-        return $query->execute();
+        if ($offset) {
+            $query->setFirstResult($offset);
+        }
+        if ($limit) {
+            $query->setMaxResults($limit);
+        }
+        return $query;
     }
 
     /**
@@ -483,6 +460,74 @@ class ContractRepository extends EntityRepository
         $query->setParameter('startDate', $firstDate);
         $query->setParameter('lastDate', $lastDate);
         $query = $query->getQuery();
+
+        return $query->execute();
+    }
+
+    /**
+     * @param QueryBuilder $query
+     * @param string $orderStatus
+     * @param int $monthAgo
+     *
+     * @return QueryBuilder
+     */
+    public static function queryOperationsOrdersHistory(&$query, $orderStatus = OrderStatus::COMPLETE, $monthAgo = 6)
+    {
+        $paidTo = new DateTime();
+        $paidTo->modify("-{$monthAgo} months");
+        $query->leftJoin(
+            'c.operations',
+            'op',
+            Expr\Join::WITH,
+            "op.paidFor > :paidTo"
+        );
+        $query->setParameter('paidTo', $paidTo->format('Y-m-d'));
+        $query->leftJoin(
+            'op.order',
+            'o',
+            Expr\Join::WITH,
+            "o.status = :orderStatus"
+        );
+        $query->setParameter('orderStatus', $orderStatus);
+
+        return $query;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Contract
+     */
+    public function findOneWithOperationsOrders($id)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->andWhere('c.id = :id');
+        $query->setParameter('id', $id);
+
+        $query = static::queryOperationsOrdersHistory($query)->getQuery();
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function findByTenantIdInvertedStatusesForPayments(
+        $tenantId,
+        $statuses = array(ContractStatus::DELETED)
+    ) {
+        $query = $this->createQueryBuilder('c');
+        $query->leftJoin('c.holding', 'h');
+        $query->leftJoin('c.property', 'p');
+        $query->leftJoin('c.unit', 'u');
+        $query->leftJoin('c.group', 'g');
+        $query->leftJoin('g.deposit_account', 'da');
+        $query->leftJoin('c.payments', 'pay');
+        if (!empty($status)) {
+            $query->andWhere('c.status NOT IN :statuses');
+            $query->setParameter('statuses', $statuses);
+        }
+        $query->andWhere('c.tenant = :tenantId');
+        $query->setParameter('tenantId', $tenantId);
+
+        $query = static::queryOperationsOrdersHistory($query)->getQuery();
 
         return $query->execute();
     }

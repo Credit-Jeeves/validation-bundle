@@ -110,7 +110,6 @@ class OrderListenerCase extends Base
         $paidFor = new DateTime();
         $operation->setPaidFor($paidFor);
         $operation->setOrder($order);
-        $order->addOperation($operation);
 
         $em->persist($operation);
         $em->persist($order);
@@ -147,7 +146,6 @@ class OrderListenerCase extends Base
         $paidFor2->modify('+1 month');
         $operation->setPaidFor($paidFor2);
         $operation->setOrder($order);
-        $order->addOperation($operation);
         /**
          * @var $em EntityManager
          */

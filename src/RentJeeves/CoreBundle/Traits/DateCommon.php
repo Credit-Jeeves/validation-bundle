@@ -1,11 +1,11 @@
 <?php
 namespace RentJeeves\CoreBundle\Traits;
 
-use \DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 trait DateCommon
 {
-    public function getDueDays($shift = 0, DateTime $date = null)
+    public function getDueDays($shift = 0, \DateTime $date = null)
     {
         if (null === $date) {
             $date = new DateTime();
@@ -34,7 +34,7 @@ trait DateCommon
         return array($day);
     }
 
-    public function getDiffDays(DateTime $date, DateTime $now = null)
+    public function getDiffDays(\DateTime $date, \DateTime $now = null)
     {
         if (null === $now) {
             $now = new DateTime();

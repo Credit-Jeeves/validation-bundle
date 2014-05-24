@@ -52,7 +52,7 @@
             </trans-unit>
             <trans-unit id="checkout.error.amount.min">
                 <source>checkout.error.amount.min</source>
-                <target>Amount should be 1 or more.</target>
+                <target>Amount should be nothing, 1 or more.</target>
             </trans-unit>
             <trans-unit id="checkout.error.amount.valid">
                 <source>checkout.error.amount.valid</source>
@@ -62,6 +62,52 @@
                 <source>checkout.date</source>
                 <target>Date</target>
             </trans-unit>
+            <trans-unit id="checkout.paidFor">
+                <source>checkout.paidFor</source>
+                <target>for</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.paidFor.invalid">
+                <source>checkout.error.paidFor.invalid</source>
+                <target>Paid for is invalid</target>
+            </trans-unit>
+            <trans-unit id="checkout.rent_starting.title">
+                <source>checkout.rent_starting.title-%MONTH%</source>
+                <target>Rent starting in %MONTH%</target>
+            </trans-unit>
+            <trans-unit id="checkout.rent_starting.text">
+                <source>checkout.rent_starting.text</source>
+                <target>Do not include late fee, deposits, etc. In your 'Rent' amount. Sum these payments in 'Other'.</target>
+            </trans-unit>
+            <trans-unit id="checkout.amountOther">
+                <source>checkout.amountOther</source>
+                <target>Other</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.amountOther.empty">
+                <source>checkout.error.amountOther.empty</source>
+                <target>Other Amount is required.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.amountOther.min">
+                <source>checkout.error.amountOther.min</source>
+                <target>Other Amount should be 1 or more.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.amountOther.valid">
+                <source>checkout.error.amountOther.valid</source>
+                <target>Other Amount should be a valid number.</target>
+            </trans-unit>
+
+            <trans-unit id="checkout.error.total.empty">
+                <source>checkout.error.total.empty</source>
+                <target>You must fill "Amount" or "Other" field.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.total.min">
+                <source>checkout.error.total.min</source>
+                <target>Total to Pay should be 1 or more.</target>
+            </trans-unit>
+            <trans-unit id="checkout.error.total.valid">
+                <source>checkout.error.total.valid</source>
+                <target>Total to Pay should be a valid number.</target>
+            </trans-unit>
+
             <trans-unit id="checkout.error.date.empty">
                 <source>checkout.error.date.empty</source>
                 <target>Date is required..</target>
@@ -334,6 +380,10 @@
                 <source>checkout.rent_amount</source>
                 <target>Rent Amount</target>
             </trans-unit>
+            <trans-unit id="checkout.other_amount">
+                <source>checkout.other_amount</source>
+                <target>Other Amount</target>
+            </trans-unit>
             <trans-unit id="checkout.day.monthly.each_month">
                 <source>checkout.day.monthly.each_month-%DAY%</source>
                 <target>Day %DAY% of Each Month</target>
@@ -364,7 +414,7 @@
             </trans-unit>
             <trans-unit id="checkout.total">
                 <source>checkout.total</source>
-                <target>Total</target>
+                <target>Total to Pay</target>
             </trans-unit>
             <trans-unit id="checkout.track_score">
                 <source>checkout.track_score-%AMOUNT%</source>
