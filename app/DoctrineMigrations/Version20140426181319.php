@@ -11,7 +11,7 @@ use PDO;
 class Version20140426181319 extends AbstractMigration
 {
     /**
-     * @see https://credit.atlassian.net/browse/RT-424
+     * @url https://credit.atlassian.net/browse/RT-424
      */
     public function up(Schema $schema)
     {
@@ -21,7 +21,7 @@ class Version20140426181319 extends AbstractMigration
         );
 
         $sql = "SELECT o.days_late AS days_late,
-            op.id AS operation_id, op.created_at AS created_at, op.type AS op_type
+            op.id AS operation_id, op.created_at AS created_at, op.type AS op_type,
             c.due_date AS contract_due_date
         FROM `cj_order` AS o
         INNER JOIN cj_operation AS op ON op.order_id = o.id
