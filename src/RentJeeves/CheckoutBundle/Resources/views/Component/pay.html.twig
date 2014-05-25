@@ -68,6 +68,14 @@
                 {{ form_widget(paymentType) }}
                 {{ JSFV(paymentType) }}
             </form>
+            <script type="text/html" id="paidFor-html">
+                <div class="tooltip-box type3 pie-el">
+                    <h4 data-bind="text: 'checkout.rent_starting.title-%MONTH%', i18n: {'MONTH': getPaidFor}">
+                    </h4>
+                    <p data-bind="text: 'checkout.rent_starting.text', i18n: {}">
+                    </p>
+                </div>
+            </script>
         </div>
 
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
@@ -176,6 +184,12 @@
                         <label>{{ 'checkout.rent_amount' | trans }}</label>
                         <div class="fields-box">
                             <span class="value" data-bind="text: getAmount"></span>
+                        </div>
+                    </div>
+                    <div class="form-row clearfix">
+                        <label>{{ 'checkout.other_amount' | trans }}</label>
+                        <div class="fields-box">
+                            <span class="value" data-bind="text: getOtherAmount"></span>
                         </div>
                     </div>
                     <div class="form-row clearfix" data-bind="visible: 'on' == payment.ends()">

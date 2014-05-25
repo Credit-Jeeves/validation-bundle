@@ -10,18 +10,18 @@ fixtures:
         createdAt: '-50 days'
         updatedAt: '-50 days'
     Contract_2:
-        tenant:   Tenant_1
-        holding:  rjHolding_1
-        group:    RentGroup_1
-        property: Property_1
-        unit:     Unit_1_2
-        rent:     1400
-        status:   approved
-        paidTo:  '60 days'
-        startAt:   '60 days'
-        finishAt:  '90 days'
-        createdAt: '-50 days'
-        updatedAt: '-50 days'
+        tenant:    Tenant_1
+        holding:   rjHolding_1
+        group:     RentGroup_1
+        property:  Property_1
+        unit:      Unit_1_2
+        rent:      1400
+        status:    approved
+        paidTo:    'now'
+        startAt:   'now'
+        finishAt:  '3 months'
+        createdAt: '-11 months'
+        updatedAt: 'now'
 # Finished contract #
     Contract_3:
         tenant:   Tenant_1
@@ -42,18 +42,19 @@ fixtures:
         group:    RentGroup_1
         property: Property_1
         unit:     Unit_1_4
-        rent:     1500
+        rent:     1250
         status:   finished
-        paidTo:  '-120 days'
-        startAt:   '-290 days'
-        finishAt: '-160 days'
-        createdAt: '-50 days'
-        updatedAt: '-50 days'
+        paidTo:  '-2 months'
+        startAt:   '-8 months'
+        finishAt: '-2 months'
+        createdAt: '-8 months -4 days'
+        updatedAt: '-1 months'
     Contract_5:
         tenant:   Tenant_3
         holding:  rjHolding_1
         group:    RentGroup_1
         property: Property_1
+        unit:     Unit_1_1
         status:   pending
         finishAt: '60 days'
         createdAt: '-50 days'

@@ -14,6 +14,7 @@ class OrderListenerCase extends BaseTestCase
      */
     public function shouldUnshiftContractDateWhenOrderIsCancelled()
     {
+        $this->load(true);
         $container = static::getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
 

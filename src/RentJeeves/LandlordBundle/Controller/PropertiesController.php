@@ -18,13 +18,6 @@ class PropertiesController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->get('doctrine.orm.entity_manager');
-        $landlordHasProperty = $em->getRepository('RjDataBundle:Property')->landlordHasProperty($this->getUser());
-
-        if (!$landlordHasProperty) {
-            return $this->redirect($this->generateUrl("landlord_property_new"));
-        }
-
         $groups = $this->getGroups();
         return array(
             'nGroups'   => $groups->count(),

@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
@@ -25,8 +26,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
-use \DateTime;
-use \Exception;
+use DateTime;
+use Exception;
 
 /**
  * 
@@ -257,11 +258,10 @@ class AjaxController extends Controller
      *
      * @return array
      */
-    public function addProperty()
+    public function addProperty(Request $request)
     {
         $property = array();
         $itsNewProperty = false;
-        $request = $this->getRequest();
         $data = $request->request->all('address');
         $addGroup = $request->request->all('addGroup');
         $data = json_decode($data['data'], true);
@@ -280,7 +280,11 @@ class AjaxController extends Controller
             );
         }
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
+        /** @var Property $property */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
+        if ($property) {
+            $property->setIsSingle($request->request->get('isSingle') == 'true');
+        }
         $em = $this->getDoctrine()->getManager();
         $user = $this->getUser();
         $group = $this->get("core.session.landlord")->getGroup();
@@ -311,7 +315,18 @@ class AjaxController extends Controller
                     'message' => $this->get('translator')->trans('fill.full.address')
                 )
             );
+        } catch (Exception $e) {
+            return new JsonResponse(
+                array(
+                    'message' => $this->get('translator')->trans(
+                        'property.error.can_not_be_added',
+                        array('%SUPPORT_EMAIL%' => $this->container->getParameter('support_email'))
+                    )
+                ),
+                500
+            );
         }
+
         if ($group && $this->getUser()->getType() == UserType::LANDLORD && $itsNewProperty) {
             $google = $this->container->get('google');
             $google->savePlace($property);
@@ -402,6 +417,7 @@ class AjaxController extends Controller
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $result['property'] = $property->getAddress();
+        $result['isSingle'] = $property->getIsSingle();
         $result['units'] = $this->getDoctrine()
             ->getRepository('RjDataBundle:Unit')
             ->getUnitsArray(
@@ -623,9 +639,8 @@ class AjaxController extends Controller
         //@TODO find best way for this implementation
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $request = $this->getRequest();
-        $page = $request->request->all('data');
+        $page = $request->request->all();
         $data = $page['data'];
 
         $sortColumn = $data['sortColumn'];
@@ -637,26 +652,27 @@ class AjaxController extends Controller
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countActionsRequired($group, $searchField, $searchText);
-        $total = count($total);
-        if ($total) {
-            $contracts = $repo->getActionsRequiredPage(
-                $group,
-                $data['page'],
-                $data['limit'],
-                $sortColumn,
-                $sortType,
-                $searchField,
-                $searchText
-            );
-            foreach ($contracts as $contract) {
-                $contract->setStatusShowLateForce(true);
-                $item = $contract->getItem();
-                $items[] = $item;
-            }
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
+        $query = $repo->getActionsRequiredPageQuery(
+            $group,
+            $data['page'],
+            $data['limit'],
+            $sortColumn,
+            $sortType,
+            $searchField,
+            $searchText
+        );
+        $contracts = $query->getQuery()->execute();
+        foreach ($contracts as $contract) {
+            $contract->setStatusShowLateForce(true);
+            $item = $contract->getItem();
+            $items[] = $item;
         }
-        
+        $total = $query->select('count(c)')
+            ->setMaxResults(null)
+            ->setFirstResult(null)
+            ->getQuery()
+            ->getSingleScalarResult();
         $result['actions'] = $items;
         $result['total'] = $total;
         $result['pagination'] = $this->datagridPagination($total, $data['limit']);
@@ -703,6 +719,11 @@ class AjaxController extends Controller
         $tenant->setEmail($details['email']);
         $tenant->setPhone($details['phone']);
         $property = $em->getRepository('RjDataBundle:Property')->find($details['property_id']);
+
+        if (!$property->isSingle() && empty($details['unit_id'])) {
+            $errors[] = $translator->trans('contract.error.unit');
+        }
+
         $unit = $em->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
         $contract->setDueDate($details['dueDate']);
@@ -840,6 +861,7 @@ class AjaxController extends Controller
 
         $result = array();
         $group = $this->getCurrentGroup();
+        /** @var OrderRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
 
         $total = $repo->countOrders($group, $searchCollum, $searchText);

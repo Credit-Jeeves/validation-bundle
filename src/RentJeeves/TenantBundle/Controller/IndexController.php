@@ -29,7 +29,7 @@ class IndexController extends Controller
         $this->get('soft.deleteable.control')->disable();
 
         return array(
-            'user'                      => $this->getUser(),
+            'user' => $tenant,
         );
     }
 

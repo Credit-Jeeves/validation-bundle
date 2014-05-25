@@ -257,3 +257,18 @@ fixtures:
         kb:             -73.9917422
         createdAt:     '-60 days'
         updatedAt:     '-8 days'
+    Property_19:
+        property_groups:
+            - RentGroup_3
+        country:        US
+        area:           NY
+        city:           New York
+        district:       Manhattan
+        street:         Lexington Avenue
+        number:         116
+        zip:            10016
+        jb:             40.7426129
+        kb:             -73.9828048
+        is_single:      1
+        createdAt:     '-1 day'
+        updatedAt:     '-1 day'

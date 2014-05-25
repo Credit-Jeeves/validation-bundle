@@ -84,6 +84,7 @@ class Property extends Base
         $item['area'] = $this->getArea();
         $item['city'] = $this->getCity();
         $item['address'] = $this->getAddress();
+        $item['isSingle'] = $this->isSingle();
         if ($group) {
             $item['units'] = $this->countUnitsByGroup($group);
         } else {
@@ -158,6 +159,49 @@ class Property extends Base
         }
 
         return $merchantExist;
+    }
+
+    public function hasUnits()
+    {
+        if ($this->getUnits()->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function hasGroups()
+    {
+        if ($this->getPropertyGroups()->count() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isSingle()
+    {
+        return $this->getIsSingle() == true;
+    }
+
+    public function getSingleUnit()
+    {
+        if ($this->isSingle()) {
+            return $this->getUnits()->first();
+        }
+
+        return null;
+    }
+
+    public function hasIntegratedGroup()
+    {
+        foreach ($this->getPropertyGroups() as $group) {
+            if ($group->getGroupSettings()->getIsIntegrated()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function __toString()

@@ -27,8 +27,8 @@ class ContractHistory extends Base
         if (isset($data['balance'])) {
             $this->setBalance($data['balance']);
         }
-        if (isset($data['importedBalance'])) {
-            $this->setImportedBalance($data['importedBalance']);
+        if (isset($data['integratedBalance'])) {
+            $this->setIntegratedBalance($data['integratedBalance']);
         }
         if (isset($data['paidTo'])) {
             $this->setPaidTo($data['paidTo']);

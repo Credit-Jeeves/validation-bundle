@@ -84,26 +84,20 @@ class InviteLandlord
             $em->persist($holding);
             $em->flush();
         }
-        $unit = new Unit();
-        $name = $invite->getUnit();
-        if (empty($name)) {
-            $name = '';
+
+        $unitName = $invite->getUnit();
+        if (empty($unitName)) {
+            $unitName = Unit::SEARCH_PROPERTY_NEW_NAME;
         }
         $group->addGroupProperty($invite->getProperty());
-        
-        $unit->setName($name);
-        $unit->setProperty($invite->getProperty());
-        $unit->setHolding($holding);
-        $unit->setGroup($group);
 
         $contract->setProperty($invite->getProperty());
-        $contract->setUnit($unit);
+        $contract->setSearch($unitName);
         $contract->setTenant($tenant);
         $contract->setHolding($holding);
         $contract->setGroup($group);
 
         $em->persist($group);
-        $em->persist($unit);
         $em->persist($contract);
         $em->persist($landlord);
         

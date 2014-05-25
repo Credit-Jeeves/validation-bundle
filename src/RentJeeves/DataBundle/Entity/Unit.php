@@ -16,6 +16,9 @@ use Doctrine\Common\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventAr
  */
 class Unit extends Base
 {
+    const SINGLE_PROPERTY_UNIT_NAME = 'SINGLE_PROPERTY';
+    const SEARCH_PROPERTY_NEW_NAME = 'NEW';
+
     public function __toString()
     {
         return $this->getName();

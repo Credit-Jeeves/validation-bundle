@@ -2,6 +2,8 @@
 namespace RentJeeves\CheckoutBundle\Form\Type;
 
 use RentJeeves\CheckoutBundle\Constraint\StartDate;
+use RentJeeves\CheckoutBundle\Form\DataTransformer\DateTimeToStringTransformer;
+use RentJeeves\CoreBundle\Form\Type\ViewHiddenType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -18,17 +20,25 @@ use DateTime;
 
 class PaymentType extends AbstractType
 {
+    const NAME = 'rentjeeves_checkoutbundle_paymenttype';
+
     /**
      * @var string
      */
     protected $oneTimeUntilValue;
 
     /**
+     * @var array
+     */
+    protected $paidFor = array();
+
+    /**
      * @param string $oneTimeUntilValue
      */
-    public function __construct($oneTimeUntilValue)
+    public function __construct($oneTimeUntilValue, array $paidFor)
     {
         $this->oneTimeUntilValue = $oneTimeUntilValue;
+        $this->paidFor = $paidFor;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -37,16 +47,67 @@ class PaymentType extends AbstractType
             'amount',
             null,
             array(
+                'required' => false,
                 'label' => 'checkout.amount',
                 'attr' => array(
                     'min' => 1,
                     'step' => '0.01',
                     'class' => 'half-of-right',
-                    'data-bind' => 'value: payment.amount'
+                    'data-bind' => 'value: payment.amount',
                 ),
                 'invalid_message' => 'checkout.error.amount.valid'
             )
         );
+        $builder->add(
+            $builder->create(
+                'paidFor',
+                'choice',
+                array(
+                    'label' => 'checkout.paidFor',
+                    'choices' => $this->paidFor,
+                    'attr' => array(
+                        'class' => 'original',
+                        'data-bind' => "options: payment.paidForOptions, optionsText: 'text', optionsValue: 'value', ".
+                        "value: payment.paidFor",
+                        'force_row' => false,
+                        'template' => 'paidFor-html',
+                    ),
+                    'invalid_message' => 'checkout.error.paidFor.invalid',
+                )
+            )->addModelTransformer(new DateTimeToStringTransformer())
+        );
+
+        $builder->add(
+            'amountOther',
+            'number',
+            array(
+                'mapped' => false,
+                'required' => false,
+                'label' => 'checkout.amountOther',
+                'attr' => array(
+                    'step' => '0.01',
+                    'class' => 'half-of-right',
+                    'data-bind' => 'value: payment.amountOther'
+                ),
+                'invalid_message' => 'checkout.error.amountOther.valid'
+            )
+        );
+
+        $builder->add(
+            'total',
+            new ViewHiddenType(),
+            array(
+                'label' => 'checkout.total',
+                'required' => true,
+                'attr' => array(
+                    'data-bind' => 'value: totalInput',
+                    'view' => array(
+                        'data-bind' => 'text: getTotal',
+                    )
+                )
+            )
+        );
+
 
         $builder->add(
             'type',
@@ -71,7 +132,7 @@ class PaymentType extends AbstractType
                             'text: \'checkout.recurring.\' + payment.frequency() + \'.\' + payment.ends() + ' .
                                 '\'.tooltip.text-%AMOUNT%-%DUE_DAY%-%ENDS_ON%-%SETTLE_DAYS%\', ' .
                             'i18n: {' .
-                                '\'AMOUNT\': getAmount, ' .
+                                '\'AMOUNT\': getTotal, ' .
                                 '\'DUE_DAY\': payment.dueDate, ' .
                                 '\'SETTLE_DAYS\': settleDays, ' .
                                 '\'ENDS_ON\': getLastPaymentDay' .
@@ -176,7 +237,6 @@ class PaymentType extends AbstractType
                 'input'           => 'string',
                 'widget'          => 'single_text',
                 'format'          => 'MM/dd/yyyy',
-                'mapped'          => false,
                 'empty_data'      => '',
                 'attr'            => array(
                     'class'     => 'datepicker-field',
@@ -336,7 +396,7 @@ class PaymentType extends AbstractType
 
     public function getName()
     {
-        return 'rentjeeves_checkoutbundle_paymenttype';
+        return static::NAME;
     }
 
     public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)

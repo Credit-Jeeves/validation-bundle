@@ -120,6 +120,15 @@ abstract class Property
     protected $kb;
 
     /**
+     * @ORM\Column(
+     *     name="is_single",
+     *     type="boolean",
+     *     nullable=true
+     * )
+     */
+    protected $isSingle;
+
+    /**
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(
      *     name="created_at",
@@ -442,6 +451,22 @@ abstract class Property
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param boolean $isSingle
+     */
+    public function setIsSingle($isSingle)
+    {
+        $this->isSingle = $isSingle;
+    }
+
+    /**
+     * @return boolean|null
+     */
+    public function getIsSingle()
+    {
+        return $this->isSingle;
     }
 
     /**

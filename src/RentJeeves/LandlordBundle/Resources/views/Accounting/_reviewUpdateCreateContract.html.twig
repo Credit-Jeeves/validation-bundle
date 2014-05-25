@@ -65,16 +65,16 @@
             )
         }}
         {{ form_widget(
-            form.importedBalance,
+            form.integratedBalance,
             {
                 "attr":
                 {
                 "data-bind":
-                    "value: contract.imported_balance,
+                    "value: contract.integrated_balance,
                      attr:
                         {
-                            'class': number+'_balance import_contract_importedBalance '+$root.getErrorClass($data, 'import_contract_importedBalance'),
-                            'title': $root.getErrorTitle($data, 'import_contract_importedBalance')
+                            'class': number+'_balance import_contract_integratedBalance '+$root.getErrorClass($data, 'import_contract_integratedBalance'),
+                            'title': $root.getErrorTitle($data, 'import_contract_integratedBalance')
                         }"
                 }
             }
