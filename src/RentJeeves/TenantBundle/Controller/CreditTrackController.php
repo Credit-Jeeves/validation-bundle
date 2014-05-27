@@ -43,9 +43,10 @@ class CreditTrackController extends Controller
     private function getCreditTrackParams()
     {
       $em = $this->getDoctrine()->getManager();
+      $rt_merchant_name = $this->container->getParameter('rt_merchant_name');
 
       return array(
-        'group' => $em->getRepository('DataBundle:Group')->findByCode('RentTrack')[0]
+        'group' => $em->getRepository('DataBundle:Group')->findByCode($rt_merchant_name)[0]
       );
     }
 
@@ -69,8 +70,6 @@ class CreditTrackController extends Controller
         $em = $this->getDoctrine()->getManager();
         $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')
           ->findById($params['paymentAccountId'])[0];
-        $this->ensureTokenForCreditTrack($paymentAccount);
-
 
         $em = $this->get('doctrine.orm.default_entity_manager');
         $em->persist($contract);
@@ -83,57 +82,6 @@ class CreditTrackController extends Controller
             )
         );
     }
-
-
-    /**
-     * Make sure this PaymentAccount has a credittrack token. If not, get a
-     * token for CreditTrack using RegisterTokenToAdditionalMerchant
-     *
-     * @param PaymentAccount $paymentAccount
-     */
-    private function ensureTokenForCreditTrack($paymentAccount)
-    {
-        // TODO: How should we determine this?
-        // if ($paymentAccount->hasCreditTrackTrackToken()) {
-        //     return true;
-        // }
-
-        $creditTrackParams = $this->getCreditTrackParams();
-        $token = $paymentAccount->getToken();
-
-        $soapRequest = new RegisterTokenToAdditionalMerchantRequest();
-        $reregistration = new TokenReregistration();
-        $reregistration->setOldMerchantName($paymentAccount->getGroup()->getMerchantName());
-        $reregistration->setNewMerchantName($creditTrackParams['group']->getMerchantName());
-        $reregistration->setToken($token);
-        $reregistration->setRequest($soapRequest);
-        $payum = $this->get('payum')->getPayment('heartland');
-        $captureRequest = new CaptureRequest($reregistration);
-        $payum->execute($captureRequest);
-
-        die();
-
-        // BAD, just testing
-        $ref = new \ReflectionClass($heartland);
-        $property = $ref->getProperty('apis');
-        $property->setAccessible(true);
-        $api = $property->getValue($heartland)[0];
-        $soapClient = $api->getSoapClient();
-
-
-        $oldMerchantCredentials = $api->getMerchantCredentials($paymentAccount->getGroup()->getMerchantName());
-        $newMerchantCredentials = $api->getMerchantCredentials($creditTrackParams['group']->getMerchantName());
-        $soapRequest = new RegisterTokenToAdditionalMerchantRequest();
-        $soapRequest->setCredential($oldMerchantCredentials);
-        $soapRequest->setRegisterToMerchantCredential($newMerchantCredentials);
-        $soapRequest->setToken($token);
-        $response = $soapClient->RegisterTokenToAdditionalMerchant($soapRequest);
-        var_dump($response);die();
-
-        // TODO: RegisterTokenToAdditionalMerchant
-        // RegisterTokenToAdditionalMerchant($token, $creditTrackParams['group']);
-    }
-
 
     /**
      * @Template()
