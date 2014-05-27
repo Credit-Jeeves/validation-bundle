@@ -9,7 +9,7 @@ use RentJeeves\CoreBundle\Traits\DateCommon;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use \Doctrine_Expression;
+use Doctrine_Expression;
 use RentJeeves\CoreBundle\DateTime;
 
 /**

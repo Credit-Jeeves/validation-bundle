@@ -162,6 +162,7 @@ class ContractRepositoryCase extends BaseTestCase
             $payment->setStatus($statusPayment);
             $payment->setType($typePayment);
             $payment->setAmount(980);
+            $payment->setTotal(980);
             $payment->setStartMonth($startPayment->format('n'));
             $payment->setStartYear($startPayment->format('Y'));
             if ($endPayment) {
@@ -285,7 +286,6 @@ class ContractRepositoryCase extends BaseTestCase
             $operation->setType(OperationType::RENT);
             $operation->setPaidFor($paidFor);
             $operation->setOrder($order);
-            $order->addOperation($operation);
 
             $em->persist($operation);
             $em->persist($order);

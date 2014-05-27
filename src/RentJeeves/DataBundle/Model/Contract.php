@@ -689,7 +689,7 @@ abstract class Contract
     public function setStartAt($startAt)
     {
         $this->startAt = $startAt;
-        if ($this->getDueDate() === null) {
+        if ($this->getDueDate() === null && ($this->getDueDate() instanceof DateTime)) {
             $this->setDueDate($this->startAt->format('j'));
         }
         return $this;

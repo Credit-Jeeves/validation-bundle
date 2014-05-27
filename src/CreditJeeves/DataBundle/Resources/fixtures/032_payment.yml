@@ -67,10 +67,8 @@ fixtures:
         status: active
         amount: 2100
         total: 2100
-        paidFor: '2014-02-28'
-        dueDate: 27
-        startMonth: 2
-        startYear: 2014
-        createdAt: '2014-02-27'
-        updatedAt: '2014-02-27'
+        paidFor: '-1 days'
+        startDate: '-1 month -2 days'
+        createdAt: '-1 month -2 days'
+        updatedAt: '-2 days'
 
