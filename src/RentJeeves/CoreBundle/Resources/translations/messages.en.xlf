@@ -1109,9 +1109,9 @@
                 <source>popup.invite.tenant.free</source>
                 <target>Free</target>
             </trans-unit>
-            <trans-unit id="popup.invite.tenant.scoretrack">
-                <source>popup.invite.tenant.scoretrack</source>
-                <target>ScoreTrack</target>
+            <trans-unit id="popup.invite.tenant.credittrack">
+                <source>popup.invite.tenant.credittrack</source>
+                <target>CreditTrack</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.per_month">
                 <source>popup.invite.tenant.per_month</source>
@@ -2071,24 +2071,24 @@
                 <source>info.payment.date</source>
                 <target>Your payment scheduled for the %%DAY_1%%st will be executed on the %%DAY_2%%th due to the short month.</target>
             </trans-unit>
-            <trans-unit id="scoretrack.pay.title">
-                <source>scoretrack.pay.title</source>
-                <target>Sign up for ScoreTrack</target>
+            <trans-unit id="credittrack.pay.title">
+                <source>credittrack.pay.title</source>
+                <target>Sign up for CreditTrack</target>
             </trans-unit>
-            <trans-unit id="scoretrack.pay.step.1">
-                <source>scoretrack.pay.step.1</source>
+            <trans-unit id="credittrack.pay.step.1">
+                <source>credittrack.pay.step.1</source>
                 <target>Payment Source</target>
             </trans-unit>
-            <trans-unit id="scoretrack.pay.step.2">
-                <source>scoretrack.pay.step.2</source>
+            <trans-unit id="credittrack.pay.step.2">
+                <source>credittrack.pay.step.2</source>
                 <target>Review &amp; Pay</target>
             </trans-unit>
-            <trans-unit id="scoretrack.pay.confirm">
-                <source>scoretrack.pay.confirm</source>
-                <target>Bill me $%amount% each month for ScoreTrack starting today until cancelled.</target>
+            <trans-unit id="credittrack.pay.confirm">
+                <source>credittrack.pay.confirm</source>
+                <target>Bill me $%amount% each month for CreditTrack starting today until cancelled.</target>
             </trans-unit>
-            <trans-unit id="scoretrack.pay.amount">
-                <source>scoretrack.pay.amount</source>
+            <trans-unit id="credittrack.pay.amount">
+                <source>credittrack.pay.amount</source>
                 <target>Amount</target>
             </trans-unit>
             <trans-unit id="tab.accounting">

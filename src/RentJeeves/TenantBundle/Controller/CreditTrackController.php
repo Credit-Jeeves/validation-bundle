@@ -12,7 +12,7 @@ use Payum\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
 use Payum\Heartland\Model\TokenReregistration;
 use Payum\Request\CaptureRequest;
 
-class ScoreTrackController extends Controller
+class CreditTrackController extends Controller
 {
     /**
      * @Template()
@@ -21,13 +21,17 @@ class ScoreTrackController extends Controller
     public function payAction()
     {
         $paymentType = $this->createForm(
-            new PaymentType($this->container->getParameter('payment_one_time_until_value'))
+            new PaymentType(
+                $this->container->getParameter('payment_one_time_until_value'),
+                array()
+            )
+            // array('2014-06-27' => 'Jun') TODO: deal with paidFor
         );
 
-        $scoreTrackParams = $this->getScoreTrackParams();
+        $creditTrackParams = $this->getCreditTrackParams();
 
         return array(
-            'paymentGroup' => $scoreTrackParams['group'],
+            'paymentGroup' => $creditTrackParams['group'],
             'paymentType' => $paymentType->createView(),
             'paymentAccounts' => $this->getUser()->getPaymentAccounts()
         );
@@ -36,7 +40,7 @@ class ScoreTrackController extends Controller
     /**
      * @return array
      */
-    private function getScoreTrackParams()
+    private function getCreditTrackParams()
     {
       $em = $this->getDoctrine()->getManager();
 
@@ -53,7 +57,7 @@ class ScoreTrackController extends Controller
     }
 
     /**
-     * @Route("/scoretrack/exec", name="scoretrack_pay_exec", options={"expose"=true})
+     * @Route("/credittrack/exec", name="credittrack_pay_exec", options={"expose"=true})
      * **Method({"POST"})
      */
     public function execAction(Request $request)
@@ -65,7 +69,7 @@ class ScoreTrackController extends Controller
         $em = $this->getDoctrine()->getManager();
         $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')
           ->findById($params['paymentAccountId'])[0];
-        $this->ensureTokenForScoreTrack($paymentAccount);
+        $this->ensureTokenForCreditTrack($paymentAccount);
 
 
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -82,25 +86,25 @@ class ScoreTrackController extends Controller
 
 
     /**
-     * Make sure this PaymentAccount has a scoretrack token. If not, get a
-     * token for ScoreTrack using RegisterTokenToAdditionalMerchant
+     * Make sure this PaymentAccount has a credittrack token. If not, get a
+     * token for CreditTrack using RegisterTokenToAdditionalMerchant
      *
      * @param PaymentAccount $paymentAccount
      */
-    private function ensureTokenForScoreTrack($paymentAccount)
+    private function ensureTokenForCreditTrack($paymentAccount)
     {
         // TODO: How should we determine this?
-        // if ($paymentAccount->hasScoreTrackToken()) {
+        // if ($paymentAccount->hasCreditTrackTrackToken()) {
         //     return true;
         // }
 
-        $scoreTrackParams = $this->getScoreTrackParams();
+        $creditTrackParams = $this->getCreditTrackParams();
         $token = $paymentAccount->getToken();
 
         $soapRequest = new RegisterTokenToAdditionalMerchantRequest();
         $reregistration = new TokenReregistration();
         $reregistration->setOldMerchantName($paymentAccount->getGroup()->getMerchantName());
-        $reregistration->setNewMerchantName($scoreTrackParams['group']->getMerchantName());
+        $reregistration->setNewMerchantName($creditTrackParams['group']->getMerchantName());
         $reregistration->setToken($token);
         $reregistration->setRequest($soapRequest);
         $payum = $this->get('payum')->getPayment('heartland');
@@ -118,7 +122,7 @@ class ScoreTrackController extends Controller
 
 
         $oldMerchantCredentials = $api->getMerchantCredentials($paymentAccount->getGroup()->getMerchantName());
-        $newMerchantCredentials = $api->getMerchantCredentials($scoreTrackParams['group']->getMerchantName());
+        $newMerchantCredentials = $api->getMerchantCredentials($creditTrackParams['group']->getMerchantName());
         $soapRequest = new RegisterTokenToAdditionalMerchantRequest();
         $soapRequest->setCredential($oldMerchantCredentials);
         $soapRequest->setRegisterToMerchantCredential($newMerchantCredentials);
@@ -127,7 +131,7 @@ class ScoreTrackController extends Controller
         var_dump($response);die();
 
         // TODO: RegisterTokenToAdditionalMerchant
-        // RegisterTokenToAdditionalMerchant($token, $scoreTrackParams['group']);
+        // RegisterTokenToAdditionalMerchant($token, $creditTrackParams['group']);
     }
 
 

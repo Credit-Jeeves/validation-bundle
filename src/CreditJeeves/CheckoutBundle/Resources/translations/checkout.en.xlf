@@ -157,25 +157,25 @@
                 <source>exp_date</source>
                 <target>Expiration</target>
             </trans-unit>
-            <trans-unit id="scoretrack-box-title">
-                <source>scoretrack-box-title</source>
+            <trans-unit id="credittrack-box-title">
+                <source>credittrack-box-title</source>
                 <target>Track Your Credit</target>
             </trans-unit>
-            <trans-unit id="scoretrack-box-message">
-                <source>scoretrack-box-message</source>
+            <trans-unit id="credittrack-box-message">
+                <source>credittrack-box-message</source>
                 <target>We'll update your Vantage 3.0 score monthly. We'll also refresh your credit profile, rank, and analysis every six months.</target>
             </trans-unit>
-            <trans-unit id="scoretrack-buy-link">
-                <source>scoretrack-buy-link</source>
+            <trans-unit id="credittrack-buy-link">
+                <source>credittrack-buy-link</source>
                 <target>Sign Up</target>
             </trans-unit>
-            <trans-unit id="scoretrack-promo-amount">
-                <source>scoretrack-promo-amount</source>
+            <trans-unit id="credittrack-promo-amount">
+                <source>credittrack-promo-amount</source>
                 <target>Only &lt;span class="integer"&gt;$%dollars%&lt;/span&gt;&lt;span class="decimal"&gt;%cents%&lt;/span&gt;/mo</target>
             </trans-unit>
-            <trans-unit id="scoretrack-box-note">
-                <source>scoretrack-box-note</source>
-                <target>ScoreTrack &#8482;</target>
+            <trans-unit id="credittrack-box-note">
+                <source>credittrack-box-note</source>
+                <target>CreditTrack &#8482;</target>
             </trans-unit>
         </body>
     </file>

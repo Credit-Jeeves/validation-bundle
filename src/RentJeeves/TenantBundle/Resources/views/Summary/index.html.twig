@@ -23,8 +23,8 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% javascripts '@TenantBundle/Resources/public/js/ScoreTrackPricing.js'
-                   '@TenantBundle/Resources/public/js/ScoreTrackPayDialog.js'
+    {% javascripts '@TenantBundle/Resources/public/js/CreditTrackPricing.js'
+                   '@TenantBundle/Resources/public/js/CreditTrackPayDialog.js'
     %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -36,7 +36,7 @@
             {{ render(controller('ComponentBundle:Score:index', {'user': User})) }}
         </div>
         <div class="column-small floatright">
-            {{ render(controller('TenantBundle:ScoreTrack:promobox')) }}
+            {{ render(controller('TenantBundle:CreditTrack:promobox')) }}
         </div>
         <div class="clearboth"></div>
         <div class="column-large">
@@ -73,7 +73,7 @@
         <div class="clearboth"></div>
     </div>
 
-    {{ render(controller('TenantBundle:ScoreTrack:pricing')) }}
-    {{ render(controller('TenantBundle:ScoreTrack:pay')) }}
+    {{ render(controller('TenantBundle:CreditTrack:pricing')) }}
+    {{ render(controller('TenantBundle:CreditTrack:pay')) }}
 
 {% endblock %}

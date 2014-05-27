@@ -4,15 +4,15 @@
     class="pricing-popup dashboard-popup properties-popup payments-popup verify-min"
     data-payment-accounts="{{ paymentAccounts | serialize('json') }}"
     data-payment-group="{{ paymentGroup | serialize('json') }}">
-    <h1>{{ 'scoretrack.pay.title' | trans }}</h1>
+    <h1>{{ 'credittrack.pay.title' | trans }}</h1>
     <div class="clearfix col-box attention-container">
 
         <ul class="steps clearfix">
             <li class="step1" data-bind="css: { 'active': 'source' == step(), check: isPassed('source') }">
-                <span class="step"><span>{{ 'scoretrack.pay.step.1' | trans }}</span></span>
+                <span class="step"><span>{{ 'credittrack.pay.step.1' | trans }}</span></span>
             </li>
             <li class="step2" data-bind="css: { 'active': 'pay' == step(), check: isPassed('pay') }">
-                <span class="step"><span>{{ 'scoretrack.pay.step.2' | trans }}</span></span>
+                <span class="step"><span>{{ 'credittrack.pay.step.2' | trans }}</span></span>
             </li>
         </ul>
 
@@ -66,7 +66,7 @@
 
         <div data-bind="visible: 'pay' == step()">
             <h3 class="italic">
-                {{ 'scoretrack.pay.confirm'|trans({'%amount%': scoretrack_payment_per_month_dollars ~ '.' ~ scoretrack_payment_per_month_cents })|raw }}
+                {{ 'credittrack.pay.confirm'|trans({'%amount%': credittrack_payment_per_month_dollars ~ '.' ~ credittrack_payment_per_month_cents })|raw }}
             </h3>
 
             <div class="information-box pie-el"
@@ -99,9 +99,9 @@
                         </div>
                     </div>
                     <div class="form-row clearfix">
-                        <label>{{ 'scoretrack.pay.amount' | trans }}</label>
+                        <label>{{ 'credittrack.pay.amount' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value">{{ scoretrack_payment_per_month }}</span>
+                            <span class="value">{{ credittrack_payment_per_month }}</span>
                         </div>
                     </div>
                     <div class="form-row clearfix">

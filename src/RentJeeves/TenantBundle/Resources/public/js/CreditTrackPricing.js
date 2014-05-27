@@ -1,8 +1,8 @@
 /**
- * ScoreTrackPricing simply displays pricing information for ScoreTrack and
- * launches ScoreTrackPayDialog if the users chooses to sign up
+ * CreditTrackPricing simply displays pricing information for CreditTrack and
+ * launches CreditTrackPayDialog if the users chooses to sign up
  */
-function ScoreTrackPricing(options){
+function CreditTrackPricing(options){
   this.options = options;
   this.pricingDialog = $("#pricing-popup");
 
@@ -12,7 +12,7 @@ function ScoreTrackPricing(options){
    * Multiple links from outside the context of this signup flow can launch
    * this module.
    */
-  $('.show-scoretrack-pricing-popup').click(function(){
+  $('.show-credittrack-pricing-popup').click(function(){
     self.pricing.call(self);
     return false;
   });
@@ -21,7 +21,7 @@ function ScoreTrackPricing(options){
 /**
   * Instantiate the dialog
   */
-ScoreTrackPricing.prototype.pricing = function(){
+CreditTrackPricing.prototype.pricing = function(){
   this.pricingDialog.dialog({
     width:660,
     modal:true
@@ -31,7 +31,7 @@ ScoreTrackPricing.prototype.pricing = function(){
 /**
  * Close the pricing dialog and launch the pay dialog
  */
-ScoreTrackPricing.prototype.pay = function(){
+CreditTrackPricing.prototype.pay = function(){
   this.pricingDialog.dialog('close');
-  this.payDialog = new ScoreTrackPayDialog(this.options);
+  this.payDialog = new CreditTrackPayDialog(this.options);
 };

@@ -1,9 +1,11 @@
-function ScoreTrackPayDialog(options) {
+function CreditTrackPayDialog(options) {
     this.root = $('#pay-popup');
 
     ko.cleanNode(this.root.get(0));
 
-    this.paymentAccounts = ko.observableArray(this.root.data('paymentAccounts'));
+    this.paymentAccounts = ko.observableArray($.map(this.root.data('paymentAccounts'), function(value) {
+      return [value];
+    }));
     this.paymentGroup = this.root.data('paymentGroup');
 
     var self = this;
@@ -84,6 +86,15 @@ function ScoreTrackPayDialog(options) {
             });
         }
     });
+
+    // TODO: deal with paidFor somehow
+    //
+    // var paidForArr = parent.getPaidForArrContractById(contractId);
+    // this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
+
+    // this.getPaidFor = ko.computed(function() {
+    //     return paidForArr[self.payment.paidFor()];
+    // });
 
     this.getAmount = function(){
       return '$' + self.payment.amount();
@@ -260,7 +271,7 @@ function ScoreTrackPayDialog(options) {
                 }
                 break;
             case 'pay':
-                sendData(Routing.generate('scoretrack_pay_exec'), forms['details']);
+                sendData(Routing.generate('credittrack_pay_exec'), forms['details']);
                 break;
         }
 

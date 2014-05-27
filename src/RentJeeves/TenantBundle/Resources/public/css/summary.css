@@ -2,12 +2,13 @@ body {
   line-height: normal;
 }
 
-.scoretrack-promo-box {
+.credittrack-promo-box {
     background: transparent right bottom no-repeat url(/bundles/checkout/images/promo-box-price-bg.png);
     position: relative;
+    height: 207px;
 }
 
-.scoretrack-promo-box .price {
+.credittrack-promo-box .price {
     font-family: astoria-medium;
     position: absolute;
     color: white;
@@ -24,20 +25,20 @@ body {
     text-align: center;
 }
 
-.scoretrack-promo-box .price .integer {
+.credittrack-promo-box .price .integer {
     vertical-align: text-top;
     font-size: 30px;
 }
 
-.scoretrack-promo-box p {
+.credittrack-promo-box p {
     font-size: 16px;
 }
 
-.scoretrack-promo-box .button {
+.credittrack-promo-box .button {
     margin: 10px 0 10px 0;
 }
 
-.scoretrack-promo-box .note-text {
+.credittrack-promo-box .note-text {
     text-align: center;
     width: 123px;
 }
@@ -46,7 +47,7 @@ body {
     position: relative;
 }
 
-.scoretrack-teaser {
+.credittrack-teaser {
     position: absolute;
     background: transparent left bottom no-repeat url(/bundles/checkout/images/teaser-banner-bg.png);
 
@@ -58,7 +59,7 @@ body {
     left: -10px; /* background sticks out the left side on purpose */
 }
 
-.scoretrack-teaser a {
+.credittrack-teaser a {
     color: white;
     display: inline-block;
     height: 100%;
@@ -70,10 +71,10 @@ body {
     padding-top: 3px;
 }
 
-.scoretrack-teaser a:hover {
+.credittrack-teaser a:hover {
     text-decoration: none;
 }
 
-.scoretrack-teaser .highlight {
+.credittrack-teaser .highlight {
     text-decoration: underline;
 }
