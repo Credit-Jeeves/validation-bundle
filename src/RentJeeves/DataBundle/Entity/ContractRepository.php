@@ -10,7 +10,6 @@ use Doctrine\ORM\Query;
 use RentJeeves\CoreBundle\DateTime;
 use Doctrine\ORM\Query\Expr;
 use RentJeeves\CoreBundle\Traits\DateCommon;
-use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 class ContractRepository extends EntityRepository
