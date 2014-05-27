@@ -161,6 +161,9 @@ function CreditTrackPayDialog(options) {
         return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };
 
+    this.getTotal = function(){};
+    this.totalInput = function(){};
+
     this.isForceSave = ko.computed(function() {
         var result = 'immediate' != this.payment.type();
         this.paymentSource.save(result);

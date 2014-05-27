@@ -8,7 +8,7 @@ fixtures:
     merchantName: Monticeto_Percent
     group: RentGroup_2
     status: complete
-  RentTrack:
-    merchantName: RentTrack
-    group: RentTrack
+  RentTrackCorp:
+    merchantName: RentTrackCorp
+    group: RentTrackCorp
     status: complete
