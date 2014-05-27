@@ -135,4 +135,21 @@ class PaymentRepository extends EntityRepository
             )"
         );
     }
+
+    /**
+     * @param int $id
+     *
+     * @return Payment | null
+     */
+    public function findOneWithContractOrdersOperations($id)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->innerJoin('p.contract', 'c');
+        $query->andWhere('p.id = :id');
+        $query->setParameter('id', $id);
+        $query = ContractRepository::queryOperationsOrdersHistory($query)->getQuery();
+
+        return $query->getOneOrNullResult();
+
+    }
 }

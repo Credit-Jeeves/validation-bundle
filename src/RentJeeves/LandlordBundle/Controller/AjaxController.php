@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Controller;
 
+use CreditJeeves\DataBundle\Entity\OrderRepository;
 use CreditJeeves\DataBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\SerializationContext;
@@ -281,7 +282,7 @@ class AjaxController extends Controller
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
         /** @var Property $property */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
-        if ($property) {
+        if ($property && $request->request->has('isSingle')) {
             $property->setIsSingle($request->request->get('isSingle') == 'true');
         }
         $em = $this->getDoctrine()->getManager();
@@ -638,9 +639,8 @@ class AjaxController extends Controller
         //@TODO find best way for this implementation
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $total = 0;
         $request = $this->getRequest();
-        $page = $request->request->all('data');
+        $page = $request->request->all();
         $data = $page['data'];
 
         $sortColumn = $data['sortColumn'];
@@ -652,26 +652,27 @@ class AjaxController extends Controller
 
         $result = array('actions' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Contract');
-        $total = $repo->countActionsRequired($group, $searchField, $searchText);
-        $total = count($total);
-        if ($total) {
-            $contracts = $repo->getActionsRequiredPage(
-                $group,
-                $data['page'],
-                $data['limit'],
-                $sortColumn,
-                $sortType,
-                $searchField,
-                $searchText
-            );
-            foreach ($contracts as $contract) {
-                $contract->setStatusShowLateForce(true);
-                $item = $contract->getItem();
-                $items[] = $item;
-            }
+        $repo = $this->getDoctrine()->getRepository('RjDataBundle:Contract');
+        $query = $repo->getActionsRequiredPageQuery(
+            $group,
+            $data['page'],
+            $data['limit'],
+            $sortColumn,
+            $sortType,
+            $searchField,
+            $searchText
+        );
+        $contracts = $query->getQuery()->execute();
+        foreach ($contracts as $contract) {
+            $contract->setStatusShowLateForce(true);
+            $item = $contract->getItem();
+            $items[] = $item;
         }
-        
+        $total = $query->select('count(c)')
+            ->setMaxResults(null)
+            ->setFirstResult(null)
+            ->getQuery()
+            ->getSingleScalarResult();
         $result['actions'] = $items;
         $result['total'] = $total;
         $result['pagination'] = $this->datagridPagination($total, $data['limit']);
@@ -860,6 +861,7 @@ class AjaxController extends Controller
 
         $result = array();
         $group = $this->getCurrentGroup();
+        /** @var OrderRepository $repo */
         $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('DataBundle:Order');
 
         $total = $repo->countOrders($group, $searchCollum, $searchText);

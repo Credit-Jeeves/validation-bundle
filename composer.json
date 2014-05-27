@@ -239,7 +239,8 @@
         "willdurand/js-translation-bundle": "dev-master",
         "beberlei/DoctrineExtensions": "dev-master",
         "jms/job-queue-bundle": "dev-ton as 0.1.x-dev",
-        "pagerfanta/pagerfanta": "dev-master"
+        "pagerfanta/pagerfanta": "dev-master",
+        "fp/jsformvalidator-bundle": "dev-master"
     },
     "require-dev": {
         "qunit": "v1",
@@ -249,7 +250,7 @@
         "behat/mink-bundle": "1.4.*",
         "behat/mink-selenium2-driver": "1.1.*",
         "behat/mink-zombie-driver": "dev-master",
-        "behat/mink-goutte-driver": "dev-master",
+        "behat/mink-goutte-driver": "v1.0.8",
         "doctrine/data-fixtures": "dev-master",
         "doctrine/doctrine-fixtures-bundle": ">=2.0.0@alpha",
         "sensio/generator-bundle": "dev-master",

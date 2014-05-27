@@ -32,6 +32,34 @@ class IframeCase extends BaseTestCase
         $propertySearch->click();
     }
 
+    public function provideGoogleAddress()
+    {
+        return array(
+            array('50 Orange Street, Brooklyn, NY 11201', 'Brooklyn', null, 40.699021, -73.993744),
+            array('13 Greenwich St, Manhattan, New York, NY 10013', 'New York', 'Manhattan', 40.7218084, -74.0097316),
+        );
+    }
+
+    /**
+     * @test
+     * @dataProvider provideGoogleAddress
+     */
+    public function parseGoogleAddress($address, $city, $district, $jb, $kb)
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->session->visit($this->getUrl() . 'iframe');
+        $this->session->wait($this->timeout, "typeof $ !== undefined");
+
+        $this->fillGoogleAddress($address);
+        $this->session->wait($this->timeout, "window.location.pathname.match('\/user\/invite\/[0-9]') != null");
+
+        $repo = $this->getContainer()->get('doctrine')->getManager()->getRepository('RjDataBundle:Property');
+        $this->assertNotNull($property = $repo->findOneByJbKbWithUnitAndAlphaNumericSort($jb, $kb));
+        $this->assertEquals($city, $property->getCity());
+        $this->assertEquals($district, $property->getDistrict());
+    }
+
     /**
      * @test
      */

@@ -5,7 +5,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20140403001720 extends AbstractMigration
+class Version20140426181139 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -15,11 +15,7 @@ class Version20140403001720 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_order
-                DROP days_late"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
+            "ALTER TABLE rj_payment
                 CHANGE paid_for paid_for DATE NOT NULL"
         );
     }
@@ -32,7 +28,7 @@ class Version20140403001720 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_operation
+            "ALTER TABLE rj_payment
                 CHANGE paid_for paid_for DATE DEFAULT NULL"
         );
     }

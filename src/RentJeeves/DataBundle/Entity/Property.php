@@ -48,6 +48,10 @@ class Property extends Base
                     }
                 }
             }
+            if (empty($property['city']) && !empty($property['district'])) {
+                $property['city'] = $property['district'];
+                unset($property['district']);
+            }
         }
         return $property;
     }
