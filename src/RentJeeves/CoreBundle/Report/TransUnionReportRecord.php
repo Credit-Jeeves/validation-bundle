@@ -45,7 +45,17 @@ class TransUnionReportRecord
     /**
      * @Serializer\Exclude
      */
-    protected $operation;
+    protected $paidFor;
+
+    /**
+     * @Serializer\Exclude
+     */
+    protected $totalOperationsAmount;
+
+    /**
+     * @Serializer\Exclude
+     */
+    protected $lastPaymentDate;
                                                                         // Field Length
     protected $recordLength = '0426';                                   // 4
     protected $processingIndicator = '1';                               // 1
@@ -90,7 +100,8 @@ class TransUnionReportRecord
     protected $dateOfFirstDelinquency = '        ';                     // 8
     /** @Serializer\Accessor(getter="getDateClosed") */
     protected $dateClosed;                                              // 8
-    protected $dateOfLastPayment = '        ';                          // 8
+    /** @Serializer\Accessor(getter="getDateOfLastPayment") */
+    protected $dateOfLastPayment;                                       // 8
     protected $reserved2 = '                 ';                         // 17
     protected $tenantTransactionType = ' ';                             // 1
     /** @Serializer\Accessor(getter="getTenantSurname") */
@@ -121,12 +132,20 @@ class TransUnionReportRecord
     protected $reserved4 = ' ';                                         // 1
     protected $residenceCode = 'R';                                     // 1
 
-    public function __construct(Contract $contract, $month, $year, Operation $operation = null)
-    {
+    public function __construct(
+        Contract $contract,
+        $month,
+        $year,
+        $paidFor = null,
+        $amount = null,
+        DateTime $lastPaymentDate = null
+    ) {
         $this->contract = $contract;
         $this->month = $month;
         $this->year = $year;
-        $this->operation = $operation;
+        $this->paidFor = $paidFor;
+        $this->totalOperationsAmount = $amount;
+        $this->lastPaymentDate = $lastPaymentDate;
     }
 
     public function getAccountUpdateTimestamp()
@@ -166,12 +185,9 @@ class TransUnionReportRecord
 
     public function getLeasePaymentAmountConfirmed()
     {
-        $amount = 0;
-        if ($this->operation) {
-            $amount = (int)$this->operation->getAmount();
-        }
+        $amount = $this->totalOperationsAmount?: 0;
 
-        return str_pad($amount, 9, '0', STR_PAD_LEFT);
+        return str_pad((int)$amount, 9, '0', STR_PAD_LEFT);
     }
 
     public function getLeaseStatus()
@@ -236,8 +252,8 @@ class TransUnionReportRecord
         //RR‐ Eviction
         //SS‐ Rent unpaid, renter skipped, and did not fulfill remaining lease term
 
-        if ($this->operation) {
-            $paidOnDay = $this->operation->getCreatedAt()->format('j');
+        if ($this->lastPaymentDate) {
+            $paidOnDay = $this->lastPaymentDate->format('j');
             switch ($paidOnDay) {
                 case ($paidOnDay < 6):
                     return 'MM';
@@ -296,6 +312,15 @@ class TransUnionReportRecord
         return str_repeat(' ', 8);
     }
 
+    public function getDateOfLastPayment()
+    {
+        if ($this->lastPaymentDate) {
+            return $this->lastPaymentDate->format('mdY');
+        }
+
+        return str_repeat(' ', 8);
+    }
+
     public function getTenantSurname()
     {
         $surname = $this->contract->getTenant()->getLastName();
@@ -344,8 +369,8 @@ class TransUnionReportRecord
     public function getSecondLineOfAddress()
     {
         $addressLine = '';
-        if ($unit = $this->contract->getUnit()) {
-            $addressLine = $unit->getName();
+        if (!$this->contract->getProperty()->isSingle()) {
+            $addressLine = $this->contract->getUnit()->getName();
         }
 
         return str_pad($addressLine, 32);
@@ -379,10 +404,8 @@ class TransUnionReportRecord
 
     private function getUnpaidInterval()
     {
-        if ($this->operation) {
-            $paidFor = $this->operation->getPaidFor();
-            $paidAt = $this->operation->getOrder()->getUpdatedAt();
-            $interval = $paidFor->diff($paidAt)->format('%r%a');
+        if ($this->lastPaymentDate) {
+            $interval = $this->paidFor->diff($this->lastPaymentDate)->format('%r%a');
         } else {
             // If we reach this point - contract is definitely late
             // paidTo is "zero point" for calculating days late
