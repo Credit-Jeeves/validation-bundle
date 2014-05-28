@@ -3,7 +3,6 @@
 namespace RentJeeves\CoreBundle\Report;
 
 use DateTime;
-use DoctrineExtensions\Types\Date;
 
 class TransUnionRentalReport extends RentalReport
 {
