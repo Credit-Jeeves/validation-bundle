@@ -59,7 +59,7 @@ fixtures:
     contract: Contract_6
     type: rent
     amount: 1500
-    paidFor: '-2 days'
+    paidFor: '-1 month'
   rjOperation_66:
     order: rjOrder_66
     contract: Contract_66

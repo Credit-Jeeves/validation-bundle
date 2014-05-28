@@ -651,7 +651,7 @@ abstract class Contract
      */
     public function setDueDate($dueDate)
     {
-        $dueDate = (int) $dueDate;
+        $dueDate = (int)$dueDate;
         if ($dueDate > 31 || $dueDate < 1) {
             throw new LogicException("Due date can't be more than 31 and less than 1");
         }
@@ -689,7 +689,7 @@ abstract class Contract
     public function setStartAt($startAt)
     {
         $this->startAt = $startAt;
-        if ($this->getDueDate() === null && ($this->getDueDate() instanceof DateTime)) {
+        if ($this->getDueDate() == null && ($this->startAt instanceof \DateTime)) {
             $this->setDueDate($this->startAt->format('j'));
         }
         return $this;

@@ -209,6 +209,12 @@ class ContractRepositoryCase extends BaseTestCase
                 $paidFor = new DateTime("-5 days"),
                 false
             ),
+            //We have order for current month, so we don't need send email
+            array(
+                $hasOrder = true,
+                $paidFor = new DateTime("-27 days"),
+                false
+            ),
             //We don't have order for current month send email
             array(
                 $hasOrder = true,
