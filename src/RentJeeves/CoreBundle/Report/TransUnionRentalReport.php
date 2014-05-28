@@ -49,10 +49,19 @@ class TransUnionRentalReport extends RentalReport
         $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
         foreach ($contracts as $contract) {
-            $rentOperations = $operationRepo->getRentOperationForMonth($contract->getId(), $month, $year);
-            foreach ($rentOperations as $rentOperation) {
-                $this->records[] = new TransUnionReportRecord($contract, $month, $year, $rentOperation);
-            }
+            $reportData = $operationRepo->getTransUnionRentOperationsForMonth($contract->getId(), $month, $year);
+            $paidFor = isset($reportData[0]['paid_for'])? new DateTime($reportData[0]['paid_for']) : null;
+            $totalAmount = isset($reportData[0]['total_amount'])? $reportData[0]['total_amount'] : null;
+            $paymentDate = isset($reportData[0]['last_payment_date'])?
+                new DateTime($reportData[0]['last_payment_date']) : null;
+            $this->records[] = new TransUnionReportRecord(
+                $contract,
+                $month,
+                $year,
+                $paidFor,
+                $totalAmount,
+                $paymentDate
+            );
         }
     }
 }
