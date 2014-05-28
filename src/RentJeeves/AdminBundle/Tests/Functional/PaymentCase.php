@@ -29,6 +29,7 @@ class PaymentCase extends BaseTestCase
 
     /**
      * @test
+     * @depends filter
      */
     public function butchRun()
     {

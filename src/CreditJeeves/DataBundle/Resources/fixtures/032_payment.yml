@@ -25,7 +25,7 @@ fixtures:
         createdAt: '-5 days'
         updatedAt: '-5 days'
     Payment_4:
-        contract: Contract_4
+        contract: Contract_41
         paymentAccount: PaymentAccount_4
         type: recurring
         status: active
