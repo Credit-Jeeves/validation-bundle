@@ -45,6 +45,7 @@ class TenantCase extends BaseTestCase
         $today->click();
         $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
         $this->page->pressButton('approve.tenant');
+        $this->session->wait($this->timeout, "!$('#tenant-approve-property-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
@@ -141,6 +142,7 @@ class TenantCase extends BaseTestCase
         $unitEdit->selectOption('14'); //
 
         $this->page->pressButton('savechanges');
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup').is(':visible')");
         $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
