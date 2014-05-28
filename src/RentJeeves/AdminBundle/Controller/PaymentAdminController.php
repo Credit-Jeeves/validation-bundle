@@ -4,7 +4,7 @@ namespace RentJeeves\AdminBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\PaymentRepository;
 use Sonata\AdminBundle\Controller\CRUDController;

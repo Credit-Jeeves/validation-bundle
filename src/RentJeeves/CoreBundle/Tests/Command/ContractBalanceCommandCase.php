@@ -2,8 +2,11 @@
 namespace RentJeeves\CoreBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Command\ContractBalanceCommand;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
