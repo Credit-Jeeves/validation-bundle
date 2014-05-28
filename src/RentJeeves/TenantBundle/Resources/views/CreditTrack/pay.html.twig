@@ -1,4 +1,3 @@
-{% form_theme paymentType 'RjCoreBundle::form.html.twig' %}
 <div
     id="pay-popup"
     class="pricing-popup dashboard-popup properties-popup payments-popup verify-min"
@@ -55,13 +54,6 @@
                     <small><b>*</b>{{ 'required' | trans }}</small>
                 </div>
             </div>
-        </div>
-
-        <div class="col" data-bind="visible: 'details' == step()">
-            <form {{ form_enctype(paymentType) }} novalidate method="post">
-                {{ form_widget(paymentType) }}
-                {{ JSFV(paymentType) }}
-            </form>
         </div>
 
         <div data-bind="visible: 'pay' == step()">
@@ -219,5 +211,4 @@
         </a>
         {{ include('RjCoreBundle::nortonSecured.html.twig', {'flash': false}) }}
     </div>
-    <script type="text/html" id="paidFor-html"></script>
 </div>

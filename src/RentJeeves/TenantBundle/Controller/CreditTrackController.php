@@ -20,19 +20,10 @@ class CreditTrackController extends Controller
      */
     public function payAction()
     {
-        $paymentType = $this->createForm(
-            new PaymentType(
-                $this->container->getParameter('payment_one_time_until_value'),
-                array()
-            )
-            // array('2014-06-27' => 'Jun') TODO: deal with paidFor
-        );
-
         $creditTrackParams = $this->getCreditTrackParams();
 
         return array(
             'paymentGroup' => $creditTrackParams['group'],
-            'paymentType' => $paymentType->createView(),
             'paymentAccounts' => $this->getUser()->getPaymentAccounts()
         );
     }
