@@ -55,7 +55,12 @@ class TransUnionRentalReport extends RentalReport
             $paymentDate = isset($reportData[0]['last_payment_date'])?
                 new DateTime($reportData[0]['last_payment_date']) : null;
             $this->records[] = new TransUnionReportRecord(
-                $contract, $month, $year, $paidFor, $totalAmount, $paymentDate
+                $contract,
+                $month,
+                $year,
+                $paidFor,
+                $totalAmount,
+                $paymentDate
             );
         }
     }
