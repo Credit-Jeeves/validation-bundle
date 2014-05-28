@@ -8,6 +8,7 @@ use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
+use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RuntimeException;
 
 /**
@@ -29,16 +30,35 @@ trait AccountAssociate
     {
         $em = $this->getDoctrine()->getManager();
         $depositAccount = $group->getDepositAccount();
-        $existingDepositAccounts = $paymentAccount->getDepositAccounts();
+        $registerToMerchantName = $group->getMerchantName();
 
-        if ($existingDepositAccounts->contains($depositAccount)) {
-            // group already associated to the payment account
-            return true;
+        if ($registerToMerchantName == null) {
+            throw new RuntimeException('Cannot register to a group without a ' .
+                'merchant name.');
+        }
+
+        $existingDepositAccounts = $em->createQueryBuilder()
+            ->from('RjDataBundle:DepositAccount', 'da')
+            ->select('da')
+            ->join('da.paymentAccounts', 'pa')
+            ->join('da.group', 'g')
+            ->where('da.status = :status')
+            ->andWhere('da.id <> :deposit_account_id')
+            ->andWhere('pa.id = :payment_account_id')
+            ->setParameter('status', DepositAccountStatus::DA_COMPLETE)
+            ->setParameter('deposit_account_id', $depositAccount->getId())
+            ->setParameter('payment_account_id', $paymentAccount->getId())
+            ->getQuery()
+            ->execute();
+
+        if (empty($existingDepositAccounts)) {
+            throw new RuntimeException('Registering to another deposit ' .
+                'account only works when there is at least one existing ' .
+                'association.');
         }
 
         // any previously registered group will work
-        $merchantName = $existingDepositAccounts->first()->getGroup()->getMerchantName();
-        $registerToMerchantName = $group->getMerchantName();
+        $merchantName = $existingDepositAccounts[0]->getGroup()->getMerchantName();
         $token = $paymentAccount->getToken();
 
         $this->registerTokenToAdditionalMerchant($merchantName, $registerToMerchantName, $token);
