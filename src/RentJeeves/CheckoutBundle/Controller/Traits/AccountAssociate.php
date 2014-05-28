@@ -38,18 +38,21 @@ trait AccountAssociate
         }
 
         $existingDepositAccounts = $em->createQueryBuilder()
-            ->from('RjDataBundle:DepositAccount', 'da')
-            ->select('da')
-            ->join('da.paymentAccounts', 'pa')
-            ->join('da.group', 'g')
-            ->where('da.status = :status')
-            ->andWhere('da.id <> :deposit_account_id')
-            ->andWhere('pa.id = :payment_account_id')
+            ->from('RjDataBundle:DepositAccount', 'd')
+            ->select('d')
+            ->join('d.paymentAccounts', 'p')
+            ->join('d.group', 'g')
+            ->where('d.status = :status')
+            ->andWhere('p.id = :payment_account_id')
             ->setParameter('status', DepositAccountStatus::DA_COMPLETE)
-            ->setParameter('deposit_account_id', $depositAccount->getId())
             ->setParameter('payment_account_id', $paymentAccount->getId())
             ->getQuery()
             ->execute();
+
+        if (in_array($depositAccount, $existingDepositAccounts)) {
+            // already associated
+            return true;
+        }
 
         if (empty($existingDepositAccounts)) {
             throw new RuntimeException('Registering to another deposit ' .
