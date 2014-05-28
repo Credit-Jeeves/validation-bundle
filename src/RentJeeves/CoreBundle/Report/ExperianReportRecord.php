@@ -270,7 +270,11 @@ class ExperianReportRecord
 
     public function getTenantDOB()
     {
-        return $this->contract->getTenant()->getDateOfBirth()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        if ($dob = $this->contract->getTenant()->getDateOfBirth()) {
+            return $dob->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        }
+
+        return '';
     }
 
     public function getTenantFirstName()

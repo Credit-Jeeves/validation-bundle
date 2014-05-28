@@ -28,7 +28,7 @@ class OperationRepository extends EntityRepository
         $query->setParameter('year', $yearNo);
         $query = $query->getQuery();
 
-        return $query->getOneOrNullResult();
+        return $query->execute();
     }
 
     public function getOperationForImport(
