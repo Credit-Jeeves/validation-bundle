@@ -33,8 +33,7 @@ trait AccountAssociate
         $registerToMerchantName = $group->getMerchantName();
 
         if ($registerToMerchantName == null) {
-            throw new RuntimeException('Cannot register to a group without a ' .
-                'merchant name.');
+            throw new RuntimeException('Cannot register to a group without a merchant name.');
         }
 
         $existingDepositAccounts = $em->createQueryBuilder()
@@ -55,9 +54,7 @@ trait AccountAssociate
         }
 
         if (empty($existingDepositAccounts)) {
-            throw new RuntimeException('Registering to another deposit ' .
-                'account only works when there is at least one existing ' .
-                'association.');
+            throw new RuntimeException('Registering to another deposit account only works when there is at least one existing association.');
         }
 
         // any previously registered group will work
