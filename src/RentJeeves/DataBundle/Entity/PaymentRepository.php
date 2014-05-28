@@ -43,7 +43,13 @@ class PaymentRepository extends EntityRepository
 
         $query = $this->createQueryBuilder('p');
         $query->select("p, c, g, d");
-        $query->innerJoin('p.contract', 'c');
+        $query->innerJoin(
+            'p.contract',
+            'c',
+            Expr\Join::WITH,
+            "c.status IN !(:contractNotActiveStatuses)"
+        );
+        $query->setParameter('contractNotActiveStatuses', array(ContractStatus::DELETED, ContractStatus::FINISHED));
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('g.deposit_account', 'd');
         $query->leftJoin(
