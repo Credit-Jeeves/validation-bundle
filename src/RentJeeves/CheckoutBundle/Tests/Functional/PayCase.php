@@ -349,8 +349,12 @@ class PayCase extends BaseTestCase
         $this->assertCount(3, $addresses);
         $this->assertEquals('New street, New city, NY 99999', $addresses[2]->getText());
 
-        $this->assertNotNull($existPaymentSource = $this->page->findField('ko_unique_2'));
-        $existPaymentSource->getParent()->click();
+        $existingPaymentSource = $this->page->find(
+            'css',
+            '#id-source-step .payment-accounts label:nth-of-type(2)'
+        );
+        $this->assertNotNull($existingPaymentSource);
+        $existingPaymentSource->click();
 
         $this->page->pressButton('pay_popup.step.next');
     }
