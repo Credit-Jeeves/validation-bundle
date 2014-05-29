@@ -35,7 +35,9 @@ trait AccountAssociate
             ->completeByPaymentAccount($paymentAccount);
 
         if ($registerToMerchantName == null) {
-            throw new RuntimeException('Cannot register to a group without a merchant name.');
+            throw new RuntimeException(
+                'Cannot register to a group without a merchant name.'
+            );
         }
 
         if (in_array($depositAccount, $existingDepositAccounts)) {
@@ -44,14 +46,21 @@ trait AccountAssociate
         }
 
         if (empty($existingDepositAccounts)) {
-            throw new RuntimeException('Registering to another deposit account only works when there is at least one existing association.');
+            throw new RuntimeException(
+                'Registering to another deposit account only works when ' .
+                'there is at least one existing association.'
+            );
         }
 
         // any previously registered group will work
         $merchantName = $existingDepositAccounts[0]->getGroup()->getMerchantName();
         $token = $paymentAccount->getToken();
 
-        $this->registerTokenToAdditionalMerchant($merchantName, $registerToMerchantName, $token);
+        $this->registerTokenToAdditionalMerchant(
+            $merchantName,
+            $registerToMerchantName,
+            $token
+        );
 
         // create the association
         $paymentAccount->addDepositAccount($depositAccount);
