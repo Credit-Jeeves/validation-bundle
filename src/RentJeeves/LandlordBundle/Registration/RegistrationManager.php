@@ -69,7 +69,7 @@ class RegistrationManager
             $property->addPropertyGroup($group);
             $group->addGroupProperty($property);
 
-            if ($formData['property']['isSingleProperty'] == true) {
+            if ($form->get('property')->get('isSingleProperty')->getData() == true) {
                 $property->setIsSingle(true);
             } else {
                 $property->setIsSingle(false);
