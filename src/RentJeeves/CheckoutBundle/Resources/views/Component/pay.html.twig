@@ -73,7 +73,7 @@
         <div class="col long-label" data-bind="visible: 'source' == step()" id="id-source-step">
             <div data-bind="visible: $root.notEmptyPaymentAccount" class="form-row clearfix" >
                 <label>{{ 'payment.account' | trans }}*</label>
-                <div class="fields-box">
+                <div class="fields-box payment-accounts">
                     <small ><b>*</b>{{ 'required' | trans }}</small>
                     <!-- ko foreach: paymentAccounts -->
                         <label class="checkbox radio" style="clear: left;">
@@ -136,7 +136,7 @@
             {{ JSFV(questionsType) }}
         </div>
 
-        <div data-bind="visible: 'pay' == step()">
+        <div data-bind="visible: 'pay' == step()" class="pay-step">
             <h3 class="italic">
                 <span data-bind="visible: 'recurring' == payment.type()">{{ 'checkout.recurring_for' | trans }}</span>
                 <span class="value" data-bind="text: fullPayTo"></span>

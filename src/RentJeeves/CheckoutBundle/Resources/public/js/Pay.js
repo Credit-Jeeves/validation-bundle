@@ -169,9 +169,7 @@ function Pay(parent, contractId) {
     this.paymentAccounts = ko.observableArray([]);
     jQuery.each(window.paymentAccounts, function (key, val) {
         jQuery.each(val.deposit_accounts, function (index, depositAccount) {
-            if (depositAccount.group && contract.groupId == depositAccount.group.id) {
-                self.paymentAccounts.push(val);
-            }
+            self.paymentAccounts.push(val);
         });
     });
 

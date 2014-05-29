@@ -8,7 +8,6 @@ use Payum\Request\BinaryMaskStatusRequest;
 use Payum\Request\CaptureRequest;
 use RentJeeves\DataBundle\Entity\PaymentAccount;
 use RentJeeves\DataBundle\Entity\Heartland as PaymentDetails;
-use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use RuntimeException;
 
 /**
@@ -32,21 +31,12 @@ trait AccountAssociate
         $depositAccount = $group->getDepositAccount();
         $registerToMerchantName = $group->getMerchantName();
 
+        $existingDepositAccounts = $em->getRepository('RjDataBundle:DepositAccount')
+            ->completeByPaymentAccount($paymentAccount);
+
         if ($registerToMerchantName == null) {
             throw new RuntimeException('Cannot register to a group without a merchant name.');
         }
-
-        $existingDepositAccounts = $em->createQueryBuilder()
-            ->from('RjDataBundle:DepositAccount', 'd')
-            ->select('d')
-            ->join('d.paymentAccounts', 'p')
-            ->join('d.group', 'g')
-            ->where('d.status = :status')
-            ->andWhere('p.id = :payment_account_id')
-            ->setParameter('status', DepositAccountStatus::DA_COMPLETE)
-            ->setParameter('payment_account_id', $paymentAccount->getId())
-            ->getQuery()
-            ->execute();
 
         if (in_array($depositAccount, $existingDepositAccounts)) {
             // already associated

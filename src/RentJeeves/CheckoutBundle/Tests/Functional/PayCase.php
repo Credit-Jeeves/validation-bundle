@@ -192,6 +192,40 @@ class PayCase extends BaseTestCase
         $this->logout();
     }
 
+    /**
+     * Choose an existing payment account that is registered to another deposit
+     * account to make sure we can register the old token to a new merchant.
+     *
+     * @test
+     */
+    public function registerAccountToAdditionalMerchant()
+    {
+        $this->setDefaultSession('selenium2');
+        $this->load(true);
+        $this->login('marion@rentrack.com', 'pass');
+
+        $this->page->pressButton('contract-pay-2');
+
+        $form = $this->page->find('css', '#rentjeeves_checkoutbundle_paymenttype');
+
+        $this->session->wait($this->timeout, "jQuery('#rentjeeves_checkoutbundle_paymenttype_amount:visible').length");
+
+        // set date to 31 so we can always continue
+        $form->fillField('rentjeeves_checkoutbundle_paymenttype_dueDate', '31');
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "jQuery('#id-source-step:visible').length");
+        $this->page->find('css', '#id-source-step .payment-accounts label:nth-of-type(2)')->click();
+        $this->page->pressButton('pay_popup.step.next');
+
+        $this->session->wait($this->timeout, "jQuery('.pay-step:visible').length");
+        $this->page->pressButton('checkout.make_payment');
+
+        $this->session->wait($this->timeout, "!jQuery('#pay-popup:visible').length");
+
+        $this->logout();
+    }
+
     protected function notSkipVerification($summary)
     {
         $this->assertNotNull($payPopup = $this->page->find('css', '#pay-popup'));

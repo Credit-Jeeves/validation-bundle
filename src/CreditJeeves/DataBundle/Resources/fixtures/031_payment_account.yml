@@ -69,3 +69,14 @@ fixtures:
         updatedAt: '2014-02-28'
         depositAccounts:
             - DepositAccount_1
+    PaymentAccount_13:
+        user: Tenant_9
+        address: rjAddress_1
+        type: card
+        name: Card
+        token: 'C09BBB4E-4C08-4295-BF05-EAAF75961D68'
+        ccExpiration: 'last day of +1 month'
+        createdAt: '-5 days'
+        updatedAt: '-5 days'
+        depositAccounts:
+            - DepositAccount_3
