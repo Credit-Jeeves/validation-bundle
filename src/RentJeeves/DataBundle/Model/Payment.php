@@ -117,7 +117,7 @@ class Payment
     protected $total;
 
     /**
-     * @ORM\Column(name="paid_for", type="datetime", nullable=true)
+     * @ORM\Column(name="paid_for", type="date", nullable=false)
      *
      * @var DateTime
      */
