@@ -619,8 +619,8 @@ class Order extends BaseOrder
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
         $result['amount'] = $this->getSum(); //TODO check. May be it must be operation getAmount()
-        $result['tenant'] = $contract->getTenant()->getFullName();
-        $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
+        $result['tenant'] = $contract? $contract->getTenant()->getFullName() : '';
+        $result['address'] = $contract? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $result['finish'] = '--';
         $result['style'] = $this->getOrderStatusStyle();

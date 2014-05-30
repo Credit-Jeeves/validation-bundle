@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -30,6 +31,10 @@ abstract class DepositAccount
      *     referencedColumnName="id"
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
+     * @Serializer\Exclude
+     *
+     * Serializer\Exclude fixes a problem with tenant dashboard error: Entity Unit was not found when serializing.
+     * User: darryl+becky@renttrack.com
      */
     protected $group;
 
