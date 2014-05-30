@@ -6,6 +6,25 @@ use RentJeeves\CoreBundle\DateTime;
 
 class DateTimeCase extends BaseTestCase
 {
+    public function providerConstructor()
+    {
+        return array(
+//            array('2014-02-31', '2014-02-28'), TODO
+            array('2014-03-30 -1 month', '2014-02-28'),
+            array('2015-03-30 -1 month -1 year', '2014-02-28'),
+        );
+    }
+
+    /**
+     * @test
+     * @dataProvider providerConstructor
+     */
+    public function constructor($time, $result)
+    {
+        $dateTime = new DateTime($time);
+        $this->assertEquals($result, $dateTime->format('Y-m-d'));
+    }
+
     public function providerSetDate()
     {
         $now = new DateTime();

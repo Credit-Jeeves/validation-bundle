@@ -68,14 +68,16 @@ class PaymentAdmin extends Admin
                 ),
             );
         } else {
-            $daysInMonth = cal_days_in_month(
-                CAL_GREGORIAN,
-                $return['startDate']['value']['month'],
-                $return['startDate']['value']['year']
+            $date = new DateTime();
+            $date->setTime(0, 0, 0);
+            $date->setDate(
+                @$return['startDate']['value']['year'],
+                @$return['startDate']['value']['month'],
+                @$return['startDate']['value']['day']
             );
-            $return['startDate']['value']['day'] = $daysInMonth < $return['startDate']['value']['day'] ?
-                $daysInMonth :
-                $return['startDate']['value']['day'];
+            $return['startDate']['value']['year'] = $date->format('Y');
+            $return['startDate']['value']['month'] = $date->format('n');
+            $return['startDate']['value']['day'] = $date->format('j');
         }
 
         if (!isset($return['status']['value'])) {

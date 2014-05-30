@@ -8,7 +8,7 @@ fixtures:
         amount: 1400
         total: 1400
         paidFor: 'now'
-        startDate: '-3 month'
+        startDate: '-3 month -10 days'
         endDate: '+9 months'
         createdAt: '-5 days'
         updatedAt: '-5 days'
@@ -55,8 +55,8 @@ fixtures:
         status: active
         amount: 2100
         total: 2100
-        paidFor: '+1 year +1 month +1 day'
-        startDate: '+1 year +1 month +1 day'
+        paidFor: '+1 year +1 month +6 day'
+        startDate: '+1 year +1 month +6 day'
         endDate: '+9 months'
         createdAt: '-50 days'
         updatedAt: '-50 days'
@@ -68,7 +68,7 @@ fixtures:
         amount: 2100
         total: 2100
         paidFor: '-1 days'
-        startDate: '-1 month -2 days'
-        createdAt: '-1 month -2 days'
-        updatedAt: '-2 days'
+        startDate: '-1 month -6 days'
+        createdAt: '-1 month -6  days'
+        updatedAt: '-6 days'
 
