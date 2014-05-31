@@ -10,9 +10,6 @@ class PaymentCase extends BaseTestCase
      */
     public function filter()
     {
-        $this->markTestSkipped(
-            'It does not work for 29-05-2014 because of origin DataTime object in fixtures loader'
-        );
         $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
@@ -20,7 +17,7 @@ class PaymentCase extends BaseTestCase
         $block->clickLink('link_list');
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));
-        $this->assertTrue(1 < count($table->findAll('css', 'tr')));
+        $this->assertTrue(1 <= count($table->findAll('css', 'tbody tr')));
 
         $this->page->fillField('filter_startDate_value_day', date('j')-1?:2);
         $this->page->pressButton('btn_filter');
@@ -35,9 +32,6 @@ class PaymentCase extends BaseTestCase
      */
     public function butchRun()
     {
-        $this->markTestSkipped(
-            'It does not work for 29-05-2014 because of origin DataTime object in fixtures loader'
-        );
         $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
         $this->assertNotNull($block = $this->page->find('css', '#id_block_paymnets'));
@@ -45,7 +39,7 @@ class PaymentCase extends BaseTestCase
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));
         $this->assertNotNull($checkBoxes = $table->findAll('css', '.sonata-ba-list-field input'));
-        $this->assertCount(2, $checkBoxes);
+        $this->assertCount(1, $checkBoxes);
 
         foreach ($checkBoxes as $checkBox) {
             $checkBox->check();
