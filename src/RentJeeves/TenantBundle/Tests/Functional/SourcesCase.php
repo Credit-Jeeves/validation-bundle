@@ -34,7 +34,10 @@ class SourcesCase extends BaseTestCase
 
         $this->page->pressButton('payment_account.edit.save');
 
-        $this->session->wait($this->timeout, "jQuery('#payment-account-edit .attention-box li').length");
+        $this->session->wait(
+            $this->timeout + 10000,
+            "jQuery('#payment-account-edit .attention-box li').length"
+        );
         $this->assertNotNull($errors = $this->page->findAll('css', '#payment-account-edit .attention-box li'));
         $this->assertCount(6, $errors);
 
