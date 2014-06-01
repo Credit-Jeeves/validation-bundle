@@ -10,13 +10,12 @@ class TransUnionRentalReportCase extends BaseTestCase
 {
     /**
      * @test
+     * @dataProvider provideData
      */
-    public function shouldMakeReportForTransUnion()
+    public function shouldMakeReportForTransUnion($month, $year, $resultFilename)
     {
         $this->load(true);
         $em = $this->getContainer()->get('doctrine')->getManager();
-        $month = '2';
-        $year = '2014';
         $report = new TransUnionRentalReport($em, $month, $year);
 
         $this->assertEquals('trans_union_rental', $report->getSerializationType());
@@ -29,8 +28,16 @@ class TransUnionRentalReportCase extends BaseTestCase
         // check only record, b/c header doesn't contain important info and has changeable data
         $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'trans_union_rental');
         $reportRecord = trim(explode("\n", $report)[1]);
-        $expectedResult = trim(file_get_contents(__DIR__.'/../Fixtures/Report/transunion.txt'));
+        $expectedResult = trim(file_get_contents($resultFilename));
 
         $this->assertEquals($expectedResult, $reportRecord);
+    }
+
+    public function provideData()
+    {
+        return array(
+            array(2, 2014, __DIR__.'/../Fixtures/Report/transunion.txt'),
+            array(4, 2014, __DIR__.'/../Fixtures/Report/transunion_multiple_transactions.txt'),
+        );
     }
 }

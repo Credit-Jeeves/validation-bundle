@@ -39,7 +39,7 @@ abstract class ContractHistory extends AbstractLogEntry
     protected $objectId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract", inversedBy="histories")
+     * @ORM\ManyToOne(targetEntity="RentJeeves\DataBundle\Entity\Contract", inversedBy="histories", cascade={"persist"})
      * @ORM\JoinColumn(name="object_id", referencedColumnName="id")
      */
     protected $object;

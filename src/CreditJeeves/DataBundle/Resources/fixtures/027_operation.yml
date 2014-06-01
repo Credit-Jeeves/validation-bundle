@@ -59,7 +59,7 @@ fixtures:
     contract: Contract_6
     type: rent
     amount: 1500
-    paidFor: '-2 days'
+    paidFor: '-1 month'
   rjOperation_66:
     order: rjOrder_66
     contract: Contract_66
@@ -320,4 +320,19 @@ fixtures:
     amount: 13
     paidFor: '2014-03-01'
     createdAt: '2014-03-01'
+  rjOperation_9_4_1:
+    order: rjOrder_9_4_1
+    contract: Contract_19
+    type: rent
+    amount: 820
+    paidFor: '2014-04-01'
+    createdAt: '2014-04-01'
+  rjOperation_9_4_2:
+    order: rjOrder_9_4_2
+    contract: Contract_19
+    type: rent
+    amount: 180
+    paidFor: '2014-04-01'
+    createdAt: '2014-05-05'
+
 

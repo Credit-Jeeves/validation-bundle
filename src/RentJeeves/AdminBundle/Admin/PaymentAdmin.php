@@ -13,6 +13,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Knp\Menu\ItemInterface as MenuItemInterface;
+use RentJeeves\CoreBundle\DateTime;
 
 class PaymentAdmin extends Admin
 {
@@ -110,7 +111,10 @@ class PaymentAdmin extends Admin
                         $queryBuilder->setParameter('start_date', $value['value']);
 
                         $queryBuilder->andWhere($alias . '.dueDate IN (:due_date)');
-                        $queryBuilder->setParameter('due_date', $this->getDueDays(0, $value['value']));
+                        $queryBuilder->setParameter(
+                            'due_date',
+                            $this->getDueDays(0, new DateTime($value['value']->format('Y-m-d')))
+                        );
 
                         return true;
                     },

@@ -68,7 +68,7 @@
                     </button>
                   {% else %}
                         <br />
-                        <a href="{{ path("tenant_invite_landlord", {'propertyId': prop.id } )}}" class="button middle inviteLandlord" >
+                        <a href="{{ path("iframe_invite", {'propertyId': prop.id } )}}" class="button middle inviteLandlord" >
                         <span>{{ 'invite.landlord'|trans }}</span></a>
                  {% endif %}
                 </div>

@@ -282,7 +282,7 @@ class AjaxController extends Controller
         $propertySearch = array_merge($propertyDataLocation, array('number' => $propertyDataAddress['number']));
         /** @var Property $property */
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->findOneBy($propertySearch);
-        if ($property) {
+        if ($property && $request->request->has('isSingle')) {
             $property->setIsSingle($request->request->get('isSingle') == 'true');
         }
         $em = $this->getDoctrine()->getManager();
