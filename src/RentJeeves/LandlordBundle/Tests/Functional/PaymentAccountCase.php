@@ -34,8 +34,7 @@ class PaymentAccountCase extends BaseTestCase
         );
         $this->assertNotNull($save = $this->page->find('css', '#save_payment'));
         $save->click();
-        $this->session->wait($this->timeout, "$('.processPayment').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.processPayment').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#billingAccountType').is(':visible')");
         $this->assertNotNull($account = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
         $this->assertEquals('mary (settings.payment_account.active)', $account[0]->getText());
 
