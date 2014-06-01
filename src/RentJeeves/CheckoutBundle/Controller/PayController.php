@@ -33,6 +33,7 @@ class PayController extends Controller
 {
     use FormErrors;
     use Traits\PaymentProcess;
+    use Traits\AccountAssociate;
 
     protected function createPaymentForm(Request $request)
     {
@@ -87,6 +88,40 @@ class PayController extends Controller
     }
 
     /**
+     * @Route("/source_existing", name="checkout_pay_existing_source", options={"expose"=true})
+     * @Method({"POST"})
+     */
+    public function sourceExistingAction(Request $request)
+    {
+        $formType = new PaymentAccountType($this->getUser());
+        $formData = $this->getRequest()->get($formType->getName());
+
+        $paymentAccountId = $formData['id'];
+        $groupId = $formData['groupId'];
+
+        $em = $this->getDoctrine()->getManager();
+        $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')->find($paymentAccountId);
+        $group = $em->getRepository('DataBundle:Group')->find($groupId);
+
+        // ensure group id is associated with payment account
+        try {
+            $this->ensureAccountAssociation($paymentAccount, $group);
+        } catch (Exception $e) {
+            return new JsonResponse(
+                array(
+                    $formType->getName() => array(
+                        '_globals' => explode('|', $e->getMessage())
+                    )
+                )
+            );
+        }
+
+        return new JsonResponse(
+            array('success' => true)
+        );
+    }
+
+    /**
      * @Route("/source", name="checkout_pay_source", options={"expose"=true})
      * @Method({"POST"})
      */
@@ -98,7 +133,6 @@ class PayController extends Controller
             return $this->renderErrors($paymentAccountType);
         }
 
-        // TODO: deal with multiple groups
         $em = $this->get('doctrine.orm.default_entity_manager');
         $group = $em->getRepository('DataBundle:Group')->find($paymentAccountType->get('groupId')->getData());
 

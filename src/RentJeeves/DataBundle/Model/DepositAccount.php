@@ -64,7 +64,10 @@ abstract class DepositAccount
     protected $message;
 
     /**
-     * The other side is the 'owning' side of this ManyToMany relationship
+     * @ORM\ManyToMany(
+     *      targetEntity="PaymentAccount",
+     *      mappedBy="depositAccounts"
+     * )
      */
     protected $paymentAccounts;
 

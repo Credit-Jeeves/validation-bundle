@@ -12,3 +12,7 @@ fixtures:
     merchantName: RentTrackCorp
     group: RentTrackCorp
     status: complete
+  DepositAccount_3:
+    merchantName: WestPac
+    group: RentGroup_3
+    status: complete
