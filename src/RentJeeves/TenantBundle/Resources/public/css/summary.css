@@ -8,6 +8,14 @@ body {
     height: 207px;
 }
 
+.credittrack-promo-box h3 {
+    margin: 12px 0;
+}
+
+.credittrack-promo-box p {
+    margin: 20px 0;
+}
+
 .credittrack-promo-box .price {
     font-family: astoria-medium;
     position: absolute;
@@ -41,6 +49,7 @@ body {
 .credittrack-promo-box .note-text {
     text-align: center;
     width: 123px;
+    color: black;
 }
 
 .credit-score-graph {
@@ -59,7 +68,7 @@ body {
     left: -10px; /* background sticks out the left side on purpose */
 }
 
-.credittrack-teaser a {
+.credittrack-teaser .text {
     color: white;
     display: inline-block;
     height: 100%;
@@ -71,8 +80,12 @@ body {
     padding-top: 3px;
 }
 
-.credittrack-teaser a:hover {
+.credittrack-teaser .text:hover {
     text-decoration: none;
+}
+
+.credittrack-teaser .text.enrolled {
+    margin-top: 9px;
 }
 
 .credittrack-teaser .highlight {

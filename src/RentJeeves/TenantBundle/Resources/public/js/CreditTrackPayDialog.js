@@ -277,7 +277,7 @@ function CreditTrackPayDialog(options) {
                 }
                 break;
             case 'pay':
-                sendData(Routing.generate('credittrack_pay_exec'), forms['details']);
+                sendData(Routing.generate('credittrack_pay_exec'), forms['source']);
                 break;
         }
 

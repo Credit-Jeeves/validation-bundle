@@ -13,7 +13,11 @@
     <div class="clearboth"></div>
   </div>
   <div class="credittrack-teaser font-helvetica">
-    <i><a href="#" class="show-credittrack-pricing-popup">{{ 'credittrack-teaser-link' | trans | raw }}</a></i>
+    {% if creditTrackEnabled %}
+      <i><span class="text enrolled">{{ 'credittrack-active-message' | trans | raw }}</span></i>
+    {% else %}
+      <i><a href="#" class="text show-credittrack-pricing-popup">{{ 'credittrack-teaser-link' | trans | raw }}</a></i>
+    {% endif %}
   </div>
   <div class="clearboth"></div>
 </div>

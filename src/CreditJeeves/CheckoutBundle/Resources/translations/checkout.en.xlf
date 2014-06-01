@@ -175,7 +175,7 @@
             </trans-unit>
             <trans-unit id="credittrack-box-note">
                 <source>credittrack-box-note</source>
-                <target>CreditTrack &#8482;</target>
+                <target>CreditTrack&#8482;</target>
             </trans-unit>
         </body>
     </file>

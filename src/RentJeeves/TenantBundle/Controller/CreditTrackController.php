@@ -2,10 +2,12 @@
 namespace RentJeeves\TenantBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\DataBundle\Entity\Heartland;
+use RentJeeves\DataBundle\Entity\UserSettings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Payum\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
@@ -20,32 +22,17 @@ class CreditTrackController extends Controller
      */
     public function payAction()
     {
-        $creditTrackParams = $this->getCreditTrackParams();
+        $rt_merchant_name = $this->container->getParameter('rt_merchant_name');
+
+        $em = $this->getDoctrine()->getManager();
+        $group = $em->getRepository('DataBundle:Group')
+            ->findOneByCode($rt_merchant_name);
+        $user = $this->getUser();
 
         return array(
-            'paymentGroup' => $creditTrackParams['group'],
-            'paymentAccounts' => $this->getUser()->getPaymentAccounts()
+            'paymentGroup' => $group,
+            'paymentAccounts' => $user->getPaymentAccounts(),
         );
-    }
-
-    /**
-     * @return array
-     */
-    private function getCreditTrackParams()
-    {
-      $em = $this->getDoctrine()->getManager();
-      $rt_merchant_name = $this->container->getParameter('rt_merchant_name');
-
-      return array(
-        'group' => $em->getRepository('DataBundle:Group')->findByCode($rt_merchant_name)[0]
-      );
-    }
-
-    private function getStatics()
-    {
-      return array(
-        'renttrack_group_code' => 'RentTrack'
-      );
     }
 
     /**
@@ -54,17 +41,37 @@ class CreditTrackController extends Controller
      */
     public function execAction(Request $request)
     {
+        $user = $this->getUser();
         $request = $this->get('request');
-        $params = $request->get('rentjeeves_checkoutbundle_paymenttype');
-        $statics = $this->getStatics();
+        $params = $request->get('rentjeeves_checkoutbundle_paymentaccounttype');
+        $paymentAccountId = $params['id'];
 
         $em = $this->getDoctrine()->getManager();
-        $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')
-          ->findById($params['paymentAccountId'])[0];
 
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $em->persist($contract);
-        $em->persist($paymentEntity);
+        // only allowed to use this user's payment account
+        $paymentAccount = $em->getRepository('RjDataBundle:PaymentAccount')
+            ->findOneBy(array('id' => $paymentAccountId, 'user' => $user));
+
+        if (!$paymentAccount) {
+            throw $this->createNotFoundException(
+                "PaymentAccount with id '{$paymentAccountId}' not found for user"
+            );
+        }
+
+        $settings = $user->getSettings();
+
+        if (!$settings) {
+            $settings = new UserSettings();
+            $settings->setUser($user);
+
+            // TODO: Is this correct? It cannot be null
+            $settings->setIsBaseOrderReport(false);
+        }
+
+        $settings->setCreditTrackPaymentAccount($paymentAccount);
+        $settings->setCreditTrackEnabledAt(new \DateTime('now'));
+
+        $em->persist($settings);
         $em->flush();
 
         return new JsonResponse(

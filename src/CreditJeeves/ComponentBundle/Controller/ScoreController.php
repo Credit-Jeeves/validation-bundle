@@ -30,7 +30,10 @@ class ScoreController extends Controller
         $nScore = ($nScore > 900) ? 900 : $nScore;
         $nFicoScore = $user->getScores()->last()->getFicoScore();
         $sDate = $user->getScores()->last()->getCreatedDate()->format('M d, Y');
+        $settings = $user->getSettings();
+        $creditTrackEnabled = !!$settings->getCreditTrackPaymentAccount();
         return array(
+            'creditTrackEnabled' => $creditTrackEnabled,
             'chartData' => $chartData,
             'nScore' => $nScore,
             'nFicoScore' => $nFicoScore,
