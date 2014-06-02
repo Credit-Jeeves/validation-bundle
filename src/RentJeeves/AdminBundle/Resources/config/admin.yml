@@ -13,7 +13,7 @@ services:
     sonata.admin.payments:
         class: RentJeeves\AdminBundle\Admin\PaymentAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Paymnets" }
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Payments" }
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\Payment
