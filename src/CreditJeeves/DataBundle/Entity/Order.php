@@ -629,16 +629,16 @@ class Order extends BaseOrder
         $result['status'] = 'order.status.text.'.$status;
         switch ($status) {
             case OrderStatus::COMPLETE:
-                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
             case OrderStatus::PENDING:
-                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
             case OrderStatus::ERROR:
             case OrderStatus::CANCELLED:
             case OrderStatus::REFUNDED:
             case OrderStatus::RETURNED:
-                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
         }
         return $result;
