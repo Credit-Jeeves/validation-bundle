@@ -125,7 +125,7 @@ class PayCase extends BaseTestCase
         $this->page->pressButton('pay_popup.step.next');
 
         $this->session->wait(
-            $this->timeout,
+            $this->timeout + 10000,
             "jQuery('#id-source-step:visible').length"
         );
 
@@ -151,14 +151,14 @@ class PayCase extends BaseTestCase
         );
         $this->page->pressButton('pay_popup.step.next');
 
+        $this->session->wait(
+            $this->timeout+ 10000,
+            "!jQuery('#id-source-step').is(':visible')"
+        );
+
         if (!$skipVerification) {
             $this->notSkipVerification($summary);
         }
-
-        $this->session->wait(
-            $this->timeout,
-            "jQuery('#checkout-payment-source:visible').length"
-        );
 
         if ($infoMessage) {
             $this->assertNotNull($informationBox = $payPopup->find('css', '.information-box'));
@@ -168,11 +168,7 @@ class PayCase extends BaseTestCase
         $payPopup->pressButton('checkout.make_payment');
 
         $this->session->wait(
-            $this->timeout+5000,
-            "false" // FIXME
-        );
-        $this->session->wait(
-            $this->timeout,
+            $this->timeout + 10000,
             "!jQuery('#pay-popup:visible').length"
         );
 
