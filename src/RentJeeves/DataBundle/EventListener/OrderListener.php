@@ -227,9 +227,10 @@ class OrderListener
             return;
         }
 
-        if ($contract->getStatus() !== ContractStatus::CURRENT) {
-            return;
-        }
+        // Contract can be finished but last payment does not pass
+//        if ($contract->getStatus() !== ContractStatus::CURRENT) {
+//            return;
+//        }
 
         $group = $contract->getGroup();
         $isIntegrated = $group->getGroupSettings()->getIsIntegrated();

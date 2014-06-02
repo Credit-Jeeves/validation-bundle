@@ -199,7 +199,7 @@ class OrderAdmin extends Admin
             ->add('updated_at')
             ->add('authorizes', null, array('route' => array('name' => 'show')))
             ->add('heartlands', null, array('route' => array('name' => 'show')))
-            // FIXME these do not work correctly
+            // FIXME these do not work correctly, because need create Operation list
             ->add('operations', null, array('route' => array('name' => 'show')))
             ->add('jobs', null, array('route' => array('name' => 'show')));
     }
