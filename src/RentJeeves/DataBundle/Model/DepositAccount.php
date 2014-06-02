@@ -31,10 +31,7 @@ abstract class DepositAccount
      *     referencedColumnName="id"
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
-     * @Serializer\Exclude
-     *
-     * Serializer\Exclude fixes a problem with tenant dashboard error: Entity Unit was not found when serializing.
-     * User: darryl+becky@renttrack.com
+     * @Serializer\MaxDepth(3)
      */
     protected $group;
 

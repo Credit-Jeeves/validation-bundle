@@ -6,6 +6,7 @@ use CreditJeeves\CheckoutBundle\Form\Type\UserAddressType;
 use CreditJeeves\DataBundle\Entity\Address;
 use CreditJeeves\ExperianBundle\Form\Type\QuestionsType;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\SerializationContext;
 use Payum\Request\CaptureRequest;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentType;
 use RentJeeves\CheckoutBundle\Form\Type\PaymentAccountType;
@@ -59,10 +60,12 @@ class ComponentController extends Controller
 
         $this->get('soft.deleteable.control')->enable();
 
+        $pa = $this->get('jms_serializer')->serialize($this->getUser()->getPaymentAccounts(), 'json', SerializationContext::create()->enableMaxDepthChecks());
+
         return array(
             'paymentAccountType' => $paymentAccountType->createView(),
             'addresses' => $this->getUser()->getAddresses(),
-            'paymentAccounts' => $this->getUser()->getPaymentAccounts(),
+            'payAccounts' => $pa,
         );
     }
 }
