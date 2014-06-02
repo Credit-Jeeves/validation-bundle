@@ -14,8 +14,9 @@ class Version20140313130207 extends AbstractMigration
             $this->connection->getDatabasePlatform()->getName() != "mysql",
             "Migration can only be executed safely on 'mysql'."
         );
-        $sql = "SELECT ord.*, o.*, op.*,
-        ord.amount AS order_amount, h.amount AS h_amount, op.cj_order_id AS cj_order_id, o.created_at AS order_create
+        $sql = "SELECT op.cj_operation_id, op.cj_order_id, o.type, o.cj_applicant_report_id, o.contract_id,
+        o.group_id, ord.cj_applicant_id,
+        ord.amount AS order_amount, h.amount AS h_amount, op.cj_order_id AS cj_order_id, ord.created_at AS order_create
         FROM `cj_order_operation` AS op
         INNER JOIN cj_operation AS o ON op.cj_operation_id = o.id
         INNER JOIN cj_order AS ord ON op.cj_order_id = ord.id
@@ -41,17 +42,17 @@ class Version20140313130207 extends AbstractMigration
                 SET
                 `order_id` = {$row['cj_order_id']},
                 `amount` = {$amount},
-                `type` = '{$oldRow['type']}',
-                `created_at` = '{$oldRow['order_create']}'
+                `type` = '{$row['type']}',
+                `created_at` = '{$row['order_create']}'
                 ";
-                if ($oldRow['cj_applicant_report_id']) {
-                    $sql .= ",`cj_applicant_report_id` = {$oldRow['cj_applicant_report_id']}";
+                if ($row['cj_applicant_report_id']) {
+                    $sql .= ",`cj_applicant_report_id` = {$row['cj_applicant_report_id']}";
                 }
-                if ($oldRow['contract_id']) {
-                    $sql .= ",`contract_id` = {$oldRow['contract_id']}";
+                if ($row['contract_id']) {
+                    $sql .= ",`contract_id` = {$row['contract_id']}";
                 }
-                if ($oldRow['group_id']) {
-                    $sql .= ",`group_id` = {$oldRow['group_id']}";
+                if ($row['group_id']) {
+                    $sql .= ",`group_id` = {$row['group_id']}";
                 }
                 $this->addSql($sql);
             }
