@@ -35,7 +35,7 @@ class PaymentAccountCase extends BaseTestCase
         $this->assertNotNull($save = $this->page->find('css', '#save_payment'));
         $save->click();
         $this->session->wait(
-            $this->timeout + 20000,
+            $this->timeout + 30000,
             "!$('#billingAccountType').is(':visible')"
         );
         $this->assertNotNull($account = $this->page->findAll('css', '.properties-table>tbody>tr>td'));
