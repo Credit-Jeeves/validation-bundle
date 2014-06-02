@@ -38,6 +38,7 @@ class PaymentAdmin extends Admin
             ->add('type')
             ->add('status')
             ->add('amount', 'money')
+            ->add('other', 'money')
             ->add('created_at', 'date')
             ->add(
                 '_action',
@@ -140,8 +141,9 @@ class PaymentAdmin extends Admin
             ->add('paymentAccount', null, array('route' => array('name' => 'show')))
             ->add('type')
             ->add('status')
-            ->add('amount')
-            ->add('dueDate')
+            ->add('amount', 'money', array('label' => 'Rent'))
+            ->add('other', 'money', array('label' => 'Other'))
+            ->add('dueDate', null, array('label' => 'Date'))
             ->add('startMonth')
             ->add('startYear')
             ->add('endYear')
