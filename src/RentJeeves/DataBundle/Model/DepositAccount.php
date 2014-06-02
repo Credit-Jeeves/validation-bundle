@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Enum\DepositAccountStatus;
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -17,6 +18,7 @@ abstract class DepositAccount
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"paymentSelect"});
      */
     protected $id;
 
@@ -30,6 +32,7 @@ abstract class DepositAccount
      *     referencedColumnName="id"
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
+     * @Serializer\Groups({"paymentSelect"});
      */
     protected $group;
 

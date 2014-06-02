@@ -67,8 +67,10 @@ function CreditTrackPayDialog(options) {
 
     this.propertyAddress = ko.observable(this.propertyFullAddress.toString());
 
-    this.payment = new Payment(this, new Date());
+    var now = new Date();
+    this.payment = new Payment(this, now);
     this.payment.amount(options.amount);
+    this.payment.dueDate(now.getDate());
 
     this.newUserAddress = ko.observableArray([]);
     this.payment.paymentAccountId.subscribe(function(newValue) {
@@ -87,25 +89,8 @@ function CreditTrackPayDialog(options) {
         }
     });
 
-    // TODO: deal with paidFor somehow
-    //
-    // var paidForArr = parent.getPaidForArrContractById(contractId);
-    // this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
-
-    // this.getPaidFor = ko.computed(function() {
-    //     return paidForArr[self.payment.paidFor()];
-    // });
-
-    this.getAmount = function(){
-      return '$' + self.payment.amount();
-    };
-
     this.getTotalAmount = function(paymentCardFee) {
-        var fee = 0;
-        if (this.paymentSource.type() == 'card') {
-            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
-        }
-        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+        return '$' + parseFloat(this.payment.amount()).toFixed(2);
     };
 
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
@@ -156,13 +141,6 @@ function CreditTrackPayDialog(options) {
     }, this);
 
     this.address = new Address(this, window.addressesViewModels, this.propertyFullAddress);
-
-    this.getFeeAmountText = function(paymentCardFee) {
-        return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
-    };
-
-    this.getTotal = function(){};
-    this.totalInput = function(){};
 
     this.isForceSave = ko.computed(function() {
         var result = 'immediate' != this.payment.type();

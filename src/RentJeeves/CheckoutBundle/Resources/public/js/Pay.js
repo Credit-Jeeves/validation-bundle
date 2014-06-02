@@ -182,14 +182,7 @@ function Pay(parent, contractId) {
             });
         }
     });
-    this.paymentAccounts = ko.observableArray([]);
-    jQuery.each(window.paymentAccounts, function (key, val) {
-        jQuery.each(val.deposit_accounts, function (index, depositAccount) {
-            self.paymentAccounts.push(val);
-        });
-    });
-
-
+    this.paymentAccounts = ko.observableArray(window.paymentAccounts);
     this.newPaymentAccount = ko.observable(!this.paymentAccounts().length);
 
     this.notEmptyPaymentAccount = ko.computed(function() {

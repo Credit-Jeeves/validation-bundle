@@ -1,8 +1,8 @@
 <div
     id="pay-popup"
     class="pricing-popup dashboard-popup properties-popup payments-popup verify-min"
-    data-payment-accounts="{{ paymentAccounts | serialize('json') }}"
-    data-payment-group="{{ paymentGroup | serialize('json') }}">
+    data-payment-accounts="{{ paymentAccountsJson }}"
+    data-payment-group="{{ paymentGroupJson }}">
     <h1>{{ 'credittrack.pay.title' | trans }}</h1>
     <div class="clearfix col-box attention-container">
 
@@ -99,14 +99,13 @@
                     <div class="form-row clearfix">
                         <label>{{ 'checkout.fee' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="visible: 'bank' == paymentSource.type()">$0.00</span>
-                            <span class="value" data-bind="visible: 'card' == paymentSource.type(), text: getFeeAmountText('{{ payment_card_fee }}')"></span>
+                            <span class="value">$0.00</span>
                         </div>
                     </div>
                     <div class="form-row clearfix total-amount">
                         <label>{{ 'checkout.total' | trans }}</label>
                         <div class="fields-box">
-                            <span class="value" data-bind="text: getTotalAmount('{{ payment_card_fee }}')"></span>
+                            <span class="value" data-bind="text: getTotalAmount()"></span>
                         </div>
                     </div>
                 </div>

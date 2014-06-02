@@ -10,6 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\DataBundle\Entity\DepositAccount;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @ORM\MappedSuperclass
@@ -20,6 +21,7 @@ abstract class Group
      * @ORM\Id
      * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Serializer\Groups({"paymentSelect"});
      */
     protected $id;
 

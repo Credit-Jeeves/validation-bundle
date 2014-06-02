@@ -37,8 +37,11 @@ class SummaryController extends Controller
             return $this->forward('ExperianBundle:Report:get');
         }
 
-        $settings = $user->getSettings();
-        $creditTrackEnabled = !!$settings->getCreditTrackPaymentAccount();
+        if ($settings = $user->getSettings()) {
+            $creditTrackEnabled = !!$settings->getCreditTrackPaymentAccount();
+        } else {
+            $creditTrackEnabled = false;
+        }
 
         $Score = $this->getScore();
         return array(

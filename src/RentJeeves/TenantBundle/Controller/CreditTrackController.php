@@ -13,6 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Payum\Heartland\Soap\Base\RegisterTokenToAdditionalMerchantRequest;
 use Payum\Heartland\Model\TokenReregistration;
 use Payum\Request\CaptureRequest;
+use JMS\Serializer\SerializationContext;
+
 
 class CreditTrackController extends Controller
 {
@@ -28,10 +30,23 @@ class CreditTrackController extends Controller
         $group = $em->getRepository('DataBundle:Group')
             ->findOneByCode($rt_merchant_name);
         $user = $this->getUser();
+        $paymentAccounts = $user->getPaymentAccounts();
+        $serializer = $this->get('jms_serializer');
+
+        $paymentAccounts = $serializer->serialize(
+            $paymentAccounts,
+            'json',
+            SerializationContext::create()->setGroups(array('paymentSelect'))
+        );
+        $group = $serializer->serialize(
+            $group,
+            'json',
+            SerializationContext::create()->setGroups(array('paymentSelect'))
+        );
 
         return array(
-            'paymentGroup' => $group,
-            'paymentAccounts' => $user->getPaymentAccounts(),
+            'paymentGroupJson' => $group,
+            'paymentAccountsJson' => $paymentAccounts,
         );
     }
 
