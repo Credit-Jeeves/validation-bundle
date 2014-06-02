@@ -61,7 +61,9 @@ class ComponentController extends Controller
         $this->get('soft.deleteable.control')->enable();
 
         $payAccounts = $this->get('jms_serializer')->serialize(
-            $this->getUser()->getPaymentAccounts(), 'json', SerializationContext::create()->enableMaxDepthChecks()
+            $this->getUser()->getPaymentAccounts(),
+            'json',
+            SerializationContext::create()->enableMaxDepthChecks()
         );
 
         return array(
