@@ -725,7 +725,17 @@
                 <td data-bind="attr: {'class': 'actions-status '+style}">
                     <div data-bind="text: status"></div>
                 </td>
-                <td class="email-box ellipsis-box" data-bind="text: tenant"></td>
+                <td class="email-box ellipsis-box">
+                  <div data-bind="if: credit_track_enabled">
+                    <div class="clarification csm-icon" style="padding: 5px 28px 5px 0;">
+                      <div data-bind="text: tenant"></div>
+                      <i data-bind="visible: credit_track_enabled" style="top:-3px;right:0;left:initial;"></i>
+                    </div>
+                  </div>
+                  <div data-bind="if: !credit_track_enabled">
+                    <div data-bind="text: tenant"></div>
+                  </div>
+                </td>
                 <td class="email-box ellipsis-box" data-bind="text: email"></td>
                 <td data-bind="text: phone"></td>
                 <td class="property-box ellipsis-box" 
