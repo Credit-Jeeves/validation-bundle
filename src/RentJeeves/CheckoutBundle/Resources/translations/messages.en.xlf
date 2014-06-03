@@ -418,7 +418,7 @@
             </trans-unit>
             <trans-unit id="checkout.track_score">
                 <source>checkout.track_score-%AMOUNT%</source>
-                <target>Track my score as I build credit for %AMOUNT%/month, paid using the method above.</target>
+                <target>Track my score as I build credit history for %AMOUNT%/month, paid using the method above.</target>
             </trans-unit>
             <trans-unit id="checkout.track_score.help">
                 <source>checkout.track_score-%AMOUNT%.help</source>

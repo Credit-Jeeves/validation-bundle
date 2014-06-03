@@ -16,11 +16,11 @@
             </trans-unit>
             <trans-unit id="rj.footer.copyright">
                 <source>rj.footer.copyright</source>
-                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" and "Pay Rent. Build Credit." are trademarks.</target>
+                <target>%nYear% RentTrack, LLC. All rights reserved. "RentTrack" and "Pay Rent. Build Credit History." are trademarks.</target>
             </trans-unit>
             <trans-unit id="rj.footer.comment">
                 <source>rj.footer.comment</source>
-                <target>RentTrack helps tenants learn about and build creditworthiness, while providing landlords with a effortless way to accept rent payments online.</target>
+                <target>RentTrack helps tenants learn about and build credit history, while providing landlords with a effortless way to accept rent payments online.</target>
             </trans-unit>
             <trans-unit id="rj.footer.title.learn">
                 <source>rj.footer.title.learn</source>
@@ -145,13 +145,13 @@
             <trans-unit id="iframe.title">
                 <source>iframe.title</source>
                 <target>
-                        Pay Rent. Build Credit.
+                        Pay Rent. Build Credit History.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.description">
                 <source>iframe.description</source>
                 <target>
-                       Get your Free Credit Score and Free Electronic Payments
+                       No more paper checks. Pay online with e-Check or Credit Card.
                 </target>
             </trans-unit>
             <trans-unit id="iframe.find">
@@ -717,11 +717,11 @@
            </trans-unit>
            <trans-unit id="bureau.reporting.experian.title">
                <source>bureau.reporting.experian.title</source>
-               <target>Experian Reporting</target>
+               <target>Experian RentBureau</target>
            </trans-unit>
            <trans-unit id="bureau.reporting.trans_union.title">
                <source>bureau.reporting.trans_union.title</source>
-               <target>TransUnion Reporting</target>
+               <target>TransUnion</target>
            </trans-unit>
            <trans-unit id="info.reporting.title">
                 <source>info.reporting.title</source>
@@ -1095,7 +1095,7 @@
             </trans-unit>
             <trans-unit id="popup.invite.tenant.title_2">
                 <source>popup.invite.tenant.title_2</source>
-                <target>Build credit while you pay rent. Introductory pricing.</target>
+                <target>Build credit history while you pay rent. Introductory pricing.</target>
             </trans-unit>
             <trans-unit id="popup.invite.tenant.note.title">
                 <source>popup.invite.tenant.note.title</source>
@@ -1143,7 +1143,7 @@
             </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
-                <target>Build Credit (opt-in)</target>
+                <target>Build Credit History (opt-in)</target>
             </trans-unit>
             <trans-unit id="popup.tenant.support">
                 <source>popup.tenant.support</source>
@@ -1334,7 +1334,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_1">
                 <source>public.base.pay.title_1</source>
-                <target>Pay your rent on time. Build your credit.</target>
+                <target>Pay your rent on time. Build credit history.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_2">
                 <source>public.base.pay.title_2</source>
@@ -1346,7 +1346,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_4">
                 <source>public.base.pay.title_4</source>
-                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit by reporting your on-time payments to credit reporting agencies.</target>
+                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit history by reporting your on-time payments to credit reporting agencies.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_5">
                 <source>public.base.pay.title_5</source>
@@ -1700,7 +1700,7 @@
             </trans-unit>
             <trans-unit id="iframe.items.title">
                 <source>iframe.items.title</source>
-                <target>Pay rent. Build Credit.</target>
+                <target>Pay Rent. Build Credit History.</target>
             </trans-unit>
             <trans-unit id="iframe.item.pay.title">
                 <source>iframe.item.pay.title</source>
