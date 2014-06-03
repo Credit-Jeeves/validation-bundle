@@ -55,6 +55,11 @@ class ContractListener
 
     public function checkContract(Contract $contract)
     {
+        // don't check finished and deleted contracts
+        if (in_array($contract->getStatus(), array(ContractStatus::DELETED, ContractStatus::FINISHED))) {
+            return;
+        }
+
         // if property is standalone we just add system unit to the contract
         $property = $contract->getProperty();
         if ($property->isSingle() && $unit = $property->getSingleUnit()) {
@@ -62,7 +67,7 @@ class ContractListener
             return;
         }
 
-        // contract should have unit and that unit should belong to the contract's property
+        // contract should have unit and that unit should belong to the contract property
         $unit = $contract->getUnit();
         if ($unit instanceof Unit && $unit->getProperty()->getId() == $property->getId()) {
             return;
