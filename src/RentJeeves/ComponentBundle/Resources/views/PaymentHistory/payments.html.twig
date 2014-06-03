@@ -1,13 +1,13 @@
 <div class="pod-large pod-border pod-padding shadow" id="tenant-payments">
     <div class="fiter-box" style="margin-bottom: 40px;">
         <h1>{{ 'tenant.payments.title' | trans() }}</h1>
-        <label>{{ 'tenant.payments.filter'|trans }}</label>
         <select id="selContract" class="select custom-select blue-arrow selectBox" style="display: none;" data-bind="event: {change: filterPayments}">
             <option value=''>- {{'all'|trans}} -</option>
             {% for contract in contracts %}
                 <option value='{{ contract.id }}'>{{ contract.getRentAddress }}</option>
             {% endfor %}
         </select>
+        <label>{{ 'tenant.payments.filter'|trans }}</label>
     </div>
     <div class="row-20"></div>
     <h3 class="notHaveData" data-bind="visible: tenantPayments().length == 0 && isLoading() == false">{{ 'donthavedata'|trans }}</h3>
