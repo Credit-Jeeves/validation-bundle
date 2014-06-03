@@ -272,7 +272,7 @@
                         <input type="text" id="amount-edit" data-bind="value: amount" value="" class="half-of-right">
                     </div>
                     <div class="fields-box width150">
-                        <label>{{ 'due_date'|trans }}</label>
+                        <label>{{ 'due_date'|trans }}<b>*</b></label>
                         <select name="dueDate"
                                 class="half-width original dueDateEdit"
                                 data-bind="
@@ -389,7 +389,7 @@
                         <input type="text" id="amount-approve" data-bind="value: amount" value="" class="half-of-right">
                     </div>
                     <div class="fields-box width150">
-                        <label>{{ 'due_date'|trans }}</label>
+                        <label>{{ 'due_date'|trans }}<b>*</b></label>
                         <select name="dueDate"
                                 class="half-width original"
                                 data-bind="
@@ -573,7 +573,7 @@
               {{ form_widget(form.contract.rent, { 'attr': {'class': 'half-width', 'placeholder':"$"} }) }}
             </div>
             <div class="fields-box width150">
-                {{ form_label(form.contract.dueDate) }}
+                <label>{{ 'due_date'|trans }}<b>*</b></label>
                 {{ form_widget(form.contract.dueDate, { 'attr': {'class': 'half-width original'} }) }}
             </div>
           </div>

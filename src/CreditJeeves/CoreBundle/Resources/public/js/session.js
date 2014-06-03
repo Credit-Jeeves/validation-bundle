@@ -14,22 +14,7 @@
         deleteCookie(window.constants.get('SESSION_NAME'));
         deleteCookie(window.constants.get('SESSION_EXPIRATION_NAME'));
 
-        $('body').overlay({ // TODO check PHPCS:
-            effect: 'fade',
-            overlayClass: 'overlayLogin',
-            glossy: false,
-            zIndex: 3000,
-            onShow: function () {
-                var clickFn = function (event) {
-                    $(this).unbind();
-                    window.location.reload();
-                    return false;
-                };
-
-                $(this).click(clickFn).bind('contextmenu', clickFn);
-                $(window).keypress(clickFn);
-            }
-        });
+        window.location.reload();
     };
 
     this.timeout = function () {
