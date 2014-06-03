@@ -119,4 +119,9 @@ class Payment extends Base
         }
         return $now->setDate($year, $month, $day);
     }
+
+    public function getOther()
+    {
+        return $this->getTotal()?$this->getTotal() - $this->getAmount():0;
+    }
 }

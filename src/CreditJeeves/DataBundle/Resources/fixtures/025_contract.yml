@@ -49,6 +49,19 @@ fixtures:
         finishAt: '-2 months'
         createdAt: '-8 months -4 days'
         updatedAt: '-1 months'
+    Contract_41:
+        tenant:   Tenant_2
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_4
+        rent:     1250
+        status:   approved
+        paidTo:  '5 days'
+        startAt:   '-8 months 5 days'
+        finishAt: '2 months'
+        createdAt: '-8 months 5 days'
+        updatedAt: '-1 months 5 days'
     Contract_5:
         tenant:   Tenant_3
         holding:  rjHolding_1

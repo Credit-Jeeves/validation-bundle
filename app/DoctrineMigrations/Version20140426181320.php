@@ -20,7 +20,9 @@ class Version20140426181320 extends AbstractMigration
         );
         $this->addSql(
             "ALTER TABLE cj_operation
-                CHANGE paid_for paid_for DATE NOT NULL"
+                CHANGE paid_for paid_for DATE NOT NULL,
+                CHANGE type type ENUM('report','rent','other','charge')
+                COMMENT '(DC2Type:OperationType)' DEFAULT 'report' NOT NULL"
         );
     }
 
@@ -33,7 +35,9 @@ class Version20140426181320 extends AbstractMigration
 
         $this->addSql(
             "ALTER TABLE cj_operation
-                CHANGE paid_for paid_for DATE DEFAULT NULL"
+                CHANGE paid_for paid_for DATE DEFAULT NULL,
+                CHANGE type type ENUM('report','rent','charge')
+                COMMENT '(DC2Type:OperationType)' DEFAULT 'report' NOT NULL"
         );
     }
 }
