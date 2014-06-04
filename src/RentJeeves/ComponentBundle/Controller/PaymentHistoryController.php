@@ -38,7 +38,7 @@ class PaymentHistoryController extends Controller
             $startDate = $contract->getStartAt();
             $finishedDate = $contract->getFinishAt();
 
-            if (!$startDate || !$finishedDate) {
+            if (!$startDate) {
                 continue;
             }
 
