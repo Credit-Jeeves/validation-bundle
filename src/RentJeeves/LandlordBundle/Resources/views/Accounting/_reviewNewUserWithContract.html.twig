@@ -160,7 +160,7 @@
             {
                 "attr": {
                     "data-bind": "
-                        checked: (email === null)? false : true,
+                        checked: email.length > 0,
                         attr: {
                             'class': number+'_sendInvite import_new_user_with_sendInvite '+$root.getErrorClass($data, 'import_new_user_with_sendInvite'),
                             'title': $root.getErrorTitle($data, 'import_new_user_with_sendInvite')
