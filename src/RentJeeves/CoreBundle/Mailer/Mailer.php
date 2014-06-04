@@ -4,14 +4,15 @@ namespace RentJeeves\CoreBundle\Mailer;
 use CreditJeeves\CoreBundle\Mailer\Mailer as BaseMailer;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Order;
+use RentJeeves\DataBundle\Entity\Payment;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use FOS\UserBundle\Mailer\MailerInterface;
 use FOS\UserBundle\Model\UserInterface;
 use JMS\DiExtraBundle\Annotation as DI;
-use \Exception;
-use \RuntimeException;
+use Exception;
+use RuntimeException;
 use CreditJeeves\DataBundle\Enum\OrderType;
 
 /**
@@ -367,5 +368,16 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
         );
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
+    }
+
+    public function sendContractAmountChanged(Contract $contract, Payment $payment)
+    {
+        $tenant = $contract->getTenant();
+        $vars = array(
+            'tenantName' => $tenant->getFullName(),
+            'rentAmount' => $contract->getRent(),
+            'paymentAmount' => $payment->getAmount(),
+        );
+        return $this->sendBaseLetter('rjContractAmountChanged', $vars, $tenant->getEmail(), $tenant->getCulture());
     }
 }

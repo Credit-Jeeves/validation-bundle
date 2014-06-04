@@ -1,35 +1,49 @@
 <?php
-
 namespace RentJeeves\DataBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Tag;
+use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 /**
- * @Service("data.event_listener.contract")
- * @Tag(
+ * @DI\Service("data.event_listener.contract")
+ * @DI\Tag(
  *     "doctrine.event_listener",
  *     attributes = {
  *         "event"="prePersist",
  *         "method"="prePersist"
  *     }
  * )
- * @Tag(
+ * @DI\Tag(
  *     "doctrine.event_listener",
  *     attributes = {
  *         "event"="preUpdate",
  *         "method"="preUpdate"
  *     }
  * )
+ * @DI\Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="postUpdate",
+ *         "method"="postUpdate"
+ *     }
+ * )
  */
 class ContractListener
 {
+    /**
+     * @DI\Inject("service_container", required = true)
+     */
+    public $container;
+
+    public $hasToClosePayment = false;
+
     /**
      * Checks contract to contain unit
      *
@@ -44,13 +58,21 @@ class ContractListener
         $this->checkContract($entity);
     }
 
-    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    /**
+     * @param Contract $contract
+     * @param PreUpdateEventArgs $eventArgs
+     */
+    public function monitoringContractAmount(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof Contract) {
-            return;
+        if (!$eventArgs->hasChangedField('amount')) {
+
+            if (($payment = $contract->getActivePayment()) && $payment->getAmount() != $contract->getRent()) {
+
+                $this->hasToClosePayment = true;
+
+                $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
+            }
         }
-        $this->checkContract($entity);
     }
 
     public function checkContract(Contract $contract)
@@ -79,5 +101,32 @@ class ContractListener
         }
 
         throw new LogicException('Invalid contract parameters');
+    }
+
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Contract) {
+            return;
+        }
+        $this->monitoringContractAmount($entity, $eventArgs);
+        $this->checkContract($entity);
+    }
+
+    public function postUpdate(LifecycleEventArgs $eventArgs)
+    {
+        /** @var Contract $entity */
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Contract) {
+            return;
+        }
+        if ($this->hasToClosePayment) {
+            $this->hasToClosePayment = false;
+            if ($payment = $entity->getActivePayment()) {
+                $payment->setStatus(PaymentStatus::CLOSE);
+                $eventArgs->getEntityManager()->persist($payment);
+                $eventArgs->getEntityManager()->flush($payment);
+            }
+        }
     }
 }
