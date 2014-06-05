@@ -11,9 +11,9 @@ use RuntimeException;
  */
 class CsvFileReader
 {
-    protected $delimiter = ',';
-    protected $enclosure = '"';
-    protected $escape    = '\\';
+    protected $delimiter = ",";
+    protected $enclosure = "\"";
+    protected $escape    = "\\";
     protected $useHeader = true;
 
     /**
@@ -102,8 +102,10 @@ class CsvFileReader
             throw new RuntimeException(sprintf('File "%s" not found.', $filename));
         }
 
+        ini_set('auto_detect_line_endings', true);
+
         $file = new SplFileObject($filename, 'rb');
-        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE);
+        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE | SplFileObject::READ_AHEAD);
         $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
         return $file;
     }
