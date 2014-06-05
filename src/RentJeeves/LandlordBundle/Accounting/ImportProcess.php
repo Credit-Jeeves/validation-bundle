@@ -821,6 +821,10 @@ class ImportProcess
         $today = new DateTime();
         if ($contract->getFinishAt() <= $today) { //set status of contract to finished...
             $contract->setStatus(ContractStatus::FINISHED);
+
+            if ($contract->getIntegratedBalance() > 0) {
+                $contract->setUncollectedBalance($contract->getIntegratedBalance());
+            }
         }
 
         $this->em->persist($contract);
