@@ -823,10 +823,6 @@ class ImportProcess
             $contract->setStatus(ContractStatus::FINISHED);
         }
 
-        if ($contract->getIntegratedBalance() > 0) {
-            $contract->setUncollectedBalance($contract->getIntegratedBalance());
-        }
-
         $this->em->persist($contract);
     }
 
