@@ -105,7 +105,12 @@ class CsvFileReader
         ini_set('auto_detect_line_endings', true);
 
         $file = new SplFileObject($filename, 'rb');
-        $file->setFlags(SplFileObject::READ_CSV | SplFileObject::SKIP_EMPTY | SplFileObject::DROP_NEW_LINE | SplFileObject::READ_AHEAD);
+        $file->setFlags(
+            SplFileObject::READ_CSV |
+            SplFileObject::SKIP_EMPTY |
+            SplFileObject::DROP_NEW_LINE |
+            SplFileObject::READ_AHEAD
+        );
         $file->setCsvControl($this->delimiter, $this->enclosure, $this->escape);
         return $file;
     }
