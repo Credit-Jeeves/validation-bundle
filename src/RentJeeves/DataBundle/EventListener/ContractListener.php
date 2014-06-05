@@ -44,6 +44,34 @@ class ContractListener
 
     public $hasToClosePayment = false;
 
+    public function checkContract(Contract $contract)
+    {
+        // don't check finished and deleted contracts
+        if (in_array($contract->getStatus(), array(ContractStatus::DELETED, ContractStatus::FINISHED))) {
+            return;
+        }
+
+        // if property is standalone we just add system unit to the contract
+        $property = $contract->getProperty();
+        if ($property->isSingle() && $unit = $property->getSingleUnit()) {
+            $contract->setUnit($unit);
+            return;
+        }
+
+        // contract should have unit and that unit should belong to the contract property
+        $unit = $contract->getUnit();
+        if ($unit instanceof Unit && $unit->getProperty()->getId() == $property->getId()) {
+            return;
+        }
+
+        // contract can be without unit ONLY if it is in a PENDING status and 'search' is not null
+        if (!$unit && $contract->getStatus() == ContractStatus::PENDING && $contract->getSearch()) {
+            return;
+        }
+
+        throw new LogicException('Invalid contract parameters');
+    }
+
     /**
      * Checks contract to contain unit
      *
@@ -75,41 +103,13 @@ class ContractListener
         }
     }
 
-    public function checkContract(Contract $contract)
-    {
-        // don't check finished and deleted contracts
-        if (in_array($contract->getStatus(), array(ContractStatus::DELETED, ContractStatus::FINISHED))) {
-            return;
-        }
-
-        // if property is standalone we just add system unit to the contract
-        $property = $contract->getProperty();
-        if ($property->isSingle() && $unit = $property->getSingleUnit()) {
-            $contract->setUnit($unit);
-            return;
-        }
-
-        // contract should have unit and that unit should belong to the contract property
-        $unit = $contract->getUnit();
-        if ($unit instanceof Unit && $unit->getProperty()->getId() == $property->getId()) {
-            return;
-        }
-
-        // contract can be without unit ONLY if it is in a PENDING status and 'search' is not null
-        if (!$unit && $contract->getStatus() == ContractStatus::PENDING && $contract->getSearch()) {
-            return;
-        }
-
-        throw new LogicException('Invalid contract parameters');
-    }
-
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
         $entity = $eventArgs->getEntity();
         if (!$entity instanceof Contract) {
             return;
         }
-        $this->monitoringContractAmount($entity, $eventArgs);
+//        $this->monitoringContractAmount($entity, $eventArgs);
         $this->checkContract($entity);
     }
 

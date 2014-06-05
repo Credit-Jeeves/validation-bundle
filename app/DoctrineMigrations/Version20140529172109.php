@@ -31,7 +31,7 @@ class Version20140529172109 extends AbstractMigration
                 Since the recurring payment you had set up for {{ paymentAmount }} is no longer correct,
                 we have cancelled your recurring payment.<br />
                 </br>
-                Please <a href="https://my.renttrack.com/">log in to RentTrack</a> and set up a new recurring payment.
+                Please <a href=\'https://my.renttrack.com/\'>log in to RentTrack</a> and set up a new recurring payment.
                 Be sure to specify the correct month that your next recurring payment should count for.<br />
                 </br>
                 If you have any questions regarding this change, please contact your property manager.
