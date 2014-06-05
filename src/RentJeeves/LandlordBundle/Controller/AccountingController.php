@@ -128,13 +128,14 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         $form = $this->createForm(
-            new ImportFileAccountingType($this->getUser())
+            new ImportFileAccountingType($this->getCurrentGroup())
         );
 
         $form->handleRequest($this->get('request'));
         if (!$form->isValid()) {
             return array(
                 'form'      => $form->createView(),
+                'nGroups' => $this->getGroups()->count(),
             );
         }
 

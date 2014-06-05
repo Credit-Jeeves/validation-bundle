@@ -13,22 +13,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ImportFileAccountingType extends AbstractType
 {
-    protected $user;
+    protected $group;
 
-    public function __construct($user)
+    public function __construct($group)
     {
-        $this->user  = $user;
+        $this->group = $group;
     }
-
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($isAdmin = $this->user->getIsSuperAdmin()) {
-            $holding = $this->user->getHolding();
-            $groups  = $holding->getGroups() ? $holding->getGroups() : null;
-        } else {
-            $groups = $this->user->getAgentGroups() ? $this->user->getAgentGroups() : null;
-        }
+        $group = $this->group;
 
         $builder->add(
             'property',
@@ -45,21 +39,11 @@ class ImportFileAccountingType extends AbstractType
                         )
                     ),
                 ),
-                'query_builder' => function (EntityRepository $er) use ($groups) {
-                    if (empty($groups)) {
-                        $query = $er->createQueryBuilder('p');
-                        $query->where('p.id = 0');
-                        return $query;
-                    }
-
-                    $ids = array();
-                    foreach ($groups as $group) {
-                        $ids[] = $group->getId();
-                    }
-
+                'query_builder' => function (EntityRepository $er) use ($group) {
                     $query = $er->createQueryBuilder('p');
                     $query->innerJoin('p.property_groups', 'g');
-                    $query->add('where', $query->expr()->in('g.id', $ids));
+                    $query->where('g.id = :group');
+                    $query->setParameter('group', $group->getId());
 
                     return $query;
                 }
