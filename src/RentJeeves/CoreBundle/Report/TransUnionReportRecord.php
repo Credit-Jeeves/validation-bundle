@@ -378,19 +378,19 @@ class TransUnionReportRecord
 
     public function getTenantAddressCity()
     {
-        $city = $this->contract->getProperty()->getCity();
+        $city = $this->contract->getTenant()->getDefaultAddress()->getCity();
 
         return str_pad($city, 20);
     }
 
     public function getTenantAddressState()
     {
-        return $this->contract->getProperty()->getArea();
+        return $this->contract->getTenant()->getDefaultAddress()->getArea();
     }
 
     public function getTenantAddressZip()
     {
-        $zip = $this->contract->getProperty()->getZip();
+        $zip = $this->contract->getTenant()->getDefaultAddress()->getZip();
 
         return str_pad($zip, 9, '0');
     }
