@@ -43,6 +43,14 @@ class UnitCase extends BaseTestCase
         $contractWaiting->setFirstName('Hi');
         $contractWaiting->setLastName('ho');
 
+        $group = $em->getRepository('DataBundle:Group')->findOneBy(
+            array(
+                'name' => 'Test Rent Group'
+            )
+        );
+        $this->assertNotNull($group);
+        $contractWaiting->setGroup($group);
+
         $em->persist($contractWaiting);
         $em->flush();
         $id = $contractWaiting->getId();

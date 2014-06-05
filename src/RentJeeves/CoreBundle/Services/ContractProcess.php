@@ -41,7 +41,7 @@ class ContractProcess
     ) {
 
         if ($property->isSingle()) {
-            $propertyGroup = $property->getPropertyGroups()->first();
+            $propertyGroup = $contractWaiting? $contractWaiting->getGroup() : $property->getPropertyGroups()->first();
             $contract = new Contract();
             $contract->setTenant($tenant);
             $contract->setHolding($propertyGroup->getHolding());
@@ -74,13 +74,14 @@ class ContractProcess
             return;
         }
 
+        $contract->setGroup($contractWaiting->getGroup());
         $contract->setStatus(ContractStatus::APPROVED);
         $contract->setStartAt($contractWaiting->getStartAt());
         $contract->setFinishAt($contractWaiting->getFinishAt());
         $contract->setIntegratedBalance($contractWaiting->getIntegratedBalance());
         $contract->setRent($contractWaiting->getRent());
 
-        $group = $contract->getUnit()->getGroup();
+        $group = $contractWaiting->getGroup();
         $hasResident = true;
         /**
          * On the database level it can be null, so we must check

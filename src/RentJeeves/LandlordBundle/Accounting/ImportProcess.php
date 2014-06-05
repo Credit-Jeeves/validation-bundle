@@ -307,11 +307,11 @@ class ImportProcess
             'name'     => $row[ImportMapping::KEY_UNIT],
         );
 
-        if ($group = $this->user->getCurrentGroup()) {
-            $params['group'] = $group;
+        if ($this->group) {
+            $params['group'] = $this->group;
         }
 
-        if ($holding = $this->user->getHolding()) {
+        if ($holding = $this->group->getHolding()) {
             $params['holding'] = $holding;
         }
 
@@ -322,8 +322,8 @@ class ImportProcess
         $unit = new Unit();
         $unit->setName($row[ImportMapping::KEY_UNIT]);
         $unit->setProperty($this->getProperty());
-        $unit->setHolding($this->user->getHolding());
-        $unit->setGroup($this->user->getCurrentGroup());
+        $unit->setHolding($this->group->getHolding());
+        $unit->setGroup($this->group);
         return $unit;
     }
 
