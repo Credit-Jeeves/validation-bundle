@@ -2129,7 +2129,7 @@
             <trans-unit id="csv.file.too.small2">
                <source>csv.file.too.small2</source>
                <target><![CDATA[
-                    CSV file should contain minimum 8 rows. Suggested fields:
+                    CSV file should contain minimum 8 columns. Suggested fields:
                     Unit, Resident ID, Name, Actual Rent, Move In, Lease Expiration, Move Out, Balance.
                     Please correct the file.
                    ]]>
