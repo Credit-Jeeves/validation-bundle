@@ -32,7 +32,7 @@ parameters:
 
     external_urls:
         main_site: 'www.renttrack.com'
-        user_voice: 'renttrack.uservoice.com'
+        user_voice: 'help.renttrack.com'
 
     partners:
         price: 0

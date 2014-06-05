@@ -1346,7 +1346,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_4">
                 <source>public.base.pay.title_4</source>
-                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit history by reporting your on-time payments to credit reporting agencies.</target>
+                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit history by reporting your payments to credit reporting agencies.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_5">
                 <source>public.base.pay.title_5</source>
