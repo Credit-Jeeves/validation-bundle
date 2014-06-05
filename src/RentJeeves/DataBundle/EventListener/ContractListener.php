@@ -92,8 +92,7 @@ class ContractListener
      */
     public function monitoringContractAmount(Contract $contract, PreUpdateEventArgs $eventArgs)
     {
-        if (!$eventArgs->hasChangedField('amount')) {
-
+        if ($eventArgs->hasChangedField('rent')) {
             if (($payment = $contract->getActivePayment()) && $payment->getAmount() != $contract->getRent()) {
 
                 $this->hasToClosePayment = true;
@@ -109,7 +108,7 @@ class ContractListener
         if (!$entity instanceof Contract) {
             return;
         }
-//        $this->monitoringContractAmount($entity, $eventArgs);
+        $this->monitoringContractAmount($entity, $eventArgs);
         $this->checkContract($entity);
     }
 
@@ -125,7 +124,8 @@ class ContractListener
             if ($payment = $entity->getActivePayment()) {
                 $payment->setStatus(PaymentStatus::CLOSE);
                 $eventArgs->getEntityManager()->persist($payment);
-                $eventArgs->getEntityManager()->flush($payment);
+                // FIXME http://www.doctrine-project.org/jira/browse/DDC-2726
+//                $eventArgs->getEntityManager()->flush($payment);
             }
         }
     }
