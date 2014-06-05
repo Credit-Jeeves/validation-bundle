@@ -1,5 +1,0 @@
-<<<<<<< HEAD
-0426101012014000000 P1                    18                            O2901012014000000000000000987001M00000098700000098771 BBBBBBBBBBBBBBBBBBBBBBBBMM  000000987000000000000000000                        02012014                  APPLEGATE                TIMOTHY                                  6663090411110193778586553921  US770 BROADWAY                    1-C                             LAWRENCE            KS660491614 R
-=======
-0426101012014000000 P1                    17                            O2901012014000000000000000987001M00000098700000098771 BBBBBBBBBBBBBBBBBBBBBBBBMM  000000987000000000000000000                        02012014                  APPLEGATE                TIMOTHY                                  6663090411110193778586553921  US770 BROADWAY                    1-C                             NEW YORK            NY100030000 R
->>>>>>> da2afe5... Fixed TU reporting bug: now sending contract address instead of tenant's one
