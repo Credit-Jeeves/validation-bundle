@@ -60,7 +60,7 @@ class ContractListenerCase extends Base
         $contract = $payment->getContract();
         $contract->setRent($payment->getAmount() + 100);
         $em->persist($contract);
-        $em->flush($contract);
+        $em->flush();
 
         $this->assertCount(1, $plugin->getPreSendMessages());
 

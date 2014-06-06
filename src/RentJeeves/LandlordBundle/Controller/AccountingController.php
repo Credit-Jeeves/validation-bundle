@@ -342,8 +342,7 @@ class AccountingController extends Controller
          */
         $importProcess = $this->get('accounting.import.process');
         $data = $request->request->all();
-        $errors               = $importProcess->saveForms($data);
-        $result['formErrors'] = $errors;
+        $result['formErrors'] = $importProcess->saveForms($data);
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');

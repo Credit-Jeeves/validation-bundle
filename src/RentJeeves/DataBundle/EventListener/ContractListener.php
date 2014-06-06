@@ -124,8 +124,7 @@ class ContractListener
             if ($payment = $entity->getActivePayment()) {
                 $payment->setStatus(PaymentStatus::CLOSE);
                 $eventArgs->getEntityManager()->persist($payment);
-                // FIXME http://www.doctrine-project.org/jira/browse/DDC-2726
-//                $eventArgs->getEntityManager()->flush($payment);
+                $eventArgs->getEntityManager()->flush($payment);
             }
         }
     }

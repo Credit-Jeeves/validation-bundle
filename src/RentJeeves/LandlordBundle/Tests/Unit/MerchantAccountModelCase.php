@@ -4,7 +4,7 @@ namespace RentJeeves\LandlordBundle\Tests\Unit;
 
 use RentJeeves\LandlordBundle\Registration\MerchantAccountModel;
 
-class MerchantAccountModelCase extends \PHPUnit_Framework_TestCase
+class MerchantAccountModelCase extends w
 {
     /**
      * @test
