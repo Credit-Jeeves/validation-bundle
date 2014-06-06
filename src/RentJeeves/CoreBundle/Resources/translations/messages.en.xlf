@@ -1346,7 +1346,7 @@
             </trans-unit>
             <trans-unit id="public.base.pay.title_4">
                 <source>public.base.pay.title_4</source>
-                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit history by reporting your on-time payments to credit reporting agencies.</target>
+                <target>While sending a check in the mail helps keep a roof over your head, it does not help establish your good reputation with anybody except your landlord. With RentTrack, you can easily set up automatic rent payments, then build credit history by reporting your payments to credit reporting agencies.</target>
             </trans-unit>
             <trans-unit id="public.base.pay.title_5">
                 <source>public.base.pay.title_5</source>
@@ -2118,8 +2118,8 @@
             <trans-unit id="csv.file.too.small1">
                 <source>csv.file.too.small1</source>
                 <target>
-                    CSV File is too small and must have at least two rows. One row is header and
-                    one row is data. Comeback please and upload correct file.
+                    CSV file is too small. Each file must have a header row and
+                    at least one data row. Please correct the file.
                 </target>
             </trans-unit>
             <trans-unit id="skip">
@@ -2129,9 +2129,9 @@
             <trans-unit id="csv.file.too.small2">
                <source>csv.file.too.small2</source>
                <target><![CDATA[
-                    CSV File should contain minimum 8 fields. Required fields:
-                    Unit, Resident_ID, Name, Actual Rent, Move In, Lease Expiration, Move Out, Balance.
-                    Comeback please and upload correct file.
+                    CSV file should contain minimum 8 columns. Suggested fields:
+                    Unit, Resident ID, Name, Actual Rent, Move In, Lease Expiration, Move Out, Balance.
+                    Please correct the file.
                    ]]>
                </target>
             </trans-unit>
@@ -2149,7 +2149,7 @@
             </trans-unit>
             <trans-unit id="you.need.map">
               <source>you.need.map</source>
-              <target>You need to map at least %NUMBER% fields. Fields which you missed: %VALUE_WHICH_NEED_SELECT%</target>
+              <target>You need to map at least %NUMBER% fields. Please map: %VALUE_WHICH_NEED_SELECT%</target>
             </trans-unit>
             <trans-unit id="auto.import">
               <source>auto.import</source>
