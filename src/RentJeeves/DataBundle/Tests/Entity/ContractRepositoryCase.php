@@ -202,7 +202,7 @@ class ContractRepositoryCase extends BaseTestCase
             //We don't have order at all and need send email
             array(
                 $hasOrder = false,
-                $paidFor = false,
+                $paidFor = null,
                 true
             ),
             //We have order for current month, so we don't need send email
@@ -284,7 +284,7 @@ class ContractRepositoryCase extends BaseTestCase
             $order = new Order();
             $order->setUser($contract->getTenant());
             $order->setSum(500);
-            $order->setType(OrderType::AUTHORIZE_CARD);
+            $order->setType(OrderType::HEARTLAND_CARD);
             $order->setStatus(OrderStatus::COMPLETE);
 
             $operation = new Operation();
@@ -302,8 +302,7 @@ class ContractRepositoryCase extends BaseTestCase
         $em->persist($contract);
         $em->flush();
 
-        $contractRepository = $em->getRepository('RjDataBundle:Contract');
-        $contracts = $contractRepository->getLateContracts($days = 5);
+        $contracts = $em->getRepository('RjDataBundle:Contract')->getLateContracts(5);
 
         $isSend = false;
         foreach ($contracts as $contractInDB) {
@@ -321,11 +320,10 @@ class ContractRepositoryCase extends BaseTestCase
     public function makeSureContractWaitingIsRemoved()
     {
         $this->load(true);
-        $doctrine = $this->getContainer()->get('doctrine');
         /**
          * @var $em EntityManager
          */
-        $em = $doctrine->getManager();
+        $em = $this->getContainer()->get('doctrine')->getManager();
         /**
          * @var $unit Unit
          */
@@ -339,6 +337,7 @@ class ContractRepositoryCase extends BaseTestCase
 
         $contractWaiting = new ContractWaiting();
         $contractWaiting->setUnit($unit);
+        $contractWaiting->setGroup($unit->getGroup());
         $contractWaiting->setResidentId('test');
         $contractWaiting->setIntegratedBalance('3333');
         $contractWaiting->setFinishAt(new DateTime());
@@ -364,6 +363,12 @@ class ContractRepositoryCase extends BaseTestCase
         $em->remove($unit);
         $em->flush();
         $em->clear();
+
+        static::$kernel = null;
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
 
         $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($id);
         $this->assertEmpty($contractWaiting);
