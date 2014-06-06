@@ -15,7 +15,6 @@ class PaymentCommandsCase extends BaseTestCase
     public function collectAndPay()
     {
         $this->load(true);
-        static::$kernel = null;
         $plugin = $this->registerEmailListener();
         $plugin->clean();
 

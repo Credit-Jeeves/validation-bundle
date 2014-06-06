@@ -7,6 +7,8 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="rj_payment")
@@ -124,4 +126,20 @@ class Payment extends Base
     {
         return $this->getTotal()?$this->getTotal() - $this->getAmount():0;
     }
+
+//    /**
+//     * @Assert\Callback
+//     */
+//    public function isEndMonth(ExecutionContextInterface $validatorContext)
+//    {
+//        if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate() ||
+//            !$this->getEndMonth() || !$this->getEndYear()
+//        ) {
+//            return;
+//        }
+//        $end = new DateTime($this->getEndYear() . '-' . $this->getEndMonth() . '-' . $this->getDueDate());
+//        if ($end > $this->getStartDate()) {
+//            $validatorContext->addViolationAt('endMonth', 'contract.error.is_end_later_than_start', array(), null);
+//        }
+//    }
 }

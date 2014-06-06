@@ -142,7 +142,6 @@ class EmailLandlordCommand extends ContainerAwareCommand
                 $payments = $repo->getPaymentsToLandlord(
                     array(
                         OrderStatus::PENDING,
-                        OrderStatus::COMPLETE
                     )
                 );
                 foreach ($payments as $payment) {

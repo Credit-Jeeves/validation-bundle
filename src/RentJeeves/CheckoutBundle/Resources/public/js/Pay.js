@@ -233,17 +233,21 @@ function Pay(parent, contractId) {
         return settleDate.toString('M/d/yyyy');
     }, this);
     this.getLastPaymentDay = ko.computed(function() {
-        var finishDate = new Date(contract.finishAt);
-        if ('on' == this.payment.ends()) {
-            finishDate.setMonth(this.payment.endMonth() - 1);
-            finishDate.setYear(this.payment.endYear());
-            var daysInMonth = Date.getDaysInMonth(this.payment.endYear(), this.payment.endMonth() - 1);
-            finishDate.setDate(
-                this.payment.dueDate() > daysInMonth ?
-                    daysInMonth :
-                    this.payment.dueDate()
-            );
-        }
+        var finishDate = new Date();
+        console.log(contract.finishAt);
+        console.log(finishDate);
+        finishDate.setDate(1);
+        console.log(finishDate);
+        finishDate.setMonth(this.payment.endMonth() - 1);
+        console.log(finishDate);
+        finishDate.setYear(this.payment.endYear());
+        var daysInMonth = Date.getDaysInMonth(this.payment.endYear(), this.payment.endMonth() - 1);
+        finishDate.setDate(
+            this.payment.dueDate() > daysInMonth ?
+                daysInMonth :
+                this.payment.dueDate()
+        );
+        console.log(finishDate);
         return finishDate.toString('M/d/yyyy');
     }, this);
 
@@ -455,6 +459,11 @@ function Pay(parent, contractId) {
 
     if (contract.payment) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
+    }
+
+    if (isNaN(this.payment.startMonth())) {
+        var startDate = new Date();
+        this.payment.startMonth(startDate.getMonth() + 1);
     }
 
     $('#pay-popup').dialog({

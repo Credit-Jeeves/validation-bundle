@@ -305,7 +305,7 @@ class PaymentType extends AbstractType
                         array(
                             'message' => 'checkout.error.ends.empty',
                         )
-                    ),
+                    )
                 )
             )
         );
@@ -401,11 +401,11 @@ class PaymentType extends AbstractType
 
     public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)
     {
-        $now = new DateTime();
-        $now->setTime(0, 0);
+        $start = new DateTime($this);
+        $start->setTime(0, 0);
 
         $payDate = new DateTime($data);
-        if ($payDate < $now) {
+        if ($payDate < $start) {
             $validatorContext->addViolationAt('start_date', 'checkout.error.date.is_in_past', array(), null);
         }
     }

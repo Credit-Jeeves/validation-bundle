@@ -123,12 +123,12 @@ class TransUnionReportRecord
     protected $firstLineOfAddress;                                      // 32
     /** @Serializer\Accessor(getter="getSecondLineOfAddress") */
     protected $secondLineOfAddress;                                     // 32
-    /** @Serializer\Accessor(getter="getTenantAddressCity") */
-    protected $tenantAddressCity;                                       // 20
-    /** @Serializer\Accessor(getter="getTenantAddressState") */
-    protected $tenantAddressState;                                      // 2
-    /** @Serializer\Accessor(getter="getTenantAddressZip") */
-    protected $tenantAddressZip;                                        // 9
+    /** @Serializer\Accessor(getter="getContractAddressCity") */
+    protected $contractAddressCity;                                       // 20
+    /** @Serializer\Accessor(getter="getContractAddressState") */
+    protected $contractAddressState;                                      // 2
+    /** @Serializer\Accessor(getter="getContractAddressZip") */
+    protected $contractAddressZip;                                        // 9
     protected $reserved4 = ' ';                                         // 1
     protected $residenceCode = 'R';                                     // 1
 
@@ -376,21 +376,21 @@ class TransUnionReportRecord
         return str_pad($addressLine, 32);
     }
 
-    public function getTenantAddressCity()
+    public function getContractAddressCity()
     {
-        $city = $this->contract->getTenant()->getDefaultAddress()->getCity();
+        $city = $this->contract->getProperty()->getCity();
 
         return str_pad($city, 20);
     }
 
-    public function getTenantAddressState()
+    public function getContractAddressState()
     {
-        return $this->contract->getTenant()->getDefaultAddress()->getArea();
+        return $this->contract->getProperty()->getArea();
     }
 
-    public function getTenantAddressZip()
+    public function getContractAddressZip()
     {
-        $zip = $this->contract->getTenant()->getDefaultAddress()->getZip();
+        $zip = $this->contract->getProperty()->getZip();
 
         return str_pad($zip, 9, '0');
     }
