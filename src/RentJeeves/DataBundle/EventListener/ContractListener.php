@@ -1,57 +1,48 @@
 <?php
-
 namespace RentJeeves\DataBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use JMS\DiExtraBundle\Annotation\Service;
-use JMS\DiExtraBundle\Annotation\Tag;
+use JMS\DiExtraBundle\Annotation as DI;
+use RentJeeves\CoreBundle\Mailer\Mailer;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
 use LogicException;
 use RentJeeves\DataBundle\Enum\ContractStatus;
+use RentJeeves\DataBundle\Enum\PaymentStatus;
 
 /**
- * @Service("data.event_listener.contract")
- * @Tag(
+ * @DI\Service("data.event_listener.contract")
+ * @DI\Tag(
  *     "doctrine.event_listener",
  *     attributes = {
  *         "event"="prePersist",
  *         "method"="prePersist"
  *     }
  * )
- * @Tag(
+ * @DI\Tag(
  *     "doctrine.event_listener",
  *     attributes = {
  *         "event"="preUpdate",
  *         "method"="preUpdate"
  *     }
  * )
+ * @DI\Tag(
+ *     "doctrine.event_listener",
+ *     attributes = {
+ *         "event"="postUpdate",
+ *         "method"="postUpdate"
+ *     }
+ * )
  */
 class ContractListener
 {
     /**
-     * Checks contract to contain unit
-     *
-     * @param LifecycleEventArgs $eventArgs
+     * @DI\Inject("service_container", required = true)
      */
-    public function prePersist(LifecycleEventArgs $eventArgs)
-    {
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof Contract) {
-            return;
-        }
-        $this->checkContract($entity);
-    }
+    public $container;
 
-    public function preUpdate(PreUpdateEventArgs $eventArgs)
-    {
-        $entity = $eventArgs->getEntity();
-        if (!$entity instanceof Contract) {
-            return;
-        }
-        $this->checkContract($entity);
-    }
+    public $hasToClosePayment = false;
 
     public function checkContract(Contract $contract)
     {
@@ -79,5 +70,62 @@ class ContractListener
         }
 
         throw new LogicException('Invalid contract parameters');
+    }
+
+    /**
+     * Checks contract to contain unit
+     *
+     * @param LifecycleEventArgs $eventArgs
+     */
+    public function prePersist(LifecycleEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Contract) {
+            return;
+        }
+        $this->checkContract($entity);
+    }
+
+    /**
+     * @param Contract $contract
+     * @param PreUpdateEventArgs $eventArgs
+     */
+    public function monitoringContractAmount(Contract $contract, PreUpdateEventArgs $eventArgs)
+    {
+        if ($eventArgs->hasChangedField('rent')) {
+            if (($payment = $contract->getActivePayment()) && $payment->getAmount() != $contract->getRent()) {
+
+                $this->hasToClosePayment = true;
+
+                $this->container->get('project.mailer')->sendContractAmountChanged($contract, $payment);
+            }
+        }
+    }
+
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Contract) {
+            return;
+        }
+        $this->monitoringContractAmount($entity, $eventArgs);
+        $this->checkContract($entity);
+    }
+
+    public function postUpdate(LifecycleEventArgs $eventArgs)
+    {
+        /** @var Contract $entity */
+        $entity = $eventArgs->getEntity();
+        if (!$entity instanceof Contract) {
+            return;
+        }
+        if ($this->hasToClosePayment) {
+            $this->hasToClosePayment = false;
+            if ($payment = $entity->getActivePayment()) {
+                $payment->setStatus(PaymentStatus::CLOSE);
+                $eventArgs->getEntityManager()->persist($payment);
+                $eventArgs->getEntityManager()->flush($payment);
+            }
+        }
     }
 }

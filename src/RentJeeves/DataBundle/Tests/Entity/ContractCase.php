@@ -103,4 +103,30 @@ class ContractCase extends BaseTestCase
         $contract->unshiftPaidTo($amount);
         $this->assertEquals($result, $contract->getPaidTo()->format('Y-m-d'));
     }
+
+    /**
+     * @test
+     */
+    public function contractNotLate()
+    {
+        $contract = new Contract();
+        $date = new DateTime();
+        $date->modify('+1 day');
+        $contract->setPaidTo($date);
+
+        $this->assertFalse($contract->isLate());
+    }
+
+    /**
+     * @test
+     */
+    public function contractLate()
+    {
+        $contract = new Contract();
+        $date = new DateTime();
+        $date->modify('-1 day');
+        $contract->setPaidTo($date);
+
+        $this->assertTrue($contract->isLate());
+    }
 }

@@ -44,7 +44,7 @@
             </trans-unit>
             <trans-unit id="checkout.amount">
                 <source>checkout.amount</source>
-                <target>Amount</target>
+                <target>Rent</target>
             </trans-unit>
             <trans-unit id="checkout.error.amount.empty">
                 <source>checkout.error.amount.empty</source>

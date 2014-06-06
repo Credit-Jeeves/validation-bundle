@@ -1084,3 +1084,35 @@ fixtures:
       </br>
       {{ 'order.receipt.footer' | trans }}
       {% endblock %}
+
+# rjContractAmountChanged.html
+  translation_37_subject:
+    translatable: email_37
+    locale: %locale%
+    property: subject
+    value: Your Rent amount was adjusted on your contract
+
+  translation_37_body:
+    translatable: email_37
+    locale: %locale%
+    property: body
+    value:  |
+      {% extends "RjComponentBundle:Mailer:base.html.twig" %}
+      {% block email %}
+        Dear {{ tenantName }}! <br />
+        <br />
+        Your property manager has adjusted the rent amount on your contract to {{ rentAmount }}.
+        Since the recurring payment you had set up for {{ paymentAmount }} is no longer correct,
+        we have cancelled your recurring payment.<br />
+        </br>
+        Please <a href="https://my.renttrack.com/">log in to RentTrack</a> and set up a new recurring payment.
+        Be sure to specify the correct month that your next recurring payment should count for.<br />
+        </br>
+        If you have any questions regarding this change, please contact your property manager.
+        If you have questions about setting up a new recurring payment,
+        please contact us at help@renttrack.com or call (866) 841-9090.</br>
+        </br>
+        </br>
+        </br>
+        {{ 'order.receipt.footer' | trans }}
+      {% endblock %}
