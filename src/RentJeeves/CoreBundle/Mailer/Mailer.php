@@ -149,9 +149,6 @@ class Mailer extends BaseMailer
         return $this->sendBaseLetter($sTemplate, $vars, $landlord->getEmail(), $landlord->getCulture());
     }
 
-    /**
-     * FIXME add details about RENT and OTHER amounts
-     */
     public function sendRentReceipt(\CreditJeeves\DataBundle\Entity\Order $order, $sTemplate = 'rjOrderReceipt')
     {
         $tenant = $order->getUser();
@@ -175,6 +172,8 @@ class Mailer extends BaseMailer
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
+            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
+            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
@@ -346,9 +345,6 @@ class Mailer extends BaseMailer
         }
     }
 
-    /**
-     * FIXME add details about RENT and OTHER amounts
-     */
     public function sendPendingInfo(Order $order, $template = 'rjPendingOrder')
     {
         $tenant = $order->getContract()->getTenant();
@@ -365,6 +361,8 @@ class Mailer extends BaseMailer
             'fee' => $fee,
             'total' => $total,
             'groupName' => $order->getGroupName(),
+            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
+            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
         );
         return $this->sendBaseLetter($template, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
