@@ -315,7 +315,6 @@ class ContractRepositoryCase extends BaseTestCase
         $this->assertEquals($isLate, $isSend);
     }
 
-
     /**
      * @test
      */

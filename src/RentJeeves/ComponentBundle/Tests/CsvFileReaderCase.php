@@ -56,4 +56,18 @@ class CsvFileReaderCase extends \PHPUnit_Framework_TestCase
         $fileReader = new CsvFileReader();
         $fileReader->read('unknown/file.ext');
     }
+
+    /**
+     * @test
+     */
+    public function canReadFileWithCarriageReturnAsEndOfLine()
+    {
+        $fileReader = new CsvFileReader();
+        $result = $fileReader->read(__DIR__ . '/Fixtures/csv_endings.csv');
+
+        $this->assertEquals(1, count($result));
+        $this->assertEquals(1018, $result[1]['Unit']);
+        $this->assertEquals('Robyn Russell', $result[1]['Name']);
+        $this->assertEquals('darryl+improbyn@renttrack.com', $result[1]['Email']);
+    }
 }

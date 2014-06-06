@@ -303,6 +303,7 @@ class ImportMapping
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
+        $waitingRoom->setGroup($contract->getGroup());
 
         $waitingRoom->setResidentId($residentMapping->getResidentId());
 

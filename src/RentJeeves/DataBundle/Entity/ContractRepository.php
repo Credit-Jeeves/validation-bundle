@@ -2,6 +2,7 @@
 namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use CreditJeeves\DataBundle\Enum\OrderType;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -301,8 +302,10 @@ class ContractRepository extends EntityRepository
         return $query->execute();
     }
 
-    public function getPaymentsToLandlord($status = array(OrderStatus::COMPLETE))
-    {
+    public function getPaymentsToLandlord(
+        $orderStatus = array(OrderStatus::COMPLETE),
+        $orderType = array(OrderType::HEARTLAND_BANK, OrderType::HEARTLAND_CARD)
+    ) {
         $start = new DateTime();
         $end = new DateTime('+1 day');
         $query = $this->createQueryBuilder('c');
@@ -311,10 +314,12 @@ class ContractRepository extends EntityRepository
         $query->innerJoin('c.group', 'g');
         $query->innerJoin('c.operations', 'operation');
         $query->innerJoin('operation.order', 'o');
-        $query->where('o.status IN (:status)');
+        $query->where('o.status IN (:orderStatus)');
         $query->andWhere('o.updated_at BETWEEN :start AND :end');
+        $query->andWhere('o.type in (:orderType)');
         $query->groupBy('h.id');
-        $query->setParameter('status', $status);
+        $query->setParameter('orderStatus', $orderStatus);
+        $query->setParameter('orderType', $orderType);
         $query->setParameter('start', $start->format('Y-m-d'));
         $query->setParameter('end', $end->format('Y-m-d'));
         $query = $query->getQuery();
