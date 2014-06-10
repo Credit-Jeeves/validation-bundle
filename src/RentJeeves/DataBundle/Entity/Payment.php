@@ -128,6 +128,7 @@ class Payment extends Base
     }
 
 //    /**
+//     * TODO https://credit.atlassian.net/browse/RT-488
 //     * @Assert\Callback
 //     */
 //    public function isEndMonth(ExecutionContextInterface $validatorContext)
