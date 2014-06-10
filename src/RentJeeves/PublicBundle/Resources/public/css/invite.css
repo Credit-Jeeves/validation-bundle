@@ -38,3 +38,6 @@ label.checkbox a {
     margin-top: -18px;
     position: absolute;
 }
+.single-property-checkbox {
+    margin-left: -31px;
+}

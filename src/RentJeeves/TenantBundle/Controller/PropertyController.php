@@ -123,24 +123,28 @@ class PropertyController extends Controller
             throw $this->createNotFoundException('The property does not exist.');
         }
 
-        $invite = new Invite();
-        $invite->setProperty($property);
-        $invite->setTenant($this->getUser());
+//        $invite = new Invite();
+//        $invite->setProperty($property);
+//        $invite->setTenant($this->getUser());
         $form = $this->createForm(
-            new InviteType(),
-            $invite
+            new InviteType() //,
+//            $invite
         );
 
         $request = $this->get('request');
-        if ($request->getMethod() == 'POST') {
-            $form->bind($request);
+        $form->handleRequest($request);
+//        if ($request->getMethod() == 'POST') {
+//            $form->bind($request);
             if ($form->isValid()) {
+                $invite = $form->getData();
+                $invite->setProperty($property);
+                $invite->setTenant($this->getUser());
 
                 $this->get('invite.landord')->invite($invite, $this->getUser());
 
                 return $this->redirect($this->generateUrl('tenant_homepage'), 301);
             }
-        }
+//        }
 
         return array(
             'property'          => $property,
