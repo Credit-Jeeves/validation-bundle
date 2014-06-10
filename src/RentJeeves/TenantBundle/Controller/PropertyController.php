@@ -129,15 +129,15 @@ class PropertyController extends Controller
 
         $request = $this->get('request');
         $form->handleRequest($request);
-            if ($form->isValid()) {
-                $invite = $form->getData();
-                $invite->setProperty($property);
-                $invite->setTenant($this->getUser());
+        if ($form->isValid()) {
+            $invite = $form->getData();
+            $invite->setProperty($property);
+            $invite->setTenant($this->getUser());
 
-                $this->get('invite.landord')->invite($invite, $this->getUser());
+            $this->get('invite.landord')->invite($invite, $this->getUser());
 
-                return $this->redirect($this->generateUrl('tenant_homepage'), 301);
-            }
+            return $this->redirect($this->generateUrl('tenant_homepage'), 301);
+        }
 
         return array(
             'property'          => $property,
