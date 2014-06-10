@@ -14,6 +14,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
  * @ORM\HasLifecycleCallbacks()
+ *
+ * @Assert\Callback({
+ *      "Symfony\Component\Validator\Constraints\CallbackValidator": "isEndLaterThanStart"
+ *
+ * })
+ *
  */
 class Payment extends Base
 {
@@ -127,20 +133,18 @@ class Payment extends Base
         return $this->getTotal()?$this->getTotal() - $this->getAmount():0;
     }
 
-//    /**
-//     * TODO https://credit.atlassian.net/browse/RT-488
-//     * @Assert\Callback
-//     */
-//    public function isEndMonth(ExecutionContextInterface $validatorContext)
-//    {
-//        if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate() ||
-//            !$this->getEndMonth() || !$this->getEndYear()
-//        ) {
-//            return;
-//        }
-//        $end = new DateTime($this->getEndYear() . '-' . $this->getEndMonth() . '-' . $this->getDueDate());
-//        if ($end > $this->getStartDate()) {
-//            $validatorContext->addViolationAt('endMonth', 'contract.error.is_end_later_than_start', array(), null);
-//        }
-//    }
+    public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
+    {
+        if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate() ||
+            !$this->getEndMonth() || !$this->getEndYear()
+        ) {
+            return;
+        }
+        $end = new DateTime();
+        $end->setTime(0, 0, 0);
+        $end->setDate($this->getEndYear(), $this->getEndMonth(), $this->getDueDate());
+        if ($end < $this->getStartDate()) {
+            $validatorContext->addViolationAt('endMonth', 'contract.error.is_end_later_than_start', array(), null);
+        }
+    }
 }

@@ -80,7 +80,7 @@ class Mailer extends BaseMailer
 
     public function sendRjLandlordComeFromInvite($tenant, $landlord, $contract, $sTemplate = 'rjLandlordComeFromInvite')
     {
-        $unitName = $contract->getUnit()? $contract->getUnit()->getName : $contract->getSearch();
+        $unitName = $contract->getUnit()? $contract->getUnit()->getName() : $contract->getSearch();
         $vars = array(
             'nameTenant'            => $tenant->getFirstName(),
             'fullNameLandlord'      => $landlord->getFullName(),

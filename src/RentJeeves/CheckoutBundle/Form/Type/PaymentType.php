@@ -401,7 +401,7 @@ class PaymentType extends AbstractType
 
     public function isLaterOrEqualNow($data, ExecutionContextInterface $validatorContext)
     {
-        $now = new DateTime($this);
+        $now = new DateTime();
         $now->setTime(0, 0);
 
         $payDate = new DateTime($data);

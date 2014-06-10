@@ -6,6 +6,7 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\DataBundle\Entity\Invite;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Unit;
@@ -46,7 +47,7 @@ class InviteLandlord
         $this->locale = $locale;
     }
 
-    public function invite($invite, $tenant)
+    public function invite(Invite $invite, $tenant)
     {
         $em = $this->em;
         $landlord = new Landlord();
@@ -85,14 +86,18 @@ class InviteLandlord
             $em->flush();
         }
 
-        $unitName = $invite->getUnit();
-        if (empty($unitName)) {
-            $unitName = Unit::SEARCH_PROPERTY_NEW_NAME;
+        $property = $invite->getProperty();
+        $isSingleProperty = $invite->getIsSingle();
+        if ($isSingleProperty) {
+            $property->setIsSingle(true);
+            $em->flush($property);
+        } else {
+            $unitName = $invite->getUnit();
+            $contract->setSearch($unitName);
         }
-        $group->addGroupProperty($invite->getProperty());
 
-        $contract->setProperty($invite->getProperty());
-        $contract->setSearch($unitName);
+        $group->addGroupProperty($property);
+        $contract->setProperty($property);
         $contract->setTenant($tenant);
         $contract->setHolding($holding);
         $contract->setGroup($group);
