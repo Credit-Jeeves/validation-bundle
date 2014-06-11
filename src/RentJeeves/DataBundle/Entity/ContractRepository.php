@@ -3,6 +3,7 @@ namespace RentJeeves\DataBundle\Entity;
 
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Enum\OrderType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use RentJeeves\DataBundle\Enum\ContractStatus;
@@ -377,7 +378,7 @@ class ContractRepository extends EntityRepository
      * Complicated query, have unit test
      *
      * @param int $days
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getLateContracts($days = 5)
     {
@@ -522,7 +523,6 @@ class ContractRepository extends EntityRepository
     public function getPotentialLateContract(DateTime $date)
     {
         $startPaymentDate = clone $date;
-        $startPaymentDate->modify("-1 month");
 
         $endPaymentDate = clone $date;
         $dueDays = $this->getDueDays(0, $date);
@@ -538,7 +538,7 @@ class ContractRepository extends EntityRepository
             AND (
                 p.id IS NULL
                 OR NOT (
-                    {$startPaymentDateDql} < STR_TO_DATE(:startDate,'%Y-%c-%e')
+                    {$startPaymentDateDql} <= STR_TO_DATE(:startDate,'%Y-%c-%e')
                     AND (
                         (p.endYear IS NULL AND p.endMonth IS NULL)
                         OR

@@ -2359,6 +2359,10 @@
                 <source>invite.error.specify_unit_or_mark_single</source>
                 <target>Either Specify a Unit or Mark the Property as Single</target>
             </trans-unit>
+            <trans-unit id="contract.error.is_end_later_than_start">
+                <source>contract.error.is_end_later_than_start</source>
+                <target>End date must be later than start</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

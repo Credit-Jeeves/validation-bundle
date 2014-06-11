@@ -12,7 +12,12 @@ class BackupCommand extends BaseCommand
 {
     protected function configure()
     {
-        $this->setName('database:backup');
+        $this->setName('database:backup')
+            ->setDefinition(
+                array(
+                    new InputArgument('filename', InputArgument::OPTIONAL, 'The name for the backup file.')
+                )
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -21,7 +26,7 @@ class BackupCommand extends BaseCommand
         
         $factory = $container->get('backup_restore.factory');
         $directory = AppKernel::BACKUP_DIR_NAME;
-        $fileName = AppKernel::BACKUP_FILE_NAME;
+        $fileName = $input->getArgument('filename') ? $input->getArgument('filename') : AppKernel::BACKUP_FILE_NAME;
         
         $backupInstance = $factory->getBackupInstance('doctrine.dbal.default_connection');
         

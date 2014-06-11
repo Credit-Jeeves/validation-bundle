@@ -74,7 +74,7 @@ class OrderAdmin extends Admin
         $datagridMapper
             ->add('user.email')
             ->add('type')
-            ->add('amount')
+            ->add('sum')
             ->add(
                 'transaction_id',
                 'doctrine_orm_callback',

@@ -1,7 +1,12 @@
 <?php
 namespace RentJeeves\DataBundle\Tests\Entity;
 
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Payment;
+use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\TestBundle\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
@@ -78,14 +83,15 @@ class ContractCase extends BaseTestCase
             array(31, '2014-03-31', 950, '2014-02-28'),
             array(2,  '2014-01-31', 1000, '2013-12-31'),
             array(31, '2014-01-31', 1000, '2013-12-31'),
-            array(31, '2014-01-29', 950, '2013-12-31', 950),
-            array(31, '2014-01-29', 950, '2013-12-31', 50),
-            array(31, '2014-01-29', 950, '2013-12-31', -50),
-            array(31, '2014-01-29', 950, '2013-12-31', -950),
-            array(31, '2014-01-01', 550, '2013-12-15'),
+            array(31, '2014-01-29', 967, '2013-12-31', 967),
+            array(31, '2014-01-29', 967, '2013-12-31', 50),
+            array(31, '2014-01-29', 967, '2013-12-31', -50),
+            array(31, '2014-01-29', 967, '2013-12-31', -967),
+            array(31, '2014-01-01', 567, '2013-12-15'),
             array(31, '2014-01-15', 500, '2013-12-31'),
             array(31, '2014-01-15', 500, '2013-12-31'),
             array(31, '2014-01-15', 400, '2013-12-31'),
+            array(11, '2014-07-01', 836, '2014-06-06'),
         );
     }
 
@@ -128,5 +134,28 @@ class ContractCase extends BaseTestCase
         $contract->setPaidTo($date);
 
         $this->assertTrue($contract->isLate());
+    }
+
+    /**
+     * @test
+     */
+    public function save()
+    {
+        $this->load(false);
+        /** @var EntityManager $em */
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        /** @var Contract $contract */
+        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
+            array(
+                'status' => ContractStatus::CURRENT,
+                'rent' => 987
+            )
+        );
+
+        $contract->setFinishAt(new DateTime('-2 years'));
+
+        $errors = $this->getContainer()->get('validator')->validate($contract);
+        $this->assertCount(1, $errors);
+        $this->assertEquals('contract.error.is_end_later_than_start', $errors[0]->getMessage());
     }
 }

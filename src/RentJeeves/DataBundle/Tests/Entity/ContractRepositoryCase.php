@@ -72,6 +72,20 @@ class ContractRepositoryCase extends BaseTestCase
                 $typePayment =  PaymentType::IMMEDIATE,
                 $isSendEmail =  true,
             ),
+            //When we have payment but payment will started in few days and don't have finish date
+            //We don't need send email
+            // FIXME potential problems when due date of payment after due date of contract
+            // https://credit.atlassian.net/browse/RT-490#comment-12526
+            array(
+                $startAtOfContract = new DateTime("-1 month"),
+                $finishAtOfContract = new DateTime("+5 month"),
+                $statusOfContract = ContractStatus::CURRENT,
+                $startPayment = new DateTime("+5 days"),
+                $endPayment = null,
+                $statusPayment = PaymentStatus::ACTIVE,
+                $typePayment =  PaymentType::RECURRING,
+                $isSendEmail =  false,
+            ),
             //When we have payment but payment in the past started and finished
             //We must send email
             array(
@@ -177,23 +191,21 @@ class ContractRepositoryCase extends BaseTestCase
         }
         $em->persist($contract);
         $em->flush();
+        $contractId = $contract->getId();
         $contractRepository = $em->getRepository('RjDataBundle:Contract');
         $contracts = $contractRepository->getPotentialLateContract(new DateTime());
-        $testResult = false;
-        if ($isSendEmail) {
-            foreach ($contracts as $contractInDb) {
-                if ($contractInDb->getId() === $contract->getId()) {
-                    $testResult = true;
+
+
+        if ($contracts) {
+            $contracts = array_filter(
+                $contracts,
+                function (Contract $contract) use ($contractId) {
+                    return $contract->getId() == $contractId;
                 }
-            }
-        } else {
-            foreach ($contracts as $contractInDb) {
-                if ($contractInDb->getId() === $contract->getId()) {
-                    $testResult = false;
-                }
-            }
+            );
         }
-        $this->assertEquals($isSendEmail, $testResult);
+
+        $this->assertEquals($isSendEmail, 1 == count($contracts));
     }
 
     public function dataForGetLateContract()
