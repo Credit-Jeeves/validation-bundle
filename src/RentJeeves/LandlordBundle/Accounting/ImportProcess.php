@@ -2,6 +2,7 @@
 
 namespace RentJeeves\LandlordBundle\Accounting;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OperationType;
@@ -14,6 +15,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
 use RentJeeves\CoreBundle\Controller\Traits\FormErrors;
 use RentJeeves\CoreBundle\Mailer\Mailer;
+use RentJeeves\CoreBundle\Session\Landlord as SessionUser;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Entity\Landlord;
@@ -29,7 +31,6 @@ use RentJeeves\LandlordBundle\Form\ImportNewUserWithContractType;
 use RentJeeves\LandlordBundle\Model\Import as ModelImport;
 use RentJeeves\LandlordBundle\Model\Import;
 use Symfony\Component\Form\Form;
-use Symfony\Component\Security\Core\SecurityContext;
 use CreditJeeves\CoreBundle\Translation\Translator;
 use \DateTime;
 use \Exception;
@@ -57,6 +58,11 @@ class ImportProcess
      * @var Landlord
      */
     protected $user;
+
+    /**
+     * @var Group
+     */
+    protected $group;
 
     /**
      * @var FormFactory
@@ -107,7 +113,7 @@ class ImportProcess
      * @InjectParams({
      *     "em"               = @Inject("doctrine.orm.default_entity_manager"),
      *     "translator"       = @Inject("translator"),
-     *     "context"          = @Inject("security.context"),
+     *     "sessionUser"      = @Inject("core.session.landlord"),
      *     "formFactory"      = @Inject("form.factory"),
      *     "translator"       = @Inject("translator"),
      *     "formCsrfProvider" = @Inject("form.csrf_provider"),
@@ -121,7 +127,7 @@ class ImportProcess
     public function __construct(
         EntityManager $em,
         Translator $translator,
-        SecurityContext $context,
+        SessionUser $sessionUser,
         FormFactory $formFactory,
         Translator $translator,
         CsrfTokenManagerAdapter $formCsrfProvider,
@@ -132,7 +138,8 @@ class ImportProcess
         $locale
     ) {
         $this->em               = $em;
-        $this->user             = $context->getToken()->getUser();
+        $this->user             = $sessionUser->getUser();
+        $this->group            = $sessionUser->getGroup();
         $this->formFactory      = $formFactory;
         $this->translator       = $translator;
         $this->formCsrfProvider = $formCsrfProvider;
@@ -234,10 +241,11 @@ class ImportProcess
         }
 
         $contract->setProperty($this->getProperty());
-        $contract->setGroup($this->user->getCurrentGroup());
-        $contract->setHolding($this->user->getHolding());
+        $contract->setGroup($this->group);
+        $contract->setHolding($this->group->getHolding());
         $contract->setTenant($tenant);
         $contract->setUnit($this->getUnit($row));
+        $contract->setDueDate($this->group->getGroupSettings()->getDueDate());
 
         $tenant->addContract($contract);
 
@@ -299,11 +307,11 @@ class ImportProcess
             'name'     => $row[ImportMapping::KEY_UNIT],
         );
 
-        if ($group = $this->user->getCurrentGroup()) {
-            $params['group'] = $group;
+        if ($this->group) {
+            $params['group'] = $this->group;
         }
 
-        if ($holding = $this->user->getHolding()) {
+        if ($holding = $this->group->getHolding()) {
             $params['holding'] = $holding;
         }
 
@@ -314,8 +322,8 @@ class ImportProcess
         $unit = new Unit();
         $unit->setName($row[ImportMapping::KEY_UNIT]);
         $unit->setProperty($this->getProperty());
-        $unit->setHolding($this->user->getHolding());
-        $unit->setGroup($this->user->getCurrentGroup());
+        $unit->setHolding($this->group->getHolding());
+        $unit->setGroup($this->group);
         return $unit;
     }
 
@@ -813,10 +821,10 @@ class ImportProcess
         $today = new DateTime();
         if ($contract->getFinishAt() <= $today) { //set status of contract to finished...
             $contract->setStatus(ContractStatus::FINISHED);
-        }
 
-        if ($contract->getIntegratedBalance() > 0) {
-            $contract->setUncollectedBalance($contract->getIntegratedBalance());
+            if ($contract->getIntegratedBalance() > 0) {
+                $contract->setUncollectedBalance($contract->getIntegratedBalance());
+            }
         }
 
         $this->em->persist($contract);

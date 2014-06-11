@@ -60,21 +60,21 @@ class ImportMapping
     );
 
     public static $mappingDates = array(
-        'm/d/Y' => 'mm/dd/yyyy  (24/09/1998)',
+        'm/d/Y' => 'mm/dd/yyyy  (09/24/1998)',
         'Y-m-d' => 'yyyy-mm-dd (1998-09-24)',
         'Ymd' => 'yyyymmdd  (19980924)',
         'dmY' => 'ddmmyyyy  (24091998)',
         'mdY' => 'mmddyyyy  (09241998)',
         'Y/m/d' => 'yyyy/mm/dd (1998/09/24)',
-        'j/n/y' => 'd/m/yy (4/9/98)',
+        'j/n/y' => 'd/m/yy (24/9/98)',
         'd/m/y' => 'dd/mm/yy  (24/09/98)',
-        'm/d/y' => 'mm/dd/yy  (12/24/98)',
+        'm/d/y' => 'mm/dd/yy  (09/24/98)',
         'm-d-y' => 'mm-dd-yy  (09-24-98)',
         'm-d-Y' => 'mm-dd-yyyy  (09-24-1998)',
-        'n-j-Y' => 'm-d-yyyy  (24-9-1998)',
-        'n-j-y' => 'm-d-yy  (9-1-98)',
-        'F d, Y' => 'Month dd, yyyy (December 12, 1998)',
-        'dd-M-y' => 'dd-mon-yy (25-Dec-98)',
+        'n-j-Y' => 'm-d-yyyy  (9-24-1998)',
+        'n-j-y' => 'm-d-yy  (9-24-98)',
+        'F d, Y' => 'Month dd, yyyy (September 24, 1998)',
+        'dd-M-y' => 'dd-mon-yy (24-Sep-98)',
     );
 
     /**
@@ -303,6 +303,7 @@ class ImportMapping
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
+        $waitingRoom->setGroup($contract->getGroup());
 
         $waitingRoom->setResidentId($residentMapping->getResidentId());
 

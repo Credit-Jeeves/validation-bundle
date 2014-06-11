@@ -10,12 +10,7 @@ trait DateCommon
         if (null === $date) {
             $date = new DateTime();
         }
-        if ($shift > 0) {
-            $date->modify('+'.$shift.' days');
-        }
-        if ($shift < 0) {
-            $date->modify('-'.$shift.' days');
-        }
+        $date->modify($shift.' days');
         $total = $date->format('t');
         $day = $date->format('j');
         if ($day > 27 & $day >= $total) {

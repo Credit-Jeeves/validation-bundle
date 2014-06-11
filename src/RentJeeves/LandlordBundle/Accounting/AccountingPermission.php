@@ -2,12 +2,12 @@
 
 namespace RentJeeves\LandlordBundle\Accounting;
 
+use CreditJeeves\CoreBundle\Session\User as SessionUser;
 use CreditJeeves\DataBundle\Entity\Group;
 use CreditJeeves\DataBundle\Entity\User;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use JMS\DiExtraBundle\Annotation\Service;
-use Symfony\Component\Security\Core\SecurityContext;
 
 /**
  * @author Alexandr Sharamko <alexandr.sharamko@gmail.com>
@@ -22,13 +22,19 @@ class AccountingPermission
     protected $user;
 
     /**
+     * @var Group
+     */
+    protected $group;
+
+    /**
      * @InjectParams({
-     *     "context" = @Inject("security.context")
+     *     "sessionUser" = @Inject("core.session.landlord")
      * })
      */
-    public function __construct(SecurityContext $context)
+    public function __construct(SessionUser $sessionUser)
     {
-        $this->user = $context->getToken()->getUser();
+        $this->user = $sessionUser->getUser();
+        $this->group = $sessionUser->getGroup();
     }
 
     /**
@@ -36,15 +42,11 @@ class AccountingPermission
      */
     public function hasAccessToImport()
     {
-        /**
-         * @var $currentGroup Group
-         */
-        $currentGroup = $this->user->getCurrentGroup();
-        if (empty($currentGroup)) {
+        if (empty($this->group)) {
             return false;
         }
 
-        $setting = $currentGroup->getGroupSettings();
+        $setting = $this->group->getGroupSettings();
 
         if (empty($setting)) {
             return false;

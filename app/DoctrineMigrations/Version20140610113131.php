@@ -5,7 +5,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20140426181320 extends AbstractMigration
+class Version20140610113131 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -15,14 +15,8 @@ class Version20140426181320 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_order
-                DROP days_late"
-        );
-        $this->addSql(
-            "ALTER TABLE cj_operation
-                CHANGE paid_for paid_for DATE NOT NULL,
-                CHANGE type type ENUM('report','rent','other','charge')
-                COMMENT '(DC2Type:OperationType)' DEFAULT 'report' NOT NULL"
+            "ALTER TABLE rj_invite
+                ADD is_single TINYINT(1) DEFAULT '0'"
         );
     }
 
@@ -34,10 +28,8 @@ class Version20140426181320 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_operation
-                CHANGE paid_for paid_for DATE DEFAULT NULL,
-                CHANGE type type ENUM('report','rent','charge')
-                COMMENT '(DC2Type:OperationType)' DEFAULT 'report' NOT NULL"
+            "ALTER TABLE rj_invite
+                DROP is_single"
         );
     }
 }

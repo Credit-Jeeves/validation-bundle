@@ -32,7 +32,7 @@ parameters:
 
     external_urls:
         main_site: 'www.renttrack.com'
-        user_voice: 'renttrack.uservoice.com'
+        user_voice: 'help.renttrack.com'
 
     partners:
         price: 0
@@ -74,6 +74,7 @@ sonata_admin:
                 - rj_email.email_admin
                 - sonata.admin.admin
                 - sonata.admin.orders
+                - sonata.admin.operations
                 - sonata.admin.jobs
             RentJeeves:
               items:

@@ -5,7 +5,7 @@ namespace Application\Migrations;
 use Doctrine\DBAL\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 
-class Version20140426181320 extends AbstractMigration
+class Version20140604104013 extends AbstractMigration
 {
     public function up(Schema $schema)
     {
@@ -15,15 +15,16 @@ class Version20140426181320 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_order
-                DROP days_late"
+            "ALTER TABLE rj_resident_mapping
+                DROP first_name,
+                DROP last_name"
         );
         $this->addSql(
-            "ALTER TABLE cj_operation
-                CHANGE paid_for paid_for DATE NOT NULL,
-                CHANGE type type ENUM('report','rent','other','charge')
-                COMMENT '(DC2Type:OperationType)' DEFAULT 'report' NOT NULL"
+            "ALTER TABLE rj_contract_waiting
+                ADD first_name VARCHAR(255) NOT NULL,
+                ADD last_name VARCHAR(255) NOT NULL"
         );
+
     }
 
     public function down(Schema $schema)
@@ -34,10 +35,14 @@ class Version20140426181320 extends AbstractMigration
         );
 
         $this->addSql(
-            "ALTER TABLE cj_operation
-                CHANGE paid_for paid_for DATE DEFAULT NULL,
-                CHANGE type type ENUM('report','rent','charge')
-                COMMENT '(DC2Type:OperationType)' DEFAULT 'report' NOT NULL"
+            "ALTER TABLE rj_contract_waiting
+                DROP first_name,
+                DROP last_name"
+        );
+        $this->addSql(
+            "ALTER TABLE rj_resident_mapping
+                ADD first_name VARCHAR(255) NOT NULL,
+                ADD last_name VARCHAR(255) NOT NULL"
         );
     }
 }

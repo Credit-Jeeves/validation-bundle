@@ -13,6 +13,12 @@ use RentJeeves\DataBundle\Entity\Contract;
 class PaidFor
 {
     /**
+     * Number of return results
+     * @var int
+     */
+    const RESULTS_COUNT = 6;
+
+    /**
      * Return array of months to pay based on contract
      *
      * @param Contract $contract
@@ -59,6 +65,11 @@ class PaidFor
             }
         }
         ksort($return);
+
+        if (static::RESULTS_COUNT < ($count = count($return))) {
+            $return = array_slice($return, (static::RESULTS_COUNT * -1), static::RESULTS_COUNT, true);
+        }
+
         return $return;
     }
 

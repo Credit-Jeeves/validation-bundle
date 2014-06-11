@@ -49,7 +49,20 @@ fixtures:
         finishAt: '-2 months'
         createdAt: '-8 months -4 days'
         updatedAt: '-1 months'
-    Contract_5:
+    Contract_41: #5
+        tenant:   Tenant_2
+        holding:  rjHolding_1
+        group:    RentGroup_1
+        property: Property_1
+        unit:     Unit_1_4
+        rent:     1250
+        status:   approved
+        paidTo:  '5 days'
+        startAt:   '-8 months 5 days'
+        finishAt: '2 months'
+        createdAt: '-8 months 5 days'
+        updatedAt: '-1 months 5 days'
+    Contract_5: #6
         tenant:   Tenant_3
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -59,7 +72,7 @@ fixtures:
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_6:
+    Contract_6: #7
         tenant:   Tenant_4
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -72,7 +85,7 @@ fixtures:
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_66:
+    Contract_66: #8
         tenant:   Tenant_6
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -85,7 +98,7 @@ fixtures:
         finishAt: '-20 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_7:
+    Contract_7: #9
         tenant:   Tenant_1
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -98,7 +111,7 @@ fixtures:
         finishAt: '2 month'
         createdAt: '-11 month'
         updatedAt: '-10 month'
-    Contract_8:
+    Contract_8: #10
         tenant:   Tenant_6
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -111,7 +124,7 @@ fixtures:
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_9:
+    Contract_9: #11
         tenant:   Tenant_7
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -124,7 +137,7 @@ fixtures:
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_10:
+    Contract_10: #12
         tenant:   Tenant_8
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -137,7 +150,7 @@ fixtures:
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_11:
+    Contract_11: #13
         tenant:   Tenant_9
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -150,7 +163,7 @@ fixtures:
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_12:
+    Contract_12: #14
         tenant:   Tenant_10
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -162,7 +175,7 @@ fixtures:
         finishAt: '60 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_13:
+    Contract_13: #15
         tenant:   Tenant_11
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -175,7 +188,7 @@ fixtures:
         finishAt: '-120 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_14:
+    Contract_14: #16
         tenant:   Tenant_12
         holding:  rjHolding_1
         group:    RentGroup_1
@@ -188,7 +201,7 @@ fixtures:
         finishAt: '-120 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_15:
+    Contract_15: #17
         tenant:   Tenant_12
         holding:  rjHolding_2
         group:    RentGroup_6
@@ -201,7 +214,7 @@ fixtures:
         finishAt: '-120 days'
         createdAt: '-50 days'
         updatedAt: '-50 days'
-    Contract_19:
+    Contract_19: #18
         tenant:   Tenant_12
         holding:  rjHolding_2
         group:    RentGroup_6

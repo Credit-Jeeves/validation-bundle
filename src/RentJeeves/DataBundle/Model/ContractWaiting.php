@@ -2,6 +2,7 @@
 
 namespace RentJeeves\DataBundle\Model;
 
+use CreditJeeves\DataBundle\Entity\Group;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -201,6 +202,21 @@ abstract class ContractWaiting
     protected $lastName;
 
     /**
+     * @ORM\ManyToOne(
+     *     targetEntity="CreditJeeves\DataBundle\Entity\Group",
+     *     inversedBy="waitingContracts",
+     *     cascade={"persist"}
+     * )
+     * @ORM\JoinColumn(
+     *     name="group_id",
+     *     referencedColumnName="id",
+     *     nullable=false
+     * )
+     * @Serializer\Exclude
+     */
+    protected $group;
+
+    /**
      * @param string $firstName
      */
     public function setFirstName($firstName)
@@ -368,5 +384,21 @@ abstract class ContractWaiting
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param Group $group
+     */
+    public function setGroup(Group $group)
+    {
+        $this->group = $group;
+    }
+
+    /**
+     * @return Group
+     */
+    public function getGroup()
+    {
+        return $this->group;
     }
 }

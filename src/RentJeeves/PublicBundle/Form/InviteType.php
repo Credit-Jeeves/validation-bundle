@@ -38,7 +38,18 @@ class InviteType extends AbstractType
         );
         $builder->add(
             'unit',
-            null
+            null,
+            array(
+                'required' => false
+            )
+        );
+        $builder->add(
+            'is_single',
+            'checkbox',
+            array(
+                'label' => 'property.single.checkbox_label',
+                'required' => false
+            )
         );
     }
 

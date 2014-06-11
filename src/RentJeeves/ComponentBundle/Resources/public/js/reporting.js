@@ -22,6 +22,7 @@ $(document).ready(function(){
             },
             success: function() {
                 $('#reporting-start-' + id).dialog('close');
+                location.reload();
             }
         });
     });

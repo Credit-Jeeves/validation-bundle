@@ -62,8 +62,6 @@ class SourcesCase extends BaseTestCase
         $this->assertCount(2, $choices);
         $choices[1]->click();
 
-
-
         $this->page->pressButton('payment_account.edit.save');
 
         $this->session->wait($this->timeout + 15000, "jQuery('#payment-account-row-1 td:first').text() == 'New Card'");
@@ -153,7 +151,6 @@ class SourcesCase extends BaseTestCase
     }
 
     /**
-     *
      * @test
      */
     public function checkEmailNotifyWhenRemoveContract()
