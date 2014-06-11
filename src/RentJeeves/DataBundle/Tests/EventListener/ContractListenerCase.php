@@ -43,13 +43,9 @@ class ContractListenerCase extends Base
         $this->load(true);
         $plugin = $this->registerEmailListener();
         $plugin->clean();
-        /**
-         * @var $em EntityManager
-         */
+        /** @var EntityManager $em */
         $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        /**
-         * @var $payment Payment
-         */
+        /** @var Payment $payment */
         $payment = $em->getRepository('RjDataBundle:Payment')->findOneBy(
             array(
                 'status' => PaymentStatus::ACTIVE,

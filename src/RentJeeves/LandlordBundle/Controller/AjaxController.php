@@ -26,8 +26,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpFoundation\Request;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 use Exception;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * 
@@ -91,7 +92,6 @@ class AjaxController extends Controller
      */
     public function contractMonthToMonth($contractId, Request $request)
     {
-        $group = $this->getCurrentGroup();
         $contract = $this->getContract($contractId);
         $contract->setFinishAt(null);
         $em = $this->getDoctrine()->getManager();
@@ -190,7 +190,7 @@ class AjaxController extends Controller
     public function getAllProperties()
     {
         $group = $this->getCurrentGroup();
-        $repo = $this->get('doctrine.orm.default_entity_manager')->getRepository('RjDataBundle:Property');
+        $repo = $this->getDoctrine()->getManager()->getRepository('RjDataBundle:Property');
         $properties = $repo->getPropetiesAll($group);
 
         foreach ($properties as $property) {
@@ -211,9 +211,8 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getPropertiesList()
+    public function getPropertiesList(Request $request)
     {
-        $request = $this->getRequest();
         $page = $request->request->all('data');
         $page = $page['data'];
         $data = array('properties' => array(), 'total' => 0, 'pagination' => array());
@@ -374,9 +373,8 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function deleteProperty()
+    public function deleteProperty(Request $request)
     {
-        $request = $this->getRequest();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $user = $this->getUser();
@@ -407,13 +405,12 @@ class AjaxController extends Controller
      * )
      * @Method({"POST"})
      */
-    public function getUnitsList()
+    public function getUnitsList(Request $request)
     {
         $result = array('property' => '', 'units' => array());
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
-        $request = $this->getRequest();
         $data = $request->request->all('property_id');
         $property = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($data['property_id']);
         $result['property'] = $property->getAddress();
@@ -469,7 +466,7 @@ class AjaxController extends Controller
      * )
      * @Method({"POST"})
      */
-    public function saveUnitsList()
+    public function saveUnitsList(Request $request)
     {
         $data = array();
         $names = array();
@@ -478,7 +475,6 @@ class AjaxController extends Controller
         $user = $this->getUser();
         $holding = $user->getHolding();
         $group = $this->getCurrentGroup();
-        $request = $this->getRequest();
         $data = $request->request->all('units');
         $property = $request->request->all('property');
         $parent = $this->getDoctrine()->getRepository('RjDataBundle:Property')->find($property['property_id']);
@@ -549,11 +545,10 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getTenantsList()
+    public function getTenantsList(Request $request)
     {
         $items = array();
         $total = 0;
-        $request = $this->getRequest();
         $page = $request->request->all('data');
         $page = $page['data'];
         $data = array('tenants' => array(), 'total' => 0, 'pagination' => array());
@@ -587,14 +582,13 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getContractsList()
+    public function getContractsList(Request $request)
     {
         //@TODO find best way for this implementation
         //For this functional need show unit which was removed
         $this->get('soft.deleteable.control')->disable();
         $items = array();
         $total = 0;
-        $request = $this->getRequest();
         $dataRequest = $request->request->all('data')['data'];
         $data = array('contracts' => array(), 'total' => 0, 'pagination' => array());
         $group = $this->getCurrentGroup();
@@ -633,13 +627,12 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function getActionsList()
+    public function getActionsList(Request $request)
     {
         //For this page need show unit each was removed
         //@TODO find best way for this implementation
         $this->get('soft.deleteable.control')->disable();
         $items = array();
-        $request = $this->getRequest();
         $page = $request->request->all();
         $data = $page['data'];
 
@@ -690,13 +683,12 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function saveContract()
+    public function saveContract(Request $request)
     {
         $errors = array();
         $response = array();
         $translator = $this->get('translator');
         $em = $this->getDoctrine()->getManager();
-        $request = $this->getRequest();
         $contract = $request->request->all('contract');
         $details = $contract['contract'];
         $action = 'edit';
@@ -727,9 +719,9 @@ class AjaxController extends Controller
         $unit = $em->getRepository('RjDataBundle:Unit')->find($details['unit_id']);
         $contract->setRent($details['amount']);
         $contract->setDueDate($details['dueDate']);
-        $contract->setStartAt(new \Datetime($details['start']));
+        $contract->setStartAt(new DateTime($details['start']));
         if (!empty($details['finish'])) {
-            $contract->setFinishAt(new \Datetime($details['finish']));
+            $contract->setFinishAt(new DateTime($details['finish']));
         } else {
             $contract->setFinishAt(null);
         }
@@ -757,6 +749,12 @@ class AjaxController extends Controller
             return new JsonResponse($response);
         }
 
+        $validatorErrors = $this->get('validator')->validate($contract);
+        /** @var ConstraintViolation $error */
+        foreach ($validatorErrors as $error) {
+            $errors[] = $translator->trans($error->getMessage());
+        }
+
         if (!empty($errors)) {
             $response['errors'] = $errors;
             return new JsonResponse($response);
@@ -778,10 +776,9 @@ class AjaxController extends Controller
      * )
      * @Method({"POST", "GET"})
      */
-    public function resolveContract()
+    public function resolveContract(Request $request)
     {
         $amount = null;
-        $request = $this->getRequest();
         $data = $request->request->all('data');
         if (!isset($data['action'])) {
             return new JsonResponse(array());
@@ -790,7 +787,8 @@ class AjaxController extends Controller
             $amount = $data['amount'];
         }
         /** @var Contract $contract */
-        $contract = $this->get('doctrine.orm.default_entity_manager')
+        $contract = $this->getDoctrine()
+            ->getManager()
             ->getRepository('RjDataBundle:Contract')
             ->find($data['contract_id']);
         $tenant = $contract->getTenant();
@@ -814,7 +812,6 @@ class AjaxController extends Controller
                 $operation->setType(OperationType::RENT);
                 $operation->setContract($contract);
                 $operation->setAmount($contract->getRent());
-                // FIXME after paid for would be implemented for payments
                 $operation->setPaidFor($contract->getPaidTo());
                 $em->persist($operation);
                 // Change paid to date

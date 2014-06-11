@@ -14,12 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
  * @ORM\HasLifecycleCallbacks()
- *
- * @Assert\Callback({
- *      "Symfony\Component\Validator\Constraints\CallbackValidator": "isEndLaterThanStart"
- *
- * })
- *
+ * @Assert\Callback(methods={"isEndLaterThanStart"})
  */
 class Payment extends Base
 {

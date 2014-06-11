@@ -57,112 +57,51 @@ class OperationAdmin extends Admin
     {
         $listMapper
             ->addIdentifier('id', null, array('route' => array('name' => 'show')))
-            ->add('created_at', 'date')
+            ->add('createdAt', 'date')
             ->add('type')
             ->add('amount', 'money')
             ->add('paidFor', 'date')
-            ->add('contract_id', null, array('route' => array('name' => 'show')))
-            ->add('order_id', null, array('route' => array('name' => 'show')));
+            ->add('contract', null, array('route' => array('name' => 'show')))
+            ->add('order', null, array('route' => array('name' => 'show')))
+            ->add('order.created_at')
+            ->add(
+                '_action',
+                'actions',
+                array(
+                    'actions' => array(
+                        'edit' => array(),
+                    )
+                )
+            );
     }
 
     public function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
-            ->add('created_at', 'doctrine_orm_date')
+            ->add('createdAt', 'doctrine_orm_date')
             ->add('type')
             ->add('amount')
             ->add('paidFor', 'doctrine_orm_date')
-            ->add('contract_id')
-            ->add('order_id');
-    }
-
-    public function buildBreadcrumbs($action, MenuItemInterface $menu = null)
-    {
-//        $nUserId = $this->getRequest()->get('user_id', $this->request->getSession()->get('user_id', null));
-//        $nContractId = $this->getRequest()->get('contract_id', $this->request->getSession()->get('contract_id', null));
-//        $menu = $this->menuFactory->createItem('root');
-//        $menu = $menu->addChild(
-//            $this->trans(
-//                $this->getLabelTranslatorStrategy()->getLabel(
-//                    'dashboard',
-//                    'breadcrumb',
-//                    'link'
-//                ),
-//                array(),
-//                'SonataAdminBundle'
-//            ),
-//            array(
-//                'uri' => $this->routeGenerator->generate('sonata_admin_dashboard')
-//            )
-//        );
-//        if ('list' == $action & !empty($nUserId)) {
-//            $menu = $menu->addChild(
-//                $this->trans(
-//                    $this->getLabelTranslatorStrategy()->getLabel(
-//                        'Tenant List',
-//                        'breadcrumb',
-//                        'link'
-//                    ),
-//                    array(),
-//                    'SonataAdminBundle'
-//                ),
-//                array(
-//                    'uri' => $this->routeGenerator->generate('admin_tenant_list')
-//                )
-//            );
-//        }
-//        if ('list' == $action & !empty($nContractId)) {
-//            $menu = $menu->addChild(
-//                $this->trans(
-//                    $this->getLabelTranslatorStrategy()->getLabel(
-//                        'Contracts List',
-//                        'breadcrumb',
-//                        'link'
-//                    ),
-//                    array(),
-//                    'SonataAdminBundle'
-//                ),
-//                array(
-//                    'uri' => $this->routeGenerator->generate('admin_rentjeeves_data_contract_list')
-//                )
-//            );
-//        }
-//        $menu = $menu->addChild(
-//            $this->trans(
-//                $this->getLabelTranslatorStrategy()->getLabel(
-//                    'Orders List',
-//                    'breadcrumb',
-//                    'link'
-//                ),
-//                array(),
-//                'SonataAdminBundle'
-//            ),
-//            array(
-//                'uri' => $this->routeGenerator->generate('admin_creditjeeves_data_order_list')
-//            )
-//        );
-//        return $this->breadcrumbs[$action] = $menu;
+            ->add('contract.id')
+            ->add('order.id')
+            ->add('order.created_at', 'doctrine_orm_date');
     }
 
     public function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
-            ->add(
-                'status',
-                'choice',
-                array('choices' => OrderStatus::getManualAvailableToSet($this->getSubject()->getStatus()))
-            );
+            ->add('paidFor');
         ;
     }
 
     protected function configureShowFields(ShowMapper $formMapper)
     {
         $formMapper
-            ->add('created_at', 'date')
+            ->add('createdAt', 'date')
             ->add('type')
             ->add('amount', 'money')
             ->add('paidFor', 'date')
-            ->add('contract_id', null, array('route' => array('name' => 'show')))
-            ->add('order_id', null, array('route' => array('name' => 'show')));
+            ->add('contract', null, array('route' => array('name' => 'show')))
+            ->add('order', null, array('route' => array('name' => 'show')));
     }
 }

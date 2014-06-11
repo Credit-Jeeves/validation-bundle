@@ -24,11 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ContractRepository")
  * @ORM\Table(name="rj_contract")
  *
- * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
+ * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
  *
- * @Assert\Callback({
- *      "Symfony\Component\Validator\Constraints\CallbackValidator": "isEndLaterThanStart"
- * })
+ * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
  */
 class Contract extends Base
 {

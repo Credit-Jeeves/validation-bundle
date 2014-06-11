@@ -317,7 +317,7 @@ class PaymentType extends AbstractType
                 'choices' => $months,
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: payment.endMonth',
+                    'data-bind' => 'value: payment.endMonth, enable: \'on\' == payment.ends()',
                     'box_attr' => array(
                         'data-bind' => 'visible: \'on\' == payment.ends()'
                     )
@@ -333,7 +333,7 @@ class PaymentType extends AbstractType
                 'choices' => array_combine($years, $years),
                 'attr' => array(
                     'class' => 'original',
-                    'data-bind' => 'value: payment.endYear',
+                    'data-bind' => 'value: payment.endYear, enable: \'on\' == payment.ends()',
                     'box_attr' => array(
                         'data-bind' => 'visible: \'on\' == payment.ends()'
                     )

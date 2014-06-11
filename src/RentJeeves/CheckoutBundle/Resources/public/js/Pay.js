@@ -234,12 +234,8 @@ function Pay(parent, contractId) {
     }, this);
     this.getLastPaymentDay = ko.computed(function() {
         var finishDate = new Date();
-        console.log(contract.finishAt);
-        console.log(finishDate);
         finishDate.setDate(1);
-        console.log(finishDate);
         finishDate.setMonth(this.payment.endMonth() - 1);
-        console.log(finishDate);
         finishDate.setYear(this.payment.endYear());
         var daysInMonth = Date.getDaysInMonth(this.payment.endYear(), this.payment.endMonth() - 1);
         finishDate.setDate(
@@ -247,7 +243,6 @@ function Pay(parent, contractId) {
                 daysInMonth :
                 this.payment.dueDate()
         );
-        console.log(finishDate);
         return finishDate.toString('M/d/yyyy');
     }, this);
 

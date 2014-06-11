@@ -96,7 +96,23 @@ abstract class BaseTestCase extends MinkTestCase
             ->getRestoreInstance('doctrine.dbal.default_connection')
             ->restoreDatabase(AppKernel::BACKUP_DIR_NAME . '/' . AppKernel::BACKUP_FILE_NAME);
         self::$isFixturesLoaded = true;
-        //@TODO Its hack, becouse after use load function, for load fixtures, we have problem.
+        //@TODO Its hack, because after use load function, for load fixtures, we have problem.
+        static::$kernel = null;
+    }
+
+    /**
+     * Clear DB
+     *
+     * @param bool $reload
+     * @return void
+     */
+    protected function clear()
+    {
+        self::$isFixturesLoaded = false;
+        $this->getContainer()->get('backup_restore.factory')
+            ->getRestoreInstance('doctrine.dbal.default_connection')
+            ->restoreDatabase(AppKernel::BACKUP_DIR_NAME . '/empty.sql');
+        //@TODO Its hack, because after use load function, for load fixtures, we have problem.
         static::$kernel = null;
     }
 
