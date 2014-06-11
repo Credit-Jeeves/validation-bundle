@@ -209,7 +209,7 @@ class ImportCase extends BaseTestCase
         $this->setDefaultSession('goutte');
         $this->visitEmailsPage();
         $this->assertNotNull($email = $this->page->findAll('css', 'a'));
-        $this->assertCount(9, $email, 'Wrong number of emails');
+        $this->assertCount(10, $email, 'Wrong number of emails');
         /**
          * @var $em EntityManager
          */

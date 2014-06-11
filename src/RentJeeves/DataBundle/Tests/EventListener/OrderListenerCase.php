@@ -1,6 +1,6 @@
 <?php
 
-namespace RentJeeves\DataBundle\Tests\Unit;
+namespace RentJeeves\DataBundle\Tests\EventListener;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
@@ -275,8 +275,8 @@ class OrderListenerCase extends Base
         $operation->setPaidFor($paidFor);
         $operation->setOrder($order);
 
-        $em->persist($operation);
         $em->persist($order);
+        $em->persist($operation);
         $em->flush();
         $em->refresh($contract);
         $order->setStatus($orderStatus);

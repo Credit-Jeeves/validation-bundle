@@ -13,7 +13,7 @@ class PaymentCase extends BaseTestCase
         $this->load(true);
         $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($block = $this->page->find('css', '#id_block_paymnets'));
+        $this->assertNotNull($block = $this->page->find('css', '#id_block_payments'));
         $block->clickLink('link_list');
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));
@@ -29,12 +29,13 @@ class PaymentCase extends BaseTestCase
 
     /**
      * @test
+     * @depends filter
      */
     public function butchRun()
     {
         $this->setDefaultSession('symfony');
         $this->login('admin@creditjeeves.com', 'P@ssW0rd');
-        $this->assertNotNull($block = $this->page->find('css', '#id_block_paymnets'));
+        $this->assertNotNull($block = $this->page->find('css', '#id_block_payments'));
         $block->clickLink('link_list');
 
         $this->assertNotNull($table = $this->page->find('css', 'table'));

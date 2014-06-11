@@ -15,12 +15,16 @@ use JMS\Serializer\Annotation as Serializer;
 use Gedmo\Mapping\Annotation as Gedmo;
 use RentJeeves\CoreBundle\DateTime;
 use RuntimeException;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Contract
  *
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\ContractRepository")
  * @ORM\Table(name="rj_contract")
+ *
+ * @Assert\Callback(methods={"isEndLaterThanStart"}, groups={"User", "Default"})
  *
  * @Gedmo\Loggable(logEntryClass="RentJeeves\DataBundle\Entity\ContractHistory")
  */
@@ -749,5 +753,19 @@ class Contract extends Base
         }
 
         return $startAt->setDate(null, null, $this->getDueDate());
+    }
+
+
+    /**
+     * FIXME find why does not work!!!
+     */
+    public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
+    {
+        if (!$this->getStartAt() || !$this->getFinishAt()) {
+            return;
+        }
+        if ($this->getFinishAt() < $this->getStartAt()) {
+            $validatorContext->addViolationAt('finish', 'contract.error.is_end_later_than_start', array(), null);
+        }
     }
 }

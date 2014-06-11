@@ -1,6 +1,8 @@
 <?php
 namespace RentJeeves\CoreBundle;
 
+use DateTimeZone;
+
 /**
  * @author Ton Sharp <66Ton99@gmail.com>
  */

@@ -109,6 +109,18 @@ abstract class Invite
     protected $property;
 
     /**
+     * @ORM\Column(
+     *     name="is_single",
+     *     type="boolean",
+     *     nullable=true,
+     *     options={
+     *         "default"="0"
+     *     }
+     * )
+     */
+    protected $isSingle = 0;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -277,5 +289,21 @@ abstract class Invite
     public function getProperty()
     {
         return $this->property;
+    }
+
+    /**
+     * @param mixed $isSingle
+     */
+    public function setIsSingle($isSingle)
+    {
+        $this->isSingle = $isSingle;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsSingle()
+    {
+        return $this->isSingle;
     }
 }

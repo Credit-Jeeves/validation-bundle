@@ -93,7 +93,7 @@
 .addPropertyContainer {
     display: block;
     position: absolute;
-    margin-left: 762px;
+    margin-left: 752px;
     margin-top: -20px;
 }
 
@@ -222,18 +222,10 @@ button.contract-delete {
     float:left;
     padding-right: 350px;
 }
-
 .fiter-box label {
-    float:left;
+    float:right !important;
     margin:5px 5px 0 0;
     font:14px/15px "PT Sans",sans-serif;
-}
-
-.fiter-box .select {
-    float:left;
-    margin-left:10px;
-    font-size:12px;
-    font-family:"PT Sans",sans-serif;
 }
 a.linkselect-link {
     width: 200px;
@@ -243,9 +235,18 @@ a.linkselect-link {
 a.linkselect-link .linkselect-link-text {
     padding-top: 3px;
 }
-.linkselect-link-icon {
-    width: 28px;
-    height: 25px;
+.fiter-box .linkselect-link-icon {
+    background: url(/bundles/rjpublic/images/select.png) no-repeat top left;
+    height: 22px;
+    width: 19px;
+    margin-top: 1px;
+}
+.fiter-box a {
+    float: right;
+    width: 135px;
+    font-size: 13px;
+    height: 23px;
+    margin-left: 10px;
 }
 .properties-table-block.table-wrap {
     overflow: visible;

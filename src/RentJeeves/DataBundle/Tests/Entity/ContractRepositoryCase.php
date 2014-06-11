@@ -1,9 +1,10 @@
 <?php
 
-namespace RentJeeves\DataBundle\Tests\Unit;
+namespace RentJeeves\DataBundle\Tests\Entity;
 
 use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\DateTime;
+use RentJeeves\DataBundle\Entity\ContractWaiting;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Enum\PaymentType;
@@ -70,6 +71,20 @@ class ContractRepositoryCase extends BaseTestCase
                 $statusPayment = PaymentStatus::ACTIVE,
                 $typePayment =  PaymentType::IMMEDIATE,
                 $isSendEmail =  true,
+            ),
+            //When we have payment but payment will started in few days and don't have finish date
+            //We don't need send email
+            // FIXME potential problems when due date of payment after due date of contract
+            // https://credit.atlassian.net/browse/RT-490#comment-12526
+            array(
+                $startAtOfContract = new DateTime("-1 month"),
+                $finishAtOfContract = new DateTime("+5 month"),
+                $statusOfContract = ContractStatus::CURRENT,
+                $startPayment = new DateTime("+5 days"),
+                $endPayment = null,
+                $statusPayment = PaymentStatus::ACTIVE,
+                $typePayment =  PaymentType::RECURRING,
+                $isSendEmail =  false,
             ),
             //When we have payment but payment in the past started and finished
             //We must send email
@@ -176,23 +191,21 @@ class ContractRepositoryCase extends BaseTestCase
         }
         $em->persist($contract);
         $em->flush();
+        $contractId = $contract->getId();
         $contractRepository = $em->getRepository('RjDataBundle:Contract');
         $contracts = $contractRepository->getPotentialLateContract(new DateTime());
-        $testResult = false;
-        if ($isSendEmail) {
-            foreach ($contracts as $contractInDb) {
-                if ($contractInDb->getId() === $contract->getId()) {
-                    $testResult = true;
+
+
+        if ($contracts) {
+            $contracts = array_filter(
+                $contracts,
+                function (Contract $contract) use ($contractId) {
+                    return $contract->getId() == $contractId;
                 }
-            }
-        } else {
-            foreach ($contracts as $contractInDb) {
-                if ($contractInDb->getId() === $contract->getId()) {
-                    $testResult = false;
-                }
-            }
+            );
         }
-        $this->assertEquals($isSendEmail, $testResult);
+
+        $this->assertEquals($isSendEmail, 1 == count($contracts));
     }
 
     public function dataForGetLateContract()
@@ -201,7 +214,7 @@ class ContractRepositoryCase extends BaseTestCase
             //We don't have order at all and need send email
             array(
                 $hasOrder = false,
-                $paidFor = false,
+                $paidFor = null,
                 true
             ),
             //We have order for current month, so we don't need send email
@@ -283,7 +296,7 @@ class ContractRepositoryCase extends BaseTestCase
             $order = new Order();
             $order->setUser($contract->getTenant());
             $order->setSum(500);
-            $order->setType(OrderType::AUTHORIZE_CARD);
+            $order->setType(OrderType::HEARTLAND_CARD);
             $order->setStatus(OrderStatus::COMPLETE);
 
             $operation = new Operation();
@@ -301,8 +314,7 @@ class ContractRepositoryCase extends BaseTestCase
         $em->persist($contract);
         $em->flush();
 
-        $contractRepository = $em->getRepository('RjDataBundle:Contract');
-        $contracts = $contractRepository->getLateContracts($days = 5);
+        $contracts = $em->getRepository('RjDataBundle:Contract')->getLateContracts(5);
 
         $isSend = false;
         foreach ($contracts as $contractInDB) {
@@ -312,5 +324,65 @@ class ContractRepositoryCase extends BaseTestCase
         }
 
         $this->assertEquals($isLate, $isSend);
+    }
+
+    /**
+     * @test
+     */
+    public function makeSureContractWaitingIsRemoved()
+    {
+        $this->load(true);
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
+        /**
+         * @var $unit Unit
+         */
+        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
+            array(
+                'name' => '1-a'
+            )
+        );
+        $this->assertNotNull($unit);
+        $this->assertTrue($unit->getContractsWaiting()->count() === 0);
+
+        $contractWaiting = new ContractWaiting();
+        $contractWaiting->setUnit($unit);
+        $contractWaiting->setGroup($unit->getGroup());
+        $contractWaiting->setResidentId('test');
+        $contractWaiting->setIntegratedBalance('3333');
+        $contractWaiting->setFinishAt(new DateTime());
+        $contractWaiting->setStartAt(new DateTime());
+        $contractWaiting->setRent('7777');
+        $contractWaiting->setFirstName('Hi');
+        $contractWaiting->setLastName('ho');
+
+        $em->persist($contractWaiting);
+        $em->flush();
+        $id = $contractWaiting->getId();
+        $em->clear();
+        /**
+         * @var $unit Unit
+         */
+        $unit = $em->getRepository('RjDataBundle:Unit')->findOneBy(
+            array(
+                'name' => '1-a'
+            )
+        );
+        $this->assertNotNull($unit);
+        $this->assertTrue($unit->getContractsWaiting()->count() === 1);
+        $em->remove($unit);
+        $em->flush();
+        $em->clear();
+
+        static::$kernel = null;
+        /**
+         * @var $em EntityManager
+         */
+        $em = $this->getContainer()->get('doctrine')->getManager();
+
+        $contractWaiting = $em->getRepository('RjDataBundle:ContractWaiting')->find($id);
+        $this->assertEmpty($contractWaiting);
     }
 }

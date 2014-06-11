@@ -40,4 +40,9 @@ function TenantPaymentsViewModel()
             self.loadData();
         }
     }
+
+    this.getStatusText = function(status)
+    {
+        return Translator.trans('order.status.text.' + status);
+    }
 }

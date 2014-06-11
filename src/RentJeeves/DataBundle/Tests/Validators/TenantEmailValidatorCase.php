@@ -1,7 +1,8 @@
 <?php
 
-namespace RentJeeves\DataBundle\Tests\Unit;
+namespace RentJeeves\DataBundle\Tests\Validators;
 
+use RentJeeves\DataBundle\Tests\Unit\Validator;
 use RentJeeves\DataBundle\Validators\TenantEmail;
 use RentJeeves\DataBundle\Validators\TenantEmailValidator;
 use RentJeeves\TestBundle\BaseTestCase;

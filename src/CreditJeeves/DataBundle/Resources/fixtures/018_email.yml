@@ -72,3 +72,5 @@ fixtures:
       name: rjOrderCancelToLandlord.html
   email_36:
       name: rjPendingOrder.html
+  email_37:
+      name: rjContractAmountChanged.html

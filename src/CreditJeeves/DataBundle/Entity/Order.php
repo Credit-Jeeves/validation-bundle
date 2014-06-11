@@ -619,8 +619,8 @@ class Order extends BaseOrder
         /** @var Contract $contract */
         $contract = $this->getOperations()->last()->getContract();
         $result['amount'] = $this->getSum(); //TODO check. May be it must be operation getAmount()
-        $result['tenant'] = $contract->getTenant()->getFullName();
-        $result['address'] = $contract->getRentAddress($contract->getProperty(), $contract->getUnit());
+        $result['tenant'] = $contract? $contract->getTenant()->getFullName() : '';
+        $result['address'] = $contract? $contract->getRentAddress($contract->getProperty(), $contract->getUnit()) : '';
         $result['start'] = $this->getCreatedAt()->format('m/d/Y');
         $result['finish'] = '--';
         $result['style'] = $this->getOrderStatusStyle();
@@ -629,16 +629,16 @@ class Order extends BaseOrder
         $result['status'] = 'order.status.text.'.$status;
         switch ($status) {
             case OrderStatus::COMPLETE:
-                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
             case OrderStatus::PENDING:
-                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
             case OrderStatus::ERROR:
             case OrderStatus::CANCELLED:
             case OrderStatus::REFUNDED:
             case OrderStatus::RETURNED:
-                $result['finish'] = $this->getUpdatedAt()->format('m/d/Y');
+                $result['finish'] = $this->getCreatedAt()->format('m/d/Y');
                 break;
         }
         return $result;

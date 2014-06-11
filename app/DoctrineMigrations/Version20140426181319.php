@@ -20,7 +20,7 @@ class Version20140426181319 extends AbstractMigration
             "Migration can only be executed safely on 'mysql'."
         );
 
-        $sql = "SELECT o.days_late AS days_late,
+        $sql = "SELECT o.days_late AS days_late, c.start_at AS contract_start,
             op.id AS operation_id, op.created_at AS created_at, op.type AS op_type,
             c.due_date AS contract_due_date
         FROM `cj_order` AS o
@@ -38,6 +38,10 @@ class Version20140426181319 extends AbstractMigration
             }
             if ($row['contract_due_date']) {
                 $date->setDate(null, null, $row['contract_due_date']);
+            }
+            if ($date->format('Y-m-d') < $row['contract_start']) {
+                $contractStart = new DateTime($row['contract_start']);
+                $date->setDate(null, $contractStart->format('n'), null);
             }
             $paidFor = $date->format('Y-m-d');
             $this->addSql("UPDATE `cj_operation` SET paid_for = '{$paidFor}' WHERE id = {$row['operation_id']}");

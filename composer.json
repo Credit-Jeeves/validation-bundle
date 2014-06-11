@@ -1,7 +1,7 @@
 {
     "name": "Credit-Jeeves/Credit-Jeeves-SF2",
     "description": "Credit-Jeeves SF2",
-    "version": "2.1",
+    "version": "3.0",
     "minimum-stability": "stable",
     "authors": [
         {
@@ -169,6 +169,10 @@
         {
             "type": "git",
             "url": "git@github.com:66Ton99/BackupRestoreBundle.git"
+        },
+        {
+            "type": "git",
+            "url": "git@github.com:66Ton99/doctrine2.git"
         }
     ],
     "require": {
@@ -196,7 +200,7 @@
         "nelmio/api-doc-bundle": "dev-master",
         "friendsofsymfony/oauth-server-bundle": "dev-master",
         "braincrafted/validation-bundle": "dev-ton as dev-master",
-        "doctrine/orm": "2.4.*",
+        "doctrine/orm": "dev-preUpdate as 2.4.0",
         "doctrine/doctrine-bundle": "dev-master",
         "doctrine/doctrine-cache-bundle": "dev-master",
         "twig/twig": "dev-master",
