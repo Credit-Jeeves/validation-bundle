@@ -165,6 +165,10 @@ class PayCase extends BaseTestCase
             $this->assertEquals('info.payment.date', $informationBox->getText());
         }
 
+        $this->session->wait(
+            $this->timeout,
+            "jQuery('button:contains(checkout.make_payment)').is(':visible')"
+        );
         $payPopup->pressButton('checkout.make_payment');
 
         $this->session->wait(
