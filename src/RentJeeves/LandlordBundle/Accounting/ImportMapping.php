@@ -298,7 +298,7 @@ class ImportMapping
         $waitingRoom->setStartAt($contract->getStartAt());
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
-        $waitingRoom->setImportedBalance($contract->getImportedBalance());
+        $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
         $waitingRoom->setUnit($contract->getUnit());
 
         $waitingRoom->setFirstName($tenant->getFirstName());

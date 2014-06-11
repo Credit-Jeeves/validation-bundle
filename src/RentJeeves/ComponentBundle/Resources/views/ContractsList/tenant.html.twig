@@ -132,7 +132,8 @@
     $(document).ready(function() {
         var currentPaymentsViewModel = new CurrentPayments(
             {{ contractsRaw | serialize('json') | raw }},
-            '{{ user.getIsVerified }}'
+            '{{ user.getIsVerified }}',
+            {{ paidForArr | serialize('json') | raw }}
         );
         ko.applyBindings(currentPaymentsViewModel, $('#current-payments').get(0));
         {% if contractsRaw|length == 1 and contractsRaw[0].status == 'invite'%}

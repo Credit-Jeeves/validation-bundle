@@ -190,6 +190,7 @@ abstract class PidkiqCase extends BaseTestCase
 
     /**
      * @test
+     * @~depends getResponseOnUserDataCorrect
      * does not work anymore. Ton
      * 2013.03.22 It works again
      * 2013.03.29 It does not work
@@ -199,6 +200,10 @@ abstract class PidkiqCase extends BaseTestCase
      * 2013.06.12 It does not work
      * 2013.06.17 It works again
      * 2014.04.18 It does not work
+     * It works again
+     * 2014.05.15 It does not work
+     * 2014.05.28 It works again
+     *
      *
      * @expectedException \ExperianException
      * @expectedExceptionMessage No questions returned due to excessive use

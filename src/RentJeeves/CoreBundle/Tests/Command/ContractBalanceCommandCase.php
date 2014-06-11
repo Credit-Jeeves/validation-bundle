@@ -2,15 +2,18 @@
 namespace RentJeeves\CoreBundle\Tests\Command;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\CoreBundle\Command\ContractBalanceCommand;
 use RentJeeves\DataBundle\Entity\Contract;
+use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use RentJeeves\TestBundle\Command\BaseTestCase;
 use RentJeeves\CoreBundle\DateTime;
 
-class ContractCommandCase extends BaseTestCase
+class ContractBalanceCommandCase extends BaseTestCase
 {
     public function dataForUpdateBalance()
     {
@@ -90,11 +93,12 @@ class ContractCommandCase extends BaseTestCase
             )
         );
 
+        /** @var Contract $contract */
         $contract = $em->getRepository('RjDataBundle:Contract')->find($contractId);
 
+
+        $this->assertEquals(999999.00, $contract->getBalance());
         if ($isIntegrated) {
-            $this->assertEquals(0, $contract->getBalance());
-        } else {
             $this->assertEquals($contract->getRent(), $contract->getBalance());
         }
 

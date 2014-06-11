@@ -2,9 +2,12 @@
 namespace RentJeeves\ComponentBundle\Controller;
 
 use CreditJeeves\DataBundle\Entity\Group;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Entity\Landlord;
 use RentJeeves\DataBundle\Entity\Tenant;
+use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -67,19 +70,27 @@ class ContractsListController extends Controller
      */
     public function tenantAction()
     {
-        /** @var Tenant $tenant */
         $tenant = $this->getUser();
-        $contracts = $tenant->getContractsHomePage();
+        /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
-        $data = array();
+        $contracts = $em->getRepository('RjDataBundle:Contract')
+            ->findByTenantIdInvertedStatusesForPayments($tenant->getId());
+        $contractsArr = array();
+        $activeContracts = array();
+        $paidForArr = array();
         /** @var $contract Contract */
         foreach ($contracts as $contract) {
-            $data[] = $contract->getDatagridRow($em);
+            $contractsArr[] = $contract->getDatagridRow($em);
+            if (!in_array($contract->getStatus(), array(ContractStatus::FINISHED, ContractStatus::PENDING))) {
+                $activeContracts[] = $contract;
+                $paidForArr[$contract->getId()] = $this->get('checkout.paid_for')->getArray($contract);
+            }
         }
 
         return array(
-            'contractsRaw' => $tenant->getActiveContracts(),
-            'contracts'    => $data,
+            'contractsRaw' => new ArrayCollection($activeContracts),
+            'contracts'    => $contractsArr,
+            'paidForArr'   => $paidForArr,
             'user'         => $tenant,
         );
     }

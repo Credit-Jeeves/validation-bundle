@@ -13,6 +13,7 @@ use Sonata\AdminBundle\Route\RouteCollection;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Knp\Menu\ItemInterface as MenuItemInterface;
+use RentJeeves\CoreBundle\DateTime;
 
 class PaymentAdmin extends Admin
 {
@@ -67,14 +68,16 @@ class PaymentAdmin extends Admin
                 ),
             );
         } else {
-            $daysInMonth = cal_days_in_month(
-                CAL_GREGORIAN,
-                $return['startDate']['value']['month'],
-                $return['startDate']['value']['year']
+            $date = new DateTime();
+            $date->setTime(0, 0, 0);
+            $date->setDate(
+                @$return['startDate']['value']['year'],
+                @$return['startDate']['value']['month'],
+                @$return['startDate']['value']['day']
             );
-            $return['startDate']['value']['day'] = $daysInMonth < $return['startDate']['value']['day'] ?
-                $daysInMonth :
-                $return['startDate']['value']['day'];
+            $return['startDate']['value']['year'] = $date->format('Y');
+            $return['startDate']['value']['month'] = $date->format('n');
+            $return['startDate']['value']['day'] = $date->format('j');
         }
 
         if (!isset($return['status']['value'])) {
@@ -110,7 +113,10 @@ class PaymentAdmin extends Admin
                         $queryBuilder->setParameter('start_date', $value['value']);
 
                         $queryBuilder->andWhere($alias . '.dueDate IN (:due_date)');
-                        $queryBuilder->setParameter('due_date', $this->getDueDays(0, $value['value']));
+                        $queryBuilder->setParameter(
+                            'due_date',
+                            $this->getDueDays(0, new DateTime($value['value']->format('Y-m-d')))
+                        );
 
                         return true;
                     },

@@ -8,10 +8,9 @@ function Pay(parent, contractId) {
     this.isPidVerificationSkipped = ko.observable(contract.isPidVerificationSkipped);
     this.infoMessage = ko.observable(null);
 
-    this.getCurrentStep = function()
-    {
+    this.getCurrentStep = function() {
         return steps[current];
-    }
+    };
 
     this.previous = function() {
         window.formProcess.removeAllErrors('#pay-popup');
@@ -23,9 +22,9 @@ function Pay(parent, contractId) {
     this.getTotalAmount = function(paymentCardFee) {
         var fee = 0;
         if (this.paymentSource.type() == 'card') {
-            fee = this.payment.amount()*parseFloat(paymentCardFee)/100;
+            fee = this.total()*parseFloat(paymentCardFee)/100;
         }
-        return '$'+(parseFloat(this.payment.amount()) + fee).toFixed(2);
+        return '$'+(parseFloat(this.total()) + fee).toFixed(2);
     };
 
     var forms = {
@@ -47,7 +46,7 @@ function Pay(parent, contractId) {
 
     this.isPassed = function(step) {
         return this.passedSteps().indexOf(step) >= 0;
-    }
+    };
 
 
     this.step.subscribe(function(newValue) {
@@ -149,6 +148,23 @@ function Pay(parent, contractId) {
     this.payment.amount(contract.rent);
     this.payment.endMonth(finishDate.getMonth() + 1);
     this.payment.endYear(finishDate.getYear());
+    var paidForArr = parent.getPaidForArrContractById(contractId);
+    this.payment.paidForOptions(associativeArrayToOptions(paidForArr));
+
+    this.getPaidFor = ko.computed(function() {
+        return paidForArr[self.payment.paidFor()];
+    });
+
+    this.total = ko.computed(function() { // It will diplay to user
+        return total = (self.payment.amount()?parseFloat(self.payment.amount()):0) +
+            (self.payment.amountOther()?parseFloat(self.payment.amountOther()):0);
+    });
+    this.totalInput = ko.computed(function() { // It will be put into the hidden input
+        if (!self.payment.amount() && !self.payment.amountOther()) {
+            return null;
+        }
+        return self.total();
+    });
 
     this.newUserAddress = ko.observableArray([]);
     this.payment.paymentAccountId.subscribe(function(newValue) {
@@ -229,11 +245,17 @@ function Pay(parent, contractId) {
     this.questions = ko.observable(parent.questions);
 
     this.getAmount = ko.computed(function() {
-        return '$' + this.payment.amount();
+        return '$' + parseFloat(this.payment.amount());
+    }, this);
+    this.getOtherAmount = ko.computed(function() {
+        return '$' + parseFloat(this.payment.amountOther());
+    }, this);
+    this.getTotal = ko.computed(function() {
+        return '$' + parseFloat(this.total());
     }, this);
 
     this.getFeeAmountText = function(paymentCardFee) {
-        return '$' + (this.payment.amount() * parseFloat(paymentCardFee) / 100).toFixed(2);
+        return '$' + (this.total() * parseFloat(paymentCardFee) / 100).toFixed(2);
     };
 
     this.isForceSave = ko.computed(function() {
@@ -429,6 +451,10 @@ function Pay(parent, contractId) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
     }
 
+    $('.user-ssn').ssn();
+
+    ko.applyBindings(this, $('#pay-popup').get(0));
+
     $('#pay-popup').dialog({
         width: 650,
         modal: true,
@@ -438,10 +464,6 @@ function Pay(parent, contractId) {
             $("input.datepicker-field").datepicker("destroy");
         }
     });
-
-
-    $('.ui-dialog>#pay-popup').css("top","0px");
-
 
     $("input.datepicker-field").datepicker({
         showOn: "both",
@@ -459,10 +481,6 @@ function Pay(parent, contractId) {
 //        width:330,
 //        height:260
 //    });
-
-    $('.user-ssn').ssn();
-
-    ko.applyBindings(this, $('#pay-popup').get(0));
 
     jQuery.each(forms, function(key, formName) {
         jsfv[formName].addError = window.formProcess.addFormError;

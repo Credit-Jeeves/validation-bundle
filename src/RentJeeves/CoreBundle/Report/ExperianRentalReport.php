@@ -22,7 +22,7 @@ class ExperianRentalReport extends RentalReport
     {
         $today = new DateTime();
 
-        return sprintf('renttrack-full-%s.csv', $today->format('Ymd'));
+        return sprintf('renttrack-raw-%s.csv', $today->format('Ymd'));
     }
 
     public function createHeader($params)
@@ -39,8 +39,10 @@ class ExperianRentalReport extends RentalReport
             $operationRepo = $this->em->getRepository('DataBundle:Operation');
 
             foreach ($contracts as $contract) {
-                $rentOperation = $operationRepo->getRentOperationForMonth($contract->getId(), $month, $year);
-                $this->records[] = new ExperianReportRecord($contract, $rentOperation);
+                $rentOperations = $operationRepo->getExperianRentOperationsForMonth($contract->getId(), $month, $year);
+                foreach ($rentOperations as $rentOperation) {
+                    $this->records[] = new ExperianReportRecord($contract, $rentOperation);
+                }
             }
         }
     }

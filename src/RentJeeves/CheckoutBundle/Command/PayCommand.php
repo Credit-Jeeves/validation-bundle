@@ -86,27 +86,37 @@ class PayCommand extends ContainerAwareCommand
             return 1;
         }
         $order = new Order();
-        $operation = new Operation();
-        $amount = $payment->getAmount();
+        $total = $payment->getTotal();
         $fee = 0;
 
-        $operation->setOrder($order);
-        $operation->setType(OperationType::RENT);
-        $operation->setContract($contract);
-        $operation->setAmount($amount);
-        // FIXME after paid for would be implemented for payments
-        $operation->setPaidFor($contract->getPaidTo());
+
+        if ($amount = $payment->getAmount()) {
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::RENT);
+            $operation->setContract($contract);
+            $operation->setAmount($amount);
+            $operation->setPaidFor($payment->getPaidFor());
+        }
+        if ($payment->getTotal() && ($amount = ($payment->getTotal() - $payment->getAmount()))) {
+            $operation = new Operation();
+            $operation->setOrder($order);
+            $operation->setType(OperationType::OTHER);
+            $operation->setContract($contract);
+            $operation->setAmount($amount);
+            $operation->setPaidFor($payment->getPaidFor());
+        }
 
         if (PaymentAccountType::CARD == $paymentAccount->getType()) {
-            $fee = round($amount * ((double)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
+            $fee = round($total * ((float)$this->getContainer()->getParameter('payment_card_fee') / 100), 2);
             $order->setType(OrderType::HEARTLAND_CARD);
         } elseif (PaymentAccountType::BANK == $paymentAccount->getType()) {
-            $fee = (double)$this->getContainer()->getParameter('payment_bank_fee');
+            $fee = (float)$this->getContainer()->getParameter('payment_bank_fee');
             $order->setType(OrderType::HEARTLAND_BANK);
         }
 
         $order->setUser($paymentAccount->getUser());
-        $order->setSum($amount);
+        $order->setSum($total);
         $order->setStatus(OrderStatus::NEWONE);
 
         $request = new MakePaymentRequest();
@@ -120,11 +130,11 @@ class PayCommand extends ContainerAwareCommand
         $billTransaction->setID3(sprintf("%s %s", $tenant->getFirstName(), $tenant->getLastName()));
         $billTransaction->setID4($contract->getGroup()->getName());
 
-        $billTransaction->setAmountToApplyToBill($amount);
+        $billTransaction->setAmountToApplyToBill($total);
         $request->getBillTransactions()->setBillTransaction(array($billTransaction));
 
         $tokenToCharge = new TokenToCharge();
-        $tokenToCharge->setAmount($amount);
+        $tokenToCharge->setAmount((float)$total);
         $tokenToCharge->setExpectedFeeAmount($fee);
         $tokenToCharge->setCardProcessingMethod(CardProcessingMethod::UNASSIGNED);
         $tokenToCharge->setToken($paymentAccount->getToken());
@@ -132,7 +142,7 @@ class PayCommand extends ContainerAwareCommand
         $request->getTokensToCharge()->setTokenToCharge(array($tokenToCharge));
 
         $request->getTransaction()
-            ->setAmount($amount)
+            ->setAmount($total)
             ->setFeeAmount($fee);
 
         $paymentDetails = new PaymentDetails();
@@ -164,7 +174,6 @@ class PayCommand extends ContainerAwareCommand
         $message = 'OK';
         if ($statusRequest->isSuccess()) {
             $order->setStatus(OrderStatus::PENDING);
-            $contract->shiftPaidTo($amount);
             $status = $contract->getStatus();
             if (in_array($status, array(ContractStatus::INVITE, ContractStatus::APPROVED))) {
                 $contract->setStatus(ContractStatus::CURRENT);
@@ -173,7 +182,7 @@ class PayCommand extends ContainerAwareCommand
             $order->setStatus(OrderStatus::ERROR);
             $message = $model->getMessages();
         }
-        $paymentDetails->setAmount($amount + $fee);
+        $paymentDetails->setAmount($total + $fee);
         $paymentDetails->setIsSuccessful($statusRequest->isSuccess());
         $em->persist($paymentDetails);
         $em->persist($order);

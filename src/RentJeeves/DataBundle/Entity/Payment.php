@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
-use DateTime;
+use RentJeeves\CoreBundle\DateTime;
 
 /**
  * @ORM\Table(name="rj_payment")
@@ -38,14 +38,15 @@ class Payment extends Base
     public function setStartDate($date = 'now')
     {
         $dateTime = new DateTime($date);
-        $this->setDueDate($dateTime->format('d'));
-        $this->setStartMonth($dateTime->format('m'));
+        $this->setDueDate($dateTime->format('j'));
+        $this->setStartMonth($dateTime->format('n'));
         $this->setStartYear($dateTime->format('Y'));
     }
 
     public function getStartDate()
     {
-        return new DateTime($this->getDueDate() . '-' . $this->getStartMonth() . '-' . $this->getStartYear());
+        $date = new DateTime('0000-00-00T00:00:00');
+        return $date->setDate($this->getStartYear(), $this->getStartMonth(), $this->getDueDate());
     }
 
     public function setEndDate($date = '+ 9 months')
@@ -116,12 +117,6 @@ class Payment extends Base
             $month = $currentMonth;
             $year = $currentYear;
         }
-
-        $daysInMont = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-        if ($day > $daysInMont) {
-            $day = $daysInMont;
-        }
-
-        return new DateTime(implode('-', array($year, $month, $day)));
+        return $now->setDate($year, $month, $day);
     }
 }

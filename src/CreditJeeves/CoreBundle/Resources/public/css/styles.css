@@ -4273,12 +4273,24 @@ table.ui-datepicker-calendar tbody tr td a {
 #rentjeeves_checkoutbundle_paymentaccounttype_ExpirationMonth_row .fields-box,
 #rentjeeves_checkoutbundle_paymenttype_endMonth_box,
 #rentjeeves_checkoutbundle_paymenttype_endYear_box,
-#rentjeeves_checkoutbundle_userdetailstype_ssn .fields-box {
+#rentjeeves_checkoutbundle_userdetailstype_ssn .fields-box,
+#rentjeeves_checkoutbundle_paymenttype_amount_box,
+#rentjeeves_checkoutbundle_paymenttype_paidFor_label,
+#rentjeeves_checkoutbundle_paymenttype_paidFor_box {
     width: auto;
 }
 
+#rentjeeves_checkoutbundle_paymenttype_paidFor_label {
+    margin-left: 10px;
+}
+
+#rentjeeves_checkoutbundle_paymenttype_total_view {
+    padding-left: 9px;
+    line-height: 25px;
+}
+
 #rentjeeves_checkoutbundle_userdetailstype_ssn_ssn1_row,
-#rentjeeves_checkoutbundle_userdetailstype_new_address_row{
+#rentjeeves_checkoutbundle_userdetailstype_new_address_row {
     padding-left: 0px;
 }
 

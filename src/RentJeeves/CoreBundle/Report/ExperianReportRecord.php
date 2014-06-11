@@ -4,6 +4,7 @@ namespace RentJeeves\CoreBundle\Report;
 
 use CreditJeeves\DataBundle\Entity\Operation;
 use JMS\Serializer\Annotation as Serializer;
+use RentJeeves\CoreBundle\Exception\InvalidContractException;
 use RentJeeves\DataBundle\Entity\Contract;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 
@@ -141,6 +142,11 @@ class ExperianReportRecord
      * @Serializer\SerializedName("Date Paid")
      */
     protected $datePaid;
+    /**
+     * @Serializer\Accessor(getter="getLateIndicator")
+     * @Serializer\SerializedName("Late Indicator")
+     */
+    protected $lateIndicator;
 
     public function __construct(Contract $contract, Operation $operation = null)
     {
@@ -249,13 +255,12 @@ class ExperianReportRecord
 
     public function getTenantAddressUniqueIdentifier()
     {
-        if ($unit = $this->contract->getUnit()) {
-            $unitNo = $unit->getId();
-        } else {
-            $unitNo = 1;
+        $unit = $this->contract->getUnit();
+        if (!$unit) {
+            throw new InvalidContractException('Contract has no unit');
         }
 
-        return sprintf('p%su%s', $this->contract->getProperty()->getId(), $unitNo);
+        return $unit->getId();
     }
 
     public function getTenantCity()
@@ -265,7 +270,11 @@ class ExperianReportRecord
 
     public function getTenantDOB()
     {
-        return $this->contract->getTenant()->getDateOfBirth()->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        if ($dob = $this->contract->getTenant()->getDateOfBirth()) {
+            return $dob->format(self::EXPERIAN_REPORT_DATE_FORMAT);
+        }
+
+        return '';
     }
 
     public function getTenantFirstName()
@@ -310,5 +319,19 @@ class ExperianReportRecord
         }
 
         return '';
+    }
+
+    public function getLateIndicator()
+    {
+        if ($this->operation) {
+            $paidFor = $this->operation->getPaidFor();
+            $paidAt = $this->operation->getCreatedAt();
+            $interval = $paidFor->diff($paidAt)->format('%r%a');
+            if ($interval >= 6) {
+                return 'YES';
+            }
+        }
+
+        return 'NO';
     }
 }

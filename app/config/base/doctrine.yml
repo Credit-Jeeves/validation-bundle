@@ -36,7 +36,6 @@ doctrine:
                 alias: GedmoLoggable # this one is optional and will default to the name set for the mapping
                 is_bundle: false
         hydrators:
-             PaymentHydrator: \RentJeeves\CheckoutBundle\Hydrators\PaymentHydrator
 #            gedmo_translatable:
 #                type: annotation
 #                prefix: Gedmo\Translatable\Entity

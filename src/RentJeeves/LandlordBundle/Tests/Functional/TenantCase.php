@@ -24,8 +24,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
         $this->assertCount(3, $contractPendings, 'Wrong number of pending');
         $this->assertEquals('PENDING', $contractPendings[0]->getHtml());
@@ -46,8 +45,8 @@ class TenantCase extends BaseTestCase
         $today->click();
         $this->session->wait($this->timeout, "!$('#ui-datepicker-div').is(':visible')");
         $this->page->pressButton('approve.tenant');
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-approve-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($propertiesTable = $this->page->find('css', '.properties-table'));
         $this->assertNotNull($contractPendings = $this->page->findAll('css', '.contract-pending>div'));
         $this->assertCount(2, $contractPendings, 'Wrong number of pending');
@@ -66,22 +65,19 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
         $this->assertEquals('Timothy Applegate', $td[1]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($tenant = $this->page->find('css', '#first_name'));
         $tenant->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
         $this->assertEquals('Connie Webster', $td[1]->getText(), 'Wrong text in field');
 
         $this->assertNotNull($tenant = $this->page->find('css', '#first_name'));
         $tenant->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($td = $this->page->findAll('css', 'td'));
         $this->assertEquals('Timothy Applegate', $td[1]->getText(), 'Wrong text in field');
         $this->logout();
@@ -97,8 +93,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
         $this->page->pressButton('edit.Info');
@@ -147,8 +142,8 @@ class TenantCase extends BaseTestCase
         $unitEdit->selectOption('14'); //
 
         $this->page->pressButton('savechanges');
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-edit-property-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
         $approve->click();
 
@@ -183,8 +178,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count of tenants');
         $this->assertNotNull($approve = $this->page->find('css', '.approve'));
@@ -192,8 +186,8 @@ class TenantCase extends BaseTestCase
         $this->page->pressButton('edit.Info');
         $this->page->clickLink('remove.tenant');
         $this->page->pressButton('yes.remove.contract');
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#contract-remove-popup').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (15)', $allh2->getText(), 'Wrong count');
         $this->logout();
@@ -215,8 +209,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count of tenants');
 
@@ -226,8 +219,7 @@ class TenantCase extends BaseTestCase
         $current->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (7)', $allh2->getText(), 'Wrong count of tenants');
         $this->assertNotNull($approve = $this->page->find('css', '.edit'));
@@ -236,8 +228,8 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($outstandingBalance = $this->page->find('css', '.outstandingBalance'));
         $outstandingBalance->setValue(223.21);
         $this->page->pressButton('yes.end.contract');
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "!$('#tenant-end-contract').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (6)', $allh2->getText(), 'Wrong count');
         $this->logout();
@@ -267,16 +259,14 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.pending');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (2)', $allh2->getText(), 'Wrong count');
         $this->logout();
@@ -293,8 +283,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
@@ -340,16 +329,14 @@ class TenantCase extends BaseTestCase
 
         //Check created contracts
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.invite');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (2)', $allh2->getText(), 'Wrong count');
         $this->logout();
@@ -415,8 +402,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
@@ -470,16 +456,14 @@ class TenantCase extends BaseTestCase
 
         //Check created contracts
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (17)', $allh2->getText(), 'Wrong count');
         $this->assertNotNull($searchField = $this->page->find('css', '#searchPaymentsStatus_link'));
         $searchField->setValue('contract.status.approved');
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (2)', $allh2->getText(), 'Wrong count');
         $this->logout();
@@ -525,8 +509,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
@@ -550,8 +533,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof $ != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         //Check created contracts
         $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
         $search->click();
@@ -560,8 +542,7 @@ class TenantCase extends BaseTestCase
 
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
 
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
@@ -569,15 +550,14 @@ class TenantCase extends BaseTestCase
         $this->assertNotNull($review = $this->page->find('css', 'a.edit'));
         $review->click();
         $this->assertNotNull($sendReminder = $this->page->find('css', '.sendReminder'));
-        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
+//        $this->session->wait($this->timeout, "$('.loader').is(':visible')");
         $this->session->wait($this->timeout, "!$('.loader').is(':visible')");
         $sendReminder->click();
-        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
+//        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
         $this->session->wait($this->timeout, "!$('.overlay-trigger').is(':visible')");
         $sendReminder->click();
 
-        $this->session->wait($this->timeout, "$('.overlay-trigger').is(':visible')");
-        $this->session->wait($this->timeout, "!$('.overlay-trigger')");
+        $this->session->wait($this->timeout, "$('.default>li').text() == 'contract.reminder.error.already.send'");
 
         $this->assertNotNull($error = $this->page->find('css', '.default>li'));
         $this->assertEquals('contract.reminder.error.already.send', $error->getText(), 'Wrong text error');
@@ -601,8 +581,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         $this->assertNotNull($allh2 = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (16)', $allh2->getText(), 'Wrong count');
         $this->page->pressButton('add.tenant');
@@ -674,8 +653,7 @@ class TenantCase extends BaseTestCase
         $this->login('landlord1@example.com', 'pass');
         $this->page->clickLink('tabs.tenants');
         $this->session->wait($this->timeout, "typeof jQuery != 'undefined'");
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         //Check created contracts
         $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
         $search->click();
@@ -683,8 +661,7 @@ class TenantCase extends BaseTestCase
         $inviteStatus->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
 
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (1)', $all->getText(), 'Wrong count');
@@ -695,8 +672,7 @@ class TenantCase extends BaseTestCase
         $this->page->clickLink('revoke.inv');
         $this->page->pressButton('yes.revoke.inv');
 
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .properties-table').length > 0");
         //Check created contracts
         $this->assertNotNull($search = $this->page->find('css', '#searchPaymentsStatus_link'));
         $search->click();
@@ -704,8 +680,7 @@ class TenantCase extends BaseTestCase
         $inviteStatus->click();
         $this->assertNotNull($searchSubmit = $this->page->find('css', '#search-submit-payments-status'));
         $searchSubmit->click();
-        $this->session->wait($this->timeout, "$('#processLoading').is(':visible')");
-        $this->session->wait($this->timeout, "!$('#processLoading').is(':visible')");
+        $this->session->wait($this->timeout, "$('#contracts-block .notHaveData').length > 0");
 
         $this->assertNotNull($all = $this->page->find('css', '.title-box>h2'));
         $this->assertEquals('All (0)', $all->getText(), 'Wrong count');

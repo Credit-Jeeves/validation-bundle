@@ -30,5 +30,6 @@ khepin_yaml_fixtures:
         - DataBundle
         - RjDataBundle
     directory: Resources/fixtures
+    datetime_class: 'RentJeeves\CoreBundle\DateTime'
 
 backup_restore: ~

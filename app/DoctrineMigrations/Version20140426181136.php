@@ -18,6 +18,10 @@ class Version20140426181136 extends AbstractMigration
             "ALTER TABLE rj_contract
                 ADD due_date INT DEFAULT NULL"
         );
+        $this->addSql(
+            "UPDATE rj_contract
+                SET due_date = DAY(start_at)"
+        );
     }
 
     public function down(Schema $schema)
