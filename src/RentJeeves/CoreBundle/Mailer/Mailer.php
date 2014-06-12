@@ -202,7 +202,9 @@ class Mailer extends BaseMailer
             'groupName' => $order->getGroupName(),
             'orderId' => $order->getId(),
             'error' => $order->getHeartlandErrorMessage(),
-            'transactionId' => $order->getHeartlandTransactionId()
+            'transactionId' => $order->getHeartlandTransactionId(),
+            'rentAmount' => $order->getRentOperation()? $order->getRentOperation()->getAmount() : 0,
+            'otherAmount' => $order->getOtherOperation()? $order->getOtherOperation()->getAmount() : 0,
         );
         return $this->sendBaseLetter($sTemplate, $vars, $tenant->getEmail(), $tenant->getCulture());
     }
