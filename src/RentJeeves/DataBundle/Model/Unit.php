@@ -43,6 +43,7 @@ abstract class Unit
      *     }
      * )
      * @Serializer\Groups({"RentJeevesImport"})
+     * @Serializer\Accessor(getter="getName",setter="setName")
      */
     protected $name;
 
