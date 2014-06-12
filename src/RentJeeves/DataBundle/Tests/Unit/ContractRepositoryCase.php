@@ -159,6 +159,7 @@ class ContractRepositoryCase extends BaseTestCase
             $payment = new Payment();
             $payment->setContract($contract);
             $payment->setDueDate($today->format('j'));
+            $payment->setPaidFor($today);
             $payment->setStatus($statusPayment);
             $payment->setType($typePayment);
             $payment->setAmount(980);

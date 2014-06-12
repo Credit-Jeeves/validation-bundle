@@ -5668,7 +5668,7 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:66Ton99/KhepinYamlFixturesBundle.git",
-                "reference": "740d093116f4a642267c633567b25be888a98622"
+                "reference": "2fb10549549c9a365e322a97d82f86fe2085c077"
             },
             "require": {
                 "doctrine/data-fixtures": "dev-master",
@@ -5703,7 +5703,7 @@
             "keywords": [
                 "data fixtures doctrine yaml"
             ],
-            "time": "2014-04-03 17:42:46"
+            "time": "2014-05-30 17:11:24"
         },
         {
             "name": "qunit",

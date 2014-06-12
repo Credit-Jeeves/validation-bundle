@@ -39,40 +39,9 @@ class StartDateCase extends BaseTestCase
      */
     public function getArray()
     {
-        $this->load(true);
-        /** @var EntityManager $em */
-        $em = $this->getContainer()->get('doctrine.orm.entity_manager');
-        $paidTo = new DateTime();
-        $paidTo->setTime(0, 0, 0);
-        $paidTo->modify('-2 months');
-        $contract = $em->getRepository('RjDataBundle:Contract')->findOneBy(
-            array('status' => ContractStatus::FINISHED, 'rent' => '1250', 'paidTo' => $paidTo)
-        );
-        $contract->setStatus(ContractStatus::CURRENT);
-        $em->persist($contract);
-        $em->flush($contract);
-
-
-        $this->assertInstanceOf('RentJeeves\CoreBundle\DateTime', $contract->getPaidTo());
-
-        $paidFor = $this->getContainer()->get('checkout.paid_for');
-
-        $dateTime = clone $paidTo;
-        $this->assertEquals(
-            $paidFor->createItem($dateTime) +
-            $paidFor->createItem($dateTime->modify('+2 month')) +
-            $paidFor->createItem($dateTime->modify('+1 month')),
-            $paidFor->getArray($contract)
-        );
-
-    }
-
-    /**
-     * @test
-     */
-    public function getArrayMocks()
-    {
-        $paidTo = new DateTime();
+        $paidTo = new DateTime('2014-02-28');
+        $now = clone $paidTo;
+        $now->modify('+2 days');
         $paidTo->setTime(0, 0, 0);
         $paidTo->modify('-2 months');
         $paidForDate = clone $paidTo;
@@ -120,7 +89,11 @@ class StartDateCase extends BaseTestCase
         $contract->addOperation($operation3);
 //        $contract->addOperation($operation4);
 
-        $paidFor = $this->getContainer()->get('checkout.paid_for');
+
+        $paidFor = $this->getMock('RentJeeves\CheckoutBundle\Services\PaidFor', array('getNow'), array(), '', false);
+        $paidFor->expects($this->once())
+            ->method('getNow')
+            ->will($this->returnValue($now));
 
         $this->assertEquals(
             $paidFor->createItem($dateTime) +

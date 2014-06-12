@@ -451,6 +451,10 @@ function Pay(parent, contractId) {
         ko.mapping.fromJS(contract.payment, {}, this.payment);
     }
 
+    $('.user-ssn').ssn();
+
+    ko.applyBindings(this, $('#pay-popup').get(0));
+
     $('#pay-popup').dialog({
         width: 650,
         modal: true,
@@ -460,10 +464,6 @@ function Pay(parent, contractId) {
             $("input.datepicker-field").datepicker("destroy");
         }
     });
-
-
-    $('.ui-dialog>#pay-popup').css("top","0px");
-
 
     $("input.datepicker-field").datepicker({
         showOn: "both",
@@ -481,10 +481,6 @@ function Pay(parent, contractId) {
 //        width:330,
 //        height:260
 //    });
-
-    $('.user-ssn').ssn();
-
-    ko.applyBindings(this, $('#pay-popup').get(0));
 
     jQuery.each(forms, function(key, formName) {
         jsfv[formName].addError = window.formProcess.addFormError;
