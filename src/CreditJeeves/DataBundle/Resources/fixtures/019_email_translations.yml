@@ -1061,8 +1061,13 @@ fixtures:
           <tr style="border: 1px solid #C8C8C8;">
             <td style="padding:5px;">{{ 'order.transaction.id' | trans }}:</td><td style="padding:5px;">{{ transactionID }}</td>
           </tr>
-          <tr style="border: 1px solid #C8C8C8;">
-            <td style="padding:5px;">{{ 'amount' | trans }}:</td><td style="padding:5px;">{{ amount }}</td>
+          <tr style='border: 1px solid #C8C8C8;'>
+              <td style='padding:5px;'>{{ 'email.rent_amount' | trans }}:</td>
+              <td style='padding:5px;'>{{ rentAmount }}</td>
+          </tr>
+          <tr style='border: 1px solid #C8C8C8;'>
+              <td style='padding:5px;'>{{ 'email.other_amount' | trans }}:</td>
+              <td style='padding:5px;'>{{ otherAmount }}</td>
           </tr>
           {% if fee > 0 %}
           <tr style="border: 1px solid #C8C8C8;">
