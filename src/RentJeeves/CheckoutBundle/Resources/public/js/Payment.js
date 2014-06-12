@@ -2,6 +2,9 @@ function Payment(parent, paidTo) {
     var self = this;
 
     this.checkDueDate = function () {
+        if (isNaN(self.startYear()) || isNaN(self.startMonth())) {
+            return null;
+        }
         var dayInMonth = Date.getDaysInMonth(self.startYear(), self.startMonth() - 1);
 
         if (dayInMonth >= self.dueDate()) {
