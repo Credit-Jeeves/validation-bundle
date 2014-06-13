@@ -30,7 +30,7 @@ abstract class ContractWaiting
      * @ORM\JoinColumn(
      *     name="unit_id",
      *     referencedColumnName="id",
-     *     nullable=true
+     *     nullable=false
      * )
      */
     protected $unit;

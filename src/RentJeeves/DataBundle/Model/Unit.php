@@ -157,6 +157,16 @@ abstract class Unit
     protected $contractsWaiting;
 
     /**
+     * @ORM\OneToOne(
+     *     targetEntity="RentJeeves\DataBundle\Entity\UnitMapping",
+     *     mappedBy="unit",
+     *     cascade={"persist", "remove", "merge"},
+     *     orphanRemoval=true
+     * )
+     */
+    protected $unitMapping;
+
+    /**
      * @param ContractWaiting $contractsWaiting
      */
     public function addContractsWaiting(ContractWaiting $contractsWaiting)
@@ -437,5 +447,21 @@ abstract class Unit
     {
         $this->contractsWaiting->removeElement($contract);
         return $this;
+    }
+
+    /**
+     * @param UnitMapping $unitMapping
+     */
+    public function setUnitMapping(UnitMapping $unitMapping)
+    {
+        $this->unitMapping = $unitMapping;
+    }
+
+    /**
+     * @return UnitMapping
+     */
+    public function getUnitMapping()
+    {
+        return $this->unitMapping;
     }
 }

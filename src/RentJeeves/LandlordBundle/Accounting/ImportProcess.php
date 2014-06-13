@@ -24,6 +24,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\LandlordBundle\Exception\ImportProcessException;
 use RentJeeves\LandlordBundle\Form\ImportContractFinishType;
@@ -49,8 +50,6 @@ class ImportProcess
     use FormErrors;
 
     const ROW_ON_PAGE = 10;
-
-    const VALID_UNIT_NAME = 'validName';
 
     /**
      * @var EntityManager
@@ -195,6 +194,7 @@ class ImportProcess
     public function getContractForm(
         Tenant $tenant,
         ResidentMapping $residentMapping,
+        UnitMapping $unitMapping,
         Unit $unit = null,
         $isUseToken = true,
         $isUseOperation = true
@@ -205,6 +205,7 @@ class ImportProcess
                 $this->translator,
                 $tenant,
                 $residentMapping,
+                $unitMapping,
                 $unit,
                 $isUseToken,
                 $isUseOperation,
@@ -218,6 +219,7 @@ class ImportProcess
      */
     public function getCreateUserAndCreateContractForm(
         ResidentMapping $residentMapping,
+        UnitMapping $unitMapping,
         Unit $unit = null
     ) {
         return $this->createForm(
@@ -225,6 +227,7 @@ class ImportProcess
                 $this->em,
                 $this->translator,
                 $residentMapping,
+                $unitMapping,
                 new Tenant(),
                 $unit,
                 $isMultipleProperty = $this->storage->isMultipleProperty()
@@ -322,6 +325,25 @@ class ImportProcess
         return $residentMapping;
     }
 
+    public function getUnitMapping(array $row)
+    {
+        if (!$this->storage->isMultipleProperty()) {
+            return new UnitMapping();
+        }
+
+        $unitMapping = $this->em->getRepository('RjDataBundle:UnitMapping')->findOneBy(
+            array(
+                'externalUnitId' => $row[ImportMapping::KEY_UNIT_ID],
+            )
+        );
+        if (!$unitMapping) {
+            $unitMapping = new UnitMapping();
+            $unitMapping->setExternalUnitId($row[ImportMapping::KEY_UNIT_ID]);
+        }
+
+        return $unitMapping;
+    }
+
     /**
      * @param $row
      *
@@ -333,8 +355,12 @@ class ImportProcess
             return null;
         }
 
+        if (empty($row[ImportMapping::KEY_UNIT])) {
+            return null;
+        }
+
         $params = array(
-            'name'     => $row[ImportMapping::KEY_UNIT],
+            'name' => $row[ImportMapping::KEY_UNIT],
         );
 
         if ($this->group) {
@@ -377,7 +403,7 @@ class ImportProcess
      */
     protected function getContract(ModelImport $import, array $row)
     {
-        $tenant  = $import->getTenant();
+        $tenant = $import->getTenant();
 
         if (!$tenant->getId()) {
             $contract = $this->createContract($row, $tenant);
@@ -396,7 +422,13 @@ class ImportProcess
         $contract->setIntegratedBalance($row[ImportMapping::KEY_BALANCE]);
         $contract->setRent($row[ImportMapping::KEY_RENT]);
         $contract->setStartAt($this->getDateByField($row[ImportMapping::KEY_MOVE_IN]));
-        $contract->setFinishAt($this->getDateByField($row[ImportMapping::KEY_LEASE_END]));
+        if (isset($row[ImportMapping::KEY_MONTH_TO_MONTH]) &&
+            strtoupper($row[ImportMapping::KEY_MONTH_TO_MONTH] == 'Y')
+        ) {
+            $contract->setFinishAt(null);
+        } else {
+            $contract->setFinishAt($this->getDateByField($row[ImportMapping::KEY_LEASE_END]));
+        }
 
         if (!empty($row[ImportMapping::KEY_MOVE_OUT])) {
             $import->setMoveOut($this->getDateByField($row[ImportMapping::KEY_MOVE_OUT]));
@@ -491,6 +523,7 @@ class ImportProcess
         $contract = $import->getContract();
         $operation = $import->getOperation();
         $residentMapping = $import->getResidentMapping();
+        $unitMapping = $import->getUnitMapping();
 
         $tenantId   = $tenant->getId();
         $contractId = $contract->getId();
@@ -511,6 +544,7 @@ class ImportProcess
             $form = $this->getContractForm(
                 $tenant,
                 $residentMapping,
+                $unitMapping,
                 $contract->getUnit(),
                 $isUseToken = true,
                 $isUseOperation
@@ -520,6 +554,9 @@ class ImportProcess
                 $form->get('operation')->setData($operation);
             }
             $form->get('residentMapping')->setData($import->getResidentMapping());
+            if ($this->storage->isMultipleProperty()) {
+                $form->get('unitMapping')->setData($import->getUnitMapping());
+            }
             return $form;
         }
 
@@ -530,6 +567,7 @@ class ImportProcess
         ) {
             $form = $this->getCreateUserAndCreateContractForm(
                 $residentMapping,
+                $unitMapping,
                 $contract->getUnit()
             );
             $form->get('tenant')->setData($tenant);
@@ -538,6 +576,9 @@ class ImportProcess
                 $form->get('contract')->get('operation')->setData($operation);
             }
             $form->get('contract')->get('residentMapping')->setData($import->getResidentMapping());
+            if ($this->storage->isMultipleProperty()) {
+                $form->get('contract')->get('unitMapping')->setData($import->getUnitMapping());
+            }
             return $form;
         }
 
@@ -571,8 +612,28 @@ class ImportProcess
             return false;
         }
 
-        if (!$import->getContract()->getProperty()) {
+        if ($this->storage->isMultipleProperty()) {
+            $unitMapping = $import->getUnitMapping();
+            $errors = $this->validator->validate($unitMapping, array("import"));
+            if (count($errors) > 0) {
+                return false;
+            }
+        }
+
+        $property = $import->getContract()->getProperty();
+        if (!$property || !$property->getNumber()) {
             return false;
+        }
+
+        if ($this->storage->isMultipleProperty()) {
+            $isSingle = false;
+            if (isset($postData['contract']['isSingle']) || isset($postData['isSingle'])) {
+                $isSingle = true;
+            }
+
+            if (!$property->isAllowedToBeSingle($isSingle, $this->group->getId())) {
+                return false;
+            }
         }
 
         return true;
@@ -609,6 +670,7 @@ class ImportProcess
         }
 
         $import->setResidentMapping($this->getResident($tenant, $row));
+        $import->setUnitMapping($this->getUnitMapping($row));
 
         if (!$import->getIsSkipped() && $form = $this->getForm($import)) {
             $import->setForm($form);
@@ -621,8 +683,11 @@ class ImportProcess
         return $import;
     }
 
-    public function getContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
-    {
+    public function getContractWaiting(
+        Tenant $tenant,
+        Contract $contract,
+        ResidentMapping $residentMapping
+    ) {
         $contractWaiting = $this->mapping->createContractWaiting(
             $tenant,
             $contract,
@@ -799,9 +864,7 @@ class ImportProcess
         if (!isset($postData['_token'])) {
             return false;
         }
-        if ($this->storage->isMultipleProperty()) {
-            $postData = $this->addUnitNameValid($postData);
-        }
+
         $form->submit($postData);
         $isCsrfTokenValid = $this->formCsrfProvider->isCsrfTokenValid($line, $postData['_token']);
         if ($form->isValid() && $isCsrfTokenValid) {
@@ -818,9 +881,13 @@ class ImportProcess
                     $contract = $form->getData();
                     if ($this->storage->isMultipleProperty()) {
                         $isSingle = $form->get('isSingle')->getData();
-                        $this->afterSubmitFormProcessProperty($contract, $isSingle);
+                        $this->afterSubmitForm($contract, $isSingle);
+                        $unitMapping = $form->get('unitMapping')->getData();
+                        if (!$unitMapping->getUnit()) {
+                            $unitMapping->setUnit($contract->getUnit());
+                        }
+                        $this->em->persist($unitMapping);
                     }
-                    $property = $contract->getProperty();
                     $this->persistContract($import, $contract);
                     if (!$contract->getId()) {
                         $this->emailSendingQueue[] = $contract;
@@ -838,24 +905,26 @@ class ImportProcess
                     /**
                      * @var $contract Contract
                      */
-                    $contract   = $data['contract'];
-                    $residentMapping = $form->get('contract')->get('residentMapping')->getData();
+                    $contract = $data['contract'];
                     if ($this->storage->isMultipleProperty()) {
                         $isSingle = $form->get('contract')->get('isSingle')->getData();
-                        $this->afterSubmitFormProcessProperty($contract, $isSingle);
+                        $this->afterSubmitForm($contract, $isSingle);
+                        $unitMapping = $form->get('contract')->get('unitMapping')->getData();
+                        if (!$unitMapping->getUnit()) {
+                            $unitMapping->setUnit($contract->getUnit());
+                        }
+                        $this->em->persist($unitMapping);
                     }
                     $email = $tenant->getEmail();
+                    $residentMapping = $form->get('contract')->get('residentMapping')->getData();
                     if (empty($email)) {
                         $waitingContract = $this->getContractWaiting($tenant, $contract, $residentMapping);
                         $this->em->persist($waitingContract);
                     } else {
-                        $unit       = $contract->getUnit();
-                        $sendInvite = $data['sendInvite'];
                         $this->em->persist($tenant);
                         $this->em->persist($residentMapping);
-                        $this->em->persist($unit);
                         $this->persistContract($import, $contract);
-                        if ($sendInvite) {
+                        if ($data['sendInvite']) {
                             $this->emailSendingQueue[] = $contract;
                         }
                     }
@@ -879,18 +948,15 @@ class ImportProcess
      * @param Contract $contract
      * @param $isSingle
      */
-    protected function afterSubmitFormProcessProperty(Contract $contract, $isSingle)
+    protected function afterSubmitForm(Contract $contract, $isSingle)
     {
         $property = $contract->getProperty();
-        if (is_null($property->getIsSingle())) {
-            $property->setIsSingle($isSingle);
-//            $this->em->persist($property);
+        $property->setIsSingle($isSingle);
+        $this->em->flush($property);
+
+        if ($property->isSingle() && !$contract->getUnit()) {
+            $contract->setUnit($property->getSingleUnit());
         }
-//        if (!$property->isSingle()) {
-//            $this->em->persist($contract->getUnit());
-//        } else {
-//            $contract->setUnit(null);
-//        }
     }
 
     /**
@@ -973,7 +1039,7 @@ class ImportProcess
         }
 
         $property = $this->mapping->createProperty($row);
-        if (empty($property)) {
+        if (empty($property) || !$property->getNumber()) {
             return null;
         }
 
@@ -1049,37 +1115,5 @@ class ImportProcess
         }
 
         return false;
-    }
-
-    /**
-     *
-     * If property single we need make valid unit name
-     * @TODO This method must be not exist at all and we need use different form validation rule and form event
-     *
-     * @param $postData
-     * @return array
-     */
-    protected function addUnitNameValid($postData)
-    {
-        if (!$this->storage->isMultipleProperty()) {
-            return $postData;
-        }
-
-        if (!$this->getIsSingle($postData)) {
-            return $postData;
-        }
-
-        $unitValid =  array(
-            'name' => self::VALID_UNIT_NAME,
-        );
-
-        if (isset($postData['contract'])) {
-            $postData['contract']['unit'] = $unitValid;
-            return $postData;
-        }
-
-        $postData['unit'] = $unitValid;
-
-        return $postData;
     }
 }

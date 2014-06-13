@@ -31,7 +31,15 @@
                                 <th class="pie-el unit"><span>{{ 'property'|trans }}*</span></th>
                             {% endif %}
                             <th class="pie-el unit"><span>{{ 'import.unit'|trans }}*</span></th>
-                            <th class="pie-el resident"><span>{{ 'import.residentId'|trans }}*</span></th>
+                            <th class="pie-el resident">
+                                <span>
+                                    {{ 'import.residentId'|trans }}*
+                                    {% if isMultipleProperty == 'true' %}
+                                        <br />
+                                        {{ 'import.unit_id'|trans }}*
+                                    {% endif %}
+                                </span>
+                            </th>
                             <th class="pie-el"><span>{{ 'import.first_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.last_name'|trans }}*</span></th>
                             <th class="pie-el"><span>{{ 'import.email'|trans }}*</span></th>

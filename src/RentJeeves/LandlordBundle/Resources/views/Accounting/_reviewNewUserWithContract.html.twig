@@ -63,6 +63,20 @@
                 }
             )
         }}
+        {% if isMultipleProperty == 'true' %}
+            <hr />
+            {{
+                form_widget(
+                    form.contract.unitMapping.externalUnitId,
+                    {"attr":
+                        {
+                            "data-bind":
+                            "html: unit_mapping.external_unit_id"
+                        }
+                    }
+                )
+            }}
+        {% endif %}
     </td>
     <td>
         {{  form_widget(

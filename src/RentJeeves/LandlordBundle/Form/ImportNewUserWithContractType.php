@@ -6,6 +6,7 @@ use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
 use RentJeeves\DataBundle\Entity\Property;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -27,6 +28,8 @@ class ImportNewUserWithContractType extends AbstractType
 
     protected $residentMapping;
 
+    protected $unitMapping;
+
     protected $em;
 
     protected $translator;
@@ -42,6 +45,7 @@ class ImportNewUserWithContractType extends AbstractType
         EntityManager $em,
         Translator $translator,
         ResidentMapping $residentMapping,
+        UnitMapping $unitMapping,
         Tenant $tenant,
         Unit $unit = null,
         $isMultipleProperty = false
@@ -49,6 +53,7 @@ class ImportNewUserWithContractType extends AbstractType
         $this->tenant = $tenant;
         $this->unit = $unit;
         $this->residentMapping = $residentMapping;
+        $this->unitMapping = $unitMapping;
         $this->em = $em;
         $this->translator = $translator;
         $this->isMultipleProperty = $isMultipleProperty;
@@ -69,6 +74,7 @@ class ImportNewUserWithContractType extends AbstractType
                 $this->translator,
                 $this->tenant,
                 $this->residentMapping,
+                $this->unitMapping,
                 $this->unit,
                 $token = false,
                 $useOperation = false,

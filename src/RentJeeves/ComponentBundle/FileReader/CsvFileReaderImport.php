@@ -22,7 +22,7 @@ class CsvFileReaderImport extends Base
 
         $totalLines = $this->countLines($file);
 
-        if (!is_null($offset) && $offset > $totalLines) {
+        if (!is_null($offset) && $offset >= $totalLines) {
             return $result;
         }
 

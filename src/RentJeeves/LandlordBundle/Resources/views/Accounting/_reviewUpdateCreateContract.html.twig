@@ -64,6 +64,19 @@
                 }
             )
         }}
+        {% if isMultipleProperty == 'true' %}
+            {{
+                form_widget(
+                    form.unitMapping.externalUnitId,
+                    {"attr":
+                        {
+                            "data-bind":
+                            "html: unit_mapping.external_unit_id"
+                        }
+                    }
+                )
+            }}
+        {% endif %}
     </td>
     <td data-bind="text:tenant.first_name"></td>
     <td data-bind="text:tenant.last_name"></td>

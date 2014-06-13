@@ -18,8 +18,6 @@ function accountingImport() {
     this.formErrors = ko.observableArray([]);
     this.loadData = function(next) {
         self.setProcessing(true);
-        self.rows([]);
-        self.rowsTotal(0);
         jQuery.ajax({
             url: Routing.generate('accounting_import_get_rows'),
             type: 'POST',
@@ -28,6 +26,8 @@ function accountingImport() {
                 'newRows': next
             },
             error: function() {
+                self.rows([]);
+                self.rowsTotal(0);
                 self.setProcessing(false);
                 self.errorLoadDataMessage(Translator.trans('import.error.flush'));
             },
@@ -151,7 +151,6 @@ function accountingImport() {
         });
         self.formErrors([]);
         var data = self.rows();
-        self.rows([])
         jQuery.ajax({
             url: Routing.generate('accounting_import_save_rows'),
             type: 'POST',

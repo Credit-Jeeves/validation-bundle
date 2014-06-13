@@ -12,8 +12,9 @@
     margin: 0px;
 }
 .properties-table td>input[type="text"] {
-    width: 55px !important;
+    width: 47px !important;
     margin-top: 5px;
+    margin-left: -4px;
 }
 .column-middle {
     padding: 2px;

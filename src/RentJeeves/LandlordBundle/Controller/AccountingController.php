@@ -13,6 +13,7 @@ use RentJeeves\DataBundle\Entity\Property;
 use RentJeeves\DataBundle\Entity\ResidentMapping;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Entity\Unit;
+use RentJeeves\DataBundle\Entity\UnitMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportMapping;
 use RentJeeves\LandlordBundle\Accounting\ImportProcess;
 use RentJeeves\LandlordBundle\Accounting\ImportStorage;
@@ -246,11 +247,13 @@ class AccountingController extends Controller
         $importProcess = $this->get('accounting.import.process');
         $formNewUserWithContract = $importProcess->getCreateUserAndCreateContractForm(
             new ResidentMapping(),
+            new UnitMapping(),
             new Unit()
         );
         $formContract = $importProcess->getContractForm(
             new Tenant(),
             new ResidentMapping(),
+            new UnitMapping(),
             new Unit()
         );
         $formContractFinish = $importProcess->getContractFinishForm();

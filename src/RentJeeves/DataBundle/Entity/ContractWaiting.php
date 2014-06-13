@@ -24,15 +24,8 @@ class ContractWaiting extends Base
             'firstName'     => $this->getFirstName(),
             'lastName'      => $this->getLastName(),
             'property'      => $this->getProperty()->getId(),
+            'unit'          => $this->getUnit()->getId(),
         );
-
-        $unit = $this->getUnit();
-
-        if (!empty($unit) && !$this->getProperty()->isSingle()) {
-            $data['unit'] = $unit->getId();
-        } else {
-            $data['unit'] = null;
-        }
 
         return $data;
     }

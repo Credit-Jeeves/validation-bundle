@@ -252,6 +252,32 @@ class Property extends Base
         return false;
     }
 
+    public function isAllowedToBeSingle($isSingle, $groupId)
+    {
+        if ($isSingle == $this->getIsSingle()) {
+            return true;
+        }
+
+        // it means previously we had null or false
+        if ($isSingle == true) {
+            if ((!$this->hasUnits() && !$this->hasGroups()) ||
+                (!$this->hasUnits() && count($this->getPropertyGroups()) == 1
+                    && $this->getPropertyGroups()->first()->getId() == $groupId)) {
+                return true;
+            }
+        }
+
+        // isSingle = false is allowed only if previous value was null (restricted to convert standalone property)
+        if ($isSingle == false) {
+            if (is_null($this->getIsSingle())) {
+                return true;
+            }
+        }
+
+
+        return false;
+    }
+
     public function __toString()
     {
         return $this->getFullAddress();

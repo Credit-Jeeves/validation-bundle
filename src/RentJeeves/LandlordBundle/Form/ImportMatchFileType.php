@@ -51,7 +51,7 @@ class ImportMatchFileType extends AbstractType
             ImportMapping::KEY_EMAIL                => $this->translator->trans('email'),
             ImportMapping::KEY_PAYMENT_AMOUNT       => $this->translator->trans('import.payment.amount'),
             ImportMapping::KEY_PAYMENT_DATE         => $this->translator->trans('import.payment.date'),
-            ImportMapping::KEY_LANDLORD_PROPERTY_ID => $this->translator->trans('common.property.id'),
+            ImportMapping::KEY_MONTH_TO_MONTH       => $this->translator->trans('common.month_to_month'),
         );
 
         if ($this->storage->isMultipleProperty()) {
@@ -59,6 +59,7 @@ class ImportMatchFileType extends AbstractType
             $choicesRequired[ImportMapping::KEY_ZIP] = $this->translator->trans('common.zip');
             $choicesRequired[ImportMapping::KEY_STATE] = $this->translator->trans('common.state');
             $choicesRequired[ImportMapping::KEY_CITY] = $this->translator->trans('common.city');
+            $choicesRequired[ImportMapping::KEY_UNIT_ID] = $this->translator->trans('import.unit_id');
             $choicesNoneRequired[ImportMapping::KEY_UNIT] = $this->translator->trans('import.unit');
         } else {
             $choicesRequired[ImportMapping::KEY_UNIT] = $this->translator->trans('import.unit');

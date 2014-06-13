@@ -56,7 +56,9 @@ class ImportMapping
 
     const KEY_ZIP = 'zip';
 
-    const KEY_LANDLORD_PROPERTY_ID = 'landlord_property_id';
+    const KEY_MONTH_TO_MONTH = 'month_to_month';
+
+    const KEY_UNIT_ID = 'unit_id';
 
     protected $requiredKeysDefault = array(
         self::KEY_EMAIL,
@@ -75,7 +77,7 @@ class ImportMapping
         self::KEY_STREET,
         self::KEY_STATE,
         self::KEY_ZIP,
-        self::KEY_LANDLORD_PROPERTY_ID,
+        self::KEY_UNIT_ID,
     );
 
     public static $mappingDates = array(
@@ -87,7 +89,8 @@ class ImportMapping
         'Y/m/d' => 'yyyy/mm/dd (1998/09/24)',
         'j/n/y' => 'd/m/yy (24/9/98)',
         'd/m/y' => 'dd/mm/yy  (24/09/98)',
-        'm/d/y' => 'mm/dd/yy  (09/24/98)',
+        'm/d/y' => 'm/d/yy  (9/24/98)',
+        'm/d/Y' => 'm/d/yyyy  (9/24/1998)',
         'm-d-y' => 'mm-dd-yy  (09-24-98)',
         'm-d-Y' => 'mm-dd-yyyy  (09-24-1998)',
         'n-j-Y' => 'm-d-yyyy  (9-24-1998)',
@@ -189,8 +192,12 @@ class ImportMapping
             $data[self::KEY_RENT]
         );
 
-        if (empty($data[self::KEY_UNIT])) {
-            $data = $this->splitUnitAndStreet($data);
+        if ($this->storage->isMultipleProperty()) {
+            if (empty($data[self::KEY_UNIT])) {
+                $data = $this->parseStreet($data);
+            } else {
+                $data = $this->parseUnit($data);
+            }
         }
 
         return $data;
@@ -327,14 +334,18 @@ class ImportMapping
      *
      * @return ContractWaiting
      */
-    public function createContractWaiting(Tenant $tenant, Contract $contract, ResidentMapping $residentMapping)
-    {
+    public function createContractWaiting(
+        Tenant $tenant,
+        Contract $contract,
+        ResidentMapping $residentMapping
+    ) {
         $waitingRoom = new ContractWaiting();
         $waitingRoom->setStartAt($contract->getStartAt());
         $waitingRoom->setFinishAt($contract->getFinishAt());
         $waitingRoom->setRent($contract->getRent());
         $waitingRoom->setIntegratedBalance($contract->getIntegratedBalance());
         $waitingRoom->setUnit($contract->getUnit());
+        $waitingRoom->setProperty($contract->getProperty());
 
         $waitingRoom->setFirstName($tenant->getFirstName());
         $waitingRoom->setLastName($tenant->getLastName());
@@ -358,8 +369,7 @@ class ImportMapping
         $property->setZip($row[self::KEY_ZIP]);
         $property->setArea($row[self::KEY_STATE]);
 
-        $result = $this->geocoder->using('google_maps')
-        ->geocode($property->getFullAddress());
+        $result = $this->geocoder->using('google_maps')->geocode($property->getFullAddress());
 
         if (empty($result)) {
             return null;
@@ -368,27 +378,37 @@ class ImportMapping
         return $property->parseGeocodeResponse($result);
     }
 
-    /**
-     * @TODO test it
-     *
-     * @param $row
-     *
-     * @return array
-     */
-    protected function splitUnitAndStreet($row)
+    protected function parseStreet($row)
     {
-        preg_match_all('/\h[\#]{1}[a-z0-9]{2,10}\h/', $row[self::KEY_STREET], $matches);
+        preg_match('/(?:\#|unit)\s?([a-z0-9]{1,10})/is', $row[self::KEY_STREET], $matches);
 
         if (empty($matches)) {
             return $row;
         }
-        //get unit name
-        $matches = reset($matches);
-        $unit = reset($matches);
+        list($unitString, $unitNumber) = $matches;
 
-        $row[self::KEY_STREET] = str_replace($unit, ' ', $row[self::KEY_STREET]);
-        $unit = trim($unit);
-        $row[self::KEY_UNIT] = str_replace('#', '', $unit);
+        $row[self::KEY_STREET] = str_replace($unitString, '', $row[self::KEY_STREET]);
+        $row[self::KEY_UNIT] = $unitNumber;
+
+        return $row;
+    }
+
+    /**
+     * @param $row
+     *
+     * @return array
+     */
+    protected function parseUnit($row)
+    {
+        preg_match('/(?:\#|unit)?\s?([a-z0-9]{1,10})/is', $row[self::KEY_UNIT], $matches);
+
+        if (empty($matches)) {
+            return $row;
+        }
+        list($unitString, $unitNumber) = $matches;
+
+        $row[self::KEY_STREET] = str_replace($unitString, '', $row[self::KEY_STREET]);
+        $row[self::KEY_UNIT] = $unitNumber;
 
         return $row;
     }

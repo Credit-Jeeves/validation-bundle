@@ -34,13 +34,8 @@ class ImportFileAccountingType extends AbstractType
                 'attr'          => array(
                     'class' => 'original widthSelect',
                 ),
-                'constraints'   => array(
-                    new NotBlank(
-                        array(
-                            'message' => 'error.property.empty'
-                        )
-                    ),
-                ),
+                'required'      => false,
+                'mapped'        => false,
                 'query_builder' => function (EntityRepository $er) use ($group) {
                     $query = $er->createQueryBuilder('p');
                     $query->innerJoin('p.property_groups', 'g');
@@ -115,7 +110,7 @@ class ImportFileAccountingType extends AbstractType
                 'choices'   => ImportMapping::$mappingDates,
                 'label'     => 'common.date_format',
                 'attr'      => array(
-                    'class' => 'half-width original'
+                    'class' => 'half-width original import-date'
                 ),
                 'constraints'    => array(
                     new NotBlank(),
