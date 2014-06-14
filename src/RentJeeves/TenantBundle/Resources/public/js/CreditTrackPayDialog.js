@@ -265,7 +265,7 @@ function CreditTrackPayDialog(options) {
         new Cancel(self.payment.id());
     };
 
-    // Constructor
+    ko.applyBindings(this, $('#pay-popup').get(0));
 
     $('#pay-popup').dialog({
         width: 650,
@@ -276,11 +276,6 @@ function CreditTrackPayDialog(options) {
         }
     });
 
-
-    $('.ui-dialog>#pay-popup').css("top","0px");
-
-    ko.applyBindings(this, $('#pay-popup').get(0));
-
-    window.formProcess.removeAllErrors('#pay-popup ');
+    window.formProcess.removeAllErrors('#pay-popup');
 }
 

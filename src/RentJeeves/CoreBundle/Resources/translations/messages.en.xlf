@@ -1109,6 +1109,10 @@
                 <source>popup.invite.tenant.free</source>
                 <target>Free</target>
             </trans-unit>
+            <trans-unit id="popup.invite.tenant.credittrack.title_2">
+                <source>popup.invite.tenant.credittrack.title_2</source>
+                <target>Build credit history while you pay rent. Introductory pricing.</target>
+            </trans-unit>
             <trans-unit id="popup.invite.tenant.credittrack">
                 <source>popup.invite.tenant.credittrack</source>
                 <target>CreditTrack</target>
@@ -1124,6 +1128,10 @@
             <trans-unit id="popup.tenant.get.credit.score">
                 <source>popup.tenant.get.credit.score</source>
                 <target>Get Your Credit Score</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.view.experian">
+                <source>popup.tenant.view.experian</source>
+                <target>View Your Experian Credit Report</target>
             </trans-unit>
             <trans-unit id="popup.tenant.get.first.free">
                 <source>popup.tenant.get.first.free</source>
@@ -1141,6 +1149,10 @@
                 <source>popup.tenant.pay.auto</source>
                 <target>Set up Auto Payments</target>
             </trans-unit>
+            <trans-unit id="popup.tenant.build.credit.history">
+                <source>popup.tenant.build.credit.history</source>
+                <target>Build Credit History</target>
+            </trans-unit>
             <trans-unit id="popup.tenant.build.credit">
                 <source>popup.tenant.build.credit</source>
                 <target>Build Credit (opt-in)</target>
@@ -1152,6 +1164,10 @@
             <trans-unit id="popup.tenant.safeguards">
                 <source>popup.tenant.safeguards</source>
                 <target>Rock-Solid Security Safeguards</target>
+            </trans-unit>
+            <trans-unit id="popup.tenant.prequalified.offers">
+                <source>popup.tenant.prequalified.offers</source>
+                <target>Pre-Qualified Credit Offers</target>
             </trans-unit>
             <trans-unit id="popup.tenant.footer.note_1">
                 <source>popup.tenant.footer.note_1</source>

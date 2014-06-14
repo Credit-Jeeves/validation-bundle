@@ -159,11 +159,11 @@
             </trans-unit>
             <trans-unit id="credittrack-box-title">
                 <source>credittrack-box-title</source>
-                <target>Track Your Credit</target>
+                <target>Track Your Progress</target>
             </trans-unit>
             <trans-unit id="credittrack-box-message">
                 <source>credittrack-box-message</source>
-                <target>We'll update your Vantage 3.0 score monthly. We'll also refresh your credit profile, rank, and analysis every six months.</target>
+                <target>Online Monthly Credit Reports and Scores from Experian</target>
             </trans-unit>
             <trans-unit id="credittrack-buy-link">
                 <source>credittrack-buy-link</source>
