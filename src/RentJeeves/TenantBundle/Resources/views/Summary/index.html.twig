@@ -45,8 +45,10 @@
         </div>
         <div class="clearboth"></div>
         <div class="column-large">
-            <div class="row-20"></div>
-            {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
+            {% if not creditTrackEnabled %}
+              <div class="row-20"></div>
+              {{ render(controller('ComponentBundle:AdCreditCards:index', {'Report': Report})) }}
+            {% endif %}
             <div class="row-20"></div>
             {{ render(controller('ComponentBundle:CreditBalance:index', {'Report': Report, 'Score': Score})) }}
             <div class="row-20"></div>
