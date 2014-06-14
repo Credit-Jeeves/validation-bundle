@@ -76,7 +76,7 @@
             </trans-unit>
             <trans-unit id="checkout.rent_starting.text">
                 <source>checkout.rent_starting.text</source>
-                <target>Do not include late fee, deposits, etc. In your 'Rent' amount. Sum these payments in 'Other'.</target>
+                <target>Do not include late fees, deposits, etc. in your 'Rent' amount. Sum these payments in 'Other'.</target>
             </trans-unit>
             <trans-unit id="checkout.amountOther">
                 <source>checkout.amountOther</source>

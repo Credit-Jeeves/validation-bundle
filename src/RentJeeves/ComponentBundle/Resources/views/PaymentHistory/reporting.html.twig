@@ -10,10 +10,10 @@
                     <input type="checkbox" id="reportExperian-{{ contract.id }}" value="experian" {% if contract.reporting.experian %}checked{% endif %} />
                     <label for="reportExperian-{{ contract.id }}">{{ 'bureau.reporting.experian'|trans }}</label>
                 </p>
-                <p>
+                {# NO TU YET <p>
                     <input type="checkbox" id="reportTU-{{ contract.id }}" value="trans_union" {% if contract.reporting.trans_union %}checked{% endif %} />
                     <label for="reportTU-{{ contract.id }}">{{ 'bureau.reporting.trans_union'|trans }}</label>
-                </p>
+                </p> #}
             </div>
             <p>{{ 'bureau.reporting.manage.description' | trans({'%link%': link}) | raw }}</p>
         </div>
