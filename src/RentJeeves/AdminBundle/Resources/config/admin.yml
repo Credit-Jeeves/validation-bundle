@@ -13,7 +13,7 @@ services:
     sonata.admin.payments:
         class: RentJeeves\AdminBundle\Admin\PaymentAdmin
         tags:
-            - { name: sonata.admin, manager_type: orm, group: admin, label: "Paymnets" }
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Payments" }
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\Payment
@@ -138,6 +138,17 @@ services:
         arguments:
             - ~
             - RentJeeves\DataBundle\Entity\Heartland
+            - 'SonataAdminBundle:CRUD'
+        calls:
+            - [ setTranslationDomain, [CreditJeevesAdminBundle]]
+
+    sonata.admin.operations:
+        class: RentJeeves\AdminBundle\Admin\OperationAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: admin, label: "Operations" }
+        arguments:
+            - ~
+            - CreditJeeves\DataBundle\Entity\Operation
             - 'SonataAdminBundle:CRUD'
         calls:
             - [ setTranslationDomain, [CreditJeevesAdminBundle]]

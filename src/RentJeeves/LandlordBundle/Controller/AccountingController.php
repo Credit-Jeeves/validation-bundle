@@ -128,13 +128,14 @@ class AccountingController extends Controller
     {
         $this->checkAccessToAccounting();
         $form = $this->createForm(
-            new ImportFileAccountingType($this->getUser())
+            new ImportFileAccountingType($this->getCurrentGroup())
         );
 
         $form->handleRequest($this->get('request'));
         if (!$form->isValid()) {
             return array(
                 'form'      => $form->createView(),
+                'nGroups' => $this->getGroups()->count(),
             );
         }
 
@@ -341,8 +342,7 @@ class AccountingController extends Controller
          */
         $importProcess = $this->get('accounting.import.process');
         $data = $request->request->all();
-        $errors               = $importProcess->saveForms($data);
-        $result['formErrors'] = $errors;
+        $result['formErrors'] = $importProcess->saveForms($data);
 
         $response = new Response($this->get('jms_serializer')->serialize($result, 'json', $context));
         $response->headers->set('Content-Type', 'application/json');

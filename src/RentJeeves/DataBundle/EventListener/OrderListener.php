@@ -9,6 +9,7 @@ use CreditJeeves\DataBundle\Enum\OperationType;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use RentJeeves\DataBundle\Entity\Tenant;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -51,9 +52,9 @@ class OrderListener
      * Because Order always(!!!) is created with status "NEWONE"
      * It will be changed after attempt of payment
      * 
-     * @param LifecycleEventArgs $eventArgs
+     * @param PreUpdateEventArgs $eventArgs
      */
-    public function preUpdate(LifecycleEventArgs $eventArgs)
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
         /** @var Order $entity */
         $entity = $eventArgs->getEntity();
@@ -227,9 +228,10 @@ class OrderListener
             return;
         }
 
-        if ($contract->getStatus() !== ContractStatus::CURRENT) {
-            return;
-        }
+        // Contract can be finished but last payment does not pass
+//        if ($contract->getStatus() !== ContractStatus::CURRENT) {
+//            return;
+//        }
 
         $group = $contract->getGroup();
         $isIntegrated = $group->getGroupSettings()->getIsIntegrated();

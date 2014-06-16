@@ -7,11 +7,14 @@ use RentJeeves\DataBundle\Enum\PaymentStatus;
 use RentJeeves\DataBundle\Model\Payment as Base;
 use RentJeeves\DataBundle\Enum\ContractStatus;
 use RentJeeves\CoreBundle\DateTime;
+use Symfony\Component\Validator\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="rj_payment")
  * @ORM\Entity(repositoryClass="RentJeeves\DataBundle\Entity\PaymentRepository")
  * @ORM\HasLifecycleCallbacks()
+ * @Assert\Callback(methods={"isEndLaterThanStart"})
  */
 class Payment extends Base
 {
@@ -118,5 +121,25 @@ class Payment extends Base
             $year = $currentYear;
         }
         return $now->setDate($year, $month, $day);
+    }
+
+    public function getOther()
+    {
+        return $this->getTotal()?$this->getTotal() - $this->getAmount():0;
+    }
+
+    public function isEndLaterThanStart(ExecutionContextInterface $validatorContext)
+    {
+        if (!$this->getStartYear() || !$this->getStartMonth() || !$this->getDueDate() ||
+            !$this->getEndMonth() || !$this->getEndYear()
+        ) {
+            return;
+        }
+        $end = new DateTime();
+        $end->setTime(0, 0, 0);
+        $end->setDate($this->getEndYear(), $this->getEndMonth(), $this->getDueDate());
+        if ($end < $this->getStartDate()) {
+            $validatorContext->addViolationAt('endMonth', 'contract.error.is_end_later_than_start', array(), null);
+        }
     }
 }

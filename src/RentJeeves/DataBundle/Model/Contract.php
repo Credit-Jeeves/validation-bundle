@@ -69,7 +69,8 @@ abstract class Contract
     /**
      * @ORM\ManyToOne(
      *     targetEntity="RentJeeves\DataBundle\Entity\Property",
-     *     inversedBy="contracts"
+     *     inversedBy="contracts",
+     *     cascade={"persist"}
      * )
      * @ORM\JoinColumn(
      *     name="property_id",

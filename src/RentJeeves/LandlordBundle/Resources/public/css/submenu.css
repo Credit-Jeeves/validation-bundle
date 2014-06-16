@@ -6,6 +6,10 @@
     border-left: 1px solid grey;
     padding-left: 5px;
 }
+.sub-menu>ul>.first.last{
+    border-left: none;
+    padding-left: 5px;
+}
 .container-content {
     clear: both;
     margin-top: 30px;

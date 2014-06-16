@@ -123,6 +123,15 @@ abstract class Unit
     protected $updatedAt;
 
     /**
+     * @ORM\Column(
+     *      name="deleted_at",
+     *      type="datetime",
+     *      nullable=true
+     * )
+     */
+    protected $deletedAt;
+
+    /**
      * @ORM\OneToMany(
      *     targetEntity="RentJeeves\DataBundle\Entity\Contract",
      *     mappedBy="unit",
@@ -134,6 +143,8 @@ abstract class Unit
      *     orphanRemoval=true
      * )
      * @Serializer\Exclude
+     *
+     * @var ArrayCollection
      */
     protected $contracts;
 
@@ -146,54 +157,15 @@ abstract class Unit
      *     }
      * )
      * @Serializer\Exclude
+     *
+     * @var ArrayCollection
      */
     protected $contractsWaiting;
-
-    /**
-     * @ORM\Column(
-     *      name="deleted_at",
-     *      type="datetime",
-     *      nullable=true
-     * )
-     */
-    protected $deletedAt;
-
-    /**
-     * @param ContractWaiting $contractsWaiting
-     */
-    public function setContractsWaiting(ContractWaiting $contractsWaiting)
-    {
-        $this->contractsWaiting = $contractsWaiting;
-    }
-
-    /**
-     * @return ContractWaiting
-     */
-    public function getContractsWaiting()
-    {
-        return $this->contractsWaiting;
-    }
-
-
-    /**
-     * @param mixed $deletedAt
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
 
     public function __construct()
     {
         $this->contracts = new ArrayCollection();
+        $this->contractsWaiting = new ArrayCollection();
     }
     
     /**
@@ -317,6 +289,22 @@ abstract class Unit
     }
 
     /**
+     * @param mixed $deletedAt
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
      * Set Property
      *
      * @param Property $property
@@ -386,7 +374,7 @@ abstract class Unit
      * Add Contract
      *
      * @param Contract $contract
-     * @return Unit
+     * @return $this
      */
     public function addContract(Contract $contract)
     {
@@ -398,19 +386,53 @@ abstract class Unit
      * Remove Contract
      *
      * @param Contract
+     * @return $this
      */
     public function removeContract(Contract $contract)
     {
         $this->contracts->removeElement($contract);
+        return $this;
     }
     
     /**
      * Get contracts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getContracts()
     {
         return $this->contracts;
+    }
+
+    /**
+     * Add ContractWaiting
+     *
+     * @param ContractWaiting $contract
+     * @return $this
+     */
+    public function addContractWaiting(ContractWaiting $contract)
+    {
+        $this->contractsWaiting[] = $contract;
+        return $this;
+    }
+
+    /**
+     * Remove ContractWaiting
+     *
+     * @param Contract
+     * @return $this
+     */
+    public function removeContractWaiting(ContractWaiting $contract)
+    {
+        $this->contractsWaiting->removeElement($contract);
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getContractsWaiting()
+    {
+        return $this->contractsWaiting;
     }
 }

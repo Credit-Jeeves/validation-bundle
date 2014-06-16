@@ -312,4 +312,12 @@ function accountingImport() {
 
         return isValid
     }
+
+    this.isCheckedInvite = function(email) {
+        if (email === null) {
+            return false;
+        }
+
+        return email.length > 0;
+    }
 }

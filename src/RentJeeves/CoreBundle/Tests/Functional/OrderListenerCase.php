@@ -5,17 +5,20 @@ namespace RentJeeves\CoreBundle\Tests\Functional;
 use CreditJeeves\DataBundle\Entity\Operation;
 use CreditJeeves\DataBundle\Entity\Order;
 use CreditJeeves\DataBundle\Enum\OrderStatus;
+use Doctrine\ORM\EntityManager;
 use RentJeeves\TestBundle\Functional\BaseTestCase;
 
 class OrderListenerCase extends BaseTestCase
 {
     /**
      * @test
+     * FIXME fails on 2014-06-11 but not fails on 2014-06-09
      */
     public function shouldUnshiftContractDateWhenOrderIsCancelled()
     {
         $this->load(true);
         $container = static::getContainer();
+        /** @var EntityManager $em */
         $em = $container->get('doctrine.orm.entity_manager');
 
         $orders = $em->getRepository('DataBundle:Order')

@@ -28,9 +28,11 @@ class TransUnionRentalReportCase extends BaseTestCase
         // check only record, b/c header doesn't contain important info and has changeable data
         $report = $this->getContainer()->get('jms_serializer')->serialize($report, 'trans_union_rental');
         $reportRecord = trim(explode("\n", $report)[1]);
+        // replace tenantId with a replacement b/c tenantId can differ
+        $resReportRecord = substr_replace($reportRecord, '%tenantId29characters________%', 42, 30);
         $expectedResult = trim(file_get_contents($resultFilename));
 
-        $this->assertEquals($expectedResult, $reportRecord);
+        $this->assertEquals($expectedResult, $resReportRecord);
     }
 
     public function provideData()

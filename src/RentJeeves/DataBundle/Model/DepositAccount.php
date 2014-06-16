@@ -33,6 +33,7 @@ abstract class DepositAccount
      * )
      * @var \CreditJeeves\DataBundle\Entity\Group
      * @Serializer\Groups({"paymentSelect"});
+     * @Serializer\MaxDepth(3)
      */
     protected $group;
 
